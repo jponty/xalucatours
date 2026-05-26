@@ -11,6 +11,63 @@ const COMMON_NIGHTS = {
   "9n10d":{ es: "9 noches · 10 días", en: "9 nights · 10 days", fr: "9 nuits · 10 jours" },
 };
 
+export const HUB_ATLAS_DESIERTO = {
+  id: "atlas-desierto",
+  hero: {
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
+    place: { es: "Ouarzazate · Alto Atlas · Erg Chebbi · Errachidia", en: "Ouarzazate · High Atlas · Erg Chebbi · Errachidia", fr: "Ouarzazate · Haut Atlas · Erg Chebbi · Errachidia" },
+    title: { es: "Atlas – Desierto.", en: "Atlas – Desert.", fr: "Atlas – Désert." },
+    subtitle: { es: "Cordillera del Atlas y dunas del Erg Chebbi — la travesía clásica del sur.", en: "Atlas range and Erg Chebbi dunes — the classic southern crossing.", fr: "Cordillère de l'Atlas et dunes de l'Erg Chebbi — la traversée classique du sud." },
+  },
+  intro: {
+    overline: { es: "Atlas – Desierto", en: "Atlas – Desert", fr: "Atlas – Désert" },
+    title: { es: "De las cumbres del Atlas a las dunas del Sahara.", en: "From Atlas summits to Sahara dunes.", fr: "Des sommets de l'Atlas aux dunes du Sahara." },
+    body: {
+      es: ["De Ouarzazate al Erg Chebbi atravesando la cordillera del Alto Atlas, sus pueblos imazighen, valles, oasis y gargantas espectaculares."],
+      en: ["From Ouarzazate to the Erg Chebbi across the High Atlas range — its Imazighen villages, valleys, oases and spectacular gorges."],
+      fr: ["D'Ouarzazate à l'Erg Chebbi à travers la cordillère du Haut Atlas — ses villages imazighen, vallées, oasis et gorges spectaculaires."],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de viaje Atlas – Desierto", en: "Atlas – Desert options", fr: "Options Atlas – Désert" },
+    title: { es: "Elige tu travesía.", en: "Choose your route.", fr: "Choisissez votre itinéraire." },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this journey.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    },
+    group_a: { es: "Atlas + Desierto", en: "Atlas + Desert", fr: "Atlas + Désert" },
+    group_b: { es: "Desierto + Atlas", en: "Desert + Atlas", fr: "Désert + Atlas" },
+  },
+  programs: [
+    { id: "ad-4-5", direction: "a", nights: "4n5d", accent: "#C16542", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 4 noches y 5 días por la cordillera del Atlas marroquí y el desierto de dunas del Erg Chebbi en el desierto del Sahara en Marruecos.",
+               en: "4-night/5-day journey through the Atlas range and the Erg Chebbi dunes in the Sahara desert.",
+               fr: "Voyage de 4 nuits et 5 jours par la cordillère de l'Atlas marocain et les dunes de l'Erg Chebbi dans le Sahara." } },
+    { id: "ad-5-6", direction: "a", nights: "5n6d", accent: "#D97742", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 5 noches y 6 días por la cordillera del Atlas marroquí y el desierto de dunas del Erg Chebbi en el desierto del Sahara en Marruecos.",
+               en: "5-night/6-day journey through the Atlas range and the Erg Chebbi dunes in the Sahara desert.",
+               fr: "Voyage de 5 nuits et 6 jours par la cordillère de l'Atlas et les dunes de l'Erg Chebbi dans le Sahara." } },
+    { id: "ad-6-7", direction: "a", nights: "6n7d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 6 noches y 7 días por la cordillera del Atlas marroquí y el desierto de dunas del Erg Chebbi en el desierto del Sahara en Marruecos.",
+               en: "6-night/7-day journey through the Atlas range and the Erg Chebbi dunes in the Sahara desert.",
+               fr: "Voyage de 6 nuits et 7 jours par la cordillère de l'Atlas et les dunes de l'Erg Chebbi dans le Sahara." } },
+    { id: "da-4-5", direction: "b", nights: "4n5d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 4 noches y 5 días por el desierto de dunas del Erg Chebbi en el desierto del Sáhara y la cordillera del Atlas marroquí.",
+               en: "4-night/5-day journey through the Erg Chebbi dunes in the Sahara and the Atlas range.",
+               fr: "Voyage de 4 nuits et 5 jours par les dunes de l'Erg Chebbi dans le Sahara et la cordillère de l'Atlas." } },
+    { id: "da-5-6", direction: "b", nights: "5n6d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 5 noches y 6 días por el desierto de dunas del Erg Chebbi en el desierto del Sáhara y la cordillera del Atlas marroquí.",
+               en: "5-night/6-day journey through the Erg Chebbi dunes in the Sahara and the Atlas range.",
+               fr: "Voyage de 5 nuits et 6 jours par les dunes de l'Erg Chebbi dans le Sahara et la cordillère de l'Atlas." } },
+    { id: "da-6-7", direction: "b", nights: "6n7d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 6 noches y 7 días por el desierto de dunas del Erg Chebbi en el desierto del Sáhara y la cordillera del Atlas marroquí.",
+               en: "6-night/7-day journey through the Erg Chebbi dunes in the Sahara and the Atlas range.",
+               fr: "Voyage de 6 nuits et 7 jours par les dunes de l'Erg Chebbi dans le Sahara et la cordillère de l'Atlas." } },
+  ],
+};
+
 export const HUB_MARRAKECH_ERG = {
   id: "marrakech-erg",
   hero: {

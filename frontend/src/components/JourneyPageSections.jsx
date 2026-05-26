@@ -7,6 +7,7 @@ import {
 import { pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
+import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
 
@@ -569,6 +570,76 @@ export const CommunityCta = ({ t, lang, testid = "community-cta", image }) => (
 /* ============================================================
    CatalogTeaser — "Descubre todos nuestros circuitos" link card
 ============================================================ */
+export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
+  const groupedKeys = Array.from(new Set(hub.programs.map((p) => p.direction)));
+  const getLabel = (k) => k === "a" ? pick(hub.options.group_a, lang) : pick(hub.options.group_b, lang);
+  const cardLabel = labels.card_label || (lang === "es" ? "Próximamente" : lang === "fr" ? "Bientôt disponible" : "Coming soon");
+
+  return (
+    <section
+      data-testid={testid || `hub-preview-${hub.id}`}
+      className="relative bg-[#F2EBE1] py-20 md:py-24 overflow-hidden"
+    >
+      <div className="absolute inset-0 berber-bg-diamond opacity-25 pointer-events-none" aria-hidden="true" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
+          <div className="md:col-span-7">
+            <span className="overline">{pick(hub.options.overline, lang)}</span>
+            <h3 className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.1] tracking-tight mt-5 text-[#2C2621]">
+              {pick(hub.options.title, lang)}
+            </h3>
+          </div>
+          <div className="md:col-span-5">
+            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{pick(hub.options.body, lang)}</p>
+          </div>
+        </div>
+
+        {groupedKeys.map((k) => {
+          const items = hub.programs.filter((p) => p.direction === k);
+          return (
+            <div key={k} className="mb-12 last:mb-0">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="font-serif-x text-xl md:text-2xl text-[#2C2621]">{getLabel(k)}</span>
+                <span className="flex-1 h-px bg-[#2C2621]/15" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {items.map((p) => (
+                  <article
+                    key={p.id}
+                    data-testid={`hub-preview-card-${p.id}`}
+                    aria-disabled="true"
+                    className="group relative block overflow-hidden h-[420px] cursor-not-allowed"
+                  >
+                    <img src={p.image} alt="" loading="lazy"
+                         className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10" />
+                    <span className="film-grain" />
+                    <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
+                      <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
+                        {getLabel(k)}
+                      </span>
+                      <h4 className="font-serif-x text-2xl md:text-[26px] leading-[1.05] mt-3 inline-flex items-center gap-3">
+                        <Clock className="w-5 h-5 text-[#D4A373]" strokeWidth={1.4} />
+                        {pick(COMMON_NIGHTS[p.nights], lang)}
+                      </h4>
+                      <p className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3">
+                        {pick(p.blurb, lang)}
+                      </p>
+                      <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/70">
+                        {cardLabel}
+                      </span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
+
 export const CatalogTeaser = ({ t, lang, testid = "catalog-teaser", image }) => (
   <section
     data-testid={testid}

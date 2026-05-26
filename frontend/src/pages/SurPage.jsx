@@ -3,6 +3,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { SUR_ITINERARIES, SUR_EDITORIAL, SUR_PILLARS } from "@/lib/surItineraries";
 import {
+  HUB_ATLAS_DESIERTO,
+  HUB_MARRAKECH_ERG,
+  HUB_MARRAKECH_LOOP,
+  HUB_MARRAKECH_ESSAOUIRA,
+} from "@/lib/itineraryHubs";
+import {
   JourneyHero,
   StickyNav,
   ItinerariesOverview,
@@ -11,6 +17,7 @@ import {
   WhyXaluca,
   CatalogTeaser,
   CommunityCta,
+  HubOptionsPreview,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 
@@ -220,25 +227,28 @@ export default function SurPage() {
 
       {/* 3. Itinerary 1: Ouarzazate -> Errachidia (links to Atlas+Desierto hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[0]} index={0} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourAtlasDesiertoHub")} />
+      <HubOptionsPreview hub={HUB_ATLAS_DESIERTO} lang={lang} testid="sur-preview-atlas-desierto" />
 
       {/* 4. Editorial: gate of the desert */}
       <EditorialBlock block={SUR_EDITORIAL[1]} lang={lang} />
 
       {/* 5. Itinerary 2: Marrakech -> Errachidia (links to Marrakech-Erg Chebbi hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[1]} index={1} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechErgHub")} />
+      <HubOptionsPreview hub={HUB_MARRAKECH_ERG} lang={lang} testid="sur-preview-marrakech-erg" />
 
       {/* 6. Editorial: Marrakech, Atlas & Sahara */}
       <EditorialBlock block={SUR_EDITORIAL[2]} lang={lang} />
 
       {/* 7. Itinerary 3: Marrakech loop (links to Marrakech-Erg Chebbi-Marrakech hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[2]} index={2} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechLoopHub")} />
+      <HubOptionsPreview hub={HUB_MARRAKECH_LOOP} lang={lang} testid="sur-preview-marrakech-loop" />
 
       {/* 8. Editorial: Marrakech & Essaouira intro */}
       <EditorialBlock block={SUR_EDITORIAL[3]} lang={lang} />
 
       {/* 9. Itinerary 4: Marrakech – Essaouira (links to Marrakech-Essaouira hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[3]} index={3} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechEssHub")} />
-
+      <HubOptionsPreview hub={HUB_MARRAKECH_ESSAOUIRA} lang={lang} testid="sur-preview-marrakech-essaouira" />
       {/* 10. Why Xaluca - 4 brand pillars */}
       <WhyXaluca pillars={SUR_PILLARS} t={t.why} lang={lang} testid="sur-why" />
 
