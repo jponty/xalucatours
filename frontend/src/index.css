@@ -299,6 +299,17 @@
 
 
 
+/* Edit mode — visual hint that link navigation is paused.
+   We use crosshair cursor on editable cards to communicate "editable area". */
+body.edit-mode-on a:has([data-testid^="editable-overlay-"]) {
+    cursor: crosshair;
+}
+body.edit-mode-on a:has([data-testid^="editable-overlay-"]):focus-visible {
+    outline: 2px solid #C16542;
+    outline-offset: 4px;
+}
+
+
 /* ============================================================
    Leaflet tweaks — editorial look
    ============================================================ */

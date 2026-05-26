@@ -71,6 +71,7 @@ export const WhatJourneysFeelLike = () => {
                     fallback={c.image}
                     alt={t(c.k_title)}
                     imgProps={{ loading: "lazy" }}
+                    aspectRatio="4/3"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 to-transparent" />

@@ -20,6 +20,7 @@ export const PersonalConsultation = () => {
               fallback="https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1400&q=85"
               alt=""
               imgProps={{ loading: "lazy" }}
+              aspectRatio="4/5"
               className="ken-burns absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-[#1A1513]/35 via-transparent to-transparent" />
@@ -87,6 +88,7 @@ export const CommunityCTA = () => {
         fallback="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
         alt=""
         imgProps={{ loading: "lazy" }}
+        aspectRatio="21/9"
         className="ken-burns absolute inset-0 w-full h-full object-cover opacity-55"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/55 to-[#1A1513]/95" />

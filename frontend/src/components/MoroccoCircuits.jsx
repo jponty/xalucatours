@@ -111,6 +111,7 @@ export const MoroccoCircuits = () => {
               fallback={current.image}
               alt={pick(currentCircuit.label, lang)}
               imgProps={{ loading: "lazy" }}
+              aspectRatio="16/10"
               className="ken-burns absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-[#1A1513]/10" />

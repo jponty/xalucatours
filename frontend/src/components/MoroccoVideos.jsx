@@ -144,6 +144,7 @@ const VideoCard = ({ video, lang, isActive, onPlay }) => (
             fallback={video.poster}
             alt={video.title[lang] || video.title.es}
             imgProps={{ loading: "lazy" }}
+            aspectRatio="16/9"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent" />

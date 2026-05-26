@@ -61,6 +61,7 @@ export const TravelCategories = () => {
                     fallback={c.image}
                     alt={pick(c.title, lang)}
                     imgProps={{ loading: "lazy" }}
+                    aspectRatio="4/5"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/20 to-transparent" />

@@ -47,6 +47,7 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
           fallback={trip.image}
           alt={pick(trip.title, lang)}
           imgProps={{ loading: "lazy" }}
+          aspectRatio="4/3"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
         {/* Dedicated bottom-half gradient — soft on top, stronger near

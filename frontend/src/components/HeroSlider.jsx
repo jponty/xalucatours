@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
+import { ArrowRight, Compass, Phone, Mail, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { CONTACT } from "@/lib/data";
@@ -45,12 +45,38 @@ export const HeroSlider = () => {
             alt=""
             className="ken-burns absolute inset-0 w-full h-full object-cover"
             imgProps={{ loading: i === 0 ? "eager" : "lazy" }}
+            aspectRatio="16/9"
           />
         </div>
       ))}
       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/30" />
       <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
       <span className="film-grain" />
+
+      {/* In edit mode, expose prev/next so each hero slide can be edited
+          independently (slides 2-4 are otherwise hidden behind opacity-0). */}
+      {editMode && (
+        <div className="absolute top-1/2 inset-x-0 z-[40] flex items-center justify-between px-4 md:px-8 pointer-events-none -translate-y-1/2">
+          <button
+            type="button"
+            data-testid="hero-edit-prev"
+            onClick={() => setIdx((p) => (p - 1 + SLIDES.length) % SLIDES.length)}
+            aria-label="Slide anterior"
+            className="pointer-events-auto inline-flex items-center justify-center w-12 h-12 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7] shadow-lg"
+          >
+            <ChevronLeft className="w-5 h-5" strokeWidth={1.6} />
+          </button>
+          <button
+            type="button"
+            data-testid="hero-edit-next"
+            onClick={() => setIdx((p) => (p + 1) % SLIDES.length)}
+            aria-label="Slide siguiente"
+            className="pointer-events-auto inline-flex items-center justify-center w-12 h-12 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7] shadow-lg"
+          >
+            <ChevronRight className="w-5 h-5" strokeWidth={1.6} />
+          </button>
+        </div>
+      )}
 
       <div className={`relative z-10 h-full flex flex-col ${editMode ? "pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto" : ""}`}>
         <div className="flex-1 flex items-end pt-32 md:pt-40 pb-24 md:pb-32">

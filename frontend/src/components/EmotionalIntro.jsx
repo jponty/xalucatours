@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import EditableImage from "@/components/EditableImage";
 
 /* Curated Moroccan-only Unsplash imagery — each frame carries a
@@ -52,6 +53,7 @@ const AUTOPLAY_MS = 5200;
 
 export const EmotionalIntro = () => {
   const { t, lang } = useLanguage();
+  const { editMode } = useEditMode();
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -60,12 +62,12 @@ export const EmotionalIntro = () => {
   }, []);
 
   useEffect(() => {
-    if (paused) return undefined;
+    if (paused || editMode) return undefined;
     const id = setInterval(() => {
       setIdx((p) => (p + 1) % SLIDES.length);
     }, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [paused, editMode]);
 
   return (
     <section
@@ -120,6 +122,7 @@ export const EmotionalIntro = () => {
                   className={`ken-burns absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out ${
                     i === idx ? "opacity-100" : "opacity-0"
                   }`}
+                  aspectRatio="4/5"
                 />
               ))}
 
@@ -142,7 +145,9 @@ export const EmotionalIntro = () => {
                 onClick={() => go(idx - 1)}
                 aria-label="Prev"
                 data-testid="emotional-intro-prev"
-                className="absolute top-1/2 left-3 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#FDFBF7]"
+                className={`absolute top-1/2 left-3 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
+                  editMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
               >
                 <ChevronLeft className="w-4 h-4" strokeWidth={1.6} />
               </button>
@@ -151,7 +156,9 @@ export const EmotionalIntro = () => {
                 onClick={() => go(idx + 1)}
                 aria-label="Next"
                 data-testid="emotional-intro-next"
-                className="absolute top-1/2 right-3 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#FDFBF7]"
+                className={`absolute top-1/2 right-3 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
+                  editMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
               >
                 <ChevronRight className="w-4 h-4" strokeWidth={1.6} />
               </button>

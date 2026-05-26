@@ -139,6 +139,7 @@ const FeaturedCard = ({ trip, lang }) => {
         fallback={trip.image}
         alt={pick(trip.title, lang)}
         imgProps={{ loading: "lazy" }}
+        aspectRatio={trip.featured ? "16/10" : "4/5"}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
       />
       <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent" />
@@ -192,6 +193,7 @@ const SmallCard = ({ trip, lang }) => {
           fallback={trip.image}
           alt={pick(trip.title, lang)}
           imgProps={{ loading: "lazy" }}
+          aspectRatio="16/10"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
         <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-[#1A1513]/10" />

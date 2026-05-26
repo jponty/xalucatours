@@ -16,6 +16,7 @@ export const FeaturedQuote = () => {
         fallback="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
         alt=""
         imgProps={{ loading: "lazy" }}
+        aspectRatio="16/9"
         className="ken-burns absolute inset-0 w-full h-full object-cover opacity-40"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/75 to-[#1A1513]/95" />

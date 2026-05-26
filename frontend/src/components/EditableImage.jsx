@@ -1,30 +1,81 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Pencil, X, Upload, Check, Loader2, AlertCircle } from "lucide-react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import Cropper from "react-easy-crop";
+import { Pencil, X, Upload, Check, Loader2, AlertCircle, RotateCcw, ImageOff } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
-/* Resolve a slot url. Server URLs starting with `/api/uploads/...` are
-   served by the backend domain, so prefix REACT_APP_BACKEND_URL.
-   External URLs are returned untouched. */
+/* Resolve relative API URLs to absolute. External URLs are kept as-is. */
 const resolveUrl = (url) => {
   if (!url) return null;
   if (url.startsWith("/api/")) return `${API}${url}`;
   return url;
 };
 
+/* Parse "16/9" → 1.7777…  ·  "4/5" → 0.8 · 1 → 1 */
+const parseRatio = (ratio) => {
+  if (!ratio) return 16 / 9;
+  if (typeof ratio === "number") return ratio;
+  const m = String(ratio).match(/^(\d+(?:\.\d+)?)\s*[/:]\s*(\d+(?:\.\d+)?)$/);
+  if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+  const n = parseFloat(ratio);
+  return Number.isFinite(n) && n > 0 ? n : 16 / 9;
+};
+
+/* Human-friendly aspect ratio label */
+const ratioLabel = (ratio) => {
+  const r = parseRatio(ratio);
+  // Match to common ratios with small tolerance
+  const known = [
+    { r: 21 / 9, label: "Cinemascope", code: "21:9" },
+    { r: 16 / 9, label: "Panorámico",  code: "16:9" },
+    { r: 16 / 10, label: "Horizontal", code: "16:10" },
+    { r: 3 / 2,  label: "Foto clásica", code: "3:2" },
+    { r: 4 / 3,  label: "Horizontal",  code: "4:3" },
+    { r: 1,      label: "Cuadrado",    code: "1:1" },
+    { r: 3 / 4,  label: "Vertical",    code: "3:4" },
+    { r: 4 / 5,  label: "Vertical",    code: "4:5" },
+    { r: 2 / 3,  label: "Retrato",     code: "2:3" },
+    { r: 9 / 16, label: "Vertical",    code: "9:16" },
+  ];
+  let best = known[0];
+  for (const k of known) {
+    if (Math.abs(k.r - r) < Math.abs(best.r - r)) best = k;
+  }
+  return { label: best.label, code: best.code };
+};
+
+/* Render the saved/cropped image. Empty-state placeholder when no source. */
+const ImageOrPlaceholder = ({ url, alt, className, imgProps, aspectRatio }) => {
+  if (url) {
+    return <img src={resolveUrl(url)} alt={alt} className={className} {...imgProps} />;
+  }
+  // Empty-state placeholder — neutral cream area matching the slot's intent
+  return (
+    <div
+      className={`${className} flex items-center justify-center bg-[#EDE5D5]`}
+      style={{ aspectRatio: parseRatio(aspectRatio) || undefined }}
+      aria-label={alt || "Imagen sin definir"}
+    >
+      <span className="inline-flex items-center gap-2 text-[#9C8E78] text-[10px] tracking-[0.32em] uppercase">
+        <ImageOff className="w-3.5 h-3.5" strokeWidth={1.5} />
+        Sin imagen
+      </span>
+    </div>
+  );
+};
+
 /**
- * <EditableImage> — drop-in <img>-like component with inline edit support.
+ * <EditableImage> — drop-in editable image.
  *
  * Props:
- *   slot        Unique slot id, e.g. "home.hero.0"
- *   fallback    Default URL when the slot has no saved image
- *   alt         Default alt text
- *   className   Forwarded to <img>
- *   imgProps    Extra <img> attributes (loading, sizes, etc.)
- *
- * When the global edit mode is OFF, this renders exactly as a normal <img>.
- * When it is ON, an overlay appears with a pencil button.
+ *   slot          required, unique slot id (e.g. "home.hero.0")
+ *   fallback      optional default URL when slot has no saved image
+ *   alt           default alt text
+ *   className     forwarded to <img>
+ *   imgProps      extra <img> attributes
+ *   aspectRatio   target ratio for the cropper (e.g. "16/9", "4/5", 1, 1.77)
+ *   forceVisible  if true, keep edit overlay above stacked carousels' transitions
  */
 export const EditableImage = ({
   slot,
@@ -32,28 +83,25 @@ export const EditableImage = ({
   alt = "",
   className = "",
   imgProps = {},
+  aspectRatio,
+  forceVisible = false,
 }) => {
   const { editMode } = useEditMode();
-  const [url, setUrl] = useState(fallback);
+  const [url, setUrl] = useState(fallback || null);
   const [open, setOpen] = useState(false);
 
-  // Load the saved slot value once on mount (and refetch when slot changes)
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`);
         const data = await res.json();
-        if (!cancelled && data && data.url) {
-          setUrl(data.url);
-        }
+        if (!cancelled && data && data.url) setUrl(data.url);
       } catch (e) {
-        /* ignore — keep fallback */
+        /* keep fallback */
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [slot]);
 
   const onSaved = (newUrl) => {
@@ -63,25 +111,34 @@ export const EditableImage = ({
 
   return (
     <>
-      <img
-        src={resolveUrl(url) || fallback}
+      <ImageOrPlaceholder
+        url={url}
         alt={alt}
         className={className}
-        {...imgProps}
+        imgProps={imgProps}
+        aspectRatio={aspectRatio}
       />
       {editMode && (
         <div
           aria-hidden="true"
           data-testid={`editable-overlay-${slot}`}
-          className="absolute inset-0 z-[45] pointer-events-none flex items-center justify-center"
+          className={`absolute inset-0 z-[45] pointer-events-none flex items-center justify-center ${
+            forceVisible ? "" : ""
+          }`}
         >
-          {/* dashed editor frame */}
           <div className="absolute inset-2 border-2 border-dashed border-[#FDFBF7] opacity-70 animate-pulse" />
-          {/* slot badge top-left */}
           <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#1A1513]/85 text-[#FDFBF7] text-[9px] tracking-[0.2em] uppercase px-2 py-1 max-w-[60%] truncate">
             {slot}
           </span>
-          {/* edit button — centered, always reachable regardless of card size */}
+          {aspectRatio && (
+            <span
+              data-testid={`editable-ratio-${slot}`}
+              className="absolute top-2 right-2 md:top-3 md:right-3 bg-[#FDFBF7]/95 text-[#2C2621] text-[9px] tracking-[0.2em] uppercase px-2 py-1"
+              title={`${ratioLabel(aspectRatio).label} · ${ratioLabel(aspectRatio).code}`}
+            >
+              {ratioLabel(aspectRatio).code}
+            </span>
+          )}
           <button
             type="button"
             onClick={(e) => {
@@ -98,30 +155,107 @@ export const EditableImage = ({
         </div>
       )}
       {open && (
-        <EditModal slot={slot} currentUrl={url} onClose={() => setOpen(false)} onSaved={onSaved} />
+        <EditModal
+          slot={slot}
+          currentUrl={url}
+          aspectRatio={aspectRatio}
+          onClose={() => setOpen(false)}
+          onSaved={onSaved}
+        />
       )}
     </>
   );
 };
 
 /* ============================================================
-   EditModal — upload-only flavour (Phase 1 test)
+   EditModal — upload + free crop & reposition
+   ------------------------------------------------------------
+   - SOLID opaque backdrop, fixed full-viewport, max z-index.
+   - Body scroll locked while open.
+   - Aspect-ratio aware: crop area uses target ratio.
+   - Drag to reposition + zoom slider.
+   - Save: crops on canvas → POSTs the JPEG blob to the slot upload.
 ============================================================ */
-const EditModal = ({ slot, currentUrl, onClose, onSaved }) => {
+const CROP_OUTPUT_SIZE = 1800; // longer side in px of the saved crop
+
+const cropImageToBlob = async (imageSrc, croppedAreaPixels) => {
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = imageSrc;
+  });
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  // Scale output to a max longer-side while preserving the crop ratio
+  const ratio = croppedAreaPixels.width / croppedAreaPixels.height;
+  let outW = croppedAreaPixels.width;
+  let outH = croppedAreaPixels.height;
+  if (Math.max(outW, outH) > CROP_OUTPUT_SIZE) {
+    if (outW >= outH) {
+      outW = CROP_OUTPUT_SIZE;
+      outH = Math.round(CROP_OUTPUT_SIZE / ratio);
+    } else {
+      outH = CROP_OUTPUT_SIZE;
+      outW = Math.round(CROP_OUTPUT_SIZE * ratio);
+    }
+  }
+  canvas.width = outW;
+  canvas.height = outH;
+
+  ctx.drawImage(
+    image,
+    croppedAreaPixels.x,
+    croppedAreaPixels.y,
+    croppedAreaPixels.width,
+    croppedAreaPixels.height,
+    0,
+    0,
+    outW,
+    outH,
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error("Canvas to blob failed"))),
+      "image/jpeg",
+      0.92,
+    );
+  });
+};
+
+const EditModal = ({ slot, currentUrl, aspectRatio, onClose, onSaved }) => {
   const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
+  const ratio = parseRatio(aspectRatio);
+  const rLabel = ratioLabel(aspectRatio);
 
-  // Close on ESC
+  // Lock body scroll + ESC to close
   useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [onClose]);
+
+  const onCropComplete = useCallback((_, areaPixels) => {
+    setCroppedAreaPixels(areaPixels);
+  }, []);
 
   const onPick = (f) => {
     if (!f) return;
@@ -129,36 +263,44 @@ const EditModal = ({ slot, currentUrl, onClose, onSaved }) => {
       setError("Solo se aceptan archivos de imagen (JPG, PNG, WEBP).");
       return;
     }
-    if (f.size > 8 * 1024 * 1024) {
-      setError("La imagen supera el límite de 8 MB.");
+    if (f.size > 20 * 1024 * 1024) {
+      setError("La imagen supera el límite de 20 MB.");
       return;
     }
     setError(null);
     setFile(f);
-    setPreviewUrl(URL.createObjectURL(f));
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageSrc(reader.result);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+    };
+    reader.readAsDataURL(f);
   };
 
-  const onDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onPick(e.dataTransfer.files?.[0]);
+  const reset = () => {
+    setFile(null);
+    setImageSrc(null);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCroppedAreaPixels(null);
+    setError(null);
   };
 
   const onSubmit = async () => {
-    if (!file) return;
+    if (!imageSrc || !croppedAreaPixels) return;
     setBusy(true);
     setError(null);
     try {
+      const blob = await cropImageToBlob(imageSrc, croppedAreaPixels);
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", new File([blob], `${slot.replace(/[^a-z0-9._-]/gi, "_")}.jpg`, { type: "image/jpeg" }));
       const res = await fetch(
         `${API}/api/slots/${encodeURIComponent(slot)}/upload`,
         { method: "POST", body: fd }
       );
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.detail || "Error al subir la imagen.");
-      }
+      if (!res.ok) throw new Error(data?.detail || "Error al subir la imagen.");
       onSaved(data.url);
     } catch (e) {
       setError(e.message || "Error inesperado.");
@@ -170,116 +312,182 @@ const EditModal = ({ slot, currentUrl, onClose, onSaved }) => {
   return (
     <div
       data-testid={`edit-modal-${slot}`}
-      className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8"
+      className="fixed inset-0 z-[9999] flex items-center justify-center px-3 py-4 md:py-8"
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+      role="presentation"
     >
-      {/* backdrop */}
+      {/* Solid backdrop — no transparency so the page below is fully covered. */}
       <button
         type="button"
         aria-label="Cerrar"
         onClick={onClose}
-        className="absolute inset-0 bg-[#1A1513]/72 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#1A1513] cursor-default"
+        style={{ opacity: 0.97 }}
       />
-      {/* dialog */}
+      {/* Dialog */}
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-xl bg-[#FDFBF7] border border-[#2C2621]/15 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        className="relative w-full max-w-3xl bg-[#FDFBF7] border border-[#2C2621]/15 shadow-2xl max-h-[95vh] flex flex-col"
         style={{ fontFamily: "Inter, sans-serif" }}
       >
-        {/* header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#2C2621]/10">
-          <div>
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 md:px-6 py-4 md:py-5 border-b border-[#2C2621]/10 shrink-0">
+          <div className="min-w-0">
             <span className="block text-[10px] tracking-[0.3em] uppercase text-[#C16542] font-semibold">
               Editar imagen
             </span>
-            <p className="font-serif-x text-[20px] text-[#2C2621] leading-snug mt-1 break-all">
+            <p className="font-serif-x text-[18px] md:text-[20px] text-[#2C2621] leading-snug mt-1 break-all">
               {slot}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Cerrar"
-            data-testid={`edit-modal-close-${slot}`}
-            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
-          >
-            <X className="w-4 h-4" strokeWidth={1.6} />
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <span
+              data-testid={`edit-modal-ratio-${slot}`}
+              className="hidden sm:inline-flex items-center gap-1.5 bg-[#F2EBE1] text-[#2C2621] px-2.5 py-1 text-[10px] tracking-[0.25em] uppercase"
+              title={`Proporción requerida: ${rLabel.code}`}
+            >
+              {rLabel.label} · {rLabel.code}
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Cerrar"
+              data-testid={`edit-modal-close-${slot}`}
+              className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+            >
+              <X className="w-4 h-4" strokeWidth={1.6} />
+            </button>
+          </div>
         </div>
 
-        {/* body */}
-        <div className="p-6 space-y-5">
-          {/* Current image preview (small) */}
-          {currentUrl && !previewUrl && (
-            <div>
-              <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2">
-                Imagen actual
-              </span>
-              <div className="aspect-[16/9] overflow-hidden bg-[#F2EBE1] border border-[#2C2621]/10">
-                <img
-                  src={resolveUrl(currentUrl)}
-                  alt="Imagen actual"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* New image picker / preview */}
-          <div>
-            <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2">
-              {previewUrl ? "Nueva imagen" : "Subir nueva imagen"}
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-5">
+          {/* Aspect ratio hint */}
+          <div className="sm:hidden">
+            <span
+              className="inline-flex items-center gap-1.5 bg-[#F2EBE1] text-[#2C2621] px-2.5 py-1 text-[10px] tracking-[0.25em] uppercase"
+            >
+              {rLabel.label} · {rLabel.code}
             </span>
-            {previewUrl ? (
-              <div className="relative aspect-[16/9] overflow-hidden bg-[#F2EBE1] border border-[#C16542]">
-                <img
-                  src={previewUrl}
-                  alt="Vista previa"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPreviewUrl(null);
-                    setFile(null);
-                  }}
-                  className="absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7]"
-                >
-                  <X className="w-3.5 h-3.5" strokeWidth={1.6} />
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onDrop={onDrop}
-                data-testid={`edit-modal-dropzone-${slot}`}
-                className="w-full flex flex-col items-center justify-center gap-3 py-12 px-6 border-2 border-dashed border-[#2C2621]/25 hover:border-[#C16542] hover:bg-[#FDF5EB] transition-colors duration-300 cursor-pointer"
-              >
-                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#C16542]/10 text-[#C16542]">
-                  <Upload className="w-5 h-5" strokeWidth={1.6} />
-                </span>
-                <span className="text-[14px] text-[#2C2621] font-medium">
-                  Arrastra una imagen aquí o haz click para seleccionar
-                </span>
-                <span className="text-[11px] text-[#5C5248]">JPG · PNG · WEBP — máx. 8 MB</span>
-              </button>
-            )}
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif"
-              className="hidden"
-              data-testid={`edit-modal-file-input-${slot}`}
-              onChange={(e) => onPick(e.target.files?.[0])}
-            />
           </div>
 
-          {/* Error */}
+          {!imageSrc ? (
+            <>
+              {currentUrl && (
+                <div>
+                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2">
+                    Imagen actual
+                  </span>
+                  <div
+                    className="overflow-hidden bg-[#F2EBE1] border border-[#2C2621]/10"
+                    style={{ aspectRatio: ratio }}
+                  >
+                    <img
+                      src={resolveUrl(currentUrl)}
+                      alt="Imagen actual"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+              <div>
+                <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2">
+                  {currentUrl ? "Subir nueva imagen" : "Subir imagen"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onPick(e.dataTransfer.files?.[0]);
+                  }}
+                  data-testid={`edit-modal-dropzone-${slot}`}
+                  className="w-full flex flex-col items-center justify-center gap-3 py-12 px-6 border-2 border-dashed border-[#2C2621]/25 hover:border-[#C16542] hover:bg-[#FDF5EB] transition-colors duration-300 cursor-pointer"
+                >
+                  <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#C16542]/10 text-[#C16542]">
+                    <Upload className="w-5 h-5" strokeWidth={1.6} />
+                  </span>
+                  <span className="text-[14px] text-[#2C2621] font-medium">
+                    Arrastra una imagen o haz click para seleccionar
+                  </span>
+                  <span className="text-[11px] text-[#5C5248]">JPG · PNG · WEBP — máx. 20 MB</span>
+                </button>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  className="hidden"
+                  data-testid={`edit-modal-file-input-${slot}`}
+                  onChange={(e) => onPick(e.target.files?.[0])}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
+                  Encuadra la imagen · arrastra para mover · usa el zoom
+                </span>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#5C5248] hover:text-[#C16542] transition-colors"
+                >
+                  <RotateCcw className="w-3 h-3" strokeWidth={1.7} />
+                  Cambiar imagen
+                </button>
+              </div>
+              {/* Crop area */}
+              <div
+                data-testid={`edit-modal-cropper-${slot}`}
+                className="relative bg-[#1A1513] overflow-hidden"
+                style={{ aspectRatio: ratio, maxHeight: "60vh" }}
+              >
+                <Cropper
+                  image={imageSrc}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={ratio}
+                  minZoom={1}
+                  maxZoom={5}
+                  showGrid={true}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                  objectFit="contain"
+                />
+              </div>
+              {/* Zoom control */}
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] shrink-0">
+                  Zoom
+                </span>
+                <input
+                  type="range"
+                  min={1}
+                  max={5}
+                  step={0.01}
+                  value={zoom}
+                  onChange={(e) => setZoom(parseFloat(e.target.value))}
+                  className="flex-1 accent-[#C16542]"
+                  data-testid={`edit-modal-zoom-${slot}`}
+                />
+                <span className="text-[11px] text-[#5C5248] tabular-nums w-10 text-right">
+                  {zoom.toFixed(2)}×
+                </span>
+              </div>
+            </>
+          )}
+
           {error && (
             <div
               data-testid={`edit-modal-error-${slot}`}
@@ -291,8 +499,8 @@ const EditModal = ({ slot, currentUrl, onClose, onSaved }) => {
           )}
         </div>
 
-        {/* footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#F8F2E6] border-t border-[#2C2621]/10">
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-3 px-5 md:px-6 py-4 bg-[#F8F2E6] border-t border-[#2C2621]/10 shrink-0">
           <button
             type="button"
             onClick={onClose}
@@ -304,7 +512,7 @@ const EditModal = ({ slot, currentUrl, onClose, onSaved }) => {
           <button
             type="button"
             onClick={onSubmit}
-            disabled={!file || busy}
+            disabled={!imageSrc || !croppedAreaPixels || busy}
             data-testid={`edit-modal-save-${slot}`}
             className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -313,7 +521,7 @@ const EditModal = ({ slot, currentUrl, onClose, onSaved }) => {
             ) : (
               <Check className="w-3.5 h-3.5" strokeWidth={1.8} />
             )}
-            <span>{busy ? "Subiendo…" : "Guardar"}</span>
+            <span>{busy ? "Guardando…" : "Guardar"}</span>
           </button>
         </div>
       </div>
