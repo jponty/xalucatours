@@ -16,6 +16,9 @@ const LABELS = {
   es: {
     overline: "Escapadas por Marruecos",
     intro_title: "El destino, en una página.",
+    gallery_overline: "Cuatro postales",
+    gallery_title: "Rincones que reconocerás de este viaje.",
+    gallery_subtitle: "Una selección visual de los lugares más memorables del destino — para que ya empieces a viajar mentalmente antes de hacerlo.",
     quick_duration: "Duración",
     quick_place: "Recorrido",
     quick_airports: "Aeropuertos",
@@ -29,6 +32,9 @@ const LABELS = {
   en: {
     overline: "Morocco short escapes",
     intro_title: "The destination, on one page.",
+    gallery_overline: "Four postcards",
+    gallery_title: "Scenes you'll recognise from this trip.",
+    gallery_subtitle: "A visual selection of the most memorable corners of the destination — so you start travelling in your head before you set off.",
     quick_duration: "Duration",
     quick_place: "Route",
     quick_airports: "Airports",
@@ -42,6 +48,9 @@ const LABELS = {
   fr: {
     overline: "Escapades au Maroc",
     intro_title: "La destination, en une page.",
+    gallery_overline: "Quatre cartes postales",
+    gallery_title: "Des décors que vous reconnaîtrez du voyage.",
+    gallery_subtitle: "Une sélection visuelle des lieux les plus marquants — pour commencer à voyager mentalement avant le départ.",
     quick_duration: "Durée",
     quick_place: "Parcours",
     quick_airports: "Aéroports",
@@ -118,6 +127,71 @@ const Description = ({ paragraphs, t }) => (
   </section>
 );
 
+/* ============================================================
+   Gallery — editorial 4-image grid with asymmetric layout.
+   Tall portrait | square | square | wide landscape — varies per row
+   to feel curated, not generic.
+============================================================ */
+const GALLERY_SPANS = [
+  "md:col-span-7 md:row-span-2 aspect-[4/5]",     // tall portrait
+  "md:col-span-5 aspect-[5/4]",                   // square-ish
+  "md:col-span-5 aspect-[5/4]",                   // square-ish
+  "md:col-span-12 aspect-[16/7]",                 // wide landscape
+];
+
+const Gallery = ({ items, lang, t, accent }) => {
+  if (!items || items.length === 0) return null;
+  return (
+    <section
+      data-testid="escapada-intro-gallery"
+      className="relative bg-[#F2EBE1] py-20 md:py-28 overflow-hidden"
+    >
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
+          <div className="md:col-span-7">
+            <span className="overline" style={{ color: accent }}>{t.gallery_overline}</span>
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
+              {t.gallery_title}
+            </h2>
+          </div>
+          <div className="md:col-span-5">
+            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{t.gallery_subtitle}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+          {items.slice(0, 4).map((it, i) => (
+            <figure
+              key={it.image}
+              data-testid={`escapada-gallery-item-${i}`}
+              className={`group relative overflow-hidden bg-[#1A1513] ${GALLERY_SPANS[i] || "md:col-span-6 aspect-[5/4]"}`}
+            >
+              <img
+                src={it.image}
+                alt={pick(it.kind, lang)}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105 opacity-95"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <figcaption className="absolute inset-x-0 bottom-0 p-5 md:p-7 text-[#FDFBF7]">
+                <span
+                  className="inline-block text-[10px] tracking-[0.3em] uppercase mb-2"
+                  style={{ color: accent }}
+                >
+                  {pick(it.kind, lang)}
+                </span>
+                <p className="font-serif-x text-base md:text-lg leading-snug max-w-md">
+                  {pick(it.caption, lang)}
+                </p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const ContactBand = ({ lang, t, accent = "#C16542" }) => (
   <section
     data-testid="escapada-intro-contact"
@@ -185,6 +259,7 @@ export default function EscapadaIntroPage({ data, accent }) {
     <div data-testid={`escapada-intro-${data.routeId}`}>
       <Hero data={data.hero} lang={lang} t={t} />
       <Description paragraphs={paragraphs} t={t} />
+      <Gallery items={data.gallery} lang={lang} t={t} accent={accent} />
       <ContactBand lang={lang} t={t} accent={accent} />
       <ContactForm />
     </div>

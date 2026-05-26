@@ -19,6 +19,28 @@ export const ESCAPADA_DESIERTO_34 = {
     duration: T("3 noches · 4 días", "3 nights · 4 days", "3 nuits · 4 jours"),
     airports: T("Llegada Fez · Salida Marrakech (sugerido)", "In Fez · Out Marrakech (suggested)", "Arrivée Fès · Sortie Marrakech (suggéré)"),
   },
+  gallery: [
+    {
+      image: "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Caravana de dromedarios", "Camel caravan", "Caravane de dromadaires"),
+      caption: T("Atardeceres a lomos de dromedario hacia el bivouac en las dunas.", "Sunsets on camelback heading to the bivouac in the dunes.", "Couchers de soleil à dos de dromadaire vers le bivouac dans les dunes."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Valle del Ziz", "Ziz Valley", "Vallée du Ziz"),
+      caption: T("De camino al desierto: 10 millones de palmeras a lo largo de 280 km.", "On the way to the desert: 10 million palms along 280 km.", "Sur la route du désert : 10 millions de palmiers sur 280 km."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Noche bereber", "Berber night", "Nuit berbère"),
+      caption: T("Cena bajo las estrellas y música gnawa junto al fuego.", "Dinner under the stars and gnawa music by the fire.", "Dîner sous les étoiles et musique gnawa au coin du feu."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Alto Atlas", "High Atlas", "Haut Atlas"),
+      caption: T("De vuelta hacia el norte: gargantas, valles y aldeas Imazighen.", "Back north: gorges, valleys and Imazighen villages.", "Retour vers le nord : gorges, vallées et villages imazighen."),
+    },
+  ],
   intro: {
     es: [
       "En el desierto marroquí, el tiempo parece haberse detenido. Las interminables dunas de arena y las antiguas kasbahs parecen estar a un mundo de distancia del ritmo acelerado de las ciudades. Desde hace siglos, viajeros de todo el mundo llegan hasta este rincón del Sáhara buscando tranquilidad, desconexión y aventura.",
@@ -58,6 +80,28 @@ export const ESCAPADA_ATLAS_34 = {
     duration: T("3 noches · 4 días", "3 nights · 4 days", "3 nuits · 4 jours"),
     airports: T("Llegada/Salida Ouarzazate o Marrakech", "In/Out Ouarzazate or Marrakech", "Arrivée/Sortie Ouarzazate ou Marrakech"),
   },
+  gallery: [
+    {
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Gargantas del Dadès", "Dades gorges", "Gorges du Dadès"),
+      caption: T("Paredes rojizas esculpidas durante millones de años.", "Reddish walls carved over millions of years.", "Parois rougeâtres sculptées sur des millions d'années."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Aldea Imazighen", "Imazighen village", "Village imazighen"),
+      caption: T("Boutaghrar y Amskar: arquitectura de adobe y vida bereber intacta.", "Boutaghrar and Amskar: adobe architecture and intact Berber life.", "Boutaghrar et Amskar : architecture en pisé et vie berbère intacte."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Valle del Drâa", "Drâa valley", "Vallée du Drâa"),
+      caption: T("El palmeral más largo de Marruecos: 200 km de oasis.", "Morocco's longest palm grove: 200 km of oasis.", "La plus longue palmeraie du Maroc : 200 km d'oasis."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Aït Ben Haddou", "Aït Ben Haddou", "Aït Ben Haddou"),
+      caption: T("Kasbah UNESCO, escenario de Gladiator y Juego de Tronos.", "UNESCO kasbah, set for Gladiator and Game of Thrones.", "Kasbah UNESCO, décor de Gladiator et Game of Thrones."),
+    },
+  ],
   intro: {
     es: [
       "El Alto Atlas es una de las regiones más fascinantes y variadas de Marruecos. Esta gran cordillera atraviesa el país ofreciendo paisajes espectaculares, valles escondidos y numerosos pueblos bereberes llenos de autenticidad.",
@@ -100,6 +144,28 @@ export const ESCAPADA_FEZ = {
     duration: T("Personalizado · 2-4 noches", "Tailor-made · 2-4 nights", "Sur mesure · 2-4 nuits"),
     airports: T("Llegada/Salida Fez", "In/Out Fez", "Arrivée/Sortie Fès"),
   },
+  gallery: [
+    {
+      image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Curtiduría Chouara", "Chouara tannery", "Tannerie Chouara"),
+      caption: T("Las tinas de cuero más antiguas del mundo, en uso desde el s.XI.", "The world's oldest leather vats, in use since the 11th century.", "Les plus anciennes cuves à cuir au monde, en usage depuis le XIe siècle."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Medina UNESCO", "UNESCO medina", "Médina UNESCO"),
+      caption: T("9.000 callejones y 60.000 puertas — la medina mejor conservada del mundo árabe.", "9,000 alleys and 60,000 doors — the best-preserved medina in the Arab world.", "9 000 ruelles et 60 000 portes — la médina la mieux conservée du monde arabe."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Madrasa Bou Inania", "Bou Inania Madrasa", "Médersa Bou Inania"),
+      caption: T("Cumbre del arte meriní: zellige, estuco y madera de cedro tallada.", "Apex of Marinid art: zellige, stucco and carved cedar.", "Sommet de l'art mérinide : zellige, stuc et cèdre sculpté."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Volubilis · Meknés", "Volubilis · Meknes", "Volubilis · Meknès"),
+      caption: T("Ruinas romanas del s.III y la imponente ciudad imperial de Mulay Ismail.", "3rd-century Roman ruins and the imposing imperial city of Moulay Ismail.", "Ruines romaines du IIIe et la cité impériale de Moulay Ismaïl."),
+    },
+  ],
   intro: {
     es: [
       "Fez es una de las ciudades con más historia y riqueza cultural de Marruecos. Su Medina, declarada Patrimonio de la Humanidad por la UNESCO, está considerada una de las ciudades medievales mejor conservadas del mundo.",
@@ -139,6 +205,28 @@ export const ESCAPADA_MARRAKECH = {
     duration: T("Personalizado · 2-4 noches", "Tailor-made · 2-4 nights", "Sur mesure · 2-4 nuits"),
     airports: T("Llegada/Salida Marrakech", "In/Out Marrakech", "Arrivée/Sortie Marrakech"),
   },
+  gallery: [
+    {
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Jemaa el-Fna", "Jemaa el-Fna", "Jemaa el-Fna"),
+      caption: T("Patrimonio oral UNESCO: encantadores de serpientes y cuentacuentos al caer la noche.", "UNESCO oral heritage: snake charmers and storytellers at nightfall.", "Patrimoine oral UNESCO : charmeurs de serpents et conteurs au crépuscule."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Zocos y artesanía", "Souks and crafts", "Souks et artisanat"),
+      caption: T("Lana, latón, cuero y especias: 18 zocos especializados en la medina.", "Wool, brass, leather and spices: 18 specialised souks in the medina.", "Laine, laiton, cuir et épices : 18 souks spécialisés dans la médina."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Jardines Majorelle", "Majorelle Gardens", "Jardins Majorelle"),
+      caption: T("El azul cobalto que Yves Saint Laurent salvó del olvido.", "The cobalt blue Yves Saint Laurent rescued from oblivion.", "Le bleu cobalt qu'Yves Saint Laurent a sauvé de l'oubli."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Desierto de Agafay", "Agafay desert", "Désert d'Agafay"),
+      caption: T("Paisaje lunar a 40 km de la ciudad — noche en campamento al pie del Atlas.", "Lunar landscape 40 km from the city — night at a camp at the foot of the Atlas.", "Paysage lunaire à 40 km de la ville — nuit au campement au pied de l'Atlas."),
+    },
+  ],
   intro: {
     es: [
       "Si buscas una ciudad llena de vida, cultura y contrastes, Marrakech debería estar entre tus próximos destinos. Sus mercados laberínticos, palacios, jardines y su ambiente único convierten a la llamada «Ciudad Roja» en uno de los lugares más fascinantes de Marruecos.",
@@ -175,6 +263,28 @@ export const ESCAPADA_TANGER = {
     duration: T("Personalizado · 2-4 noches", "Tailor-made · 2-4 nights", "Sur mesure · 2-4 nuits"),
     airports: T("Llegada/Salida Tánger", "In/Out Tangier", "Arrivée/Sortie Tanger"),
   },
+  gallery: [
+    {
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Chefchaouen", "Chefchaouen", "Chefchaouen"),
+      caption: T("La «perla azul» del Rif: callejuelas pintadas a mano en mil tonos de añil.", "The Rif's «blue pearl»: hand-painted alleys in a thousand shades of indigo.", "La « perle bleue » du Rif : ruelles peintes à la main dans mille nuances d'indigo."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Asilah", "Asilah", "Asilah"),
+      caption: T("Murallas portuguesas blancas frente al Atlántico, capital del arte urbano.", "White Portuguese ramparts facing the Atlantic — capital of urban art.", "Remparts portugais blancs face à l'Atlantique, capitale du street-art."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Tetuán", "Tetouan", "Tétouan"),
+      caption: T("Medina UNESCO de influencia andalusí, junto al Mediterráneo.", "UNESCO Andalusian-influenced medina, by the Mediterranean.", "Médina UNESCO d'influence andalouse, au bord de la Méditerranée."),
+    },
+    {
+      image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1800&q=85",
+      kind: T("Café Hafa", "Café Hafa", "Café Hafa"),
+      caption: T("Las terrazas de Tánger sobre el Estrecho — donde el Atlántico besa el Mediterráneo.", "Tangier terraces over the Strait — where the Atlantic kisses the Mediterranean.", "Les terrasses de Tanger sur le Détroit — là où l'Atlantique embrasse la Méditerranée."),
+    },
+  ],
   intro: {
     es: [
       "Tánger es una ciudad histórica situada en el norte de Marruecos, donde se unen el Atlántico y el Mediterráneo. Su mezcla cultural, su ambiente artístico y su cercanía con Europa la convierten en uno de los destinos más especiales del país.",
