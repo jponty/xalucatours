@@ -314,6 +314,11 @@ const BLURB_FR = (n, d) => (origen, destino) => T(
   `${n}-night/${d}-day journey from ${origen} to ${destino}.`,
   `Voyage de ${n} nuits et ${d} jours de ${origen} à ${destino}.`,
 );
+const BLURB_SIDI = (n, d) => (origen, destino) => T(
+  `Viaje de ${n} noches y ${d} días desde ${origen} hasta ${destino} pasando por el lago Aguelmame Sidi Ali.`,
+  `${n}-night/${d}-day journey from ${origen} to ${destino} via the Aguelmame Sidi Ali lake.`,
+  `Voyage de ${n} nuits et ${d} jours de ${origen} à ${destino} en passant par le lac Aguelmame Sidi Ali.`,
+);
 const BLURB_KASBAH = (n, d) => (origen, destino) => T(
   `Viaje de ${n} noches y ${d} días desde ${origen} hasta ${destino} recorriendo la ruta de las mil kasbahs.`,
   `${n}-night/${d}-day journey from ${origen} to ${destino} along the route of a thousand kasbahs.`,
@@ -426,12 +431,12 @@ export const HUB_GRANSUR_FEZ_SIDIALI_RAK = {
     group_b: T("Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fès"),
   },
   programs: [
-    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Marrakech") },
-    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Fez","Marrakech") },
-    { id: "fsm-9-10", direction: "a", nights: "9n10d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(9,10)("Fez","Marrakech") },
-    { id: "msf-7-8",  direction: "b", nights: "7n8d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Marrakech","Fez") },
-    { id: "msf-8-9",  direction: "b", nights: "8n9d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Marrakech","Fez") },
-    { id: "msf-9-10", direction: "b", nights: "9n10d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(9,10)("Marrakech","Fez") },
+    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Marrakech") },
+    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Fez","Marrakech") },
+    { id: "fsm-9-10", direction: "a", nights: "9n10d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(9,10)("Fez","Marrakech") },
+    { id: "msf-7-8",  direction: "b", nights: "7n8d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Marrakech","Fez") },
+    { id: "msf-8-9",  direction: "b", nights: "8n9d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Marrakech","Fez") },
+    { id: "msf-9-10", direction: "b", nights: "9n10d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(9,10)("Marrakech","Fez") },
   ],
 };
 
@@ -481,12 +486,12 @@ export const HUB_GRANSUR_OUARZA_FEZ = {
     group_b: T("Fez → Sidi Ali → Ouarzazate", "Fez → Sidi Ali → Ouarzazate", "Fès → Sidi Ali → Ouarzazate"),
   },
   programs: [
-    { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(5,6)("Ouarzazate","Fez") },
-    { id: "of-6-7", direction: "a", nights: "6n7d", accent: "#D97742", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Ouarzazate","Fez") },
-    { id: "of-7-8", direction: "a", nights: "7n8d", accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Ouarzazate","Fez") },
-    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(5,6)("Fez","Ouarzazate") },
-    { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Fez","Ouarzazate") },
-    { id: "fo-7-8", direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Ouarzazate") },
+    { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Ouarzazate","Fez") },
+    { id: "of-6-7", direction: "a", nights: "6n7d", accent: "#D97742", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(6,7)("Ouarzazate","Fez") },
+    { id: "of-7-8", direction: "a", nights: "7n8d", accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Ouarzazate","Fez") },
+    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Fez","Ouarzazate") },
+    { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(6,7)("Fez","Ouarzazate") },
+    { id: "fo-7-8", direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Ouarzazate") },
   ],
 };
 

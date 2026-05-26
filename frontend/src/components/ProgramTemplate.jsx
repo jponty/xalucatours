@@ -482,7 +482,7 @@ const Pricing = ({ t, lang, program }) => (
   </section>
 );
 
-const DetailsAccordion = ({ t, lang }) => {
+const DetailsAccordion = ({ t, lang, program }) => {
   const [open, setOpen] = useState("includes");
   const tabs = [
     { id: "includes", label: t.tab_includes },
@@ -503,7 +503,8 @@ const DetailsAccordion = ({ t, lang }) => {
         <div className="border border-[#2C2621]/15">
           {tabs.map((tab) => {
             const isOpen = open === tab.id;
-            const items = SHARED_DETAILS[tab.id]?.[lang] || SHARED_DETAILS[tab.id]?.es || [];
+            const detailsObj = (program && program.details) || SHARED_DETAILS;
+            const items = detailsObj[tab.id]?.[lang] || detailsObj[tab.id]?.es || [];
             return (
               <div key={tab.id} className="border-b border-[#2C2621]/10 last:border-b-0">
                 <button data-testid={`program-detail-tab-${tab.id}`}
@@ -619,7 +620,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       <Itinerary t={t} lang={lang} days={program.days} />
       <TripOverview days={program.days} />
       <Pricing t={t} lang={lang} program={program} />
-      <DetailsAccordion t={t} lang={lang} />
+      <DetailsAccordion t={t} lang={lang} program={program} />
       <ContactBand t={t} lang={lang} />
       <div id="form"><ContactForm /></div>
     </div>
