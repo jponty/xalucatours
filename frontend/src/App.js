@@ -25,6 +25,7 @@ import AtlasDesierto45Page from "@/pages/AtlasDesierto45Page";
 import AtlasDesierto56Page from "@/pages/AtlasDesierto56Page";
 import AtlasDesierto67Page from "@/pages/AtlasDesierto67Page";
 import AtlasDesiertoHubPage from "@/pages/AtlasDesiertoHubPage";
+import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
 /**
@@ -51,6 +52,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourAtlasDesierto45")  return <AtlasDesierto45Page />;
   if (routeId === "tourAtlasDesierto56")  return <AtlasDesierto56Page />;
   if (routeId === "tourAtlasDesierto67")  return <AtlasDesierto67Page />;
+  if (routeId === "tourUpcoming")  return <ProximasSalidasPage />;
   if (routeId)                     return <StubPage routeId={routeId} />;
 
   // Unknown URL within a known lang → redirect to home of that lang
