@@ -4,6 +4,7 @@ import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
 import { pathFor } from "@/lib/routes";
+import EditableImage from "@/components/EditableImage";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -55,10 +56,11 @@ export const TravelCategories = () => {
                     reverse ? "md:order-2" : ""
                   }`}
                 >
-                  <img
-                    src={c.image}
+                  <EditableImage
+                    slot={`home.cat.${c.slug}`}
+                    fallback={c.image}
                     alt={pick(c.title, lang)}
-                    loading="lazy"
+                    imgProps={{ loading: "lazy" }}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/20 to-transparent" />

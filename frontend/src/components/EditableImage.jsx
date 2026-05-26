@@ -73,20 +73,24 @@ export const EditableImage = ({
         <div
           aria-hidden="true"
           data-testid={`editable-overlay-${slot}`}
-          className="absolute inset-0 z-[45] pointer-events-none"
+          className="absolute inset-0 z-[45] pointer-events-none flex items-center justify-center"
         >
           {/* dashed editor frame */}
           <div className="absolute inset-2 border-2 border-dashed border-[#FDFBF7] opacity-70 animate-pulse" />
-          {/* slot badge */}
-          <span className="absolute top-24 left-4 md:left-6 bg-[#1A1513]/85 text-[#FDFBF7] text-[10px] tracking-[0.3em] uppercase px-2 py-1">
+          {/* slot badge top-left */}
+          <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#1A1513]/85 text-[#FDFBF7] text-[9px] tracking-[0.2em] uppercase px-2 py-1 max-w-[60%] truncate">
             {slot}
           </span>
-          {/* edit button — placed below header to avoid overlap */}
+          {/* edit button — centered, always reachable regardless of card size */}
           <button
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setOpen(true);
+            }}
             data-testid={`editable-edit-btn-${slot}`}
-            className="pointer-events-auto absolute top-24 right-4 md:right-6 inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase transition-colors duration-300 shadow-lg"
+            className="pointer-events-auto relative inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase transition-colors duration-300 shadow-lg"
           >
             <Pencil className="w-3 h-3" strokeWidth={1.8} />
             <span>Editar</span>

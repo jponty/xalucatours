@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Play, Film, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    Editorial video gallery — Morocco through the lens.
@@ -138,10 +139,11 @@ const VideoCard = ({ video, lang, isActive, onPlay }) => (
         />
       ) : (
         <>
-          <img
-            src={video.poster}
+          <EditableImage
+            slot={`home.video.${video.id}`}
+            fallback={video.poster}
             alt={video.title[lang] || video.title.es}
-            loading="lazy"
+            imgProps={{ loading: "lazy" }}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent" />

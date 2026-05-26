@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { CIRCUITS } from "@/lib/data";
+import EditableImage from "@/components/EditableImage";
 
 // Visual companion for each circuit — short summary + image
 const DETAILS = {
@@ -104,11 +105,12 @@ export const MoroccoCircuits = () => {
         <div className="mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
           <div className="md:col-span-7 relative h-[420px] md:h-[520px] overflow-hidden bg-[#1A1513]"
                data-testid={`circuit-image-${active}`}>
-            <img
+            <EditableImage
               key={active}
-              src={current.image}
+              slot={`home.circuit.${active}`}
+              fallback={current.image}
               alt={pick(currentCircuit.label, lang)}
-              loading="lazy"
+              imgProps={{ loading: "lazy" }}
               className="ken-burns absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-[#1A1513]/10" />

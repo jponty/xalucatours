@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Sun, Globe2, Mountain, Wind, MountainSnow, Scissors, CalendarDays } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    OurTrips — editorial bento grid of trip categories
@@ -133,10 +134,11 @@ const FeaturedCard = ({ trip, lang }) => {
       data-testid={`our-trips-featured-${trip.id}`}
       className="group relative col-span-12 lg:col-span-7 lg:row-span-2 overflow-hidden bg-[#1A1513] block aspect-[4/5] lg:aspect-auto lg:min-h-[640px]"
     >
-      <img
-        src={trip.image}
+      <EditableImage
+        slot={`home.trips.${trip.id}`}
+        fallback={trip.image}
         alt={pick(trip.title, lang)}
-        loading="lazy"
+        imgProps={{ loading: "lazy" }}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
       />
       <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent" />
@@ -185,10 +187,11 @@ const SmallCard = ({ trip, lang }) => {
       className="group relative overflow-hidden bg-[#FBF5EA] border border-[#2C2621]/8 hover:border-[#2C2621]/25 transition-colors block"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-[#1A1513]">
-        <img
-          src={trip.image}
+        <EditableImage
+          slot={`home.trips.${trip.id}`}
+          fallback={trip.image}
           alt={pick(trip.title, lang)}
-          loading="lazy"
+          imgProps={{ loading: "lazy" }}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
         <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-[#1A1513]/10" />

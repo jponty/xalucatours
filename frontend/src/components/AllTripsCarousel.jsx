@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    AllTripsCarousel — quick-access rail with every concrete tour
@@ -211,10 +212,11 @@ export default function AllTripsCarousel() {
               className="group relative shrink-0 w-[78vw] sm:w-[320px] md:w-[340px] snap-start bg-white border border-[#2C2621]/8 hover:border-[#2C2621]/30 transition-colors"
             >
               <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
-                <img
-                  src={trip.image}
+                <EditableImage
+                  slot={`home.alltrips.${trip.id}`}
+                  fallback={trip.image}
                   alt={pick(trip.title, lang)}
-                  loading="lazy"
+                  imgProps={{ loading: "lazy" }}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                 />
                 <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/90 via-[#1A1513]/30 to-[#1A1513]/8" />

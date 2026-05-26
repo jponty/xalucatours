@@ -1,6 +1,7 @@
 import React from "react";
 import { Quote } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import EditableImage from "@/components/EditableImage";
 
 export const FeaturedQuote = () => {
   const { t } = useLanguage();
@@ -10,10 +11,11 @@ export const FeaturedQuote = () => {
       data-testid="featured-quote-section"
       className="relative bg-[#1A1513] text-[#FDFBF7] py-24 md:py-32 overflow-hidden"
     >
-      <img
-        src="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
+      <EditableImage
+        slot="home.quote.bg"
+        fallback="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
         alt=""
-        loading="lazy"
+        imgProps={{ loading: "lazy" }}
         className="ken-burns absolute inset-0 w-full h-full object-cover opacity-40"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/75 to-[#1A1513]/95" />

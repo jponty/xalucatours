@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    HomeCategoryCarousel — title + lede + horizontal trip cards + CTA
@@ -41,10 +42,11 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
-        <img
-          src={trip.image}
+        <EditableImage
+          slot={`home.cat-carousel.${trip.id}`}
+          fallback={trip.image}
           alt={pick(trip.title, lang)}
-          loading="lazy"
+          imgProps={{ loading: "lazy" }}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
         {/* Dedicated bottom-half gradient — soft on top, stronger near

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import EditableImage from "@/components/EditableImage";
 
 /* Curated Moroccan-only Unsplash imagery — each frame carries a
    trilingual caption to keep the editorial feel of the original. */
@@ -107,12 +108,15 @@ export const EmotionalIntro = () => {
               onTouchEnd={() => setPaused(false)}
             >
               {SLIDES.map((s, i) => (
-                <img
+                <EditableImage
                   key={s.src}
-                  src={s.src}
+                  slot={`home.intro.${i}`}
+                  fallback={s.src}
                   alt={pick(s.caption, lang)}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  data-testid={`emotional-intro-slide-${i}`}
+                  imgProps={{
+                    loading: i === 0 ? "eager" : "lazy",
+                    "data-testid": `emotional-intro-slide-${i}`,
+                  }}
                   className={`ken-burns absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out ${
                     i === idx ? "opacity-100" : "opacity-0"
                   }`}

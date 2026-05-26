@@ -2,6 +2,7 @@ import React from "react";
 import { Phone, Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
+import EditableImage from "@/components/EditableImage";
 
 export const PersonalConsultation = () => {
   const { t } = useLanguage();
@@ -14,10 +15,11 @@ export const PersonalConsultation = () => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="md:col-span-5 relative aspect-[4/5] overflow-hidden bg-[#F2EBE1] order-2 md:order-1">
-            <img
-              src="https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1400&q=85"
+            <EditableImage
+              slot="home.consult.portrait"
+              fallback="https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1400&q=85"
               alt=""
-              loading="lazy"
+              imgProps={{ loading: "lazy" }}
               className="ken-burns absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-[#1A1513]/35 via-transparent to-transparent" />
@@ -80,10 +82,11 @@ export const CommunityCTA = () => {
       data-testid="community-cta-section"
       className="relative overflow-hidden bg-[#1A1513] text-[#FDFBF7]"
     >
-      <img
-        src="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
+      <EditableImage
+        slot="home.community.bg"
+        fallback="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
         alt=""
-        loading="lazy"
+        imgProps={{ loading: "lazy" }}
         className="ken-burns absolute inset-0 w-full h-full object-cover opacity-55"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/55 to-[#1A1513]/95" />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Tent, BedDouble, HandHeart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import EditableImage from "@/components/EditableImage";
 
 const CARDS = [
   {
@@ -65,10 +66,11 @@ export const WhatJourneysFeelLike = () => {
                 className="group relative overflow-hidden bg-[#FDFBF7] hover:bg-white transition-colors duration-500 flex flex-col"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-[#F2EBE1]">
-                  <img
-                    src={c.image}
+                  <EditableImage
+                    slot={`home.feel.${c.slug}`}
+                    fallback={c.image}
                     alt={t(c.k_title)}
-                    loading="lazy"
+                    imgProps={{ loading: "lazy" }}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 to-transparent" />
