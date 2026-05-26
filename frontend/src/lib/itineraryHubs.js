@@ -547,3 +547,127 @@ export const HUB_GRANSUR_TANGER_RAK = {
     { id: "tr-9-10", direction: "a", nights: "9n10d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_KASBAH(9,10)("Tánger","Marrakech") },
   ],
 };
+
+
+/* ============================================================
+   Norte de Marruecos · 2 hubs
+============================================================ */
+
+const BLURB_CI = (n, d) => ({
+  es: `Viaje de ${n} noches y ${d} días descubriendo las ciudades imperiales de Marruecos.`,
+  en: `A ${n}-night, ${d}-day journey through Morocco's imperial cities.`,
+  fr: `Voyage de ${n} nuits et ${d} jours à la découverte des cités impériales du Maroc.`,
+});
+const BLURB_CI_RIF = (n, d) => ({
+  es: `Viaje de ${n} noches y ${d} días descubriendo las ciudades imperiales y la región del Rif.`,
+  en: `A ${n}-night, ${d}-day journey through the imperial cities and the Rif region.`,
+  fr: `Voyage de ${n} nuits et ${d} jours, cités impériales et région du Rif.`,
+});
+const BLURB_FT = (n, d) => ({
+  es: `Viaje de ${n} noches y ${d} días recorriendo Fez, Chefchaouen, Tetuán y Tánger.`,
+  en: `A ${n}-night, ${d}-day journey through Fez, Chefchaouen, Tetouan and Tangier.`,
+  fr: `Voyage de ${n} nuits et ${d} jours à travers Fès, Chefchaouen, Tétouan et Tanger.`,
+});
+
+export const HUB_NORTE_CIUDADES_IMPERIALES = {
+  id: "norte-ciudades-imperiales",
+  hero: {
+    image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Viajes al Norte de Marruecos", "Northern Morocco journeys", "Voyages au Nord du Maroc"),
+    place: T("Marrakech · Fez · Meknès · Rabat", "Marrakech · Fez · Meknes · Rabat", "Marrakech · Fès · Meknès · Rabat"),
+    title: T("Ciudades imperiales.", "Imperial cities.", "Cités impériales."),
+    subtitle: T(
+      "Cuatro capitales históricas, mil años de legado árabe, bereber y andalusí.",
+      "Four historic capitals, a thousand years of Arab, Berber and Andalusian legacy.",
+      "Quatre capitales historiques, mille ans d'héritage arabe, berbère et andalou.",
+    ),
+  },
+  intro: {
+    overline: T("Opciones de viaje Ciudades Imperiales de Marruecos", "Imperial Cities of Morocco · options", "Cités Impériales du Maroc · options"),
+    title: T("Cuatro capitales históricas, una sola travesía.", "Four historic capitals, one journey.", "Quatre capitales historiques, un seul voyage."),
+    body: {
+      es: [
+        "Visitar las cuatro Ciudades Imperiales de Marruecos es una de las mejores formas de conocer el país.",
+        "Marrakech, Fez, Meknes y Rabat fueron capitales históricas y cada una conserva su propia personalidad, arquitectura y esencia cultural.",
+        "Sus medinas, palacios, jardines y mercados permiten descubrir siglos de historia mientras se experimenta la gastronomía y la hospitalidad marroquí en todo su esplendor.",
+      ],
+      en: [
+        "Visiting the four Imperial Cities is one of the best ways to discover Morocco.",
+        "Marrakech, Fez, Meknes and Rabat were all historic capitals — each keeps its own personality, architecture and cultural essence.",
+        "Their medinas, palaces, gardens and markets reveal centuries of history while you experience Moroccan hospitality and cuisine at their finest.",
+      ],
+      fr: [
+        "Visiter les quatre cités impériales est l'une des meilleures façons de découvrir le Maroc.",
+        "Marrakech, Fès, Meknès et Rabat ont toutes été capitales historiques — chacune conserve sa personnalité, son architecture et son essence culturelle.",
+        "Leurs médinas, palais, jardins et marchés révèlent des siècles d'histoire au rythme de l'hospitalité et de la cuisine marocaines.",
+      ],
+    },
+  },
+  options: {
+    overline: T("Opciones de viaje", "Travel options", "Options de voyage"),
+    title: T("Elige tu travesía.", "Choose your route.", "Choisissez votre itinéraire."),
+    body: T(
+      "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      "Pick between the options depending on how many days you have.",
+      "Choisissez parmi les options selon le nombre de jours disponibles.",
+    ),
+    group_a: T("Ciudades Imperiales", "Imperial Cities", "Cités Impériales"),
+    group_b: T("Ciudades Imperiales + Rif", "Imperial Cities + Rif", "Cités Impériales + Rif"),
+  },
+  programs: [
+    { id: "ci-4-5",    direction: "a", nights: "4n5d", accent: "#A07042", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI(4, 5) },
+    { id: "ci-6-7",    direction: "a", nights: "6n7d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI(6, 7) },
+    { id: "cirf-6-7",  direction: "b", nights: "6n7d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI_RIF(6, 7) },
+    { id: "cirf-7-8",  direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI_RIF(7, 8) },
+  ],
+};
+
+export const HUB_NORTE_TANGER_FEZ = {
+  id: "norte-tanger-fez",
+  hero: {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Viajes al Norte de Marruecos", "Northern Morocco journeys", "Voyages au Nord du Maroc"),
+    place: T("Fez · Chefchaouen · Tetuán · Tánger", "Fez · Chefchaouen · Tetouan · Tangier", "Fès · Chefchaouen · Tétouan · Tanger"),
+    title: T("Fez – Tánger.", "Fez – Tangier.", "Fès – Tanger."),
+    subtitle: T(
+      "Mar, montaña, medinas históricas y el famoso pueblo azul de Chefchaouen.",
+      "Sea, mountain, historic medinas and the famous blue town of Chefchaouen.",
+      "Mer, montagne, médinas historiques et le célèbre village bleu de Chefchaouen.",
+    ),
+  },
+  intro: {
+    overline: T("Opciones de viajes Tánger – Fez", "Tangier – Fez options", "Options Tanger – Fès"),
+    title: T("Del Mediterráneo al laberinto de Fez.", "From the Mediterranean to the Fez labyrinth.", "De la Méditerranée au labyrinthe de Fès."),
+    body: {
+      es: [
+        "Elige entre las distintas opciones según los días disponibles para descubrir el norte de Marruecos, combinando ciudades imperiales, pueblos del Rif y costas atlánticas y mediterráneas.",
+        "Tanto Fez, Meknès, Volubilis, como Chefchaouen, Tetuán y Tánger destacan por ser ciudades únicas, cada una con su propia personalidad y atmósfera.",
+        "Desde su impresionante arquitectura hasta sus vibrantes mercados y paisajes mediterráneos, estas ciudades permiten descubrir la enorme diversidad cultural del norte de Marruecos.",
+      ],
+      en: [
+        "Pick between the options depending on the days available to discover northern Morocco — imperial cities, Rif villages, Atlantic and Mediterranean coasts.",
+        "Fez, Meknes, Volubilis, Chefchaouen, Tetouan and Tangier each stand out as a unique city, with its own personality and atmosphere.",
+        "From striking architecture to vibrant markets and Mediterranean landscapes, they reveal the immense cultural diversity of northern Morocco.",
+      ],
+      fr: [
+        "Choisissez parmi les options selon le nombre de jours pour découvrir le nord du Maroc — cités impériales, villages du Rif, côtes atlantique et méditerranéenne.",
+        "Fès, Meknès, Volubilis, Chefchaouen, Tétouan et Tanger : chacune unique, avec sa propre atmosphère.",
+        "De l'architecture aux marchés et aux paysages méditerranéens, elles révèlent l'immense diversité culturelle du nord marocain.",
+      ],
+    },
+  },
+  options: {
+    overline: T("Opciones de viaje", "Travel options", "Options de voyage"),
+    title: T("Elige tu travesía.", "Choose your route.", "Choisissez votre itinéraire."),
+    body: T(
+      "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      "Pick between the options depending on the days available.",
+      "Choisissez parmi les options selon les jours disponibles.",
+    ),
+    group_a: T("Fez → Tánger", "Fez → Tangier", "Fès → Tanger"),
+  },
+  programs: [
+    { id: "ft-5-6", direction: "a", nights: "5n6d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FT(5, 6) },
+    { id: "ft-6-7", direction: "a", nights: "6n7d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FT(6, 7) },
+  ],
+};

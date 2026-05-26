@@ -73,9 +73,9 @@ export const TRAVEL_CATEGORIES = [
       es: "La riqueza del norte de Marruecos",
     },
     summary: {
-      en: "Blue-painted towns, ancient medinas, Roman mosaics, mountain villages — a fascinating blend of textures, aromas and cultures.",
-      fr: "Villes peintes en bleu, médinas anciennes, mosaïques romaines, villages de montagne — un mélange fascinant de textures, d'arômes et de cultures.",
-      es: "Pueblos pintados de azul, medinas antiguas, mosaicos romanos, aldeas de montaña — una fascinante mezcla de texturas, aromas y culturas.",
+      en: "Blue-painted towns, ancient medinas, Roman mosaics, mountain villages and history-rich cities — a fascinating blend of textures, aromas and cultures that reveal the most authentic and cultural side of Morocco.",
+      fr: "Villes peintes en bleu, médinas anciennes, mosaïques romaines, villages de montagne et villes chargées d'histoire — un mélange fascinant de textures, d'arômes et de cultures qui révèle le côté le plus authentique et culturel du Maroc.",
+      es: "Pueblos pintados de azul, medinas antiguas, mosaicos romanos, aldeas de montaña y ciudades llenas de historia — una fascinante mezcla de texturas, aromas y culturas que muestran el lado más auténtico y cultural de Marruecos.",
     },
     badges: [],
     region: { en: "Chefchaouen · Fez · Atlantic", fr: "Chefchaouen · Fès · Atlantique", es: "Chefchaouen · Fez · Atlántico" },

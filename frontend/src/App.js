@@ -44,6 +44,8 @@ import {
   EscapadaMarrakechPage,
   EscapadaTangerPage,
 } from "@/pages/EscapadaIntroPages";
+import NorteCiudadesImperialesHubPage from "@/pages/NorteCiudadesImperialesHubPage";
+import NorteTangerFezHubPage from "@/pages/NorteTangerFezHubPage";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
@@ -82,6 +84,8 @@ const LocalizedRouter = () => {
   if (routeId === "tourEscapadaFez")        return <EscapadaFezPage />;
   if (routeId === "tourEscapadaMarrakech")  return <EscapadaMarrakechPage />;
   if (routeId === "tourEscapadaTanger")     return <EscapadaTangerPage />;
+  if (routeId === "tourNorteCiudadesImperiales") return <NorteCiudadesImperialesHubPage />;
+  if (routeId === "tourNorteTangerFez")          return <NorteTangerFezHubPage />;
   if (routeId === "tourDesiertoAtlas67")  return <DesiertoAtlas67Page />;
   if (routeId === "tourDesiertoAtlas56")  return <DesiertoAtlas56Page />;
   if (routeId === "tourDesiertoAtlas45")  return <DesiertoAtlas45Page />;

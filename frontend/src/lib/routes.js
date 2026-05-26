@@ -42,6 +42,8 @@ export const ROUTES = {
   tourEscapadaMarrakech:  { es: "viajes/escapadas/marrakech",               en: "tours/short-escapes/marrakech",                fr: "voyages/escapades-courtes/marrakech" },
   tourEscapadaTanger:     { es: "viajes/escapadas/tanger",                  en: "tours/short-escapes/tangier",                  fr: "voyages/escapades-courtes/tanger" },
   tourNorth:          { es: "viajes/nortedemarruecos",   en: "tours/northern-morocco",   fr: "voyages/nord-du-maroc" },
+  tourNorteCiudadesImperiales: { es: "viajes/norte/ciudades_imperiales", en: "tours/northern/imperial-cities", fr: "voyages/nord/cites-imperiales" },
+  tourNorteTangerFez:          { es: "viajes/norte/tanger_fez",          en: "tours/northern/tangier-fez",     fr: "voyages/nord/tanger-fes" },
   tourAdventure:      { es: "viajes/aventura",           en: "tours/adventure",          fr: "voyages/aventure" },
   upcomingDepartures: { es: "proximas_salidas",          en: "upcoming-departures",      fr: "prochains-departs" },
   tourBespoke:        { es: "viajesamedida",             en: "tailor-made-tours",        fr: "voyages-sur-mesure" },

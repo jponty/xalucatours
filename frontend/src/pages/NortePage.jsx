@@ -22,8 +22,8 @@ const COPY = {
       eyebrow: "Viajes al Norte de Marruecos",
       place: "Fez · Chefchaouen · Tánger",
       title: "Norte de Marruecos.",
-      subtitle: "Ciudades imperiales, medinas históricas, mar Mediterráneo y los pueblos azules del Rif.",
-      intro: "Una mirada cultural y paisajística al Marruecos más antiguo — donde la arquitectura, la historia y la luz del Mediterráneo se encuentran.",
+      subtitle: "Pueblos pintados de azul, medinas antiguas, mosaicos romanos, aldeas de montaña y ciudades llenas de historia — una fascinante mezcla de texturas, aromas y culturas que muestran el lado más auténtico y cultural de Marruecos.",
+      intro: "Las ciudades imperiales son una auténtica ventana al pasado de Marruecos. Repletas de historia, cultura y tradiciones, ofrecen una inmersión en una forma de vida única donde el legado árabe, bereber y andalusí sigue muy presente. Sus medinas, palacios, mezquitas y zocos permiten descubrir el país desde una perspectiva cultural, histórica y gastronómica incomparable.",
       primaryCta: "Ver itinerarios", secondaryCta: "Pedir asesoramiento", scroll: "Desplázate",
     },
     nav: {
@@ -40,7 +40,7 @@ const COPY = {
       body: "Dos maneras de descubrir el norte de Marruecos: una inmersión cultural en las ciudades imperiales o una travesía completa de Fez a Tánger.",
       cta: "Ver itinerario",
     },
-    block: { cta_request: "Solicitar viaje", cta_info: "Más información" },
+    block: { cta_request: "Solicitar viaje", cta_view: "Ver opciones", cta_info: "Más información" },
     cities: {
       overline: "Ciudades destacadas",
       title: "Seis joyas del norte marroquí.",
@@ -60,8 +60,8 @@ const COPY = {
       eyebrow: "Northern Morocco journeys",
       place: "Fez · Chefchaouen · Tangier",
       title: "Northern Morocco.",
-      subtitle: "Imperial cities, historic medinas, the Mediterranean coast and the blue villages of the Rif.",
-      intro: "A cultural and scenic look at the oldest Morocco — where architecture, history and Mediterranean light meet.",
+      subtitle: "Blue-painted towns, ancient medinas, Roman mosaics, mountain villages and history-rich cities — a fascinating blend of textures, aromas and cultures that reveal the most authentic and cultural side of Morocco.",
+      intro: "Morocco's imperial cities are a true window into the country's past. Filled with history, culture and traditions, they offer an immersion into a unique way of life where the Arab, Berber and Andalusian legacy remains very much alive. Their medinas, palaces, mosques and souks reveal Morocco from an unmatched cultural, historical and culinary perspective.",
       primaryCta: "View itineraries", secondaryCta: "Get advice", scroll: "Scroll",
     },
     nav: {
@@ -78,7 +78,7 @@ const COPY = {
       body: "Two ways to discover northern Morocco: a cultural immersion in the imperial cities, or a full crossing from Fez to Tangier.",
       cta: "See itinerary",
     },
-    block: { cta_request: "Request journey", cta_info: "More info" },
+    block: { cta_request: "Request journey", cta_view: "View options", cta_info: "More info" },
     cities: {
       overline: "Featured cities",
       title: "Six jewels of the Moroccan north.",
@@ -98,8 +98,8 @@ const COPY = {
       eyebrow: "Voyages au Nord du Maroc",
       place: "Fès · Chefchaouen · Tanger",
       title: "Nord du Maroc.",
-      subtitle: "Cités impériales, médinas historiques, mer Méditerranée et villages bleus du Rif.",
-      intro: "Un regard culturel et paysager sur le Maroc le plus ancien — là où architecture, histoire et lumière méditerranéenne se rencontrent.",
+      subtitle: "Villages peints en bleu, médinas anciennes, mosaïques romaines, villages de montagne et villes chargées d'histoire — un mélange fascinant de textures, d'arômes et de cultures qui révèle le côté le plus authentique et culturel du Maroc.",
+      intro: "Les cités impériales du Maroc sont une véritable fenêtre sur le passé du pays. Pleines d'histoire, de culture et de traditions, elles offrent une immersion dans un mode de vie unique où l'héritage arabe, berbère et andalou reste très présent. Leurs médinas, palais, mosquées et souks révèlent le Maroc sous un angle culturel, historique et gastronomique incomparable.",
       primaryCta: "Voir les itinéraires", secondaryCta: "Demander conseil", scroll: "Faites défiler",
     },
     nav: {
@@ -116,7 +116,7 @@ const COPY = {
       body: "Deux façons de découvrir le nord du Maroc : une immersion culturelle dans les cités impériales ou une traversée complète de Fès à Tanger.",
       cta: "Voir l'itinéraire",
     },
-    block: { cta_request: "Demander ce voyage", cta_info: "Plus d'infos" },
+    block: { cta_request: "Demander ce voyage", cta_view: "Voir les options", cta_info: "Plus d'infos" },
     cities: {
       overline: "Villes phares",
       title: "Six joyaux du nord marocain.",
