@@ -173,6 +173,42 @@
     .fade-up { opacity: 1; transform: none; }
 }
 
+/* Landmark carousel — entrance animation + custom scroll track */
+.landmark-carousel-enter {
+    animation: landmark-carousel-enter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes landmark-carousel-enter {
+    0%   { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.landmark-story-card {
+    animation: landmark-card-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.landmark-story-card:nth-child(1) { animation-delay: 0.08s; }
+.landmark-story-card:nth-child(2) { animation-delay: 0.18s; }
+.landmark-story-card:nth-child(3) { animation-delay: 0.28s; }
+.landmark-story-card:nth-child(4) { animation-delay: 0.38s; }
+.landmark-story-card:nth-child(n+5) { animation-delay: 0.48s; }
+@keyframes landmark-card-enter {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.landmark-track {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(193, 101, 66, 0.45) transparent;
+}
+.landmark-track::-webkit-scrollbar { height: 6px; }
+.landmark-track::-webkit-scrollbar-track { background: transparent; }
+.landmark-track::-webkit-scrollbar-thumb {
+    background: rgba(193, 101, 66, 0.45);
+    border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .landmark-carousel-enter, .landmark-story-card { animation: none; opacity: 1; transform: none; }
+    .landmark-track { scroll-behavior: auto; }
+}
+
 /* ============================================================
    Leaflet tweaks — editorial look
    ============================================================ */

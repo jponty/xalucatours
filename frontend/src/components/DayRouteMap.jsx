@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-le
 import { MapPin, Navigation, Sparkles } from "lucide-react";
 import { DAY_LANDMARKS, LANDMARK_KINDS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { LandmarkCarousel, LandmarkCarouselHint } from "@/components/LandmarkCarousel";
+import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 
 const LABEL_T = {
   es: { route: "Mapa del día", landmarks_title: "Puntos de interés del día", progress: "Progreso del viaje", day_short: "Día", count_singular: "punto destacado", count_plural: "puntos destacados" },
@@ -59,7 +61,7 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
 
   return (
     <section data-testid={`day-route-map-${day.route_id}`}
-             className="relative bg-[#F2EBE1] py-10 md:py-14 border-t border-[#2C2621]/10">
+             className="relative bg-[#F2EBE1] mt-12 md:mt-16 pt-14 md:pt-20 pb-10 md:pb-14 border-t border-[#2C2621]/10">
       <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
@@ -192,6 +194,18 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
             </ol>
           </div>
         </div>
+
+        {/* Per-landmark image carousel — appears below the map when a
+            landmark is selected (synchronized with map + side list). */}
+        {activeLandmark && LANDMARK_GALLERIES[activeLandmark.id] ? (
+          <LandmarkCarousel
+            landmark={activeLandmark}
+            accent={accent}
+            onClose={() => setActiveId(null)}
+          />
+        ) : (
+          <LandmarkCarouselHint accent={accent} />
+        )}
       </div>
     </section>
   );

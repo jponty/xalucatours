@@ -1,0 +1,242 @@
+import React, { useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight, Camera, X, MapPin } from "lucide-react";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
+import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
+
+const LABELS = {
+  es: {
+    eyebrow: "Galería del lugar",
+    helper: "Selecciona un punto del mapa o de la lista para conocer cada lugar a través de pequeñas historias visuales.",
+    prev: "Anterior",
+    next: "Siguiente",
+    close: "Cerrar galería",
+    count_one: "card",
+    count_many: "cards",
+  },
+  en: {
+    eyebrow: "Place gallery",
+    helper: "Pick a point on the map or the side list to read each place through small visual stories.",
+    prev: "Previous",
+    next: "Next",
+    close: "Close gallery",
+    count_one: "card",
+    count_many: "cards",
+  },
+  fr: {
+    eyebrow: "Galerie du lieu",
+    helper: "Sélectionnez un point sur la carte ou dans la liste pour découvrir chaque lieu à travers de petites histoires visuelles.",
+    prev: "Précédent",
+    next: "Suivant",
+    close: "Fermer la galerie",
+    count_one: "card",
+    count_many: "cards",
+  },
+};
+
+const Card = ({ image, accent, kindLabel, lang, index, total }) => (
+  <article
+    data-testid={`landmark-card-${index}`}
+    className="landmark-story-card snap-start shrink-0 w-[78vw] sm:w-[320px] md:w-[300px] lg:w-[320px] bg-[#FDFBF7] border border-[#2C2621]/12 overflow-hidden flex flex-col group transition-shadow duration-500 hover:shadow-[0_30px_60px_-30px_rgba(26,21,19,0.45)]"
+  >
+    <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
+      <img
+        src={image.src}
+        alt={pick(image.title, lang)}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent opacity-90" />
+      <span className="film-grain pointer-events-none" />
+      <span
+        className="absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase"
+        style={{ color: accent }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+        {kindLabel || ""}
+      </span>
+      <span className="absolute top-3.5 right-3.5 inline-flex items-center justify-center bg-[#1A1513]/85 text-[#FDFBF7] font-serif-x text-[12px] tracking-[0.18em] px-2.5 py-1">
+        {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+      </span>
+    </div>
+    <div className="flex-1 p-5 md:p-6 flex flex-col gap-3">
+      <h5 className="font-serif-x text-[18px] md:text-[20px] leading-[1.2] text-[#2C2621]">
+        {pick(image.title, lang)}
+      </h5>
+      <p className="text-[13px] md:text-[13.5px] text-[#5C5248] leading-[1.7] flex-1">
+        {pick(image.description, lang)}
+      </p>
+      <span className="block w-10 h-px mt-1" style={{ background: accent }} />
+    </div>
+  </article>
+);
+
+export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
+  const { lang } = useLanguage();
+  const t = LABELS[lang] || LABELS.es;
+  const images = (landmark && LANDMARK_GALLERIES[landmark.id]) || [];
+  const containerRef = useRef(null);
+  const trackRef = useRef(null);
+
+  // Auto-scroll into view + reset scroll position when landmark changes
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    if (trackRef.current) {
+      trackRef.current.scrollTo({ left: 0, behavior: "instant" in window ? "instant" : "auto" });
+    }
+  }, [landmark && landmark.id]);
+
+  if (!landmark || images.length === 0) return null;
+
+  const kindCfg = LANDMARK_KINDS[landmark.kind];
+  const kindLabel = kindCfg ? pick(kindCfg.label, lang) : "";
+
+  const scrollBy = (dir) => {
+    if (!trackRef.current) return;
+    const card = trackRef.current.querySelector("[data-testid^='landmark-card-']");
+    const step = card ? card.getBoundingClientRect().width + 16 : 320;
+    trackRef.current.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      data-testid={`landmark-carousel-${landmark.id}`}
+      key={landmark.id}
+      className="landmark-carousel-enter mt-8 md:mt-10 bg-[#FDFBF7] border border-[#2C2621]/15 overflow-hidden shadow-[0_24px_60px_-30px_rgba(26,21,19,0.35)]"
+    >
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 px-5 md:px-7 py-4 md:py-5 border-b border-[#2C2621]/10 bg-[#FDFBF7]">
+        <div className="flex items-center gap-3 min-w-0">
+          <span
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full shrink-0"
+            style={{ background: `${accent}1A`, color: accent }}
+          >
+            <Camera className="w-4 h-4" strokeWidth={1.7} />
+          </span>
+          <div className="min-w-0">
+            <span
+              className="block text-[10px] tracking-[0.3em] uppercase"
+              style={{ color: accent }}
+            >
+              {t.eyebrow}
+            </span>
+            <p className="font-serif-x text-[16px] md:text-[18px] text-[#2C2621] leading-snug mt-0.5 inline-flex items-center gap-2 truncate">
+              <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: accent }} strokeWidth={1.6} />
+              <span className="truncate">{pick(landmark.name, lang)}</span>
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="hidden sm:inline-block text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
+            {images.length} {images.length === 1 ? t.count_one : t.count_many}
+          </span>
+          {images.length > 1 && (
+            <div className="hidden md:flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => scrollBy(-1)}
+                aria-label={t.prev}
+                data-testid={`landmark-carousel-prev-${landmark.id}`}
+                className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" strokeWidth={1.6} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollBy(1)}
+                aria-label={t.next}
+                data-testid={`landmark-carousel-next-${landmark.id}`}
+                className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+              >
+                <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+              </button>
+            </div>
+          )}
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={t.close}
+              data-testid={`landmark-carousel-close-${landmark.id}`}
+              className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={1.6} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Track */}
+      <div className="relative bg-[#F7F1E4]">
+        <div
+          ref={trackRef}
+          data-testid={`landmark-carousel-track-${landmark.id}`}
+          className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory px-5 md:px-7 py-6 md:py-7 scroll-smooth landmark-track"
+        >
+          {images.map((img, i) => (
+            <Card
+              key={i}
+              image={img}
+              accent={accent}
+              kindLabel={kindLabel}
+              lang={lang}
+              index={i}
+              total={images.length}
+            />
+          ))}
+        </div>
+
+        {/* Mobile arrows — overlay */}
+        {images.length > 1 && (
+          <div className="md:hidden flex justify-end gap-1.5 px-5 pb-5">
+            <button
+              type="button"
+              onClick={() => scrollBy(-1)}
+              aria-label={t.prev}
+              data-testid={`landmark-carousel-prev-mobile-${landmark.id}`}
+              className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/25 text-[#2C2621] bg-[#FDFBF7] hover:bg-[#2C2621] hover:text-[#FDFBF7] transition-all duration-300"
+            >
+              <ChevronLeft className="w-4 h-4" strokeWidth={1.6} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              aria-label={t.next}
+              data-testid={`landmark-carousel-next-mobile-${landmark.id}`}
+              className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/25 text-[#2C2621] bg-[#FDFBF7] hover:bg-[#2C2621] hover:text-[#FDFBF7] transition-all duration-300"
+            >
+              <ChevronRight className="w-4 h-4" strokeWidth={1.6} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* Subtle helper card shown when no landmark is selected. */
+export const LandmarkCarouselHint = ({ accent = "#C16542" }) => {
+  const { lang } = useLanguage();
+  const t = LABELS[lang] || LABELS.es;
+  return (
+    <div
+      data-testid="landmark-carousel-hint"
+      className="mt-8 md:mt-10 flex items-center gap-4 px-5 md:px-7 py-4 md:py-5 bg-[#FDFBF7]/70 border border-dashed border-[#2C2621]/20"
+    >
+      <span
+        className="inline-flex items-center justify-center w-9 h-9 rounded-full shrink-0"
+        style={{ background: `${accent}1A`, color: accent }}
+      >
+        <Camera className="w-4 h-4" strokeWidth={1.6} />
+      </span>
+      <p className="text-[12px] md:text-[13px] tracking-[0.04em] text-[#5C5248] leading-relaxed">
+        {t.helper}
+      </p>
+    </div>
+  );
+};
+
+export default LandmarkCarousel;
