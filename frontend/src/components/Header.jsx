@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ArrowRight } from "lucide-react";
+import { Menu, ArrowRight, ImagePlus, Check } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import { pathFor } from "@/lib/routes";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
+  const { editMode, toggle } = useEditMode();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -89,16 +91,39 @@ export const Header = () => {
 
           <BrandMark />
 
-          <Link
-            to={pathFor(lang, "contact")}
-            onClick={onEnquireClick}
-            data-testid="header-enquire-button"
-            className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
-          >
-            <span className="hidden sm:inline">{t("cta_plan")}</span>
-            <span className="sm:hidden">{t("nav_contact")}</span>
-            <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
-          </Link>
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Image edit mode toggle — icon-only, dev tool */}
+            <button
+              type="button"
+              onClick={toggle}
+              aria-pressed={editMode}
+              aria-label={editMode ? "Salir del modo edición de imágenes" : "Activar modo edición de imágenes"}
+              data-testid="header-edit-mode-toggle"
+              className={`inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 border transition-colors duration-300 ${
+                editMode
+                  ? "bg-[#C16542] border-[#C16542] text-[#FDFBF7] hover:bg-[#A35133]"
+                  : "border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621]"
+              }`}
+              title={editMode ? "Edición ON · clic para salir" : "Activar edición de imágenes"}
+            >
+              {editMode ? (
+                <Check className="w-4 h-4" strokeWidth={1.8} />
+              ) : (
+                <ImagePlus className="w-4 h-4" strokeWidth={1.7} />
+              )}
+            </button>
+
+            <Link
+              to={pathFor(lang, "contact")}
+              onClick={onEnquireClick}
+              data-testid="header-enquire-button"
+              className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
+            >
+              <span className="hidden sm:inline">{t("cta_plan")}</span>
+              <span className="sm:hidden">{t("nav_contact")}</span>
+              <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
+            </Link>
+          </div>
         </div>
       </header>
 
