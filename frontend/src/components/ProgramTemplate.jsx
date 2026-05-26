@@ -11,6 +11,7 @@ import { StickyNav } from "@/components/JourneyPageSections";
 import { SHARED_SEASONS, SHARED_DETAILS } from "@/lib/programData";
 import { DayRouteMap } from "@/components/DayRouteMap";
 import { DayGallery } from "@/components/DayGallery";
+import { TripOverview } from "@/components/TripOverview";
 import ContactForm from "@/components/ContactForm";
 
 /* ============================================================
@@ -598,10 +599,12 @@ export default function ProgramTemplate({ program, variant = "da" }) {
     window.scrollTo(0, 0);
   }, [vt.title, program.duration, lang]);
 
+  const navOverview = { es: "Resumen", en: "Overview", fr: "Résumé" };
   const navItems = [
     { id: "description", label: t.nav_description },
     { id: "quick",       label: t.nav_quick },
     { id: "itinerary",   label: t.nav_itinerary },
+    { id: "overview",    label: pick(navOverview, lang) },
     { id: "pricing",     label: t.nav_pricing },
     { id: "includes",    label: t.nav_includes },
     { id: "contact",     label: t.nav_contact },
@@ -614,6 +617,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       <Description vt={vt} t={t} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <Itinerary t={t} lang={lang} days={program.days} />
+      <TripOverview days={program.days} />
       <Pricing t={t} lang={lang} program={program} />
       <DetailsAccordion t={t} lang={lang} />
       <ContactBand t={t} lang={lang} />
