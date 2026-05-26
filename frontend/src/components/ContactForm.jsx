@@ -97,7 +97,7 @@ export const ContactForm = () => {
                   data-testid="contact-send-another"
                   className="mt-8 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b border-[#D4A373]/40 pb-1 text-[#D4A373] hover:text-[#FDFBF7] hover:border-[#FDFBF7] transition-colors"
                 >
-                  Send another
+                  {t("send_another")}
                   <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                 </button>
               </div>

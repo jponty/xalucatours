@@ -93,6 +93,7 @@ export const translations = {
 
   // Misc
   read_more:       { en: "Read",      fr: "Lire",      es: "Leer" },
+  send_another:    { en: "Send another", fr: "Envoyer une autre demande", es: "Enviar otra consulta" },
   duration:        { en: "Duration",  fr: "Durée",     es: "Duración" },
   from_price:      { en: "From",      fr: "À partir de", es: "Desde" },
   per_person:      { en: "/ person",  fr: "/ personne",  es: "/ persona" },
