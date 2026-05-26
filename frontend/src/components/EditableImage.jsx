@@ -120,38 +120,54 @@ export const EditableImage = ({
       />
       {editMode && (
         <div
-          aria-hidden="true"
           data-testid={`editable-overlay-${slot}`}
-          className={`absolute inset-0 z-[45] pointer-events-none flex items-center justify-center ${
-            forceVisible ? "" : ""
-          }`}
+          className="absolute inset-0 z-[45]"
         >
-          <div className="absolute inset-2 border-2 border-dashed border-[#FDFBF7] opacity-70 animate-pulse" />
-          <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#1A1513]/85 text-[#FDFBF7] text-[9px] tracking-[0.2em] uppercase px-2 py-1 max-w-[60%] truncate">
+          {/* Full-area click trap. CAPTURE-phase handlers intercept the click
+              before it can bubble up to a wrapping <Link>, so navigation is
+              completely disabled while edit mode is on. */}
+          <button
+            type="button"
+            data-testid={`editable-edit-btn-${slot}`}
+            aria-label={`Editar imagen ${slot}`}
+            onClickCapture={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.nativeEvent?.stopImmediatePropagation?.();
+              setOpen(true);
+            }}
+            onMouseDownCapture={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onPointerDownCapture={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onTouchStartCapture={(e) => {
+              e.stopPropagation();
+            }}
+            className="absolute inset-0 w-full h-full bg-transparent cursor-pointer focus:outline-none"
+          />
+          {/* Decorative layer — pointer-events-none so the click trap below
+              always receives the input. */}
+          <div className="absolute inset-2 border-2 border-dashed border-[#FDFBF7] opacity-70 animate-pulse pointer-events-none" />
+          <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#1A1513]/85 text-[#FDFBF7] text-[9px] tracking-[0.2em] uppercase px-2 py-1 max-w-[60%] truncate pointer-events-none">
             {slot}
           </span>
           {aspectRatio && (
             <span
               data-testid={`editable-ratio-${slot}`}
-              className="absolute top-2 right-2 md:top-3 md:right-3 bg-[#FDFBF7]/95 text-[#2C2621] text-[9px] tracking-[0.2em] uppercase px-2 py-1"
-              title={`${ratioLabel(aspectRatio).label} · ${ratioLabel(aspectRatio).code}`}
+              className="absolute top-2 right-2 md:top-3 md:right-3 bg-[#FDFBF7]/95 text-[#2C2621] text-[9px] tracking-[0.2em] uppercase px-2 py-1 pointer-events-none"
             >
               {ratioLabel(aspectRatio).code}
             </span>
           )}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setOpen(true);
-            }}
-            data-testid={`editable-edit-btn-${slot}`}
-            className="pointer-events-auto relative inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase transition-colors duration-300 shadow-lg"
-          >
+          {/* Visible "Editar" pill — decorative, but matches the click trap below */}
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none">
             <Pencil className="w-3 h-3" strokeWidth={1.8} />
             <span>Editar</span>
-          </button>
+          </span>
         </div>
       )}
       {open && (
