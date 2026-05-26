@@ -42,6 +42,7 @@ export const HUB_ATLAS_DESIERTO = {
   },
   programs: [
     { id: "ad-4-5", direction: "a", nights: "4n5d", accent: "#C16542", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
+      link: "tourAtlasDesierto45",
       blurb: { es: "Viaje de 4 noches y 5 días por la cordillera del Atlas marroquí y el desierto de dunas del Erg Chebbi en el desierto del Sahara en Marruecos.",
                en: "4-night/5-day journey through the Atlas range and the Erg Chebbi dunes in the Sahara desert.",
                fr: "Voyage de 4 nuits et 5 jours par la cordillère de l'Atlas marocain et les dunes de l'Erg Chebbi dans le Sahara." } },

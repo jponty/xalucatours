@@ -603,34 +603,54 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                 <span className="flex-1 h-px bg-[#2C2621]/15" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {items.map((p) => (
-                  <article
-                    key={p.id}
-                    data-testid={`hub-preview-card-${p.id}`}
-                    aria-disabled="true"
-                    className="group relative block overflow-hidden h-[420px] cursor-not-allowed"
-                  >
-                    <img src={p.image} alt="" loading="lazy"
-                         className="absolute inset-0 w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10" />
-                    <span className="film-grain" />
-                    <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
-                      <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
-                        {getLabel(k)}
-                      </span>
-                      <h4 className="font-serif-x text-2xl md:text-[26px] leading-[1.05] mt-3 inline-flex items-center gap-3">
-                        <Clock className="w-5 h-5 text-[#D4A373]" strokeWidth={1.4} />
-                        {pick(COMMON_NIGHTS[p.nights], lang)}
-                      </h4>
-                      <p className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3">
-                        {pick(p.blurb, lang)}
-                      </p>
-                      <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/70">
-                        {cardLabel}
-                      </span>
-                    </div>
-                  </article>
-                ))}
+                {items.map((p) => {
+                  const inner = (
+                    <>
+                      <img src={p.image} alt="" loading="lazy"
+                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10" />
+                      <span className="film-grain" />
+                      <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
+                        <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
+                          {getLabel(k)}
+                        </span>
+                        <h4 className="font-serif-x text-2xl md:text-[26px] leading-[1.05] mt-3 inline-flex items-center gap-3">
+                          <Clock className="w-5 h-5 text-[#D4A373]" strokeWidth={1.4} />
+                          {pick(COMMON_NIGHTS[p.nights], lang)}
+                        </h4>
+                        <p className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3">
+                          {pick(p.blurb, lang)}
+                        </p>
+                        <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/90 group-hover:gap-4 transition-all duration-300">
+                          {p.link ? (labels.card_active || (lang === "es" ? "Ver itinerario" : lang === "fr" ? "Voir l'itinéraire" : "View itinerary")) : cardLabel}
+                          {p.link && <ArrowRight className="w-3 h-3" strokeWidth={1.5} />}
+                        </span>
+                      </div>
+                    </>
+                  );
+                  if (p.link) {
+                    return (
+                      <Link
+                        key={p.id}
+                        to={pathFor(lang, p.link)}
+                        data-testid={`hub-preview-card-${p.id}`}
+                        className="group relative block overflow-hidden h-[420px]"
+                      >
+                        {inner}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <article
+                      key={p.id}
+                      data-testid={`hub-preview-card-${p.id}`}
+                      aria-disabled="true"
+                      className="group relative block overflow-hidden h-[420px] cursor-not-allowed"
+                    >
+                      {inner}
+                    </article>
+                  );
+                })}
               </div>
             </div>
           );
