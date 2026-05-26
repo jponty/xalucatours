@@ -6,41 +6,47 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 ## Architecture
 - React 19 + Tailwind v3 + Shadcn UI · FastAPI · MongoDB
 - Trilingual via `LanguageContext` + `lib/routes.js`. ES at root, EN under `/en/*`, FR under `/fr/*`.
-- Universal Program template at `components/ProgramTemplate.jsx` powers all desert/atlas program detail pages from `lib/programData.js`.
+- 3-tier navigation hierarchy:
+  - **Region landing pages** (`/viajes/marruecos`, `/viajes/surdemarruecos`, etc.)
+  - **Hub pages** intermediate, listing duration variants (`/viajes/sur/atlas_desierto`, `/viajes/gransur/fez-rak`, etc.) — powered by `components/ItineraryHubPage.jsx`
+  - **Program detail pages** day-by-day — powered by `components/ProgramTemplate.jsx`
 
-## Implemented (this session, Feb 2026)
+## Implemented (Feb 2026)
 ### Journey landing pages
-- `/viajes/marruecos` — 4 country-wide itineraries
-- `/viajes/nortedemarruecos` — 2 northern itineraries + 2 editorial essays + 6 cities row
-- `/viajes/surdemarruecos` — 4 southern itineraries + editorials + brand pillars
-- `/viajes/aventura` — adventure narrative + 8 adventure experience cards
-- `/viajes/escapadas` — 5 short-escape itineraries
-- `/viajesamedida` — 6 tailor-made trip types + 10 sports + 3-step process
+- `/` — Home with 5 TravelCategory cards routing to regional pages
+- `/viajes/marruecos` — 4 itinerary blocks + intro editorial + WhyXaluca pillars + CatalogTeaser + CommunityCta
+- `/viajes/nortedemarruecos`
+- `/viajes/surdemarruecos` — 4 itinerary blocks (Ouarzazate, Marrakech→ErgChebbi, Marrakech circular, Marrakech-Essaouira), each linking to its hub
+- `/viajes/aventura`
+- `/viajes/escapadas`
+- `/viajesamedida`
+- `/proximas_salidas`
 
-### Program detail pages (universal template)
-- `/viajes/sur/atlas_desierto` — HUB linking to 6 programmes
+### Hub pages (intermediate — duration variants)
+- `/viajes/sur/atlas_desierto` (Atlas–Desierto, 6 programs)
+- `/viajes/sur/marrakech_ergchebbi` (4 ida + 4 vuelta)
+- `/viajes/marrakech_ergchebbi_marrakech` (3 circular)
+- `/viajes/sur/marrakech_essaouira` (2 options)
+- `/viajes/gransur/fez-rak` (4 ida + 4 vuelta)
+- `/viajes/gransur/fez-sidiali-rak` (3 ida + 3 vuelta)
+- `/viajes/gransur/ouarzazate-sidiali-fez` (3 ida + 3 vuelta)
+- `/viajes/gransur/tanger-rak` (2 options)
+
+### Program detail pages (universal `ProgramTemplate`)
 - `/viajes/desierto_atlas/programa_6n_7d`, `_5n_6d`, `_4n_5d`
 - `/viajes/atlas_desierto/programa_4n_5d`, `_5n_6d`, `_6n_7d`
 
-### Home page navigation
-- 5 TravelCategory cards now navigate to corresponding pages via `routeId`:
-  - magic-south → `/viajes/surdemarruecos`
-  - north-to-south → `/viajes/marruecos`
-  - short-escapes → `/viajes/escapadas`
-  - northern-morocco → `/viajes/nortedemarruecos`
-  - group-departures → `/proximas_salidas`
-
 ## Backlog / P1
-- Build dedicated `/proximas_salidas` page (currently falls back to StubPage)
-- Provide real photo set (Unsplash placeholders today)
+- Build individual day-by-day pages for the new Marrakech↔ErgChebbi, Marrakech loop, Marrakech-Essaouira options (currently CTAs land on contact form)
+- Build individual day-by-day pages for the 22 Gran Sur duration variants
+- Real photo set (Unsplash placeholders today)
 - Replace mocked stub-content for non-tour routes (about, contact intermediate, etc.)
-- Final integration testing for contact form → MongoDB enqueue
-- Mobile QA pass on the 14 newly built pages
+- Mobile QA pass on all 25+ pages
 
 ## Backlog / P2
 - Sticky-nav active-state improvements on long pages
 - Sitemap / SEO meta per page
-- Replace stock Unsplash imagery with curated Xaluca photo library
+- Stripe Checkout for `/proximas_salidas` deposits
 
 ## Stack & integrations
 - MongoDB enquiries (POST `/api/contact`)
@@ -48,15 +54,14 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - No 3rd-party LLM integrations needed yet
 
 ## Key files of reference
-- `frontend/src/App.js` · LocalizedRouter wiring of all 20+ pages
-- `frontend/src/lib/routes.js` · Trilingual slugs (now incl. tourUpcoming)
-- `frontend/src/lib/data.js` · TRAVEL_CATEGORIES with routeIds
-- `frontend/src/components/TravelCategories.jsx` · Now uses `Link` when `routeId` present
-- `frontend/src/components/ProgramTemplate.jsx` · Universal Atlas/Desert program template (variant "da"/"ad")
-- `frontend/src/components/JourneyPageSections.jsx` · Shared hero/stickyNav/itinerary/editorial blocks
-- `frontend/src/lib/programData.js` · 6 programmes + day building blocks
-- `frontend/src/lib/marruecosItineraries.js`, `norteItineraries.js`, `surItineraries.js`, `aventuraExperiences.js`, `escapadasItineraries.js`
+- `frontend/src/App.js` · LocalizedRouter wiring of all 25+ pages
+- `frontend/src/lib/routes.js` · Trilingual slugs (incl. 4 new tourGransur* + 3 Marrakech hubs)
+- `frontend/src/lib/itineraryHubs.js` · Hub configurations (7 hubs total)
+- `frontend/src/lib/marruecosItineraries.js`, `surItineraries.js`, etc.
+- `frontend/src/components/ItineraryHubPage.jsx` · Universal hub template
+- `frontend/src/components/ProgramTemplate.jsx` · Universal day-by-day program template
+- `frontend/src/components/JourneyPageSections.jsx` · Shared editorial sections (hero, sticky nav, itinerary block, pillars, catalog teaser, community CTA)
 
 ## Testing status
-- `iteration_4.json` (Feb 2026): 14 new pages — all rendering, language switcher preserved, all hub-to-program links work, 0 console errors.
-- Home category links (5/5) self-tested: all hrefs and click-through to `/viajes/surdemarruecos` verified ✓
+- `iteration_4.json` (Feb 2026): 14 pages passed flawlessly.
+- Latest (Feb 2026): All 4 new gran-sur hubs render with correct option counts (8/6/6/2); MarruecosPage editorial intro + pillars + catalog + community CTA visually verified; Sur block titles match user spec and CTAs land on correct hubs.

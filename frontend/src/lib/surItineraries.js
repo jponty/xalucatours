@@ -8,11 +8,11 @@ export const SUR_ITINERARIES = [
     slug: "ouarzazate-erg-chebbi",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
-      es: "Ouarzazate · Alto Atlas · Erg Chebbi · Errachidia",
-      en: "Ouarzazate · High Atlas · Erg Chebbi · Errachidia",
-      fr: "Ouarzazate · Haut Atlas · Erg Chebbi · Errachidia",
+      es: "Ouarzazate · Cordillera Alto Atlas · Dunas Erg Chebbi · Errachidia",
+      en: "Ouarzazate · High Atlas range · Erg Chebbi dunes · Errachidia",
+      fr: "Ouarzazate · Cordillère du Haut Atlas · Dunes de l'Erg Chebbi · Errachidia",
     },
-    duration: { es: "6 días / 5 noches", en: "6 days / 5 nights", fr: "6 jours / 5 nuits" },
+    duration: { es: "Varias duraciones disponibles", en: "Multiple durations", fr: "Plusieurs durées" },
     image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=85",
     accent: "#C16542",
     stages: [
@@ -52,11 +52,11 @@ export const SUR_ITINERARIES = [
     slug: "marrakech-erg-chebbi-errachidia",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
-      es: "Marrakech · Alto Atlas · Erg Chebbi · Errachidia",
-      en: "Marrakech · High Atlas · Erg Chebbi · Errachidia",
-      fr: "Marrakech · Haut Atlas · Erg Chebbi · Errachidia",
+      es: "Marrakech · Cordillera Alto Atlas · Dunas Erg Chebbi · Errachidia",
+      en: "Marrakech · High Atlas range · Erg Chebbi dunes · Errachidia",
+      fr: "Marrakech · Cordillère du Haut Atlas · Dunes de l'Erg Chebbi · Errachidia",
     },
-    duration: { es: "7 días / 6 noches", en: "7 days / 6 nights", fr: "7 jours / 6 nuits" },
+    duration: { es: "Varias duraciones disponibles", en: "Multiple durations", fr: "Plusieurs durées" },
     image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2200&q=85",
     accent: "#A07042",
     stages: [
@@ -99,11 +99,11 @@ export const SUR_ITINERARIES = [
     slug: "marrakech-erg-chebbi-marrakech",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
-      es: "Marrakech · Alto Atlas · Erg Chebbi · Marrakech",
-      en: "Marrakech · High Atlas · Erg Chebbi · Marrakech",
-      fr: "Marrakech · Haut Atlas · Erg Chebbi · Marrakech",
+      es: "Marrakech · Cordillera Alto Atlas · Dunas Erg Chebbi · Marrakech",
+      en: "Marrakech · High Atlas range · Erg Chebbi dunes · Marrakech",
+      fr: "Marrakech · Cordillère du Haut Atlas · Dunes de l'Erg Chebbi · Marrakech",
     },
-    duration: { es: "5 días / 4 noches", en: "5 days / 4 nights", fr: "5 jours / 4 nuits" },
+    duration: { es: "Varias duraciones disponibles", en: "Multiple durations", fr: "Plusieurs durées" },
     image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2200&q=85",
     accent: "#D97742",
     stages: [
@@ -145,7 +145,7 @@ export const SUR_ITINERARIES = [
       en: "Marrakech · Essaouira",
       fr: "Marrakech · Essaouira",
     },
-    duration: { es: "5 días / 4 noches", en: "5 days / 4 nights", fr: "5 jours / 4 nuits" },
+    duration: { es: "Varias duraciones disponibles", en: "Multiple durations", fr: "Plusieurs durées" },
     image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2200&q=85",
     accent: "#3A4A5F",
     stages: [

@@ -7,6 +7,8 @@ const COMMON_NIGHTS = {
   "5n6d": { es: "5 noches · 6 días", en: "5 nights · 6 days", fr: "5 nuits · 6 jours" },
   "6n7d": { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" },
   "7n8d": { es: "7 noches · 8 días", en: "7 nights · 8 days", fr: "7 nuits · 8 jours" },
+  "8n9d": { es: "8 noches · 9 días", en: "8 nights · 9 days", fr: "8 nuits · 9 jours" },
+  "9n10d":{ es: "9 noches · 10 días", en: "9 nights · 10 days", fr: "9 nuits · 10 jours" },
 };
 
 export const HUB_MARRAKECH_ERG = {
@@ -241,3 +243,244 @@ export const HUB_MARRAKECH_ESSAOUIRA = {
 };
 
 export { COMMON_NIGHTS };
+
+/* ============================================================
+   /viajes/gransur/* — Hubs intermedios desde la página
+   /viajes/marruecos (Gran Sur de Marruecos).
+   Cada hub muestra opciones de duración agrupadas por dirección.
+============================================================ */
+
+const T = (es, en, fr) => ({ es, en, fr });
+const BLURB_FR = (n, d) => (origen, destino) => T(
+  `Viaje de ${n} noches y ${d} días desde ${origen} hasta ${destino}.`,
+  `${n}-night/${d}-day journey from ${origen} to ${destino}.`,
+  `Voyage de ${n} nuits et ${d} jours de ${origen} à ${destino}.`,
+);
+const BLURB_KASBAH = (n, d) => (origen, destino) => T(
+  `Viaje de ${n} noches y ${d} días desde ${origen} hasta ${destino} recorriendo la ruta de las mil kasbahs.`,
+  `${n}-night/${d}-day journey from ${origen} to ${destino} along the route of a thousand kasbahs.`,
+  `Voyage de ${n} nuits et ${d} jours de ${origen} à ${destino} par la route des mille kasbahs.`,
+);
+
+export const HUB_GRANSUR_FEZ_RAK = {
+  id: "gransur-fez-rak",
+  hero: {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    place: T("Fez · Atlas · Erg Chebbi · Marrakech", "Fez · Atlas · Erg Chebbi · Marrakech", "Fès · Atlas · Erg Chebbi · Marrakech"),
+    title: T("Gran Sur · Fez – Marrakech.", "Grand South · Fez – Marrakech.", "Grand Sud · Fès – Marrakech."),
+    subtitle: T(
+      "De la medina más antigua del mundo árabe a la ciudad roja — el sur de Marruecos en una sola travesía.",
+      "From the oldest medina in the Arab world to the red city — southern Morocco in one crossing.",
+      "De la plus ancienne médina du monde arabe à la ville rouge — le sud du Maroc en une seule traversée.",
+    ),
+  },
+  intro: {
+    overline: T("Gran Sur · Fez – Marrakech", "Grand South · Fez – Marrakech", "Grand Sud · Fès – Marrakech"),
+    title: T("Una travesía cinematográfica del norte imperial al sur sahariano.", "A cinematic crossing from the imperial north to the Saharan south.", "Une traversée cinématographique du nord impérial au sud saharien."),
+    body: {
+      es: [
+        "Gran Sur · Fez – Marrakech es la travesía clásica para descubrir lo mejor de Marruecos en un solo viaje.",
+        "La ruta arranca en Fez, cuya medina patrimonio UNESCO es el laberinto vivo más fascinante del mundo árabe, y cruza el Medio Atlas con sus bosques de cedros y sus pueblos bereberes.",
+        "Desde Erfoud nos adentramos en el Erg Chebbi, un mar de dunas de 150 metros, donde dormiremos en bivouac de lujo bajo un cielo absolutamente estrellado.",
+        "Tras la ruta de las mil kasbahs y el imponente Aït Benhaddou, atravesaremos el Alto Atlas por el puerto de Tizi n'Tichka para terminar en Marrakech, la ciudad roja.",
+      ],
+      en: [
+        "Grand South · Fez – Marrakech is the classic crossing to discover the best of Morocco in a single journey.",
+        "The route starts in Fez — its UNESCO medina is the most fascinating living labyrinth in the Arab world — and crosses the Middle Atlas with its cedar forests and Berber villages.",
+        "From Erfoud we enter the Erg Chebbi, a sea of 150-metre dunes, sleeping in a luxury bivouac under an absolute starry sky.",
+        "After the route of a thousand kasbahs and the imposing Aït Benhaddou, we cross the High Atlas via the Tizi n'Tichka pass to finish in Marrakech, the red city.",
+      ],
+      fr: [
+        "Grand Sud · Fès – Marrakech est la traversée classique pour découvrir le meilleur du Maroc en un seul voyage.",
+        "L'itinéraire débute à Fès — sa médina UNESCO est le labyrinthe vivant le plus fascinant du monde arabe — et traverse le Moyen Atlas avec ses forêts de cèdres et ses villages berbères.",
+        "Depuis Erfoud, nous entrons dans l'Erg Chebbi, une mer de dunes de 150 mètres, pour dormir en bivouac de luxe sous un ciel étoilé absolu.",
+        "Après la route des mille kasbahs et l'imposant Aït Benhaddou, nous traversons le Haut Atlas par le col Tizi n'Tichka pour terminer à Marrakech, la ville rouge.",
+      ],
+    },
+  },
+  options: {
+    overline: T("Opciones de viaje del Gran Sur de Marruecos desde Fez hasta Marrakech", "Grand South of Morocco options from Fez to Marrakech", "Options Grand Sud du Maroc, de Fès à Marrakech"),
+    title: T("Elige tu travesía.", "Choose your route.", "Choisissez votre itinéraire."),
+    body: T(
+      "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      "Pick between the options depending on how many days you have for this journey.",
+      "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    ),
+    group_a: T("Fez → Marrakech", "Fez → Marrakech", "Fès → Marrakech"),
+    group_b: T("Marrakech → Fez", "Marrakech → Fez", "Marrakech → Fès"),
+  },
+  programs: [
+    { id: "fr-6-7",  direction: "a", nights: "6n7d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Fez","Marrakech") },
+    { id: "fr-7-8",  direction: "a", nights: "7n8d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Marrakech") },
+    { id: "fr-8-9",  direction: "a", nights: "8n9d",  accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Fez","Marrakech") },
+    { id: "fr-9-10", direction: "a", nights: "9n10d", accent: "#D4A373", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(9,10)("Fez","Marrakech") },
+    { id: "rf-6-7",  direction: "b", nights: "6n7d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Marrakech","Fez") },
+    { id: "rf-7-8",  direction: "b", nights: "7n8d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Marrakech","Fez") },
+    { id: "rf-8-9",  direction: "b", nights: "8n9d",  accent: "#A07042", image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Marrakech","Fez") },
+    { id: "rf-9-10", direction: "b", nights: "9n10d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(9,10)("Marrakech","Fez") },
+  ],
+};
+
+export const HUB_GRANSUR_FEZ_SIDIALI_RAK = {
+  id: "gransur-fez-sidiali-rak",
+  hero: {
+    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    place: T("Fez · Medio Atlas · Sidi Ali · Erg Chebbi · Marrakech", "Fez · Middle Atlas · Sidi Ali · Erg Chebbi · Marrakech", "Fès · Moyen Atlas · Sidi Ali · Erg Chebbi · Marrakech"),
+    title: T("Gran Sur + Medio Atlas.", "Grand South + Middle Atlas.", "Grand Sud + Moyen Atlas."),
+    subtitle: T(
+      "La travesía clásica ampliada con el Medio Atlas y el lago Aguelmame Sidi Ali — más profundidad, más contrastes.",
+      "The classic crossing extended with the Middle Atlas and Aguelmame Sidi Ali lake — more depth, more contrasts.",
+      "La traversée classique enrichie du Moyen Atlas et du lac Aguelmame Sidi Ali — plus de profondeur, plus de contrastes.",
+    ),
+  },
+  intro: {
+    overline: T("Fez – Sidi Ali – Marrakech", "Fez – Sidi Ali – Marrakech", "Fès – Sidi Ali – Marrakech"),
+    title: T("El Medio Atlas se suma a la gran travesía.", "The Middle Atlas joins the great crossing.", "Le Moyen Atlas rejoint la grande traversée."),
+    body: {
+      es: [
+        "Una versión más amplia y serena de la ruta clásica Fez – Marrakech.",
+        "Se incorpora el Medio Atlas con su bosque de cedros gigantes, los pueblos de Azrou e Ifrane y el espectacular lago Aguelmame Sidi Ali, oasis alpino a 2.000 metros de altitud.",
+        "El recorrido sigue después hacia el Erg Chebbi, la ruta de las mil kasbahs, el Alto Atlas y, finalmente, Marrakech.",
+      ],
+      en: [
+        "A broader, more serene version of the classic Fez – Marrakech route.",
+        "It adds the Middle Atlas with its giant cedar forest, the villages of Azrou and Ifrane and the spectacular Aguelmame Sidi Ali lake — an alpine oasis at 2,000 metres.",
+        "The route then continues toward the Erg Chebbi, the route of a thousand kasbahs, the High Atlas and finally Marrakech.",
+      ],
+      fr: [
+        "Une version plus ample et plus sereine de la route classique Fès – Marrakech.",
+        "S'y ajoute le Moyen Atlas avec sa forêt de cèdres géants, les villages d'Azrou et Ifrane et le spectaculaire lac Aguelmame Sidi Ali, oasis alpin à 2 000 mètres.",
+        "Le parcours continue ensuite vers l'Erg Chebbi, la route des mille kasbahs, le Haut Atlas et enfin Marrakech.",
+      ],
+    },
+  },
+  options: {
+    overline: T("Opciones de viaje del Gran Sur de Marruecos y Medio Atlas desde Fez hasta Marrakech", "Grand South + Middle Atlas options from Fez to Marrakech", "Options Grand Sud + Moyen Atlas, Fès à Marrakech"),
+    title: T("Elige tu travesía.", "Choose your route.", "Choisissez votre itinéraire."),
+    body: T(
+      "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      "Pick between the options depending on how many days you have for this journey.",
+      "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    ),
+    group_a: T("Fez → Sidi Ali → Marrakech", "Fez → Sidi Ali → Marrakech", "Fès → Sidi Ali → Marrakech"),
+    group_b: T("Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fès"),
+  },
+  programs: [
+    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Marrakech") },
+    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Fez","Marrakech") },
+    { id: "fsm-9-10", direction: "a", nights: "9n10d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(9,10)("Fez","Marrakech") },
+    { id: "msf-7-8",  direction: "b", nights: "7n8d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Marrakech","Fez") },
+    { id: "msf-8-9",  direction: "b", nights: "8n9d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Marrakech","Fez") },
+    { id: "msf-9-10", direction: "b", nights: "9n10d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(9,10)("Marrakech","Fez") },
+  ],
+};
+
+export const HUB_GRANSUR_OUARZA_FEZ = {
+  id: "gransur-ouarzazate-sidiali-fez",
+  hero: {
+    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    place: T("Ouarzazate · Alto Atlas · Sahara · Sidi Ali · Fez", "Ouarzazate · High Atlas · Sahara · Sidi Ali · Fez", "Ouarzazate · Haut Atlas · Sahara · Sidi Ali · Fès"),
+    title: T("Alto Atlas – Desierto – Fez.", "High Atlas – Desert – Fez.", "Haut Atlas – Désert – Fès."),
+    subtitle: T(
+      "De las cumbres del Atlas al laberinto de Fez, atravesando el Sahara y el oasis alpino de Sidi Ali.",
+      "From the Atlas summits to the labyrinth of Fez, crossing the Sahara and the Sidi Ali alpine oasis.",
+      "Des sommets de l'Atlas au labyrinthe de Fès, en traversant le Sahara et l'oasis alpine de Sidi Ali.",
+    ),
+  },
+  intro: {
+    overline: T("Ouarzazate – Sidi Ali – Fez", "Ouarzazate – Sidi Ali – Fez", "Ouarzazate – Sidi Ali – Fès"),
+    title: T("Una ruta inversa, del Atlas hacia el norte imperial.", "A reverse route, from the Atlas to the imperial north.", "Un itinéraire inversé, de l'Atlas vers le nord impérial."),
+    body: {
+      es: [
+        "La ruta arranca en Ouarzazate, capital del cine y puerta del Sahara, y se adentra en la ruta de las mil kasbahs hasta el Erg Chebbi.",
+        "Tras la noche en el desierto, ascendemos al Medio Atlas con parada obligada en el lago Aguelmame Sidi Ali y el bosque de cedros gigantes.",
+        "El viaje culmina en Fez, donde la medina viva más grande del mundo nos espera con sus zocos, sus tenerías y sus madrasas.",
+      ],
+      en: [
+        "The route starts in Ouarzazate, capital of cinema and gateway to the Sahara, threading the route of a thousand kasbahs to the Erg Chebbi.",
+        "After the desert night, we climb into the Middle Atlas with a mandatory stop at the Aguelmame Sidi Ali lake and the giant cedar forest.",
+        "The journey culminates in Fez, where the world's largest living medina awaits with its souks, tanneries and madrasas.",
+      ],
+      fr: [
+        "L'itinéraire débute à Ouarzazate, capitale du cinéma et porte du Sahara, et s'engage sur la route des mille kasbahs jusqu'à l'Erg Chebbi.",
+        "Après la nuit au désert, nous montons dans le Moyen Atlas avec un arrêt obligatoire au lac Aguelmame Sidi Ali et à la forêt de cèdres géants.",
+        "Le voyage culmine à Fès, où la plus grande médina vivante au monde nous attend avec ses souks, ses tanneries et ses médersas.",
+      ],
+    },
+  },
+  options: {
+    overline: T("Opciones de viaje del Alto Atlas desde Ouarzazate hasta Fez", "High Atlas options from Ouarzazate to Fez", "Options Haut Atlas, Ouarzazate à Fès"),
+    title: T("Elige tu travesía.", "Choose your route.", "Choisissez votre itinéraire."),
+    body: T(
+      "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      "Pick between the options depending on how many days you have for this journey.",
+      "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    ),
+    group_a: T("Ouarzazate → Sidi Ali → Fez", "Ouarzazate → Sidi Ali → Fez", "Ouarzazate → Sidi Ali → Fès"),
+    group_b: T("Fez → Sidi Ali → Ouarzazate", "Fez → Sidi Ali → Ouarzazate", "Fès → Sidi Ali → Ouarzazate"),
+  },
+  programs: [
+    { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(5,6)("Ouarzazate","Fez") },
+    { id: "of-6-7", direction: "a", nights: "6n7d", accent: "#D97742", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Ouarzazate","Fez") },
+    { id: "of-7-8", direction: "a", nights: "7n8d", accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Ouarzazate","Fez") },
+    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(5,6)("Fez","Ouarzazate") },
+    { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Fez","Ouarzazate") },
+    { id: "fo-7-8", direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Ouarzazate") },
+  ],
+};
+
+export const HUB_GRANSUR_TANGER_RAK = {
+  id: "gransur-tanger-rak",
+  hero: {
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    place: T("Tánger · Chefchaouen · Fez · Sahara · Marrakech", "Tangier · Chefchaouen · Fez · Sahara · Marrakech", "Tanger · Chefchaouen · Fès · Sahara · Marrakech"),
+    title: T("Tánger – Marrakech.", "Tangier – Marrakech.", "Tanger – Marrakech."),
+    subtitle: T(
+      "Del Mediterráneo al desierto y del azul de Chefchaouen al rojo de Marrakech — la travesía más larga y completa.",
+      "From the Mediterranean to the desert, from Chefchaouen blue to Marrakech red — the longest, most complete crossing.",
+      "De la Méditerranée au désert, du bleu de Chefchaouen au rouge de Marrakech — la traversée la plus longue et complète.",
+    ),
+  },
+  intro: {
+    overline: T("Tánger – Marrakech", "Tangier – Marrakech", "Tanger – Marrakech"),
+    title: T("La travesía total: norte, desierto y sur.", "The total crossing: north, desert and south.", "La traversée totale : nord, désert et sud."),
+    body: {
+      es: [
+        "Una travesía completa que recorre Marruecos de norte a sur por la mítica ruta de las mil kasbahs.",
+        "Comenzamos en Tánger, cruce de civilizaciones; continuamos hasta Chefchaouen, el pueblo azul del Rif, y descendemos a Fez para sumergirnos en la medina más antigua del mundo árabe.",
+        "Después del Medio Atlas y el cedro gigante, el desierto del Erg Chebbi nos regala una noche bajo las estrellas.",
+        "Cerramos en Marrakech, la ciudad roja, tras atravesar las gargantas del Todra, el Dades, Aït Benhaddou y el Alto Atlas por Tizi n'Tichka.",
+      ],
+      en: [
+        "A full crossing of Morocco from north to south along the mythical route of a thousand kasbahs.",
+        "We begin in Tangier, crossroads of civilisations; continue to Chefchaouen, the blue town of the Rif, and descend to Fez to enter the oldest medina in the Arab world.",
+        "After the Middle Atlas and giant cedars, the Erg Chebbi desert grants us a night under the stars.",
+        "We close in Marrakech, the red city, after crossing the Todra and Dades gorges, Aït Benhaddou and the High Atlas via Tizi n'Tichka.",
+      ],
+      fr: [
+        "Une traversée complète du Maroc, du nord au sud, par la mythique route des mille kasbahs.",
+        "Nous commençons à Tanger, carrefour des civilisations ; continuons jusqu'à Chefchaouen, la ville bleue du Rif, et descendons à Fès pour plonger dans la plus ancienne médina du monde arabe.",
+        "Après le Moyen Atlas et les cèdres géants, le désert de l'Erg Chebbi nous offre une nuit sous les étoiles.",
+        "Nous terminons à Marrakech, la ville rouge, après les gorges du Todra et du Dadès, Aït Benhaddou et le Haut Atlas par Tizi n'Tichka.",
+      ],
+    },
+  },
+  options: {
+    overline: T("Opciones de viaje de la ruta de las mil kasbahs desde Tánger hasta Marrakech", "Route of a thousand kasbahs options from Tangier to Marrakech", "Options route des mille kasbahs, Tanger à Marrakech"),
+    title: T("Elige tu travesía.", "Choose your route.", "Choisissez votre itinéraire."),
+    body: T(
+      "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      "Pick between the options depending on how many days you have for this journey.",
+      "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    ),
+    group_a: T("Tánger → Marrakech", "Tangier → Marrakech", "Tanger → Marrakech"),
+  },
+  programs: [
+    { id: "tr-8-9",  direction: "a", nights: "8n9d",  accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_KASBAH(8,9)("Tánger","Marrakech") },
+    { id: "tr-9-10", direction: "a", nights: "9n10d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_KASBAH(9,10)("Tánger","Marrakech") },
+  ],
+};

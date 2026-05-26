@@ -46,7 +46,7 @@ const COPY = {
       body: "Del Alto Atlas a las dunas del Erg Chebbi, pasando por el Atlántico de Essaouira — cuatro circuitos diseñados para descubrir el alma del sur de Marruecos.",
       cta: "Ver circuito",
     },
-    block: { cta_request: "Solicitar viaje", cta_info: "Más información" },
+    block: { cta_request: "Ver opciones de viaje", cta_info: "Más información" },
     why: {
       overline: "Razones para viajar con Xaluca Tours",
       title: "Cuatro razones que marcan la diferencia.",
@@ -96,7 +96,7 @@ const COPY = {
       body: "From the High Atlas to the Erg Chebbi dunes, by way of Essaouira's Atlantic — four circuits to discover the soul of southern Morocco.",
       cta: "See circuit",
     },
-    block: { cta_request: "Request journey", cta_info: "More info" },
+    block: { cta_request: "View travel options", cta_info: "More info" },
     why: {
       overline: "Reasons to travel with Xaluca Tours",
       title: "Four reasons that make the difference.",
@@ -146,7 +146,7 @@ const COPY = {
       body: "Du Haut Atlas aux dunes de l'Erg Chebbi, en passant par l'Atlantique d'Essaouira — quatre circuits pour découvrir l'âme du sud du Maroc.",
       cta: "Voir le circuit",
     },
-    block: { cta_request: "Demander ce voyage", cta_info: "Plus d'infos" },
+    block: { cta_request: "Voir les options", cta_info: "Plus d'infos" },
     why: {
       overline: "Pourquoi voyager avec Xaluca Tours",
       title: "Quatre raisons qui font la différence.",
