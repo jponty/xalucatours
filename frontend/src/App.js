@@ -33,6 +33,10 @@ import GransurFezSidialiRakHubPage from "@/pages/GransurFezSidialiRakHubPage";
 import GransurOuarzaFezHubPage from "@/pages/GransurOuarzaFezHubPage";
 import GransurTangerRakHubPage from "@/pages/GransurTangerRakHubPage";
 import FezMarrakech910Page from "@/pages/FezMarrakech910Page";
+import MarrakechFez67Page from "@/pages/MarrakechFez67Page";
+import MarrakechFez78Page from "@/pages/MarrakechFez78Page";
+import MarrakechFez89Page from "@/pages/MarrakechFez89Page";
+import MarrakechFez910Page from "@/pages/MarrakechFez910Page";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
@@ -62,6 +66,10 @@ const LocalizedRouter = () => {
   if (routeId === "tourGransurOuarzaFez")  return <GransurOuarzaFezHubPage />;
   if (routeId === "tourGransurTangerRak")  return <GransurTangerRakHubPage />;
   if (routeId === "tourFezRak910")         return <FezMarrakech910Page />;
+  if (routeId === "tourMarrakechFez67")    return <MarrakechFez67Page />;
+  if (routeId === "tourMarrakechFez78")    return <MarrakechFez78Page />;
+  if (routeId === "tourMarrakechFez89")    return <MarrakechFez89Page />;
+  if (routeId === "tourMarrakechFez910")   return <MarrakechFez910Page />;
   if (routeId === "tourDesiertoAtlas67")  return <DesiertoAtlas67Page />;
   if (routeId === "tourDesiertoAtlas56")  return <DesiertoAtlas56Page />;
   if (routeId === "tourDesiertoAtlas45")  return <DesiertoAtlas45Page />;

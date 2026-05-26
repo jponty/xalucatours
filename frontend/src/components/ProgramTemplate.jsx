@@ -12,6 +12,7 @@ import { SHARED_SEASONS, SHARED_DETAILS } from "@/lib/programData";
 import { DayRouteMap } from "@/components/DayRouteMap";
 import { DayGallery } from "@/components/DayGallery";
 import { TripOverview } from "@/components/TripOverview";
+import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 
 /* ============================================================
@@ -75,6 +76,60 @@ const VARIANT_COPY = {
         "L'itinéraire commence à Erfoud, « porte du désert », d'où nous pénétrons dans le Sahara en 4x4 avec chauffeur.",
         "Les traditions ancestrales, les marchés, les couleurs du désert et une nuit sous les étoiles rendent cette expérience inoubliable.",
         "Nous poursuivons ensuite vers la cordillère du Haut Atlas, traversant vallées, gorges et villages imazighen où le temps semble s'être arrêté.",
+      ],
+    },
+  },
+  // Marrakech → Fez (Gran Sur · reverse)
+  frm: {
+    es: {
+      title: "Marrakech · Erg Chebbi · Fez.",
+      eyebrow_prefix: "Circuito Gran Sur · Marrakech → Fez",
+      place: "Marrakech · Alto Atlas · Erg Chebbi · Medio Atlas · Fez",
+      subtitle: "De la ciudad roja al laberinto de Fez, cruzando el Atlas, el Sahara y el bosque de cedros.",
+      hero_image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+      airports: "Entrada Marrakech · Salida Fez",
+      quick_airports: "Marrakech / Fez",
+      quick_places: "Marrakech · Aït Ben Haddou · Ouarzazate · Boumalne Dades · Tinerhir · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Ifrane · Fez",
+      highlights: "Djemaa el-Fna · Aït Ben Haddou · Erg Chebbi · Cedros · Medina UNESCO",
+      description_title: "De la ciudad roja al laberinto de Fez.",
+      description: [
+        "«Gran Sur de Marruecos» es un viaje auténtico pensado para descubrir en profundidad el sur del país. La ruta en 4x4 comienza en Marrakech, una ciudad vibrante, llena de color, salpicada de artesanos y artistas, plazas maravillosas y aromas que quedarán grabados en nuestra memoria.",
+        "Desde la ciudad, nos adentraremos en el Alto Atlas, dejando atrás sus paisajes montañosos para alcanzar el imponente Desierto del Erg Chebbi, un espectáculo para los sentidos. Las interminables dunas y la magia que envuelve estos lugares nos regalarán una noche inolvidable bajo las estrellas.",
+        "El camino nos llevará por rincones únicos como los poblados de Rissani, con su mercado ancestral, o Ifrane, conocida como «la pequeña Suiza», rodeada de bosques de cedros gigantes, hasta llegar a Fez, cuya medina es considerada una joya del mundo árabe: un precioso laberinto donde perderse y encontrar ese recuerdo especial de Marruecos.",
+      ],
+    },
+    en: {
+      title: "Marrakech · Erg Chebbi · Fez.",
+      eyebrow_prefix: "Grand South circuit · Marrakech → Fez",
+      place: "Marrakech · High Atlas · Erg Chebbi · Middle Atlas · Fez",
+      subtitle: "From the red city to the labyrinth of Fez, crossing the Atlas, the Sahara and the cedar forest.",
+      hero_image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+      airports: "In Marrakech · Out Fez",
+      quick_airports: "Marrakech / Fez",
+      quick_places: "Marrakech · Aït Ben Haddou · Ouarzazate · Boumalne Dades · Tinerhir · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Ifrane · Fez",
+      highlights: "Jemaa el-Fna · Aït Ben Haddou · Erg Chebbi · Cedars · UNESCO medina",
+      description_title: "From the red city to the labyrinth of Fez.",
+      description: [
+        "«Grand South of Morocco» is an authentic journey to discover the south of the country in depth. The 4x4 route begins in Marrakech, a vibrant city full of colour, sprinkled with artisans and artists, marvellous squares and aromas that will linger in our memory.",
+        "From the city we head into the High Atlas, leaving its mountain landscapes behind to reach the imposing Erg Chebbi desert — a feast for the senses. The endless dunes and the magical halo of these places will give us an unforgettable night under the stars.",
+        "The road takes us through unique places such as Rissani with its ancestral market, or Ifrane — «little Switzerland» — surrounded by giant cedar forests, all the way to Fez, whose medina is a jewel of the Arab world: a beautiful labyrinth in which to get lost and find that special memory of Morocco.",
+      ],
+    },
+    fr: {
+      title: "Marrakech · Erg Chebbi · Fès.",
+      eyebrow_prefix: "Circuit Grand Sud · Marrakech → Fès",
+      place: "Marrakech · Haut Atlas · Erg Chebbi · Moyen Atlas · Fès",
+      subtitle: "De la ville rouge au labyrinthe de Fès, en traversant l'Atlas, le Sahara et la forêt de cèdres.",
+      hero_image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+      airports: "Arrivée Marrakech · Sortie Fès",
+      quick_airports: "Marrakech / Fès",
+      quick_places: "Marrakech · Aït Ben Haddou · Ouarzazate · Boumalne Dadès · Tinerhir · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Ifrane · Fès",
+      highlights: "Jemaa el-Fna · Aït Ben Haddou · Erg Chebbi · Cèdres · Médina UNESCO",
+      description_title: "De la ville rouge au labyrinthe de Fès.",
+      description: [
+        "« Grand Sud du Maroc » est un voyage authentique conçu pour découvrir en profondeur le sud du pays. L'itinéraire en 4x4 commence à Marrakech, ville vibrante et colorée, parsemée d'artisans et d'artistes, aux places merveilleuses et aux parfums qui marqueront notre mémoire.",
+        "Depuis la ville, nous entrons dans le Haut Atlas, laissant derrière nous ses paysages montagneux pour rejoindre l'imposant désert de l'Erg Chebbi, un spectacle pour les sens. Les dunes infinies et le halo magique de ces lieux nous offriront une nuit inoubliable sous les étoiles.",
+        "La route nous mène par des lieux uniques comme Rissani avec son marché ancestral, ou Ifrane — « la petite Suisse » — entourée de forêts de cèdres géants, jusqu'à Fès, dont la médina est un joyau du monde arabe : un magnifique labyrinthe pour se perdre et trouver ce souvenir spécial du Maroc.",
       ],
     },
   },
@@ -240,7 +295,7 @@ const LABELS = {
     quick_overline: "Quick facts", quick_title: "The essentials.",
     card_duration: "Duration", card_places: "Places", card_airports: "Airports",
     card_type: "Type", card_experiences: "Experiences",
-    type_da: "Desert + Atlas", type_ad: "Atlas + Desert", type_frz: "Fez · Erg Chebbi · Marrakech",
+    type_da: "Desert + Atlas", type_ad: "Atlas + Desert", type_frz: "Fez · Erg Chebbi · Marrakech", type_frm: "Marrakech · Erg Chebbi · Fez",
     experiences_value: "4x4 · camels · bivouac · Berber villages · gorges · oases",
     itinerary_overline: "Full itinerary", itinerary_title: "Day by day, no shortcuts.",
     culture_label: "Cultural highlights", wellness_label: "Hotel wellness",
@@ -269,7 +324,7 @@ const LABELS = {
     quick_overline: "Infos rapides", quick_title: "L'essentiel.",
     card_duration: "Durée", card_places: "Lieux", card_airports: "Aéroports",
     card_type: "Type", card_experiences: "Expériences",
-    type_da: "Désert + Atlas", type_ad: "Atlas + Désert", type_frz: "Fès · Erg Chebbi · Marrakech",
+    type_da: "Désert + Atlas", type_ad: "Atlas + Désert", type_frz: "Fès · Erg Chebbi · Marrakech", type_frm: "Marrakech · Erg Chebbi · Fès",
     experiences_value: "4x4 · dromadaires · bivouac · villages berbères · gorges · oasis",
     itinerary_overline: "Itinéraire complet", itinerary_title: "Jour après jour.",
     culture_label: "Points culturels", wellness_label: "Bien-être à l'hôtel",
@@ -374,7 +429,7 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
     { Icon: Clock,    label: t.card_duration,   value: pick(program.duration, lang) },
     { Icon: MapPin,   label: t.card_places,     value: vt.quick_places },
     { Icon: Plane,    label: t.card_airports,   value: vt.quick_airports },
-    { Icon: Mountain, label: t.card_type,       value: variant === "frz" ? (t.type_frz || "Fez · Erg Chebbi · Marrakech") : (variant === "ad" ? t.type_ad : t.type_da) },
+    { Icon: Mountain, label: t.card_type,       value: variant === "frz" ? (t.type_frz || "Fez · Erg Chebbi · Marrakech") : variant === "frm" ? (t.type_frm || "Marrakech · Erg Chebbi · Fez") : (variant === "ad" ? t.type_ad : t.type_da) },
     { Icon: Sparkles, label: t.card_experiences,value: t.experiences_value },
   ];
   return (
@@ -675,6 +730,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
     <div data-testid={`program-page-${program.duration_key}`}>
       <ProgramHero vt={vt} t={t} program={program} lang={lang} />
       <StickyNav items={navItems} testid="program-nav" />
+      {program.route && <TripRouteMap route={program.route} />}
       <Description vt={vt} t={t} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <Itinerary t={t} lang={lang} days={program.days} />

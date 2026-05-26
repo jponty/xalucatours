@@ -355,6 +355,19 @@ export const PROGRAM_FRZ_910 = {
   duration_key: "frz9n10d",
   duration: T("9 noches / 10 días", "9 nights / 10 days", "9 nuits / 10 jours"),
   prices: { low: 2490, mid: 2790, high: 3090, premium: 3490 },
+  // Global route — one anchor stop per day, drawn as a connected polyline on a mini-map after the hero
+  route: [
+    { day: 1, lat: 34.0651, lng: -4.9760, type: "city",   name: T("Fez · Llegada", "Fez · Arrival", "Fès · Arrivée") },
+    { day: 2, lat: 31.4373, lng: -4.2330, type: "city",   name: T("Erfoud · Kasbah Xaluca", "Erfoud · Kasbah Xaluca", "Erfoud · Kasbah Xaluca") },
+    { day: 3, lat: 31.1257, lng: -3.9789, type: "desert", name: T("Erg Chebbi · Bivouac", "Erg Chebbi · Bivouac", "Erg Chebbi · Bivouac") },
+    { day: 4, lat: 31.1010, lng: -4.0030, type: "kasbah", name: T("Kasbah Tombouctou", "Kasbah Tombouctou", "Kasbah Tombouctou") },
+    { day: 5, lat: 31.2828, lng: -4.2683, type: "market", name: T("Rissani · Kasbah Xaluca", "Rissani · Kasbah Xaluca", "Rissani · Kasbah Xaluca") },
+    { day: 6, lat: 31.3582, lng: -5.9911, type: "gorge",  name: T("Boumalne Dadès · Todra", "Boumalne Dades · Todra", "Boumalne Dadès · Todra") },
+    { day: 7, lat: 31.4900, lng: -5.7950, type: "gorge",  name: T("Gargantas del M'Goun", "M'Goun Gorges", "Gorges du M'Goun") },
+    { day: 8, lat: 31.0470, lng: -7.1294, type: "unesco", name: T("Aït Ben Haddou · Tichka", "Aït Ben Haddou · Tichka", "Aït Ben Haddou · Tichka") },
+    { day: 9, lat: 31.6295, lng: -7.9811, type: "city",   name: T("Marrakech · Medina", "Marrakech · Medina", "Marrakech · Médina") },
+    { day:10, lat: 31.6069, lng: -8.0363, type: "airport",name: T("Marrakech · Aeropuerto", "Marrakech · Airport", "Marrakech · Aéroport") },
+  ],
   days: [
     DAY_01_ARRIVAL_FEZ,
     DAY_02_FEZ_MEDIO_ATLAS_ERFOUD,
