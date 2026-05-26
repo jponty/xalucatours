@@ -10,15 +10,46 @@ export const Header = () => {
   const { t, lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    const SCROLL_THRESHOLD = 12; // px movement required to flip direction
+    const TOP_OFFSET = 24;       // header always visible above this Y
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+      const y = window.scrollY;
+      setScrolled(y > TOP_OFFSET);
+
+      const delta = y - lastY;
+      if (y <= TOP_OFFSET) {
+        // Always visible near the top
+        setHidden(false);
+      } else if (Math.abs(delta) > SCROLL_THRESHOLD) {
+        setHidden(delta > 0); // scroll down → hide, scroll up → show
+        lastY = y;
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Keep header visible while side menu is open so the close button stays reachable
+  const isHeaderHidden = hidden && !open;
 
   const onEnquireClick = (e) => {
     e.preventDefault();
@@ -35,7 +66,11 @@ export const Header = () => {
     <>
       <header
         data-testid="site-header"
-        className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${
+        aria-hidden={isHeaderHidden}
+        style={{ willChange: "transform" }}
+        className={`fixed top-0 inset-x-0 z-40 transform-gpu transition-[transform,background-color,backdrop-filter,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isHeaderHidden ? "-translate-y-full" : "translate-y-0"
+        } ${
           scrolled
             ? "bg-[#FDFBF7]/92 backdrop-blur-xl backdrop-saturate-150 border-b border-[#2C2621]/12 shadow-[0_10px_30px_-22px_rgba(26,21,19,0.35)]"
             : "bg-[#FDFBF7]/55 backdrop-blur-md backdrop-saturate-150 border-b border-[#FDFBF7]/15 shadow-[0_1px_0_rgba(44,38,33,0.05)]"
