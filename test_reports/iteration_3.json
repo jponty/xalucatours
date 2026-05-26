@@ -1,0 +1,34 @@
+{
+  "summary": "Iteration 3 — Premium /viajes ToursLandingPage + full Spanish-at-root route restructure. Backend regression (10/10 pytest on test_contact_api.py) re-passed. Frontend: every requested behaviour verified via Playwright on the public REACT_APP_BACKEND_URL with localStorage cleared. GET / loads in Spanish with no /es prefix and document.documentElement.lang === 'es'. GET /viajes renders [data-testid=tours-landing-page] containing all 8 sections (viajes-hero / -intro / -aventura / -descubre / -categorias / -proximas / -asesoramiento / -contact-intro) plus the embedded ContactForm. Hero <h1> reads exactly 'Viajes por Marruecos'. The Categorías grid renders 4 cards (categoria-card-south/full/short/north) with correct hrefs (/viajes/surdemarruecos, /viajes/marruecos, /viajes/escapadas, /viajes/nortedemarruecos); clicking the south card navigates to /viajes/surdemarruecos and shows [data-testid=stub-page-tourSouth]. Próximas section shows 4 proxima-card-{0..3} with dates (28 Mar — 04 Abr, 12 Jul — 23 Jul, 10 Oct — 21 Oct, 27 Dic — 03 Ene) and 'plazas'. Asesoramiento section has 3 glass cards (asesoramiento-card-0..2). Aventura section has 3 cards. The embedded ContactForm POSTs to /api/contact-requests successfully (network capture confirmed) and shows the success state 'Gracias — te responderemos en 24 horas.'. /catalogo serves the same ToursLandingPage. All 16 direct-visit routes return 200 with Spanish content: /citaprevia, /viajes, /viajes/surdemarruecos, /viajes/marruecos, /viajes/escapadas, /viajes/nortedemarruecos, /viajes/aventura, /proximas_salidas, /viajesamedida, /equipo, /quehacemos, /que-ver-en-Marruecos, /incentivos, /marruecos, /contacto, /catalogo. Language switching round-trips on /viajes/surdemarruecos: ES→/en/tours/southern-morocco, EN→/fr/voyages/sud-du-maroc, FR→/viajes/surdemarruecos. On /viajes: ES→/en/tours and EN→/fr/voyages. Side menu opens via header-menu-button; expanding tours→catalog reveals the 7 leaves (all, south, full, short, north, departures, adventure); about-cluster expands to {team, wwd, wts, events} with NO hotels item. Clicking menu-link-departures navigates to /proximas_salidas and renders stub-page-upcomingDepartures; menu-link-team navigates to /equipo. Footer 'Planificar mi viaje' on /equipo points to /contacto (Spanish slug). Unknown URL /random-doesnt-exist redirects to /. Zero console errors observed across navigations.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "FloatingLanguageSwitcher (bottom-left, z-30) vs SideMenu drawer (z-60)", "issues": ["Carry-over from iteration 2 — still applicable: the language switcher is covered by the open side-menu drawer. Tests close the menu before switching language. Consider raising z-index or mirroring lang buttons inside the drawer."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_contact_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional UX) — Lift FloatingLanguageSwitcher above the SideMenu drawer or render language buttons inside the drawer."
+  ],
+  "critical_code_review_comments": [
+    "ToursLandingPage.jsx is 868 lines — consider splitting each cinematic section into its own file under /components/tours-landing/* (Hero.jsx, EditorialIntro.jsx, Aventura.jsx, …) to keep files <700 LOC.",
+    "ToursLandingPage.jsx hard-codes Unsplash image URLs inline in three cards arrays — extracting them into /lib/data.js would let translators or designers swap imagery without touching JSX.",
+    "Trilingual COPY object is colocated with the page — fine for one page, but if more landing pages adopt this pattern consider moving copy to /lib/copy/<route>.<lang>.json to keep components tight.",
+    "Proxima cards render a {d.spots <= 2} 'Últimas plazas' badge — the threshold is a magic number; would be cleaner as a named constant.",
+    "Spanish slug /que-ver-en-Marruecos contains a capital M — most URL conventions prefer lowercase; consider /que-ver-en-marruecos with a 301 redirect from the capitalised form for SEO consistency.",
+    "App.js uses a single catch-all <Route path='*'> that delegates everything to LocalizedRouter — clean and idiomatic for the new model; the legacy 'allPaths' approach noted in iteration 2 is gone (good)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100% (10/10 pytest)", "frontend": "100% — 19/19 of the requested behaviours verified" },
+  "test_credentials": "N/A — no auth in this app",
+  "seed_data_creation": "One TEST_-prefixed contact request was created during the /viajes form-submission test (full_name='TEST_Iteration3 User'). Pre-existing iteration-1/2 TEST_ rows are still in MongoDB.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Spanish lives at the root (no /es prefix). The ToursLandingPage embeds a working ContactForm whose data-testids are: contact-form, contact-input-name, contact-input-email, contact-input-phone, contact-input-dates, contact-input-party, contact-select-journey, contact-input-message, contact-submit-button. After a successful submit the entire form is REPLACED by the success state — querying contact-form after submission will time out. When sequencing side-menu interactions, expanding one cluster (e.g. about-cluster) while another is still open can produce a fast DOM re-layout — give 400ms+ between toggle clicks and 1500ms after a menu-link click. Confirmed via isolated retest that menu-link-departures → /proximas_salidas works correctly. localStorage key for language persistence is 'xaluca-tours-lang' — clear it before testing default-language. The language switcher (z-30, bottom-left) is still occluded by the SideMenu drawer (z-60).",
+  "rca of the issue": "No production bugs. One test artefact observed initially — chaining menu-toggle-catalog → menu-toggle-about-cluster → menu-link-departures inside one rapid sequence resulted in a click on /, but isolating the click (open menu → expand tours → expand catalog → click menu-link-departures) navigated to /proximas_salidas correctly. Mitigation: insert waits between toggle clicks in Playwright; product code is correct."
+}

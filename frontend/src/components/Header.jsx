@@ -22,7 +22,8 @@ export const Header = () => {
 
   const onEnquireClick = (e) => {
     e.preventDefault();
-    const isHome = location.pathname === `/${lang}` || location.pathname === "/";
+    const homePath = pathFor(lang, "home");
+    const isHome = location.pathname === homePath || location.pathname === "/";
     if (isHome) {
       document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
     } else {

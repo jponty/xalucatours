@@ -1,5 +1,4 @@
-// Side-menu data — Spanish-first nav per the brief, with trilingual labels.
-// Each leaf is either { routeId } (resolves to a URL) or { anchor } (scrolls within home).
+// Side-menu data — Spanish-first nav (no /es/ prefix in the URL, since ES is primary market).
 
 export const MENU_TREE = [
   {
@@ -18,15 +17,16 @@ export const MENU_TREE = [
     children: [
       {
         id: "catalog",
+        routeId: "catalog",
         label: { es: "Catálogo", en: "Catalogue", fr: "Catalogue" },
         children: [
-          { id: "all",       routeId: "tourAll",       label: { es: "Todos los viajes",       en: "All tours",        fr: "Tous les voyages" } },
-          { id: "south",     routeId: "tourSouth",     label: { es: "Sur de Marruecos",       en: "Southern Morocco", fr: "Sud du Maroc" } },
-          { id: "full",      routeId: "tourFull",      label: { es: "Marruecos al completo",  en: "Full Morocco",     fr: "Maroc intégral" } },
-          { id: "short",     routeId: "tourShort",     label: { es: "Escapadas cortas",       en: "Short escapes",    fr: "Escapades courtes" } },
-          { id: "north",     routeId: "tourNorth",     label: { es: "Norte de Marruecos",     en: "Northern Morocco", fr: "Nord du Maroc" } },
-          { id: "featured",  routeId: "tourFeatured",  label: { es: "Viajes destacados",      en: "Featured tours",   fr: "Voyages phares" } },
-          { id: "adventure", routeId: "tourAdventure", label: { es: "Aventura",               en: "Adventure",        fr: "Aventure" } },
+          { id: "all",        routeId: "toursLanding",       label: { es: "Todos los viajes",     en: "All tours",           fr: "Tous les voyages" } },
+          { id: "south",      routeId: "tourSouth",          label: { es: "Sur de Marruecos",     en: "Southern Morocco",    fr: "Sud du Maroc" } },
+          { id: "full",       routeId: "tourFull",           label: { es: "Marruecos al completo",en: "Full Morocco",        fr: "Maroc intégral" } },
+          { id: "short",      routeId: "tourShort",          label: { es: "Escapadas cortas",     en: "Short escapes",       fr: "Escapades courtes" } },
+          { id: "north",      routeId: "tourNorth",          label: { es: "Norte de Marruecos",   en: "Northern Morocco",    fr: "Nord du Maroc" } },
+          { id: "departures", routeId: "upcomingDepartures", label: { es: "Próximas salidas",     en: "Upcoming departures", fr: "Prochains départs" } },
+          { id: "adventure",  routeId: "tourAdventure",      label: { es: "Aventura",             en: "Adventure",           fr: "Aventure" } },
         ],
       },
       {
@@ -40,16 +40,11 @@ export const MENU_TREE = [
     id: "about-cluster",
     label: { es: "Sobre nosotros", en: "About us", fr: "À propos" },
     children: [
-      { id: "about",     routeId: "about",     label: { es: "Sobre nosotros",         en: "About us",             fr: "À propos" } },
-      { id: "wwd",       routeId: "whatWeDo",  label: { es: "¿Qué hacemos?",          en: "What we do",           fr: "Ce que nous faisons" } },
-      { id: "wts",       routeId: "whatToSee", label: { es: "¿Qué ver en Marruecos?", en: "What to see in Morocco", fr: "Que voir au Maroc" } },
-      { id: "events",    routeId: "events",    label: { es: "Eventos & incentivos",   en: "Events & incentives",  fr: "Événements & incentives" } },
+      { id: "team",   routeId: "about",     label: { es: "Equipo",                 en: "The team",             fr: "L'équipe" } },
+      { id: "wwd",    routeId: "whatWeDo",  label: { es: "¿Qué hacemos?",          en: "What we do",           fr: "Ce que nous faisons" } },
+      { id: "wts",    routeId: "whatToSee", label: { es: "¿Qué ver en Marruecos?", en: "What to see in Morocco", fr: "Que voir au Maroc" } },
+      { id: "events", routeId: "events",    label: { es: "Incentivos",             en: "Incentives",            fr: "Incentives" } },
     ],
-  },
-  {
-    id: "hotels",
-    routeId: "hotels",
-    label: { es: "Nuestros hoteles", en: "Our hotels", fr: "Nos hôtels" },
   },
   {
     id: "morocco",
