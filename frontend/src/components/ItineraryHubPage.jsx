@@ -117,7 +117,7 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                 {items.map((p) => (
                   <Link
                     key={p.id}
-                    to={ctaTarget}
+                    to={p.link ? pathFor(lang, p.link) : ctaTarget}
                     data-testid={`hub-program-${p.id}`}
                     className="group relative block overflow-hidden h-[440px]"
                   >

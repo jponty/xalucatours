@@ -27,6 +27,7 @@ export const ROUTES = {
   tourUpcoming:       { es: "proximas_salidas", en: "upcoming-departures", fr: "prochains-departs" },
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },
   tourGransurFezRak:      { es: "viajes/gransur/fez-rak",            en: "tours/grand-south/fez-marrakech",            fr: "voyages/grand-sud/fes-marrakech" },
+  tourFezRak910:          { es: "viajes/gransur/fez_marrakech/programa_9n_10d", en: "tours/grand-south/fez-marrakech/program-9n-10d", fr: "voyages/grand-sud/fes-marrakech/programme-9n-10j" },
   tourGransurFezSidiali:  { es: "viajes/gransur/fez-sidiali-rak",     en: "tours/grand-south/fez-sidi-ali-marrakech",   fr: "voyages/grand-sud/fes-sidi-ali-marrakech" },
   tourGransurOuarzaFez:   { es: "viajes/gransur/ouarzazate-sidiali-fez", en: "tours/grand-south/ouarzazate-sidi-ali-fez", fr: "voyages/grand-sud/ouarzazate-sidi-ali-fes" },
   tourGransurTangerRak:   { es: "viajes/gransur/tanger-rak",          en: "tours/grand-south/tangier-marrakech",        fr: "voyages/grand-sud/tanger-marrakech" },

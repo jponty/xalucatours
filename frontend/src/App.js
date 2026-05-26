@@ -32,6 +32,7 @@ import GransurFezRakHubPage from "@/pages/GransurFezRakHubPage";
 import GransurFezSidialiRakHubPage from "@/pages/GransurFezSidialiRakHubPage";
 import GransurOuarzaFezHubPage from "@/pages/GransurOuarzaFezHubPage";
 import GransurTangerRakHubPage from "@/pages/GransurTangerRakHubPage";
+import FezMarrakech910Page from "@/pages/FezMarrakech910Page";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
@@ -60,6 +61,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourGransurFezSidiali") return <GransurFezSidialiRakHubPage />;
   if (routeId === "tourGransurOuarzaFez")  return <GransurOuarzaFezHubPage />;
   if (routeId === "tourGransurTangerRak")  return <GransurTangerRakHubPage />;
+  if (routeId === "tourFezRak910")         return <FezMarrakech910Page />;
   if (routeId === "tourDesiertoAtlas67")  return <DesiertoAtlas67Page />;
   if (routeId === "tourDesiertoAtlas56")  return <DesiertoAtlas56Page />;
   if (routeId === "tourDesiertoAtlas45")  return <DesiertoAtlas45Page />;

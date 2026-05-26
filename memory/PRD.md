@@ -35,6 +35,10 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 ### Program detail pages (universal `ProgramTemplate`)
 - `/viajes/desierto_atlas/programa_6n_7d`, `_5n_6d`, `_4n_5d`
 - `/viajes/atlas_desierto/programa_4n_5d`, `_5n_6d`, `_6n_7d`
+- `/viajes/gransur/fez_marrakech/programa_9n_10d` (Feb 2026 — variant `frz`, 10-day cinematic itinerary, linked from `fr-9-10` card in Fez–Marrakech Hub)
+
+### Hub cards now support per-card `link` prop
+`ItineraryHubPage` falls back to the global contact CTA when a program has no `link`, but jumps directly to the program detail page when `link` is set (used by `fr-9-10`).
 
 ## Backlog / P1
 - Build individual day-by-day pages for the new Marrakech↔ErgChebbi, Marrakech loop, Marrakech-Essaouira options (currently CTAs land on contact form)
