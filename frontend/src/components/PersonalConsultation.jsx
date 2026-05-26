@@ -1,0 +1,124 @@
+import React from "react";
+import { Phone, Calendar, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { CONTACT } from "@/lib/data";
+
+export const PersonalConsultation = () => {
+  const { t } = useLanguage();
+
+  return (
+    <section
+      data-testid="consultation-section"
+      className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden"
+    >
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
+          <div className="md:col-span-5 relative aspect-[4/5] overflow-hidden bg-[#F2EBE1] order-2 md:order-1">
+            <img
+              src="https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1400&q=85"
+              alt=""
+              loading="lazy"
+              className="ken-burns absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#1A1513]/35 via-transparent to-transparent" />
+          </div>
+
+          <div className="md:col-span-7 order-1 md:order-2">
+            <span className="overline">{t("consult_overline")}</span>
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
+              {t("consult_title")}
+            </h2>
+            <p className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed max-w-2xl">
+              {t("consult_body")}
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href={`tel:${CONTACT.phoneRaw}`}
+                data-testid="consult-cta-call"
+                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              >
+                <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
+                {t("cta_book_call")}
+              </a>
+              <a
+                href="#contact"
+                data-testid="consult-cta-visit"
+                className="inline-flex items-center gap-3 border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+              >
+                <Calendar className="w-3.5 h-3.5" strokeWidth={1.5} />
+                {t("cta_schedule_visit")}
+              </a>
+            </div>
+
+            <div className="mt-10 pt-8 border-t border-[#2C2621]/10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
+                  {t("office_hours_label")}
+                </p>
+                <p className="mt-2 text-sm text-[#2C2621]">{t("office_hours_value")}</p>
+              </div>
+              <div>
+                <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
+                  24/7
+                </p>
+                <p className="mt-2 text-sm text-[#2C2621]">{t("contact_24_7")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ---------------- Community CTA (dark cinematic) ---------------- */
+export const CommunityCTA = () => {
+  const { t } = useLanguage();
+  return (
+    <section
+      data-testid="community-cta-section"
+      className="relative overflow-hidden bg-[#1A1513] text-[#FDFBF7]"
+    >
+      <img
+        src="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
+        alt=""
+        loading="lazy"
+        className="ken-burns absolute inset-0 w-full h-full object-cover opacity-55"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/55 to-[#1A1513]/95" />
+      <div className="absolute inset-0 berber-bg-cross opacity-50" aria-hidden="true" />
+      <span className="film-grain" />
+
+      <div className="relative max-w-5xl mx-auto px-6 md:px-12 py-28 md:py-40 text-center">
+        <span className="overline text-[#D4A373]">{t("community_overline")}</span>
+        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5">
+          {t("community_title")}
+        </h2>
+        <p className="mt-8 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed max-w-3xl mx-auto">
+          {t("community_body")}
+        </p>
+        <div className="mt-12 flex flex-wrap justify-center gap-4">
+          <a
+            href="#contact"
+            data-testid="community-cta-plan"
+            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+          >
+            {t("cta_plan")}
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+          </a>
+          <a
+            href="#contact"
+            data-testid="community-cta-specialist"
+            className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+          >
+            {t("cta_contact_specialist")}
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default PersonalConsultation;

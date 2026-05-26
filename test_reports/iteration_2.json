@@ -1,0 +1,33 @@
+{
+  "summary": "Iteration 2 — Spanish default + lateral side menu + language-based URLs. Backend regression suite (10/10) re-passed against existing /api/contact-requests endpoint. Frontend: all 23 requested behaviours verified via Playwright on the public REACT_APP_BACKEND_URL after clearing localStorage. Root / redirects to /es, document.documentElement.lang === 'es', hero shows 'Viajes a Medida', side menu renders the 7 Spanish top-level items with correct data-testids, tours→catalog→leaves expand to 7 entries, about-cluster expands to 4 leaves, menu-link-south navigates to /es/viajes/sur-de-marruecos and the StubPage hero shows the Spanish overline 'Sur de Marruecos' plus ContactForm. Language switching while on the Sur stub round-trips ES↔EN↔FR with matching localized URLs (sur-de-marruecos ↔ southern-morocco ↔ sud-du-maroc) and translated copy. Direct visits to /en/tours/short-escapes, /fr (French home), /es/cita-previa all render the correct page. Unknown slug /es/random-thing redirects to /es home with no crash. Side-menu close button hides the drawer (aria-hidden becomes true). Hero CTA 'Planificar mi viaje' scrolls #contact into view. Footer enquire button is lang-correct on /es (/es/contacto), /en (/en/contact), /fr (/fr/contact). localStorage key 'xaluca-tours-lang' is updated when language changes. Zero console errors on default home load.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Side menu / FloatingLanguageSwitcher", "issues": ["The floating language switcher (z-30, bottom-left) is fully covered by the side-menu drawer (z-60) when the drawer is open. Users can only switch language with the menu closed. Either lift the switcher above z-60, mirror language buttons inside the side menu, or hide the switcher while open to avoid the dead click area."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_contact_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Optional UX: language switcher is occluded by the open side menu — consider rendering language buttons inside the SideMenu drawer or raising z-index."
+  ],
+  "critical_code_review_comments": [
+    "routes.js resolvePath: routeId match is O(routes * langs) per lookup — acceptable for current size but could be precomputed into a slug→{routeId,lang} reverse map.",
+    "LanguageContext setLang(): the URL is rewritten via navigate(nextPath) and state is set in parallel. The URL effect already syncs state back, so the explicit setLangState in setLang is redundant (minor — no functional issue observed).",
+    "App.js: building `allPaths` for every (lang, routeId) and registering each as an explicit Route is fine, but the trailing `path=\"/:lang/*\"` catch-all alone would be sufficient and reduce route count.",
+    "SideMenu line 25 closes drawer on every location.pathname change including the initial / → /es redirect. Harmless since menu starts closed, but worth a guard if you ever default-open it.",
+    "FloatingLanguageSwitcher is hidden behind the SideMenu drawer when open (see design issue)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100% (10/10 pytest)", "frontend": "100% functional coverage of 23 requested cases" },
+  "test_credentials": "N/A — no auth in this app",
+  "seed_data_creation": "No new seed data created in iteration 2. The TEST_-prefixed contact_requests from iteration 1 (and the pytest run) remain in MongoDB.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "When asserting SPA navigation in Playwright, page.wait_for_url() and page.wait_for_function('window.location.pathname …') can both time out against React Router's pushState because the 'load' event never fires; assert via Locator visibility / inner_text on the destination instead, or use a generous wait_for_timeout + page.url poll. Also: the side menu is z-60 and visually overlays the FloatingLanguageSwitcher (z-30), so ALWAYS close the menu before clicking lang-button-*. The expanded state inside SideMenu is local component state — a fresh page load resets it. localStorage key for language persistence is 'xaluca-tours-lang' — clear it before testing default-language behaviour.",
+  "rca of the issue": "No production bugs found. Two test-only artefacts were observed: (1) page.wait_for_url('**/es/viajes/sur-de-marruecos') timed out after Link-click navigations because React Router uses History.pushState which doesn't trigger Playwright's default 'load' wait condition — verified the navigation HAD occurred by asserting visibility of [data-testid='stub-page-tourSouth'] which was true. (2) Language switcher clicks appeared to no-op when the side-menu drawer was open; root cause is the menu drawer (z-60) visually covering the bottom-left FloatingLanguageSwitcher (z-30). Mitigation in tests: close the side menu before clicking lang-button-*. Mitigation in product (optional): place language buttons inside the drawer or raise their z-index."
+}

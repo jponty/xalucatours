@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { ArrowRight, Mail, Phone, MapPin, Check } from "lucide-react";
+import { ArrowRight, Mail, Phone, Check, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { JOURNEYS } from "@/lib/data";
+import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -53,7 +53,7 @@ export const ContactForm = () => {
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Left column — copy & contact details */}
+          {/* Left — copy & contact details */}
           <div className="lg:col-span-5">
             <span className="overline text-[#D4A373]">{t("sec_contact_overline")}</span>
             <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5">
@@ -64,22 +64,35 @@ export const ContactForm = () => {
             </p>
 
             <ul className="mt-12 space-y-5 text-sm text-[#FDFBF7]/85">
-              <li className="flex items-start gap-4">
-                <MapPin className="w-4 h-4 mt-0.5 text-[#D4A373]" strokeWidth={1.5} />
-                <span>Av. Hassan II, Riad El Mansour<br />40000 Marrakech, Morocco</span>
-              </li>
               <li className="flex items-center gap-4">
                 <Phone className="w-4 h-4 text-[#D4A373]" strokeWidth={1.5} />
-                <a href="tel:+212524000000" className="hover:text-[#D4A373] transition-colors">+212 524 000 000</a>
+                <a href={`tel:${CONTACT.phoneRaw}`} className="hover:text-[#D4A373] transition-colors">
+                  {CONTACT.phone}
+                </a>
               </li>
               <li className="flex items-center gap-4">
                 <Mail className="w-4 h-4 text-[#D4A373]" strokeWidth={1.5} />
-                <a href="mailto:contact@xalucatours.ma" className="hover:text-[#D4A373] transition-colors">contact@xalucatours.ma</a>
+                <a href={`mailto:${CONTACT.email}`} className="hover:text-[#D4A373] transition-colors">
+                  {CONTACT.email}
+                </a>
+              </li>
+              <li className="flex items-start gap-4">
+                <Clock className="w-4 h-4 mt-0.5 text-[#D4A373]" strokeWidth={1.5} />
+                <span>
+                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">
+                    {t("office_hours_label")}
+                  </span>
+                  {t("office_hours_value")}
+                </span>
               </li>
             </ul>
+
+            <p className="mt-10 text-xs tracking-[0.25em] uppercase text-[#D4A373]/85">
+              {t("contact_24_7")}
+            </p>
           </div>
 
-          {/* Right column — form */}
+          {/* Right — form */}
           <div className="lg:col-span-7">
             {done ? (
               <div
@@ -109,73 +122,38 @@ export const ContactForm = () => {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Field label={t("form_name")} testId="form-name">
-                    <input
-                      required
-                      name="full_name"
-                      value={form.full_name}
-                      onChange={onChange}
-                      data-testid="contact-input-name"
-                      className="form-input"
-                    />
+                    <input required name="full_name" value={form.full_name} onChange={onChange}
+                      data-testid="contact-input-name" className="form-input" />
                   </Field>
 
                   <Field label={t("form_email")} testId="form-email">
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={onChange}
-                      data-testid="contact-input-email"
-                      className="form-input"
-                    />
+                    <input required type="email" name="email" value={form.email} onChange={onChange}
+                      data-testid="contact-input-email" className="form-input" />
                   </Field>
 
                   <Field label={t("form_phone")} testId="form-phone">
-                    <input
-                      name="phone"
-                      value={form.phone}
-                      onChange={onChange}
-                      data-testid="contact-input-phone"
-                      className="form-input"
-                    />
+                    <input name="phone" value={form.phone} onChange={onChange}
+                      data-testid="contact-input-phone" className="form-input" />
                   </Field>
 
                   <Field label={t("form_dates")} testId="form-dates">
-                    <input
-                      name="travel_dates"
-                      value={form.travel_dates}
-                      onChange={onChange}
+                    <input name="travel_dates" value={form.travel_dates} onChange={onChange}
                       placeholder="e.g. Oct 12 — Oct 22, 2026"
-                      data-testid="contact-input-dates"
-                      className="form-input"
-                    />
+                      data-testid="contact-input-dates" className="form-input" />
                   </Field>
 
                   <Field label={t("form_party")} testId="form-party">
-                    <input
-                      name="party_size"
-                      value={form.party_size}
-                      onChange={onChange}
+                    <input name="party_size" value={form.party_size} onChange={onChange}
                       placeholder="2 adults"
-                      data-testid="contact-input-party"
-                      className="form-input"
-                    />
+                      data-testid="contact-input-party" className="form-input" />
                   </Field>
 
                   <Field label={t("form_interest")} testId="form-interest">
-                    <select
-                      name="journey_interest"
-                      value={form.journey_interest}
-                      onChange={onChange}
-                      data-testid="contact-select-journey"
-                      className="form-input"
-                    >
+                    <select name="journey_interest" value={form.journey_interest} onChange={onChange}
+                      data-testid="contact-select-journey" className="form-input">
                       <option value="">{t("form_no_preference")}</option>
-                      {JOURNEYS.map((j) => (
-                        <option key={j.slug} value={j.slug}>
-                          {pick(j.title, lang)}
-                        </option>
+                      {TRAVEL_CATEGORIES.map((c) => (
+                        <option key={c.slug} value={c.slug}>{pick(c.title, lang)}</option>
                       ))}
                     </select>
                   </Field>
@@ -183,15 +161,8 @@ export const ContactForm = () => {
 
                 <div className="mt-6">
                   <Field label={t("form_message")} testId="form-message">
-                    <textarea
-                      required
-                      name="message"
-                      value={form.message}
-                      onChange={onChange}
-                      rows={5}
-                      data-testid="contact-input-message"
-                      className="form-input resize-none"
-                    />
+                    <textarea required name="message" value={form.message} onChange={onChange} rows={5}
+                      data-testid="contact-input-message" className="form-input resize-none" />
                   </Field>
                 </div>
 

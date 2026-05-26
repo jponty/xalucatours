@@ -1,14 +1,25 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { rewriteForLang, SUPPORTED_LANGS } from "@/lib/routes";
 
 const LANGS = [
+  { code: "es", label: "ES" },
   { code: "en", label: "EN" },
   { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
 ];
 
 export const FloatingLanguageSwitcher = () => {
   const { lang, setLang } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const onChange = (newLang) => {
+    if (!SUPPORTED_LANGS.includes(newLang) || newLang === lang) return;
+    const nextPath = rewriteForLang(location.pathname, newLang);
+    navigate(nextPath + (location.hash || ""));
+    setLang(newLang);
+  };
 
   return (
     <div
@@ -19,7 +30,7 @@ export const FloatingLanguageSwitcher = () => {
         <React.Fragment key={l.code}>
           {i > 0 && <span className="w-px h-3 bg-[#2C2621]/15" />}
           <button
-            onClick={() => setLang(l.code)}
+            onClick={() => onChange(l.code)}
             data-testid={`lang-button-${l.code}`}
             className={`px-2 py-1 text-[11px] tracking-[0.25em] transition-colors ${
               lang === l.code

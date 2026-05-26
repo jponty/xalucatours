@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { ArrowRight, Compass } from "lucide-react";
+import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { CONTACT } from "@/lib/data";
 
 const SLIDES = [
-  {
-    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
-    overline: { en: "Erg Chebbi · Sahara", fr: "Erg Chebbi · Sahara", es: "Erg Chebbi · Sáhara" },
-  },
-  {
-    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
-    overline: { en: "Aït Benhaddou · Atlas", fr: "Aït Benhaddou · Atlas", es: "Aït Benhaddou · Atlas" },
-  },
-  {
-    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
-    overline: { en: "Fez · Imperial Cities", fr: "Fès · Cités impériales", es: "Fez · Ciudades imperiales" },
-  },
+  { image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+    place: { en: "Erg Chebbi · Sahara",     fr: "Erg Chebbi · Sahara",       es: "Erg Chebbi · Sáhara" } },
+  { image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+    place: { en: "Aït Benhaddou · Atlas",   fr: "Aït Benhaddou · Atlas",     es: "Aït Benhaddou · Atlas" } },
+  { image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+    place: { en: "Fez · Imperial Cities",   fr: "Fès · Cités impériales",    es: "Fez · Ciudades imperiales" } },
+  { image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+    place: { en: "Marrakech · Palm groves", fr: "Marrakech · Palmeraies",    es: "Marrakech · Palmerales" } },
 ];
 
 export const HeroSlider = () => {
@@ -29,7 +26,7 @@ export const HeroSlider = () => {
   return (
     <section
       data-testid="hero-section"
-      className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#1A1513]"
+      className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-[#1A1513]"
     >
       {SLIDES.map((s, i) => (
         <div
@@ -51,13 +48,17 @@ export const HeroSlider = () => {
       <span className="film-grain" />
 
       <div className="relative z-10 h-full flex flex-col">
-        <div className="flex-1 flex items-end pb-20 md:pb-32">
+        <div className="flex-1 flex items-end pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-3xl">
               <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
                 <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-                <span className="text-[11px] tracking-[0.3em] uppercase font-semibold">
-                  {SLIDES[idx].overline[lang] || SLIDES[idx].overline.en}
+                <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">
+                  {t("hero_eyebrow")}
+                </span>
+                <span className="w-8 h-px bg-[#D4A373]/50" />
+                <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">
+                  {SLIDES[idx].place[lang] || SLIDES[idx].place.es}
                 </span>
               </div>
 
@@ -72,22 +73,51 @@ export const HeroSlider = () => {
                 {t("hero_sub")}
               </p>
 
-              <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
+              <p className="fade-up fade-up-delay-3 mt-4 max-w-2xl text-sm md:text-base text-[#FDFBF7]/65 leading-relaxed">
+                {t("hero_support")}
+              </p>
+
+              <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
                 <a
                   href="#contact"
                   data-testid="hero-cta-primary"
                   className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
-                  {t("cta_enquire")}
+                  {t("cta_plan")}
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
                 </a>
                 <a
-                  href="#journeys"
+                  href="#categories"
                   data-testid="hero-cta-secondary"
                   className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                 >
-                  {t("cta_explore")}
+                  {t("cta_explore_routes")}
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                </a>
+              </div>
+
+              {/* Quick contact pill */}
+              <div className="fade-up fade-up-delay-4 mt-10 inline-flex flex-wrap items-center gap-x-6 gap-y-3 bg-[#1A1513]/55 backdrop-blur-md border border-[#FDFBF7]/15 px-5 py-3"
+                   data-testid="hero-quick-contact">
+                <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
+                  {t("hero_quick")}
+                </span>
+                <a
+                  href={`tel:${CONTACT.phoneRaw}`}
+                  data-testid="hero-phone"
+                  className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
+                  {CONTACT.phone}
+                </a>
+                <span className="w-px h-4 bg-[#FDFBF7]/20 hidden sm:inline-block" />
+                <a
+                  href={`mailto:${CONTACT.email}`}
+                  data-testid="hero-email"
+                  className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
+                  {CONTACT.email}
                 </a>
               </div>
             </div>

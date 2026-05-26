@@ -1,29 +1,36 @@
 import React, { useEffect } from "react";
 import HeroSlider from "@/components/HeroSlider";
 import Marquee from "@/components/Marquee";
-import FeaturedJourneys from "@/components/FeaturedJourneys";
-import LuxuryCamps from "@/components/LuxuryCamps";
-import CulturalExperiences from "@/components/CulturalExperiences";
-import Testimonials from "@/components/Testimonials";
-import JournalSection from "@/components/JournalSection";
+import EmotionalIntro from "@/components/EmotionalIntro";
+import WhyXaluca from "@/components/WhyXaluca";
+import FeaturedQuote from "@/components/FeaturedQuote";
+import TravelCategories from "@/components/TravelCategories";
+import StressFreeProcess from "@/components/StressFreeProcess";
+import WhatJourneysFeelLike from "@/components/WhatJourneysFeelLike";
+import MoroccoCircuits from "@/components/MoroccoCircuits";
 import MapSection from "@/components/MapSection";
+import PersonalConsultation, { CommunityCTA } from "@/components/PersonalConsultation";
 import ContactForm from "@/components/ContactForm";
 
 export default function HomePage() {
   useEffect(() => {
-    document.title = "Xaluca Tours — Bespoke journeys through Morocco";
+    document.title = "Xaluca Tours · Viajes a medida por Marruecos";
   }, []);
 
   return (
     <div data-testid="home-page">
       <HeroSlider />
       <Marquee />
-      <FeaturedJourneys />
-      <LuxuryCamps />
-      <CulturalExperiences />
-      <Testimonials />
-      <JournalSection />
+      <EmotionalIntro />
+      <WhyXaluca />
+      <FeaturedQuote />
+      <TravelCategories />
+      <StressFreeProcess />
+      <WhatJourneysFeelLike />
+      <MoroccoCircuits />
       <MapSection />
+      <PersonalConsultation />
+      <CommunityCTA />
       <ContactForm />
     </div>
   );
