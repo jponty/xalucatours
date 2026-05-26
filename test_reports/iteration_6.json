@@ -1,0 +1,66 @@
+{
+  "summary": "Frontend retest of iteration_5's two P0 issues plus the EditorialBlock redesign. ALL retest criteria from the review_request pass: (a) the 5 new Norte program pages render without redirect, their own H1 titles, and the new authentic-Morocco hero images (photo-1570133435536-7ececf000ef6 or photo-1539020140153-e479b8c22e70) instead of the Taj-Mahal/Mughal photo; (b) ZERO React 'Encountered two children with the same key' warnings on full navigation through all 5 program pages; (c) EditorialBlock now renders cream `#F5EFE3` (rgb 245,239,227) body background + 2 lateral `.berber-bg-cross` pattern columns on every editorial section across /viajes/surdemarruecos (4 blocks), /viajes/marruecos (1), /viajes/nortedemarruecos (2) and /viajes/escapadas (5); (d) Section galleries (28+7+14+35 testids found) still render with sur-/norte-/marruecos-/escapadas- testids, lightbox opens on click and closes on ESC; (e) trilingual EN H1='Imperial cities and the Rif.' and FR H1='Cités impériales et Rif.' verified; (f) hub /viajes/norte/tanger_fez exposes all 4 expected hrefs and clicking 4n_5d card navigates to the right URL.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Program-detail itinerary day cards (e.g. /viajes/norte/tanger_fez/programa_4n_5d, fezTanger56, fezTanger67, ciudadesImperialesRif67, ciudadesImperiales45)",
+        "issues": [
+          "While the meta `hero_image` was correctly swapped to authentic-Morocco URLs (1570133435536-7ececf000ef6 / 1539020140153-e479b8c22e70), the *itinerary day cards* inside those same program files still reference photo-1548013146-72479768bada (Taj Mahal) and photo-1597212618440-806262de4f6b (Mughal-looking) for the per-day `image:` fields. Hero is now correct (in-scope fix verified), but the day-card images are still Indian — recommend a follow-up sweep of the non-hero `image:` fields in these 6 files."
+        ]
+      },
+      {
+        "screen": "/viajes/surdemarruecos sur-gallery-kasbahs slot 02 (Adobe del Valle del Drâa) and /viajes/surdemarruecos circuit card 'Marrakech · Essaouira'",
+        "issues": [
+          "Pre-existing curation mismatches independent of this retest: slot 02 of mil-kasbahs gallery displays a vintage red Dodge muscle car captioned 'Adobe del Valle del Drâa'; the Marrakech·Essaouira circuit cover photo shows a chef-and-guest interaction unrelated to either city. Not caused by current changes but worth fixing alongside the Morocco image registry."
+        ]
+      }
+    ]
+  },
+  "verified_pages_and_flows": {
+    "norte_program_pages_hero_titles_images": {
+      "/viajes/norte/ciudadesimperiales_rif/programa_6n_7d": "H1='Ciudades imperiales y el Rif.' ✓, hero=photo-1570133435536-7ececf000ef6 ✓",
+      "/viajes/norte/tanger_fez/programa_4n_5d": "H1='Tánger – Fez.' ✓, hero=photo-1539020140153-e479b8c22e70 ✓",
+      "/viajes/norte/tanger_fez/programa_5n_6d": "H1='Tánger – Asilah – Fez.' ✓, hero=photo-1539020140153-e479b8c22e70 ✓",
+      "/viajes/norte/fez_tanger/programa_5n_6d": "H1='Fez – Tánger.' ✓, hero=photo-1570133435536-7ececf000ef6 ✓",
+      "/viajes/norte/fez_tanger/programa_6n_7d": "H1='Fez – Asilah – Tánger.' ✓, hero=photo-1570133435536-7ececf000ef6 ✓"
+    },
+    "duplicate_key_react_warnings": "0 warnings across full navigation of all 5 program pages and the hub (was multiple per render in iteration_5). Composite keys `${stop.day}-${idx}` in TripRouteMap (lines 156 & 207) confirmed in source.",
+    "editorial_blocks_redesign": {
+      "/viajes/surdemarruecos": "4/4 editorial-* blocks: bg=rgb(245,239,227)=#F5EFE3, text=rgb(44,38,33)=#2C2621, lateralColumns=2 each (berber-bg-cross at left and right)",
+      "/viajes/marruecos": "1/1 editorial-intro-marruecos: same cream bg + 2 lateral columns",
+      "/viajes/nortedemarruecos": "2/2 (editorial-riqueza-belleza, editorial-ciudades-historicas): same",
+      "/viajes/escapadas": "5/5 (intro-desierto, intro-atlas, intro-fez, intro-marrakech, intro-tanger): same"
+    },
+    "galleries_and_lightbox": {
+      "testids_present": "sur-gallery-{kasbahs,desierto,atlas-sahara,essaouira}, norte-gallery-{imperial,rif}, marruecos-gallery-intro, escapadas-gallery-{desierto,alto-atlas,fez,marrakech,tanger} — all 12 sections render 6 images each",
+      "lightbox": "Clicking a gallery image on /viajes/surdemarruecos opens [data-testid=section-gallery-lightbox]; Escape closes it cleanly"
+    },
+    "i18n": {
+      "EN /en/tours/northern/imperial-cities-rif/program-6n-7d": "H1='Imperial cities and the Rif.' ✓",
+      "FR /fr/voyages/nord/cites-imperiales-rif/programme-6n-7j": "H1='Cités impériales et Rif.' ✓"
+    },
+    "hub_/viajes/norte/tanger_fez": "Renders 4 cards; all 4 expected hrefs present in DOM (fez_tanger/5n_6d, fez_tanger/6n_7d, tanger_fez/4n_5d, tanger_fez/5n_6d); clicking 4n_5d card navigates to /viajes/norte/tanger_fez/programa_4n_5d successfully"
+  },
+  "test_report_links": ["/app/test_reports/iteration_6.json"],
+  "action_items": [
+    "(Follow-up, NOT a regression) Swap the per-day itinerary `image:` fields in ciudadesImperialesRif67.js, fezTanger56.js, fezTanger67.js, tangerFez45.js, tangerFez56.js, ciudadesImperiales45.js — they still point to the Taj-Mahal (photo-1548013146-72479768bada) and Mughal (photo-1597212618440-806262de4f6b) IDs. The hero (in-scope) is now correct, but the body day cards reuse the bad IDs.",
+    "(Curation) Replace sur-gallery-kasbahs slot 02 (Drâa adobe = red car photo) and the Marrakech·Essaouira circuit card cover photo with Morocco-relevant images; consider a `/lib/morocco-image-set.js` registry to prevent future foreign-country placeholders."
+  ],
+  "critical_code_review_comments": [
+    "EditorialBlock (JourneyPageSections.jsx 279-337) is now cleanly structured: cream section bg + two `.berber-bg-cross` lateral columns (md+) + vertical gradient dividers + softer image overlay (55%/10% top + 85%/55% bottom) — visually matches the 'Arabic pattern lateral' request. No issues found.",
+    "TripRouteMap.jsx composite keys `${stop.day}-${idx}` (lines 156 and 207) fully eliminate the duplicate-key warnings — verified end-to-end with `page.on('console')` listener across 6 routes, 0 hits.",
+    "ProgramTemplate's meta override (line 815-820) correctly produces 5 distinct H1 titles (instead of the variant 'Erg Chebbi y el Alto Atlas.' fallback). The `meta.hero_image` is correctly picked up over VARIANT_COPY.da. Implementation pattern is sound.",
+    "Image curation is still the systemic gap: 2 Unsplash IDs (1548013146-…, 1597212618440-…) leak into multiple day cards. A typed registry of 'verified Morocco images' would catch this at lint time."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (frontend-only scope)", "frontend": "100% — 6/6 retest criteria pass" },
+  "test_credentials": "n/a",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration_5 P0s fully closed: (a) Taj-Mahal hero image replaced by authentic Morocco hero photos in the meta block of all 5 new Norte program files + ciudadesImperiales45; (b) duplicate-key React warning eliminated via composite keys in TripRouteMap. EditorialBlock redesign verified across all 4 regional pages — cream `#F5EFE3` background + 2 lateral berber-bg-cross columns per section. Remaining (NOT regressions, out-of-scope of this retest): non-hero itinerary day-card images in 6 program files still reuse the two Indian Unsplash IDs (1548013146-…, 1597212618440-…); a couple of sur-gallery/circuit card images are mis-curated. Lightbox + i18n + hub-card linking all green.",
+  "rca of the issue": "n/a — fixes from iteration_5 are confirmed working. The two remaining cosmetic concerns are pre-existing/out-of-scope image-curation tasks, not introduced by the current changeset."
+}

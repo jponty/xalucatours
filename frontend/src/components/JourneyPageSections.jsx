@@ -282,34 +282,50 @@ export const EditorialBlock = ({ block, lang }) => {
     <section
       id={block.id}
       data-testid={`editorial-${block.id}`}
-      className="relative bg-[#1A1513] text-[#FDFBF7] overflow-hidden"
+      className="relative bg-[#F5EFE3] text-[#2C2621] overflow-hidden"
     >
+      {/* Lateral berber pattern columns — echo the footer aesthetic */}
+      <div
+        className="hidden md:block absolute inset-y-0 left-0 w-20 lg:w-28 pointer-events-none berber-bg-cross opacity-30"
+        aria-hidden="true"
+      />
+      <div
+        className="hidden md:block absolute inset-y-0 right-0 w-20 lg:w-28 pointer-events-none berber-bg-cross opacity-30"
+        aria-hidden="true"
+      />
+      <div className="hidden md:block absolute inset-y-0 left-20 lg:left-28 w-px bg-gradient-to-b from-transparent via-[#A07042]/30 to-transparent pointer-events-none" aria-hidden="true" />
+      <div className="hidden md:block absolute inset-y-0 right-20 lg:right-28 w-px bg-gradient-to-b from-transparent via-[#A07042]/30 to-transparent pointer-events-none" aria-hidden="true" />
+
       <div className="relative h-[70svh] min-h-[420px] w-full overflow-hidden">
         <img
           src={block.image}
           alt=""
           loading="lazy"
-          className="ken-burns absolute inset-0 w-full h-full object-cover opacity-65"
+          className="ken-burns absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/45 via-[#1A1513]/40 to-[#1A1513]" />
-        <div className="absolute inset-0 berber-bg-cross opacity-30" aria-hidden="true" />
-        <span className="film-grain" />
+        {/* Softer base overlay — the image breathes */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-[#1A1513]/10 to-transparent" />
+        {/* Localised reading shade behind the title only (bottom 45%) */}
+        <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/55 to-transparent" />
+        <span className="film-grain opacity-40" />
 
         <div className="relative h-full max-w-5xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-12 md:pb-16">
-          <span className="overline text-[#D4A373]">{pick(block.eyebrow, lang)}</span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 max-w-3xl">
+          <span className="overline text-[#D4A373] drop-shadow-[0_1px_8px_rgba(26,21,19,0.65)]">
+            {pick(block.eyebrow, lang)}
+          </span>
+          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 max-w-3xl text-[#FDFBF7] drop-shadow-[0_2px_18px_rgba(26,21,19,0.55)]">
             {pick(block.title, lang)}
           </h2>
         </div>
       </div>
 
       <div className="relative py-20 md:py-28">
-        <div className="absolute inset-0 berber-bg-diamond opacity-15" aria-hidden="true" />
-        <div className="relative max-w-3xl mx-auto px-6 md:px-12 space-y-7 text-[15px] md:text-base text-[#FDFBF7]/85 leading-[1.85]">
+        <div className="absolute inset-0 berber-bg-diamond opacity-[0.08] pointer-events-none" aria-hidden="true" />
+        <div className="relative max-w-3xl mx-auto px-6 md:px-12 space-y-7 text-[15px] md:text-base text-[#3D352C] leading-[1.85]">
           {paragraphs.map((p, i) => (
             <p
               key={i}
-              className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#D4A373]/95" : ""}
+              className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#A07042]" : ""}
             >
               {p}
             </p>

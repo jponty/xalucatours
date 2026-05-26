@@ -149,11 +149,11 @@ export const TripRouteMap = ({ route }) => {
                   positions={positions}
                   pathOptions={{ color: "#C16542", weight: 2.5, opacity: 0.9, dashArray: "1 6" }}
                 />
-                {route.map((stop) => {
+                {route.map((stop, idx) => {
                   const color = TYPE_COLORS[stop.type] || "#C16542";
                   const isActive = activeDay === stop.day;
                   return (
-                    <React.Fragment key={stop.day}>
+                    <React.Fragment key={`${stop.day}-${idx}`}>
                       <CircleMarker
                         center={[stop.lat, stop.lng]}
                         radius={isActive ? 28 : 18}
@@ -199,12 +199,12 @@ export const TripRouteMap = ({ route }) => {
           {/* Right rail · ordered list of days */}
           <div className="lg:col-span-4">
             <ol className="space-y-2" data-testid="trip-route-rail">
-              {route.map((stop, i) => {
+              {route.map((stop, idx) => {
                 const color = TYPE_COLORS[stop.type] || "#C16542";
                 const isActive = activeDay === stop.day;
                 const kindLabel = TYPE_LABELS[stop.type];
                 return (
-                  <li key={stop.day}>
+                  <li key={`${stop.day}-${idx}`}>
                     <button
                       type="button"
                       onClick={() => setActiveDay((prev) => (prev === stop.day ? null : stop.day))}
@@ -234,7 +234,7 @@ export const TripRouteMap = ({ route }) => {
                           {pick(stop.name, lang)}
                         </span>
                       </span>
-                      {i < route.length - 1 && (
+                      {idx < route.length - 1 && (
                         <ArrowRight className="w-3.5 h-3.5 mt-1 text-[#5C5248] group-hover:text-[#C16542] shrink-0 transition-colors" strokeWidth={1.6} />
                       )}
                     </button>
