@@ -21,6 +21,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import Testimonials from "@/components/Testimonials";
 import { SUR_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
@@ -257,6 +258,14 @@ export default function SurPage() {
       <HubOptionsPreview hub={HUB_MARRAKECH_ESSAOUIRA} lang={lang} testid="sur-preview-marrakech-essaouira" />
       {/* 10. Why Xaluca - 4 brand pillars */}
       <WhyXaluca pillars={SUR_PILLARS} t={t.why} lang={lang} testid="sur-why" />
+
+      {/* 10.5 Testimonials — South-themed */}
+      <Testimonials
+        themes={["sur", "atlas", "desert"]}
+        limit={3}
+        tone="sand"
+        testid="sur-testimonials"
+      />
 
       {/* 11. Catalog teaser */}
       <CatalogTeaser

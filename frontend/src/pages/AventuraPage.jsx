@@ -16,6 +16,7 @@ import {
   CommunityCta,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import Testimonials from "@/components/Testimonials";
 
 const EXP_ICONS = { Bike, Mountain, Truck, Tent, Palmtree, Flame, Sparkles, Trophy };
 
@@ -380,6 +381,14 @@ export default function AventuraPage() {
 
       {/* 6. Why Xaluca pillars (dark variant on adventure page) */}
       <WhyXaluca pillars={AVENTURA_PILLARS} t={t.why} lang={lang} testid="aventura-why" />
+
+      {/* 6.5 Testimonials — Adventure-themed */}
+      <Testimonials
+        themes={["aventura", "atlas"]}
+        limit={3}
+        tone="sage"
+        testid="aventura-testimonials"
+      />
 
       {/* 7. Catalog teaser */}
       <CatalogTeaser

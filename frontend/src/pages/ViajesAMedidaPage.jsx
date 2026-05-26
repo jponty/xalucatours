@@ -13,6 +13,7 @@ import {
   CommunityCta,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import Testimonials from "@/components/Testimonials";
 
 const TRIP_ICONS = { Compass, Heart, Users, Sparkles, Baby, Activity };
 
@@ -563,6 +564,13 @@ export default function ViajesAMedidaPage() {
       <ProcessTimeline t={t.process} lang={lang} />
 
       <EditorialBlock block={EXPERIENCE_EDITORIAL} lang={lang} />
+
+      <Testimonials
+        themes={["bespoke", "marruecos"]}
+        limit={3}
+        tone="sand"
+        testid="bespoke-testimonials"
+      />
 
       <CommunityCta
         t={t.community}

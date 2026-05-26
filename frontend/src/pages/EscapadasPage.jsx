@@ -14,6 +14,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import Testimonials from "@/components/Testimonials";
 import { ESCAPADAS_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
@@ -221,6 +222,13 @@ export default function EscapadasPage() {
       ))}
 
       <WhyXaluca pillars={ESCAPADAS_PILLARS} t={t.why} lang={lang} testid="escapadas-why" />
+
+      <Testimonials
+        themes={["escapadas", "desert"]}
+        limit={3}
+        tone="cream"
+        testid="escapadas-testimonials"
+      />
 
       <CatalogTeaser
         t={t.catalog}

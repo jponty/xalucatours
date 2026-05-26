@@ -16,6 +16,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import Testimonials from "@/components/Testimonials";
 import { MARRUECOS_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
@@ -294,6 +295,13 @@ export default function MarruecosPage() {
       <CtaBand t={t.cta} lang={lang} testid="marruecos-cta-band" />
 
       <WhyXaluca pillars={SUR_PILLARS} t={t.why} lang={lang} testid="marruecos-why" />
+
+      <Testimonials
+        themes={["marruecos", "general"]}
+        limit={3}
+        tone="sand"
+        testid="marruecos-testimonials"
+      />
 
       <CatalogTeaser
         t={t.catalog}

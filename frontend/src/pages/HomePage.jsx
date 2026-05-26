@@ -14,6 +14,7 @@ import MoroccoCircuits from "@/components/MoroccoCircuits";
 import MapSection from "@/components/MapSection";
 import PersonalConsultation, { CommunityCTA } from "@/components/PersonalConsultation";
 import ContactForm from "@/components/ContactForm";
+import Testimonials from "@/components/Testimonials";
 
 export default function HomePage() {
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function HomePage() {
       <AllTripsCarousel />
       <StressFreeProcess />
       <WhatJourneysFeelLike />
+      <Testimonials themes={["general"]} limit={3} tone="cream" testid="home-testimonials" />
       <MoroccoVideos />
       <MoroccoCircuits />
       <MapSection />

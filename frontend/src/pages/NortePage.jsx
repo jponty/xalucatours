@@ -12,6 +12,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import Testimonials from "@/components/Testimonials";
 import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
@@ -246,6 +247,13 @@ export default function NortePage() {
       <CitiesRow t={t.cities} lang={lang} />
 
       <CtaBand t={t.cta} lang={lang} testid="norte-cta-band" />
+
+      <Testimonials
+        themes={["norte", "marruecos"]}
+        limit={3}
+        tone="sage"
+        testid="norte-testimonials"
+      />
 
       <ContactForm />
     </div>
