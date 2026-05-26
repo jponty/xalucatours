@@ -37,8 +37,8 @@ export const Header = () => {
         data-testid="site-header"
         className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${
           scrolled
-            ? "bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#2C2621]/10"
-            : "bg-transparent"
+            ? "bg-[#FDFBF7]/92 backdrop-blur-xl backdrop-saturate-150 border-b border-[#2C2621]/12 shadow-[0_10px_30px_-22px_rgba(26,21,19,0.35)]"
+            : "bg-[#FDFBF7]/55 backdrop-blur-md backdrop-saturate-150 border-b border-[#FDFBF7]/15 shadow-[0_1px_0_rgba(44,38,33,0.05)]"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 md:h-20 flex items-center justify-between">
