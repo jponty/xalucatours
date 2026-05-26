@@ -61,12 +61,14 @@ export const HeroSlider = () => {
       <span className="film-grain" />
 
       {/* In edit mode, expose prev/next so each hero slide can be edited
-          independently (slides 2-4 are otherwise hidden behind opacity-0). */}
+          independently (slides 2-4 are otherwise hidden behind opacity-0).
+          Z-[60] keeps them above the per-slide edit overlay (z-45). */}
       {editMode && (
-        <div className="absolute top-1/2 inset-x-0 z-[40] flex items-center justify-between px-4 md:px-8 pointer-events-none -translate-y-1/2">
+        <div className="absolute top-1/2 inset-x-0 z-[60] flex items-center justify-between px-4 md:px-8 pointer-events-none -translate-y-1/2">
           <button
             type="button"
             data-testid="hero-edit-prev"
+            data-edit-allow="true"
             onClick={() => setIdx((p) => (p - 1 + SLIDES.length) % SLIDES.length)}
             aria-label="Slide anterior"
             className="pointer-events-auto inline-flex items-center justify-center w-12 h-12 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7] shadow-lg"
@@ -76,6 +78,7 @@ export const HeroSlider = () => {
           <button
             type="button"
             data-testid="hero-edit-next"
+            data-edit-allow="true"
             onClick={() => setIdx((p) => (p + 1) % SLIDES.length)}
             aria-label="Slide siguiente"
             className="pointer-events-auto inline-flex items-center justify-center w-12 h-12 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7] shadow-lg"
@@ -170,6 +173,7 @@ export const HeroSlider = () => {
                 key={i}
                 onClick={() => setIdx(i)}
                 data-testid={`hero-slide-indicator-${i}`}
+                data-edit-allow="true"
                 className={`h-px transition-all duration-500 ${
                   i === idx ? "w-12 bg-[#D4A373]" : "w-6 bg-[#FDFBF7]/35"
                 }`}

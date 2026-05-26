@@ -118,8 +118,11 @@ export const EmotionalIntro = () => {
                   } ${
                     /* Only the visible slide receives clicks so edit-mode
                        targets the currently shown image (and its overlay)
-                       instead of a hidden stacked one. */
-                    i === idx ? "pointer-events-auto z-[2]" : "pointer-events-none"
+                       instead of a hidden stacked one. We intentionally
+                       leave z-index in `auto` so carousel controls
+                       (positioned later in the DOM with explicit z-[50])
+                       always paint above the edit overlay. */
+                    i === idx ? "pointer-events-auto" : "pointer-events-none"
                   }`}
                 >
                   <EditableImage
@@ -149,13 +152,15 @@ export const EmotionalIntro = () => {
                 {pick(SLIDES[idx].caption, lang)}
               </span>
 
-              {/* Manual nav arrows — only on hover, subtle */}
+              {/* Manual nav arrows — always above the edit overlay (z-50)
+                  so users can swap between slides while edit mode is on. */}
               <button
                 type="button"
                 onClick={() => go(idx - 1)}
                 aria-label="Prev"
                 data-testid="emotional-intro-prev"
-                className={`absolute top-1/2 left-3 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
+                data-edit-allow="true"
+                className={`absolute top-1/2 left-3 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
                   editMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
@@ -166,7 +171,8 @@ export const EmotionalIntro = () => {
                 onClick={() => go(idx + 1)}
                 aria-label="Next"
                 data-testid="emotional-intro-next"
-                className={`absolute top-1/2 right-3 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
+                data-edit-allow="true"
+                className={`absolute top-1/2 right-3 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
                   editMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
@@ -174,7 +180,7 @@ export const EmotionalIntro = () => {
               </button>
 
               {/* Dots */}
-              <div className="absolute bottom-4 right-4 flex items-center gap-1.5">
+              <div className="absolute bottom-4 right-4 z-[50] flex items-center gap-1.5">
                 {SLIDES.map((_, i) => (
                   <button
                     key={i}
@@ -183,6 +189,7 @@ export const EmotionalIntro = () => {
                     aria-label={`Slide ${i + 1}`}
                     aria-current={i === idx}
                     data-testid={`emotional-intro-dot-${i}`}
+                    data-edit-allow="true"
                     className={`h-1.5 rounded-full transition-all duration-500 ${
                       i === idx ? "w-6 bg-[#FDFBF7]" : "w-1.5 bg-[#FDFBF7]/45 hover:bg-[#FDFBF7]/75"
                     }`}

@@ -180,6 +180,7 @@ export default function AllTripsCarousel() {
                 onClick={() => scrollBy("prev")}
                 aria-label={pick(COPY.prev, lang)}
                 data-testid="all-trips-prev"
+                data-edit-allow="true"
                 disabled={!canPrev}
                 className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#2C2621]"
               >
@@ -190,6 +191,7 @@ export default function AllTripsCarousel() {
                 onClick={() => scrollBy("next")}
                 aria-label={pick(COPY.next, lang)}
                 data-testid="all-trips-next"
+                data-edit-allow="true"
                 disabled={!canNext}
                 className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#2C2621]"
               >

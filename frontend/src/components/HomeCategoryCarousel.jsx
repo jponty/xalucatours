@@ -243,6 +243,7 @@ export const HomeCategoryCarousel = ({
               disabled={atStart}
               aria-label={tx.prev}
               data-testid={`${testid}-prev`}
+              data-edit-allow="true"
               className="hidden md:inline-flex items-center justify-center w-11 h-11 border transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621]"
               style={{ borderColor: `${palette.border}33`, color: palette.ink }}
             >
@@ -254,6 +255,7 @@ export const HomeCategoryCarousel = ({
               disabled={atEnd}
               aria-label={tx.next}
               data-testid={`${testid}-next`}
+              data-edit-allow="true"
               className="hidden md:inline-flex items-center justify-center w-11 h-11 border transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621]"
               style={{ borderColor: `${palette.border}33`, color: palette.ink }}
             >
