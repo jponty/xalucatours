@@ -9,7 +9,7 @@ export const TRAVEL_CATEGORIES = [
     routeId: "tourSouth",
     number: "01",
     accent: "#C16542",
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
     title: {
       en: "The magic of Southern Morocco",
       fr: "La magie du Sud marocain",

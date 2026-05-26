@@ -15,7 +15,7 @@ export const PersonalConsultation = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="md:col-span-5 relative aspect-[4/5] overflow-hidden bg-[#F2EBE1] order-2 md:order-1">
             <img
-              src="https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1400&q=85"
+              src="https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1400&q=85"
               alt=""
               loading="lazy"
               className="ken-burns absolute inset-0 w-full h-full object-cover"

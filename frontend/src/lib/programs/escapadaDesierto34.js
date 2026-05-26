@@ -4,7 +4,7 @@ const T = (es, en, fr) => ({ es, en, fr });
 const DAY_01 = {
   route_id: "desierto34-arrival-erfoud",
   id: "desierto34-d1",
-  image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Llegada a Errachidia · traslado a Erfoud",
@@ -66,7 +66,7 @@ const DAY_02 = {
 const DAY_03 = {
   route_id: "khamlia-rissani",
   id: "desierto34-d3",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T(
     "Amanecer en las dunas · Khamlia · Rissani · relax",

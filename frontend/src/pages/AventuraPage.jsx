@@ -385,7 +385,7 @@ export default function AventuraPage() {
       <CatalogTeaser
         t={t.catalog}
         lang={lang}
-        image="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
         testid="aventura-catalog"
       />
 

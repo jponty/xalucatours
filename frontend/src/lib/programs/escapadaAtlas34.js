@@ -4,7 +4,7 @@ const T = (es, en, fr) => ({ es, en, fr });
 const DAY_01 = {
   route_id: "atlas34-arrival-dades",
   id: "atlas34-d1",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T(
     "Llegada a Ouarzazate · traslado al Valle del Dadès",

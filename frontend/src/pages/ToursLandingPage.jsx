@@ -22,7 +22,7 @@ const Hero = ({ t }) => (
     className="relative h-[100svh] min-h-[660px] w-full overflow-hidden bg-[#1A1513]"
   >
     <img
-      src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85"
+      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
       alt=""
       loading="eager"
       className="ken-burns absolute inset-0 w-full h-full object-cover"
@@ -403,7 +403,7 @@ const ProximasSalidas = ({ t, lang }) => {
       spots: 8, accent: "#A07042", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1600&q=85" },
     { season: { es: "Fin de año 2026", en: "New Year 2026", fr: "Nouvel An 2026" }, dates: "27 Dic — 03 Ene",
       title:  { es: "Bivouac Erg Chigaga", en: "Erg Chigaga bivouac", fr: "Bivouac Erg Chigaga" },
-      spots: 2, accent: "#D97742", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=85" },
+      spots: 2, accent: "#D97742", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85" },
   ];
 
   return (

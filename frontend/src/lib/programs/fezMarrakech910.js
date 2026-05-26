@@ -10,7 +10,7 @@ const T = (es, en, fr) => ({ es, en, fr });
 const DAY_01_ARRIVAL_FEZ = {
   route_id: "frz910-arrival-fez",
   id: "frz910-d1",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T(
     "Vuelo de origen · Llegada a Fez",
@@ -80,7 +80,7 @@ const DAY_02_FEZ_MEDIO_ATLAS_ERFOUD = {
 const DAY_03_ERFOUD_ERG_BIVOUAC = {
   route_id: "desert-bivouac",
   id: "frz910-d3",
-  image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Erfoud · pistas del desierto · Oasis · Erg Chebbi · Bivouac",
@@ -115,7 +115,7 @@ const DAY_03_ERFOUD_ERG_BIVOUAC = {
 const DAY_04_ERG_KHAMLIA_TOMBOUCTOU = {
   route_id: "khamlia-rissani",
   id: "frz910-d4",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#D97742",
   title: T(
     "Erg Chebbi · Merdani · Khamlia · Kasbah Tombouctou",
@@ -156,7 +156,7 @@ const DAY_04_ERG_KHAMLIA_TOMBOUCTOU = {
 const DAY_05_RISSANI_RELAX = {
   route_id: "frz910-rissani-relax",
   id: "frz910-d5",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T(
     "Rissani · relax en Kasbah Xaluca",
@@ -191,7 +191,7 @@ const DAY_05_RISSANI_RELAX = {
 const DAY_06_TODRA_DADES = {
   route_id: "frz910-todra-dades",
   id: "frz910-d6",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#7C8B5C",
   title: T(
     "Erfoud · Gargantas del Todra · Valle del Dadès · Boumalne Dades",
@@ -261,7 +261,7 @@ const DAY_07_MGOUN_ATLAS = {
 const DAY_08_AITBENHADDOU_MARRAKECH = {
   route_id: "frz910-aitbenhaddou-marrakech",
   id: "frz910-d8",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#D4A373",
   title: T(
     "Dadès · Aït Ben Haddou · Tizi n'Tichka · Marrakech",

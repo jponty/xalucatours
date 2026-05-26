@@ -47,7 +47,7 @@ export const MARRUECOS_ITINERARIES = [
     eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
     title:   { es: "Gran Sur + Medio Atlas", en: "Grand South + Middle Atlas", fr: "Grand Sud + Moyen Atlas" },
     duration:{ es: "9 días / 8 noches", en: "9 days / 8 nights", fr: "9 jours / 8 nuits" },
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2200&q=85",
     accent: "#5A6B4F",
     stages: [
       { es: "Ifrane",                en: "Ifrane",                fr: "Ifrane" },
@@ -84,7 +84,7 @@ export const MARRUECOS_ITINERARIES = [
     eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
     title:   { es: "Alto Atlas · Desierto · Fez", en: "High Atlas · Desert · Fez", fr: "Haut Atlas · Désert · Fès" },
     duration:{ es: "9 días / 8 noches", en: "9 days / 8 nights", fr: "9 jours / 8 nuits" },
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=85",
     accent: "#A07042",
     stages: [
       { es: "Alto Atlas",         en: "High Atlas",         fr: "Haut Atlas" },

@@ -104,7 +104,7 @@ export const SUR_ITINERARIES = [
       fr: "Marrakech · Cordillère du Haut Atlas · Dunes de l'Erg Chebbi · Marrakech",
     },
     duration: { es: "Varias duraciones disponibles", en: "Multiple durations", fr: "Plusieurs durées" },
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2200&q=85",
     accent: "#D97742",
     stages: [
       { es: "Marrakech",  en: "Marrakech",  fr: "Marrakech" },
@@ -146,7 +146,7 @@ export const SUR_ITINERARIES = [
       fr: "Marrakech · Essaouira",
     },
     duration: { es: "Varias duraciones disponibles", en: "Multiple durations", fr: "Plusieurs durées" },
-    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2200&q=85",
     accent: "#3A4A5F",
     stages: [
       { es: "Marrakech",    en: "Marrakech",    fr: "Marrakech" },
@@ -210,7 +210,7 @@ export const SUR_EDITORIAL = [
   },
   {
     id: "puerta-del-desierto",
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=85",
     eyebrow: { es: "Leyenda del Sahara", en: "Sahara legend", fr: "Légende du Sahara" },
     title: {
       es: "La puerta del desierto",
@@ -273,7 +273,7 @@ export const SUR_EDITORIAL = [
   },
   {
     id: "marrakech-essaouira-intro",
-    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2200&q=85",
     eyebrow: { es: "Dos almas, un país", en: "Two souls, one country", fr: "Deux âmes, un pays" },
     title: {
       es: "Marrakech y Essaouira",

@@ -2,7 +2,7 @@
 
 export const STUB_CONTENT = {
   appointment: {
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" },
     title:    { es: "Hablemos de tu próximo viaje a Marruecos.",
                 en: "Let's talk about your next trip to Morocco.",
@@ -24,7 +24,7 @@ export const STUB_CONTENT = {
   },
 
   tourSouth: {
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Sur de Marruecos", en: "Southern Morocco", fr: "Sud du Maroc" },
     title:    { es: "La magia del Sur: Sáhara, Atlas y oasis.",
                 en: "The magic of the South: Sahara, Atlas and oases.",
@@ -44,7 +44,7 @@ export const STUB_CONTENT = {
                 fr: "Des itinéraires complets à travers tout le pays — cités impériales, désert et Atlas à votre rythme." },
   },
   tourShort: {
-    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Escapadas", en: "Short escapes", fr: "Escapades" },
     title:    { es: "Escapadas cortas por Marruecos.",
                 en: "Short escapes across Morocco.",
@@ -95,7 +95,7 @@ export const STUB_CONTENT = {
   },
 
   about: {
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Equipo", en: "The team", fr: "L'équipe" },
     title:    { es: "El equipo detrás de Xaluca Tours.",
                 en: "The team behind Xaluca Tours.",
@@ -105,7 +105,7 @@ export const STUB_CONTENT = {
                 fr: "Plus de 30 ans à créer des voyages au Maroc. Nous allions hospitalité locale et planification haut de gamme — et la passion d'une équipe qui vit le Sud au quotidien." },
   },
   whatWeDo: {
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "¿Qué hacemos?", en: "What we do", fr: "Ce que nous faisons" },
     title:    { es: "Diseñamos viajes a medida por Marruecos.",
                 en: "We design tailor-made journeys across Morocco.",
@@ -125,7 +125,7 @@ export const STUB_CONTENT = {
                 fr: "Montagnes légendaires, déserts infinis, cités impériales, médinas anciennes, côtes atlantiques et oasis de palmiers. Nous vous aidons à choisir ce qui est essentiel pour vous." },
   },
   events: {
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Incentivos", en: "Incentives", fr: "Incentives" },
     title:    { es: "Eventos corporativos & viajes de incentivo.",
                 en: "Corporate events & incentive trips.",
@@ -145,7 +145,7 @@ export const STUB_CONTENT = {
                 fr: "De Marrakech à Merzouga, de Fès à la Route des Kasbahs — le Maroc offre des expériences culturelles, gastronomiques et d'aventure inoubliables." },
   },
   contact: {
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Contacto", en: "Contact", fr: "Contact" },
     title:    { es: "Hablemos. Te respondemos en menos de 24 horas.",
                 en: "Let's talk. We reply within 24 hours.",

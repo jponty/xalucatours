@@ -47,7 +47,7 @@ export const ESCAPADAS_ITEMS = [
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate al Alto Atlas marroquí", en: "Escape to the Moroccan High Atlas", fr: "Évadez-vous dans le Haut Atlas marocain" },
     duration:{ es: "4 días / 3 noches", en: "4 days / 3 nights", fr: "4 jours / 3 nuits" },
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2200&q=85",
     accent: "#5A6B4F",
     stages: [
       { es: "Boumalne Dades",  en: "Boumalne Dades",  fr: "Boumalne Dadès" },
@@ -90,7 +90,7 @@ export const ESCAPADAS_ITEMS = [
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate a la ciudad de Fez", en: "Escape to the city of Fez", fr: "Évadez-vous dans la ville de Fès" },
     duration:{ es: "3 días / 2 noches", en: "3 days / 2 nights", fr: "3 jours / 2 nuits" },
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2200&q=85",
     accent: "#A07042",
     stages: [
       { es: "Fez · Medina",     en: "Fez · Medina",     fr: "Fès · Médina" },
@@ -187,7 +187,7 @@ export const ESCAPADAS_ITEMS = [
 export const ESCAPADAS_EDITORIAL = [
   {
     id: "intro-desierto",
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=85",
     eyebrow: { es: "Xaluca Tours · Tu aventura a medida", en: "Xaluca Tours · Tailor-made", fr: "Xaluca Tours · Sur mesure" },
     title: { es: "Tu aventura 100% personalizada", en: "Your adventure, 100% tailor-made", fr: "Votre aventure 100% sur mesure" },
     body: {
@@ -236,7 +236,7 @@ export const ESCAPADAS_EDITORIAL = [
   },
   {
     id: "intro-fez",
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2200&q=85",
     eyebrow: { es: "Patrimonio cultural", en: "Cultural heritage", fr: "Patrimoine culturel" },
     title: { es: "Fez, capital cultural y espiritual", en: "Fez, cultural and spiritual capital", fr: "Fès, capitale culturelle et spirituelle" },
     body: {
@@ -285,7 +285,7 @@ export const ESCAPADAS_EDITORIAL = [
   },
   {
     id: "intro-tanger",
-    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2200&q=85",
     eyebrow: { es: "Entre dos mares", en: "Between two seas", fr: "Entre deux mers" },
     title: { es: "Tánger y el norte de Marruecos", en: "Tangier and northern Morocco", fr: "Tanger et le nord du Maroc" },
     body: {

@@ -10,7 +10,7 @@ export const NORTE_ITINERARIES = [
     eyebrow: { es: "Viajes al Norte de Marruecos", en: "Northern Morocco journeys", fr: "Voyages au Nord du Maroc" },
     title:   { es: "Ciudades imperiales",   en: "Imperial cities",   fr: "Cités impériales" },
     duration:{ es: "6 días / 5 noches", en: "6 days / 5 nights", fr: "6 jours / 5 nuits" },
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2200&q=85",
     accent: "#A07042",
     stages: [
       { es: "Fez",        en: "Fez",        fr: "Fès" },

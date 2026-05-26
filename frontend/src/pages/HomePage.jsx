@@ -5,6 +5,7 @@ import EmotionalIntro from "@/components/EmotionalIntro";
 import WhyXaluca from "@/components/WhyXaluca";
 import FeaturedQuote from "@/components/FeaturedQuote";
 import TravelCategories from "@/components/TravelCategories";
+import OurTrips from "@/components/OurTrips";
 import StressFreeProcess from "@/components/StressFreeProcess";
 import WhatJourneysFeelLike from "@/components/WhatJourneysFeelLike";
 import MoroccoVideos from "@/components/MoroccoVideos";
@@ -26,6 +27,7 @@ export default function HomePage() {
       <WhyXaluca />
       <FeaturedQuote />
       <TravelCategories />
+      <OurTrips />
       <StressFreeProcess />
       <WhatJourneysFeelLike />
       <MoroccoVideos />

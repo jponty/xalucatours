@@ -81,7 +81,7 @@ const DAY_03 = {
 const DAY_04 = {
   route_id: "ci45-fez-medina",
   id: "ci45-d4",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T("Fez · la capital cultural de Marruecos", "Fez · Morocco's cultural capital", "Fès · capitale culturelle du Maroc"),
   body: {
@@ -112,7 +112,7 @@ const DAY_04 = {
 const DAY_05 = {
   route_id: "ci45-return",
   id: "ci45-d5",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Fez", "Return from Fez", "Retour depuis Fès"),
   body: {

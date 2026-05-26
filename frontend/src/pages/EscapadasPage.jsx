@@ -186,7 +186,7 @@ export default function EscapadasPage() {
   return (
     <div data-testid="escapadas-page">
       <JourneyHero
-        image="https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2400&q=85"
         eyebrow={t.hero.eyebrow}
         place={t.hero.place}
         title={t.hero.title}
@@ -232,7 +232,7 @@ export default function EscapadasPage() {
       <CommunityCta
         t={t.community}
         lang={lang}
-        image="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
         testid="escapadas-community"
       />
 

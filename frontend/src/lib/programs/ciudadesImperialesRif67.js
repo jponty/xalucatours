@@ -31,7 +31,7 @@ const DAY_01 = {
 const DAY_02 = {
   route_id: "cirf67-chefchaouen",
   id: "cirf67-d2",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: T(
     "Chefchaouen y las montañas del Rif",
@@ -93,7 +93,7 @@ const DAY_03 = {
 const DAY_04 = {
   route_id: "cirf67-fez-medina",
   id: "cirf67-d4",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Fez · la capital cultural de Marruecos",
@@ -128,7 +128,7 @@ const DAY_04 = {
 const DAY_05 = {
   route_id: "cirf67-medio-atlas-marrakech",
   id: "cirf67-d5",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T(
     "Fez · Medio Atlas · Marrakech",
@@ -155,7 +155,7 @@ const DAY_05 = {
 const DAY_06 = {
   route_id: "cirf67-marrakech",
   id: "cirf67-d6",
-  image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Marrakech · medina, zocos y Jemaa el-Fna",
@@ -182,7 +182,7 @@ const DAY_06 = {
 const DAY_07 = {
   route_id: "cirf67-return",
   id: "cirf67-d7",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Marrakech", "Return from Marrakech", "Retour depuis Marrakech"),
   body: {

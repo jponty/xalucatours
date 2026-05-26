@@ -45,7 +45,7 @@ const DAY_01_MARRAKECH_ARRIVAL = {
 export const DAY_02_TICHKA_AITBENHADDOU_DADES = {
   route_id: "frm67-tichka-aitbenhaddou-dades",
   id: "frm67-d2",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#D4A373",
   title: T(
     "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Boumalne Dades",
@@ -80,7 +80,7 @@ export const DAY_02_TICHKA_AITBENHADDOU_DADES = {
 export const DAY_03_DADES_TODRA_ERFOUD = {
   route_id: "frm67-dades-todra-erfoud",
   id: "frm67-d3",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T(
     "Dadès · Boutaghrar · Valle del Dadès · Todra · Erfoud",
@@ -115,7 +115,7 @@ export const DAY_03_DADES_TODRA_ERFOUD = {
 export const DAY_04_DESERT_BIVOUAC = {
   route_id: "desert-bivouac",
   id: "frm67-d4",
-  image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Erfoud · pistas del desierto · Oasis · Erg Chebbi · Bivouac",
@@ -142,7 +142,7 @@ export const DAY_04_DESERT_BIVOUAC = {
 export const DAY_05_SUNRISE_KHAMLIA_RISSANI = {
   route_id: "khamlia-rissani",
   id: "frm67-d5",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#D97742",
   title: T(
     "Amanecer en el Erg · Merdani · Khamlia · Rissani · Relax",
@@ -220,7 +220,7 @@ export const DAY_06_ZIZ_IFRANE_FEZ = {
 export const DAY_07_FEZ_MEDINA_RETURN = {
   route_id: "frm67-fez-medina-return",
   id: "frm67-d7",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T(
     "Fez · visita guiada por la Medina · regreso",

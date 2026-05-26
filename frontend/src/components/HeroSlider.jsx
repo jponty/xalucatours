@@ -10,7 +10,7 @@ const SLIDES = [
     place: { en: "Aït Benhaddou · Atlas",   fr: "Aït Benhaddou · Atlas",     es: "Aït Benhaddou · Atlas" } },
   { image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
     place: { en: "Fez · Imperial Cities",   fr: "Fès · Cités impériales",    es: "Fez · Ciudades imperiales" } },
-  { image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+  { image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
     place: { en: "Marrakech · Palm groves", fr: "Marrakech · Palmeraies",    es: "Marrakech · Palmerales" } },
 ];
 

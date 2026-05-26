@@ -26,7 +26,7 @@ const VIDEOS = [
   {
     id: "8U_yU4o6cTM",
     accent: "#A07042",
-    poster: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=85",
+    poster: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=85",
     eyebrow: { es: "Fez · UNESCO", en: "Fez · UNESCO", fr: "Fès · UNESCO" },
     title: {
       es: "Fez el-Bali, el laberinto vivo",
@@ -58,7 +58,7 @@ const VIDEOS = [
   {
     id: "p9bD8oOMpdY",
     accent: "#D97742",
-    poster: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=85",
+    poster: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85",
     eyebrow: { es: "Marrakech", en: "Marrakech", fr: "Marrakech" },
     title: {
       es: "Jemaa el-Fna al caer la noche",
@@ -90,7 +90,7 @@ const VIDEOS = [
   {
     id: "ZbZSe6N_BXs",
     accent: "#3A4A5F",
-    poster: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1600&q=85",
+    poster: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1600&q=85",
     eyebrow: { es: "Essaouira", en: "Essaouira", fr: "Essaouira" },
     title: {
       es: "Essaouira, la perla del Atlántico",

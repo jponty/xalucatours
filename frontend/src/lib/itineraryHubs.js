@@ -50,7 +50,7 @@ export const HUB_ATLAS_DESIERTO = {
       blurb: { es: "Viaje de 5 noches y 6 días por la cordillera del Atlas marroquí y el desierto de dunas del Erg Chebbi en el desierto del Sahara en Marruecos.",
                en: "5-night/6-day journey through the Atlas range and the Erg Chebbi dunes in the Sahara desert.",
                fr: "Voyage de 5 nuits et 6 jours par la cordillère de l'Atlas et les dunes de l'Erg Chebbi dans le Sahara." } },
-    { id: "ad-6-7", direction: "a", nights: "6n7d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+    { id: "ad-6-7", direction: "a", nights: "6n7d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 6 noches y 7 días por la cordillera del Atlas marroquí y el desierto de dunas del Erg Chebbi en el desierto del Sahara en Marruecos.",
                en: "6-night/7-day journey through the Atlas range and the Erg Chebbi dunes in the Sahara desert.",
                fr: "Voyage de 6 nuits et 7 jours par la cordillère de l'Atlas et les dunes de l'Erg Chebbi dans le Sahara." } },
@@ -58,7 +58,7 @@ export const HUB_ATLAS_DESIERTO = {
       blurb: { es: "Viaje de 4 noches y 5 días por el desierto de dunas del Erg Chebbi en el desierto del Sáhara y la cordillera del Atlas marroquí.",
                en: "4-night/5-day journey through the Erg Chebbi dunes in the Sahara and the Atlas range.",
                fr: "Voyage de 4 nuits et 5 jours par les dunes de l'Erg Chebbi dans le Sahara et la cordillère de l'Atlas." } },
-    { id: "da-5-6", direction: "b", nights: "5n6d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+    { id: "da-5-6", direction: "b", nights: "5n6d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 5 noches y 6 días por el desierto de dunas del Erg Chebbi en el desierto del Sáhara y la cordillera del Atlas marroquí.",
                en: "5-night/6-day journey through the Erg Chebbi dunes in the Sahara and the Atlas range.",
                fr: "Voyage de 5 nuits et 6 jours par les dunes de l'Erg Chebbi dans le Sahara et la cordillère de l'Atlas." } },
@@ -136,17 +136,17 @@ export const HUB_MARRAKECH_ERG = {
                en: "5-night/6-day journey from Marrakech to the Erg Chebbi desert.",
                fr: "Voyage de 5 nuits et 6 jours de Marrakech au désert de l'Erg Chebbi." } },
     { id: "me-6-7", direction: "a", nights: "6n7d", accent: "#A07042",
-      image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 6 noches y 7 días desde Marrakech hasta el desierto del Erg Chebbi.",
                en: "6-night/7-day journey from Marrakech to the Erg Chebbi desert.",
                fr: "Voyage de 6 nuits et 7 jours de Marrakech au désert de l'Erg Chebbi." } },
     { id: "me-7-8", direction: "a", nights: "7n8d", accent: "#D4A373",
-      image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 7 noches y 8 días desde Marrakech hasta el desierto del Erg Chebbi.",
                en: "7-night/8-day journey from Marrakech to the Erg Chebbi desert.",
                fr: "Voyage de 7 nuits et 8 jours de Marrakech au désert de l'Erg Chebbi." } },
     { id: "em-4-5", direction: "b", nights: "4n5d", accent: "#5A6B4F",
-      image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 4 noches y 5 días desde Errachidia hasta Marrakech.",
                en: "4-night/5-day journey from Errachidia to Marrakech.",
                fr: "Voyage de 4 nuits et 5 jours d'Errachidia à Marrakech." } },
@@ -171,7 +171,7 @@ export const HUB_MARRAKECH_ERG = {
 export const HUB_MARRAKECH_LOOP = {
   id: "marrakech-loop",
   hero: {
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     place: { es: "Marrakech · Atlas · Erg Chebbi · Marrakech", en: "Marrakech · Atlas · Erg Chebbi · Marrakech", fr: "Marrakech · Atlas · Erg Chebbi · Marrakech" },
     title: {
@@ -226,7 +226,7 @@ export const HUB_MARRAKECH_LOOP = {
                en: "5-night/6-day journey from Marrakech to the Erg Chebbi desert and back to Marrakech.",
                fr: "Voyage de 5 nuits et 6 jours de Marrakech au désert de l'Erg Chebbi et retour à Marrakech." } },
     { id: "mem-6-7", direction: "a", nights: "6n7d", accent: "#D97742",
-      image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 6 noches y 7 días desde Marrakech hasta el desierto del Erg Chebbi y de vuelta a Marrakech.",
                en: "6-night/7-day journey from Marrakech to the Erg Chebbi desert and back to Marrakech.",
                fr: "Voyage de 6 nuits et 7 jours de Marrakech au désert de l'Erg Chebbi et retour à Marrakech." } },
@@ -241,7 +241,7 @@ export const HUB_MARRAKECH_LOOP = {
 export const HUB_MARRAKECH_ESSAOUIRA = {
   id: "marrakech-essaouira",
   hero: {
-    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     place: { es: "Marrakech · Essaouira", en: "Marrakech · Essaouira", fr: "Marrakech · Essaouira" },
     title: {
@@ -288,7 +288,7 @@ export const HUB_MARRAKECH_ESSAOUIRA = {
   },
   programs: [
     { id: "mes-4-5", direction: "a", nights: "4n5d", accent: "#3A4A5F",
-      image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 4 noches y 5 días desde Marrakech hasta Essaouira.",
                en: "4-night/5-day journey from Marrakech to Essaouira.",
                fr: "Voyage de 4 nuits et 5 jours de Marrakech à Essaouira." } },
@@ -375,12 +375,12 @@ export const HUB_GRANSUR_FEZ_RAK = {
   },
   programs: [
     { id: "fr-6-7",  direction: "a", nights: "6n7d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(6,7)("Fez","Marrakech") },
-    { id: "fr-7-8",  direction: "a", nights: "7n8d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Marrakech") },
+    { id: "fr-7-8",  direction: "a", nights: "7n8d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(7,8)("Fez","Marrakech") },
     { id: "fr-8-9",  direction: "a", nights: "8n9d",  accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FR(8,9)("Fez","Marrakech") },
-    { id: "fr-9-10", direction: "a", nights: "9n10d", accent: "#D4A373", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", link: "tourFezRak910", blurb: BLURB_FR(9,10)("Fez","Marrakech") },
+    { id: "fr-9-10", direction: "a", nights: "9n10d", accent: "#D4A373", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourFezRak910", blurb: BLURB_FR(9,10)("Fez","Marrakech") },
     { id: "rf-6-7",  direction: "b", nights: "6n7d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez67",  blurb: BLURB_FR(6,7)("Marrakech","Fez") },
     { id: "rf-7-8",  direction: "b", nights: "7n8d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez78",  blurb: BLURB_FR(7,8)("Marrakech","Fez") },
-    { id: "rf-8-9",  direction: "b", nights: "8n9d",  accent: "#A07042", image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez89",  blurb: BLURB_FR(8,9)("Marrakech","Fez") },
+    { id: "rf-8-9",  direction: "b", nights: "8n9d",  accent: "#A07042", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez89",  blurb: BLURB_FR(8,9)("Marrakech","Fez") },
     { id: "rf-9-10", direction: "b", nights: "9n10d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez910", blurb: BLURB_FR(9,10)("Marrakech","Fez") },
   ],
 };
@@ -388,7 +388,7 @@ export const HUB_GRANSUR_FEZ_RAK = {
 export const HUB_GRANSUR_FEZ_SIDIALI_RAK = {
   id: "gransur-fez-sidiali-rak",
   hero: {
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
     place: T("Fez · Medio Atlas · Sidi Ali · Erg Chebbi · Marrakech", "Fez · Middle Atlas · Sidi Ali · Erg Chebbi · Marrakech", "Fès · Moyen Atlas · Sidi Ali · Erg Chebbi · Marrakech"),
     title: T("Gran Sur + Medio Atlas.", "Grand South + Middle Atlas.", "Grand Sud + Moyen Atlas."),
@@ -431,8 +431,8 @@ export const HUB_GRANSUR_FEZ_SIDIALI_RAK = {
     group_b: T("Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fès"),
   },
   programs: [
-    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Marrakech") },
-    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Fez","Marrakech") },
+    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Marrakech") },
+    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Fez","Marrakech") },
     { id: "fsm-9-10", direction: "a", nights: "9n10d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(9,10)("Fez","Marrakech") },
     { id: "msf-7-8",  direction: "b", nights: "7n8d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Marrakech","Fez") },
     { id: "msf-8-9",  direction: "b", nights: "8n9d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Marrakech","Fez") },
@@ -443,7 +443,7 @@ export const HUB_GRANSUR_FEZ_SIDIALI_RAK = {
 export const HUB_GRANSUR_OUARZA_FEZ = {
   id: "gransur-ouarzazate-sidiali-fez",
   hero: {
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
     place: T("Ouarzazate · Alto Atlas · Sahara · Sidi Ali · Fez", "Ouarzazate · High Atlas · Sahara · Sidi Ali · Fez", "Ouarzazate · Haut Atlas · Sahara · Sidi Ali · Fès"),
     title: T("Alto Atlas – Desierto – Fez.", "High Atlas – Desert – Fez.", "Haut Atlas – Désert – Fès."),
@@ -486,10 +486,10 @@ export const HUB_GRANSUR_OUARZA_FEZ = {
     group_b: T("Fez → Sidi Ali → Ouarzazate", "Fez → Sidi Ali → Ouarzazate", "Fès → Sidi Ali → Ouarzazate"),
   },
   programs: [
-    { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#A07042", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Ouarzazate","Fez") },
+    { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#A07042", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Ouarzazate","Fez") },
     { id: "of-6-7", direction: "a", nights: "6n7d", accent: "#D97742", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(6,7)("Ouarzazate","Fez") },
     { id: "of-7-8", direction: "a", nights: "7n8d", accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Ouarzazate","Fez") },
-    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Fez","Ouarzazate") },
+    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Fez","Ouarzazate") },
     { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(6,7)("Fez","Ouarzazate") },
     { id: "fo-7-8", direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Ouarzazate") },
   ],
@@ -572,7 +572,7 @@ const BLURB_FT = (n, d) => ({
 export const HUB_NORTE_CIUDADES_IMPERIALES = {
   id: "norte-ciudades-imperiales",
   hero: {
-    image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Viajes al Norte de Marruecos", "Northern Morocco journeys", "Voyages au Nord du Maroc"),
     place: T("Marrakech · Fez · Meknès · Rabat", "Marrakech · Fez · Meknes · Rabat", "Marrakech · Fès · Meknès · Rabat"),
     title: T("Ciudades imperiales.", "Imperial cities.", "Cités impériales."),
@@ -615,7 +615,7 @@ export const HUB_NORTE_CIUDADES_IMPERIALES = {
     group_b: T("Ciudades Imperiales + Rif", "Imperial Cities + Rif", "Cités Impériales + Rif"),
   },
   programs: [
-    { id: "ci-4-5",    direction: "a", nights: "4n5d", accent: "#A07042", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85", link: "tourCiudadesImperiales45",    blurb: BLURB_CI(4, 5) },
+    { id: "ci-4-5",    direction: "a", nights: "4n5d", accent: "#A07042", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourCiudadesImperiales45",    blurb: BLURB_CI(4, 5) },
     { id: "ci-6-7",    direction: "a", nights: "6n7d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI(6, 7) },
     { id: "cirf-6-7",  direction: "b", nights: "6n7d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", link: "tourCiudadesImperialesRif67", blurb: BLURB_CI_RIF(6, 7) },
     { id: "cirf-7-8",  direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI_RIF(7, 8) },

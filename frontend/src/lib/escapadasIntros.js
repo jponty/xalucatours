@@ -8,7 +8,7 @@ const T = (es, en, fr) => ({ es, en, fr });
 export const ESCAPADA_DESIERTO_34 = {
   routeId: "tourEscapadaDesierto34",
   hero: {
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
     title: T(
       "Escápate al desierto de Marruecos.",
@@ -36,7 +36,7 @@ export const ESCAPADA_DESIERTO_34 = {
       caption: T("Cena bajo las estrellas y música gnawa junto al fuego.", "Dinner under the stars and gnawa music by the fire.", "Dîner sous les étoiles et musique gnawa au coin du feu."),
     },
     {
-      image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       kind: T("Alto Atlas", "High Atlas", "Haut Atlas"),
       caption: T("De vuelta hacia el norte: gargantas, valles y aldeas Imazighen.", "Back north: gorges, valleys and Imazighen villages.", "Retour vers le nord : gorges, vallées et villages imazighen."),
     },
@@ -69,7 +69,7 @@ export const ESCAPADA_DESIERTO_34 = {
 export const ESCAPADA_ATLAS_34 = {
   routeId: "tourEscapadaAtlas34",
   hero: {
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
     title: T(
       "Escápate al Alto Atlas marroquí.",
@@ -87,7 +87,7 @@ export const ESCAPADA_ATLAS_34 = {
       caption: T("Paredes rojizas esculpidas durante millones de años.", "Reddish walls carved over millions of years.", "Parois rougeâtres sculptées sur des millions d'années."),
     },
     {
-      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       kind: T("Aldea Imazighen", "Imazighen village", "Village imazighen"),
       caption: T("Boutaghrar y Amskar: arquitectura de adobe y vida bereber intacta.", "Boutaghrar and Amskar: adobe architecture and intact Berber life.", "Boutaghrar et Amskar : architecture en pisé et vie berbère intacte."),
     },
@@ -97,7 +97,7 @@ export const ESCAPADA_ATLAS_34 = {
       caption: T("El palmeral más largo de Marruecos: 200 km de oasis.", "Morocco's longest palm grove: 200 km of oasis.", "La plus longue palmeraie du Maroc : 200 km d'oasis."),
     },
     {
-      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
       kind: T("Aït Ben Haddou", "Aït Ben Haddou", "Aït Ben Haddou"),
       caption: T("Kasbah UNESCO, escenario de Gladiator y Juego de Tronos.", "UNESCO kasbah, set for Gladiator and Game of Thrones.", "Kasbah UNESCO, décor de Gladiator et Game of Thrones."),
     },
@@ -133,7 +133,7 @@ export const ESCAPADA_ATLAS_34 = {
 export const ESCAPADA_FEZ = {
   routeId: "tourEscapadaFez",
   hero: {
-    image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
     title: T(
       "Escápate a la ciudad de Fez.",
@@ -151,7 +151,7 @@ export const ESCAPADA_FEZ = {
       caption: T("Las tinas de cuero más antiguas del mundo, en uso desde el s.XI.", "The world's oldest leather vats, in use since the 11th century.", "Les plus anciennes cuves à cuir au monde, en usage depuis le XIe siècle."),
     },
     {
-      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
       kind: T("Medina UNESCO", "UNESCO medina", "Médina UNESCO"),
       caption: T("9.000 callejones y 60.000 puertas — la medina mejor conservada del mundo árabe.", "9,000 alleys and 60,000 doors — the best-preserved medina in the Arab world.", "9 000 ruelles et 60 000 portes — la médina la mieux conservée du monde arabe."),
     },
@@ -270,12 +270,12 @@ export const ESCAPADA_TANGER = {
       caption: T("La «perla azul» del Rif: callejuelas pintadas a mano en mil tonos de añil.", "The Rif's «blue pearl»: hand-painted alleys in a thousand shades of indigo.", "La « perle bleue » du Rif : ruelles peintes à la main dans mille nuances d'indigo."),
     },
     {
-      image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       kind: T("Asilah", "Asilah", "Asilah"),
       caption: T("Murallas portuguesas blancas frente al Atlántico, capital del arte urbano.", "White Portuguese ramparts facing the Atlantic — capital of urban art.", "Remparts portugais blancs face à l'Atlantique, capitale du street-art."),
     },
     {
-      image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       kind: T("Tetuán", "Tetouan", "Tétouan"),
       caption: T("Medina UNESCO de influencia andalusí, junto al Mediterráneo.", "UNESCO Andalusian-influenced medina, by the Mediterranean.", "Médina UNESCO d'influence andalouse, au bord de la Méditerranée."),
     },

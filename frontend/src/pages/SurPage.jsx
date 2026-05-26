@@ -270,7 +270,7 @@ export default function SurPage() {
       <CommunityCta
         t={t.community}
         lang={lang}
-        image="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85"
         testid="sur-community"
       />
 

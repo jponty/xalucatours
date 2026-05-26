@@ -18,7 +18,7 @@ const DETAILS = {
              es: "Marrakech, Fez, Mequinez y Rabat — cuatro ciudades, cuatro reinos." },
   },
   atlas: {
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
     blurb: { en: "Cedar passes, Berber villages, mule treks under snow-capped peaks.",
              fr: "Cols de cèdres, villages berbères, randonnées muletières sous des sommets enneigés.",
              es: "Pasos de cedros, aldeas bereberes, caminatas con mulas bajo cumbres nevadas." },
@@ -36,7 +36,7 @@ const DETAILS = {
              es: "Los callejones índigo de Chefchaouen, la calma de Tánger y los queseros ocultos del Rif." },
   },
   short: {
-    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
     blurb: { en: "Four nights from Marrakech to a desert bivouac — Morocco distilled.",
              fr: "Quatre nuits de Marrakech à un bivouac dans le désert — le Maroc concentré.",
              es: "Cuatro noches de Marrakech a un vivac en el desierto — Marruecos esencial." },

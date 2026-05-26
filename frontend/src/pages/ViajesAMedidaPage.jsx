@@ -48,7 +48,7 @@ const TRIP_TYPES = [
     id: "grupo",
     icon: "Users",
     accent: "#3A4A5F",
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Viaje en grupo", en: "Group trip", fr: "Voyage en groupe" },
     body: {
       es: "¿Sois un grupo y queréis vivir una gran aventura juntos? Disponemos de rutas especialmente diseñadas para grupos, incluyendo experiencias organizadas, actividades privadas y atención personalizada para que solo tengáis que preocuparos de disfrutar del viaje. Ideal para grupos de amigos, incentivos, celebraciones o viajes organizados.",
@@ -84,7 +84,7 @@ const TRIP_TYPES = [
     id: "deportivo",
     icon: "Activity",
     accent: "#5A6B4F",
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Viaje deportivo", en: "Sport trip", fr: "Voyage sportif" },
     body: {
       es: "Marruecos es el lugar perfecto para practicar deporte y aventura. Diseñamos viajes alrededor de las disciplinas que te apasionan: BTT, trekking, senderismo, esquí, equitación, escalada, espeleología, surf, windsurf y kitesurf.",
@@ -112,7 +112,7 @@ const SPORTS = [
 ============================================================ */
 const EXPERIENCE_EDITORIAL = {
   id: "experiencia",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2200&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2200&q=85",
   eyebrow: { es: "Experiencia personalizada", en: "Personalised experience", fr: "Expérience personnalisée" },
   title: {
     es: "Diseñado desde Marruecos, para ti.",

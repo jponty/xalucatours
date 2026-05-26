@@ -18,7 +18,7 @@ import ContactForm from "@/components/ContactForm";
 const PROGRAMS = [
   {
     id: "ad-4-5", routeId: "tourAtlasDesierto45", direction: "ad", nights: "4n / 5d",
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
     accent: "#5A6B4F",
     stages: ["Ouarzazate", "Alto Atlas", "Tinghir", "Erg Chebbi", "Errachidia"],
     blurb: {
@@ -54,7 +54,7 @@ const PROGRAMS = [
   },
   {
     id: "da-4-5", routeId: "tourDesiertoAtlas45", direction: "da", nights: "4n / 5d",
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
     accent: "#C16542",
     stages: ["Errachidia", "Erg Chebbi", "Tinghir", "Alto Atlas", "Ouarzazate"],
     blurb: {
@@ -78,7 +78,7 @@ const PROGRAMS = [
   },
   {
     id: "da-6-7", routeId: "tourDesiertoAtlas67", direction: "da", nights: "6n / 7d",
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
     accent: "#D4A373",
     stages: ["Errachidia", "Erg Chebbi", "Tinghir", "Gargantas Dades", "Alto Atlas", "Aït Benhaddou", "Ouarzazate"],
     blurb: {
@@ -469,7 +469,7 @@ export default function AtlasDesiertoHubPage() {
   return (
     <div data-testid="atlas-desierto-hub-page">
       <JourneyHero
-        image="https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2400&q=85"
         eyebrow={t.hero.eyebrow}
         place={t.hero.place}
         title={t.hero.title}
@@ -512,7 +512,7 @@ export default function AtlasDesiertoHubPage() {
       <CommunityCta
         t={t.community}
         lang={lang}
-        image="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85"
         testid="hub-community"
       />
 

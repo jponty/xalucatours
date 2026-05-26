@@ -111,7 +111,7 @@ export const DAY_FRM_MGOUN = {
 export const DAY_FRM_DADES_TODRA_ERFOUD_LIGHT = {
   route_id: "frm-dades-todra-erfoud-light",
   id: "frm-d-dadestoderfoud-light",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#7C8B5C",
   title: T(
     "Valle del Dadès · Gargantas del Todra · Erfoud",
@@ -142,7 +142,7 @@ export const DAY_FRM_DADES_TODRA_ERFOUD_LIGHT = {
 export const DAY_FRM_SUNRISE_TOMBOUCTOU = {
   route_id: "frm-sunrise-tombouctou",
   id: "frm-d-sunrise-tombouctou",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#D97742",
   title: T(
     "Amanecer en las dunas · Merdani · M'Fis · Khamlia · Kasbah Tombouctou",
@@ -174,7 +174,7 @@ export const DAY_FRM_SUNRISE_TOMBOUCTOU = {
 export const DAY_FRM_RISSANI_RELAX_ONLY = {
   route_id: "frm-rissani-relax",
   id: "frm-d-rissani-relax",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T(
     "Rissani · día libre en Kasbah Xaluca",

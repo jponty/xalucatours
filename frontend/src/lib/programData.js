@@ -70,7 +70,7 @@ export const DAY_DESERT_BIVOUAC = {
 export const DAY_KHAMLIA_MERDANI = {
   route_id: "khamlia-merdani",
   id: "dia-3",
-  image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#D4A373",
   title: { es: "Amanecer en el desierto – Khamlia – Merdani", en: "Sunrise in the desert – Khamlia – Merdani", fr: "Lever du soleil au désert – Khamlia – Merdani" },
   body: {
@@ -104,7 +104,7 @@ export const DAY_KHAMLIA_MERDANI = {
 export const DAY_KHAMLIA_RISSANI = {
   route_id: "khamlia-rissani",
   id: "dia-3",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Amanecer en el desierto – Khamlia – Rissani", en: "Sunrise – Khamlia – Rissani", fr: "Lever du soleil – Khamlia – Rissani" },
   body: {
@@ -144,7 +144,7 @@ export const DAY_KHAMLIA_RISSANI = {
 export const DAY_RISSANI_RELAX = {
   route_id: "rissani-relax",
   id: "dia-4-rissani",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Rissani – Mercados ancestrales – Relax en Erfoud", en: "Rissani – Ancestral markets – Relax in Erfoud", fr: "Rissani – Marchés ancestraux – Relax à Erfoud" },
   body: {
@@ -178,7 +178,7 @@ export const DAY_RISSANI_RELAX = {
 export const DAY_TODRA_DADES = {
   route_id: "da-todra-dades",
   id: "dia-todra-dades",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: { es: "Tinerhir – Gargantas del Todra – Valle del Dades", en: "Tinerhir – Todra Gorges – Dades Valley", fr: "Tinerhir – Gorges du Todra – Vallée du Dadès" },
   body: {
@@ -394,7 +394,7 @@ export const PROGRAM_45 = {
 const DAY_AD_OUARZAZATE_DADES = {
   route_id: "ad-ouarzazate-dades",
   id: "dia-1",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: { es: "Llegada a Ouarzazate – Boumalne Dades", en: "Arrival in Ouarzazate – Boumalne Dades", fr: "Arrivée à Ouarzazate – Boumalne Dadès" },
   body: {
@@ -427,7 +427,7 @@ const DAY_AD_OUARZAZATE_DADES = {
 const DAY_AD_TODRA_ERFOUD = {
   route_id: "ad-todra-erfoud",
   id: "dia-todra-erfoud",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#7C8B5C",
   title: { es: "Alto Atlas Central – Gargantas del Todra – Erfoud", en: "Central High Atlas – Todra Gorges – Erfoud", fr: "Haut Atlas Central – Gorges du Todra – Erfoud" },
   body: {
@@ -460,7 +460,7 @@ const DAY_AD_TODRA_ERFOUD = {
 const DAY_AD_DADES_TODRA_ERFOUD = {
   route_id: "ad-dades-todra-erfoud",
   id: "dia-dades-todra",
-  image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: { es: "Valle del Dades – Gargantas del Todra – Erfoud", en: "Dades Valley – Todra Gorges – Erfoud", fr: "Vallée du Dadès – Gorges du Todra – Erfoud" },
   body: {

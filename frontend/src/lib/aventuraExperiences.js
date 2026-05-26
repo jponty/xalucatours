@@ -24,7 +24,7 @@ export const AVENTURA_EXPERIENCES = [
     level: { es: "Medio · buena forma física", en: "Medium · good fitness", fr: "Moyen · bonne condition" },
     duration: { es: "4 – 7 días", en: "4 – 7 days", fr: "4 – 7 jours" },
     type: { es: "Trekking", en: "Trekking", fr: "Trekking" },
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Trekking por el Alto Atlas", en: "High Atlas trekking", fr: "Trekking dans le Haut Atlas" },
     blurb: {
       es: "Senderos serpenteantes, pueblos bereberes y picos nevados. Toubkal, Aït Bouguemez y valles secretos.",
@@ -39,7 +39,7 @@ export const AVENTURA_EXPERIENCES = [
     level: { es: "Accesible · todos los niveles", en: "Accessible · all levels", fr: "Accessible · tous niveaux" },
     duration: { es: "3 – 9 días", en: "3 – 9 days", fr: "3 – 9 jours" },
     type: { es: "4x4 off-road", en: "4x4 off-road", fr: "4x4 tout-terrain" },
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Expediciones 4x4", en: "4x4 expeditions", fr: "Expéditions 4x4" },
     blurb: {
       es: "Pistas perdidas del Anti-Atlas, gargantas inmensas y oasis dormidos — todo en 4x4 con chófer-guía.",
@@ -84,7 +84,7 @@ export const AVENTURA_EXPERIENCES = [
     level: { es: "Inmersiva · sensibilidad cultural", en: "Immersive · cultural sensitivity", fr: "Immersive · sensibilité culturelle" },
     duration: { es: "2 – 4 días", en: "2 – 4 days", fr: "2 – 4 jours" },
     type: { es: "Experiencia humana", en: "Human experience", fr: "Expérience humaine" },
-    image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Experiencias nómadas", en: "Nomadic experiences", fr: "Expériences nomades" },
     blurb: {
       es: "Convive con familias nómadas del Sahara: ordeñar cabras, cocinar al fuego y leer las estrellas.",
@@ -99,7 +99,7 @@ export const AVENTURA_EXPERIENCES = [
     level: { es: "Premium · confort en el desierto", en: "Premium · desert comfort", fr: "Premium · confort au désert" },
     duration: { es: "1 – 3 noches", en: "1 – 3 nights", fr: "1 – 3 nuits" },
     type: { es: "Glamping desierto", en: "Desert glamping", fr: "Glamping désert" },
-    image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Campamentos en dunas", en: "Dune camps", fr: "Campements sur dunes" },
     blurb: {
       es: "Tiendas privadas con cama king, baño completo y cena cinco estrellas en el corazón de Erg Chigaga.",
@@ -173,7 +173,7 @@ export const AVENTURA_EDITORIAL = [
   },
   {
     id: "tu-aventura",
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2200&q=85",
     eyebrow: { es: "Agencia a medida", en: "Tailor-made agency", fr: "Agence sur mesure" },
     title: {
       es: "Tu aventura 100% personalizada",

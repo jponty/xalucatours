@@ -4,7 +4,7 @@ const T = (es, en, fr) => ({ es, en, fr });
 const DAY_01 = {
   route_id: "ft67-arrival-fez",
   id: "ft67-d1",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T("Llegada a Fez", "Arrival in Fez", "Arrivée à Fès"),
   body: {
@@ -18,7 +18,7 @@ const DAY_01 = {
 const DAY_02 = {
   route_id: "ft67-fez-medina",
   id: "ft67-d2",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Fez · la capital cultural de Marruecos",
@@ -72,7 +72,7 @@ const DAY_03 = {
 const DAY_04 = {
   route_id: "ft67-chefchaouen-akchour-tetuan",
   id: "ft67-d4",
-  image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: T(
     "Chefchaouen · Akchour · Tetuán",
@@ -144,7 +144,7 @@ const DAY_06 = {
 const DAY_07 = {
   route_id: "ft67-return",
   id: "ft67-d7",
-  image: "https://images.unsplash.com/photo-1604940500627-d3f44d1d21c6?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Tánger", "Return from Tangier", "Retour depuis Tanger"),
   body: {
