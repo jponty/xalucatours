@@ -50,6 +50,44 @@ class ContactRequestCreate(BaseModel):
     language: Optional[str] = "en"
 
 
+# ---------- Trip Planner ----------
+class TripPlannerRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    # contact
+    full_name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    # itinerary
+    date_mode: str = "range"            # "range" | "exact" | "flexible"
+    start_date: Optional[str] = None    # ISO yyyy-mm-dd
+    end_date: Optional[str] = None
+    flexible_month: Optional[str] = None
+    travellers_adults: int = 2
+    travellers_children: int = 0
+    accommodation: str = "superior"     # "basic" | "superior" | "premium"
+    activities: List[str] = Field(default_factory=list)
+    notes: Optional[str] = None
+    language: Optional[str] = "es"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TripPlannerCreate(BaseModel):
+    full_name: str = Field(..., min_length=2, max_length=120)
+    email: EmailStr
+    phone: Optional[str] = Field(default=None, max_length=40)
+    date_mode: str = Field(default="range", pattern="^(range|exact|flexible)$")
+    start_date: Optional[str] = Field(default=None, max_length=20)
+    end_date: Optional[str] = Field(default=None, max_length=20)
+    flexible_month: Optional[str] = Field(default=None, max_length=40)
+    travellers_adults: int = Field(default=2, ge=1, le=40)
+    travellers_children: int = Field(default=0, ge=0, le=20)
+    accommodation: str = Field(default="superior", pattern="^(basic|superior|premium)$")
+    activities: List[str] = Field(default_factory=list, max_length=20)
+    notes: Optional[str] = Field(default=None, max_length=4000)
+    language: Optional[str] = "es"
+
+
 # ---------- Routes ----------
 @api_router.get("/")
 async def root():
@@ -68,6 +106,29 @@ async def create_contact_request(payload: ContactRequestCreate):
 @api_router.get("/contact-requests", response_model=List[ContactRequest])
 async def list_contact_requests():
     rows = await db.contact_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    for r in rows:
+        if isinstance(r.get('created_at'), str):
+            try:
+                r['created_at'] = datetime.fromisoformat(r['created_at'])
+            except ValueError:
+                pass
+    return rows
+
+
+@api_router.post("/trip-planner", response_model=TripPlannerRequest)
+async def create_trip_planner(payload: TripPlannerCreate):
+    # Sanitize activity list (strip + cap length per item)
+    activities = [a.strip()[:60] for a in (payload.activities or []) if a and a.strip()]
+    obj = TripPlannerRequest(**{**payload.model_dump(), "activities": activities})
+    doc = obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.trip_planner_requests.insert_one(doc)
+    return obj
+
+
+@api_router.get("/trip-planner", response_model=List[TripPlannerRequest])
+async def list_trip_planner():
+    rows = await db.trip_planner_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
     for r in rows:
         if isinstance(r.get('created_at'), str):
             try:

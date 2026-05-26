@@ -52,6 +52,7 @@ import TangerFez45Page from "@/pages/TangerFez45Page";
 import TangerFez56Page from "@/pages/TangerFez56Page";
 import FezTanger56Page from "@/pages/FezTanger56Page";
 import FezTanger67Page from "@/pages/FezTanger67Page";
+import PlanificaTuViajePage from "@/pages/PlanificaTuViajePage";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
@@ -98,6 +99,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourTangerFez56")             return <TangerFez56Page />;
   if (routeId === "tourFezTanger56")             return <FezTanger56Page />;
   if (routeId === "tourFezTanger67")             return <FezTanger67Page />;
+  if (routeId === "planTrip")                    return <PlanificaTuViajePage />;
   if (routeId === "tourDesiertoAtlas67")  return <DesiertoAtlas67Page />;
   if (routeId === "tourDesiertoAtlas56")  return <DesiertoAtlas56Page />;
   if (routeId === "tourDesiertoAtlas45")  return <DesiertoAtlas45Page />;
