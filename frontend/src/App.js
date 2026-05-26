@@ -8,6 +8,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { EditModeProvider } from "@/contexts/EditModeContext";
 import Layout from "@/components/Layout";
 import HomePage from "@/pages/HomePage";
 import StubPage from "@/pages/StubPage";
@@ -118,11 +119,13 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <LanguageProvider>
-          <Layout>
-            <Routes>
-              <Route path="*" element={<LocalizedRouter />} />
-            </Routes>
-          </Layout>
+          <EditModeProvider>
+            <Layout>
+              <Routes>
+                <Route path="*" element={<LocalizedRouter />} />
+              </Routes>
+            </Layout>
+          </EditModeProvider>
         </LanguageProvider>
       </BrowserRouter>
     </div>

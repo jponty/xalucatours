@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import { CONTACT } from "@/lib/data";
+import EditableImage from "@/components/EditableImage";
 
 const SLIDES = [
   { image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
@@ -16,12 +18,14 @@ const SLIDES = [
 
 export const HeroSlider = () => {
   const { t, lang } = useLanguage();
+  const { editMode } = useEditMode();
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
+    if (editMode) return undefined; // pause autoplay while editing
     const id = setInterval(() => setIdx((p) => (p + 1) % SLIDES.length), 7000);
     return () => clearInterval(id);
-  }, []);
+  }, [editMode]);
 
   return (
     <section
@@ -33,13 +37,14 @@ export const HeroSlider = () => {
           key={i}
           className={`absolute inset-0 transition-opacity duration-[1600ms] ease-out ${
             i === idx ? "opacity-100" : "opacity-0"
-          }`}
+          } ${editMode && i === idx ? "z-[3]" : ""}`}
         >
-          <img
-            src={s.image}
+          <EditableImage
+            slot={`home.hero.${i}`}
+            fallback={s.image}
             alt=""
             className="ken-burns absolute inset-0 w-full h-full object-cover"
-            loading={i === 0 ? "eager" : "lazy"}
+            imgProps={{ loading: i === 0 ? "eager" : "lazy" }}
           />
         </div>
       ))}
@@ -47,7 +52,7 @@ export const HeroSlider = () => {
       <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
       <span className="film-grain" />
 
-      <div className="relative z-10 h-full flex flex-col">
+      <div className={`relative z-10 h-full flex flex-col ${editMode ? "pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto" : ""}`}>
         <div className="flex-1 flex items-end pt-32 md:pt-40 pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-3xl">

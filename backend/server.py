@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -209,7 +210,89 @@ async def climate_current_month():
         raise HTTPException(status_code=502, detail=f"upstream-error: {exc}")
 
 
+# ---------- Image slots (admin inline editing) ----------
+# Stored in collection `image_slots` as a single document per slot id
+# (e.g. "home.hero.0") with { url, alt, source, updated_at }.
+ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp", "image/avif"}
+MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB
+
+
+class SlotPayload(BaseModel):
+    url: str = Field(..., min_length=4, max_length=2000)
+    alt: Optional[str] = Field(default=None, max_length=300)
+    source: Optional[str] = Field(default="external", max_length=40)
+
+
+@api_router.get("/slots/{slot_id}")
+async def get_slot(slot_id: str):
+    doc = await db.image_slots.find_one({"_id": slot_id}, {"_id": 0})
+    if not doc:
+        return {"slot_id": slot_id, "url": None}
+    return {"slot_id": slot_id, **doc}
+
+
+@api_router.put("/slots/{slot_id}")
+async def put_slot(slot_id: str, payload: SlotPayload):
+    doc = {
+        "url": payload.url,
+        "alt": payload.alt,
+        "source": payload.source or "external",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.image_slots.update_one(
+        {"_id": slot_id},
+        {"$set": doc},
+        upsert=True,
+    )
+    return {"slot_id": slot_id, **doc}
+
+
+@api_router.post("/slots/{slot_id}/upload")
+async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
+    if file.content_type not in ALLOWED_MIME:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type: {file.content_type}. Use JPG, PNG, WEBP or AVIF.",
+        )
+    data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds 8 MB limit.")
+
+    UPLOAD_DIR_LOCAL = ROOT_DIR / "uploads"
+    UPLOAD_DIR_LOCAL.mkdir(exist_ok=True)
+
+    ext = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp",
+        "image/avif": "avif",
+    }[file.content_type]
+    safe_slot = "".join(c for c in slot_id if c.isalnum() or c in "._-")[:60] or "slot"
+    filename = f"{safe_slot}-{uuid.uuid4().hex[:10]}.{ext}"
+    target = UPLOAD_DIR_LOCAL / filename
+    target.write_bytes(data)
+
+    public_url = f"/api/uploads/{filename}"
+    doc = {
+        "url": public_url,
+        "alt": None,
+        "source": "upload",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.image_slots.update_one(
+        {"_id": slot_id},
+        {"$set": doc},
+        upsert=True,
+    )
+    return {"slot_id": slot_id, **doc, "filename": filename}
+
+
 app.include_router(api_router)
+
+# Serve uploaded files under /api/uploads so they pass through the ingress
+UPLOAD_DIR = ROOT_DIR / "uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

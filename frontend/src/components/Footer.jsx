@@ -1,13 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Mail, Phone, MapPin, Clock } from "lucide-react";
+import { ArrowRight, Mail, Phone, MapPin, Clock, Pencil, X as XIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import { BerberZigzagDivider } from "./BerberDivider";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 
 export const Footer = () => {
   const { t, lang } = useLanguage();
+  const { editMode, toggle } = useEditMode();
 
   const exploreLinks = [
     { routeId: "tourAll",       k: "menu_all" },
@@ -99,9 +101,34 @@ export const Footer = () => {
 
         <div className="mt-16 pt-8 border-t border-[#FDFBF7]/15 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-xs text-[#FDFBF7]/55">{t("footer_rights")}</p>
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/40">
-            {t("contact_24_7")}
-          </p>
+          <div className="flex items-center gap-5">
+            <button
+              type="button"
+              onClick={toggle}
+              data-testid="footer-edit-mode-toggle"
+              aria-pressed={editMode}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-[10px] tracking-[0.3em] uppercase transition-colors duration-300 ${
+                editMode
+                  ? "bg-[#C16542] text-[#FDFBF7] hover:bg-[#A35133]"
+                  : "border border-[#FDFBF7]/25 text-[#FDFBF7]/75 hover:text-[#FDFBF7] hover:border-[#FDFBF7]/60"
+              }`}
+            >
+              {editMode ? (
+                <>
+                  <XIcon className="w-3 h-3" strokeWidth={1.8} />
+                  Salir edición
+                </>
+              ) : (
+                <>
+                  <Pencil className="w-3 h-3" strokeWidth={1.8} />
+                  Modo edición
+                </>
+              )}
+            </button>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/40">
+              {t("contact_24_7")}
+            </p>
+          </div>
         </div>
       </div>
     </footer>
