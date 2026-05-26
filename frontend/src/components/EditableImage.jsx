@@ -341,6 +341,18 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
   const inputSingleRef = useRef(null);
   const inputMultiRef = useRef(null);
 
+  // Slide-in / slide-out animation state for the side panel
+  const [entered, setEntered] = useState(false);
+  const [exiting, setExiting] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  const requestClose = useCallback(() => {
+    setExiting(true);
+    setTimeout(() => onClose(), 250);
+  }, [onClose]);
+
   const currentDraft = getDraft(current.slot);
   const ratio = parseRatio(current.aspectRatio);
   const rLabel = ratioLabel(current.aspectRatio);
@@ -350,7 +362,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") requestClose();
       if (isGallery && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
         // Only navigate when not focused inside an input
         const t = e.target;
@@ -368,7 +380,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [onClose, isGallery, items.length]);
+  }, [requestClose, isGallery, items.length]);
 
   const onCropComplete = useCallback(
     (_, areaPixels) => {
@@ -479,10 +491,10 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
           setCurrentIdx(nextPending);
         } else {
           // Nothing else pending — close on single-slot edits, keep open otherwise.
-          if (!hasAnyPendingDraft()) onClose();
+          if (!hasAnyPendingDraft()) requestClose();
         }
       } else {
-        onClose();
+        requestClose();
       }
     } catch (e) {
       setError(e.message || "Error inesperado.");
@@ -521,7 +533,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
       if (failed.length > 0) {
         setError(`Algunas imágenes no se han podido guardar: ${failed.join(", ")}`);
       } else {
-        onClose();
+        requestClose();
       }
     } finally {
       setBusyAll(false);
@@ -532,33 +544,61 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
   const pendingCount = pendingDraftCount();
   const totalDirty = Array.from(draftsRef.current.values()).filter((d) => d.dirty && d.imageSrc).length;
 
+  // Hard click-isolation: every pointer/click/wheel event captured at the
+  // panel root is contained. The page underneath cannot receive any of
+  // them, even on bubbling-phase listeners attached elsewhere.
+  const stop = (e) => {
+    e.stopPropagation();
+    e.nativeEvent?.stopImmediatePropagation?.();
+  };
+
   return (
     <div
       data-testid={`edit-modal-${initialSlot}`}
-      className="fixed inset-0 z-[9999] flex items-center justify-center px-3 py-4 md:py-8"
-      onMouseDown={(e) => e.stopPropagation()}
-      onClick={(e) => e.stopPropagation()}
+      className="fixed inset-0 z-[9999] flex"
+      onMouseDown={stop}
+      onMouseUp={stop}
+      onClick={stop}
+      onPointerDown={stop}
+      onTouchStart={stop}
+      onWheelCapture={stop}
+      onContextMenu={stop}
       role="presentation"
     >
-      {/* Solid backdrop */}
+      {/* Backdrop — softer than a modal so the page stays visible behind
+          the side panel, signalling that the page is still here. */}
       <button
         type="button"
         aria-label="Cerrar"
-        onClick={onClose}
-        className="absolute inset-0 bg-[#1A1513] cursor-default"
-        style={{ opacity: 0.97 }}
+        onClick={requestClose}
+        data-testid={`edit-panel-backdrop-${initialSlot}`}
+        className={`absolute inset-0 bg-[#1A1513] cursor-default transition-opacity duration-300 ${
+          entered && !exiting ? "opacity-60" : "opacity-0"
+        }`}
       />
-      {/* Dialog */}
-      <div
+      {/* Side panel (drawer). Slides in from the right; full-screen on
+          mobile, fixed-width on tablet+. All interaction lives inside it. */}
+      <aside
         role="dialog"
         aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl bg-[#FDFBF7] border border-[#2C2621]/15 shadow-2xl max-h-[95vh] flex flex-col"
+        aria-label={isGallery ? "Editor de galería" : "Editor de imagen"}
+        onClick={stop}
+        onMouseDown={stop}
+        onPointerDown={stop}
+        onWheel={stop}
+        className={`relative ml-auto h-full w-full sm:max-w-[560px] md:max-w-[640px] bg-[#FDFBF7] border-l border-[#2C2621]/15 shadow-[ -24px_0_60px_-20px_rgba(0,0,0,0.45) ] flex flex-col transform transition-transform duration-300 ease-out will-change-transform ${
+          entered && !exiting ? "translate-x-0" : "translate-x-full"
+        }`}
         style={{ fontFamily: "Inter, sans-serif" }}
       >
+        {/* Top brand stripe — makes the panel feel like a dedicated
+            editing surface rather than a centred dialog. */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C16542] via-[#D4A373] to-[#C16542]"
+        />
         {/* Header */}
-        <div className="flex items-center justify-between px-5 md:px-6 py-4 md:py-5 border-b border-[#2C2621]/10 shrink-0">
+        <div className="flex items-center justify-between px-5 md:px-6 py-4 md:py-5 border-b border-[#2C2621]/10 shrink-0 mt-1">
           <div className="min-w-0">
             <span className="block text-[10px] tracking-[0.3em] uppercase text-[#C16542] font-semibold inline-flex items-center gap-2">
               {isGallery ? <Layers className="w-3 h-3" strokeWidth={1.9} /> : <Pencil className="w-3 h-3" strokeWidth={1.9} />}
@@ -582,7 +622,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
             </span>
             <button
               type="button"
-              onClick={onClose}
+              onClick={requestClose}
               aria-label="Cerrar"
               data-testid={`edit-modal-close-${initialSlot}`}
               className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
@@ -874,7 +914,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
           <div className="flex items-center gap-2 ml-auto">
             <button
               type="button"
-              onClick={onClose}
+              onClick={requestClose}
               disabled={busy || busyAll}
               className="text-[11px] tracking-[0.25em] uppercase text-[#5C5248] hover:text-[#2C2621] px-4 py-2 transition-colors disabled:opacity-50"
             >
@@ -914,7 +954,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
             </button>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
   );
 };
