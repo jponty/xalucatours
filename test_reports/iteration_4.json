@@ -1,0 +1,48 @@
+{
+  "summary": "Frontend rendering / navigation / i18n test of 14 newly built journey pages (7 landing pages + 6 program detail pages + 1 hub). All pages render with correct testids, expected itinerary blocks, correct day counts on program templates, working hub-card navigation, working ES/EN/FR language switcher (preserves page), working sticky-nav anchor scroll, and ZERO console errors / no white screens.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "AtlasDesiertoHubPage", "issue": "Hero background image renders the Burj Al Arab (Dubai, UAE) instead of a Moroccan landscape. Geographically incorrect for a Morocco/Atlas/Erg-Chebbi tour landing page and breaks the cinematic Morocco brand promise.", "selector": "[data-testid='atlas-desierto-hub-page'] hero image", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_pages": {
+    "MarruecosPage": {"url": "/viajes/marruecos", "title": "Viajes por todo Marruecos · Xaluca Tours", "itinerary_ids_found": "4/4 (gran-sur-fez-marrakech, gran-sur-medio-atlas, alto-atlas-desierto-fez, tanger-marrakech)"},
+    "NortePage": {"url": "/viajes/nortedemarruecos", "title": "Viajes al Norte de Marruecos · Xaluca Tours", "itinerary_ids_found": "2/2 (ciudades-imperiales, fez-tanger)"},
+    "SurPage": {"url": "/viajes/surdemarruecos", "title": "Viajes por el Sur de Marruecos · Xaluca Tours", "itinerary_ids_found": "4/4"},
+    "AventuraPage": {"url": "/viajes/aventura", "title": "Viajes de aventura por Marruecos · Xaluca Tours", "rendered": true},
+    "EscapadasPage": {"url": "/viajes/escapadas", "title": "Escapadas por Marruecos · Xaluca Tours", "itinerary_ids_found": "5/5"},
+    "ViajesAMedidaPage": {"url": "/viajesamedida", "title": "Viajes a medida por Marruecos · Xaluca Tours", "rendered": true},
+    "AtlasDesiertoHubPage": {"url": "/viajes/sur/atlas_desierto", "title": "Atlas + Desierto del Erg Chebbi · Xaluca Tours", "hub_program_cards": "6/6"},
+    "DesiertoAtlas67Page": {"testid": "program-page-6n7d", "day_blocks": "7/7"},
+    "DesiertoAtlas56Page": {"testid": "program-page-5n6d", "day_blocks": "6/6"},
+    "DesiertoAtlas45Page": {"testid": "program-page-4n5d", "day_blocks": "5/5"},
+    "AtlasDesierto45Page": {"testid": "program-page-ad4n5d", "day_blocks": "5/5"},
+    "AtlasDesierto56Page": {"testid": "program-page-ad5n6d", "day_blocks": "6/6"},
+    "AtlasDesierto67Page": {"testid": "program-page-ad6n7d", "day_blocks": "7/7"}
+  },
+  "navigation_tests": {
+    "hub_card_click": "Clicked [data-testid='hub-program-ad-4-5'] on /viajes/sur/atlas_desierto → correctly routed to /viajes/atlas_desierto/programa_4n_5d",
+    "sticky_nav_anchor": "Clicked anchor link a[href*='#tanger-marrakech'] on Marruecos page → target section visible and scrolled into view",
+    "language_switch_es_en": "ES /viajes/marruecos → EN /en/tours/full-morocco (URL slug changed, page preserved)",
+    "language_switch_en_fr": "EN /en/tours/full-morocco → FR /fr/voyages/maroc-integral (URL slug changed, page preserved)",
+    "language_switch_fr_es": "FR /fr/voyages/maroc-integral → ES /viajes/marruecos (URL slug changed, page preserved)"
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Replace the AtlasDesiertoHubPage hero image: it currently shows the Burj Al Arab (Dubai) — swap for a real Morocco hero asset (Erg Chebbi dunes, Atlas mountains, Aït Benhaddou, Drâa valley etc.) to match the rest of the cinematic Xaluca brand language."
+  ],
+  "critical_code_review_comments": [
+    "App.js: long if/else chain of routeId-to-component (15+ branches). Consider extracting a routeId→component map in /lib/routes.js to remove the imperative router resolver — improves maintainability as more pages are added.",
+    "ProgramTemplate.jsx is the universal template — recommend snapshotting once locally to confirm all 4 pricing seasons and all 4 details accordion tabs render uniformly across both variants (heuristic counts confirm structure, no targeted testids on those subsections)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only review)", "frontend": "100% (14/14 pages render; 0 console errors; navigation, i18n, sticky-nav all pass)"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 14 new pages verified rendering, navigation, hub-card click routing, language switcher preserving page across ES/EN/FR, sticky-nav anchor scroll, and program-template day counts (4n5d→5 days, 5n6d→6 days, 6n7d→7 days for both 'da' and 'ad' variants). Only outstanding issue is the AtlasDesiertoHubPage hero image being a Dubai photo. Useful testids: program-page-6n7d/5n6d/4n5d (and ad-prefixed for atlas-desert variant), program-day-*, atlas-desierto-hub-page, hub-program-*, lang-button-es/en/fr (FloatingLanguageSwitcher), language-switcher.",
+  "rca of the issue": "AtlasDesiertoHubPage hero image issue: likely a placeholder image URL that was never swapped for the final Moroccan asset. Main agent should inspect AtlasDesiertoHubPage.jsx hero img src / JourneyHero props and replace with an Atlas/Erg Chebbi photo from the existing curated image set used in sibling pages."
+}
