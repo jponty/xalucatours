@@ -1,53 +1,62 @@
-# Xaluca Tours — Product Requirements Document
+# Xaluca Tours — PRD
 
-_Last updated: 2026-02 · Initial MVP_
-
-## Problem Statement
-Build **Xaluca Tours**, a trilingual marketing site for a bespoke Morocco travel agency that is part of Grup Xaluca. Must inherit the Grup Xaluca design system (editorial · cinematic · slow · earthy · hand-made) and adapt the color palette to desert-inspired hues (sand, terracotta, indigo, gold, sunset orange) with Moroccan imagery and Berber patterns.
+## Original Problem Statement
+Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN, FR), MongoDB-backed contact, premium cinematic UI inspired by Grup Xaluca (glassmorphism, desert tones, serif typography, berber patterns, ken-burns + film grain).
 
 ## Architecture
-- **Frontend**: React 19 + CRA (craco) + Tailwind 3 + shadcn/ui (Radix). Routing via react-router-dom v7. Maps via `react-leaflet` v5 / `leaflet`. Toasts via `sonner`.
-- **Backend**: FastAPI + Motor (async MongoDB). Single `/api/contact-requests` collection.
-- **i18n**: React Context (LanguageContext) with EN/FR/ES persisted to `localStorage`.
-- **State**: pure `useState` + `useEffect`. No Redux/Zustand/React-Query.
+- React 19 + Tailwind v3 + Shadcn UI · FastAPI · MongoDB
+- Trilingual via `LanguageContext` + `lib/routes.js`. ES at root, EN under `/en/*`, FR under `/fr/*`.
+- Universal Program template at `components/ProgramTemplate.jsx` powers all desert/atlas program detail pages from `lib/programData.js`.
 
-## User Personas
-1. **Couple/family planning a bespoke trip** — submits an enquiry through the cinematic contact section, expects warm editorial tone.
-2. **Returning traveller browsing journal posts** — exploring Featured Journeys and Cultural Experiences.
-3. **Operations/Concierge team** — reviews submitted enquiries (`GET /api/contact-requests`) to follow up within 24 h.
+## Implemented (this session, Feb 2026)
+### Journey landing pages
+- `/viajes/marruecos` — 4 country-wide itineraries
+- `/viajes/nortedemarruecos` — 2 northern itineraries + 2 editorial essays + 6 cities row
+- `/viajes/surdemarruecos` — 4 southern itineraries + editorials + brand pillars
+- `/viajes/aventura` — adventure narrative + 8 adventure experience cards
+- `/viajes/escapadas` — 5 short-escape itineraries
+- `/viajesamedida` — 6 tailor-made trip types + 10 sports + 3-step process
 
-## Core Requirements (static)
-- Trilingual (EN/FR/ES) every user-facing string.
-- Strict adherence to Grup Xaluca design system: Cormorant Garamond + Outfit, cream/charcoal/terracotta palette, 2 px square radius, generous spacing (py-24 to py-32), ken-burns + film-grain on cinematic stages, Berber pattern utilities at low opacity.
-- Fully responsive (mobile-first, breakpoints 640/768/1024/1280).
-- Reduced-motion respected via `@media (prefers-reduced-motion: reduce)`.
+### Program detail pages (universal template)
+- `/viajes/sur/atlas_desierto` — HUB linking to 6 programmes
+- `/viajes/desierto_atlas/programa_6n_7d`, `_5n_6d`, `_4n_5d`
+- `/viajes/atlas_desierto/programa_4n_5d`, `_5n_6d`, `_6n_7d`
 
-## Implemented (2026-02)
-- [x] Hero slider (3 cinematic slides + ken-burns + film grain + overline ticker)
-- [x] Featured Journeys (6 curated trips, card grid, currency, duration chip)
-- [x] Luxury Camps (3 editorial blocks alternating sides, dark cinematic stage)
-- [x] Cultural Experiences (6 tile pattern with icon medallions)
-- [x] Testimonials (auto-rotating editorial blockquote)
-- [x] Journal (3 article cards)
-- [x] Interactive Map of Morocco (Leaflet + 12 marker points + CartoDB editorial tiles)
-- [x] Contact form → POST `/api/contact-requests` (validated Pydantic / EmailStr)
-- [x] Sticky header + side drawer nav (left, 80vw / 480px)
-- [x] Floating EN/FR/ES language switcher (bottom-left)
-- [x] Trilingual i18n table for all UI copy + per-record content `{en, fr, es}`
-- [x] Berber pattern SVG utilities (diamond, cross, zigzag, watermark) + grain + ken-burns
-- [x] Sonner toast on contact submit
-- [x] Marquee strip beneath hero
+### Home page navigation
+- 5 TravelCategory cards now navigate to corresponding pages via `routeId`:
+  - magic-south → `/viajes/surdemarruecos`
+  - north-to-south → `/viajes/marruecos`
+  - short-escapes → `/viajes/escapadas`
+  - northern-morocco → `/viajes/nortedemarruecos`
+  - group-departures → `/proximas_salidas`
 
-## Backlog (P1 / P2)
-- P1: Per-journey detail pages with deeper itinerary, gallery, day-by-day.
-- P1: Per-camp detail pages.
-- P1: Email notifications for new enquiries (Resend/SendGrid integration).
-- P2: Newsletter/journal email capture.
-- P2: Concierge chatbot widget (Emergent LLM Key).
-- P2: Admin dashboard for /api/contact-requests review.
-- P2: SEO meta, Open Graph image, sitemap.xml.
+## Backlog / P1
+- Build dedicated `/proximas_salidas` page (currently falls back to StubPage)
+- Provide real photo set (Unsplash placeholders today)
+- Replace mocked stub-content for non-tour routes (about, contact intermediate, etc.)
+- Final integration testing for contact form → MongoDB enqueue
+- Mobile QA pass on the 14 newly built pages
 
-## Next Action Items
-1. Validate end-to-end submission flow via testing agent.
-2. Iterate on user-supplied imagery once provided.
-3. Build journey/camp detail routes when copy is finalised.
+## Backlog / P2
+- Sticky-nav active-state improvements on long pages
+- Sitemap / SEO meta per page
+- Replace stock Unsplash imagery with curated Xaluca photo library
+
+## Stack & integrations
+- MongoDB enquiries (POST `/api/contact`)
+- Leaflet maps (existing components)
+- No 3rd-party LLM integrations needed yet
+
+## Key files of reference
+- `frontend/src/App.js` · LocalizedRouter wiring of all 20+ pages
+- `frontend/src/lib/routes.js` · Trilingual slugs (now incl. tourUpcoming)
+- `frontend/src/lib/data.js` · TRAVEL_CATEGORIES with routeIds
+- `frontend/src/components/TravelCategories.jsx` · Now uses `Link` when `routeId` present
+- `frontend/src/components/ProgramTemplate.jsx` · Universal Atlas/Desert program template (variant "da"/"ad")
+- `frontend/src/components/JourneyPageSections.jsx` · Shared hero/stickyNav/itinerary/editorial blocks
+- `frontend/src/lib/programData.js` · 6 programmes + day building blocks
+- `frontend/src/lib/marruecosItineraries.js`, `norteItineraries.js`, `surItineraries.js`, `aventuraExperiences.js`, `escapadasItineraries.js`
+
+## Testing status
+- `iteration_4.json` (Feb 2026): 14 new pages — all rendering, language switcher preserved, all hub-to-program links work, 0 console errors.
+- Home category links (5/5) self-tested: all hrefs and click-through to `/viajes/surdemarruecos` verified ✓

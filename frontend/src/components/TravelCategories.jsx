@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
+import { pathFor } from "@/lib/routes";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -36,14 +38,20 @@ export const TravelCategories = () => {
         <div className="space-y-12 md:space-y-16">
           {TRAVEL_CATEGORIES.map((c, idx) => {
             const reverse = idx % 2 === 1;
+            const linkTo = c.routeId ? pathFor(lang, c.routeId) : null;
+            const ImageWrapper = linkTo ? Link : "div";
+            const imageProps = linkTo
+              ? { to: linkTo, "data-testid": `category-image-${c.slug}` }
+              : {};
             return (
               <article
                 key={c.slug}
                 data-testid={`category-card-${c.slug}`}
                 className="group grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-10 items-center"
               >
-                <div
-                  className={`relative md:col-span-7 overflow-hidden h-[56vh] min-h-[420px] max-h-[640px] ${
+                <ImageWrapper
+                  {...imageProps}
+                  className={`relative md:col-span-7 overflow-hidden h-[56vh] min-h-[420px] max-h-[640px] block ${
                     reverse ? "md:order-2" : ""
                   }`}
                 >
@@ -82,7 +90,7 @@ export const TravelCategories = () => {
                     <MapPin className="w-3 h-3" strokeWidth={1.6} />
                     {pick(c.region, lang)}
                   </span>
-                </div>
+                </ImageWrapper>
 
                 <div className={`md:col-span-5 ${reverse ? "md:order-1 md:pr-6" : "md:pl-6"}`}>
                   <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
@@ -116,14 +124,25 @@ export const TravelCategories = () => {
                     </ul>
                   )}
 
-                  <a
-                    href="#contact"
-                    data-testid={`category-cta-${c.slug}`}
-                    className="mt-8 inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
-                  >
-                    {t("cta_discover_routes")}
-                    <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
-                  </a>
+                  {linkTo ? (
+                    <Link
+                      to={linkTo}
+                      data-testid={`category-cta-${c.slug}`}
+                      className="mt-8 inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+                    >
+                      {t("cta_discover_routes")}
+                      <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                    </Link>
+                  ) : (
+                    <a
+                      href="#contact"
+                      data-testid={`category-cta-${c.slug}`}
+                      className="mt-8 inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+                    >
+                      {t("cta_discover_routes")}
+                      <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                    </a>
+                  )}
                 </div>
               </article>
             );

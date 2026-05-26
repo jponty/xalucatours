@@ -21,6 +21,7 @@ export const ROUTES = {
   tourAtlasDesierto56:{ es: "viajes/atlas_desierto/programa_5n_6d", en: "tours/atlas-desert/program-5n-6d", fr: "voyages/atlas-desert/programme-5n-6j" },
   tourAtlasDesierto67:{ es: "viajes/atlas_desierto/programa_6n_7d", en: "tours/atlas-desert/program-6n-7d", fr: "voyages/atlas-desert/programme-6n-7j" },
   tourAtlasDesiertoHub:{ es: "viajes/sur/atlas_desierto", en: "tours/south/atlas-desert", fr: "voyages/sud/atlas-desert" },
+  tourUpcoming:       { es: "proximas_salidas", en: "upcoming-departures", fr: "prochains-departs" },
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },
   tourShort:          { es: "viajes/escapadas",          en: "tours/short-escapes",      fr: "voyages/escapades-courtes" },
   tourNorth:          { es: "viajes/nortedemarruecos",   en: "tours/northern-morocco",   fr: "voyages/nord-du-maroc" },

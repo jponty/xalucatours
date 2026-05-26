@@ -6,6 +6,7 @@
 export const TRAVEL_CATEGORIES = [
   {
     slug: "magic-south",
+    routeId: "tourSouth",
     number: "01",
     accent: "#C16542",
     image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=85",
@@ -24,6 +25,7 @@ export const TRAVEL_CATEGORIES = [
   },
   {
     slug: "north-to-south",
+    routeId: "tourFull",
     number: "02",
     accent: "#A07042",
     image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
@@ -42,6 +44,7 @@ export const TRAVEL_CATEGORIES = [
   },
   {
     slug: "short-escapes",
+    routeId: "tourShort",
     number: "03",
     accent: "#D97742",
     image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
@@ -60,6 +63,7 @@ export const TRAVEL_CATEGORIES = [
   },
   {
     slug: "northern-morocco",
+    routeId: "tourNorth",
     number: "04",
     accent: "#3A4A5F",
     image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
@@ -78,6 +82,7 @@ export const TRAVEL_CATEGORIES = [
   },
   {
     slug: "group-departures",
+    routeId: "tourUpcoming",
     number: "05",
     accent: "#C8A24B",
     image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
