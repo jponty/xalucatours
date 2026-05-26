@@ -40,26 +40,36 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
       style={{ background: tone.card, border: `1px solid ${tone.border}1A` }}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513] img-overlay">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
         <img
           src={trip.image}
           alt={pick(trip.title, lang)}
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
+        {/* Dedicated bottom-half gradient — soft on top, stronger near
+            the title for guaranteed readability on light imagery. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(20,15,12,0.86) 0%, rgba(20,15,12,0.55) 38%, rgba(20,15,12,0.18) 70%, rgba(20,15,12,0) 100%)",
+          }}
+        />
         <span className="film-grain pointer-events-none opacity-40" aria-hidden="true" />
         <span
-          className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image"
+          className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-white text-on-image z-[2]"
           style={{ background: `${cardAccent}f0` }}
           data-testid={`home-trip-tag-${trip.id}`}
         >
           {pick(trip.tag, lang)}
         </span>
-        <div className="absolute inset-x-0 bottom-0 p-5">
-          <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/85 mb-1.5 text-on-image">
+        <div className="absolute inset-x-0 bottom-0 p-5 z-[2]">
+          <span className="block text-[10px] tracking-[0.3em] uppercase text-white/90 mb-1.5 text-on-image-strong">
             {pick(trip.duration, lang)}
           </span>
-          <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-[20px] md:text-[22px] leading-[1.12] tracking-tight">
+          <h3 className="font-serif-x text-white text-on-image-strong text-[20px] md:text-[22px] leading-[1.12] tracking-tight">
             {pick(trip.title, lang)}
           </h3>
         </div>
