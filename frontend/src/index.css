@@ -90,13 +90,17 @@
     background-size: 60px 60px;
 }
 .berber-bg-cross {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><g fill='none' stroke='%23D4A373' stroke-width='1' opacity='0.14'><path d='M24 4 L24 44 M4 24 L44 24'/><path d='M24 4 L28 12 L24 20 L20 12 Z M24 28 L28 36 L24 44 L20 36 Z'/><path d='M4 24 L12 20 L20 24 L12 28 Z M28 24 L36 20 L44 24 L36 28 Z'/></g></svg>");
-    background-size: 48px 48px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%23D4A373' stroke-width='0.9' opacity='0.18'><polygon points='30,12 36,18 42,12 48,18 42,24 48,30 42,36 48,42 42,48 36,42 30,48 24,42 18,48 12,42 18,36 12,30 18,24 12,18 18,12 24,18'/><circle cx='30' cy='30' r='3'/></g></svg>");
+    background-size: 60px 60px;
 }
 .berber-bg-zigzag {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='12' viewBox='0 0 40 12'><path d='M0 10 L10 2 L20 10 L30 2 L40 10' fill='none' stroke='%23D4A373' stroke-width='1' opacity='0.45'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='14' viewBox='0 0 48 14'><g fill='none' stroke='%23D4A373' stroke-width='0.8' opacity='0.5'><path d='M0 7 L48 7'/><circle cx='6' cy='7' r='2'/><circle cx='24' cy='7' r='2'/><circle cx='42' cy='7' r='2'/><path d='M11 7 L19 7 M29 7 L37 7'/></g></svg>");
     background-repeat: repeat-x;
-    background-size: 40px 12px;
+    background-size: 48px 14px;
+}
+.arabic-bg-tile {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%23D4A373' stroke-width='0.9' opacity='0.20'><polygon points='30,12 36,18 42,12 48,18 42,24 48,30 42,36 48,42 42,48 36,42 30,48 24,42 18,48 12,42 18,36 12,30 18,24 12,18 18,12 24,18'/><circle cx='30' cy='30' r='3'/></g></svg>");
+    background-size: 60px 60px;
 }
 .berber-watermark::before {
     content: '';

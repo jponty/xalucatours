@@ -220,7 +220,7 @@ export default function EscapadasPage() {
           />
           {i < ESCAPADAS_ITEMS.length - 1 && (
             <BerberDivider
-              variant={i % 2 === 0 ? "nomadic" : "berber"}
+              variant={i % 2 === 0 ? "arabesque" : "zellige"}
               tone="cream"
               color="#A07042"
               label={`Escapada · ${String(i + 2).padStart(2, "0")}`}

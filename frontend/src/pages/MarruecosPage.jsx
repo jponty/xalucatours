@@ -278,7 +278,7 @@ export default function MarruecosPage() {
 
       <EditorialBlock block={t.intro} lang={lang} />
       <SectionGallery {...MARRUECOS_GALLERIES[0]} testid="marruecos-gallery-intro" />
-      <BerberDivider variant="berber" tone="cream" color="#A07042" />
+      <BerberDivider variant="zellige" tone="cream" color="#A07042" />
 
       <ItinerariesOverview itineraries={MARRUECOS_ITINERARIES} t={t.overview} lang={lang} />
 

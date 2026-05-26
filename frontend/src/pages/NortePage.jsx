@@ -243,7 +243,7 @@ export default function NortePage() {
       {/* Editorial 2 — closing narrative */}
       <EditorialBlock block={NORTE_EDITORIAL[1]} lang={lang} />
       <SectionGallery {...NORTE_GALLERIES[1]} testid="norte-gallery-rif" />
-      <BerberDivider variant="nomadic" tone="paper" color="#A07042" label="Mediterráneo · Rif" />
+      <BerberDivider variant="arabesque" tone="paper" color="#A07042" label="Mediterráneo · Rif" />
 
       {/* Cities row */}
       <CitiesRow t={t.cities} lang={lang} />

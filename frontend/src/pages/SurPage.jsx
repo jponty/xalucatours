@@ -237,7 +237,7 @@ export default function SurPage() {
       {/* 4. Editorial: gate of the desert */}
       <EditorialBlock block={SUR_EDITORIAL[1]} lang={lang} />
       <SectionGallery {...SUR_GALLERIES[1]} testid="sur-gallery-desierto" />
-      <BerberDivider variant="berber" tone="cream" color="#A07042" />
+      <BerberDivider variant="zellige" tone="cream" color="#A07042" />
 
       {/* 5. Itinerary 2: Marrakech -> Errachidia (links to Marrakech-Erg Chebbi hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[1]} index={1} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechErgHub")} />
@@ -246,7 +246,7 @@ export default function SurPage() {
       {/* 6. Editorial: Marrakech, Atlas & Sahara */}
       <EditorialBlock block={SUR_EDITORIAL[2]} lang={lang} />
       <SectionGallery {...SUR_GALLERIES[2]} testid="sur-gallery-atlas-sahara" />
-      <BerberDivider variant="nomadic" tone="paper" color="#A07042" label="Atlas · Sáhara" />
+      <BerberDivider variant="arabesque" tone="paper" color="#A07042" label="Atlas · Sáhara" />
 
       {/* 7. Itinerary 3: Marrakech loop (links to Marrakech-Erg Chebbi-Marrakech hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[2]} index={2} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechLoopHub")} />
