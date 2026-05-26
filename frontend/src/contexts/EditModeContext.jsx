@@ -21,41 +21,68 @@ export const EditModeProvider = ({ children }) => {
        • Any element opted in via             `data-edit-allow="true"`
   =================================================================== */
 
-  // 1. Capture-phase click guard for <a> and opt-in elements
+  // 1. Capture-phase navigation guard.
+  //    Editing must be completely isolated from navigation: no link should
+  //    fire, no card should redirect, no middle-click should open a new
+  //    tab. We intercept every gesture that browsers/SPA routers can hook
+  //    into — click, auxclick (middle-click), mousedown, pointerdown —
+  //    in the capture phase so we beat React's own bubble-phase listeners
+  //    AND any document-level navigation library.
   useEffect(() => {
     if (!editMode) return undefined;
 
-    const allowed = (target) =>
+    const isAllowed = (target) =>
       target.closest('[role="dialog"]') ||
       target.closest('[data-testid^="editable-edit-btn-"]') ||
       target.closest('[data-testid="header-edit-mode-toggle"]') ||
       target.closest('[data-edit-allow="true"]');
 
+    const block = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation?.();
+    };
+
     const handler = (e) => {
       const t = e.target;
-      if (allowed(t)) return;
+      if (!t) return;
 
-      // Block ALL anchor clicks unconditionally
-      if (t.closest("a")) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation?.();
-        return;
-      }
+      // Middle-click (button 1) inside an <a> would open a new tab even
+      // if the immediate target is a whitelisted button. Block it
+      // unconditionally — middle-click has no meaning while editing.
+      const isMiddle = e.button === 1 || e.type === "auxclick";
+      if (isMiddle && t.closest("a")) return block(e);
 
-      // Block any element explicitly marked as a navigation source
-      if (t.closest('[data-edit-block="true"]')) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation?.();
-      }
+      if (isAllowed(t)) return;
+
+      // Block ALL anchor clicks unconditionally (covers React Router <Link>
+      // since it renders an <a> and binds onClick in bubble phase).
+      if (t.closest("a")) return block(e);
+
+      // Opt-in extra block (cards/buttons explicitly tagged as navigation).
+      if (t.closest('[data-edit-block="true"]')) return block(e);
+    };
+
+    // Suppress native image dragging while editing — a stray drag could
+    // start a ghost image and trigger unintended browser behaviours.
+    const dragHandler = (e) => {
+      const t = e.target;
+      if (isAllowed(t)) return;
+      if (t.tagName === "IMG" || t.tagName === "A" || t.closest("a")) block(e);
     };
 
     document.addEventListener("click", handler, true);
-    document.addEventListener("auxclick", handler, true); // middle-click
+    document.addEventListener("auxclick", handler, true);
+    document.addEventListener("mousedown", handler, true);
+    document.addEventListener("pointerdown", handler, true);
+    document.addEventListener("dragstart", dragHandler, true);
+
     return () => {
       document.removeEventListener("click", handler, true);
       document.removeEventListener("auxclick", handler, true);
+      document.removeEventListener("mousedown", handler, true);
+      document.removeEventListener("pointerdown", handler, true);
+      document.removeEventListener("dragstart", dragHandler, true);
     };
   }, [editMode]);
 

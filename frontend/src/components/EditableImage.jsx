@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Cropper from "react-easy-crop";
 import {
   Pencil, X, Upload, Check, Loader2, AlertCircle, RotateCcw, ImageOff,
@@ -547,19 +548,30 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
   // Hard click-isolation: every pointer/click/wheel event captured at the
   // panel root is contained. The page underneath cannot receive any of
   // them, even on bubbling-phase listeners attached elsewhere.
+  //
+  // We also call preventDefault — critical because the modal is rendered
+  // via Portal so its host is <body>, but even so, browsers can interpret
+  // events inside ancestor <a> elements as activations. With preventDefault
+  // there is no way a stray click follows a link.
   const stop = (e) => {
     e.stopPropagation();
     e.nativeEvent?.stopImmediatePropagation?.();
   };
+  const stopAndPrevent = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent?.stopImmediatePropagation?.();
+  };
 
-  return (
+  return createPortal(
+    (
     <div
       data-testid={`edit-modal-${initialSlot}`}
       className="fixed inset-0 z-[9999] flex"
-      onMouseDown={stop}
+      onMouseDown={stopAndPrevent}
       onMouseUp={stop}
       onClick={stop}
-      onPointerDown={stop}
+      onPointerDown={stopAndPrevent}
       onTouchStart={stop}
       onWheelCapture={stop}
       onContextMenu={stop}
@@ -956,6 +968,8 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
         </div>
       </aside>
     </div>
+    ),
+    document.body,
   );
 };
 

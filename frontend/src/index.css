@@ -303,6 +303,7 @@
    While `body.edit-mode-on` is set, all navigation is paused. We add:
    - A persistent terracotta band at the very top so the admin sees the
      lockdown state from any scroll position.
+   - A small floating chip ("EDITANDO") in the corner as a hard signal.
    - `not-allowed` cursor on every anchor element on the page. */
 body.edit-mode-on::before {
     content: "";
@@ -316,12 +317,49 @@ body.edit-mode-on::before {
     pointer-events: none;
     animation: edit-band-pulse 2.8s ease-in-out infinite;
 }
+body.edit-mode-on::after {
+    content: "MODO EDICIÓN · navegación bloqueada";
+    position: fixed;
+    bottom: 14px;
+    left: 14px;
+    z-index: 9000;
+    pointer-events: none;
+    background: #C16542;
+    color: #FDFBF7;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.4);
+    animation: edit-chip-pulse 2.8s ease-in-out infinite;
+}
 @keyframes edit-band-pulse {
     0%, 100% { opacity: 0.85; }
     50%      { opacity: 1;    }
 }
-body.edit-mode-on a {
-    cursor: not-allowed !important;
+@keyframes edit-chip-pulse {
+    0%, 100% { transform: translateY(0); box-shadow: 0 12px 32px -10px rgba(0,0,0,0.4); }
+    50%      { transform: translateY(-2px); box-shadow: 0 18px 36px -10px rgba(0,0,0,0.5); }
+}
+/* CSS-level lockdown. Browsers can decide to open a link (left/middle
+   click, drag-link-to-tab, touch long-press) before any JS listener
+   fires. Setting `pointer-events: none` on the <a> AND all its
+   descendants removes the link entirely from the hit-testing tree, so
+   the browser cannot treat any event inside the link as a link target
+   under any user gesture.
+
+   Only the edit overlay BUTTON receives clicks — not the decorative
+   dashed border, ratio chip, slot tag, "Editar" pill, etc. Otherwise
+   those decorative elements (which paint after the button in the DOM)
+   would steal the hit-test and the click would cascade up to the <a>.
+*/
+body.edit-mode-on a:not([data-edit-allow="true"]),
+body.edit-mode-on a:not([data-edit-allow="true"]) * {
+    pointer-events: none !important;
+}
+body.edit-mode-on a:not([data-edit-allow="true"]) [data-testid^="editable-edit-btn-"] {
+    pointer-events: auto !important;
 }
 body.edit-mode-on a:has([data-testid^="editable-overlay-"]) {
     cursor: crosshair !important;
@@ -329,6 +367,13 @@ body.edit-mode-on a:has([data-testid^="editable-overlay-"]) {
 body.edit-mode-on a:has([data-testid^="editable-overlay-"]):focus-visible {
     outline: 2px solid #C16542;
     outline-offset: 4px;
+}
+/* Suppress hover transforms on link cards while editing — feels weird to
+   hover-zoom an image you're about to crop. Anything inside an editable
+   overlay keeps its own interactions. */
+body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:scale-\[1\.06\],
+body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5 {
+    transform: none !important;
 }
 
 
