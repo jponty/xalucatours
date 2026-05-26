@@ -10,6 +10,7 @@ import { CONTACT } from "@/lib/data";
 import { StickyNav } from "@/components/JourneyPageSections";
 import { SHARED_SEASONS, SHARED_DETAILS } from "@/lib/programData";
 import { DayRouteMap } from "@/components/DayRouteMap";
+import { DayGallery } from "@/components/DayGallery";
 import ContactForm from "@/components/ContactForm";
 
 /* ============================================================
@@ -410,6 +411,7 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
         </div>
       </div>
       <DayRouteMap day={day} idx={idx} total={total} accent={day.accent} />
+      <DayGallery day={day} accent={day.accent} />
     </article>
   );
 };
