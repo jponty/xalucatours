@@ -1,0 +1,121 @@
+import React, { useEffect, useState } from "react";
+import { ArrowRight, Compass } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+const SLIDES = [
+  {
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+    overline: { en: "Erg Chebbi · Sahara", fr: "Erg Chebbi · Sahara", es: "Erg Chebbi · Sáhara" },
+  },
+  {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+    overline: { en: "Aït Benhaddou · Atlas", fr: "Aït Benhaddou · Atlas", es: "Aït Benhaddou · Atlas" },
+  },
+  {
+    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+    overline: { en: "Fez · Imperial Cities", fr: "Fès · Cités impériales", es: "Fez · Ciudades imperiales" },
+  },
+];
+
+export const HeroSlider = () => {
+  const { t, lang } = useLanguage();
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIdx((p) => (p + 1) % SLIDES.length), 7000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <section
+      data-testid="hero-section"
+      className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#1A1513]"
+    >
+      {SLIDES.map((s, i) => (
+        <div
+          key={i}
+          className={`absolute inset-0 transition-opacity duration-[1600ms] ease-out ${
+            i === idx ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <img
+            src={s.image}
+            alt=""
+            className="ken-burns absolute inset-0 w-full h-full object-cover"
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        </div>
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/30" />
+      <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
+      <span className="film-grain" />
+
+      <div className="relative z-10 h-full flex flex-col">
+        <div className="flex-1 flex items-end pb-20 md:pb-32">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
+            <div className="max-w-3xl">
+              <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
+                <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+                <span className="text-[11px] tracking-[0.3em] uppercase font-semibold">
+                  {SLIDES[idx].overline[lang] || SLIDES[idx].overline.en}
+                </span>
+              </div>
+
+              <h1
+                key={`title-${idx}`}
+                className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6"
+              >
+                {t("hero_title")}
+              </h1>
+
+              <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
+                {t("hero_sub")}
+              </p>
+
+              <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
+                <a
+                  href="#contact"
+                  data-testid="hero-cta-primary"
+                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                >
+                  {t("cta_enquire")}
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+                </a>
+                <a
+                  href="#journeys"
+                  data-testid="hero-cta-secondary"
+                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                >
+                  {t("cta_explore")}
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Slide indicators */}
+        <div className="pb-8 md:pb-12 max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIdx(i)}
+                data-testid={`hero-slide-indicator-${i}`}
+                className={`h-px transition-all duration-500 ${
+                  i === idx ? "w-12 bg-[#D4A373]" : "w-6 bg-[#FDFBF7]/35"
+                }`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
+          <span className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 hidden md:block">
+            {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSlider;

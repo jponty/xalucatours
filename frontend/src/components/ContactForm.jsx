@@ -1,0 +1,246 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { ArrowRight, Mail, Phone, MapPin, Check } from "lucide-react";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { JOURNEYS } from "@/lib/data";
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const initialState = {
+  full_name: "",
+  email: "",
+  phone: "",
+  travel_dates: "",
+  party_size: "",
+  journey_interest: "",
+  message: "",
+};
+
+export const ContactForm = () => {
+  const { t, lang } = useLanguage();
+  const [form, setForm] = useState(initialState);
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    try {
+      await axios.post(`${API}/contact-requests`, { ...form, language: lang });
+      setDone(true);
+      toast.success(t("form_success"));
+      setForm(initialState);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("form_error"));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <section
+      id="contact"
+      data-testid="contact-section"
+      className="relative bg-[#1A1513] text-[#FDFBF7] py-24 md:py-32 overflow-hidden"
+    >
+      <div className="absolute inset-0 berber-bg-cross opacity-50 pointer-events-none" aria-hidden="true" />
+      <span className="film-grain" />
+
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* Left column — copy & contact details */}
+          <div className="lg:col-span-5">
+            <span className="overline text-[#D4A373]">{t("sec_contact_overline")}</span>
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5">
+              {t("sec_contact_title")}
+            </h2>
+            <p className="mt-6 text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed">
+              {t("sec_contact_sub")}
+            </p>
+
+            <ul className="mt-12 space-y-5 text-sm text-[#FDFBF7]/85">
+              <li className="flex items-start gap-4">
+                <MapPin className="w-4 h-4 mt-0.5 text-[#D4A373]" strokeWidth={1.5} />
+                <span>Av. Hassan II, Riad El Mansour<br />40000 Marrakech, Morocco</span>
+              </li>
+              <li className="flex items-center gap-4">
+                <Phone className="w-4 h-4 text-[#D4A373]" strokeWidth={1.5} />
+                <a href="tel:+212524000000" className="hover:text-[#D4A373] transition-colors">+212 524 000 000</a>
+              </li>
+              <li className="flex items-center gap-4">
+                <Mail className="w-4 h-4 text-[#D4A373]" strokeWidth={1.5} />
+                <a href="mailto:contact@xalucatours.ma" className="hover:text-[#D4A373] transition-colors">contact@xalucatours.ma</a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Right column — form */}
+          <div className="lg:col-span-7">
+            {done ? (
+              <div
+                data-testid="contact-success-card"
+                className="bg-[#FDFBF7]/[0.04] border border-[#D4A373]/40 p-10 md:p-14 text-center berber-watermark relative"
+              >
+                <span className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#D4A373]/40 text-[#D4A373] mx-auto">
+                  <Check className="w-5 h-5" strokeWidth={1.6} />
+                </span>
+                <h3 className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-6 text-[#FDFBF7]">
+                  {t("form_success")}
+                </h3>
+                <button
+                  onClick={() => setDone(false)}
+                  data-testid="contact-send-another"
+                  className="mt-8 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b border-[#D4A373]/40 pb-1 text-[#D4A373] hover:text-[#FDFBF7] hover:border-[#FDFBF7] transition-colors"
+                >
+                  Send another
+                  <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={onSubmit}
+                data-testid="contact-form"
+                className="bg-[#FDFBF7]/[0.04] border border-[#FDFBF7]/15 p-8 md:p-12 backdrop-blur-sm"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Field label={t("form_name")} testId="form-name">
+                    <input
+                      required
+                      name="full_name"
+                      value={form.full_name}
+                      onChange={onChange}
+                      data-testid="contact-input-name"
+                      className="form-input"
+                    />
+                  </Field>
+
+                  <Field label={t("form_email")} testId="form-email">
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={onChange}
+                      data-testid="contact-input-email"
+                      className="form-input"
+                    />
+                  </Field>
+
+                  <Field label={t("form_phone")} testId="form-phone">
+                    <input
+                      name="phone"
+                      value={form.phone}
+                      onChange={onChange}
+                      data-testid="contact-input-phone"
+                      className="form-input"
+                    />
+                  </Field>
+
+                  <Field label={t("form_dates")} testId="form-dates">
+                    <input
+                      name="travel_dates"
+                      value={form.travel_dates}
+                      onChange={onChange}
+                      placeholder="e.g. Oct 12 — Oct 22, 2026"
+                      data-testid="contact-input-dates"
+                      className="form-input"
+                    />
+                  </Field>
+
+                  <Field label={t("form_party")} testId="form-party">
+                    <input
+                      name="party_size"
+                      value={form.party_size}
+                      onChange={onChange}
+                      placeholder="2 adults"
+                      data-testid="contact-input-party"
+                      className="form-input"
+                    />
+                  </Field>
+
+                  <Field label={t("form_interest")} testId="form-interest">
+                    <select
+                      name="journey_interest"
+                      value={form.journey_interest}
+                      onChange={onChange}
+                      data-testid="contact-select-journey"
+                      className="form-input"
+                    >
+                      <option value="">{t("form_no_preference")}</option>
+                      {JOURNEYS.map((j) => (
+                        <option key={j.slug} value={j.slug}>
+                          {pick(j.title, lang)}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
+
+                <div className="mt-6">
+                  <Field label={t("form_message")} testId="form-message">
+                    <textarea
+                      required
+                      name="message"
+                      value={form.message}
+                      onChange={onChange}
+                      rows={5}
+                      data-testid="contact-input-message"
+                      className="form-input resize-none"
+                    />
+                  </Field>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={sending}
+                  data-testid="contact-submit-button"
+                  className="mt-8 w-full md:w-auto inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A35133] disabled:opacity-60 disabled:cursor-not-allowed text-[#FDFBF7] px-10 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                >
+                  {sending ? t("form_sending") : t("form_submit")}
+                  {!sending && <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .form-input {
+          width: 100%;
+          background: transparent;
+          border: 1px solid rgba(253, 251, 247, 0.18);
+          color: #FDFBF7;
+          padding: 0.85rem 1rem;
+          font-family: 'Outfit', sans-serif;
+          font-size: 0.95rem;
+          outline: none;
+          border-radius: 2px;
+          transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .form-input:focus {
+          border-color: #C16542;
+          background-color: rgba(253, 251, 247, 0.03);
+        }
+        .form-input::placeholder { color: rgba(253, 251, 247, 0.35); }
+        .form-input option { color: #2C2621; background: #FDFBF7; }
+      `}</style>
+    </section>
+  );
+};
+
+const Field = ({ label, testId, children }) => (
+  <label className="block" data-testid={`${testId}-field`}>
+    <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2">
+      {label}
+    </span>
+    {children}
+  </label>
+);
+
+export default ContactForm;
