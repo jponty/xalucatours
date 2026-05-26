@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
-import { Compass, Thermometer, CloudSun, MapPin } from "lucide-react";
+import { Compass, Thermometer, CloudSun, MapPin, Activity } from "lucide-react";
 import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 
@@ -15,6 +15,11 @@ const T = {
     climate_atlas: "Cordillera del Atlas · 1.612 m",
     climate_sahara: "Sahara · Erg Chebbi",
     climate_note: "Temperaturas medias orientativas en °C, día y noche.",
+    climate_live: "Este mes · en directo",
+    climate_live_subtitle: "Datos reales · Open-Meteo",
+    climate_live_loading: "Cargando datos reales del clima…",
+    climate_live_error: "No se han podido cargar los datos en vivo · mostrando datos orientativos.",
+    day_label: "Día", night_label: "Noche",
   },
   en: {
     eyebrow: "Visual trip summary",
@@ -25,6 +30,11 @@ const T = {
     climate_atlas: "Atlas range · 1,612 m",
     climate_sahara: "Sahara · Erg Chebbi",
     climate_note: "Average indicative temperatures in °C, day and night.",
+    climate_live: "This month · live",
+    climate_live_subtitle: "Real data · Open-Meteo",
+    climate_live_loading: "Loading live weather data…",
+    climate_live_error: "Couldn't load live data · showing indicative values.",
+    day_label: "Day", night_label: "Night",
   },
   fr: {
     eyebrow: "Résumé visuel du voyage",
@@ -35,6 +45,11 @@ const T = {
     climate_atlas: "Cordillère de l'Atlas · 1 612 m",
     climate_sahara: "Sahara · Erg Chebbi",
     climate_note: "Températures moyennes indicatives en °C, jour et nuit.",
+    climate_live: "Ce mois · en direct",
+    climate_live_subtitle: "Données réelles · Open-Meteo",
+    climate_live_loading: "Chargement des données météo en direct…",
+    climate_live_error: "Impossible de charger les données en direct · valeurs indicatives affichées.",
+    day_label: "Jour", night_label: "Nuit",
   },
 };
 
@@ -53,6 +68,12 @@ const CLIMATE = {
   premium: { atlas: { day: 12, night: 0 },  sahara: { day: 20, night: 5 } },
 };
 
+const MONTH_NAMES = {
+  es: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+};
+
 const FitBoundsCtl = ({ bounds }) => {
   const map = useMap();
   useEffect(() => {
@@ -69,6 +90,37 @@ export const TripOverview = ({ days }) => {
   const t = T[lang] || T.es;
   const [activeDay, setActiveDay] = useState(null); // null = show all
   const [activeSeason, setActiveSeason] = useState("high");
+  const [liveData, setLiveData] = useState(null);
+  const [liveState, setLiveState] = useState("idle"); // idle | loading | ok | error
+
+  // Fetch real monthly climate from our backend (which proxies Open-Meteo)
+  useEffect(() => {
+    let cancelled = false;
+    setLiveState("loading");
+    const api = process.env.REACT_APP_BACKEND_URL;
+    fetch(`${api}/api/climate/current-month`)
+      .then((r) => r.json())
+      .then((payload) => {
+        if (cancelled) return;
+        const z = payload && payload.zones;
+        if (z && z.atlas && z.sahara) {
+          setLiveData({
+            atlas: { day: z.atlas.day, night: z.atlas.night },
+            sahara: { day: z.sahara.day, night: z.sahara.night },
+          });
+          setLiveState("ok");
+          setActiveSeason("live");
+        } else {
+          setLiveState("error");
+        }
+      })
+      .catch(() => { if (!cancelled) setLiveState("error"); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const currentMonthName = (MONTH_NAMES[lang] || MONTH_NAMES.es)[new Date().getMonth()];
+  const showingLive = activeSeason === "live" && liveData;
+  const climateData = showingLive ? liveData : CLIMATE[activeSeason];
 
   // Flatten landmarks per day with day metadata
   const dayBlocks = useMemo(() => days.map((d, i) => {
@@ -254,6 +306,23 @@ export const TripOverview = ({ days }) => {
               </span>
               <p className="mt-3 text-[14px] text-[#5C5248] leading-relaxed">{t.climate_note}</p>
               <div className="mt-4 flex flex-wrap gap-2">
+                {/* Live (this month) chip — first */}
+                <button
+                  type="button"
+                  onClick={() => liveState === "ok" && setActiveSeason("live")}
+                  disabled={liveState !== "ok"}
+                  data-testid="climate-season-live"
+                  className={`text-[10px] tracking-[0.3em] uppercase px-3 py-2 border transition-all duration-300 inline-flex items-center gap-2 ${
+                    activeSeason === "live"
+                      ? "bg-[#C16542] text-[#FDFBF7] border-[#C16542]"
+                      : liveState === "ok"
+                      ? "text-[#C16542] border-[#C16542]/40 hover:border-[#C16542]"
+                      : "text-[#5C5248]/50 border-[#2C2621]/10 cursor-not-allowed"
+                  }`}
+                >
+                  <Activity className={`w-3 h-3 ${liveState === "loading" ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+                  {t.climate_live}
+                </button>
                 {Object.keys(SEASON_LABELS).map((s) => {
                   const isActive = activeSeason === s;
                   return (
@@ -274,30 +343,47 @@ export const TripOverview = ({ days }) => {
                 })}
               </div>
               <p className="mt-3 text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
-                {pick(SEASON_LABELS[activeSeason].months, lang)}
+                {showingLive
+                  ? `${currentMonthName} · ${t.climate_live_subtitle}`
+                  : pick(SEASON_LABELS[activeSeason].months, lang)}
               </p>
+              {liveState === "loading" && (
+                <p className="mt-2 text-[11px] text-[#5C5248] italic">{t.climate_live_loading}</p>
+              )}
+              {liveState === "error" && (
+                <p className="mt-2 text-[11px] text-[#C16542]/80 italic">{t.climate_live_error}</p>
+              )}
             </div>
 
             <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { id: "atlas",  label: t.climate_atlas,  data: CLIMATE[activeSeason].atlas,  color: "#5A6B4F" },
-                { id: "sahara", label: t.climate_sahara, data: CLIMATE[activeSeason].sahara, color: "#D97742" },
+                { id: "atlas",  label: t.climate_atlas,  data: climateData.atlas,  color: "#5A6B4F" },
+                { id: "sahara", label: t.climate_sahara, data: climateData.sahara, color: "#D97742" },
               ].map((z) => (
                 <div key={z.id} data-testid={`climate-zone-${z.id}`}
-                     className="border border-[#2C2621]/10 p-5 md:p-6 bg-[#FDFBF7]">
+                     className="border border-[#2C2621]/10 p-5 md:p-6 bg-[#FDFBF7] relative">
+                  {showingLive && (
+                    <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 text-[9px] tracking-[0.3em] uppercase text-[#C16542]">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-[#C16542] opacity-60 animate-ping" />
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#C16542]" />
+                      </span>
+                      Live
+                    </span>
+                  )}
                   <div className="flex items-center gap-3">
                     <Thermometer className="w-4 h-4" style={{ color: z.color }} strokeWidth={1.7} />
                     <span className="font-serif-x text-[16px] md:text-[17px] text-[#2C2621]">{z.label}</span>
                   </div>
                   <div className="mt-5 grid grid-cols-2 gap-3">
                     <div className="bg-[#F2EBE1] px-4 py-3">
-                      <span className="text-[9px] tracking-[0.3em] uppercase text-[#5C5248]">Día</span>
+                      <span className="text-[9px] tracking-[0.3em] uppercase text-[#5C5248]">{t.day_label}</span>
                       <p className="font-serif-x text-3xl md:text-4xl text-[#2C2621] mt-1 tabular-nums">
                         {z.data.day}<span className="text-base text-[#5C5248] ml-0.5">°C</span>
                       </p>
                     </div>
                     <div className="bg-[#2C2621] text-[#FDFBF7] px-4 py-3">
-                      <span className="text-[9px] tracking-[0.3em] uppercase text-[#D4A373]">Noche</span>
+                      <span className="text-[9px] tracking-[0.3em] uppercase text-[#D4A373]">{t.night_label}</span>
                       <p className="font-serif-x text-3xl md:text-4xl mt-1 tabular-nums">
                         {z.data.night}<span className="text-base text-[#FDFBF7]/55 ml-0.5">°C</span>
                       </p>

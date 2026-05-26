@@ -4,11 +4,13 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import asyncio
+import httpx
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 ROOT_DIR = Path(__file__).parent
@@ -73,6 +75,77 @@ async def list_contact_requests():
             except ValueError:
                 pass
     return rows
+
+
+# ---------- Climate proxy (Open-Meteo) ----------
+# Lightweight in-process TTL cache; data only changes meaningfully day to day.
+_climate_cache = {"data": None, "ts": None}
+_CLIMATE_CACHE_TTL = timedelta(hours=6)
+
+CLIMATE_ZONES = [
+    {"id": "atlas",  "lat": 31.358,  "lng": -5.987},   # Boumalne Dades
+    {"id": "sahara", "lat": 31.0995, "lng": -4.0128},  # Merzouga / Erg Chebbi
+]
+
+
+@api_router.get("/climate/current-month")
+async def climate_current_month():
+    """Return average max/min temperatures for the **current calendar month**
+    based on last year's archived data from Open-Meteo (very stable + truly
+    representative of what the traveller will find). Cached for 6 hours."""
+    now = datetime.now(timezone.utc)
+    if _climate_cache["data"] and _climate_cache["ts"] and (now - _climate_cache["ts"]) < _CLIMATE_CACHE_TTL:
+        return _climate_cache["data"]
+
+    # Build same-month-range from last year. End at last day of that month.
+    year_last = now.year - 1
+    month = now.month
+    start = datetime(year_last, month, 1, tzinfo=timezone.utc)
+    # First day of next month minus 1 day
+    if month == 12:
+        end = datetime(year_last, 12, 31, tzinfo=timezone.utc)
+    else:
+        end = datetime(year_last, month + 1, 1, tzinfo=timezone.utc) - timedelta(days=1)
+    start_s = start.strftime("%Y-%m-%d")
+    end_s = end.strftime("%Y-%m-%d")
+
+    async def fetch_zone(client: httpx.AsyncClient, zone):
+        url = (
+            "https://archive-api.open-meteo.com/v1/archive"
+            f"?latitude={zone['lat']}&longitude={zone['lng']}"
+            f"&start_date={start_s}&end_date={end_s}"
+            "&daily=temperature_2m_max,temperature_2m_min&timezone=auto"
+        )
+        r = await client.get(url, timeout=10.0)
+        r.raise_for_status()
+        d = r.json().get("daily") or {}
+        maxs = [v for v in (d.get("temperature_2m_max") or []) if v is not None]
+        mins = [v for v in (d.get("temperature_2m_min") or []) if v is not None]
+        if not maxs or not mins:
+            return None
+        return {
+            "id": zone["id"],
+            "day": round(sum(maxs) / len(maxs)),
+            "night": round(sum(mins) / len(mins)),
+            "samples": len(maxs),
+        }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            results = await asyncio.gather(*[fetch_zone(client, z) for z in CLIMATE_ZONES])
+        if any(r is None for r in results):
+            raise HTTPException(status_code=502, detail="incomplete-upstream-data")
+        payload = {
+            "source": "open-meteo-archive",
+            "fetched_at": now.isoformat(),
+            "reference_month": start.strftime("%Y-%m"),
+            "zones": {r["id"]: {"day": r["day"], "night": r["night"], "samples": r["samples"]} for r in results},
+        }
+        _climate_cache["data"] = payload
+        _climate_cache["ts"] = now
+        return payload
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=502, detail=f"upstream-error: {exc}")
 
 
 app.include_router(api_router)
