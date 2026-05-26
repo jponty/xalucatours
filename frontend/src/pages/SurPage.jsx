@@ -218,26 +218,26 @@ export default function SurPage() {
       {/* 2. Itineraries overview (4 cards) */}
       <ItinerariesOverview itineraries={SUR_ITINERARIES} t={t.overview} lang={lang} />
 
-      {/* 3. Itinerary 1: Ouarzazate -> Errachidia */}
-      <ItineraryBlock itinerary={SUR_ITINERARIES[0]} index={0} lang={lang} t={t.block} ctaTarget={pathFor(lang, "contact")} />
+      {/* 3. Itinerary 1: Ouarzazate -> Errachidia (links to Atlas+Desierto hub) */}
+      <ItineraryBlock itinerary={SUR_ITINERARIES[0]} index={0} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourAtlasDesiertoHub")} />
 
       {/* 4. Editorial: gate of the desert */}
       <EditorialBlock block={SUR_EDITORIAL[1]} lang={lang} />
 
-      {/* 5. Itinerary 2: Marrakech -> Errachidia */}
-      <ItineraryBlock itinerary={SUR_ITINERARIES[1]} index={1} lang={lang} t={t.block} ctaTarget={pathFor(lang, "contact")} />
+      {/* 5. Itinerary 2: Marrakech -> Errachidia (links to Marrakech-Erg Chebbi hub) */}
+      <ItineraryBlock itinerary={SUR_ITINERARIES[1]} index={1} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechErgHub")} />
 
       {/* 6. Editorial: Marrakech, Atlas & Sahara */}
       <EditorialBlock block={SUR_EDITORIAL[2]} lang={lang} />
 
-      {/* 7. Itinerary 3: Marrakech loop */}
-      <ItineraryBlock itinerary={SUR_ITINERARIES[2]} index={2} lang={lang} t={t.block} ctaTarget={pathFor(lang, "contact")} />
+      {/* 7. Itinerary 3: Marrakech loop (links to Marrakech-Erg Chebbi-Marrakech hub) */}
+      <ItineraryBlock itinerary={SUR_ITINERARIES[2]} index={2} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechLoopHub")} />
 
       {/* 8. Editorial: Marrakech & Essaouira intro */}
       <EditorialBlock block={SUR_EDITORIAL[3]} lang={lang} />
 
-      {/* 9. Itinerary 4: Marrakech – Essaouira */}
-      <ItineraryBlock itinerary={SUR_ITINERARIES[3]} index={3} lang={lang} t={t.block} ctaTarget={pathFor(lang, "contact")} />
+      {/* 9. Itinerary 4: Marrakech – Essaouira (links to Marrakech-Essaouira hub) */}
+      <ItineraryBlock itinerary={SUR_ITINERARIES[3]} index={3} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechEssHub")} />
 
       {/* 10. Why Xaluca - 4 brand pillars */}
       <WhyXaluca pillars={SUR_PILLARS} t={t.why} lang={lang} testid="sur-why" />

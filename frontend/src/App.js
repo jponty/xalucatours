@@ -25,6 +25,9 @@ import AtlasDesierto45Page from "@/pages/AtlasDesierto45Page";
 import AtlasDesierto56Page from "@/pages/AtlasDesierto56Page";
 import AtlasDesierto67Page from "@/pages/AtlasDesierto67Page";
 import AtlasDesiertoHubPage from "@/pages/AtlasDesiertoHubPage";
+import MarrakechErgChebbiHubPage from "@/pages/MarrakechErgChebbiHubPage";
+import MarrakechErgChebbiMarrakechHubPage from "@/pages/MarrakechErgChebbiMarrakechHubPage";
+import MarrakechEssaouiraHubPage from "@/pages/MarrakechEssaouiraHubPage";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
@@ -46,6 +49,9 @@ const LocalizedRouter = () => {
   if (routeId === "tourShort")     return <EscapadasPage />;
   if (routeId === "tourBespoke")   return <ViajesAMedidaPage />;
   if (routeId === "tourAtlasDesiertoHub") return <AtlasDesiertoHubPage />;
+  if (routeId === "tourMarrakechErgHub")  return <MarrakechErgChebbiHubPage />;
+  if (routeId === "tourMarrakechLoopHub") return <MarrakechErgChebbiMarrakechHubPage />;
+  if (routeId === "tourMarrakechEssHub")  return <MarrakechEssaouiraHubPage />;
   if (routeId === "tourDesiertoAtlas67")  return <DesiertoAtlas67Page />;
   if (routeId === "tourDesiertoAtlas56")  return <DesiertoAtlas56Page />;
   if (routeId === "tourDesiertoAtlas45")  return <DesiertoAtlas45Page />;
