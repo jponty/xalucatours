@@ -35,7 +35,7 @@ const LABELS = {
   es: {
     overline: "El recorrido completo",
     title: "Tu travesía en un solo mapa.",
-    subtitle: "Diez etapas conectadas — del laberinto de Fez al palmeral de Marrakech atravesando el Sahara y el Atlas.",
+    subtitle: "Cada parada conectada — la ruta completa del viaje, día a día, en una única imagen.",
     day_short: "Día",
     stops: "etapas",
     total_kms: "km aproximados",
@@ -43,7 +43,7 @@ const LABELS = {
   en: {
     overline: "The whole route",
     title: "Your journey on a single map.",
-    subtitle: "Ten connected stages — from the labyrinth of Fez to the Marrakech palm grove, crossing the Sahara and the Atlas.",
+    subtitle: "Every stop connected — the full route, day by day, in a single image.",
     day_short: "Day",
     stops: "stops",
     total_kms: "approximate km",
@@ -51,7 +51,7 @@ const LABELS = {
   fr: {
     overline: "L'itinéraire complet",
     title: "Votre traversée sur une seule carte.",
-    subtitle: "Dix étapes connectées — du labyrinthe de Fès à la palmeraie de Marrakech, en traversant le Sahara et l'Atlas.",
+    subtitle: "Chaque étape connectée — l'itinéraire complet, jour après jour, en une seule image.",
     day_short: "Jour",
     stops: "étapes",
     total_kms: "km approximatifs",
