@@ -7,6 +7,7 @@ import FeaturedQuote from "@/components/FeaturedQuote";
 import TravelCategories from "@/components/TravelCategories";
 import StressFreeProcess from "@/components/StressFreeProcess";
 import WhatJourneysFeelLike from "@/components/WhatJourneysFeelLike";
+import MoroccoVideos from "@/components/MoroccoVideos";
 import MoroccoCircuits from "@/components/MoroccoCircuits";
 import MapSection from "@/components/MapSection";
 import PersonalConsultation, { CommunityCTA } from "@/components/PersonalConsultation";
@@ -27,6 +28,7 @@ export default function HomePage() {
       <TravelCategories />
       <StressFreeProcess />
       <WhatJourneysFeelLike />
+      <MoroccoVideos />
       <MoroccoCircuits />
       <MapSection />
       <PersonalConsultation />

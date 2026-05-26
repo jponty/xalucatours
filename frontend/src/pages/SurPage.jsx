@@ -20,6 +20,8 @@ import {
   HubOptionsPreview,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import SectionGallery from "@/components/SectionGallery";
+import { SUR_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
    Trilingual copy for /viajes/surdemarruecos
@@ -221,6 +223,7 @@ export default function SurPage() {
 
       {/* 1. Editorial opener: the route of a thousand kasbahs */}
       <EditorialBlock block={SUR_EDITORIAL[0]} lang={lang} />
+      <SectionGallery {...SUR_GALLERIES[0]} testid="sur-gallery-kasbahs" />
 
       {/* 2. Itineraries overview (4 cards) */}
       <ItinerariesOverview itineraries={SUR_ITINERARIES} t={t.overview} lang={lang} />
@@ -231,6 +234,7 @@ export default function SurPage() {
 
       {/* 4. Editorial: gate of the desert */}
       <EditorialBlock block={SUR_EDITORIAL[1]} lang={lang} />
+      <SectionGallery {...SUR_GALLERIES[1]} testid="sur-gallery-desierto" />
 
       {/* 5. Itinerary 2: Marrakech -> Errachidia (links to Marrakech-Erg Chebbi hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[1]} index={1} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechErgHub")} />
@@ -238,6 +242,7 @@ export default function SurPage() {
 
       {/* 6. Editorial: Marrakech, Atlas & Sahara */}
       <EditorialBlock block={SUR_EDITORIAL[2]} lang={lang} />
+      <SectionGallery {...SUR_GALLERIES[2]} testid="sur-gallery-atlas-sahara" />
 
       {/* 7. Itinerary 3: Marrakech loop (links to Marrakech-Erg Chebbi-Marrakech hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[2]} index={2} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechLoopHub")} />
@@ -245,6 +250,7 @@ export default function SurPage() {
 
       {/* 8. Editorial: Marrakech & Essaouira intro */}
       <EditorialBlock block={SUR_EDITORIAL[3]} lang={lang} />
+      <SectionGallery {...SUR_GALLERIES[3]} testid="sur-gallery-essaouira" />
 
       {/* 9. Itinerary 4: Marrakech – Essaouira (links to Marrakech-Essaouira hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[3]} index={3} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechEssHub")} />

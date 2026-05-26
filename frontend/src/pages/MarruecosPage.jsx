@@ -15,6 +15,8 @@ import {
   CtaBand,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import SectionGallery from "@/components/SectionGallery";
+import { MARRUECOS_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
    Trilingual copy for the Marruecos gateway
@@ -274,6 +276,7 @@ export default function MarruecosPage() {
       <StickyNav items={navItems} testid="marruecos-nav" />
 
       <EditorialBlock block={t.intro} lang={lang} />
+      <SectionGallery {...MARRUECOS_GALLERIES[0]} testid="marruecos-gallery-intro" />
 
       <ItinerariesOverview itineraries={MARRUECOS_ITINERARIES} t={t.overview} lang={lang} />
 

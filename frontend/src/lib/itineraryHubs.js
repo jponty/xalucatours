@@ -615,9 +615,9 @@ export const HUB_NORTE_CIUDADES_IMPERIALES = {
     group_b: T("Ciudades Imperiales + Rif", "Imperial Cities + Rif", "Cités Impériales + Rif"),
   },
   programs: [
-    { id: "ci-4-5",    direction: "a", nights: "4n5d", accent: "#A07042", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI(4, 5) },
+    { id: "ci-4-5",    direction: "a", nights: "4n5d", accent: "#A07042", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=85", link: "tourCiudadesImperiales45",    blurb: BLURB_CI(4, 5) },
     { id: "ci-6-7",    direction: "a", nights: "6n7d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI(6, 7) },
-    { id: "cirf-6-7",  direction: "b", nights: "6n7d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI_RIF(6, 7) },
+    { id: "cirf-6-7",  direction: "b", nights: "6n7d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", link: "tourCiudadesImperialesRif67", blurb: BLURB_CI_RIF(6, 7) },
     { id: "cirf-7-8",  direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_CI_RIF(7, 8) },
   ],
 };
@@ -665,9 +665,12 @@ export const HUB_NORTE_TANGER_FEZ = {
       "Choisissez parmi les options selon les jours disponibles.",
     ),
     group_a: T("Fez → Tánger", "Fez → Tangier", "Fès → Tanger"),
+    group_b: T("Tánger → Fez", "Tangier → Fez", "Tanger → Fès"),
   },
   programs: [
-    { id: "ft-5-6", direction: "a", nights: "5n6d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FT(5, 6) },
-    { id: "ft-6-7", direction: "a", nights: "6n7d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_FT(6, 7) },
+    { id: "ft-5-6", direction: "a", nights: "5n6d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourFezTanger56", blurb: BLURB_FT(5, 6) },
+    { id: "ft-6-7", direction: "a", nights: "6n7d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", link: "tourFezTanger67", blurb: BLURB_FT(6, 7) },
+    { id: "tf-4-5", direction: "b", nights: "4n5d", accent: "#A07042", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", link: "tourTangerFez45", blurb: BLURB_FT(4, 5) },
+    { id: "tf-5-6", direction: "b", nights: "5n6d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourTangerFez56", blurb: BLURB_FT(5, 6) },
   ],
 };

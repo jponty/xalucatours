@@ -2,3 +2,7 @@
     min-height: 100vh;
     background: var(--xaluca-bg);
 }
+
+/* Hide scrollbar for horizontal rails */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }

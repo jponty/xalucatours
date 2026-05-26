@@ -11,6 +11,8 @@ import {
   CtaBand,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import SectionGallery from "@/components/SectionGallery";
+import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
    Trilingual copy for the Norte de Marruecos gateway
@@ -225,6 +227,7 @@ export default function NortePage() {
 
       {/* Editorial 1 — between itineraries */}
       <EditorialBlock block={NORTE_EDITORIAL[0]} lang={lang} />
+      <SectionGallery {...NORTE_GALLERIES[0]} testid="norte-gallery-imperial" />
 
       {/* Itinerary 2 */}
       <ItineraryBlock
@@ -237,6 +240,7 @@ export default function NortePage() {
 
       {/* Editorial 2 — closing narrative */}
       <EditorialBlock block={NORTE_EDITORIAL[1]} lang={lang} />
+      <SectionGallery {...NORTE_GALLERIES[1]} testid="norte-gallery-rif" />
 
       {/* Cities row */}
       <CitiesRow t={t.cities} lang={lang} />

@@ -816,7 +816,10 @@ const ContactBand = ({ t, lang }) => (
 export default function ProgramTemplate({ program, variant = "da" }) {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
-  const vt = (VARIANT_COPY[variant] && VARIANT_COPY[variant][lang]) || VARIANT_COPY.da.es;
+  const baseVt = (VARIANT_COPY[variant] && VARIANT_COPY[variant][lang]) || VARIANT_COPY.da.es;
+  // Per-program meta overrides VARIANT_COPY (trilingual `meta: { es, en, fr }`)
+  const metaOverride = program.meta && (program.meta[lang] || program.meta.es) || null;
+  const vt = metaOverride ? { ...baseVt, ...metaOverride } : baseVt;
 
   useEffect(() => {
     document.title = `${vt.title} · ${pick(program.duration, lang)} · Xaluca Tours`;

@@ -13,6 +13,8 @@ import {
   CommunityCta,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import SectionGallery from "@/components/SectionGallery";
+import { ESCAPADAS_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
    Trilingual copy for /viajes/escapadas
@@ -205,6 +207,9 @@ export default function EscapadasPage() {
       {ESCAPADAS_ITEMS.map((it, i) => (
         <React.Fragment key={it.id}>
           <EditorialBlock block={ESCAPADAS_EDITORIAL[i]} lang={lang} />
+          {ESCAPADAS_GALLERIES[i] && (
+            <SectionGallery {...ESCAPADAS_GALLERIES[i]} testid={`escapadas-gallery-${it.id}`} />
+          )}
           <ItineraryBlock
             itinerary={it}
             index={i}

@@ -1,0 +1,66 @@
+{
+  "summary": "Frontend-only verification of the 5 new Norte program pages + hub-card wiring + Hero spacing + MoroccoVideos rail + SectionGallery (Sur/Norte/Marruecos/Escapadas) + ES/EN/FR i18n + lightweight backend smoke. 12/12 functional UI assertions pass. Two issues surfaced: (1) the Norte program heroes use an Unsplash photo of the Taj Mahal (India) as the hero background — geographically wrong; (2) React 'two children with the same key' console errors fire on every program page render.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/contact", "issue": "PRD references /api/contact with field 'name', but the actual implemented endpoint is /api/contact-requests with field 'full_name'. POST to /api/contact-requests with {full_name,email,message,language} returns 200 OK and persists. Frontend appears to use the correct endpoint — only PRD/spec drift."},
+      {"endpoint": "/api/climate/current-month?lat=35.16&lon=-5.26", "issue": "Returns 200 OK but response shape is {source, fetched_at, reference_month, zones:{atlas:{day,night,samples}, sahara:{day,night,samples}}}, not the PRD-stated {avg,min,max}. Functionally OK, schema mismatch with spec."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Norte program heroes (ciudadesImperialesRif67, fezTanger67, tangerFez4567, fezTanger56)", "issue": "Hero background image is the Taj Mahal (Unsplash photo-1548013146-72479768bada). Geographically wrong for a Morocco tour and breaks brand promise. The page renders correctly with the right title overlay ('Cités impériales et Rif.', 'Fez – Asilah – Tánger.', etc.) but the visual is India, not Morocco. Same class of mistake as iteration_4 (Burj Al Arab on Atlas/Desierto hub).", "selector": "Hero <img> on /viajes/norte/ciudadesimperiales_rif/programa_6n_7d and /viajes/norte/fez_tanger/programa_6n_7d", "priority": "MEDIUM"},
+      {"component": "ProgramTemplate / itinerary or contact form", "issue": "React fires repeated 'Encountered two children with the same key' warnings (keys 1,2,3,4,5,6) on every program-detail render. Suggests a list (likely day list or quick-info chip list) uses non-unique keys (probably key={item.day} where multiple subsections reuse the same index, or duplicate program.meta.es vs VARIANT_COPY items rendered side by side). Likely culprit in ProgramTemplate.jsx around the itinerary/quickInfo/seasons render or the merge of program.meta + VARIANT_COPY.", "selector": "ProgramTemplate.jsx ~ line 816-820 and below (meta override section)", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_pages_and_flows": {
+    "new_program_pages": {
+      "CI_Rif_6n7d (/viajes/norte/ciudadesimperiales_rif/programa_6n_7d)": "renders, H1='Ciudades imperiales y el Rif.', quickInfo+itinerary+map+contact all present, no redirect",
+      "TangerFez_4n5d": "renders, H1='Tánger – Fez.'",
+      "TangerFez_5n6d": "renders, H1='Tánger – Asilah – Fez.'",
+      "FezTanger_5n6d": "renders, H1='Fez – Tánger.'",
+      "FezTanger_6n7d": "renders, H1='Fez – Asilah – Tánger.'"
+    },
+    "hub_cards": {
+      "/viajes/norte/ciudades_imperiales": "6n/7d 'Ciudades Imperiales + Rif' card correctly links to /viajes/norte/ciudadesimperiales_rif/programa_6n_7d (slug difference respected)",
+      "/viajes/norte/tanger_fez": "All 4 expected hrefs present: fez_tanger/5n6d, fez_tanger/6n7d, tanger_fez/4n5d, tanger_fez/5n6d"
+    },
+    "homepage_hero_spacing": "headerBottom=80px, h1Top=392.5px — gap ≈ 312px. min-h=1080px. Eyebrow no longer touches fixed header (pt-32 md:pt-40 confirmed visually).",
+    "morocco_videos_section": "data-testid=videos-rail present, 6 video cards + 6 play buttons, 'Marruecos en imágenes' overline visible, clicking video-play-* swaps poster for iframe[src*='youtube'] successfully",
+    "section_galleries": {
+      "sur (4)": "sur-gallery-kasbahs/desierto/atlas-sahara/essaouira all present, 6 imgs each",
+      "norte (2)": "norte-gallery-imperial + norte-gallery-rif present, 6 imgs each",
+      "marruecos (1)": "marruecos-gallery-intro present, 6 imgs",
+      "escapadas (5)": "desierto, alto-atlas, fez, marrakech, tanger present, 6 imgs each"
+    },
+    "lightbox": "Clicking image opens [data-testid=section-gallery-lightbox]; Escape closes it. (Next/prev cycling not deeply verified but lightbox open/close confirmed.)",
+    "i18n": {
+      "EN /en/tours/northern/imperial-cities-rif/program-6n-7d": "H1='Imperial cities and the Rif.' ✓",
+      "FR /fr/voyages/nord/cites-imperiales-rif/programme-6n-7j": "H1='Cités impériales et Rif.' ✓"
+    },
+    "backend_smoke": {
+      "GET /api/climate/current-month": "200, JSON returned (different schema than PRD)",
+      "POST /api/contact-requests": "200 with full_name field — endpoint name is /api/contact-requests not /api/contact"
+    }
+  },
+  "test_report_links": ["/app/test_reports/iteration_5.json"],
+  "action_items": [
+    "Replace the Taj Mahal Unsplash image (photo-1548013146-72479768bada) used as hero in /app/frontend/src/lib/programs/ciudadesImperialesRif67.js, fezTanger67.js, tangerFez45.js, tangerFez56.js, fezTanger56.js with an authentic Moroccan visual (Fez medina, Volubilis, Chefchaouen blue village, Tangier coast, Asilah ramparts). Photo-1597212618440-806262de4f6b also looks Indian/Mughal — verify too.",
+    "Fix the React duplicate-key warnings on program pages. Inspect ProgramTemplate.jsx around the meta merge (lines 816-820) and the itinerary / quickInfo / seasons map() blocks — most likely two arrays are rendered into the same parent (e.g., VARIANT_COPY days + program.meta days, or quickInfo chips key={index}) producing key collisions 1..6.",
+    "(Doc) Either rename backend endpoint /api/contact-requests → /api/contact or update the PRD line to match. Also reconcile the climate response schema (avg/min/max vs zones.atlas/sahara.day/night) with the spec."
+  ],
+  "critical_code_review_comments": [
+    "ProgramTemplate.jsx merge of program.meta over VARIANT_COPY (line 816-820) does work — hero title comes from program.meta.es.title as designed — but the duplicate-key warnings on the same page suggest the merge or a downstream .map() is iterating two list sources with overlapping numeric keys. Use stable ids (e.g., `${variant}-day-${day.day}`) instead of `key={day}` or `key={index}`.",
+    "Image curation gap: 2 of 5 newly added Norte program files share the same Taj Mahal Unsplash URL. There is no central image registry — a `/lib/morocco-image-set.js` would prevent foreign-country placeholders from slipping into Morocco-only pages (cf. iteration_4 Burj Al Arab issue).",
+    "Tests for backend contact / climate exist (/app/backend/tests/test_contact_api.py) but PRD endpoint names drift; a one-line README mapping spec→implementation would prevent future testers re-hitting wrong URLs."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (2/2 smoke endpoints respond 200)", "frontend": "100% functional (12/12 assertions) but with cosmetic hero-image + React warnings"},
+  "seed_data_creation": "1 test contact request inserted via POST /api/contact-requests with full_name='TEST_User' — caller may want to clean up.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 5 new Norte program routes (/viajes/norte/ciudadesimperiales_rif/programa_6n_7d, /viajes/norte/tanger_fez/programa_{4n_5d,5n_6d}, /viajes/norte/fez_tanger/programa_{5n_6d,6n_7d}) render the correct hero TITLE from program.meta (not the variant 'da' fallback). Hub cards on /viajes/norte/ciudades_imperiales and /viajes/norte/tanger_fez wire correctly. SectionGallery testids: sur-gallery-{kasbahs|desierto|atlas-sahara|essaouira}, norte-gallery-{imperial|rif}, marruecos-gallery-intro, escapadas-gallery-{desierto|alto-atlas|fez|marrakech|tanger}; lightbox testid section-gallery-lightbox. Videos rail testid videos-rail with video-card-{id} + video-play-{id}. Trilingual works. Two outstanding issues for E1 to fix: (a) Norte hero photo = Taj Mahal, (b) React duplicate-key warnings.",
+  "rca of the issue": "Wrong hero image RCA: 5 new program data files were created in /app/frontend/src/lib/programs/ but the curator likely copy-pasted a generic 'oriental arch' Unsplash photo (1548013146-72479768bada) as the hero image without verifying the photo's actual location — it is the Taj Mahal in Agra, India. Same root cause as iteration_4's Burj Al Arab. Mitigation: maintain a curated Morocco-only image registry. // React key RCA: most likely the merge program.meta.es.quickInfo + VARIANT_COPY.quickInfo in ProgramTemplate.jsx (~line 816-820) produces a list where both sources contribute items with the same `key={i}` index, or the day list uses `key={day.day}` and some merged variant has duplicate day numbers. Look for the rendering loop fed by the merged structure and ensure keys are namespaced (e.g., `program-${id}-day-${day.day}` or `meta-${i}`)."
+}
