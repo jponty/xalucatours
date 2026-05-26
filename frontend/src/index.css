@@ -299,10 +299,32 @@
 
 
 
-/* Edit mode — visual hint that link navigation is paused.
-   We use crosshair cursor on editable cards to communicate "editable area". */
+/* Edit mode — global lockdown visuals.
+   While `body.edit-mode-on` is set, all navigation is paused. We add:
+   - A persistent terracotta band at the very top so the admin sees the
+     lockdown state from any scroll position.
+   - `not-allowed` cursor on every anchor element on the page. */
+body.edit-mode-on::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #C16542 0%, #D4A373 50%, #C16542 100%);
+    z-index: 9000;
+    pointer-events: none;
+    animation: edit-band-pulse 2.8s ease-in-out infinite;
+}
+@keyframes edit-band-pulse {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1;    }
+}
+body.edit-mode-on a {
+    cursor: not-allowed !important;
+}
 body.edit-mode-on a:has([data-testid^="editable-overlay-"]) {
-    cursor: crosshair;
+    cursor: crosshair !important;
 }
 body.edit-mode-on a:has([data-testid^="editable-overlay-"]):focus-visible {
     outline: 2px solid #C16542;
