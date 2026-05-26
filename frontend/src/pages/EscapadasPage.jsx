@@ -43,7 +43,7 @@ const COPY = {
       body: "Desierto, montaña, Fez, Marrakech o el norte azul de Chefchaouen. Elige la tuya — o combínalas para crear una escapada a medida.",
       cta: "Ver escapada",
     },
-    block: { cta_request: "Solicitar escapada", cta_info: "Más información" },
+    block: { cta_request: "Solicitar escapada", cta_view: "Ver escapada", cta_info: "Más información" },
     why: {
       overline: "Razones para viajar con Xaluca Tours",
       title: "Cuatro razones que marcan la diferencia.",
@@ -90,7 +90,7 @@ const COPY = {
       body: "Desert, mountains, Fez, Marrakech or the blue north of Chefchaouen. Pick yours — or combine them into a tailor-made escape.",
       cta: "See escape",
     },
-    block: { cta_request: "Request escape", cta_info: "More info" },
+    block: { cta_request: "Request escape", cta_view: "View escape", cta_info: "More info" },
     why: {
       overline: "Reasons to travel with Xaluca Tours",
       title: "Four reasons that make the difference.",
@@ -137,7 +137,7 @@ const COPY = {
       body: "Désert, montagne, Fès, Marrakech ou le nord bleu de Chefchaouen. Choisissez la vôtre — ou combinez-les pour une escapade sur mesure.",
       cta: "Voir l'escapade",
     },
-    block: { cta_request: "Demander l'escapade", cta_info: "Plus d'infos" },
+    block: { cta_request: "Demander l'escapade", cta_view: "Voir l'escapade", cta_info: "Plus d'infos" },
     why: {
       overline: "Pourquoi voyager avec Xaluca Tours",
       title: "Quatre raisons qui font la différence.",

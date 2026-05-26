@@ -250,12 +250,12 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <Link
-                to={ctaTarget}
+                to={itinerary.link ? pathFor(lang, itinerary.link) : ctaTarget}
                 data-testid={`itinerary-cta-${itinerary.id}`}
                 className="inline-flex items-center gap-3 text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:opacity-90"
                 style={{ background: itinerary.accent }}
               >
-                {t.cta_request}
+                {itinerary.link ? (t.cta_view || t.cta_request) : t.cta_request}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
               </Link>
               <a

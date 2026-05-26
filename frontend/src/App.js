@@ -37,6 +37,13 @@ import MarrakechFez67Page from "@/pages/MarrakechFez67Page";
 import MarrakechFez78Page from "@/pages/MarrakechFez78Page";
 import MarrakechFez89Page from "@/pages/MarrakechFez89Page";
 import MarrakechFez910Page from "@/pages/MarrakechFez910Page";
+import {
+  EscapadaDesierto34Page,
+  EscapadaAtlas34Page,
+  EscapadaFezPage,
+  EscapadaMarrakechPage,
+  EscapadaTangerPage,
+} from "@/pages/EscapadaIntroPages";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
@@ -70,6 +77,11 @@ const LocalizedRouter = () => {
   if (routeId === "tourMarrakechFez78")    return <MarrakechFez78Page />;
   if (routeId === "tourMarrakechFez89")    return <MarrakechFez89Page />;
   if (routeId === "tourMarrakechFez910")   return <MarrakechFez910Page />;
+  if (routeId === "tourEscapadaDesierto34") return <EscapadaDesierto34Page />;
+  if (routeId === "tourEscapadaAtlas34")    return <EscapadaAtlas34Page />;
+  if (routeId === "tourEscapadaFez")        return <EscapadaFezPage />;
+  if (routeId === "tourEscapadaMarrakech")  return <EscapadaMarrakechPage />;
+  if (routeId === "tourEscapadaTanger")     return <EscapadaTangerPage />;
   if (routeId === "tourDesiertoAtlas67")  return <DesiertoAtlas67Page />;
   if (routeId === "tourDesiertoAtlas56")  return <DesiertoAtlas56Page />;
   if (routeId === "tourDesiertoAtlas45")  return <DesiertoAtlas45Page />;

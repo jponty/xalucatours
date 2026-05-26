@@ -4,6 +4,7 @@
 export const ESCAPADAS_ITEMS = [
   {
     id: "desierto",
+    link: "tourEscapadaDesierto34",
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate al desierto de Marruecos", en: "Escape to the Moroccan desert", fr: "Évadez-vous dans le désert marocain" },
     duration:{ es: "3 días / 2 noches", en: "3 days / 2 nights", fr: "3 jours / 2 nuits" },
@@ -42,6 +43,7 @@ export const ESCAPADAS_ITEMS = [
   },
   {
     id: "alto-atlas",
+    link: "tourEscapadaAtlas34",
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate al Alto Atlas marroquí", en: "Escape to the Moroccan High Atlas", fr: "Évadez-vous dans le Haut Atlas marocain" },
     duration:{ es: "4 días / 3 noches", en: "4 days / 3 nights", fr: "4 jours / 3 nuits" },
@@ -84,6 +86,7 @@ export const ESCAPADAS_ITEMS = [
   },
   {
     id: "fez",
+    link: "tourEscapadaFez",
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate a la ciudad de Fez", en: "Escape to the city of Fez", fr: "Évadez-vous dans la ville de Fès" },
     duration:{ es: "3 días / 2 noches", en: "3 days / 2 nights", fr: "3 jours / 2 nuits" },
@@ -115,6 +118,7 @@ export const ESCAPADAS_ITEMS = [
   },
   {
     id: "marrakech",
+    link: "tourEscapadaMarrakech",
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate a la ciudad de Marrakech", en: "Escape to the city of Marrakech", fr: "Évadez-vous dans la ville de Marrakech" },
     duration:{ es: "3 días / 2 noches", en: "3 days / 2 nights", fr: "3 jours / 2 nuits" },
@@ -147,6 +151,7 @@ export const ESCAPADAS_ITEMS = [
   },
   {
     id: "tanger",
+    link: "tourEscapadaTanger",
     eyebrow: { es: "Escapadas por Marruecos", en: "Morocco short escapes", fr: "Escapades au Maroc" },
     title:   { es: "Escápate a la ciudad de Tánger", en: "Escape to the city of Tangier", fr: "Évadez-vous dans la ville de Tanger" },
     duration:{ es: "4 días / 3 noches", en: "4 days / 3 nights", fr: "4 jours / 3 nuits" },
