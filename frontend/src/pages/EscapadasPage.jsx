@@ -14,7 +14,6 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
-import BerberDivider from "@/components/BerberDivider";
 import { ESCAPADAS_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
@@ -218,14 +217,6 @@ export default function EscapadasPage() {
             t={t.block}
             ctaTarget={pathFor(lang, "contact")}
           />
-          {i < ESCAPADAS_ITEMS.length - 1 && (
-            <BerberDivider
-              variant={i % 2 === 0 ? "arabesque" : "zellige"}
-              tone="cream"
-              color="#A07042"
-              label={`Escapada · ${String(i + 2).padStart(2, "0")}`}
-            />
-          )}
         </React.Fragment>
       ))}
 

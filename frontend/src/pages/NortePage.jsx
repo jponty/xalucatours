@@ -12,7 +12,6 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
-import BerberDivider from "@/components/BerberDivider";
 import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
 
 /* ============================================================
@@ -229,7 +228,6 @@ export default function NortePage() {
       {/* Editorial 1 — between itineraries */}
       <EditorialBlock block={NORTE_EDITORIAL[0]} lang={lang} />
       <SectionGallery {...NORTE_GALLERIES[0]} testid="norte-gallery-imperial" />
-      <BerberDivider variant="zellige" tone="cream" color="#A07042" />
 
       {/* Itinerary 2 */}
       <ItineraryBlock
@@ -243,7 +241,6 @@ export default function NortePage() {
       {/* Editorial 2 — closing narrative */}
       <EditorialBlock block={NORTE_EDITORIAL[1]} lang={lang} />
       <SectionGallery {...NORTE_GALLERIES[1]} testid="norte-gallery-rif" />
-      <BerberDivider variant="arabesque" tone="paper" color="#A07042" label="Mediterráneo · Rif" />
 
       {/* Cities row */}
       <CitiesRow t={t.cities} lang={lang} />

@@ -12,7 +12,6 @@ import MoroccoCircuits from "@/components/MoroccoCircuits";
 import MapSection from "@/components/MapSection";
 import PersonalConsultation, { CommunityCTA } from "@/components/PersonalConsultation";
 import ContactForm from "@/components/ContactForm";
-import BerberDivider from "@/components/BerberDivider";
 
 export default function HomePage() {
   useEffect(() => {
@@ -24,21 +23,16 @@ export default function HomePage() {
       <HeroSlider />
       <Marquee />
       <EmotionalIntro />
-      <BerberDivider variant="zellige" tone="paper" color="#A07042" />
       <WhyXaluca />
       <FeaturedQuote />
-      <BerberDivider variant="zellige" tone="cream" color="#A07042" />
       <TravelCategories />
       <StressFreeProcess />
       <WhatJourneysFeelLike />
-      <BerberDivider variant="zellige" tone="cream" color="#A07042" />
       <MoroccoVideos />
       <MoroccoCircuits />
-      <BerberDivider variant="zellige" tone="cream" color="#A07042" />
       <MapSection />
       <PersonalConsultation />
       <CommunityCTA />
-      <BerberDivider variant="arabesque" tone="paper" color="#A07042" label="Xaluca · Tours" />
       <ContactForm />
     </div>
   );
