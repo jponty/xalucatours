@@ -84,17 +84,13 @@ export const EditModeProvider = ({ children }) => {
     };
   }, [editMode]);
 
-  // 3. Block the navigator beforeunload (refresh / close / external nav)
-  useEffect(() => {
-    if (!editMode) return undefined;
-    const onBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = "";
-      return "";
-    };
-    window.addEventListener("beforeunload", onBeforeUnload);
-    return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [editMode]);
+  // 3. (Removed) `beforeunload` prompt — caused a spurious native dialog
+  //    "¿Quieres salir del sitio web?" while interacting with the upload modal
+  //    in some browsers. The combination of click interception + history
+  //    sentinel + keyboard guards already prevents accidental in-app
+  //    navigation, which is the only thing we actually want to lock down.
+  //    Explicit F5 / closing the tab is a voluntary user action and must
+  //    not block the upload workflow.
 
   // 4. Block keyboard navigation shortcuts that would change the route
   useEffect(() => {

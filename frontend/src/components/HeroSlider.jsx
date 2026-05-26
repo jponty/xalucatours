@@ -35,8 +35,15 @@ export const HeroSlider = () => {
       {SLIDES.map((s, i) => (
         <div
           key={i}
+          aria-hidden={i !== idx}
           className={`absolute inset-0 transition-opacity duration-[1600ms] ease-out ${
             i === idx ? "opacity-100" : "opacity-0"
+          } ${
+            /* Only the visible slide receives pointer events. Without this,
+               every stacked <EditableImage> overlay would catch clicks based
+               on DOM order, so the user would end up editing a hidden slide
+               instead of the one they actually see. */
+            i === idx ? "pointer-events-auto" : "pointer-events-none"
           } ${editMode && i === idx ? "z-[3]" : ""}`}
         >
           <EditableImage

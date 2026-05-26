@@ -110,20 +110,30 @@ export const EmotionalIntro = () => {
               onTouchEnd={() => setPaused(false)}
             >
               {SLIDES.map((s, i) => (
-                <EditableImage
+                <div
                   key={s.src}
-                  slot={`home.intro.${i}`}
-                  fallback={s.src}
-                  alt={pick(s.caption, lang)}
-                  imgProps={{
-                    loading: i === 0 ? "eager" : "lazy",
-                    "data-testid": `emotional-intro-slide-${i}`,
-                  }}
-                  className={`ken-burns absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out ${
+                  aria-hidden={i !== idx}
+                  className={`absolute inset-0 transition-opacity duration-[1200ms] ease-out ${
                     i === idx ? "opacity-100" : "opacity-0"
+                  } ${
+                    /* Only the visible slide receives clicks so edit-mode
+                       targets the currently shown image (and its overlay)
+                       instead of a hidden stacked one. */
+                    i === idx ? "pointer-events-auto z-[2]" : "pointer-events-none"
                   }`}
-                  aspectRatio="4/5"
-                />
+                >
+                  <EditableImage
+                    slot={`home.intro.${i}`}
+                    fallback={s.src}
+                    alt={pick(s.caption, lang)}
+                    imgProps={{
+                      loading: i === 0 ? "eager" : "lazy",
+                      "data-testid": `emotional-intro-slide-${i}`,
+                    }}
+                    className="ken-burns absolute inset-0 w-full h-full object-cover"
+                    aspectRatio="4/5"
+                  />
+                </div>
               ))}
 
               {/* Soft overlay for caption readability */}
