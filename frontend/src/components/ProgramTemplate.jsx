@@ -9,6 +9,7 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { StickyNav } from "@/components/JourneyPageSections";
 import { SHARED_SEASONS, SHARED_DETAILS } from "@/lib/programData";
+import { DayRouteMap } from "@/components/DayRouteMap";
 import ContactForm from "@/components/ContactForm";
 
 /* ============================================================
@@ -342,7 +343,7 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
   );
 };
 
-const DayBlock = ({ day, idx, lang, t }) => {
+const DayBlock = ({ day, idx, total, lang, t }) => {
   const reverse = idx % 2 === 1;
   const dayNum = String(idx + 1).padStart(2, "0");
   return (
@@ -408,6 +409,7 @@ const DayBlock = ({ day, idx, lang, t }) => {
           </div>
         </div>
       </div>
+      <DayRouteMap day={day} idx={idx} total={total} accent={day.accent} />
     </article>
   );
 };
@@ -422,7 +424,7 @@ const Itinerary = ({ t, lang, days }) => (
       </h2>
     </div>
     {days.map((d, i) => (
-      <DayBlock key={`${d.id}-${i}`} day={d} idx={i} lang={lang} t={t} />
+      <DayBlock key={`${d.id}-${i}`} day={d} idx={i} total={days.length} lang={lang} t={t} />
     ))}
   </section>
 );
