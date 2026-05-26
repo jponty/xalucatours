@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Polyline, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import { MapPin, Navigation } from "lucide-react";
 import { DAY_ROUTES, computeBounds } from "@/lib/dayRoutes";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -52,7 +52,6 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
   const t = LABEL_T[lang] || LABEL_T.es;
   const route = DAY_ROUTES[day.route_id];
 
-  const positions = useMemo(() => (route ? route.map((p) => [p[1], p[2]]) : []), [route]);
   const bounds = useMemo(() => computeBounds(route), [route]);
 
   const [active, setActive] = useState(null); // index of selected landmark or null = fit-all
@@ -85,10 +84,6 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
                   subdomains={["a", "b", "c", "d"]}
                 />
                 <MapController position={activePos} bounds={bounds} />
-                <Polyline
-                  positions={positions}
-                  pathOptions={{ color: accent, weight: 3, opacity: 0.9, dashArray: "8 6" }}
-                />
                 {route.map((p, i) => {
                   const kind = p[3];
                   const color = KIND_COLOR[kind] || accent;
@@ -96,17 +91,18 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
                   const isAnchor = i === 0 || i === route.length - 1;
                   return (
                     <React.Fragment key={i}>
-                      {isActive && (
+                      {/* Outer halo for the anchor / active points */}
+                      {(isActive || isAnchor) && (
                         <CircleMarker
                           center={[p[1], p[2]]}
-                          radius={18}
-                          pathOptions={{ color, weight: 0, fillColor: color, fillOpacity: 0.18 }}
+                          radius={isActive ? 22 : 14}
+                          pathOptions={{ color, weight: 0, fillColor: color, fillOpacity: isActive ? 0.22 : 0.12 }}
                           interactive={false}
                         />
                       )}
                       <CircleMarker
                         center={[p[1], p[2]]}
-                        radius={isActive ? 11 : isAnchor ? 9 : 6}
+                        radius={isActive ? 13 : isAnchor ? 10 : 8}
                         pathOptions={{
                           color: isActive ? "#1A1513" : "#FDFBF7",
                           weight: isActive ? 3 : 2,
