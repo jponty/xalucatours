@@ -233,6 +233,16 @@ export default function SurPage() {
       <ItineraryBlock itinerary={SUR_ITINERARIES[0]} index={0} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourAtlasDesiertoHub")} />
       <HubOptionsPreview hub={HUB_ATLAS_DESIERTO} lang={lang} testid="sur-preview-atlas-desierto" />
 
+      {/* Testimonials · Atlas + Desert · 2 cards */}
+      <Testimonials
+        variant="compact"
+        themes={["atlas", "gorges", "berber-village"]}
+        limit={2}
+        tone="sand"
+        eyebrow={{ es: "Voces de quienes han vivido el Atlas", en: "Voices from the Atlas", fr: "Voix de l'Atlas" }}
+        testid="sur-testi-atlas"
+      />
+
       {/* 4. Editorial: gate of the desert */}
       <EditorialBlock block={SUR_EDITORIAL[1]} lang={lang} />
       <SectionGallery {...SUR_GALLERIES[1]} testid="sur-gallery-desierto" />
@@ -240,6 +250,16 @@ export default function SurPage() {
       {/* 5. Itinerary 2: Marrakech -> Errachidia (links to Marrakech-Erg Chebbi hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[1]} index={1} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechErgHub")} />
       <HubOptionsPreview hub={HUB_MARRAKECH_ERG} lang={lang} testid="sur-preview-marrakech-erg" />
+
+      {/* Testimonials · Marrakech → Sahara · 2 cards */}
+      <Testimonials
+        variant="compact"
+        themes={["desert", "dunes", "bivouac", "stars", "nomads"]}
+        limit={2}
+        tone="cream"
+        eyebrow={{ es: "Una noche bajo las estrellas del Erg Chebbi", en: "A night under the Erg Chebbi stars", fr: "Une nuit sous les étoiles de l'Erg Chebbi" }}
+        testid="sur-testi-desierto"
+      />
 
       {/* 6. Editorial: Marrakech, Atlas & Sahara */}
       <EditorialBlock block={SUR_EDITORIAL[2]} lang={lang} />
@@ -249,6 +269,16 @@ export default function SurPage() {
       <ItineraryBlock itinerary={SUR_ITINERARIES[2]} index={2} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechLoopHub")} />
       <HubOptionsPreview hub={HUB_MARRAKECH_LOOP} lang={lang} testid="sur-preview-marrakech-loop" />
 
+      {/* Testimonials · Marrakech medina + riads · 2 cards */}
+      <Testimonials
+        variant="compact"
+        themes={["marrakech", "riad", "medina", "gastronomy"]}
+        limit={2}
+        tone="sage"
+        eyebrow={{ es: "Marrakech vista desde dentro", en: "Marrakech from within", fr: "Marrakech vue de l'intérieur" }}
+        testid="sur-testi-marrakech"
+      />
+
       {/* 8. Editorial: Marrakech & Essaouira intro */}
       <EditorialBlock block={SUR_EDITORIAL[3]} lang={lang} />
       <SectionGallery {...SUR_GALLERIES[3]} testid="sur-gallery-essaouira" />
@@ -256,6 +286,17 @@ export default function SurPage() {
       {/* 9. Itinerary 4: Marrakech – Essaouira (links to Marrakech-Essaouira hub) */}
       <ItineraryBlock itinerary={SUR_ITINERARIES[3]} index={3} lang={lang} t={t.block} ctaTarget={pathFor(lang, "tourMarrakechEssHub")} />
       <HubOptionsPreview hub={HUB_MARRAKECH_ESSAOUIRA} lang={lang} testid="sur-preview-marrakech-essaouira" />
+
+      {/* Testimonials · Essaouira & Atlantic coast · 2 cards */}
+      <Testimonials
+        variant="compact"
+        themes={["essaouira", "coast"]}
+        limit={2}
+        tone="sand"
+        eyebrow={{ es: "El viento atlántico de Essaouira", en: "Essaouira's Atlantic breeze", fr: "Le vent atlantique d'Essaouira" }}
+        testid="sur-testi-essaouira"
+      />
+
       {/* 10. Why Xaluca - 4 brand pillars */}
       <WhyXaluca pillars={SUR_PILLARS} t={t.why} lang={lang} testid="sur-why" />
 

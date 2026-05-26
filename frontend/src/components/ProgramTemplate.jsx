@@ -474,10 +474,10 @@ const ProgramHero = ({ vt, t, program, lang }) => (
               <span className="w-8 h-px bg-[#D4A373]/50" />
               <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">{vt.place}</span>
             </div>
-            <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
+            <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
               {vt.title}
             </h1>
-            <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
+            <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
               {vt.subtitle}
             </p>
             <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-3xl">

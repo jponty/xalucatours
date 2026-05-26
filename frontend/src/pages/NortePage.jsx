@@ -226,6 +226,16 @@ export default function NortePage() {
         ctaTarget={pathFor(lang, "contact")}
       />
 
+      {/* Testimonials · Imperial cities · 2 cards */}
+      <Testimonials
+        variant="compact"
+        themes={["imperial", "fez", "medina", "riad", "gastronomy"]}
+        limit={2}
+        tone="cream"
+        eyebrow={{ es: "Vivir las ciudades imperiales por dentro", en: "Living the imperial cities from within", fr: "Vivre les villes impériales de l'intérieur" }}
+        testid="norte-testi-imperial"
+      />
+
       {/* Editorial 1 — between itineraries */}
       <EditorialBlock block={NORTE_EDITORIAL[0]} lang={lang} />
       <SectionGallery {...NORTE_GALLERIES[0]} testid="norte-gallery-imperial" />
@@ -237,6 +247,16 @@ export default function NortePage() {
         lang={lang}
         t={t.block}
         ctaTarget={pathFor(lang, "contact")}
+      />
+
+      {/* Testimonials · Tánger · Chefchaouen · Rif · 2 cards */}
+      <Testimonials
+        variant="compact"
+        themes={["tangier", "chefchaouen", "coast"]}
+        limit={2}
+        tone="sage"
+        eyebrow={{ es: "El norte azul: Tánger, Chefchaouen y el Rif", en: "The blue north: Tangier, Chefchaouen & the Rif", fr: "Le nord bleu : Tanger, Chefchaouen et le Rif" }}
+        testid="norte-testi-rif"
       />
 
       {/* Editorial 2 — closing narrative */}

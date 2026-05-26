@@ -118,6 +118,7 @@ export const Testimonials = ({
   limit = 3,
   testid = "testimonials",
   tone = "cream",
+  variant = "full", // "full" | "compact"
 }) => {
   const { lang } = useLanguage();
   const palette = TONES[tone] || TONES.cream;
@@ -135,24 +136,42 @@ export const Testimonials = ({
     ? (typeof subtitle === "string" ? subtitle : pick(subtitle, lang))
     : null;
 
+  const isCompact = variant === "compact";
+  const sectionCls = isCompact ? "relative py-12 md:py-16" : "relative py-20 md:py-28";
+  const containerCls = isCompact
+    ? "relative max-w-7xl mx-auto px-6 md:px-12"
+    : "relative max-w-7xl mx-auto px-6 md:px-12";
+  const headerCls = isCompact ? "max-w-3xl mb-7 md:mb-9" : "max-w-3xl mb-12 md:mb-16";
+  const gridCls = isCompact
+    ? "grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6";
+
   return (
     <section
       data-testid={testid}
-      className="relative py-20 md:py-28"
+      className={sectionCls}
       style={{ background: palette.bg }}
     >
-      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
-        <header className="max-w-3xl mb-12 md:mb-16">
+      <div className={containerCls}>
+        <header className={headerCls}>
           <span
-            className="block text-[10px] tracking-[0.32em] uppercase"
+            className="inline-flex items-center gap-3 text-[10px] tracking-[0.32em] uppercase"
             style={{ color: palette.quote, fontFamily: INTER_FAMILY, fontWeight: 600 }}
           >
+            <span className="w-6 h-px" style={{ background: palette.quote, opacity: 0.5 }} />
             {resolvedEyebrow}
           </span>
-          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.1] tracking-tight mt-5 text-[#2C2621]">
-            {resolvedTitle}
-          </h2>
-          {resolvedSub && (
+          {!isCompact && (
+            <h2 className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.1] tracking-tight mt-5 text-[#2C2621]">
+              {resolvedTitle}
+            </h2>
+          )}
+          {isCompact && (resolvedTitle && resolvedTitle !== labels.default_title) && (
+            <h3 className="font-serif-x text-2xl md:text-3xl leading-[1.15] tracking-tight mt-3 text-[#2C2621]">
+              {resolvedTitle}
+            </h3>
+          )}
+          {resolvedSub && !isCompact && (
             <p
               className="mt-5 text-[15px] md:text-base text-[#5C5248] leading-[1.8] max-w-2xl"
               style={{ fontFamily: INTER_FAMILY, fontWeight: 400 }}
@@ -162,7 +181,7 @@ export const Testimonials = ({
           )}
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <div className={gridCls}>
           {items.map((t, i) => (
             <TestimonialCard key={t.id} t={t} tone={palette} lang={lang} idx={i} />
           ))}

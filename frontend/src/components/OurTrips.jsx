@@ -191,9 +191,9 @@ const SmallCard = ({ trip, lang }) => {
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
-        <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/60 via-transparent to-transparent" />
+        <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-[#1A1513]/10" />
         {/* Tag */}
-        <span className="absolute top-4 left-4 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]">
+        <span className="absolute top-4 left-4 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image">
           {I && (
             <span
               className="inline-flex items-center justify-center w-6 h-6 rounded-full"

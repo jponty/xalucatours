@@ -42,7 +42,7 @@ export const LuxuryCamps = () => {
                     loading="lazy"
                     className="ken-burns absolute inset-0 w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#1A1513]/65 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#1A1513]/85 via-[#1A1513]/25 to-transparent" />
                   <span className="film-grain" />
                   <span
                     className="absolute top-6 left-6 inline-flex items-center gap-2 bg-[#1A1513]/70 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] border border-[#D4A373]/30"

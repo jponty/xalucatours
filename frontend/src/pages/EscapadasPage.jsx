@@ -205,21 +205,47 @@ export default function EscapadasPage() {
 
       <ItinerariesOverview itineraries={ESCAPADAS_ITEMS} t={t.overview} lang={lang} />
 
-      {ESCAPADAS_ITEMS.map((it, i) => (
-        <React.Fragment key={it.id}>
-          <EditorialBlock block={ESCAPADAS_EDITORIAL[i]} lang={lang} />
-          {ESCAPADAS_GALLERIES[i] && (
-            <SectionGallery {...ESCAPADAS_GALLERIES[i]} testid={`escapadas-gallery-${it.id}`} />
-          )}
-          <ItineraryBlock
-            itinerary={it}
-            index={i}
-            lang={lang}
-            t={t.block}
-            ctaTarget={pathFor(lang, "contact")}
-          />
-        </React.Fragment>
-      ))}
+      {ESCAPADAS_ITEMS.map((it, i) => {
+        // Per-escapada theming for testimonials
+        const themesByEscapada = {
+          desierto:    { themes: ["desert", "dunes", "bivouac", "stars", "short-escape"], tone: "cream",
+                         eyebrow: { es: "Tres días de Sahara que valen un año entero", en: "Three Saharan days worth a whole year", fr: "Trois jours de Sahara valent une année entière" } },
+          "alto-atlas":{ themes: ["atlas", "berber-village", "short-escape"], tone: "sage",
+                         eyebrow: { es: "Aire del Atlas, en sólo unos días", en: "Atlas air in just a few days", fr: "L'air de l'Atlas en quelques jours" } },
+          fez:         { themes: ["fez", "medina", "imperial", "riad", "short-escape"], tone: "sand",
+                         eyebrow: { es: "Fez en 3 días: medina pura", en: "Fez in 3 days: pure medina", fr: "Fès en 3 jours : médina pure" } },
+          marrakech:   { themes: ["marrakech", "riad", "medina", "short-escape"], tone: "cream",
+                         eyebrow: { es: "Marrakech sin prisas", en: "Marrakech without rush", fr: "Marrakech sans hâte" } },
+          tanger:      { themes: ["tangier", "coast", "short-escape"], tone: "sage",
+                         eyebrow: { es: "El norte azul, en un fin de semana largo", en: "The blue north in a long weekend", fr: "Le nord bleu, en un long week-end" } },
+        };
+        const cfg = themesByEscapada[it.id];
+        return (
+          <React.Fragment key={it.id}>
+            <EditorialBlock block={ESCAPADAS_EDITORIAL[i]} lang={lang} />
+            {ESCAPADAS_GALLERIES[i] && (
+              <SectionGallery {...ESCAPADAS_GALLERIES[i]} testid={`escapadas-gallery-${it.id}`} />
+            )}
+            <ItineraryBlock
+              itinerary={it}
+              index={i}
+              lang={lang}
+              t={t.block}
+              ctaTarget={pathFor(lang, "contact")}
+            />
+            {cfg && (
+              <Testimonials
+                variant="compact"
+                themes={cfg.themes}
+                limit={2}
+                tone={cfg.tone}
+                eyebrow={cfg.eyebrow}
+                testid={`escapadas-testi-${it.id}`}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
 
       <WhyXaluca pillars={ESCAPADAS_PILLARS} t={t.why} lang={lang} testid="escapadas-why" />
 

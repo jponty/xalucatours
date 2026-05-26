@@ -217,19 +217,19 @@ export default function AllTripsCarousel() {
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                 />
-                <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/15 to-transparent" />
+                <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/90 via-[#1A1513]/30 to-[#1A1513]/8" />
                 <span className="film-grain opacity-40" aria-hidden="true" />
 
-                <span className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7]"
+                <span className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image"
                   style={{ background: `${trip.accent}f0` }}>
                   {pick(TAGS[trip.tag], lang)}
                 </span>
 
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/70 mb-2">
+                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/80 mb-2 text-on-image">
                     {trip.nights}
                   </span>
-                  <h3 className="font-serif-x text-[#FDFBF7] text-xl md:text-[22px] leading-[1.15] tracking-tight">
+                  <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight">
                     {pick(trip.title, lang)}
                   </h3>
                 </div>

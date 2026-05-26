@@ -282,14 +282,56 @@ export default function MarruecosPage() {
       <ItinerariesOverview itineraries={MARRUECOS_ITINERARIES} t={t.overview} lang={lang} />
 
       {MARRUECOS_ITINERARIES.map((it, i) => (
-        <ItineraryBlock
-          key={it.id}
-          itinerary={it}
-          index={i}
-          lang={lang}
-          t={t.block}
-          ctaTarget={pathFor(lang, ROUTE_BY_ID[it.id] || "contact")}
-        />
+        <React.Fragment key={it.id}>
+          <ItineraryBlock
+            itinerary={it}
+            index={i}
+            lang={lang}
+            t={t.block}
+            ctaTarget={pathFor(lang, ROUTE_BY_ID[it.id] || "contact")}
+          />
+          {/* Per-itinerary themed testimonials */}
+          {it.id === "gran-sur-fez-marrakech" && (
+            <Testimonials
+              variant="compact"
+              themes={["fez", "imperial", "medina", "riad", "desert", "stars"]}
+              limit={2}
+              tone="cream"
+              eyebrow={{ es: "De la medina de Fez al silencio del Sahara", en: "From Fez medina to Saharan silence", fr: "De la médina de Fès au silence saharien" }}
+              testid="marruecos-testi-fez-rak"
+            />
+          )}
+          {it.id === "gran-sur-medio-atlas" && (
+            <Testimonials
+              variant="compact"
+              themes={["atlas", "berber-village", "gorges", "desert"]}
+              limit={2}
+              tone="sand"
+              eyebrow={{ es: "Travesía del Atlas central", en: "Crossing the central Atlas", fr: "Traversée de l'Atlas central" }}
+              testid="marruecos-testi-medio-atlas"
+            />
+          )}
+          {it.id === "alto-atlas-desierto-fez" && (
+            <Testimonials
+              variant="compact"
+              themes={["mgoun", "trekking", "atlas", "fez"]}
+              limit={2}
+              tone="sage"
+              eyebrow={{ es: "Cumbres del Alto Atlas", en: "High Atlas summits", fr: "Sommets du Haut Atlas" }}
+              testid="marruecos-testi-alto-atlas"
+            />
+          )}
+          {it.id === "tanger-marrakech" && (
+            <Testimonials
+              variant="compact"
+              themes={["tangier", "chefchaouen", "marrakech", "imperial"]}
+              limit={2}
+              tone="cream"
+              eyebrow={{ es: "De Tánger a Marrakech", en: "From Tangier to Marrakech", fr: "De Tanger à Marrakech" }}
+              testid="marruecos-testi-tanger-rak"
+            />
+          )}
+        </React.Fragment>
       ))}
 
       <CtaBand t={t.cta} lang={lang} testid="marruecos-cta-band" />

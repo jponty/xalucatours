@@ -373,11 +373,41 @@ export default function AventuraPage() {
       {/* 3. Merzouga editorial */}
       <EditorialBlock block={AVENTURA_EDITORIAL[0]} lang={lang} />
 
+      {/* 3.5 Testimonials · Merzouga / 4x4 expedition */}
+      <Testimonials
+        variant="compact"
+        themes={["4x4", "expedition", "desert", "dunes", "adrenaline"]}
+        limit={2}
+        tone="cream"
+        eyebrow={{ es: "Pistas del Dakar, hamada y dunas", en: "Dakar tracks, hamada and dunes", fr: "Pistes du Dakar, hamada et dunes" }}
+        testid="aventura-testi-4x4"
+      />
+
       {/* 4. Enduro editorial */}
       <EditorialBlock block={AVENTURA_EDITORIAL[1]} lang={lang} />
 
+      {/* 4.5 Testimonials · Enduro / motorbike raids */}
+      <Testimonials
+        variant="compact"
+        themes={["enduro", "adrenaline", "expedition"]}
+        limit={2}
+        tone="sage"
+        eyebrow={{ es: "Raids enduro en el Sur Marroquí", en: "Enduro raids in the Moroccan South", fr: "Raids enduro dans le Sud marocain" }}
+        testid="aventura-testi-enduro"
+      />
+
       {/* 5. Experiences grid (8 cards) */}
       <ExperiencesGrid t={t.experiences} lang={lang} />
+
+      {/* 5.5 Testimonials · M'Goun & trekking */}
+      <Testimonials
+        variant="compact"
+        themes={["mgoun", "trekking", "atlas", "berber-village"]}
+        limit={2}
+        tone="sand"
+        eyebrow={{ es: "Cumbres y noches en aldeas bereberes", en: "Summits and nights in Berber villages", fr: "Sommets et nuits en villages berbères" }}
+        testid="aventura-testi-trekking"
+      />
 
       {/* 6. Why Xaluca pillars (dark variant on adventure page) */}
       <WhyXaluca pillars={AVENTURA_PILLARS} t={t.why} lang={lang} testid="aventura-why" />

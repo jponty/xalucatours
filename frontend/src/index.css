@@ -210,6 +210,96 @@
 }
 
 /* ============================================================
+   Cinematic readability overlays — applied wherever text sits
+   on top of an image (heroes, cards, banners, galleries…).
+
+   USAGE
+     • .img-overlay         — soft default (vignette + bottom darken)
+     • .img-overlay-strong  — for very bright / busy images
+     • .img-overlay-soft    — minimal, near-invisible
+     • .img-overlay-hover   — strengthen overlay on hover
+     • .text-on-image       — adds subtle shadow to light text
+
+   IMPLEMENTATION
+     A single ::after pseudo-element. Parents need `relative` and
+     `overflow-hidden`. Adapts via `mix-blend-mode: multiply`
+     so bright spots get darker but shadows stay rich.
+============================================================ */
+.img-overlay,
+.img-overlay-strong,
+.img-overlay-soft {
+    position: relative;
+}
+.img-overlay::after,
+.img-overlay-strong::after,
+.img-overlay-soft::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.5s ease, background 0.5s ease;
+}
+/* Default — combines a soft top vignette + bottom darken.
+   Multiply blend keeps highlights from washing out. */
+.img-overlay::after {
+    background:
+        linear-gradient(to top, rgba(26, 21, 19, 0.62) 0%, rgba(26, 21, 19, 0.18) 38%, rgba(26, 21, 19, 0) 62%),
+        radial-gradient(120% 80% at 50% 100%, rgba(26, 21, 19, 0.20) 0%, rgba(26, 21, 19, 0) 60%);
+}
+/* Stronger — for hero / over very busy images. */
+.img-overlay-strong::after {
+    background:
+        linear-gradient(to top, rgba(26, 21, 19, 0.78) 0%, rgba(26, 21, 19, 0.40) 35%, rgba(26, 21, 19, 0.12) 60%, rgba(26, 21, 19, 0) 88%),
+        linear-gradient(180deg, rgba(26, 21, 19, 0.10), rgba(26, 21, 19, 0) 30%);
+}
+/* Soft — barely-there, for editorial galleries / thumbnails. */
+.img-overlay-soft::after {
+    background:
+        linear-gradient(to top, rgba(26, 21, 19, 0.38) 0%, rgba(26, 21, 19, 0.08) 40%, rgba(26, 21, 19, 0) 70%);
+}
+/* Optional hover boost — opt in by adding `.img-overlay-hover`. */
+.img-overlay-hover:hover::after {
+    background:
+        linear-gradient(to top, rgba(26, 21, 19, 0.72) 0%, rgba(26, 21, 19, 0.28) 40%, rgba(26, 21, 19, 0.06) 70%, rgba(26, 21, 19, 0) 90%);
+}
+
+/* Make any direct child sit above the overlay automatically.
+   Use `relative z-[2]` on the elements that hold text/buttons
+   when in doubt. */
+.img-overlay > *:not(img):not(picture):not(video):not(span.film-grain):not(.absolute),
+.img-overlay-strong > *:not(img):not(picture):not(video):not(span.film-grain):not(.absolute),
+.img-overlay-soft > *:not(img):not(picture):not(video):not(span.film-grain):not(.absolute) {
+    position: relative;
+    z-index: 2;
+}
+
+/* Light/white type on imagery — a hint of shadow keeps it
+   readable even when the underlying photo flips white-ish. */
+.text-on-image {
+    text-shadow: 0 1px 2px rgba(26, 21, 19, 0.35), 0 0 16px rgba(26, 21, 19, 0.18);
+}
+.text-on-image-strong {
+    text-shadow: 0 1px 2px rgba(26, 21, 19, 0.55), 0 2px 18px rgba(26, 21, 19, 0.32);
+}
+
+/* Slightly stronger contrast on small screens — phone screens
+   in sunlight are the harshest readability test. */
+@media (max-width: 768px) {
+    .img-overlay::after {
+        background:
+            linear-gradient(to top, rgba(26, 21, 19, 0.70) 0%, rgba(26, 21, 19, 0.24) 42%, rgba(26, 21, 19, 0) 68%),
+            radial-gradient(140% 90% at 50% 100%, rgba(26, 21, 19, 0.22) 0%, rgba(26, 21, 19, 0) 65%);
+    }
+    .img-overlay-soft::after {
+        background:
+            linear-gradient(to top, rgba(26, 21, 19, 0.48) 0%, rgba(26, 21, 19, 0.12) 45%, rgba(26, 21, 19, 0) 72%);
+    }
+}
+
+
+
+/* ============================================================
    Leaflet tweaks — editorial look
    ============================================================ */
 .leaflet-container {
