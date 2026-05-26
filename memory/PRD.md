@@ -56,6 +56,13 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Sticky-nav active-state improvements on long pages
 - Sitemap / SEO meta per page
 - Stripe Checkout for `/proximas_salidas` deposits
+- Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
+
+## Recent additions (Feb 2026 — session)
+- **Day map interactive carousel** — Selecting a landmark on the map or the side list reveals an editorial card carousel below the map: vertical 4:5 cards, each with image + title + short curiosity (trilingual). 28 landmarks × 3-4 cards in `lib/landmarkGalleries.js`. Component: `components/LandmarkCarousel.jsx`.
+- Increased spacing between "Bloques culturales destacados" and "Mapa del día" sections (`mt-12 md:mt-16 pt-14 md:pt-20`).
+- Added "Planifica tu viaje" link in `SideMenu` → group "Nuestros viajes / Experiencias y formatos" (between *Viajes a medida* and *Próximas salidas*), trilingual, icon `wand-2`.
+- Verified `/planifica-tu-viaje` end-to-end submission against `POST /api/trip-planner` (HTTP 200, MongoDB persisted).
 
 ## Stack & integrations
 - MongoDB enquiries (POST `/api/contact`)

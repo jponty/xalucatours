@@ -4,7 +4,7 @@ import {
   X, ChevronDown, ArrowRight, Phone, Mail,
   Home, CalendarClock, Compass, MapPin, Sparkles,
   Sun, Globe2, Mountain, Wind, MountainSnow, Scissors,
-  CalendarDays, Users, Landmark,
+  CalendarDays, Users, Landmark, Wand2,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { MENU_TREE } from "@/lib/menu";
@@ -16,7 +16,7 @@ const ICONS = {
   "map-pin": MapPin, "sparkles": Sparkles, "sun": Sun, "globe-2": Globe2,
   "mountain": Mountain, "wind": Wind, "mountain-snow": MountainSnow,
   "scissors": Scissors, "calendar-days": CalendarDays, "users": Users,
-  "landmark": Landmark, "mail": Mail,
+  "landmark": Landmark, "mail": Mail, "wand-2": Wand2,
 };
 const Icon = ({ name, className = "w-4 h-4", strokeWidth = 1.5 }) => {
   const C = ICONS[name];

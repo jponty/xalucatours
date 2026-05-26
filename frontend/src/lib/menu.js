@@ -41,6 +41,7 @@ export const MENU_TREE = [
         items: [
           { id: "adventure",  routeId: "tourAdventure",      icon: "mountain-snow",  label: { es: "Viajes de aventura", en: "Adventure travel", fr: "Voyages d'aventure" } },
           { id: "bespoke",    routeId: "tourBespoke",        icon: "scissors",       label: { es: "Viajes a medida",    en: "Tailor-made tours", fr: "Voyages sur mesure" } },
+          { id: "plan-trip",  routeId: "planTrip",           icon: "wand-2",         label: { es: "Planifica tu viaje", en: "Plan your trip",    fr: "Planifiez votre voyage" } },
           { id: "departures", routeId: "upcomingDepartures", icon: "calendar-days", label: { es: "Próximas salidas",   en: "Upcoming departures", fr: "Prochains départs" } },
         ],
       },
