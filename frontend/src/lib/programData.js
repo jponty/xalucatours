@@ -2391,3 +2391,719 @@ export const PROGRAM_MEM_45 = {
   },
 };
 
+
+/* ============================================================
+   Marrakech → Erg Chebbi → Marrakech · 5 noches / 6 días
+   Circular con dos noches en Marrakech (llegada + visita guiada),
+   3 días de circuito 4x4 hacia el Erg Chebbi y regreso largo a
+   Marrakech para una última noche y traslado al aeropuerto.
+============================================================ */
+
+export const DAY_MEM56_ARRIVAL_MARRAKECH = {
+  route_id: "mem56-arrival-marrakech",
+  id: "dia-1",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Llegada a Marrakech", en: "Arrival in Marrakech", fr: "Arrivée à Marrakech" },
+  body: {
+    es: "Vuelo desde el aeropuerto de origen hacia Marrakech. Llegada y traslado al Riad en la Medina u Hotel 5*. Alojamiento. Dependiendo de la hora de llegada, se recomienda una primera toma de contacto con la Medina y la famosa Plaza Djemaa el-Fna, que al caer la tarde y la noche se llena de recitadores, adivinadores, malabaristas, encantadores de serpientes y puestos de comida tradicional al aire libre.",
+    en: "Flight from your home airport to Marrakech. Arrival and transfer to a Riad in the Medina or 5* Hotel. Overnight. Depending on your arrival time, we recommend a first contact with the Medina and the famous Djemaa el-Fna Square — which at dusk and after dark fills with storytellers, fortune-tellers, jugglers, snake charmers and traditional open-air food stalls.",
+    fr: "Vol depuis votre aéroport d'origine vers Marrakech. Arrivée et transfert au Riad dans la Médina ou Hôtel 5*. Nuit. Selon l'heure d'arrivée, nous vous recommandons une première rencontre avec la Médina et la célèbre place Djemaa el-Fna — qui se remplit en soirée de conteurs, devins, jongleurs, charmeurs de serpents et étals de cuisine en plein air.",
+  },
+  culture: [
+    {
+      title: { es: "Djemaa el-Fna al caer la tarde", en: "Djemaa el-Fna at dusk", fr: "Djemaa el-Fna à la tombée du soir" },
+      body: {
+        es: "Patrimonio Cultural Inmaterial de la UNESCO desde 2008. Al anochecer la plaza se convierte en un gran escenario gastronómico y cultural con decenas de paraditas de comida iluminadas y espectáculos espontáneos.",
+        en: "UNESCO Intangible Cultural Heritage since 2008. At nightfall the square becomes a vast gastronomic and cultural stage with dozens of lit-up food stalls and impromptu shows.",
+        fr: "Patrimoine Culturel Immatériel de l'UNESCO depuis 2008. À la tombée de la nuit, la place devient une vaste scène gastronomique et culturelle avec des dizaines d'échoppes éclairées et des spectacles improvisés.",
+      },
+    },
+    {
+      title: { es: "Vivir en un riad de la Medina", en: "Living in a Medina riad", fr: "Vivre dans un riad de la Médina" },
+      body: {
+        es: "Los riads son antiguas casas-palacio organizadas en torno a un patio interior. Dormir en uno permite experimentar la vida tradicional marroquí en pleno corazón de la Medina, lejos del bullicio.",
+        en: "Riads are former palatial homes organised around an inner courtyard. Spending the night in one offers an immersion into traditional Moroccan life at the heart of the Medina, away from the bustle.",
+        fr: "Les riads sont d'anciennes maisons-palais organisées autour d'un patio intérieur. Y dormir permet de vivre la tradition marocaine au cœur de la Médina, loin de l'agitation.",
+      },
+    },
+    {
+      title: { es: "Aeropuerto Menara de Marrakech", en: "Marrakech Menara airport", fr: "Aéroport Menara de Marrakech" },
+      body: {
+        es: "Inaugurado en su forma moderna en 2008, es una de las grandes puertas de entrada de Marruecos y un referente arquitectónico por su celosía geométrica inspirada en el zellige tradicional.",
+        en: "Opened in its modern form in 2008, it is one of Morocco's main gateways and an architectural landmark thanks to its geometric lattice façade inspired by traditional zellige.",
+        fr: "Inauguré dans sa forme moderne en 2008, c'est l'une des grandes portes d'entrée du Maroc et une référence architecturale grâce à sa façade en moucharabieh inspirée du zellige traditionnel.",
+      },
+    },
+  ],
+};
+
+export const DAY_MEM56_MARRAKECH_VISIT = {
+  route_id: "mem56-marrakech-visit",
+  id: "dia-2",
+  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
+  body: {
+    es: "Visita guiada a pie por la Medina de Marrakech con un guía local. Empezaremos admirando el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y seguiremos con el Palacio de la Bahía. Recorreremos los zocos tradicionales viendo a tejedores de alfombras, fabricantes de babuchas y una infinita variedad de artesanos. Visita a una farmacia bereber, donde nos enseñarán sus «secretillos». Por la tarde: tiempo libre, compras, paseo por la Medina y práctica del arte del regateo. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "Guided walking tour of the Marrakech Medina with a local guide. We start at the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We wander the traditional souks watching carpet weavers, babouche makers and a vast range of artisans at work. Visit to a Berber pharmacy where they share their «little secrets». In the afternoon: free time, shopping, a Medina stroll and the art of bargaining. Overnight in a Riad in the Medina or 5* Hotel.",
+    fr: "Visite guidée à pied de la Médina de Marrakech avec un guide local. Nous commençons par le minaret de la Koutoubia — jumeau de la Giralda de Séville — puis le Palais de la Bahia. Nous parcourons les souks traditionnels en observant tisserands de tapis, fabricants de babouches et une infinité d'artisans. Visite d'une pharmacie berbère, où l'on partage ses « petits secrets ». L'après-midi : temps libre, shopping, balade dans la Médina et art du marchandage. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "La Koutoubia: el alminar que inspiró a la Giralda", en: "Koutoubia: the minaret that inspired the Giralda", fr: "La Koutoubia : le minaret qui inspira la Giralda" },
+      body: {
+        es: "La Mezquita de la Koutoubia fue construida en el siglo XII por los almohades y su alminar está considerado una obra maestra de la arquitectura islámica. Su diseño sirvió de modelo para la Giralda de Sevilla y la Torre Hassan de Rabat.",
+        en: "Built in the 12th century by the Almohads, the Koutoubia minaret is considered a masterpiece of Islamic architecture. Its design served as the model for Seville's Giralda and Rabat's Hassan Tower.",
+        fr: "Construite au XIIᵉ siècle par les Almohades, la mosquée de la Koutoubia possède un minaret considéré comme un chef-d'œuvre de l'architecture islamique. Son dessin servit de modèle à la Giralda de Séville et à la Tour Hassan de Rabat.",
+      },
+    },
+    {
+      title: { es: "Palacio de la Bahía", en: "Bahia Palace", fr: "Palais de la Bahia" },
+      body: {
+        es: "Construido en el siglo XIX por el gran visir Sí Moussa para su favorita, el palacio cuenta con 150 habitaciones, jardines de mosaico y delicados artesonados de cedro. Una obra maestra de la artesanía marroquí.",
+        en: "Built in the 19th century by the grand vizier Si Moussa for his favourite, the palace has 150 rooms, mosaic gardens and exquisite cedar coffered ceilings. A masterpiece of Moroccan craftsmanship.",
+        fr: "Édifié au XIXᵉ siècle par le grand vizir Si Moussa pour sa favorite, le palais compte 150 pièces, des jardins en mosaïque et de délicats plafonds à caissons en cèdre. Un chef-d'œuvre de l'artisanat marocain.",
+      },
+    },
+    {
+      title: { es: "Los zocos y la artesanía", en: "The souks and the crafts", fr: "Les souks et l'artisanat" },
+      body: {
+        es: "Uno de los mercados artesanales más extensos del norte de África, dividido en sectores especializados — curtidores, cesteros, tintoreros, herreros, joyeros — manteniendo viva la tradición de oficios medievales.",
+        en: "One of North Africa's largest artisan markets, divided into specialised quarters — tanners, basket weavers, dyers, blacksmiths, jewellers — keeping medieval crafts alive.",
+        fr: "L'un des plus vastes marchés artisanaux d'Afrique du Nord, divisé en quartiers spécialisés — tanneurs, vanniers, teinturiers, forgerons, bijoutiers — perpétuant des métiers médiévaux.",
+      },
+    },
+  ],
+};
+
+export const DAY_MEM56_RETURN_MARRAKECH = {
+  route_id: "mem56-return-marrakech",
+  id: "dia-5",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5A6B4F",
+  title: { es: "Amanecer · Merdani · Alnif · regreso a Marrakech", en: "Sunrise · Merdani · Alnif · return to Marrakech", fr: "Lever du soleil · Merdani · Alnif · retour à Marrakech" },
+  body: {
+    es: "«Cita con el Amanecer»: recomendable madrugar para subir a las dunas y contemplar la salida del sol. Desayuno beduino, regreso al coche y recorrido alrededor del Erg hasta el pueblo abandonado de Merdani. Emprenderemos el largo camino de regreso a Marrakech (aproximadamente 550 km), pasando por la localidad de Alnif y disfrutando de los grandes contrastes paisajísticos entre el Anti-Atlas y la llanura del Haouz. Último día de utilización del 4x4. Llegada a Marrakech y alojamiento en Riad u Hotel 5*.",
+    en: "«A date with the Sunrise»: we recommend an early walk up the dunes for sunrise. Bedouin breakfast, back to the vehicle and a drive around the Erg to the abandoned village of Merdani. Then a long drive back to Marrakech (approximately 550 km), passing through Alnif and enjoying the great landscape contrasts between the Anti-Atlas and the Haouz plain. Final day with the 4x4. Arrival in Marrakech and overnight at a Riad or 5* Hotel.",
+    fr: "« Rendez-vous avec l'aube » : il est recommandé de se lever tôt pour monter sur les dunes admirer le lever du soleil. Petit déjeuner bédouin, retour au véhicule et tour de l'Erg jusqu'au village abandonné de Merdani. Longue route de retour vers Marrakech (environ 550 km) en passant par Alnif, avec les grands contrastes de paysages entre l'Anti-Atlas et la plaine du Haouz. Dernier jour avec le 4x4. Arrivée à Marrakech et nuit au Riad ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "Merdani: el pueblo abandonado", en: "Merdani: the abandoned village", fr: "Merdani : le village abandonné" },
+      body: {
+        es: "Antiguo poblado minero hoy parcialmente abandonado, junto a las minas de M'Fis. Una parada fotográfica imprescindible para entender la vida en los confines del Sahara y la historia del kohl, el plomo y el cobre extraídos en la región.",
+        en: "An old mining village, today partly abandoned, next to the M'Fis mines. A must-stop for photographers and a window into life on the edge of the Sahara and the regional history of kohl, lead and copper mining.",
+        fr: "Ancien village minier aujourd'hui partiellement abandonné, près des mines de M'Fis. Une halte photo incontournable et une fenêtre sur la vie aux confins du Sahara et l'histoire du kohl, du plomb et du cuivre extraits dans la région.",
+      },
+    },
+    {
+      title: { es: "Una larga ruta llena de contrastes", en: "A long route full of contrasts", fr: "Une longue route pleine de contrastes" },
+      body: {
+        es: "Los 550 km de regreso encadenan tres ecosistemas: las tierras pedregosas y oasis del Anti-Atlas, los valles fluviales con palmerales y olivares y, finalmente, la gran llanura agrícola del Haouz hasta los pies del Atlas.",
+        en: "The 550 km return chains three ecosystems: the stony lands and oases of the Anti-Atlas, the river valleys with palm groves and olive orchards, and finally the great agricultural Haouz plain at the feet of the Atlas.",
+        fr: "Les 550 km de retour enchaînent trois écosystèmes : terres pierreuses et oasis de l'Anti-Atlas, vallées fluviales aux palmeraies et oliveraies et, enfin, la grande plaine agricole du Haouz jusqu'au pied de l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Una última noche en Marrakech", en: "One last night in Marrakech", fr: "Une dernière nuit à Marrakech" },
+      body: {
+        es: "Tras un largo día de pistas, llegar de noche al riad o al hotel y salir a cenar a la Medina —cargados de polvo y recuerdos— es una de las experiencias más memorables del viaje.",
+        en: "After a long day on the tracks, arriving at the riad or hotel by night and going out for dinner in the Medina — covered in dust and full of memories — is one of the most memorable experiences of the trip.",
+        fr: "Après une longue journée de pistes, arriver de nuit au riad ou à l'hôtel et aller dîner dans la Médina — couverts de poussière et de souvenirs — est l'une des expériences les plus marquantes du voyage.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MEM_56 = {
+  routeId: "tourMarrakechLoop56",
+  duration_key: "mem5n6d",
+  duration: { es: "5 noches / 6 días", en: "5 nights / 6 days", fr: "5 nuits / 6 jours" },
+  prices: { low: 1290, mid: 1490, high: 1690, premium: 1990 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Un viaje circular para conocer a fondo el sur del país.",
+      description: [
+        "«Marrakech – Erg Chebbi – Marrakech» es un viaje para conocer a fondo el sur del país. Esta ruta nos despierta en Marrakech, una ciudad llena de colores, salpicada de artesanos y artistas, de plazas maravillosas y de aromas que marcarán nuestro recuerdo.",
+        "Desde la ciudad continuaremos en 4x4 hacia el Alto Atlas, descubriendo paisajes espectaculares, pueblos perdidos y gargantas inmensas. Más adelante llegaremos al Desierto del Erg Chebbi, un espectáculo para los sentidos, con interminables dunas y una atmósfera mágica que permite vivir una noche inolvidable bajo las estrellas.",
+        "El recorrido atraviesa lugares tan auténticos como Rissani y su mercado ancestral, además de oasis, montañas y pistas del desierto.",
+      ],
+    },
+    en: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "A circular journey to discover southern Morocco in depth.",
+      description: [
+        "«Marrakech – Erg Chebbi – Marrakech» is a journey to discover the south of the country in depth. The route wakes us up in Marrakech, a city full of colour, scattered with artisans and artists, marvellous squares and aromas that will linger in our memory.",
+        "From the city we continue in a 4x4 towards the High Atlas, discovering spectacular landscapes, hidden villages and immense gorges. Further on we reach the Erg Chebbi desert — a feast for the senses with endless dunes and a magical atmosphere that allows us to spend an unforgettable night under the stars.",
+        "The route crosses authentic places such as Rissani and its ancestral market, as well as oases, mountains and desert tracks.",
+      ],
+    },
+    fr: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Un voyage circulaire pour découvrir en profondeur le sud du pays.",
+      description: [
+        "« Marrakech – Erg Chebbi – Marrakech » est un voyage pour découvrir en profondeur le sud du pays. L'itinéraire nous réveille à Marrakech, ville colorée parsemée d'artisans et d'artistes, aux places merveilleuses et aux parfums qui marqueront notre mémoire.",
+        "Depuis la ville, nous poursuivons en 4x4 vers le Haut Atlas, à la découverte de paysages spectaculaires, de villages perdus et de gorges immenses. Plus loin, nous atteignons le désert de l'Erg Chebbi — un spectacle pour les sens, avec ses dunes infinies et son atmosphère magique pour une nuit inoubliable sous les étoiles.",
+        "Le parcours traverse des lieux authentiques comme Rissani et son marché ancestral, ainsi que des oasis, des montagnes et des pistes du désert.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM56_ARRIVAL_MARRAKECH,
+    DAY_MEM56_MARRAKECH_VISIT,
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM23_TODRA_BIVOUAC,
+    DAY_MEM56_RETURN_MARRAKECH,
+    DAY_EM78_DEPARTURE,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Tres noches en Marrakech en Riad u Hotel 5* en régimen de alojamiento y desayuno",
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 4",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 3 al día 5",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Marrakech",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Three nights in Marrakech in a Riad or 5* Hotel, bed and breakfast",
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "Desert «picnic» on day 4",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 3 to day 5",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Marrakech",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Trois nuits à Marrakech en Riad ou Hôtel 5* en logement et petit déjeuner",
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 4",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 3 au jour 5",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Marrakech",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía no especificadas",
+        "Cenas en Marrakech",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches not specified",
+        "Dinners in Marrakech",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners non spécifiés",
+        "Dîners à Marrakech",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair — vuelos directos desde varias ciudades",
+        "Tarifas basadas en habitaciones dobles y triples · Suplemento individual 470 €",
+        "Descuento niños 3-11 años compartiendo con dos adultos: 170 € baja · 175 € alta",
+        "Si los riads estuvieran completos, se ofrecerán alternativas similares con previo aviso",
+        "Guías locales pueden compartirse en temporada alta",
+        "Chóferes de habla española limitados — se recomienda reservar con antelación",
+        "Pasaporte con un mínimo de 3 meses de validez desde la fecha de regreso",
+        "Actividades opcionales: Quads 70 € por vehículo (1 hora) · Spa y masajes en recepción del hotel",
+        "Seguro de cancelación opcional: 30 € por persona para viajes de hasta 10 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair — direct flights from various cities",
+        "Rates based on double and triple rooms · Single supplement €470",
+        "Children 3-11 sharing room with two adults: €170 low season · €175 high season",
+        "If the planned riads are full, similar alternatives will be offered in advance",
+        "Local guides may be shared in high season",
+        "Spanish-speaking drivers limited — book in advance",
+        "Passport valid for at least 3 months from the return date",
+        "Optional activities: Quads €70 per vehicle (1 hour) · Spa and massages at hotel reception",
+        "Optional cancellation insurance: €30 per person for trips up to 10 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair — vols directs depuis plusieurs villes",
+        "Tarifs basés sur chambres doubles et triples · Supplément individuel 470 €",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 170 € basse · 175 € haute",
+        "Si les riads prévus sont complets, des alternatives similaires seront proposées au préalable",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Chauffeurs hispanophones limités — réserver à l'avance",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Activités en option : Quads 70 € par véhicule (1 heure) · Spa et massages à la réception de l'hôtel",
+        "Assurance annulation en option : 30 € par personne pour les voyages jusqu'à 10 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria",
+        "Pago: 30% al confirmar · 70% restante hasta 30 días antes de la salida",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Los seguros no son reembolsables",
+      ],
+      en: [
+        "Compulsory booking form",
+        "Payment: 30% at confirmation · remaining 70% up to 30 days before departure",
+        "If the chosen flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Insurances are non-refundable",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire",
+        "Paiement : 30 % à la confirmation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol choisi requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les assurances ne sont pas remboursables",
+      ],
+    },
+  },
+};
+
+
+/* ============================================================
+   Marrakech → Erg Chebbi → Marrakech · 6 noches / 7 días
+   Variante con noche extra en Kasbah Xaluca tras el bivouac y
+   día completo de regreso a Marrakech.
+============================================================ */
+
+export const DAY_MEM67_ERFOUD_MARRAKECH = {
+  route_id: "mem67-erfoud-marrakech",
+  id: "dia-6",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5A6B4F",
+  title: { es: "Erfoud · Alnif · regreso a Marrakech", en: "Erfoud · Alnif · return to Marrakech", fr: "Erfoud · Alnif · retour à Marrakech" },
+  body: {
+    es: "Día de regreso hacia Marrakech atravesando Alnif, paisajes desérticos del Anti-Atlas y zonas montañosas. Será un día de traslado largo (aproximadamente 550 km), recompensado por la enorme variedad paisajística. Último día de utilización del vehículo 4x4. Llegada a Marrakech y tiempo libre — buen momento para una última cena en la Medina o un paseo nocturno por Djemaa el-Fna. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "Day of return towards Marrakech via Alnif, desert landscapes of the Anti-Atlas and mountain stretches. A long transfer day (approximately 550 km), rewarded by the immense variety of landscapes. Final day with the 4x4. Arrival in Marrakech and free time — a good moment for a last dinner in the Medina or an evening stroll across Djemaa el-Fna. Overnight in a Riad in the Medina or 5* Hotel.",
+    fr: "Journée de retour vers Marrakech en passant par Alnif, paysages désertiques de l'Anti-Atlas et zones montagneuses. Longue journée de transfert (environ 550 km), récompensée par l'immense variété de paysages. Dernier jour avec le 4x4. Arrivée à Marrakech et temps libre — bon moment pour un dernier dîner dans la Médina ou une promenade nocturne sur Djemaa el-Fna. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "Alnif y la ruta de los fósiles", en: "Alnif and the fossil road", fr: "Alnif et la route des fossiles" },
+      body: {
+        es: "Pequeña localidad bereber del Anti-Atlas, internacionalmente conocida por sus yacimientos de trilobites del periodo Devónico, algunos de los más completos del mundo. Punto de paso obligado en la travesía del desierto al Atlas.",
+        en: "A small Berber town in the Anti-Atlas, internationally known for its Devonian trilobite deposits — among the most complete in the world. A mandatory stop on the crossing from the desert to the Atlas.",
+        fr: "Petite ville berbère de l'Anti-Atlas, mondialement connue pour ses gisements de trilobites du Dévonien — parmi les plus complets au monde. Halte obligée sur la traversée du désert vers l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Del Anti-Atlas al llano del Haouz", en: "From the Anti-Atlas to the Haouz plain", fr: "De l'Anti-Atlas à la plaine du Haouz" },
+      body: {
+        es: "El recorrido encadena tres ecosistemas en pocas horas: tierras pedregosas y oasis de palmeras del Anti-Atlas, valles fluviales con olivares y, finalmente, el gran llano agrícola del Haouz que se abre hasta los pies del Atlas.",
+        en: "The route chains three ecosystems in just a few hours: stony lands and palm oases of the Anti-Atlas, river valleys with olive groves and, finally, the great agricultural Haouz plain stretching to the foot of the Atlas.",
+        fr: "L'itinéraire enchaîne trois écosystèmes en quelques heures : terres pierreuses et oasis de palmiers de l'Anti-Atlas, vallées fluviales aux oliveraies et, enfin, la grande plaine agricole du Haouz jusqu'au pied de l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Última noche en Marrakech", en: "Last night in Marrakech", fr: "Dernière nuit à Marrakech" },
+      body: {
+        es: "La llegada nocturna a Marrakech tras los días en el desierto y la montaña convierte la cena en la Medina o el paseo por Djemaa el-Fna en una despedida intensa y memorable del viaje.",
+        en: "Arriving in Marrakech by night after days in the desert and the mountains turns dinner in the Medina or a stroll around Djemaa el-Fna into an intense, memorable farewell to the trip.",
+        fr: "L'arrivée nocturne à Marrakech après les jours dans le désert et la montagne fait du dîner dans la Médina ou d'une promenade autour de Djemaa el-Fna un adieu intense et mémorable.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MEM_67 = {
+  routeId: "tourMarrakechLoop67",
+  duration_key: "mem6n7d",
+  duration: { es: "6 noches / 7 días", en: "6 nights / 7 days", fr: "6 nuits / 7 jours" },
+  prices: { low: 1490, mid: 1690, high: 1890, premium: 2190 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Una semana para descubrir Marrakech, el Atlas y el Sahara.",
+      description: [
+        "«Marrakech – Erg Chebbi – Marrakech» es un viaje para conocer a fondo el sur del país. La ruta comienza en Marrakech, una ciudad llena de colores, artesanos, plazas vibrantes y aromas inolvidables.",
+        "Desde allí se continúa en vehículo 4x4 atravesando el Alto Atlas, descubriendo paisajes espectaculares, aldeas remotas y gargantas impresionantes. Posteriormente se llega al Desierto del Erg Chebbi, con sus dunas infinitas y su atmósfera mágica, donde se vive la experiencia de dormir bajo las estrellas.",
+        "El recorrido también atraviesa lugares tan auténticos como Rissani y su mercado ancestral, además de oasis, poblados del desierto y una noche extra de descanso en Kasbah Xaluca.",
+      ],
+    },
+    en: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "A week to discover Marrakech, the Atlas and the Sahara.",
+      description: [
+        "«Marrakech – Erg Chebbi – Marrakech» is a journey to discover southern Morocco in depth. The route begins in Marrakech — a city full of colour, artisans, vibrant squares and unforgettable aromas.",
+        "From there, we continue in a 4x4 crossing the High Atlas, discovering spectacular landscapes, remote hamlets and impressive gorges. We then reach the Erg Chebbi desert, with its endless dunes and magical atmosphere, where we experience sleeping under the stars.",
+        "The route also crosses authentic places such as Rissani and its ancestral market, as well as oases, desert villages and an extra rest night at Kasbah Xaluca.",
+      ],
+    },
+    fr: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Une semaine pour découvrir Marrakech, l'Atlas et le Sahara.",
+      description: [
+        "« Marrakech – Erg Chebbi – Marrakech » est un voyage pour découvrir en profondeur le sud du pays. L'itinéraire commence à Marrakech — ville colorée, parsemée d'artisans, aux places vibrantes et aux parfums inoubliables.",
+        "De là, nous poursuivons en 4x4 à travers le Haut Atlas, à la découverte de paysages spectaculaires, de villages reculés et de gorges impressionnantes. Nous atteignons ensuite le désert de l'Erg Chebbi, ses dunes infinies et son atmosphère magique, pour une nuit sous les étoiles.",
+        "L'itinéraire traverse aussi des lieux authentiques comme Rissani et son marché ancestral, des oasis, des villages du désert et une nuit supplémentaire de repos à la Kasbah Xaluca.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM56_ARRIVAL_MARRAKECH,
+    DAY_MEM56_MARRAKECH_VISIT,
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM23_TODRA_BIVOUAC,
+    DAY_MEM34_KHAMLIA_KASBAH,
+    DAY_MEM67_ERFOUD_MARRAKECH,
+    DAY_EM78_DEPARTURE,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Tres noches en Marrakech en Riad u Hotel 5* en régimen de alojamiento y desayuno",
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Una noche en Erfoud en Kasbah Xaluca en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 4",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 3 al día 6",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Marrakech",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Three nights in Marrakech in a Riad or 5* Hotel, bed and breakfast",
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "One night in Erfoud at Kasbah Xaluca, half board",
+        "Desert «picnic» on day 4",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 3 to day 6",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Marrakech",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Trois nuits à Marrakech en Riad ou Hôtel 5* en logement et petit déjeuner",
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Une nuit à Erfoud au Kasbah Xaluca en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 4",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 3 au jour 6",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Marrakech",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía no especificadas",
+        "Cenas en Marrakech",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches not specified",
+        "Dinners in Marrakech",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners non spécifiés",
+        "Dîners à Marrakech",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Habitaciones dobles y triples · Suplemento individual 515 €",
+        "Descuento niños 3-11 años: 215 € baja · 225 € alta",
+        "Guías locales compartidos en temporada alta",
+        "Chóferes de habla española limitados — se recomienda reservar con antelación",
+        "Pasaporte con un mínimo de 3 meses de validez desde la fecha de regreso",
+        "Actividades opcionales: Quads 70 € por vehículo (1 hora) · Spa y masajes directamente en los hoteles",
+        "Seguro de cancelación opcional: 30 € por persona para viajes de hasta 10 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Double and triple rooms · Single supplement €515",
+        "Children 3-11 discount: €215 low season · €225 high season",
+        "Local guides may be shared in high season",
+        "Spanish-speaking drivers limited — book in advance",
+        "Passport valid for at least 3 months from the return date",
+        "Optional activities: Quads €70 per vehicle (1 hour) · Spa and massages at the hotels",
+        "Optional cancellation insurance: €30 per person for trips up to 10 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Chambres doubles et triples · Supplément individuel 515 €",
+        "Remise enfants 3-11 ans : 215 € basse saison · 225 € haute saison",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Chauffeurs hispanophones limités — réserver à l'avance",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Activités en option : Quads 70 € par véhicule (1 heure) · Spa et massages directement dans les hôtels",
+        "Assurance annulation en option : 30 € par personne pour les voyages jusqu'à 10 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria",
+        "Pago: 30% al reservar · 70% restante hasta 30 días antes de la salida",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Los seguros no son reembolsables",
+      ],
+      en: [
+        "Compulsory booking form",
+        "Payment: 30% at booking · remaining 70% up to 30 days before departure",
+        "If the chosen flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Insurances are non-refundable",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire",
+        "Paiement : 30 % à la réservation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol choisi requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les assurances ne sont pas remboursables",
+      ],
+    },
+  },
+};
+
+
+/* ============================================================
+   Marrakech → Erg Chebbi → Marrakech · 7 noches / 8 días
+   Versión completa: añade un día extra de Alto Atlas Central
+   (Boutaghrar + Dadès + Todra → Erfoud) entre Boumalne Dades y
+   el bivouac. Dos noches en Kasbah Xaluca y tres en Marrakech.
+============================================================ */
+
+export const PROGRAM_MEM_78 = {
+  routeId: "tourMarrakechLoop78",
+  duration_key: "mem7n8d",
+  duration: { es: "7 noches / 8 días", en: "7 nights / 8 days", fr: "7 nuits / 8 jours" },
+  prices: { low: 1690, mid: 1890, high: 2090, premium: 2490 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Ocho días para conocer Marrakech, el Atlas y el Sahara.",
+      description: [
+        "«Marrakech – Erg Chebbi – Marrakech» es un viaje para conocer a fondo el sur del país. La ruta comienza en Marrakech, una ciudad llena de colores, artesanos, plazas y aromas inolvidables.",
+        "Desde allí el recorrido continúa en vehículo 4x4 atravesando el Alto Atlas, descubriendo paisajes espectaculares, pueblos bereberes y gargantas impresionantes. Más adelante se llega al Desierto del Erg Chebbi, un lugar mágico de dunas infinitas donde se vive la experiencia única de dormir bajo las estrellas.",
+        "El itinerario también atraviesa lugares tan auténticos como Rissani y su mercado ancestral, oasis escondidos y pistas del desierto, con dos noches de relax en Kasbah Xaluca antes del regreso a Marrakech.",
+      ],
+    },
+    en: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Eight days to discover Marrakech, the Atlas and the Sahara.",
+      description: [
+        "«Marrakech – Erg Chebbi – Marrakech» is a journey to discover the south of the country in depth. The route begins in Marrakech, a city full of colour, artisans, squares and unforgettable aromas.",
+        "From there the journey continues in a 4x4 across the High Atlas, discovering spectacular landscapes, Berber villages and impressive gorges. Further on we reach the Erg Chebbi desert, a magical place of endless dunes where we have the unique experience of sleeping under the stars.",
+        "The itinerary also crosses authentic places such as Rissani and its ancestral market, hidden oases and desert tracks, with two relaxing nights at Kasbah Xaluca before returning to Marrakech.",
+      ],
+    },
+    fr: {
+      title: "Marrakech · Erg Chebbi · Marrakech.",
+      description_title: "Huit jours pour découvrir Marrakech, l'Atlas et le Sahara.",
+      description: [
+        "« Marrakech – Erg Chebbi – Marrakech » est un voyage pour découvrir en profondeur le sud du pays. L'itinéraire commence à Marrakech, ville colorée, parsemée d'artisans, de places et de parfums inoubliables.",
+        "De là, le voyage se poursuit en 4x4 à travers le Haut Atlas, à la découverte de paysages spectaculaires, de villages berbères et de gorges impressionnantes. Nous atteignons ensuite le désert de l'Erg Chebbi, lieu magique aux dunes infinies pour l'expérience unique de dormir sous les étoiles.",
+        "L'itinéraire traverse aussi des lieux aussi authentiques que Rissani et son marché ancestral, des oasis cachées et des pistes du désert, avec deux nuits de détente à la Kasbah Xaluca avant le retour à Marrakech.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM56_ARRIVAL_MARRAKECH,
+    DAY_MEM56_MARRAKECH_VISIT,
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM45_ATLAS_CENTRAL,
+    DAY_DESERT_BIVOUAC,
+    DAY_MEM34_KHAMLIA_KASBAH,
+    DAY_MEM67_ERFOUD_MARRAKECH,
+    DAY_EM78_DEPARTURE,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Tres noches en Marrakech en Riad u Hotel 5* en régimen de alojamiento y desayuno",
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Dos noches en Erfoud en Kasbah Xaluca en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 5",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 3 al día 7",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Marrakech",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Three nights in Marrakech in a Riad or 5* Hotel, bed and breakfast",
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "Two nights in Erfoud at Kasbah Xaluca, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "Desert «picnic» on day 5",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 3 to day 7",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Marrakech",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Trois nuits à Marrakech en Riad ou Hôtel 5* en logement et petit déjeuner",
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Deux nuits à Erfoud au Kasbah Xaluca en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 5",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 3 au jour 7",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Marrakech",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía no especificadas",
+        "Cenas en Marrakech",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches not specified",
+        "Dinners in Marrakech",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners non spécifiés",
+        "Dîners à Marrakech",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Habitaciones dobles y triples · Suplemento individual 560 €",
+        "Descuento niños 3-11 años: 260 € baja · 280 € alta",
+        "Guías locales compartidos en temporada alta",
+        "Chóferes de habla española limitados — se recomienda reservar con antelación",
+        "Pasaporte con un mínimo de 3 meses de validez desde la fecha de regreso",
+        "Actividades opcionales: Quads 70 € por vehículo (1 hora) · Spa y masajes directamente en los hoteles",
+        "Seguro de cancelación opcional: 30 € por persona para viajes de hasta 10 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Double and triple rooms · Single supplement €560",
+        "Children 3-11 discount: €260 low season · €280 high season",
+        "Local guides may be shared in high season",
+        "Spanish-speaking drivers limited — book in advance",
+        "Passport valid for at least 3 months from the return date",
+        "Optional activities: Quads €70 per vehicle (1 hour) · Spa and massages at the hotels",
+        "Optional cancellation insurance: €30 per person for trips up to 10 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Chambres doubles et triples · Supplément individuel 560 €",
+        "Remise enfants 3-11 ans : 260 € basse saison · 280 € haute saison",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Chauffeurs hispanophones limités — réserver à l'avance",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Activités en option : Quads 70 € par véhicule (1 heure) · Spa et massages directement dans les hôtels",
+        "Assurance annulation en option : 30 € par personne pour les voyages jusqu'à 10 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria",
+        "Pago: 30% al reservar · 70% restante hasta 30 días antes de la salida",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Los seguros no son reembolsables",
+      ],
+      en: [
+        "Compulsory booking form",
+        "Payment: 30% at booking · remaining 70% up to 30 days before departure",
+        "If the chosen flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Insurances are non-refundable",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire",
+        "Paiement : 30 % à la réservation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol choisi requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les assurances ne sont pas remboursables",
+      ],
+    },
+  },
+};
+
