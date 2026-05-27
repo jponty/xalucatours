@@ -69,6 +69,7 @@ import FezSidialiOuarzazate67Page from "@/pages/FezSidialiOuarzazate67Page";
 import FezSidialiOuarzazate78Page from "@/pages/FezSidialiOuarzazate78Page";
 import OuarzazateSidialiFez56Page from "@/pages/OuarzazateSidialiFez56Page";
 import OuarzazateSidialiFez67Page from "@/pages/OuarzazateSidialiFez67Page";
+import OuarzazateSidialiFez78Page from "@/pages/OuarzazateSidialiFez78Page";
 import MarrakechFez67Page from "@/pages/MarrakechFez67Page";
 import MarrakechFez78Page from "@/pages/MarrakechFez78Page";
 import MarrakechFez89Page from "@/pages/MarrakechFez89Page";
@@ -141,6 +142,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourFezSidialiOzz78")   return <FezSidialiOuarzazate78Page />;
   if (routeId === "tourOzzSidialiFez56")   return <OuarzazateSidialiFez56Page />;
   if (routeId === "tourOzzSidialiFez67")   return <OuarzazateSidialiFez67Page />;
+  if (routeId === "tourOzzSidialiFez78")   return <OuarzazateSidialiFez78Page />;
   if (routeId === "tourFezRak67")          return <FezMarrakech67Page />;
   if (routeId === "tourMarrakechFez67")    return <MarrakechFez67Page />;
   if (routeId === "tourMarrakechFez78")    return <MarrakechFez78Page />;

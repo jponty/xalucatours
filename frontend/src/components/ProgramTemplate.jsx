@@ -1171,24 +1171,26 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
                 </ul>
               </div>
             )}
-            <div className="mt-10">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-4 inline-flex items-center gap-2">
-                <Camera className="w-3 h-3" strokeWidth={1.6} style={{ color: day.accent }} />
-                {t.culture_label}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {day.culture.map((c, i) => (
-                  <div key={`${day.id}-c-${i}`} className="bg-[#F2EBE1] border-l-2 p-5" style={{ borderColor: day.accent }}>
-                    <p className="font-serif-x text-base md:text-lg text-[#2C2621] leading-snug">
-                      {pick(c.title, lang)}
-                    </p>
-                    <p className="mt-2 text-sm text-[#5C5248] leading-relaxed">
-                      {pick(c.body, lang)}
-                    </p>
-                  </div>
-                ))}
+            {day.culture && day.culture.length > 0 && (
+              <div className="mt-10">
+                <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-4 inline-flex items-center gap-2">
+                  <Camera className="w-3 h-3" strokeWidth={1.6} style={{ color: day.accent }} />
+                  {t.culture_label}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {day.culture.map((c, i) => (
+                    <div key={`${day.id}-c-${i}`} className="bg-[#F2EBE1] border-l-2 p-5" style={{ borderColor: day.accent }}>
+                      <p className="font-serif-x text-base md:text-lg text-[#2C2621] leading-snug">
+                        {pick(c.title, lang)}
+                      </p>
+                      <p className="mt-2 text-sm text-[#5C5248] leading-relaxed">
+                        {pick(c.body, lang)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

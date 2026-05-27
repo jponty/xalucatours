@@ -64,6 +64,7 @@ export const ROUTES = {
   tourFezSidialiOzz78:    { es: "viajes/gransur/fez_sidiali_ouarzazate/programa_7n_8d", en: "tours/grand-south/fez-sidiali-ouarzazate/program-7n-8d", fr: "voyages/grand-sud/fes-sidiali-ouarzazate/programme-7n-8j" },
   tourOzzSidialiFez56:    { es: "viajes/gransur/ozz_sidiali_fez/programa_5n_6d", en: "tours/grand-south/ouarzazate-sidiali-fez/program-5n-6d", fr: "voyages/grand-sud/ouarzazate-sidiali-fes/programme-5n-6j" },
   tourOzzSidialiFez67:    { es: "viajes/gransur/ozz_sidiali_fez/programa_6n_7d", en: "tours/grand-south/ouarzazate-sidiali-fez/program-6n-7d", fr: "voyages/grand-sud/ouarzazate-sidiali-fes/programme-6n-7j" },
+  tourOzzSidialiFez78:    { es: "viajes/gransur/ozz_sidiali_fez/programa_7n_8d", en: "tours/grand-south/ouarzazate-sidiali-fez/program-7n-8d", fr: "voyages/grand-sud/ouarzazate-sidiali-fes/programme-7n-8j" },
   tourFezRak67:           { es: "viajes/gransur/fez_marrakech/programa_6n_7d",  en: "tours/grand-south/fez-marrakech/program-6n-7d",  fr: "voyages/grand-sud/fes-marrakech/programme-6n-7j" },
   tourMarrakechFez67:     { es: "viajes/gransur/marrakech_fez/programa_6n_7d",  en: "tours/grand-south/marrakech-fez/program-6n-7d",  fr: "voyages/grand-sud/marrakech-fes/programme-6n-7j" },
   tourMarrakechFez78:     { es: "viajes/gransur/marrakech_fez/programa_7n_8d",  en: "tours/grand-south/marrakech-fez/program-7n-8d",  fr: "voyages/grand-sud/marrakech-fes/programme-7n-8j" },
