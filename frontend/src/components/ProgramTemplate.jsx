@@ -634,6 +634,60 @@ const VARIANT_COPY = {
       ],
     },
   },
+  // Errachidia → Alto Atlas → Fez (entrada Errachidia, salida Fez)
+  eaf: {
+    es: {
+      title: "Del desierto del Tafilalet al alma medieval de Fez.",
+      eyebrow_prefix: "Circuito · Errachidia → Atlas → Fez",
+      place: "Errachidia · Erg Chebbi · Medio Atlas · Fez",
+      subtitle: "Una travesía que une el desierto del Erg Chebbi con los cedros del Atlas y la medina más antigua del mundo árabe.",
+      hero_image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+      airports: "Entrada Errachidia · Salida Fez",
+      quick_airports: "Errachidia / Fez",
+      quick_places: "Errachidia · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Valle del Ziz · Midelt · Ifrane · Aguelmame Sidi Ali · Fez",
+      highlights: "Erg Chebbi · Khamlia · Rissani · Valle del Ziz · Lago Sidi Ali · Medina de Fez",
+      description_title: "Cultura, historia, naturaleza, desierto y oasis.",
+      description: [
+        "Una combinación perfecta entre cultura, historia, naturaleza, desierto, oasis y montañas del Atlas — empezando por las dunas infinitas del Erg Chebbi y terminando en el corazón medieval de Fez.",
+        "Atravesarás el Valle del Ziz con sus diez millones de palmeras, ascenderás al Medio Atlas para alojarte junto al lago natural más profundo del país y descubrirás los bosques de cedros gigantes habitados por monos magot.",
+        "Y como remate, Fez: callejuelas medievales, zocos bulliciosos, mezquitas centenarias y palacios históricos en una de las medinas mejor conservadas del mundo.",
+      ],
+    },
+    en: {
+      title: "From the Tafilalet desert to the medieval soul of Fez.",
+      eyebrow_prefix: "Circuit · Errachidia → Atlas → Fez",
+      place: "Errachidia · Erg Chebbi · Middle Atlas · Fez",
+      subtitle: "A crossing that links the Erg Chebbi desert with the Atlas cedars and the oldest medina in the Arab world.",
+      hero_image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+      airports: "In Errachidia · Out Fez",
+      quick_airports: "Errachidia / Fez",
+      quick_places: "Errachidia · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Ziz Valley · Midelt · Ifrane · Aguelmame Sidi Ali · Fez",
+      highlights: "Erg Chebbi · Khamlia · Rissani · Ziz Valley · Sidi Ali Lake · Fez Medina",
+      description_title: "Culture, history, nature, desert and oasis.",
+      description: [
+        "A perfect blend of culture, history, nature, desert, oasis and Atlas mountains — starting with the endless dunes of the Erg Chebbi and ending in the medieval heart of Fez.",
+        "You'll cross the Ziz Valley with its ten million palm trees, climb the Middle Atlas to stay beside the country's deepest natural lake, and explore the giant cedar forests inhabited by Barbary macaques.",
+        "And as the finale: Fez — medieval lanes, lively souks, centuries-old mosques and historic palaces in one of the best-preserved medinas in the world.",
+      ],
+    },
+    fr: {
+      title: "Du désert du Tafilalet à l'âme médiévale de Fès.",
+      eyebrow_prefix: "Circuit · Errachidia → Atlas → Fès",
+      place: "Errachidia · Erg Chebbi · Moyen Atlas · Fès",
+      subtitle: "Une traversée qui relie le désert de l'Erg Chebbi aux cèdres de l'Atlas et à la plus ancienne médina du monde arabe.",
+      hero_image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+      airports: "Arrivée Errachidia · Sortie Fès",
+      quick_airports: "Errachidia / Fès",
+      quick_places: "Errachidia · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Vallée du Ziz · Midelt · Ifrane · Aguelmame Sidi Ali · Fès",
+      highlights: "Erg Chebbi · Khamlia · Rissani · Vallée du Ziz · Lac Sidi Ali · Médina de Fès",
+      description_title: "Culture, histoire, nature, désert et oasis.",
+      description: [
+        "Un mélange parfait de culture, d'histoire, de nature, de désert, d'oasis et de montagnes de l'Atlas — débutant par les dunes infinies de l'Erg Chebbi et s'achevant au cœur médiéval de Fès.",
+        "Vous traverserez la Vallée du Ziz et ses dix millions de palmiers, monterez dans le Moyen Atlas pour séjourner au bord du lac naturel le plus profond du pays, et découvrirez les forêts de cèdres géants peuplées de macaques de Barbarie.",
+        "Et en apothéose : Fès — ruelles médiévales, souks animés, mosquées centenaires et palais historiques dans l'une des médinas les mieux préservées au monde.",
+      ],
+    },
+  },
 };
 
 const LABELS = {
