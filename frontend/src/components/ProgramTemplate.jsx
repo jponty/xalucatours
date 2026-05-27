@@ -812,8 +812,8 @@ const ProgramHero = ({ vt, t, program, lang }) => (
                 { Icon: Clock,    label: t.eyebrow_duration,   value: pick(program.duration, lang) },
                 { Icon: Plane,    label: t.eyebrow_airports,   value: vt.airports },
                 { Icon: Sparkles, label: t.eyebrow_highlights, value: vt.highlights },
-              ].map(({ Icon, label, value }, i) => (
-                <div key={i} className="bg-[#1A1513]/80 backdrop-blur-md p-5 flex flex-col gap-2">
+              ].map(({ Icon, label, value }) => (
+                <div key={label} className="bg-[#1A1513]/80 backdrop-blur-md p-5 flex flex-col gap-2">
                   <div className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
                     <Icon className="w-3 h-3" strokeWidth={1.6} />{label}
                   </div>
@@ -852,7 +852,7 @@ const Description = ({ vt, t }) => (
       </h2>
       <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
         {vt.description.map((p, i) => (
-          <p key={i} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
+          <p key={`desc-${i}`} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
         ))}
       </div>
     </div>
@@ -880,7 +880,7 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
           {cards.map((c, i) => (
-            <div key={i} data-testid={`program-quick-${i}`}
+            <div key={c.label} data-testid={`program-quick-${i}`}
                  className="bg-[#FDFBF7] p-5 md:p-6 flex flex-col gap-3">
               <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#C16542]/40 text-[#C16542]">
                 <c.Icon className="w-4 h-4" strokeWidth={1.6} />
@@ -932,7 +932,7 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
                 <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">{t.wellness_label}</p>
                 <ul className="flex flex-wrap gap-2">
                   {day.wellness.map((w, i) => (
-                    <li key={i} className="text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border"
+                    <li key={`${day.id}-w-${i}`} className="text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border"
                         style={{ borderColor: `${day.accent}55`, color: day.accent }}>
                       {pick(w, lang)}
                     </li>
@@ -947,7 +947,7 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {day.culture.map((c, i) => (
-                  <div key={i} className="bg-[#F2EBE1] border-l-2 p-5" style={{ borderColor: day.accent }}>
+                  <div key={`${day.id}-c-${i}`} className="bg-[#F2EBE1] border-l-2 p-5" style={{ borderColor: day.accent }}>
                     <p className="font-serif-x text-base md:text-lg text-[#2C2621] leading-snug">
                       {pick(c.title, lang)}
                     </p>
@@ -1067,7 +1067,7 @@ const DetailsAccordion = ({ t, lang, program }) => {
                   <div className="px-6 md:px-8 pb-6 bg-[#FDFBF7]">
                     <ul className="space-y-3 text-[15px] text-[#5C5248] leading-relaxed">
                       {items.map((it, i) => (
-                        <li key={i} className="flex items-start gap-3">
+                        <li key={`${tab.id}-${i}`} className="flex items-start gap-3">
                           <span className="mt-2.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#C16542" }} />
                           <span>{it}</span>
                         </li>

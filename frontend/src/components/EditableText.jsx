@@ -33,7 +33,11 @@ const ensureLoaded = async () => {
       for (const [slot, vals] of Object.entries(slots)) {
         cache.values.set(slot, vals || {});
       }
-    } catch (e) { /* leave cache empty so fallbacks render */ }
+    } catch (err) {
+      // Network/parse failure — keep cache empty so defaults render.
+      // Logged at debug level so production consoles stay clean.
+      console.debug("[text_slots] bulk fetch failed:", err);
+    }
     cache.ready = true;
     cache.loading = null;
     // Notify every subscriber so they re-render with hydrated values
@@ -118,8 +122,9 @@ export const EditableText = ({
       const nextValues = { ...(stored || {}), [lang]: newText };
       await persistSlot(slot, nextValues);
       setDirty(false);
-    } catch (e) {
-      // Swallow — caller can retry by editing again
+    } catch (err) {
+      // Save failed (offline, 5xx). Caller can retry by re-editing.
+      console.error(`[text_slots] persist failed for ${slot}:`, err);
     } finally {
       setSaving(false);
     }

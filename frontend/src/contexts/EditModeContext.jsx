@@ -117,9 +117,14 @@ export const EditModeProvider = ({ children }) => {
   //    immediately undo any back/forward gesture.
   useEffect(() => {
     if (!anyMode) return undefined;
-    try { window.history.pushState({ __editLock: true }, ""); } catch (e) { /* noop */ }
+    // history.pushState / history.back can throw in sandboxed iframes or when
+    // permissions block them. These failures are non-actionable — the edit
+    // lock simply degrades gracefully — so we explicitly debug-log them.
+    try { window.history.pushState({ __editLock: true }, ""); }
+    catch (err) { console.debug("[editLock] pushState blocked:", err); }
     const onPop = () => {
-      try { window.history.pushState({ __editLock: true }, ""); } catch (e) { /* noop */ }
+      try { window.history.pushState({ __editLock: true }, ""); }
+      catch (err) { console.debug("[editLock] pushState blocked:", err); }
     };
     window.addEventListener("popstate", onPop);
     return () => {
@@ -128,7 +133,7 @@ export const EditModeProvider = ({ children }) => {
         if (window.history.state && window.history.state.__editLock) {
           window.history.back();
         }
-      } catch (e) { /* noop */ }
+      } catch (err) { console.debug("[editLock] history.back blocked:", err); }
     };
   }, [anyMode]);
 

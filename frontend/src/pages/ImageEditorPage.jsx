@@ -204,7 +204,10 @@ const EditorBody = ({ group, initialIndex, backHref, page, section, onCancel }) 
           const res = await fetch(`${API}/api/slots/${encodeURIComponent(s.id)}`);
           const data = await res.json();
           if (data && data.url) next[s.id] = data.url;
-        } catch (e) { /* keep fallback */ }
+        } catch (err) {
+          // Slot not yet persisted or offline — keep placeholder fallback.
+          console.debug(`[slots] fetch failed for ${s.id}:`, err);
+        }
       }));
       if (!cancelled) {
         setSlotUrls((p) => ({ ...next, ...p })); // p wins so freshly saved values persist
