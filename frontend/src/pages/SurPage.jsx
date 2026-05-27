@@ -297,6 +297,73 @@ export default function SurPage() {
         testid="sur-testi-essaouira"
       />
 
+      {/* 9.5 More routes block: cross-link to less-prominent South hubs */}
+      <section data-testid="sur-more-routes" className="bg-[#F2EBE1] py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="mb-10">
+            <span className="overline">
+              {{ es: "Otras rutas del sur", en: "Other South routes", fr: "Autres routes du Sud" }[lang]}
+            </span>
+            <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight mt-4 text-[#2C2621] max-w-3xl">
+              {{
+                es: "Más formas de descubrir el Marruecos del sur.",
+                en: "More ways to discover Southern Morocco.",
+                fr: "D'autres façons de découvrir le sud du Maroc.",
+              }[lang]}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {[
+              {
+                target: "tourDesiertoAtlasHub",
+                image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+                eyebrow: { es: "Sentido inverso · Erg Chebbi → Atlas → Marrakech", en: "Reverse · Erg Chebbi → Atlas → Marrakech", fr: "Sens inverse · Erg Chebbi → Atlas → Marrakech" },
+                title: { es: "Desierto y Alto Atlas hacia Marrakech.", en: "Desert and High Atlas towards Marrakech.", fr: "Désert et Haut Atlas vers Marrakech." },
+                cta: { es: "Ver 3 itinerarios", en: "See 3 itineraries", fr: "Voir 3 itinéraires" },
+              },
+              {
+                target: "tourErgChebbiMarrakechHub",
+                image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+                eyebrow: { es: "Sentido inverso · Erg Chebbi → Marrakech", en: "Reverse · Erg Chebbi → Marrakech", fr: "Sens inverse · Erg Chebbi → Marrakech" },
+                title: { es: "Del Sáhara a la ciudad roja.", en: "From the Sahara to the red city.", fr: "Du Sahara à la ville rouge." },
+                cta: { es: "Ver 4 itinerarios", en: "See 4 itineraries", fr: "Voir 4 itinéraires" },
+              },
+              {
+                target: "tourErrAtlasFezHub",
+                image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
+                eyebrow: { es: "Eje sur · Errachidia → Atlas → Fez", en: "Southern axis · Errachidia → Atlas → Fez", fr: "Axe sud · Errachidia → Atlas → Fès" },
+                title: { es: "Del desierto a Fez por el Atlas.", en: "From the desert to Fez through the Atlas.", fr: "Du désert à Fès par l'Atlas." },
+                cta: { es: "Ver itinerarios", en: "See itineraries", fr: "Voir itinéraires" },
+              },
+            ].map((card) => (
+              <a
+                key={card.target}
+                href={pathFor(lang, card.target)}
+                data-testid={`sur-more-${card.target}`}
+                className="group relative block overflow-hidden h-[360px] md:h-[400px]"
+              >
+                <img
+                  src={card.image}
+                  alt={card.title[lang]}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10" />
+                <span className="film-grain" />
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
+                  <p className="text-[10px] tracking-[0.3em] uppercase text-[#E8C5A3] mb-3">{card.eyebrow[lang]}</p>
+                  <h3 className="font-serif-x text-xl md:text-2xl text-white leading-snug mb-4">{card.title[lang]}</h3>
+                  <span className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-white border-b border-white/40 pb-1 group-hover:border-white transition-colors">
+                    {card.cta[lang]}
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 10. Why Xaluca - 4 brand pillars */}
       <WhyXaluca pillars={SUR_PILLARS} t={t.why} lang={lang} testid="sur-why" />
 
