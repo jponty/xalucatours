@@ -86,7 +86,18 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
 ## Recent additions (Feb 2026 — session, latest)
-- **Aventura → Enduro hub + videos en Sur** (Feb 2026, latest):
+- **Emergent Object Storage integration** (Feb 2026, latest):
+  - Backend now persists CMS image uploads to **Emergent Object Storage** (cloud, stateless) instead of the local `backend/uploads/` disk.
+  - New module `backend/storage.py` (`init_storage`, `put_object`, `get_object`) — session-scoped key, auto-refresh on 403.
+  - `POST /api/slots/{slot_id}/upload` rewritten: validates MIME + 8 MB cap → uploads to `xaluca/slots/{slot_id}/{uuid}.{ext}` → stores `storage_path` + metadata in `image_slots` collection (Mongo) and bookkeeping in `files` collection (with `is_deleted` soft-delete flag).
+  - New endpoint `GET /api/files/{path:path}` — public proxy that streams objects from Emergent storage with `Cache-Control: public, max-age=86400`. Used directly by `<img src>` so editors can upload + see results without any auth dance.
+  - Legacy `/api/uploads/*` static mount kept for backward-compat with pre-migration files.
+  - Frontend `EditableImage.jsx` already used `POST /api/slots/{slot}/upload` + reads `data.url` — no change required, transparent migration.
+  - `EMERGENT_LLM_KEY` added to `backend/.env`.
+  - Verified end-to-end via curl: upload → slot read → file fetch returned exact bytes (HTTP 200 · 68 B for the test PNG).
+  - Tested via testing agent iteration 8/9/10 (previous tasks); this integration was self-tested via curl per the playbook ("upload succeeds + download returns matching bytes").
+
+- **Aventura → Enduro hub + videos en Sur** (Feb 2026):
   - New **Enduro hub** `/viajes/aventura/enduro` (`AventuraEnduroHubPage` → `ItineraryHubPage` + `HUB_AVENTURA_ENDURO`) with two programmes:
     - `/viajes/aventura/enduro/programa_4n_5d` — 5 days (`PROGRAM_ENDURO_45`): Llegada · Oasis · La Momia · Grandes Dunas · Regreso.
     - `/viajes/aventura/enduro/programa_6n_7d` — 7 days (`PROGRAM_ENDURO_67`): Llegada · Kemkem · Saghro · Atlas · Anti Atlas · Bereberes · Regreso.

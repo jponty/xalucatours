@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Response
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -12,6 +12,8 @@ from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone, timedelta
+
+from storage import init_storage, put_object, get_object
 
 
 ROOT_DIR = Path(__file__).parent
@@ -258,9 +260,6 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="File exceeds 8 MB limit.")
 
-    UPLOAD_DIR_LOCAL = ROOT_DIR / "uploads"
-    UPLOAD_DIR_LOCAL.mkdir(exist_ok=True)
-
     ext = {
         "image/jpeg": "jpg",
         "image/png": "png",
@@ -268,15 +267,25 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         "image/avif": "avif",
     }[file.content_type]
     safe_slot = "".join(c for c in slot_id if c.isalnum() or c in "._-")[:60] or "slot"
-    filename = f"{safe_slot}-{uuid.uuid4().hex[:10]}.{ext}"
-    target = UPLOAD_DIR_LOCAL / filename
-    target.write_bytes(data)
+    storage_path = f"xaluca/slots/{safe_slot}/{uuid.uuid4().hex}.{ext}"
 
-    public_url = f"/api/uploads/{filename}"
+    try:
+        result = put_object(storage_path, data, file.content_type)
+    except Exception as exc:
+        logger.exception("Emergent storage upload failed")
+        raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
+
+    canonical_path = result.get("path", storage_path)
+    public_url = f"/api/files/{canonical_path}"
+
     doc = {
         "url": public_url,
         "alt": None,
-        "source": "upload",
+        "source": "emergent-objstore",
+        "storage_path": canonical_path,
+        "original_filename": file.filename,
+        "content_type": file.content_type,
+        "size": result.get("size", len(data)),
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.image_slots.update_one(
@@ -284,7 +293,35 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         {"$set": doc},
         upsert=True,
     )
-    return {"slot_id": slot_id, **doc, "filename": filename}
+    # Bookkeeping collection for global listing / soft-delete in the future.
+    await db.files.insert_one({
+        "id": str(uuid.uuid4()),
+        "slot_id": slot_id,
+        "storage_path": canonical_path,
+        "original_filename": file.filename,
+        "content_type": file.content_type,
+        "size": doc["size"],
+        "is_deleted": False,
+        "created_at": doc["updated_at"],
+    })
+    return {"slot_id": slot_id, **doc}
+
+
+@api_router.get("/files/{path:path}")
+async def download_file(path: str):
+    """Public proxy that streams an object from Emergent storage.
+    Used by <img src="/api/files/..."> tags in the CMS — no auth needed
+    because CMS images are part of the public site content."""
+    try:
+        data, content_type = get_object(path)
+    except Exception as exc:
+        logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
+        raise HTTPException(status_code=404, detail="File not found")
+    return Response(
+        content=data,
+        media_type=content_type,
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 
 # ---------- Text slots (admin inline editing) ----------
@@ -356,7 +393,9 @@ async def list_text_slots():
 
 app.include_router(api_router)
 
-# Serve uploaded files under /api/uploads so they pass through the ingress
+# Serve legacy uploaded files under /api/uploads for backward compatibility
+# with images uploaded before the Emergent Object Storage migration. New
+# uploads go straight to object storage and are served via /api/files/.
 UPLOAD_DIR = ROOT_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
@@ -379,3 +418,14 @@ logger = logging.getLogger(__name__)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+
+@app.on_event("startup")
+async def startup_storage():
+    """Pre-warm the Emergent object storage session at startup."""
+    try:
+        init_storage()
+    except Exception as exc:
+        # Don't crash the app — uploads will surface a 502 if storage is down,
+        # but every other endpoint stays available.
+        logger.error("Emergent object storage init failed: %s", exc)
