@@ -787,3 +787,185 @@ export const PROGRAM_ME_45 = {
     DAY_ME_ZIZ_ERRACHIDIA,
   ],
 };
+
+/* ============================================================
+   Marrakech → Erg Chebbi · 6 noches / 7 días
+   The 6N/7D version unpacks the Marrakech day into arrival + a
+   dedicated medina day, adds an Atlas Central traverse via
+   Boutaghrar / Dades / Todra, and gives the desert its own full
+   day. Days 3 (Atlas→Boumalne), 6 (Khamlia/Rissani) and 7 (Ziz)
+   are shared with PROGRAM_ME_45.
+============================================================ */
+
+export const DAY_ME67_ARRIVAL = {
+  route_id: "me67-arrival",
+  id: "dia-1",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#C16542",
+  title: { es: "Llegada a Marrakech · Djemaa el-Fna", en: "Arrival in Marrakech · Djemaa el-Fna", fr: "Arrivée à Marrakech · Djemaa el-Fna" },
+  body: {
+    es: "Salida del aeropuerto de origen dirección Marrakech. Recogida en el aeropuerto y traslado al Riad en la Medina u Hotel 5*. Por la tarde haremos una primera toma de contacto con la Medina visitando la Plaza Djemaa el-Fna, una de las plazas más vivas del mundo. Por la noche se llena de músicos, narradores, artistas callejeros y puestos gastronómicos tradicionales. Cena libre y alojamiento.",
+    en: "Departure from your home airport towards Marrakech. Pick-up at the airport and transfer to a Riad in the Medina or 5* Hotel. In the afternoon, a first immersion in the Medina at Djemaa el-Fna Square — one of the world's most vibrant squares. By night it fills with musicians, storytellers, street artists and traditional food stalls. Dinner on your own and overnight.",
+    fr: "Départ de votre aéroport d'origine vers Marrakech. Accueil à l'aéroport et transfert vers un Riad dans la Médina ou un Hôtel 5*. L'après-midi, première immersion dans la Médina sur la place Djemaa el-Fna, l'une des plus vivantes au monde. La nuit, elle se remplit de musiciens, conteurs, artistes de rue et de stands gastronomiques traditionnels. Dîner libre et nuit sur place.",
+  },
+  culture: [
+    {
+      title: { es: "Djemaa el-Fna: Patrimonio Inmaterial de la UNESCO", en: "Djemaa el-Fna: UNESCO intangible heritage", fr: "Djemaa el-Fna : patrimoine immatériel de l'UNESCO" },
+      body: {
+        es: "Inscrita en 2001 como Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO por su extraordinaria concentración de tradición oral, música, gastronomía y artes populares. Un lugar único en el mundo donde el patrimonio cultural se vive cada día.",
+        en: "Inscribed in 2001 as UNESCO Intangible Cultural Heritage for its extraordinary concentration of oral tradition, music, gastronomy and folk arts. A truly unique place where heritage is lived every single day.",
+        fr: "Inscrite en 2001 au Patrimoine Culturel Immatériel de l'Humanité par l'UNESCO pour son extraordinaire concentration de tradition orale, musique, gastronomie et arts populaires. Un lieu unique au monde où le patrimoine se vit chaque jour.",
+      },
+    },
+    {
+      title: { es: "Un cambio total entre el día y la noche", en: "Day & night — a complete transformation", fr: "Une transformation totale entre jour et nuit" },
+      body: {
+        es: "De día predominan encantadores de serpientes, curanderos y vendedores ambulantes. De noche la plaza se transforma en un gran escenario gastronómico y cultural con decenas de puestos de comida y espectáculos espontáneos.",
+        en: "By day, snake charmers, healers and street vendors dominate the square. By night, it transforms into a vast gastronomic and cultural stage with dozens of food stalls and impromptu shows.",
+        fr: "De jour, charmeurs de serpents, guérisseurs et vendeurs ambulants animent la place. De nuit, elle devient une vaste scène gastronomique et culturelle, avec des dizaines de stands et de spectacles improvisés.",
+      },
+    },
+    {
+      title: { es: "Marrakech y la diferencia horaria", en: "Marrakech & the time difference", fr: "Marrakech et le décalage horaire" },
+      body: {
+        es: "Marruecos cambia temporalmente a UTC+0 durante el Ramadán, lo que puede generar diferencias horarias respecto al país de origen. Conviene verificar el huso horario antes del viaje y al llegar.",
+        en: "Morocco temporarily switches to UTC+0 during Ramadan, which can create a time difference with your home country. It is wise to double-check the local time before departure and on arrival.",
+        fr: "Le Maroc passe temporairement à UTC+0 pendant le Ramadan, ce qui peut entraîner un décalage horaire avec votre pays d'origine. Vérifiez l'heure locale avant le départ et à l'arrivée.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME67_MEDINA = {
+  route_id: "me67-medina",
+  id: "dia-2",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
+  body: {
+    es: "Día completo para descubrir Marrakech. Visita guiada a pie por la Medina con un guía local. Visitaremos el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y el Palacio de la Bahía. Recorreremos los zocos tradicionales viendo en acción a tejedores de alfombras, fabricantes de babuchas, tintoreros y joyeros. Visita a una farmacia bereber y regreso a Djemaa el-Fna. Tarde libre para descubrir la Medina a nuestro aire o hacer compras. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "A full day to discover Marrakech. Guided walking tour of the Medina with a local guide. We visit the Koutoubia minaret — twin of Seville's Giralda — and the Bahia Palace. We wander the traditional souks watching carpet weavers, babouche makers, dyers and jewellers at work. We visit a Berber pharmacy and return to Djemaa el-Fna. Free afternoon to explore the Medina at your own pace or shop. Overnight in a Riad in the Medina or 5* Hotel.",
+    fr: "Journée complète pour découvrir Marrakech. Visite guidée à pied de la Médina avec un guide local. Nous visitons le minaret de la Koutoubia — jumeau de la Giralda de Séville — et le Palais de la Bahia. Nous parcourons les souks traditionnels en observant tisserands de tapis, fabricants de babouches, teinturiers et bijoutiers. Visite d'une pharmacie berbère et retour à Djemaa el-Fna. Après-midi libre pour explorer la Médina à votre rythme ou faire des achats. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "La Koutoubia", en: "The Koutoubia", fr: "La Koutoubia" },
+      body: {
+        es: "La gran obra maestra de la arquitectura almohade y referencia arquitectónica del occidente islámico. Su alminar inspiró tanto la Giralda de Sevilla como la Torre Hassan de Rabat.",
+        en: "The great masterpiece of Almohad architecture and a benchmark of the Islamic West. Its minaret inspired both Seville's Giralda and Rabat's Hassan Tower.",
+        fr: "Le grand chef-d'œuvre de l'architecture almohade et une référence de l'occident islamique. Son minaret a inspiré aussi bien la Giralda de Séville que la Tour Hassan de Rabat.",
+      },
+    },
+    {
+      title: { es: "Los zocos de Marrakech", en: "The souks of Marrakech", fr: "Les souks de Marrakech" },
+      body: {
+        es: "Uno de los mercados artesanales más grandes y auténticos del norte de África. Cada gremio ocupa un sector — curtidores, cesteros, tintoreros, herreros, joyeros — manteniendo viva la tradición de oficios medievales.",
+        en: "One of the largest and most authentic artisan markets in North Africa. Each guild occupies its own quarter — tanners, basket weavers, dyers, blacksmiths, jewellers — keeping medieval crafts alive.",
+        fr: "L'un des plus grands marchés artisanaux et des plus authentiques d'Afrique du Nord. Chaque corporation occupe son quartier — tanneurs, vanniers, teinturiers, forgerons, bijoutiers — perpétuant des métiers médiévaux.",
+      },
+    },
+    {
+      title: { es: "Djemaa el-Fna", en: "Djemaa el-Fna", fr: "Djemaa el-Fna" },
+      body: {
+        es: "Un patrimonio cultural vivo que cambia completamente entre el día y la noche. La UNESCO la incluyó en 2001 como Patrimonio Cultural Inmaterial de la Humanidad.",
+        en: "A living cultural heritage that transforms completely between day and night. UNESCO listed it in 2001 as Intangible Cultural Heritage.",
+        fr: "Un patrimoine culturel vivant qui se transforme complètement entre jour et nuit. L'UNESCO l'a inscrite en 2001 au Patrimoine Culturel Immatériel.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME67_BOUTAGHRAR_TODRA = {
+  route_id: "me67-boutaghrar-todra",
+  id: "dia-4",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D97742",
+  title: { es: "Boutaghrar · Valle del Dadès · Todra · Erfoud", en: "Boutaghrar · Dadès Valley · Todra · Erfoud", fr: "Boutaghrar · Vallée du Dadès · Todra · Erfoud" },
+  body: {
+    es: "Ruta por pistas del Alto Atlas Central. Visitaremos poblados bereberes como Boutaghrar y descubriremos grutas donde aún habitan familias nómadas. Recorreremos el Valle del Dadès con parada en su famoso mirador y en las espectaculares «Patas de Mono». Continuamos hacia Tinerhir para visitar las Gargantas del Todra y bajaremos hasta Erfoud, la puerta del desierto. Cena y alojamiento en Kasbah Xaluca.",
+    en: "Day on the tracks of the Central High Atlas. We visit Berber villages like Boutaghrar and discover caves still inhabited by nomadic families. We drive the Dadès Valley with stops at its famous viewpoint and at the spectacular «Monkey Paws». We continue to Tinerhir to visit the Todra Gorges and descend to Erfoud, the gate of the desert. Dinner and overnight at Kasbah Xaluca.",
+    fr: "Journée sur les pistes du Haut Atlas Central. Nous visitons des villages berbères comme Boutaghrar et découvrons des grottes encore habitées par des familles nomades. Nous parcourons la Vallée du Dadès avec des arrêts au célèbre belvédère et aux spectaculaires « Pattes de Singe ». Nous continuons vers Tinerhir pour visiter les Gorges du Todra, puis nous descendons à Erfoud, porte du désert. Dîner et nuit à la Kasbah Xaluca.",
+  },
+  culture: [
+    {
+      title: { es: "Boutaghrar", en: "Boutaghrar", fr: "Boutaghrar" },
+      body: {
+        es: "Zona famosa por conservar tradiciones bereberes ancestrales y por la presencia de comunidades nómadas Aït Atta que aún viven en grutas naturales de las montañas.",
+        en: "An area famed for preserving ancestral Berber traditions and for the Aït Atta nomadic communities still living in natural mountain caves.",
+        fr: "Zone célèbre pour la conservation de traditions berbères ancestrales et pour les communautés nomades Aït Atta qui vivent encore dans des grottes naturelles de la montagne.",
+      },
+    },
+    {
+      title: { es: "Valle del Dadès y las «Patas de Mono»", en: "Dadès Valley & the «Monkey Paws»", fr: "Vallée du Dadès et les « Pattes de Singe »" },
+      body: {
+        es: "Formaciones geológicas creadas por la erosión natural durante millones de años. El cañón del Dadès es uno de los recorridos paisajísticos más espectaculares del sur de Marruecos.",
+        en: "Geological formations carved by natural erosion over millions of years. The Dadès canyon is one of southern Morocco's most spectacular drives.",
+        fr: "Formations géologiques façonnées par l'érosion naturelle au fil de millions d'années. Le canyon du Dadès est l'un des parcours paysagers les plus spectaculaires du sud marocain.",
+      },
+    },
+    {
+      title: { es: "Tinerhir y Todra", en: "Tinerhir & Todra", fr: "Tinerhir et le Todra" },
+      body: {
+        es: "Uno de los desfiladeros más espectaculares del sureste marroquí, con paredes que en su tramo más estrecho alcanzan los 160 metros de altura.",
+        en: "One of south-east Morocco's most spectacular canyons, where walls reach 160 metres at their narrowest stretch.",
+        fr: "L'un des canyons les plus spectaculaires du sud-est marocain, dont les parois atteignent 160 m dans la partie la plus étroite.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME67_DESIERTO_TOTAL = {
+  route_id: "me67-desierto-total",
+  id: "dia-5",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D4A373",
+  title: { es: "Desierto total · Erg Chebbi", en: "Total desert day · Erg Chebbi", fr: "Journée désert · Erg Chebbi" },
+  body: {
+    es: "Día completo de inmersión en el desierto. Saldremos desde Erfoud por pistas utilizadas antiguamente por el Rally Dakar. Visitaremos poblados y nómadas del desierto, y haremos parada en las canteras de fósiles marinos. Picnic en un oasis. Llegada al Gran Erg Chebbi, donde cambiaremos el vehículo 4x4 por dromedarios para entrar en el corazón de las dunas y contemplar la puesta de sol. Llegada al Bivouac de Luxe. Cena y alojamiento en haimas de lujo, bajo las estrellas.",
+    en: "A full day of desert immersion. We set off from Erfoud along tracks once used by the Dakar Rally. We visit villages and desert nomads, with a stop at the marine fossil quarries. Picnic in an oasis. Arrival at the great Erg Chebbi, where we swap the 4x4 for camels and ride into the heart of the dunes to watch the sunset. Arrival at the Bivouac de Luxe. Dinner and overnight in luxury jaimas, under the stars.",
+    fr: "Journée complète d'immersion au désert. Départ d'Erfoud par des pistes autrefois empruntées par le Rallye Dakar. Visite de villages et de nomades du désert, avec un arrêt aux carrières de fossiles marins. Pique-nique dans une oasis. Arrivée au grand Erg Chebbi : nous échangeons le 4x4 contre des dromadaires pour pénétrer au cœur des dunes et admirer le coucher de soleil. Arrivée au Bivouac de Luxe. Dîner et nuit en jaimas de luxe, sous les étoiles.",
+  },
+  culture: [
+    {
+      title: { es: "Las pistas del Rally Dakar", en: "The Dakar Rally tracks", fr: "Les pistes du Rallye Dakar" },
+      body: {
+        es: "La región fue utilizada durante años en etapas oficiales del Rally Dakar antes de su traslado a Sudamérica en 2008. Sus dunas y pistas pedregosas siguen siendo escenario de otros raids internacionales.",
+        en: "The region hosted Dakar Rally stages for years before the race moved to South America in 2008. Its dunes and stony tracks still feature in other international raids.",
+        fr: "La région a accueilli pendant des années des étapes du Rallye Dakar avant son déménagement en Amérique du Sud en 2008. Ses dunes et pistes pierreuses sont toujours empruntées par d'autres raids internationaux.",
+      },
+    },
+    {
+      title: { es: "Fósiles marinos del Devónico", en: "Devonian marine fossils", fr: "Fossiles marins du Dévonien" },
+      body: {
+        es: "Hace más de 360 millones de años esta región estaba cubierta por un mar tropical. Hoy las canteras de Erfoud abastecen al mundo de fósiles de amonites, ortoceras y trilobites perfectamente conservados.",
+        en: "Over 360 million years ago this region lay under a tropical sea. Today, Erfoud's quarries supply the world with perfectly preserved fossils of ammonites, orthoceras and trilobites.",
+        fr: "Il y a plus de 360 millions d'années, cette région se trouvait sous une mer tropicale. Aujourd'hui, les carrières d'Erfoud fournissent au monde entier des fossiles d'ammonites, d'orthocères et de trilobites parfaitement conservés.",
+      },
+    },
+    {
+      title: { es: "Erg Chebbi", en: "Erg Chebbi", fr: "Erg Chebbi" },
+      body: {
+        es: "Dunas gigantes de arena fina con una de las puestas de sol más famosas del Sahara marroquí. Sus crestas alcanzan 150 metros de altura y cambian de tonalidad varias veces al día.",
+        en: "Giant fine-sand dunes hosting one of the most famous sunsets in the Moroccan Sahara. Their crests reach 150 metres and change colour several times throughout the day.",
+        fr: "Dunes géantes de sable fin offrant l'un des couchers de soleil les plus célèbres du Sahara marocain. Leurs crêtes atteignent 150 m et changent de tonalité plusieurs fois par jour.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_ME_67 = {
+  routeId: "tourMarrakechErg67",
+  duration_key: "me6n7d",
+  duration: { es: "6 noches / 7 días", en: "6 nights / 7 days", fr: "6 nuits / 7 jours" },
+  prices: { low: 1490, mid: 1790, high: 2090, premium: 2490 },
+  reverse: false,
+  days: [
+    DAY_ME67_ARRIVAL,
+    DAY_ME67_MEDINA,
+    DAY_ME_ATLAS_AITBENHADDOU,
+    DAY_ME67_BOUTAGHRAR_TODRA,
+    DAY_ME67_DESIERTO_TOTAL,
+    DAY_ME_KHAMLIA_RISSANI,
+    DAY_ME_ZIZ_ERRACHIDIA,
+  ],
+};
