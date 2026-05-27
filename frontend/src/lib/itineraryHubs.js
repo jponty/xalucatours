@@ -1170,7 +1170,7 @@ export const HUB_ESCAPADA_RAK_ERG_RAK = {
                fr: "Voyage de 3 nuits et 4 jours avec Marrakech, l'Erg Chebbi et une nuit supplémentaire au Kasbah Xaluca." } },
     { id: "esc-mem-4-5", direction: "a", nights: "4n5d", accent: "#D97742",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
-      link: "tourMarrakechLoop45",
+      link: "tourEscapadaRakErgRak45",
       blurb: { es: "Viaje de 4 noches y 5 días con día completo en el Alto Atlas Central y dos noches en Kasbah Xaluca antes del bivouac.",
                en: "4-night/5-day trip with a full Central High Atlas day and two nights at Kasbah Xaluca before the bivouac.",
                fr: "Voyage de 4 nuits et 5 jours avec une journée complète dans le Haut Atlas Central et deux nuits au Kasbah Xaluca." } },

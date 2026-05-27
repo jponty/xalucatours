@@ -88,6 +88,7 @@ export const ROUTES = {
   tourEscapadaRakErgRakHub: { es: "viajes/escapadas/rak_erg_rak",            en: "tours/short-escapes/marrakech-erg-marrakech",  fr: "voyages/escapades-courtes/marrakech-erg-marrakech" },
   tourEscapadaRakErgRak23:  { es: "viajes/escapadas/rak_erg_rak/programa_2n_3d", en: "tours/short-escapes/marrakech-erg-marrakech/program-2n-3d", fr: "voyages/escapades-courtes/marrakech-erg-marrakech/programme-2n-3j" },
   tourEscapadaRakErgRak34:  { es: "viajes/escapadas/rak_erg_rak/programa_3n_4d", en: "tours/short-escapes/marrakech-erg-marrakech/program-3n-4d", fr: "voyages/escapades-courtes/marrakech-erg-marrakech/programme-3n-4j" },
+  tourEscapadaRakErgRak45:  { es: "viajes/escapadas/rak_erg_rak/programa_4n_5d", en: "tours/short-escapes/marrakech-erg-marrakech/program-4n-5d", fr: "voyages/escapades-courtes/marrakech-erg-marrakech/programme-4n-5j" },
   tourEscapadaTanger:     { es: "viajes/escapadas/tanger",                  en: "tours/short-escapes/tangier",                  fr: "voyages/escapades-courtes/tanger" },
   tourNorth:          { es: "viajes/nortedemarruecos",   en: "tours/northern-morocco",   fr: "voyages/nord-du-maroc" },
   tourNorteCiudadesImperiales: { es: "viajes/norte/ciudades_imperiales", en: "tours/northern/imperial-cities", fr: "voyages/nord/cites-imperiales" },
