@@ -3107,3 +3107,522 @@ export const PROGRAM_MEM_78 = {
   },
 };
 
+
+/* ============================================================
+   Marrakech → Essaouira → Marrakech · 4 noches / 5 días
+   Combinado ciudad-costa: 2 noches en Marrakech + 2 noches en
+   Essaouira con traslado entre ambas ciudades.
+============================================================ */
+
+export const DAY_MES_MARRAKECH_ESSAOUIRA = {
+  route_id: "mes-marrakech-essaouira",
+  id: "dia-3",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5A7F9C",
+  title: { es: "Marrakech → Essaouira", en: "Marrakech → Essaouira", fr: "Marrakech → Essaouira" },
+  body: {
+    es: "Salida hacia las 09:30 h con vehículo y chófer hacia Essaouira (aproximadamente 190 km de carretera). Llegada y tiempo libre para disfrutar de la ciudad: el puerto pesquero y sus gaviotas, las galerías de arte, los estudios de pintura, el ambiente bohemio y la música callejera. Recomendable comer pescado fresco junto al puerto, pasear por la medina amurallada y descubrir el ambiente atlántico tan especial que dio nombre a la «Perla del Atlántico». Cena y noche en Riad en la Medina u Hotel 5*.",
+    en: "Departure around 09:30 by vehicle and driver to Essaouira (approximately 190 km on the road). Arrival and free time to enjoy the city: the fishing port and its seagulls, art galleries, painters' studios, the bohemian vibe and street music. We recommend a fresh-fish lunch by the harbour, a stroll through the walled medina and discovering the very particular Atlantic atmosphere that earned the «Pearl of the Atlantic» its nickname. Dinner and overnight at a Riad in the Medina or 5* Hotel.",
+    fr: "Départ vers 09h30 en véhicule avec chauffeur vers Essaouira (environ 190 km de route). Arrivée et temps libre pour profiter de la ville : le port de pêche et ses mouettes, les galeries d'art, les ateliers de peintres, l'ambiance bohème et la musique de rue. Nous recommandons un déjeuner de poisson frais près du port, une balade dans la médina fortifiée et la découverte de l'atmosphère atlantique si particulière qui valut son surnom de « Perle de l'Atlantique ». Dîner et nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "Essaouira: la Perla del Atlántico", en: "Essaouira: the Pearl of the Atlantic", fr: "Essaouira : la Perle de l'Atlantique" },
+      body: {
+        es: "Antiguamente conocida como Mogador, Essaouira fue rediseñada en el siglo XVIII por el arquitecto francés Théodore Cornut bajo el sultán Mohammed III. Su medina amurallada, declarada Patrimonio de la UNESCO, es un ejemplo único de urbanismo planificado norteafricano.",
+        en: "Formerly known as Mogador, Essaouira was redesigned in the 18th century by French architect Théodore Cornut under Sultan Mohammed III. Its walled medina, UNESCO World Heritage, is a unique example of planned North African urbanism.",
+        fr: "Anciennement Mogador, Essaouira fut redessinée au XVIIIᵉ siècle par l'architecte français Théodore Cornut sous le sultan Mohammed III. Sa médina fortifiée, Patrimoine de l'UNESCO, est un exemple unique d'urbanisme planifié nord-africain.",
+      },
+    },
+    {
+      title: { es: "El puerto pesquero", en: "The fishing port", fr: "Le port de pêche" },
+      body: {
+        es: "Uno de los puertos pesqueros más antiguos y activos de Marruecos. Su lonja matinal, las barcas azules y las decenas de gaviotas crean una de las postales más icónicas del país.",
+        en: "One of Morocco's oldest and busiest fishing ports. The morning fish market, the blue boats and the dozens of seagulls create one of the country's most iconic postcards.",
+        fr: "L'un des plus anciens et actifs ports de pêche du Maroc. La criée matinale, les barques bleues et les dizaines de mouettes composent l'une des plus emblématiques cartes postales du pays.",
+      },
+    },
+    {
+      title: { es: "Arte, música y ambiente bohemio", en: "Art, music and bohemian vibe", fr: "Art, musique et ambiance bohème" },
+      body: {
+        es: "Essaouira ha sido refugio de artistas y músicos desde los años 60 — Jimi Hendrix, Cat Stevens, Orson Welles. Hoy alberga galerías de arte contemporáneo y celebra cada junio el Festival Gnaoua, referente mundial de músicas del mundo.",
+        en: "Essaouira has been a haven for artists and musicians since the 1960s — Jimi Hendrix, Cat Stevens, Orson Welles. Today it hosts contemporary art galleries and, every June, the world-renowned Gnaoua World Music Festival.",
+        fr: "Essaouira est un refuge d'artistes et musiciens depuis les années 60 — Jimi Hendrix, Cat Stevens, Orson Welles. Elle accueille aujourd'hui des galeries d'art contemporain et, chaque juin, le célèbre Festival Gnaoua des musiques du monde.",
+      },
+    },
+  ],
+};
+
+export const DAY_MES_ESSAOUIRA_FREE = {
+  route_id: "mes-essaouira-free",
+  id: "dia-4",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+  accent: "#3A4A5F",
+  title: { es: "Día libre en Essaouira", en: "Free day in Essaouira", fr: "Journée libre à Essaouira" },
+  body: {
+    es: "Jornada libre para disfrutar de la ciudad a tu ritmo: pasear por la playa, relajarse frente al Atlántico, descubrir las galerías, recorrer las murallas (skala), perderse en la medina o tomar un té en una terraza con vistas al océano. Para quienes buscan algo más activo, Essaouira es uno de los mejores destinos del mundo para surf, kitesurf y windsurf gracias a los famosos alisios. Cena y noche en Riad en la Medina u Hotel 5*.",
+    en: "A free day to enjoy the city at your own pace: walk on the beach, relax facing the Atlantic, discover the galleries, walk the ramparts (skala), get lost in the medina or have tea on a terrace overlooking the ocean. For those after something more active, Essaouira is one of the world's best destinations for surfing, kitesurfing and windsurfing thanks to the famous trade winds. Dinner and overnight at a Riad in the Medina or 5* Hotel.",
+    fr: "Journée libre pour profiter de la ville à votre rythme : balade sur la plage, détente face à l'Atlantique, découverte des galeries, parcours des remparts (skala), flânerie dans la médina ou thé sur une terrasse face à l'océan. Pour les plus actifs, Essaouira est l'une des meilleures destinations mondiales pour le surf, kitesurf et windsurf grâce aux célèbres alizés. Dîner et nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  wellness: [
+    { es: "Playa y paseo marítimo", en: "Beach & seafront", fr: "Plage et front de mer" },
+    { es: "Surf · Kitesurf · Windsurf", en: "Surf · Kitesurf · Windsurf", fr: "Surf · Kitesurf · Windsurf" },
+    { es: "Skala de la Kasbah", en: "Skala of the Kasbah", fr: "Skala de la Kasbah" },
+    { es: "Galerías de arte", en: "Art galleries", fr: "Galeries d'art" },
+    { es: "Lonja del puerto", en: "Fish market", fr: "Criée du port" },
+  ],
+  culture: [
+    {
+      title: { es: "Capital mundial del kitesurf", en: "World capital of kitesurfing", fr: "Capitale mondiale du kitesurf" },
+      body: {
+        es: "La playa de Essaouira es famosa por los vientos alisios que soplan de marzo a octubre, convirtiéndola en una de las mejores escuelas mundiales de kitesurf y windsurf, con eventos PWA y campeonatos europeos cada temporada.",
+        en: "Essaouira's beach is famous for the trade winds blowing from March to October, making it one of the world's top kitesurf and windsurf schools, hosting PWA events and European championships every season.",
+        fr: "La plage d'Essaouira est célèbre pour les alizés qui soufflent de mars à octobre, ce qui en fait l'une des meilleures écoles mondiales de kitesurf et windsurf, accueillant chaque saison événements PWA et championnats européens.",
+      },
+    },
+    {
+      title: { es: "Skala y murallas portuguesas", en: "Skala and Portuguese ramparts", fr: "Skala et remparts portugais" },
+      body: {
+        es: "Las murallas y cañones de bronce de la Skala de la Kasbah son uno de los símbolos de Essaouira. Sirvieron de escenario para clásicos del cine como Otelo de Orson Welles (1952) y, más recientemente, Juego de Tronos (Astapor).",
+        en: "The ramparts and bronze cannons of the Skala of the Kasbah are one of Essaouira's symbols. They have been the setting for film classics like Orson Welles's Othello (1952) and, more recently, Game of Thrones (Astapor).",
+        fr: "Les remparts et canons de bronze de la Skala de la Kasbah sont l'un des symboles d'Essaouira. Ils ont servi de décor à des classiques du cinéma comme Othello d'Orson Welles (1952) et, plus récemment, à Game of Thrones (Astapor).",
+      },
+    },
+    {
+      title: { es: "Las puertas azules de la medina", en: "The blue doors of the medina", fr: "Les portes bleues de la médina" },
+      body: {
+        es: "El característico azul de las puertas y postigos de la medina, junto a la blancura de la cal, dan a Essaouira un aspecto único en el panorama marroquí, más cercano a las islas del Egeo que al desierto.",
+        en: "The distinctive blue of the medina's doors and shutters, against the whitewashed walls, gives Essaouira a unique look in the Moroccan landscape — closer to the Aegean islands than to the desert.",
+        fr: "Le bleu caractéristique des portes et volets de la médina, sur la blancheur de la chaux, donne à Essaouira un aspect unique dans le paysage marocain — plus proche des îles de la mer Égée que du désert.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MES_45 = {
+  routeId: "tourMarrakechEss45",
+  duration_key: "mes4n5d",
+  duration: { es: "4 noches / 5 días", en: "4 nights / 5 days", fr: "4 nuits / 5 jours" },
+  prices: { low: 890, mid: 1090, high: 1290, premium: 1490 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Marrakech – Essaouira – Marrakech.",
+      description_title: "Un combinado entre dos imprescindibles de Marruecos.",
+      description: [
+        "Te presentamos un combinado entre dos lugares imprescindibles de Marruecos. Por un lado, la vibrante Marrakech, con su famosa Plaza Djemaa el-Fna, sus zocos llenos de vida, palacios, jardines y talleres artesanales.",
+        "Por otro lado, Essaouira, conocida como la «Perla del Atlántico» — una encantadora ciudad costera de pescadores ideal para relajarse y pasear, declarada Patrimonio de la Humanidad por la UNESCO.",
+      ],
+    },
+    en: {
+      title: "Marrakech – Essaouira – Marrakech.",
+      description_title: "A pairing of two Moroccan essentials.",
+      description: [
+        "A pairing of two essential places in Morocco. On one hand the vibrant Marrakech, with its famous Djemaa el-Fna square, its lively souks, palaces, gardens and artisan workshops.",
+        "On the other hand Essaouira, known as the «Pearl of the Atlantic» — a charming coastal fishing town ideal for strolling and unwinding, listed as UNESCO World Heritage.",
+      ],
+    },
+    fr: {
+      title: "Marrakech – Essaouira – Marrakech.",
+      description_title: "Un combiné de deux incontournables du Maroc.",
+      description: [
+        "Un combiné de deux lieux incontournables du Maroc. D'un côté la vibrante Marrakech, avec sa célèbre place Djemaa el-Fna, ses souks animés, palais, jardins et ateliers d'artisans.",
+        "De l'autre Essaouira, « la Perle de l'Atlantique » — charmante ville côtière de pêcheurs idéale pour flâner et se détendre, classée Patrimoine de l'Humanité de l'UNESCO.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM56_ARRIVAL_MARRAKECH,
+    DAY_MEM56_MARRAKECH_VISIT,
+    DAY_MES_MARRAKECH_ESSAOUIRA,
+    DAY_MES_ESSAOUIRA_FREE,
+    DAY_EM78_DEPARTURE,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Dos noches en Marrakech en Riad o Hotel 4* / 5* en régimen de alojamiento y desayuno",
+        "Dos noches en Essaouira en Riad o Hotel 5* en régimen de media pensión",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visita al Palacio de la Bahía",
+        "Transfer aeropuerto Marrakech → alojamiento",
+        "Transfer Marrakech → Essaouira con vehículo y chófer",
+        "Transfer Essaouira → aeropuerto de Marrakech",
+        "Seguro de asistencia en viaje",
+        "Teléfono de asistencia 24 horas",
+      ],
+      en: [
+        "Two nights in Marrakech in a Riad or 4* / 5* Hotel, bed and breakfast",
+        "Two nights in Essaouira in a Riad or 5* Hotel, half board",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visit to the Bahia Palace",
+        "Marrakech airport → accommodation transfer",
+        "Marrakech → Essaouira transfer with vehicle and driver",
+        "Essaouira → Marrakech airport transfer",
+        "Travel assistance insurance",
+        "24-hour assistance phone",
+      ],
+      fr: [
+        "Deux nuits à Marrakech en Riad ou Hôtel 4* / 5* en logement et petit déjeuner",
+        "Deux nuits à Essaouira en Riad ou Hôtel 5* en demi-pension",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visite du Palais de la Bahia",
+        "Transfert aéroport Marrakech → hébergement",
+        "Transfert Marrakech → Essaouira avec véhicule et chauffeur",
+        "Transfert Essaouira → aéroport de Marrakech",
+        "Assurance assistance voyage",
+        "Téléphone d'assistance 24 h",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía",
+        "Cenas no especificadas",
+        "Entradas no detalladas",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches",
+        "Dinners not specified",
+        "Entrance fees not detailed",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners",
+        "Dîners non spécifiés",
+        "Entrées non détaillées",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Ryanair — vuelos directos desde varias ciudades",
+        "Suplemento habitación individual: 260 € baja · 275 € alta",
+        "Descuento niños 3-11 años en habitación compartida con dos adultos: 110 € baja · 125 € alta",
+        "Los guías locales pueden compartirse en temporada alta",
+        "Pasaporte obligatorio con vigencia mínima de 6 meses",
+        "El nombre del riad o el hotel se confirma tras la reserva",
+        "Posibilidad de consultar hoteles concretos incluidos en el programa",
+        "Seguro de cancelación opcional: 45 € por persona para viajes de hasta 9 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Ryanair — direct flights from various cities",
+        "Single room supplement: €260 low season · €275 high season",
+        "Children 3-11 discount sharing room with two adults: €110 low season · €125 high season",
+        "Local guides may be shared in high season",
+        "Passport valid for at least 6 months required",
+        "Riad or hotel name is confirmed after booking",
+        "Specific included hotels can be requested",
+        "Optional cancellation insurance: €45 per person for trips up to 9 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Ryanair — vols directs depuis plusieurs villes",
+        "Supplément chambre individuelle : 260 € basse · 275 € haute",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 110 € basse · 125 € haute",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Passeport valable au moins 6 mois obligatoire",
+        "Le nom du riad ou de l'hôtel est confirmé après la réservation",
+        "Les hôtels spécifiques inclus peuvent être consultés",
+        "Assurance annulation en option : 45 € par personne pour les voyages jusqu'à 9 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "30% del importe total al confirmar la reserva",
+        "70% restante hasta 30 días antes de la salida",
+        "Si el vuelo requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos · 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Las condiciones cubren los servicios terrestres; los vuelos se rigen por la política de cada aerolínea",
+        "Los seguros no son reembolsables",
+      ],
+      en: [
+        "30% of total at booking confirmation",
+        "Remaining 70% up to 30 days before departure",
+        "If the flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs · 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Conditions cover land services; flights are governed by each airline's policy",
+        "Insurances are non-refundable",
+      ],
+      fr: [
+        "30 % du total à la confirmation de la réservation",
+        "70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais · 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les conditions couvrent les services terrestres ; les vols suivent la politique de chaque compagnie",
+        "Les assurances ne sont pas remboursables",
+      ],
+    },
+  },
+};
+
+
+/* ============================================================
+   Marrakech → Essaouira → Marrakech · 6 noches / 7 días
+   Versión extendida con un día libre adicional en Marrakech y
+   un segundo día libre en Essaouira (3 noches en cada ciudad).
+============================================================ */
+
+export const DAY_MES67_FREE_MARRAKECH = {
+  route_id: "mes67-free-marrakech",
+  id: "dia-3",
+  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Día libre en Marrakech", en: "Free day in Marrakech", fr: "Journée libre à Marrakech" },
+  body: {
+    es: "Jornada libre para descubrir Marrakech a tu ritmo: practicar el arte del regateo en los zocos, perderse por la Medina y descubrir rincones menos turísticos como el barrio de los curtidores, los jardines Majorelle o el Museo Yves Saint Laurent. También existe la posibilidad de contratar excursiones facultativas a media jornada o día completo — Valle de Ourika, Cascadas de Ouzoud, Tres Valles del Atlas o, con pernoctación, una incursión al desierto de Agafay. Alojamiento en Riad en la Medina u Hotel 4* / 5*.",
+    en: "A free day to discover Marrakech at your own pace: practise the art of haggling in the souks, get lost in the Medina and explore less touristy corners such as the tanners' quarter, the Majorelle Gardens or the Yves Saint Laurent Museum. You can also book optional half- or full-day excursions — Ourika Valley, Ouzoud Waterfalls, Atlas Three Valleys or, with an overnight, an Agafay desert escape. Overnight in a Riad in the Medina or 4* / 5* Hotel.",
+    fr: "Journée libre pour découvrir Marrakech à votre rythme : pratiquer l'art du marchandage dans les souks, vous perdre dans la Médina et explorer des coins moins touristiques comme le quartier des tanneurs, les Jardins Majorelle ou le Musée Yves Saint Laurent. Possibilité de réserver des excursions facultatives en demi-journée ou journée complète — Vallée de l'Ourika, Cascades d'Ouzoud, Trois Vallées de l'Atlas ou, avec nuitée, escapade au désert d'Agafay. Nuit en Riad dans la Médina ou Hôtel 4* / 5*.",
+  },
+  culture: [
+    {
+      title: { es: "Jardines Majorelle e Yves Saint Laurent", en: "Majorelle Gardens & Yves Saint Laurent", fr: "Jardins Majorelle et Yves Saint Laurent" },
+      body: {
+        es: "Creados por el pintor francés Jacques Majorelle en los años 20 y restaurados por Pierre Bergé e Yves Saint Laurent en 1980, los jardines combinan más de 300 especies vegetales con el icónico azul cobalto «bleu Majorelle». A pocos pasos, el Museo Yves Saint Laurent reúne 50 años de moda.",
+        en: "Created by French painter Jacques Majorelle in the 1920s and restored by Pierre Bergé and Yves Saint Laurent in 1980, the gardens combine over 300 plant species with the iconic cobalt blue «bleu Majorelle». A few steps away, the Yves Saint Laurent Museum spans 50 years of fashion.",
+        fr: "Créés par le peintre français Jacques Majorelle dans les années 1920 et restaurés par Pierre Bergé et Yves Saint Laurent en 1980, les jardins associent plus de 300 espèces végétales à l'iconique bleu cobalt « bleu Majorelle ». À quelques pas, le Musée Yves Saint Laurent retrace 50 ans de mode.",
+      },
+    },
+    {
+      title: { es: "Excursión al Valle de Ourika", en: "Excursion to the Ourika Valley", fr: "Excursion à la Vallée de l'Ourika" },
+      body: {
+        es: "Una de las escapadas favoritas desde Marrakech, a apenas 60 km al sur. El valle del río Ourika permite descubrir aldeas bereberes, cascadas, mercados locales y los primeros picos del Alto Atlas en menos de un día.",
+        en: "One of the favourite escapes from Marrakech, just 60 km south. The Ourika river valley showcases Berber villages, waterfalls, local markets and the first peaks of the High Atlas in less than a day.",
+        fr: "L'une des escapades préférées depuis Marrakech, à seulement 60 km au sud. La vallée de l'Ourika permet de découvrir villages berbères, cascades, marchés locaux et les premiers sommets du Haut Atlas en moins d'une journée.",
+      },
+    },
+    {
+      title: { es: "Cascadas de Ouzoud", en: "Ouzoud Waterfalls", fr: "Cascades d'Ouzoud" },
+      body: {
+        es: "Las cataratas más altas del norte de África, con 110 metros de caída en tres niveles. Excursión de día completo desde Marrakech (150 km), ideal para combinar naturaleza, monos magot en libertad y baño bajo la cascada.",
+        en: "The highest waterfalls in North Africa, with a 110-metre drop in three tiers. A full-day trip from Marrakech (150 km), ideal to combine nature, free-roaming Barbary macaques and a swim at the foot of the falls.",
+        fr: "Les chutes les plus hautes d'Afrique du Nord, avec 110 mètres de dénivelé sur trois niveaux. Excursion à la journée depuis Marrakech (150 km), idéale pour combiner nature, macaques en liberté et baignade au pied de la cascade.",
+      },
+    },
+  ],
+};
+
+export const DAY_MES67_ESSAOUIRA_FREE_2 = {
+  route_id: "mes67-essaouira-free-2",
+  id: "dia-6",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+  accent: "#3A4A5F",
+  title: { es: "Segundo día libre en Essaouira", en: "Second free day in Essaouira", fr: "Deuxième journée libre à Essaouira" },
+  body: {
+    es: "Nueva jornada libre para seguir disfrutando del ambiente costero a tu aire: playa, paseos por el puerto y la medina, sesiones de surf o kitesurf, relax frente al Atlántico o una visita a las pequeñas islas Purpurarias en barca privada. Buen momento también para una clase de cocina marroquí o un té con dulces en una azotea con vistas al océano. Cena y noche en Riad en la Medina u Hotel 5*.",
+    en: "Another free day to enjoy the coastal vibe your way: beach, walks around the harbour and medina, surf or kitesurf sessions, relaxing facing the Atlantic, or a private boat trip to the small Purpuraires Islands. A great moment too for a Moroccan cooking class or tea and pastries on a rooftop overlooking the ocean. Dinner and overnight at a Riad in the Medina or 5* Hotel.",
+    fr: "Nouvelle journée libre pour profiter de l'ambiance côtière à votre façon : plage, balades autour du port et de la médina, sessions de surf ou kitesurf, détente face à l'Atlantique ou excursion privée en barque vers les petites îles Purpuraires. C'est aussi le bon moment pour un cours de cuisine marocaine ou un thé pâtisseries sur un toit-terrasse face à l'océan. Dîner et nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  wellness: [
+    { es: "Excursión a las islas Purpurarias", en: "Purpuraires Islands trip", fr: "Excursion aux îles Purpuraires" },
+    { es: "Clases de cocina marroquí", en: "Moroccan cooking class", fr: "Cours de cuisine marocaine" },
+    { es: "Surf · Kitesurf · Windsurf", en: "Surf · Kitesurf · Windsurf", fr: "Surf · Kitesurf · Windsurf" },
+    { es: "Hammam y masajes", en: "Hammam & massages", fr: "Hammam & massages" },
+    { es: "Tarde de azotea con vistas", en: "Rooftop afternoon", fr: "Après-midi sur les toits" },
+  ],
+  culture: [
+    {
+      title: { es: "Las islas Purpurarias", en: "The Purpuraires Islands", fr: "Les îles Purpuraires" },
+      body: {
+        es: "Frente a Essaouira, este pequeño archipiélago fue famoso en la Antigüedad por la producción del codiciado tinte púrpura — extraído de moluscos por los fenicios. Hoy es reserva natural protegida y refugio de la única colonia de halcones Eleonora del Magreb.",
+        en: "Off Essaouira, this small archipelago was famous in Antiquity for producing the prized purple dye — extracted from molluscs by the Phoenicians. Today it is a protected nature reserve and home to the Maghreb's only Eleonora's falcon colony.",
+        fr: "Face à Essaouira, ce petit archipel était célèbre dans l'Antiquité pour la production du précieux pourpre, extrait de mollusques par les Phéniciens. Aujourd'hui réserve naturelle protégée, il abrite la seule colonie de faucons d'Éléonore du Maghreb.",
+      },
+    },
+    {
+      title: { es: "Festival Gnaoua y músicas del mundo", en: "Gnaoua & World Music Festival", fr: "Festival Gnaoua et musiques du monde" },
+      body: {
+        es: "Cada año en junio, Essaouira acoge uno de los grandes festivales gratuitos del Magreb, con conciertos al aire libre que mezclan la espiritual música Gnawa con artistas de jazz, blues, electrónica y world music de todo el planeta.",
+        en: "Every June, Essaouira hosts one of the Maghreb's great free festivals, with open-air concerts blending the spiritual Gnawa music with jazz, blues, electronic and world music artists from around the planet.",
+        fr: "Chaque année en juin, Essaouira accueille l'un des grands festivals gratuits du Maghreb, avec des concerts en plein air mêlant la musique spirituelle Gnawa à des artistes de jazz, blues, électronique et musiques du monde.",
+      },
+    },
+    {
+      title: { es: "Cocina atlántica de Essaouira", en: "Essaouira's Atlantic cuisine", fr: "Cuisine atlantique d'Essaouira" },
+      body: {
+        es: "La gastronomía local destaca por la frescura del pescado: sardinas a la brasa, tagine de pescado al azafrán, ostras del banco de Oualidia y argán como producto estrella. Las parrillas del puerto son una experiencia única.",
+        en: "Local cuisine stands out for fresh fish: grilled sardines, saffron fish tagine, Oualidia oysters and argan oil as a star ingredient. The harbour's grills are a one-of-a-kind experience.",
+        fr: "La cuisine locale brille par la fraîcheur du poisson : sardines grillées, tagine de poisson au safran, huîtres de Oualidia et huile d'argan comme produit star. Les grillades du port sont une expérience unique.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MES_67 = {
+  routeId: "tourMarrakechEss67",
+  duration_key: "mes6n7d",
+  duration: { es: "6 noches / 7 días", en: "6 nights / 7 days", fr: "6 nuits / 7 jours" },
+  prices: { low: 1190, mid: 1390, high: 1590, premium: 1890 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Marrakech – Essaouira – Marrakech.",
+      description_title: "Un combinado profundo entre dos imprescindibles.",
+      description: [
+        "Te presentamos un combinado entre dos lugares imprescindibles de Marruecos. Por un lado, la vibrante Marrakech, con su famosa Plaza Djemaa el-Fna, sus zocos llenos de vida, palacios, jardines y talleres artesanales.",
+        "Por otro lado, Essaouira, conocida como la «Perla del Atlántico» — una encantadora ciudad costera de pescadores ideal para relajarse y pasear, también declarada Patrimonio de la Humanidad por la UNESCO.",
+      ],
+    },
+    en: {
+      title: "Marrakech – Essaouira – Marrakech.",
+      description_title: "A deeper pairing of two essentials.",
+      description: [
+        "A pairing of two essential places in Morocco. On one hand the vibrant Marrakech, with its famous Djemaa el-Fna square, its lively souks, palaces, gardens and artisan workshops.",
+        "On the other hand Essaouira, known as the «Pearl of the Atlantic» — a charming coastal fishing town ideal for strolling and unwinding, also a UNESCO World Heritage site.",
+      ],
+    },
+    fr: {
+      title: "Marrakech – Essaouira – Marrakech.",
+      description_title: "Un combiné plus profond de deux incontournables.",
+      description: [
+        "Un combiné de deux lieux incontournables du Maroc. D'un côté la vibrante Marrakech, avec sa célèbre place Djemaa el-Fna, ses souks animés, palais, jardins et ateliers d'artisans.",
+        "De l'autre Essaouira, « la Perle de l'Atlantique » — charmante ville côtière de pêcheurs idéale pour flâner et se détendre, également classée Patrimoine de l'Humanité de l'UNESCO.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM56_ARRIVAL_MARRAKECH,
+    DAY_MEM56_MARRAKECH_VISIT,
+    DAY_MES67_FREE_MARRAKECH,
+    DAY_MES_MARRAKECH_ESSAOUIRA,
+    DAY_MES_ESSAOUIRA_FREE,
+    DAY_MES67_ESSAOUIRA_FREE_2,
+    DAY_EM78_DEPARTURE,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Tres noches en Marrakech en Riad o Hotel 4* / 5* en régimen de alojamiento y desayuno",
+        "Tres noches en Essaouira en Riad o Hotel 5* en régimen de media pensión",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visita al Palacio de la Bahía",
+        "Transfer aeropuerto Marrakech → alojamiento",
+        "Transfer Marrakech → Essaouira con vehículo y chófer",
+        "Transfer Essaouira → aeropuerto de Marrakech",
+        "Seguro de asistencia en viaje",
+        "Teléfono de asistencia 24 horas",
+      ],
+      en: [
+        "Three nights in Marrakech in a Riad or 4* / 5* Hotel, bed and breakfast",
+        "Three nights in Essaouira in a Riad or 5* Hotel, half board",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visit to the Bahia Palace",
+        "Marrakech airport → accommodation transfer",
+        "Marrakech → Essaouira transfer with vehicle and driver",
+        "Essaouira → Marrakech airport transfer",
+        "Travel assistance insurance",
+        "24-hour assistance phone",
+      ],
+      fr: [
+        "Trois nuits à Marrakech en Riad ou Hôtel 4* / 5* en logement et petit déjeuner",
+        "Trois nuits à Essaouira en Riad ou Hôtel 5* en demi-pension",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visite du Palais de la Bahia",
+        "Transfert aéroport Marrakech → hébergement",
+        "Transfert Marrakech → Essaouira avec véhicule et chauffeur",
+        "Transfert Essaouira → aéroport de Marrakech",
+        "Assurance assistance voyage",
+        "Téléphone d'assistance 24 h",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía",
+        "Cenas no especificadas",
+        "Entradas no detalladas",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches",
+        "Dinners not specified",
+        "Entrance fees not detailed",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners",
+        "Dîners non spécifiés",
+        "Entrées non détaillées",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Suplemento habitación individual: 390 € baja · 410 € alta",
+        "Descuento niños 3-11 años en habitación compartida con dos adultos: 165 € baja · 185 € alta",
+        "Los guías locales pueden compartirse en temporada alta",
+        "Pasaporte obligatorio con vigencia mínima de 6 meses",
+        "El nombre del riad o el hotel se confirma tras la reserva",
+        "Posibilidad de consultar hoteles concretos incluidos en el programa",
+        "Seguro de cancelación opcional: 45 € por persona para viajes de hasta 9 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Single room supplement: €390 low season · €410 high season",
+        "Children 3-11 discount sharing room with two adults: €165 low season · €185 high season",
+        "Local guides may be shared in high season",
+        "Passport valid for at least 6 months required",
+        "Riad or hotel name is confirmed after booking",
+        "Specific included hotels can be requested",
+        "Optional cancellation insurance: €45 per person for trips up to 9 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Supplément chambre individuelle : 390 € basse · 410 € haute",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 165 € basse · 185 € haute",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Passeport valable au moins 6 mois obligatoire",
+        "Le nom du riad ou de l'hôtel est confirmé après la réservation",
+        "Les hôtels spécifiques inclus peuvent être consultés",
+        "Assurance annulation en option : 45 € par personne pour les voyages jusqu'à 9 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "30% del importe total al confirmar la reserva",
+        "70% restante hasta 30 días antes de la salida",
+        "Si el vuelo requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Las condiciones cubren los servicios terrestres; los vuelos se rigen por la política de cada aerolínea",
+        "Los seguros de cancelación no son reembolsables",
+      ],
+      en: [
+        "30% of total at booking confirmation",
+        "Remaining 70% up to 30 days before departure",
+        "If the flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Conditions cover land services; flights are governed by each airline's policy",
+        "Cancellation insurances are non-refundable",
+      ],
+      fr: [
+        "30 % du total à la confirmation de la réservation",
+        "70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les conditions couvrent les services terrestres ; les vols suivent la politique de chaque compagnie",
+        "Les assurances annulation ne sont pas remboursables",
+      ],
+    },
+  },
+};
+

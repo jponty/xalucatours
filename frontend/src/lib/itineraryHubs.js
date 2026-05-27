@@ -415,16 +415,91 @@ export const HUB_MARRAKECH_ESSAOUIRA = {
   programs: [
     { id: "mes-4-5", direction: "a", nights: "4n5d", accent: "#3A4A5F",
       image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechEss45",
       blurb: { es: "Viaje de 4 noches y 5 días desde Marrakech hasta Essaouira.",
                en: "4-night/5-day journey from Marrakech to Essaouira.",
                fr: "Voyage de 4 nuits et 5 jours de Marrakech à Essaouira." } },
     { id: "mes-6-7", direction: "a", nights: "6n7d", accent: "#5A7F9C",
       image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechEss67",
       blurb: { es: "Viaje de 6 noches y 7 días desde Marrakech hasta Essaouira.",
                en: "6-night/7-day journey from Marrakech to Essaouira.",
                fr: "Voyage de 6 nuits et 7 jours de Marrakech à Essaouira." } },
   ],
 };
+
+export const HUB_ERRACHIDIA_ATLAS_FEZ = {
+  id: "errachidia-atlas-fez",
+  hero: {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
+    place: { es: "Errachidia · Alto Atlas · Fez", en: "Errachidia · High Atlas · Fez", fr: "Errachidia · Haut Atlas · Fès" },
+    title: {
+      es: "Errachidia – Alto Atlas – Fez.",
+      en: "Errachidia – High Atlas – Fez.",
+      fr: "Errachidia – Haut Atlas – Fès.",
+    },
+    subtitle: {
+      es: "Del oasis del Tafilalet al alma medieval de Fez, atravesando los pasos más altos del Atlas marroquí.",
+      en: "From the Tafilalet oasis to the medieval soul of Fez, crossing Morocco's highest Atlas passes.",
+      fr: "De l'oasis du Tafilalet à l'âme médiévale de Fès, en traversant les plus hauts cols de l'Atlas marocain.",
+    },
+  },
+  intro: {
+    overline: { es: "Errachidia · Alto Atlas · Fez", en: "Errachidia · High Atlas · Fez", fr: "Errachidia · Haut Atlas · Fès" },
+    title: {
+      es: "Dos viajes posibles, una misma travesía.",
+      en: "Two possible journeys, one same crossing.",
+      fr: "Deux voyages possibles, une même traversée.",
+    },
+    body: {
+      es: [
+        "Descubre Errachidia, un destino cautivador situado en las impresionantes montañas del Alto Atlas de Marruecos, con la autenticidad y la serenidad que se respiran en medio de estos paisajes.",
+        "Finalmente, adéntrate en Fez, con sus laberínticas calles medievales y su fascinante mezcla de historia y cultura, donde cada rincón cuenta una historia milenaria.",
+        "Esta combinación única de destinos te transportará a través de los contrastes y la diversidad de Marruecos, ofreciéndote una experiencia inolvidable que cautivará todos tus sentidos.",
+      ],
+      en: [
+        "Discover Errachidia, a captivating destination at the foot of Morocco's stunning High Atlas mountains, with the authenticity and serenity that breathe through these landscapes.",
+        "Then immerse yourself in Fez, with its labyrinthine medieval streets and its fascinating blend of history and culture, where every corner tells a thousand-year-old story.",
+        "This unique combination of destinations will take you across the contrasts and diversity of Morocco — an unforgettable experience that will captivate all your senses.",
+      ],
+      fr: [
+        "Découvrez Errachidia, destination captivante au pied du majestueux Haut Atlas marocain, avec l'authenticité et la sérénité qui se dégagent de ces paysages.",
+        "Puis plongez dans Fès, ses ruelles médiévales labyrinthiques et son fascinant mélange d'histoire et de culture, où chaque coin raconte une histoire millénaire.",
+        "Cette combinaison unique de destinations vous fera traverser les contrastes et la diversité du Maroc — une expérience inoubliable qui captivera tous vos sens.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de viaje", en: "Trip options", fr: "Options de voyage" },
+    title: {
+      es: "Elige tu dirección.",
+      en: "Choose your direction.",
+      fr: "Choisissez votre direction.",
+    },
+    body: {
+      es: "Dependiendo de dónde prefieras comenzar tu viaje, selecciona entre las dos opciones disponibles según los días que tengas disponibles.",
+      en: "Pick where you'd rather start your journey, between the two available options depending on the days you have.",
+      fr: "Selon l'endroit où vous préférez commencer votre voyage, choisissez entre les deux options disponibles selon les jours dont vous disposez.",
+    },
+    group_a: { es: "Errachidia → Atlas → Fez", en: "Errachidia → Atlas → Fez", fr: "Errachidia → Atlas → Fès" },
+    group_b: { es: "Fez → Atlas → Errachidia", en: "Fez → Atlas → Errachidia", fr: "Fès → Atlas → Errachidia" },
+  },
+  programs: [
+    { id: "eaf-5-6", direction: "a", nights: "5n6d", accent: "#C16542",
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 5 noches y 6 días desde Errachidia hasta Fez.",
+               en: "5-night/6-day journey from Errachidia to Fez.",
+               fr: "Voyage de 5 nuits et 6 jours d'Errachidia à Fès." } },
+    { id: "fae-5-6", direction: "b", nights: "5n6d", accent: "#5A7F9C",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 5 noches y 6 días desde Fez hasta Errachidia.",
+               en: "5-night/6-day journey from Fez to Errachidia.",
+               fr: "Voyage de 5 nuits et 6 jours de Fès à Errachidia." } },
+  ],
+};
+
+
 
 export { COMMON_NIGHTS };
 
