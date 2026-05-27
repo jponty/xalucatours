@@ -969,3 +969,107 @@ export const PROGRAM_ME_67 = {
     DAY_ME_ZIZ_ERRACHIDIA,
   ],
 };
+
+/* ============================================================
+   Marrakech → Erg Chebbi · 7 noches / 8 días
+   The 7N/8D version stretches the Atlas Central exploration into
+   two days (Boutaghrar/Amskar/M'Goun then Dadès/Todra/Erfoud) and
+   keeps the desert day, Khamlia/Rissani and Ziz blocks shared
+   with PROGRAM_ME_67.
+============================================================ */
+
+export const DAY_ME78_BOUTAGHRAR_MGOUN = {
+  route_id: "me78-boutaghrar-mgoun",
+  id: "dia-4",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Boutaghrar · Amskar · Gargantas del M'Goun", en: "Boutaghrar · Amskar · M'Goun Gorges", fr: "Boutaghrar · Amskar · Gorges du M'Goun" },
+  body: {
+    es: "Día completo por las pistas del Alto Atlas Central. Visitaremos poblados bereberes como Boutaghrar y Amskar y descubriremos grutas donde todavía viven familias nómadas. Recorreremos las espectaculares Gargantas del M'Goun, esculpidas durante millones de años por el río que les da nombre. Comida en ruta en una «Gite d'Etape» — refugio tradicional para senderistas y conductores. Regreso al Hotel Xaluca Dades para cena y alojamiento.",
+    en: "Full day on the tracks of the Central High Atlas. We visit Berber villages such as Boutaghrar and Amskar and discover caves still inhabited by nomadic families. We drive the spectacular M'Goun Gorges, carved over millions of years by the river that gives them their name. Lunch en route at a «Gite d'Etape» — a traditional refuge for hikers and drivers. Return to Hotel Xaluca Dades for dinner and overnight.",
+    fr: "Journée complète sur les pistes du Haut Atlas Central. Nous visitons des villages berbères comme Boutaghrar et Amskar et découvrons des grottes encore habitées par des familles nomades. Nous parcourons les spectaculaires Gorges du M'Goun, sculptées par la rivière du même nom au fil de millions d'années. Déjeuner en route dans une « Gite d'Étape » — refuge traditionnel des randonneurs et chauffeurs. Retour à l'Hotel Xaluca Dades pour le dîner et la nuit.",
+  },
+  culture: [
+    {
+      title: { es: "Boutaghrar y Amskar", en: "Boutaghrar & Amskar", fr: "Boutaghrar et Amskar" },
+      body: {
+        es: "Aldeas bereberes donde aún se conservan sistemas agrícolas tradicionales — terrazas de regadío, almacenes comunales (agadirs) — y las formas de vida nómadas ancestrales del pueblo Aït Atta.",
+        en: "Berber villages where traditional farming systems still endure — irrigation terraces, communal granaries (agadirs) — alongside the ancestral nomadic lifestyle of the Aït Atta people.",
+        fr: "Villages berbères où subsistent encore des systèmes agricoles traditionnels — terrasses d'irrigation, greniers communautaires (agadirs) — et le mode de vie nomade ancestral du peuple Aït Atta.",
+      },
+    },
+    {
+      title: { es: "Gargantas del M'Goun", en: "M'Goun Gorges", fr: "Gorges du M'Goun" },
+      body: {
+        es: "Impresionante cañón esculpido durante millones de años por el río M'Goun. Atraviesa la cordillera del mismo nombre, segunda cumbre más alta de Marruecos con 4.071 m.",
+        en: "An impressive canyon carved over millions of years by the M'Goun river. It cuts through the eponymous range — Morocco's second-highest peak at 4,071 m.",
+        fr: "Un canyon impressionnant sculpté par la rivière M'Goun au fil de millions d'années. Il traverse la chaîne du même nom — second sommet du Maroc à 4 071 m.",
+      },
+    },
+    {
+      title: { es: "Alto Atlas Central", en: "Central High Atlas", fr: "Haut Atlas Central" },
+      body: {
+        es: "Una de las regiones geológicas más antiguas y complejas de Marruecos: pliegues precámbricos, conglomerados rojos y mesetas calcáreas que descubrimos en cada tramo de pista.",
+        en: "One of Morocco's oldest and most complex geological regions: Precambrian folds, red conglomerates and limestone plateaus revealed at every turn of the track.",
+        fr: "L'une des régions géologiques les plus anciennes et complexes du Maroc : plis précambriens, conglomérats rouges et plateaux calcaires révélés à chaque tronçon de piste.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME78_DADES_TODRA = {
+  route_id: "me78-dades-todra",
+  id: "dia-5",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D97742",
+  title: { es: "Valle del Dadès · Todra · Erfoud", en: "Dadès Valley · Todra · Erfoud", fr: "Vallée du Dadès · Todra · Erfoud" },
+  body: {
+    es: "Recorreremos el Valle del Dadès con parada en su famoso mirador y en las espectaculares «Patas de Mono». Continuaremos hacia Tinerhir para visitar las imponentes Gargantas del Todra, antes de bajar hasta Erfoud, conocida como la «Puerta del Desierto». Cena y alojamiento en Kasbah Xaluca.",
+    en: "We drive the Dadès Valley with stops at its famous viewpoint and at the spectacular «Monkey Paws». We continue to Tinerhir to visit the imposing Todra Gorges, before descending to Erfoud — known as the «Gate of the Desert». Dinner and overnight at Kasbah Xaluca.",
+    fr: "Nous parcourons la Vallée du Dadès avec des arrêts au célèbre belvédère et aux spectaculaires « Pattes de Singe ». Nous continuons vers Tinerhir pour visiter les imposantes Gorges du Todra, puis nous descendons à Erfoud — la « Porte du Désert ». Dîner et nuit à la Kasbah Xaluca.",
+  },
+  culture: [
+    {
+      title: { es: "Valle del Dadès", en: "Dadès Valley", fr: "Vallée du Dadès" },
+      body: {
+        es: "Famoso por su carretera en zig-zag y por las formaciones rocosas erosionadas conocidas como «Patas de Mono», esculpidas por la lluvia y el viento durante milenios.",
+        en: "Famous for its zig-zag road and for the eroded rock formations known as «Monkey Paws», shaped by rain and wind over millennia.",
+        fr: "Célèbre pour sa route en zigzag et pour les formations rocheuses érodées dites « Pattes de Singe », sculptées par la pluie et le vent au fil des millénaires.",
+      },
+    },
+    {
+      title: { es: "Tinerhir y Todra", en: "Tinerhir & Todra", fr: "Tinerhir et le Todra" },
+      body: {
+        es: "Oasis y desfiladero espectacular con paredes de roca caliza que en su tramo más estrecho alcanzan 160 metros de altura.",
+        en: "Oasis and spectacular canyon with limestone walls rising up to 160 metres at their narrowest point.",
+        fr: "Oasis et canyon spectaculaire dont les parois calcaires atteignent 160 m de hauteur dans la partie la plus étroite.",
+      },
+    },
+    {
+      title: { es: "Erfoud · puerta del desierto", en: "Erfoud · gate of the desert", fr: "Erfoud · porte du désert" },
+      body: {
+        es: "Conocida internacionalmente por sus fósiles devónicos — amonites, ortoceras, trilobites — y como base logística para las expediciones al Erg Chebbi.",
+        en: "Internationally known for its Devonian fossils — ammonites, orthoceras, trilobites — and as the logistics hub for expeditions into the Erg Chebbi.",
+        fr: "Connue internationalement pour ses fossiles dévoniens — ammonites, orthocères, trilobites — et comme base logistique des expéditions vers l'Erg Chebbi.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_ME_78 = {
+  routeId: "tourMarrakechErg78",
+  duration_key: "me7n8d",
+  duration: { es: "7 noches / 8 días", en: "7 nights / 8 days", fr: "7 nuits / 8 jours" },
+  prices: { low: 1690, mid: 1990, high: 2390, premium: 2790 },
+  reverse: false,
+  days: [
+    DAY_ME67_ARRIVAL,
+    DAY_ME67_MEDINA,
+    DAY_ME_ATLAS_AITBENHADDOU,
+    DAY_ME78_BOUTAGHRAR_MGOUN,
+    DAY_ME78_DADES_TODRA,
+    DAY_ME67_DESIERTO_TOTAL,
+    DAY_ME_KHAMLIA_RISSANI,
+    DAY_ME_ZIZ_ERRACHIDIA,
+  ],
+};
