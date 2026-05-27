@@ -570,3 +570,220 @@ export const PROGRAM_AD_67 = {
     DAY_AD_ZIZ_RETURN,
   ],
 };
+
+/* ============================================================
+   Marrakech → Erg Chebbi (entrada Marrakech · salida Errachidia)
+   4 noches · 5 días — circuit days are bespoke to this route and
+   intentionally not shared with the AD/DA variants because the
+   stops, hotels and cultural blocks differ.
+============================================================ */
+
+export const DAY_ME_MARRAKECH = {
+  route_id: "me-marrakech",
+  id: "dia-1",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#C16542",
+  title: { es: "Marrakech · la ciudad roja", en: "Marrakech · the red city", fr: "Marrakech · la ville rouge" },
+  body: {
+    es: "Salida del aeropuerto de origen dirección Marrakech. Llegada (con la posible diferencia horaria según la época del año), recogida y traslado al Riad en la Medina u Hotel 5*. Por la mañana visitaremos a pie la Medina con un guía local: empezaremos admirando el alminar de la Koutoubia — gemela de la Giralda de Sevilla — y seguiremos con el Palacio de la Bahía. Nos adentraremos por las callejuelas del zoco, donde veremos en acción a tejedores de alfombras, fabricantes de babuchas y una infinita variedad de artesanía. Visitaremos una farmacia bereber y saldremos a la Plaza Djemaa el-Fna, cuyo ambiente diurno es totalmente distinto al nocturno. Por la tarde, tiempo libre para el arte del regateo o para descubrir los rincones más recónditos de la Medina. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "Departure from your home airport to Marrakech. Arrival (mind the seasonal time difference), pick-up and transfer to a Riad in the Medina or 5* Hotel. In the morning we walk the Medina with a local guide: we start at the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We enter the alleys of the souk, where we watch carpet weavers, babouche makers and a vast range of artisans at work. We visit a Berber pharmacy and step out into Djemaa el-Fna, whose daytime atmosphere is completely different from the night. Free afternoon for haggling or to explore the Medina's hidden corners. Overnight at a Riad in the Medina or 5* Hotel.",
+    fr: "Départ de votre aéroport d'origine vers Marrakech. Arrivée (attention au décalage horaire selon la saison), accueil et transfert vers un Riad dans la Médina ou un Hôtel 5*. Le matin, nous parcourons la Médina à pied avec un guide local : minaret de la Koutoubia — jumeau de la Giralda de Séville — puis Palais de la Bahia. Nous entrons dans les ruelles du souk, où nous observons tisserands de tapis, fabricants de babouches et une infinité d'artisans. Visite d'une pharmacie berbère, puis sortie sur la place Djemaa el-Fna, dont l'ambiance diurne est totalement différente de celle de la nuit. Après-midi libre pour le marchandage ou pour découvrir les recoins cachés de la Médina. Hébergement en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "La Koutoubia: el alminar que inspiró a la Giralda", en: "Koutoubia: the minaret that inspired the Giralda", fr: "La Koutoubia : le minaret qui inspira la Giralda" },
+      body: {
+        es: "La Mezquita de la Koutoubia fue construida en el siglo XII por los almohades y su alminar está considerado una obra maestra de la arquitectura islámica. Su diseño sirvió de modelo para la Giralda de Sevilla y la Torre Hassan de Rabat, convirtiéndolo en uno de los campanarios más influyentes del mundo medieval.",
+        en: "Built in the 12th century by the Almohads, the Koutoubia Mosque's minaret is considered a masterpiece of Islamic architecture. Its design served as a model for Seville's Giralda and Rabat's Hassan Tower, making it one of the most influential minarets of the medieval world.",
+        fr: "Construite au XIIᵉ siècle par les Almohades, la mosquée de la Koutoubia possède un minaret considéré comme un chef-d'œuvre de l'architecture islamique. Son dessin a servi de modèle à la Giralda de Séville et à la Tour Hassan de Rabat — l'un des minarets les plus influents du Moyen Âge.",
+      },
+    },
+    {
+      title: { es: "Los zocos: uno de los mercados más grandes del norte de África", en: "The souks: one of North Africa's largest markets", fr: "Les souks : l'un des plus grands marchés d'Afrique du Nord" },
+      body: {
+        es: "La Medina alberga uno de los zocos más extensos y antiguos del norte de África, dividido en sectores especializados: curtidores, cesteros, tintoreros, zapateros, herreros, joyeros… La tradición artesanal se mantiene viva gracias a gremios heredados de época medieval que transmiten los oficios de generación en generación.",
+        en: "The Medina hosts one of the largest and oldest souks in North Africa, divided into specialised quarters: tanners, basket weavers, dyers, shoemakers, blacksmiths, jewellers… Artisan tradition is kept alive by medieval-era guilds that pass down each craft from generation to generation.",
+        fr: "La Médina abrite l'un des souks les plus vastes et les plus anciens d'Afrique du Nord, divisé en quartiers spécialisés : tanneurs, vanniers, teinturiers, cordonniers, forgerons, bijoutiers… Une tradition artisanale maintenue vivante par des corporations héritées du Moyen Âge.",
+      },
+    },
+    {
+      title: { es: "Djemaa el-Fna: patrimonio inmaterial de la UNESCO", en: "Djemaa el-Fna: UNESCO intangible heritage", fr: "Djemaa el-Fna : patrimoine immatériel de l'UNESCO" },
+      body: {
+        es: "La Plaza Djemaa el-Fna fue declarada en 2001 Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO por su extraordinaria vida cultural: cuentacuentos, músicos, acróbatas, herbolarios y artistas callejeros. La plaza cambia por completo del día a la noche, cuando se llena de puestos de comida y espectáculos espontáneos.",
+        en: "Djemaa el-Fna Square was declared UNESCO Intangible Cultural Heritage in 2001 for its extraordinary cultural life: storytellers, musicians, acrobats, herbalists and street performers. The square completely transforms from day to night, when it fills with food stalls and impromptu shows.",
+        fr: "La place Djemaa el-Fna est classée Patrimoine Culturel Immatériel de l'Humanité par l'UNESCO depuis 2001 pour son extraordinaire vie culturelle : conteurs, musiciens, acrobates, herboristes et artistes de rue. Elle se métamorphose complètement entre le jour et la nuit, où elle se remplit de stands de cuisine et de spectacles improvisés.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME_ATLAS_AITBENHADDOU = {
+  route_id: "me-atlas-ait-ben-haddou",
+  id: "dia-2",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Alto Atlas · Aït Ben Haddou · Boumalne Dades", en: "High Atlas · Aït Ben Haddou · Boumalne Dades", fr: "Haut Atlas · Aït Ben Haddou · Boumalne Dadès" },
+  body: {
+    es: "Hoy saldremos con un vehículo 4x4 con chófer hacia el Alto Atlas Central. Por delante tenemos unos 310 km recompensados por la espectacularidad del paisaje. Cruzaremos el Tizi n'Tichka, el puerto de carretera asfaltado más alto del país, donde dejaremos los verdes y ocres del norte para dar paso a un paisaje lunar. Visitaremos la Kasbah de Aït Ben Haddou, Patrimonio de la Humanidad y escenario de incontables películas. Pasaremos por Ouarzazate y continuaremos por el Valle de las Rosas hasta Boumalne Dades, a 1.612 m de altitud en el Alto Atlas. Alojamiento y cena en el Hotel Xaluca Dades.",
+    en: "We set off in a 4x4 with driver for the Central High Atlas. About 310 km lie ahead, generously rewarded by the landscape. We cross the Tizi n'Tichka — the highest tarmac mountain pass in the country — where the greens and ochres of the north give way to a lunar scenery. We visit the Aït Ben Haddou Kasbah, UNESCO World Heritage and backdrop for countless films. We pass through Ouarzazate and continue along the Valley of the Roses to Boumalne Dades, perched at 1,612 m. Dinner and overnight at Hotel Xaluca Dades.",
+    fr: "Départ en 4x4 avec chauffeur vers le Haut Atlas Central. Environ 310 km nous attendent, largement récompensés par le paysage. Nous franchissons le Tizi n'Tichka — col routier asphalté le plus haut du pays — où les verts et ocres du nord laissent place à un paysage lunaire. Visite de la Kasbah d'Aït Ben Haddou, Patrimoine de l'Humanité et décor d'innombrables films. Passage par Ouarzazate et remontée de la Vallée des Roses jusqu'à Boumalne Dadès, à 1 612 m d'altitude. Dîner et nuit à l'Hotel Xaluca Dades.",
+  },
+  culture: [
+    {
+      title: { es: "Tizi n'Tichka: el paso asfaltado más alto de Marruecos", en: "Tizi n'Tichka: Morocco's highest tarmac pass", fr: "Tizi n'Tichka : le col asphalté le plus haut du Maroc" },
+      body: {
+        es: "Con 2.260 m de altitud, el Tizi n'Tichka es el puerto de carretera asfaltado más alto de Marruecos. Fue construido durante el Protectorado Francés en los años 30 para conectar Marrakech con el sur. Su ascenso permite ver cómo el paisaje cambia radicalmente: de los bosques y tierras fértiles del norte a un entorno casi lunar en el lado sur del Atlas.",
+        en: "At 2,260 m, Tizi n'Tichka is Morocco's highest tarmac mountain pass. It was built during the French Protectorate in the 1930s to connect Marrakech with the south. The drive shows how the landscape changes dramatically — from the green, fertile north to the near-lunar south side of the Atlas.",
+        fr: "Avec 2 260 m d'altitude, le Tizi n'Tichka est le col routier asphalté le plus haut du Maroc. Construit pendant le Protectorat Français dans les années 1930 pour relier Marrakech au sud. La montée révèle un changement radical de paysage entre le nord verdoyant et le versant sud presque lunaire.",
+      },
+    },
+    {
+      title: { es: "Aït Ben Haddou: ksar milenario y plató de cine", en: "Aït Ben Haddou: ancient ksar and film set", fr: "Aït Ben Haddou : ksar millénaire et plateau de cinéma" },
+      body: {
+        es: "El Ksar de Aït Ben Haddou es Patrimonio de la Humanidad desde 1987 y uno de los mejores ejemplos de arquitectura tradicional de adobe del sur marroquí. Ha sido escenario de numerosas superproducciones: Gladiator, La Momia, Juego de Tronos o Kingdom of Heaven.",
+        en: "The Aït Ben Haddou Ksar has been UNESCO World Heritage since 1987 and is one of the finest examples of traditional southern-Moroccan adobe architecture. It has hosted countless blockbusters: Gladiator, The Mummy, Game of Thrones and Kingdom of Heaven.",
+        fr: "Le Ksar d'Aït Ben Haddou est Patrimoine de l'Humanité depuis 1987 et l'un des plus beaux exemples d'architecture traditionnelle en pisé du sud marocain. De nombreuses superproductions y ont été tournées : Gladiator, La Momie, Game of Thrones, Kingdom of Heaven.",
+      },
+    },
+    {
+      title: { es: "Valle de las Rosas y Boumalne Dades", en: "Valley of the Roses & Boumalne Dades", fr: "Vallée des Roses et Boumalne Dadès" },
+      body: {
+        es: "El Valle de las Rosas es famoso por la producción de rosa damascena, utilizada desde hace siglos para elaborar agua de rosas y aceites esenciales. Más adelante, Boumalne Dades marca la entrada al impresionante valle del Dadès.",
+        en: "The Valley of the Roses is famous for its Damask roses, used for centuries to make rose water and essential oils. Further on, Boumalne Dades marks the entrance to the impressive Dadès Valley.",
+        fr: "La Vallée des Roses est célèbre pour la rose de Damas, utilisée depuis des siècles pour l'eau de rose et les huiles essentielles. Plus loin, Boumalne Dadès marque l'entrée de l'impressionnante vallée du Dadès.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME_TODRA_ERGCHEBBI = {
+  route_id: "me-todra-erg-chebbi",
+  id: "dia-3",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D97742",
+  title: { es: "Tinerhir · Gargantas del Todra · Erg Chebbi", en: "Tinerhir · Todra Gorges · Erg Chebbi", fr: "Tinerhir · Gorges du Todra · Erg Chebbi" },
+  body: {
+    es: "Saldremos temprano hacia Tinerhir para visitar las famosas Gargantas del Todra. Continuamos hacia Erfoud por pistas que en su día utilizó el Rally Dakar, visitando poblados y nómadas del desierto. Parada en las Canteras de Fósiles Marinos y picnic en un auténtico oasis. Llegada al Gran Erg Chebbi: cambiamos el 4x4 por dromedarios para entrar en el corazón de las dunas y contemplar la puesta de sol. Llegada al Bivouac de Luxe; cena y alojamiento en haimas, bajo las estrellas.",
+    en: "Early start towards Tinerhir to visit the famous Todra Gorges. We continue to Erfoud along tracks once used by the Dakar Rally, visiting villages and desert nomads. Stop at the Marine Fossil Quarries and picnic in a real oasis. Arrival at the great Erg Chebbi: we swap the 4x4 for camels and ride into the heart of the dunes to watch the sunset. Arrival at the Bivouac de Luxe; dinner and overnight in jaimas, under the stars.",
+    fr: "Départ matinal vers Tinerhir pour visiter les célèbres Gorges du Todra. Nous poursuivons vers Erfoud par des pistes autrefois empruntées par le Rallye Dakar, à la rencontre de villages et de nomades du désert. Halte aux Carrières de Fossiles Marins et pique-nique dans une véritable oasis. Arrivée au grand Erg Chebbi : nous échangeons le 4x4 contre des dromadaires pour pénétrer au cœur des dunes et admirer le coucher de soleil. Arrivée au Bivouac de Luxe ; dîner et nuit en jaimas, sous les étoiles.",
+  },
+  culture: [
+    {
+      title: { es: "Tinerhir y las Gargantas del Todra", en: "Tinerhir & the Todra Gorges", fr: "Tinerhir et les Gorges du Todra" },
+      body: {
+        es: "Las Gargantas del Todra son uno de los cañones más impresionantes del sur de Marruecos. En su tramo más estrecho, las paredes alcanzan 160 metros de altura.",
+        en: "The Todra Gorges are one of the most impressive canyons of southern Morocco. At their narrowest point the walls rise 160 metres high.",
+        fr: "Les Gorges du Todra forment l'un des canyons les plus impressionnants du sud du Maroc. Dans leur partie la plus étroite, les parois s'élèvent à 160 m de hauteur.",
+      },
+    },
+    {
+      title: { es: "Pistas del Rally Dakar y fósiles devónicos", en: "Dakar Rally tracks & Devonian fossils", fr: "Pistes du Rallye Dakar et fossiles dévoniens" },
+      body: {
+        es: "La zona entre Erfoud, Taouz y el Erg Chebbi fue escenario de varias etapas del Rally Dakar antes de 2007. Sus canteras contienen fósiles de más de 360 millones de años — amonites, trilobites y peces primitivos.",
+        en: "The area between Erfoud, Taouz and the Erg Chebbi was the setting for several Dakar Rally stages before 2007. The quarries hold fossils more than 360 million years old — ammonites, trilobites and primitive fish.",
+        fr: "La zone entre Erfoud, Taouz et l'Erg Chebbi a accueilli plusieurs étapes du Rallye Dakar avant 2007. Les carrières recèlent des fossiles de plus de 360 millions d'années — ammonites, trilobites et poissons primitifs.",
+      },
+    },
+    {
+      title: { es: "Erg Chebbi: dunas gigantes y puesta de sol", en: "Erg Chebbi: giant dunes & sunsets", fr: "Erg Chebbi : dunes géantes et couchers de soleil" },
+      body: {
+        es: "El Erg Chebbi destaca por sus dunas de 100–150 m de altura y por la extraordinaria finura de su arena, formada por los vientos saharianos. Es uno de los lugares más fotografiados del Sahara marroquí.",
+        en: "The Erg Chebbi is famous for dunes between 100 and 150 metres high and for the extraordinary fineness of its sand, shaped by Saharan winds. One of the most photographed spots in the Moroccan Sahara.",
+        fr: "L'Erg Chebbi se distingue par ses dunes de 100 à 150 m de hauteur et par la finesse extraordinaire de son sable, façonné par les vents sahariens. L'un des lieux les plus photographiés du Sahara marocain.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME_KHAMLIA_RISSANI = {
+  route_id: "me-khamlia-rissani",
+  id: "dia-4",
+  image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D4A373",
+  title: { es: "Amanecer en el Erg · Khamlia · Rissani · Erfoud", en: "Erg sunrise · Khamlia · Rissani · Erfoud", fr: "Lever sur l'Erg · Khamlia · Rissani · Erfoud" },
+  body: {
+    es: "«Cita con el amanecer»: recomendable madrugar y caminar hasta lo más alto de las dunas para ver la salida del sol. Desayuno beduino y ruta alrededor del Erg hasta Merdani. Visitaremos Khamlia, con su espectáculo de música Gnawa, y el mercado tradicional de Rissani. Parada en el mirador natural del desierto y llegada a Kasbah Xaluca. Tiempo libre para descansar y disfrutar de las instalaciones — hammam, masajes, piscina climatizada, tenis, minigolf o excursión opcional en quad. Cena y alojamiento en Kasbah Xaluca.",
+    en: "«Sunrise date»: an early walk to the top of the dunes to watch the sun rise. Bedouin breakfast and route around the Erg towards Merdani. We visit Khamlia and its Gnawa music show, then the traditional market of Rissani. Stop at the natural desert viewpoint and arrival at Kasbah Xaluca. Free time to rest and enjoy the facilities — hammam, massages, heated pool, tennis, minigolf or an optional quad excursion. Dinner and overnight at Kasbah Xaluca.",
+    fr: "« Rendez-vous au lever du soleil » : montée matinale au sommet des dunes pour assister au lever du jour. Petit-déjeuner bédouin puis route autour de l'Erg vers Merdani. Visite de Khamlia et de son spectacle de musique Gnawa, puis du marché traditionnel de Rissani. Halte au mirador naturel du désert et arrivée à la Kasbah Xaluca. Temps libre pour profiter des installations — hammam, massages, piscine chauffée, tennis, minigolf ou excursion optionnelle en quad. Dîner et nuit à la Kasbah Xaluca.",
+  },
+  culture: [
+    {
+      title: { es: "Amanecer en el Erg Chebbi", en: "Sunrise over the Erg Chebbi", fr: "Lever de soleil sur l'Erg Chebbi" },
+      body: {
+        es: "Las dunas cambian de tonos rojizos a dorados y rosados mientras el sol asciende sobre el Sahara. Uno de los momentos más recordados por todo viajero que ha pernoctado en el desierto.",
+        en: "The dunes shift from reddish to gold and pink hues as the sun rises over the Sahara — one of the most unforgettable moments of every overnight in the desert.",
+        fr: "Les dunes passent du rouge au doré et au rose tandis que le soleil monte sur le Sahara. L'un des instants les plus marquants pour quiconque a passé la nuit au désert.",
+      },
+    },
+    {
+      title: { es: "Khamlia y la música Gnawa", en: "Khamlia & Gnawa music", fr: "Khamlia et la musique Gnawa" },
+      body: {
+        es: "El pueblo de Khamlia es conocido por su música Gnawa, declarada Patrimonio Cultural Inmaterial por la UNESCO. Las familias acogen al viajero con té y un concierto íntimo en su zaouia.",
+        en: "The village of Khamlia is famed for its Gnawa music, listed as UNESCO Intangible Cultural Heritage. Families welcome travellers with tea and an intimate concert at their zaouia.",
+        fr: "Le village de Khamlia est connu pour sa musique Gnawa, classée au Patrimoine Culturel Immatériel de l'UNESCO. Les familles accueillent les voyageurs avec un thé et un concert intime dans leur zaouia.",
+      },
+    },
+    {
+      title: { es: "Rissani y su mercado tradicional", en: "Rissani & its traditional market", fr: "Rissani et son marché traditionnel" },
+      body: {
+        es: "Uno de los zocos más antiguos del sur de Marruecos. Famoso por su auténtico «parking de burros» y por ser la cuna histórica de la dinastía alauita.",
+        en: "One of the oldest souks of southern Morocco. Famous for its authentic «donkey parking» and for being the historic cradle of the Alaouite dynasty.",
+        fr: "L'un des plus anciens souks du sud du Maroc. Célèbre pour son authentique « parking d'ânes » et pour être le berceau historique de la dynastie alaouite.",
+      },
+    },
+  ],
+};
+
+export const DAY_ME_ZIZ_ERRACHIDIA = {
+  route_id: "me-ziz-errachidia",
+  id: "dia-5",
+  image: "https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85",
+  accent: "#3A4A5F",
+  title: { es: "Valle del Ziz · Errachidia · regreso", en: "Ziz Valley · Errachidia · return", fr: "Vallée du Ziz · Errachidia · retour" },
+  body: {
+    es: "Traslado al aeropuerto de Errachidia con parada en el mirador del Valle del Ziz, uno de los mayores oasis del norte de África. Vuelo Errachidia → Casablanca y enlace con vuelo de regreso al punto de origen.",
+    en: "Transfer to Errachidia airport with a stop at the Ziz Valley viewpoint — one of North Africa's largest oases. Flight Errachidia → Casablanca and connection to your home airport.",
+    fr: "Transfert à l'aéroport d'Errachidia avec halte au mirador de la vallée du Ziz, l'une des plus grandes oasis d'Afrique du Nord. Vol Errachidia → Casablanca et correspondance vers l'aéroport d'origine.",
+  },
+  culture: [
+    {
+      title: { es: "Valle del Ziz", en: "Ziz Valley", fr: "Vallée du Ziz" },
+      body: {
+        es: "Uno de los mayores oasis del norte de África, famoso por sus palmerales infinitos y por la producción del codiciado dátil medjoul.",
+        en: "One of the largest oases in North Africa, famous for its endless palm groves and the production of the coveted Medjool date.",
+        fr: "L'une des plus grandes oasis d'Afrique du Nord, célèbre pour ses palmeraies infinies et la production de la précieuse datte medjoul.",
+      },
+    },
+    {
+      title: { es: "Mirador del Valle del Ziz", en: "Ziz Valley viewpoint", fr: "Mirador de la vallée du Ziz" },
+      body: {
+        es: "Panorámica espectacular sobre oasis, montañas y palmerales del sur marroquí — una de las paradas obligadas antes de tomar el vuelo de regreso.",
+        en: "Spectacular panorama over oases, mountains and palm groves of southern Morocco — one of the mandatory stops before catching the return flight.",
+        fr: "Panorama spectaculaire sur les oasis, montagnes et palmeraies du sud marocain — l'une des haltes incontournables avant de prendre l'avion du retour.",
+      },
+    },
+    {
+      title: { es: "Aeropuerto de Errachidia", en: "Errachidia airport", fr: "Aéroport d'Errachidia" },
+      body: {
+        es: "Principal conexión aérea del sureste de Marruecos, con vuelos diarios vía Casablanca hacia Europa.",
+        en: "The main air gateway for south-eastern Morocco, with daily flights via Casablanca to Europe.",
+        fr: "Principale liaison aérienne du sud-est marocain, avec des vols quotidiens via Casablanca vers l'Europe.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_ME_45 = {
+  routeId: "tourMarrakechErg45",
+  duration_key: "me4n5d",
+  duration: { es: "4 noches / 5 días", en: "4 nights / 5 days", fr: "4 nuits / 5 jours" },
+  prices: { low: 1190, mid: 1390, high: 1590, premium: 1890 },
+  reverse: false,
+  days: [
+    DAY_ME_MARRAKECH,
+    DAY_ME_ATLAS_AITBENHADDOU,
+    DAY_ME_TODRA_ERGCHEBBI,
+    DAY_ME_KHAMLIA_RISSANI,
+    DAY_ME_ZIZ_ERRACHIDIA,
+  ],
+};
