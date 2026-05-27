@@ -307,8 +307,180 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     return {"slot_id": slot_id, **doc}
 
 
+@api_router.post("/library/upload")
+async def upload_library_images(files: List[UploadFile] = File(...)):
+    """Bulk-upload images directly into the CMS library.
+    The files are NOT bound to any slot — editors browse them later
+    from the library picker and reuse them across pages."""
+    if not files:
+        raise HTTPException(status_code=400, detail="No files provided.")
+    if len(files) > 30:
+        raise HTTPException(status_code=400, detail="Máximo 30 archivos por lote.")
+
+    ext_map = {
+        "image/jpeg": "jpg", "image/png": "png",
+        "image/webp": "webp", "image/avif": "avif",
+    }
+    uploaded: List[Dict] = []
+    skipped: List[Dict] = []
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    for f in files:
+        if f.content_type not in ALLOWED_MIME:
+            skipped.append({"filename": f.filename, "reason": f"unsupported-type:{f.content_type}"})
+            continue
+        data = await f.read()
+        if len(data) > MAX_UPLOAD_BYTES:
+            skipped.append({"filename": f.filename, "reason": "too-large"})
+            continue
+        ext = ext_map[f.content_type]
+        storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
+        try:
+            result = put_object(storage_path, data, f.content_type)
+        except Exception as exc:
+            logger.exception("Bulk upload — storage put failed for %s", f.filename)
+            skipped.append({"filename": f.filename, "reason": f"storage-error:{exc}"})
+            continue
+        canonical_path = result.get("path", storage_path)
+        record = {
+            "id": str(uuid.uuid4()),
+            "slot_id": None,
+            "storage_path": canonical_path,
+            "original_filename": f.filename,
+            "content_type": f.content_type,
+            "size": result.get("size", len(data)),
+            "is_deleted": False,
+            "tags": ["library"],
+            "created_at": now_iso,
+        }
+        await db.files.insert_one(record)
+        uploaded.append({
+            "id": record["id"],
+            "url": f"/api/files/{canonical_path}",
+            "storage_path": canonical_path,
+            "original_filename": f.filename,
+            "content_type": f.content_type,
+            "size": record["size"],
+        })
+
+    return {"uploaded": uploaded, "skipped": skipped, "count": len(uploaded)}
+
+
+class FileUpdate(BaseModel):
+    original_filename: Optional[str] = Field(default=None, max_length=200)
+    tags: Optional[List[str]] = Field(default=None, max_length=20)
+
+
+@api_router.patch("/files/{file_id}")
+async def update_file_metadata(file_id: str, payload: FileUpdate):
+    """Rename + retag a library file. Only mutable fields are accepted."""
+    update: Dict = {}
+    if payload.original_filename is not None:
+        name = payload.original_filename.strip()[:200]
+        if not name:
+            raise HTTPException(status_code=400, detail="Filename cannot be empty.")
+        update["original_filename"] = name
+    if payload.tags is not None:
+        # Lowercase, trim, dedupe, cap each tag.
+        norm = []
+        seen = set()
+        for t in payload.tags:
+            if not isinstance(t, str):
+                continue
+            tt = t.strip().lower()[:30]
+            if tt and tt not in seen:
+                seen.add(tt)
+                norm.append(tt)
+        update["tags"] = norm
+    if not update:
+        raise HTTPException(status_code=400, detail="No editable fields provided.")
+    update["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+    res = await db.files.update_one({"id": file_id, "is_deleted": {"$ne": True}}, {"$set": update})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="File not found.")
+    doc = await db.files.find_one({"id": file_id}, {"_id": 0})
+    return doc
+
+
+@api_router.delete("/files/{file_id}")
+async def delete_file(file_id: str):
+    """Soft-delete a library file. The bytes stay in Emergent storage
+    (no delete API) but the record is hidden from listings."""
+    res = await db.files.update_one(
+        {"id": file_id},
+        {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}},
+    )
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="File not found.")
+    return {"id": file_id, "deleted": True}
+
+
+@api_router.post("/files/{file_id}/replace")
+async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
+    """Upload new bytes for an existing library record. The previous
+    storage path stays untouched (storage has no delete API) and the
+    record is updated to point at the new object."""
+    if file.content_type not in ALLOWED_MIME:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type: {file.content_type}.",
+        )
+    data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds 8 MB limit.")
+
+    record = await db.files.find_one({"id": file_id, "is_deleted": {"$ne": True}})
+    if not record:
+        raise HTTPException(status_code=404, detail="File not found.")
+
+    ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
+    ext = ext_map[file.content_type]
+    storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
+    try:
+        result = put_object(storage_path, data, file.content_type)
+    except Exception as exc:
+        logger.exception("Replace — storage put failed")
+        raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
+
+    canonical_path = result.get("path", storage_path)
+    now_iso = datetime.now(timezone.utc).isoformat()
+    await db.files.update_one(
+        {"id": file_id},
+        {"$set": {
+            "storage_path": canonical_path,
+            "content_type": file.content_type,
+            "size": result.get("size", len(data)),
+            "original_filename": file.filename or record.get("original_filename"),
+            "updated_at": now_iso,
+        }},
+    )
+    return {
+        "id": file_id,
+        "url": f"/api/files/{canonical_path}",
+        "storage_path": canonical_path,
+        "original_filename": file.filename or record.get("original_filename"),
+        "content_type": file.content_type,
+        "size": result.get("size", len(data)),
+    }
+
+
+@api_router.get("/library/tags")
+async def list_library_tags():
+    """Distinct tag list — used by the picker for filter chips."""
+    pipeline = [
+        {"$match": {"is_deleted": {"$ne": True}}},
+        {"$unwind": "$tags"},
+        {"$group": {"_id": "$tags", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1, "_id": 1}},
+        {"$limit": 60},
+    ]
+    rows = await db.files.aggregate(pipeline).to_list(60)
+    return {"tags": [{"name": r["_id"], "count": r["count"]} for r in rows if r.get("_id")]}
+
+
 @api_router.get("/files")
-async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None):
+async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, tag: Optional[str] = None):
     """Lists every previously-uploaded image (most recent first) for the
     CMS image-library picker. Soft-deleted files are excluded. Supports
     a simple case-insensitive substring search on the original filename
@@ -325,7 +497,10 @@ async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None):
         query["$or"] = [
             {"original_filename": {"$regex": safe_re, "$options": "i"}},
             {"slot_id": {"$regex": safe_re, "$options": "i"}},
+            {"tags": {"$regex": safe_re, "$options": "i"}},
         ]
+    if tag:
+        query["tags"] = tag.strip().lower()[:30]
 
     cursor = (
         db.files
@@ -347,6 +522,7 @@ async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None):
             "content_type": it.get("content_type"),
             "size": it.get("size"),
             "slot_id": it.get("slot_id"),
+            "tags": it.get("tags") or [],
             "created_at": it.get("created_at"),
         }
         for it in items_raw

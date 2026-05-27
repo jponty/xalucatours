@@ -1,0 +1,31 @@
+{
+  "summary": "Iteration 11 — both backend and frontend tested for the Image Library management feature (bulk upload, list/search/filter, rename+tags PATCH, soft-delete, replace bytes, tags aggregation). Backend: 7/7 pytest cases PASS (file: /app/backend/tests/test_image_library.py). Frontend Playwright run on prod-preview URL: 17/17 UI checks PASS, 0 console errors.\n\nBackend verified: POST /api/library/upload bulk-uploads 3 PNGs → response { uploaded[3], count:3, each with id+url+storage_path }; GET /api/files reflects them. PATCH /api/files/{id} with {original_filename:'duna.jpg', tags:['Duna',' Sahara ','duna','DUNA']} returns 200 with tags normalized → ['duna','sahara']. PATCH with empty body returns 400. DELETE /api/files/{id} returns {id, deleted:true}; subsequent GET excludes it; subsequent PATCH returns 404. POST /api/files/{id}/replace returns new storage_path that differs from original and is reflected in GET /api/files. GET /api/library/tags returns sorted [{name,count}] (counts non-increasing) including 'duna' (≥2) and 'sahara' (≥1). GET /api/files?tag=sahara filters correctly.\n\nFrontend verified on https://hub-navigator-3.preview.emergentagent.com/ : (1) header-library-toggle HIDDEN when image edit mode OFF, (2) clicking header-edit-mode-toggle makes header-library-toggle APPEAR, (3) clicking it opens image-library-picker modal exposing image-library-bulk-upload + image-library-search + image-library-grid, (4) page.set_input_files on image-library-bulk-input uploaded 2 PNGs → success banner '2 fotos subidas.' shown, grid count grew from 6 to 8, (5) image-library-tag-library chip filtered grid to 4 items; image-library-tag-all reset to 8, (6) hover revealed image-library-replace-*, image-library-edit-*, image-library-delete-* per-thumb actions, (7) edit drawer opens, fields fillable, Save closes drawer and the new name 'ui_test_riad.png' + #riad / #marrakech chips render in the thumb, (8) delete with confirm() removes the thumb. Picker closed cleanly. 0 console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_image_library.py",
+    "/app/test_reports/pytest/iter11_image_library.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py /api/files/{file_id}/replace silently leaks the previous object bytes in Emergent storage. Since the storage API has no delete, this is unavoidable but worth documenting publicly (already noted in code comment).",
+    "server.py /api/files route uses {path:path} catch-all under the same prefix as the structured /api/files endpoints. The current ordering works because list/PATCH/DELETE/replace are registered first, but adding any further /api/files/* route later would be ambiguity-prone. Consider moving the streaming endpoint to /api/file-bytes/{path:path} for clarity.",
+    "server.py file size: 658 lines — still acceptable, but the slot/library/text-slot routes could be split into routers (e.g., backend/routes/library.py) before crossing the 700-line threshold.",
+    "ImageLibraryPicker.jsx uses window.confirm() for the delete action — works for tests via Playwright dialog handler, but consider a styled in-modal confirmation for production polish.",
+    "ImageLibraryPicker.jsx — replace flow does not surface a success banner (only the success path for bulk upload does). User receives no feedback when replace succeeds; grid silently refreshes."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_image_library.py (new)"
+  ],
+  "success_rate": {"backend": "100% (7/7)", "frontend": "100% (17/17)"},
+  "test_credentials": "n/a — public CMS pages, no auth required",
+  "seed_data_creation": "Uploaded 4 transient PNGs to the library via /api/library/upload (3 cleaned up via module-scoped pytest teardown; the 4th was used by test_delete_then_patch_returns_404 and soft-deleted). Frontend run uploaded 2 more PNGs (one renamed to ui_test_riad.png with tags riad+marrakech, one deleted). All file_id rows are flagged is_deleted=true except the renamed riad/marrakech one which remains in the library and will surface in future runs.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 5 new library endpoints are live and stable: POST /api/library/upload (bulk), PATCH /api/files/{id}, DELETE /api/files/{id}, POST /api/files/{id}/replace, GET /api/library/tags. GET /api/files now accepts ?tag=<lowercase>. Tags are forcibly lowercased+deduped+trimmed (max 30 chars/tag, 20 tags/file) on PATCH. Bulk uploaded files get the default tag ['library']. Frontend testids exposed: header-library-toggle (only when imageEditMode ON), image-library-picker, image-library-bulk-upload, image-library-bulk-input (hidden), image-library-search, image-library-tag-all, image-library-tag-<name>, image-library-grid, image-library-item-<id24>, image-library-pick-<id24>, image-library-replace-<id24>, image-library-edit-<id24>, image-library-delete-<id24>, image-library-replace-input, image-library-edit-drawer, image-library-edit-name, image-library-edit-tags, image-library-edit-save, image-library-close, image-library-cancel. NOTE: a residual TEST file 'ui_test_riad.png' tagged riad,marrakech remains in the library; if a future test asserts on tag counts it should account for that.",
+  "rca of the issue": "No bug to RCA — every feature listed in the review request passed."
+}

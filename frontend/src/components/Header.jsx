@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ArrowRight, ImagePlus, Check, Type } from "lucide-react";
+import { Menu, ArrowRight, ImagePlus, Check, Type, Library } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,6 +8,7 @@ import { useEditMode } from "@/contexts/EditModeContext";
 import { translations } from "@/lib/i18n";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
+import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
@@ -15,6 +16,7 @@ export const Header = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -101,6 +103,19 @@ export const Header = () => {
           <BrandMark />
 
           <div className="flex items-center gap-2 md:gap-3">
+            {/* Library shortcut — only visible when image edit mode is on */}
+            {imageEditMode && (
+              <button
+                type="button"
+                onClick={() => setLibraryOpen(true)}
+                aria-label="Abrir biblioteca de imágenes"
+                data-testid="header-library-toggle"
+                className="inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+                title="Biblioteca de imágenes"
+              >
+                <Library className="w-4 h-4" strokeWidth={1.7} />
+              </button>
+            )}
             {/* Image edit mode toggle — icon-only, dev tool */}
             <button
               type="button"
@@ -161,6 +176,11 @@ export const Header = () => {
       </header>
 
       <SideMenu open={open} onClose={() => setOpen(false)} />
+      <ImageLibraryPicker
+        open={libraryOpen}
+        onClose={() => setLibraryOpen(false)}
+        onSelect={() => setLibraryOpen(false)}
+      />
     </>
   );
 };
