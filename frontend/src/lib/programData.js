@@ -1904,3 +1904,270 @@ export const PROGRAM_MEM_23 = {
   },
 };
 
+
+/* ============================================================
+   Marrakech → Erg Chebbi → Marrakech · 3 noches / 4 días
+   Misma travesía circular que el 2n3d pero con un día extra:
+   tras dormir en el bivouac visitamos Khamlia, Rissani y el
+   mirador del Erg, y descansamos en Kasbah Xaluca. Día 4 puro
+   traslado de regreso a Marrakech.
+============================================================ */
+
+export const DAY_MEM34_KHAMLIA_KASBAH = {
+  route_id: "mem34-khamlia-kasbah",
+  id: "dia-3",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Amanecer · Merdani · Khamlia · Rissani · Kasbah Xaluca", en: "Sunrise · Merdani · Khamlia · Rissani · Kasbah Xaluca", fr: "Lever du soleil · Merdani · Khamlia · Rissani · Kasbah Xaluca" },
+  body: {
+    es: "«Cita con el Amanecer»: recomendable madrugar para caminar hasta lo más alto de las dunas y ver la salida del sol. Desayuno beduino y regreso al coche, que nos llevará a rodear el Erg hasta el pueblo abandonado de Merdani. Continuaremos hacia el poblado de origen sudanés Khamlia, donde sus habitantes nos obsequiarán con sus danzas tradicionales y un té a la menta. Más tarde iremos a Rissani para visitar su mercado, único en estas latitudes, lugar donde se abastecen las tribus y nómadas del desierto — curioso ver su «parking» de burros. Finalmente subiremos a un mirador natural para despedirnos del desierto con una bella panorámica. Llegada a Kasbah Xaluca para tomarnos el resto del día libre: piscina climatizada, jacuzzi, tenis, minigolf, hammam, masaje o, para los más intrépidos, salida en quads o visita a kasbahs cercanas (opcional). Alojamiento y cena en Kasbah Xaluca.",
+    en: "«A date with the Sunrise»: we recommend an early walk to the top of the dunes for sunrise. Bedouin breakfast and back to the vehicle for a drive around the Erg to the abandoned village of Merdani. We continue to Khamlia, a village of Sudanese origin, where its inhabitants offer traditional dances and mint tea. Later we head to Rissani's market — unique in these latitudes — where desert tribes and nomads stock up; the «donkey parking» is a sight worth photographing. We climb to a natural viewpoint for a final desert farewell. Arrival at Kasbah Xaluca for a free afternoon: heated pool, jacuzzi, tennis, minigolf, hammam, massage or — for the more adventurous — optional quad biking or a visit to nearby kasbahs. Dinner and overnight at Kasbah Xaluca.",
+    fr: "« Rendez-vous avec l'aube » : il est recommandé de se lever tôt pour monter au sommet des dunes voir le lever du soleil. Petit déjeuner bédouin puis retour au véhicule, qui nous fait contourner l'Erg jusqu'au village abandonné de Merdani. Poursuite vers Khamlia, village d'origine soudanaise, où ses habitants offrent danses traditionnelles et thé à la menthe. Plus tard, marché de Rissani, unique sous ces latitudes, où s'approvisionnent tribus et nomades — curieux « parking d'ânes ». Montée à un mirador naturel pour faire ses adieux au désert. Arrivée à la Kasbah Xaluca pour un après-midi libre : piscine chauffée, jacuzzi, tennis, mini-golf, hammam, massage ou — pour les plus intrépides — sortie en quads ou visite de kasbahs voisines (en option). Dîner et nuit à la Kasbah Xaluca.",
+  },
+  wellness: [
+    { es: "Piscina climatizada", en: "Heated pool", fr: "Piscine chauffée" },
+    { es: "Hammam & Jacuzzi", en: "Hammam & Jacuzzi", fr: "Hammam & Jacuzzi" },
+    { es: "Masajes", en: "Massages", fr: "Massages" },
+    { es: "Quads opcionales", en: "Optional quads", fr: "Quads en option" },
+    { es: "Tenis y minigolf", en: "Tennis & minigolf", fr: "Tennis & minigolf" },
+  ],
+  culture: [
+    {
+      title: { es: "Khamlia: música ancestral Gnawa", en: "Khamlia: ancestral Gnawa music", fr: "Khamlia : musique ancestrale Gnawa" },
+      body: {
+        es: "Poblado fundado por comunidades de origen sudanés, internacionalmente reconocido por su música Gnawa, Patrimonio Cultural Inmaterial de la UNESCO. Grupos locales como Pigeons du Sable mantienen viva la tradición de ritmos hipnóticos, krakebs metálicos y tambores.",
+        en: "A village founded by Sudanese communities, internationally known for its Gnawa music, listed as UNESCO Intangible Cultural Heritage. Local groups such as Pigeons du Sable keep alive a tradition of hypnotic rhythms, metallic krakebs and drums.",
+        fr: "Village fondé par des communautés d'origine soudanaise, mondialement connu pour sa musique Gnawa, inscrite au Patrimoine Culturel Immatériel de l'UNESCO. Des groupes locaux comme Pigeons du Sable perpétuent cette tradition de rythmes hypnotiques, krakebs métalliques et tambours.",
+      },
+    },
+    {
+      title: { es: "Rissani: mercado único del sur", en: "Rissani: a unique southern market", fr: "Rissani : un marché unique du sud" },
+      body: {
+        es: "El zoco de Rissani, activo especialmente los martes, jueves y domingos, es uno de los mercados más importantes del valle del Ziz. Allí acuden nómadas Aït Atta y habitantes de aldeas remotas para intercambiar productos. Su «parking de burros» es una de las particularidades más fotografiadas.",
+        en: "The Rissani souk, busiest on Tuesdays, Thursdays and Sundays, is one of the most important markets of the Ziz valley. Aït Atta nomads and remote-village dwellers gather to trade — and its «donkey parking» is one of the most photographed quirks.",
+        fr: "Le souk de Rissani, actif surtout les mardis, jeudis et dimanches, est l'un des plus importants de la vallée du Ziz. Nomades Aït Atta et habitants des villages reculés viennent y commercer — son « parking d'ânes » est l'une des particularités les plus photographiées.",
+      },
+    },
+    {
+      title: { es: "Kasbah Xaluca: oasis tras el desierto", en: "Kasbah Xaluca: an oasis after the desert", fr: "Kasbah Xaluca : une oasis après le désert" },
+      body: {
+        es: "Un hotel emblemático del sur de Marruecos, único en el país por sus peculiares características arquitectónicas y por su completo conjunto de servicios wellness: piscina climatizada, jacuzzi, hammam, masajes, tenis y minigolf. El refugio perfecto tras una noche bajo las estrellas.",
+        en: "An emblematic hotel of southern Morocco, unique in the country thanks to its singular architecture and a full set of wellness services: heated pool, jacuzzi, hammam, massages, tennis and minigolf. The perfect refuge after a night under the stars.",
+        fr: "Un hôtel emblématique du sud du Maroc, unique au pays par son architecture singulière et son éventail complet de services bien-être : piscine chauffée, jacuzzi, hammam, massages, tennis et mini-golf. Le refuge idéal après une nuit sous les étoiles.",
+      },
+    },
+  ],
+};
+
+export const DAY_MEM34_RETURN_MARRAKECH = {
+  route_id: "mem34-return-marrakech",
+  id: "dia-4",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5A6B4F",
+  title: { es: "Erfoud · Alnif · Regreso a Marrakech", en: "Erfoud · Alnif · Return to Marrakech", fr: "Erfoud · Alnif · Retour à Marrakech" },
+  body: {
+    es: "Hoy emprenderemos nuestro camino de regreso a Marrakech, pasando por la localidad de Alnif y disfrutando de una gran variedad de paisajes que enlazan el Anti-Atlas con la llanura del Haouz. Será un día de traslado largo pero escénico. Llegada a Marrakech y fin de nuestros servicios.",
+    en: "Today we make our way back to Marrakech, passing through the town of Alnif and enjoying a wide variety of landscapes that link the Anti-Atlas with the Haouz plain. A long but scenic transfer day. Arrival in Marrakech and end of our services.",
+    fr: "Aujourd'hui, route du retour vers Marrakech en passant par la ville d'Alnif et en profitant d'une grande variété de paysages qui relient l'Anti-Atlas à la plaine du Haouz. Une journée de transfert longue mais scénique. Arrivée à Marrakech et fin de nos services.",
+  },
+  culture: [
+    {
+      title: { es: "Alnif y la ruta de los fósiles", en: "Alnif and the fossil road", fr: "Alnif et la route des fossiles" },
+      body: {
+        es: "Pequeña localidad bereber del Anti-Atlas, internacionalmente conocida por sus yacimientos de trilobites del periodo Devónico, algunos de los más completos del mundo. Punto de paso obligado en la travesía del desierto al Atlas.",
+        en: "A small Berber town in the Anti-Atlas, internationally known for its Devonian trilobite deposits — among the most complete in the world. A mandatory stop on the crossing from the desert to the Atlas.",
+        fr: "Petite ville berbère de l'Anti-Atlas, mondialement connue pour ses gisements de trilobites du Dévonien — parmi les plus complets au monde. Halte obligée sur la traversée du désert vers l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Del Anti-Atlas al llano del Haouz", en: "From the Anti-Atlas to the Haouz plain", fr: "De l'Anti-Atlas à la plaine du Haouz" },
+      body: {
+        es: "El recorrido encadena tres ecosistemas en pocas horas: tierras pedregosas y oasis de palmeras del Anti-Atlas, valles fluviales con olivares y, finalmente, el gran llano agrícola del Haouz que se abre hasta los pies del Atlas.",
+        en: "The route chains three ecosystems in just a few hours: stony lands and palm oases of the Anti-Atlas, river valleys with olive groves and, finally, the great agricultural Haouz plain stretching to the foot of the Atlas.",
+        fr: "L'itinéraire enchaîne trois écosystèmes en quelques heures : terres pierreuses et oasis de palmiers de l'Anti-Atlas, vallées fluviales aux oliveraies et, enfin, la grande plaine agricole du Haouz jusqu'au pied de l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Llegar a Marrakech con calma", en: "Arriving in Marrakech with calm", fr: "Arriver à Marrakech tranquillement" },
+      body: {
+        es: "La entrada a Marrakech tras varios días de pistas y dunas se vive con una intensidad especial: el bullicio de la medina, los colores de los zocos y los aromas de Djemaa el-Fna son la mejor despedida del viaje.",
+        en: "Arriving in Marrakech after several days of tracks and dunes feels especially intense: the buzz of the medina, the colours of the souks and the aromas of Djemaa el-Fna are the trip's best farewell.",
+        fr: "Arriver à Marrakech après plusieurs jours de pistes et de dunes se vit avec une intensité particulière : l'effervescence de la médina, les couleurs des souks et les parfums de Djemaa el-Fna sont les meilleurs adieux du voyage.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MEM_34 = {
+  routeId: "tourMarrakechLoop34",
+  duration_key: "mem3n4d",
+  duration: { es: "3 noches / 4 días", en: "3 nights / 4 days", fr: "3 nuits / 4 jours" },
+  prices: { low: 790, mid: 920, high: 1050, premium: 1250 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Escapa al Erg Chebbi desde Marrakech.",
+      description_title: "Una inmersión auténtica en el sur de Marruecos.",
+      description: [
+        "Vive una experiencia completa y fascinante con esta escapada de 3 noches y 4 días desde Marrakech hacia el corazón del desierto del Erg Chebbi, un recorrido que combina montañas, valles, kasbahs históricas y la magia infinita del Sahara.",
+        "Cruzarás el Alto Atlas, conocerás pueblos bereberes, caminarás por las espectaculares Gargantas del Todra y seguirás pistas legendarias del Rally Dakar hasta adentrarte en las dunas en dromedario para disfrutar de un atardecer inolvidable.",
+        "Dormir bajo las estrellas en un bivouac tradicional, descubrir la música Gnawa de Khamlia, visitar mercados locales y relajarte en Kasbah Xaluca tras la aventura convierten este viaje en una inmersión auténtica y única en la esencia más profunda de Marruecos.",
+      ],
+    },
+    en: {
+      title: "Escape to the Erg Chebbi from Marrakech.",
+      description_title: "An authentic immersion in southern Morocco.",
+      description: [
+        "Live a complete and fascinating experience with this 3-night/4-day escape from Marrakech to the heart of the Erg Chebbi desert — a journey that blends mountains, valleys, historic kasbahs and the endless magic of the Sahara.",
+        "You will cross the High Atlas, meet Berber villages, walk through the spectacular Todra Gorges and follow the legendary Dakar Rally tracks before riding into the dunes on camelback for an unforgettable sunset.",
+        "Sleeping under the stars in a traditional bivouac, discovering the Gnawa music of Khamlia, visiting local markets and unwinding at Kasbah Xaluca after the adventure turn this trip into an authentic, unique immersion in Morocco's deepest essence.",
+      ],
+    },
+    fr: {
+      title: "Escapade à l'Erg Chebbi depuis Marrakech.",
+      description_title: "Une immersion authentique dans le sud du Maroc.",
+      description: [
+        "Vivez une expérience complète et fascinante avec cette escapade de 3 nuits et 4 jours depuis Marrakech vers le cœur du désert de l'Erg Chebbi — un parcours qui mêle montagnes, vallées, kasbahs historiques et la magie infinie du Sahara.",
+        "Vous traverserez le Haut Atlas, rencontrerez des villages berbères, marcherez dans les spectaculaires Gorges du Todra et suivrez les pistes mythiques du Rallye Dakar avant de pénétrer dans les dunes à dos de dromadaire pour un coucher de soleil inoubliable.",
+        "Dormir sous les étoiles dans un bivouac traditionnel, découvrir la musique Gnawa de Khamlia, visiter des marchés locaux et se détendre à la Kasbah Xaluca après l'aventure transforment ce voyage en une immersion authentique et unique dans l'essence la plus profonde du Maroc.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM23_TODRA_BIVOUAC,
+    DAY_MEM34_KHAMLIA_KASBAH,
+    DAY_MEM34_RETURN_MARRAKECH,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Una noche en Erfoud en Kasbah Xaluca en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 2",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer todos los días del itinerario",
+        "Visita a la Kasbah de Aït Ben Haddou",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "One night in Erfoud at Kasbah Xaluca, half board",
+        "Desert «picnic» on day 2",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver every day of the itinerary",
+        "Visit to the Aït Ben Haddou Kasbah",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Une nuit à Erfoud au Kasbah Xaluca en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 2",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur tous les jours de l'itinéraire",
+        "Visite de la Kasbah d'Aït Ben Haddou",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía salvo la indicada",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Suplemento opcional para añadir cancelación al seguro",
+      ],
+      en: [
+        "Drinks",
+        "Lunches except the one stated",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Optional supplement to add cancellation to the insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners sauf celui indiqué",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Supplément en option pour ajouter l'annulation à l'assurance",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Vueling, Ryanair y otras compañías de bajo coste con vuelos directos a Marrakech",
+        "Tarifas calculadas según ocupación del vehículo (4x4 o minibús); el coste se reparte entre los ocupantes",
+        "Precios basados en habitaciones dobles y triples · Suplemento individual 175 €",
+        "Descuento niños 3-11 años compartiendo habitación con dos adultos: 190 € baja · 205 € alta",
+        "Chóferes de habla española limitados, sobre todo en temporada alta — se recomienda reservar con antelación",
+        "Los guías titulados están reservados para las medinas, no para las rutas",
+        "Pasaporte vigente mínimo 6 meses para viajar a Marruecos",
+        "Actividades opcionales: quads, visita a kasbahs cercanas, hammam y masajes — más información en xaluca.com",
+        "Seguro de cancelación opcional: 45 € por persona para viajes de hasta 9 días",
+      ],
+      en: [
+        "Flight options: Vueling, Ryanair and other low-cost carriers fly direct to Marrakech",
+        "Rates calculated based on vehicle (4x4 or minibus) occupancy; the cost is split between occupants",
+        "Prices based on double and triple rooms · Single supplement €175",
+        "Children 3-11 sharing room with two adults: €190 low season · €205 high season",
+        "Spanish-speaking drivers limited, especially in high season — book well in advance",
+        "Official guides are reserved for the medinas, not for the routes",
+        "Passport valid at least 6 months to travel to Morocco",
+        "Optional activities: quad rides, visits to nearby kasbahs, hammam and massages — more info at xaluca.com",
+        "Optional cancellation insurance: €45 per person for trips up to 9 days",
+      ],
+      fr: [
+        "Options de vols : Vueling, Ryanair et autres compagnies low-cost en vol direct vers Marrakech",
+        "Tarifs calculés selon l'occupation du véhicule (4x4 ou minibus) ; le coût se partage entre les occupants",
+        "Tarifs basés sur chambres doubles et triples · Supplément individuel 175 €",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 190 € basse · 205 € haute",
+        "Chauffeurs hispanophones limités, surtout en haute saison — réserver à l'avance",
+        "Les guides officiels sont réservés aux médinas, pas aux itinéraires",
+        "Passeport valable au moins 6 mois pour voyager au Maroc",
+        "Activités en option : quads, visite de kasbahs voisines, hammam et massages — plus d'infos sur xaluca.com",
+        "Assurance annulation en option : 45 € par personne pour les voyages jusqu'à 9 jours",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria (pasaporte se puede enviar más adelante)",
+        "Pago por transferencia bancaria o tarjeta Visa",
+        "30% del importe total en el momento de la reserva · 70% restante hasta 30 días antes de la salida",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Las condiciones cubren los servicios terrestres; los vuelos se rigen por la política de cada aerolínea",
+        "El seguro de cancelación no se reembolsa en ningún caso",
+      ],
+      en: [
+        "Compulsory booking form (passport may be sent later)",
+        "Payment by bank transfer or Visa card",
+        "30% of total at booking · remaining 70% up to 30 days before departure",
+        "If the chosen flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Conditions cover land services; flights are governed by each airline's policy",
+        "Cancellation insurance is non-refundable under any circumstances",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire (le passeport peut être envoyé plus tard)",
+        "Paiement par virement bancaire ou carte Visa",
+        "30 % du total à la réservation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol choisi requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les conditions couvrent les services terrestres ; les vols suivent la politique de chaque compagnie",
+        "L'assurance annulation n'est en aucun cas remboursable",
+      ],
+    },
+  },
+};
+

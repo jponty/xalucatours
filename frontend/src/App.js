@@ -34,6 +34,7 @@ import MarrakechErg78Page from "@/pages/MarrakechErg78Page";
 import ErgMarrakech67Page from "@/pages/ErgMarrakech67Page";
 import ErgMarrakech78Page from "@/pages/ErgMarrakech78Page";
 import MarrakechLoop23Page from "@/pages/MarrakechLoop23Page";
+import MarrakechLoop34Page from "@/pages/MarrakechLoop34Page";
 import MarrakechErgChebbiMarrakechHubPage from "@/pages/MarrakechErgChebbiMarrakechHubPage";
 import MarrakechEssaouiraHubPage from "@/pages/MarrakechEssaouiraHubPage";
 import GransurFezRakHubPage from "@/pages/GransurFezRakHubPage";
@@ -121,6 +122,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourErgMarrakech67")   return <ErgMarrakech67Page />;
   if (routeId === "tourErgMarrakech78")   return <ErgMarrakech78Page />;
   if (routeId === "tourMarrakechLoop23")  return <MarrakechLoop23Page />;
+  if (routeId === "tourMarrakechLoop34")  return <MarrakechLoop34Page />;
   if (routeId === "tourUpcoming")  return <ProximasSalidasPage />;
   if (routeId)                     return <StubPage routeId={routeId} />;
 
