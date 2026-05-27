@@ -14,6 +14,8 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import VideoSection from "@/components/VideoSection";
+import { ESCAPADAS_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { ESCAPADAS_GALLERIES } from "@/lib/sectionGalleries";
 
@@ -223,6 +225,9 @@ export default function EscapadasPage() {
         return (
           <React.Fragment key={it.id}>
             <EditorialBlock block={ESCAPADAS_EDITORIAL[i]} lang={lang} />
+            {ESCAPADAS_VIDEOS[it.id] && (
+              <VideoSection {...ESCAPADAS_VIDEOS[it.id]} testid={`escapadas-video-${it.id}`} />
+            )}
             {ESCAPADAS_GALLERIES[i] && (
               <SectionGallery {...ESCAPADAS_GALLERIES[i]} testid={`escapadas-gallery-${it.id}`} />
             )}

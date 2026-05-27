@@ -16,6 +16,8 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import VideoSection from "@/components/VideoSection";
+import { MARRUECOS_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { MARRUECOS_GALLERIES } from "@/lib/sectionGalleries";
 
@@ -277,6 +279,7 @@ export default function MarruecosPage() {
       <StickyNav items={navItems} testid="marruecos-nav" />
 
       <EditorialBlock block={t.intro} lang={lang} />
+      <VideoSection {...MARRUECOS_VIDEOS.intro} testid="marruecos-video-intro" />
       <SectionGallery {...MARRUECOS_GALLERIES[0]} testid="marruecos-gallery-intro" />
 
       <ItinerariesOverview itineraries={MARRUECOS_ITINERARIES} t={t.overview} lang={lang} />

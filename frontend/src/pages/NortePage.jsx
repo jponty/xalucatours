@@ -12,6 +12,8 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
+import VideoSection from "@/components/VideoSection";
+import { NORTE_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
 
@@ -238,6 +240,7 @@ export default function NortePage() {
 
       {/* Editorial 1 — between itineraries */}
       <EditorialBlock block={NORTE_EDITORIAL[0]} lang={lang} />
+      <VideoSection {...NORTE_VIDEOS.imperial} testid="norte-video-imperial" />
       <SectionGallery {...NORTE_GALLERIES[0]} testid="norte-gallery-imperial" />
 
       {/* Itinerary 2 */}
@@ -261,6 +264,7 @@ export default function NortePage() {
 
       {/* Editorial 2 — closing narrative */}
       <EditorialBlock block={NORTE_EDITORIAL[1]} lang={lang} />
+      <VideoSection {...NORTE_VIDEOS.rif} testid="norte-video-rif" />
       <SectionGallery {...NORTE_GALLERIES[1]} testid="norte-gallery-rif" />
 
       {/* Cities row */}

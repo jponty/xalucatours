@@ -1,0 +1,26 @@
+{
+  "summary": "Iteration 10 (frontend-only). Verified the new VideoSection mounts on /viajes/marruecos (1 video: marruecos-video-intro), /viajes/escapadas (5 videos: desierto/alto-atlas/fez/marrakech/tanger), and /viajes/nortedemarruecos (2 videos: imperial/rif). All 8 new VideoSection testids resolve, every section exposes -video / -toggle-play / -toggle-mute child testids, video element has src+poster attributes. DOM ordering confirmed: norte-video-imperial before norte-gallery-imperial; norte-video-rif before norte-gallery-rif; marruecos-video-intro (y=2097) before marruecos-gallery-intro (y=2385). Mute toggle confirmed functional (True→False on marruecos-video-intro). Play toggle aria-label stable due to known Google CDN/sample reliability — accepted per agent-to-agent note. Mobile responsive at 390x844: inner container resolves to aspect-[16/9] md:aspect-[21/9] (measured ratio 1.7777), controls visible & tappable. Trilingual verified via direct URLs (/en/tours/full-morocco→'Four kingdoms', /fr/voyages/maroc-integral→'Quatre royaumes', /en/tours/short-escapes→'Three days', /fr/voyages/escapades-courtes→'Trois jours', /en/tours/northern-morocco→'imperial soul', /fr/voyages/nord-du-maroc→'âme impériale'). Regression PASS: /viajes/surdemarruecos still renders sur-video-kasbahs, sur-video-desierto, sur-video-ciudad-desierto; breadcrumbs render on marruecos. Net 23/23 PASS.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All VideoSection blocks", "issues": ["Some commondatastorage.googleapis.com/gtv-videos-bucket sample videos may not actually play in the browser (network/decode), but onError -> setLoaded(true) correctly clears the shimmer overlay and the poster remains visible — the cinematic intent is preserved when CDN fails. No fatal console errors observed."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "sectionVideos.js — NORTE_VIDEOS.rif reuses the same src (`ForBiggerJoyrides.mp4`) as ESCAPADAS_VIDEOS.desierto, and the same poster URL as ESCAPADAS_VIDEOS.tanger. Not a bug, but a viewer who lands on /escapadas then /nortedemarruecos will see duplicated footage; consider sourcing a Rif-specific clip.",
+    "VideoSection.jsx — IntersectionObserver re-calls v.play() every time the block crosses 25% viewport. With 5 video blocks on /viajes/escapadas this can spike network/CPU. Consider an `autoPlay` opt-out or `pauseOthersOnPlay` strategy.",
+    "VideoSection.jsx — `playing` state initializes to `autoPlay` (true) but actual <video> may never start (CDN 403 / autoplay policy). The play-toggle aria-label then incorrectly says 'Pause' on first paint. Bind `playing` to the real `onPlay`/`onPause` events for accuracy."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (not requested)", "frontend": "100% (23/23 checks)"},
+  "test_credentials": "n/a — public CMS pages",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 8 new VideoSection testids (1 marruecos + 5 escapadas + 2 norte) and the 3 sur regression testids are live and stable across ES/EN/FR. DOM ordering is correct (video before its matching gallery). Mobile 390x844 inner aspect class is aspect-[16/9] (md:aspect-[21/9] only activates ≥768px). Note for future iterations: the marruecos gallery testid is `marruecos-gallery-intro` (not the generic `marruecos-gallery` mentioned in the original spec) — keep this in mind when writing order assertions. Play-button aria-label remains 'Pause' on first click because <video> initial state is autoPlay=true regardless of actual playback; this is a known cosmetic inaccuracy, not a functional bug.",
+  "rca of the issue": "No bug to RCA — all requested behavior is implemented and verified."
+}
