@@ -1164,7 +1164,7 @@ export const HUB_ESCAPADA_RAK_ERG_RAK = {
                fr: "Voyage de 2 nuits et 3 jours pour découvrir Marrakech et le désert de l'Erg Chebbi." } },
     { id: "esc-mem-3-4", direction: "a", nights: "3n4d", accent: "#7C8B5C",
       image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
-      link: "tourMarrakechLoop34",
+      link: "tourEscapadaRakErgRak34",
       blurb: { es: "Viaje de 3 noches y 4 días descubriendo Marrakech y el desierto del Erg Chebbi, con noche extra en Kasbah Xaluca.",
                en: "3-night/4-day trip with Marrakech, the Erg Chebbi desert and an extra night at Kasbah Xaluca.",
                fr: "Voyage de 3 nuits et 4 jours avec Marrakech, l'Erg Chebbi et une nuit supplémentaire au Kasbah Xaluca." } },
