@@ -57,6 +57,11 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 ### Program detail pages (universal `ProgramTemplate`)
 - `/viajes/desierto_atlas/programa_6n_7d`, `_5n_6d`, `_4n_5d`
 - `/viajes/atlas_desierto/programa_4n_5d`, `_5n_6d`, `_6n_7d`
+- `/viajes/marrakech_ergchebbi/programa_4n_5d`, `_5n_6d`, `_6n_7d`, `_7n_8d` (variant `me`)
+- `/viajes/ergchebbi_marrakech/programa_4n_5d`, `_5n_6d` (Feb 2026 — `PROGRAM_EM_45`/`PROGRAM_EM_56`), `_6n_7d`, `_7n_8d` (variant `em`)
+- `/viajes/marrakech_ergchebbi_marrakech/programa_2n_3d`, `_3n_4d`, `_4n_5d`, `_5n_6d`, `_6n_7d`, `_7n_8d` (variant `mem`)
+- `/viajes/marrakech_essaouira/programa_4n_5d`, `_6n_7d` (variant `mes`)
+- `/viajes/fez-atlas-errachidia/programa_5n_6d` (variant `fae`)
 - `/viajes/gransur/fez_marrakech/programa_9n_10d` (Feb 2026 — variant `frz`, 10-day cinematic itinerary)
 - `/viajes/gransur/marrakech_fez/programa_6n_7d`, `_7n_8d`, `_8n_9d`, `_9n_10d` (Feb 2026 — variant `frm`, full reverse Gran Sur route)
 
