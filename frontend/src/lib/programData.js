@@ -1639,3 +1639,268 @@ export const PROGRAM_EM_78 = {
     },
   },
 };
+
+/* ============================================================
+   Marrakech → Erg Chebbi → Marrakech · 2 noches / 3 días
+   Escapada exprés circular: salida y regreso a Marrakech, una
+   noche en Boumalne Dades + una noche en bivouac en el Erg
+   Chebbi.
+============================================================ */
+
+export const DAY_MEM23_ATLAS_DADES = {
+  route_id: "mem23-atlas-dades",
+  id: "dia-1",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#C16542",
+  title: { es: "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Boumalne Dades", en: "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Boumalne Dades", fr: "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Boumalne Dadès" },
+  body: {
+    es: "Recogida a las 09:30 h en el lugar indicado de Marrakech y salida en un vehículo 4x4 con chófer hacia el Alto Atlas Central. Por delante tenemos unos cuantos kilómetros, recompensados por la espectacularidad de los paisajes. Cruzaremos el Tizi n'Tichka, el puerto de montaña más alto del país (2.260 m), dejando atrás los colores verdes y ocres para adentrarnos en un paisaje lunar. Por el camino visitaremos la Kasbah de Aït Ben Haddou, Patrimonio de la Humanidad por la UNESCO y escenario de innumerables producciones cinematográficas. Pasaremos por Ouarzazate y seguiremos por el Valle de las Rosas hasta llegar a Boumalne Dades, a 1.612 m de altitud en el Valle de los Pájaros. Alojamiento y cena en el Hotel Xaluca Dades 4*.",
+    en: "Pick-up at 09:30 from the agreed point in Marrakech and departure in a 4x4 with driver towards the Central High Atlas. A few kilometres lie ahead, generously rewarded by the landscape. We cross the Tizi n'Tichka — Morocco's highest tarmac mountain pass at 2,260 m — leaving the greens and ochres behind to enter a lunar landscape. Along the way we visit the Aït Ben Haddou Kasbah, UNESCO World Heritage and backdrop of countless film productions. We pass through Ouarzazate and continue along the Valley of the Roses to Boumalne Dades, at 1,612 m in the Valley of the Birds. Dinner and overnight at Hotel Xaluca Dades 4*.",
+    fr: "Prise en charge à 09h30 au point convenu à Marrakech et départ en 4x4 avec chauffeur vers le Haut Atlas Central. Quelques kilomètres nous attendent, largement récompensés par le paysage. Franchissement du Tizi n'Tichka, le col routier asphalté le plus haut du pays (2 260 m), où les verts et ocres laissent place à un paysage lunaire. En chemin, visite de la Kasbah d'Aït Ben Haddou, Patrimoine de l'Humanité de l'UNESCO et décor d'innombrables productions cinématographiques. Passage par Ouarzazate et remontée de la Vallée des Roses jusqu'à Boumalne Dadès, à 1 612 m d'altitude dans la Vallée des Oiseaux. Dîner et nuit à l'Hôtel Xaluca Dadès 4*.",
+  },
+  culture: [
+    {
+      title: { es: "Tizi n'Tichka: el paso asfaltado más alto de Marruecos", en: "Tizi n'Tichka: Morocco's highest tarmac pass", fr: "Tizi n'Tichka : le col asphalté le plus haut du Maroc" },
+      body: {
+        es: "Con 2.260 m de altitud, el Tizi n'Tichka es el puerto de carretera asfaltado más alto del país. Su ascenso permite ver cómo el paisaje cambia radicalmente: de los bosques y tierras fértiles del norte al entorno casi lunar del sur del Atlas.",
+        en: "At 2,260 m, the Tizi n'Tichka is Morocco's highest tarmac mountain pass. The drive shows how the landscape changes dramatically — from the green, fertile north to the near-lunar south side of the Atlas.",
+        fr: "Avec 2 260 m d'altitude, le Tizi n'Tichka est le col routier asphalté le plus haut du Maroc. La montée révèle un changement radical de paysage, du nord verdoyant au versant sud quasi lunaire.",
+      },
+    },
+    {
+      title: { es: "Aït Ben Haddou: ksar milenario y plató de cine", en: "Aït Ben Haddou: ancient ksar and film set", fr: "Aït Ben Haddou : ksar millénaire et plateau de cinéma" },
+      body: {
+        es: "Patrimonio de la Humanidad desde 1987 y uno de los mejores ejemplos de arquitectura tradicional de adobe del sur marroquí. Ha sido escenario de superproducciones como Gladiator, La Momia, Juego de Tronos o Kingdom of Heaven.",
+        en: "UNESCO World Heritage since 1987 and one of the finest examples of traditional southern-Moroccan adobe architecture. It has hosted blockbusters like Gladiator, The Mummy, Game of Thrones and Kingdom of Heaven.",
+        fr: "Patrimoine de l'Humanité depuis 1987 et l'un des plus beaux exemples d'architecture traditionnelle en pisé du sud marocain. Décor de superproductions comme Gladiator, La Momie, Game of Thrones ou Kingdom of Heaven.",
+      },
+    },
+    {
+      title: { es: "Boumalne Dades, en el Valle de los Pájaros", en: "Boumalne Dades, in the Valley of the Birds", fr: "Boumalne Dadès, dans la Vallée des Oiseaux" },
+      body: {
+        es: "Población situada a 1.612 m de altitud en plena Cordillera del Alto Atlas. Punto estratégico entre oasis, kasbahs y pueblos bereberes, y entrada natural al espectacular Valle del Dadès.",
+        en: "Town set at 1,612 m in the heart of the High Atlas range. A strategic point between oases, kasbahs and Berber villages, and the natural gateway to the spectacular Dades Valley.",
+        fr: "Bourg situé à 1 612 m d'altitude au cœur du Haut Atlas. Point stratégique entre oasis, kasbahs et villages berbères, porte d'entrée naturelle de la spectaculaire Vallée du Dadès.",
+      },
+    },
+  ],
+};
+
+export const DAY_MEM23_TODRA_BIVOUAC = {
+  route_id: "mem23-todra-bivouac",
+  id: "dia-2",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D97742",
+  title: { es: "Tinerhir · Todra · Erg Chebbi · Bivouac", en: "Tinerhir · Todra · Erg Chebbi · Bivouac", fr: "Tinerhir · Todra · Erg Chebbi · Bivouac" },
+  body: {
+    es: "Salida temprano en dirección a Tinerhir, pequeña y próspera población que ofrece una bella panorámica de contrastes con sus casas rosas y palmerales, punto de partida ideal para adentrarnos en las famosas Gargantas del Todra, donde podremos caminar siguiendo el curso del río. Dejaremos atrás las montañas y seguiremos hasta Erfoud, donde cogeremos pista para vivir un día de Desierto Total. Recorreremos una de las pistas del Rally Dakar visitando poblados y nómadas, parada en las Canteras de Fósiles Marinos (360 millones de años) y picnic en un auténtico oasis. Continuaremos hasta el Gran Erg Chebbi, donde cambiaremos el 4x4 por dromedarios para entrar en el corazón de las dunas y contemplar una puesta de sol inolvidable. Llegada al Bivouac, alojamiento en haimas como las de los nómadas. Cena y noche bajo las estrellas.",
+    en: "Early departure towards Tinerhir, a small and prosperous town with pink houses and palm groves — the ideal starting point to enter the famous Todra Gorges, where we walk along the riverbed. Leaving the mountains behind, we continue to Erfoud, where we take the desert track for a day of Total Desert. We follow one of the Dakar Rally tracks visiting villages and nomads, stop at the Marine Fossil Quarries (360 million years old) and picnic at a real oasis. We continue to the great Erg Chebbi, where we swap the 4x4 for camels and ride into the heart of the dunes for an unforgettable sunset. Arrival at the bivouac, accommodation in nomad-style jaimas. Dinner and overnight under the stars.",
+    fr: "Départ matinal vers Tinerhir, petite ville prospère aux maisons roses et palmeraies — point de départ idéal pour les célèbres Gorges du Todra, où nous marchons en suivant le cours de la rivière. En quittant les montagnes, nous continuons vers Erfoud, où nous prenons la piste pour une journée de Désert Total. Nous suivons l'une des pistes du Rallye Dakar à la rencontre de villages et nomades, halte aux Carrières de Fossiles Marins (360 millions d'années) et pique-nique dans une véritable oasis. Continuation vers le grand Erg Chebbi, où nous échangeons le 4x4 contre des dromadaires pour pénétrer au cœur des dunes et admirer un coucher de soleil inoubliable. Arrivée au bivouac, hébergement en jaimas comme celles des nomades. Dîner et nuit sous les étoiles.",
+  },
+  culture: [
+    {
+      title: { es: "Gargantas del Todra", en: "The Todra Gorges", fr: "Les Gorges du Todra" },
+      body: {
+        es: "Uno de los desfiladeros más espectaculares del sureste marroquí, con paredes que en su tramo más estrecho alcanzan 160 metros de altura. El río Todra esculpió estas paredes durante millones de años — meca mundial de la escalada.",
+        en: "One of south-east Morocco's most spectacular canyons, with walls up to 160 metres high at their narrowest point. The Todra river sculpted these walls over millions of years and is a world-class climbing destination.",
+        fr: "L'un des canyons les plus spectaculaires du sud-est marocain, avec des parois pouvant atteindre 160 mètres dans la partie la plus étroite. La rivière Todra a sculpté ces parois pendant des millions d'années — destination mondiale de l'escalade.",
+      },
+    },
+    {
+      title: { es: "Las pistas históricas del Rally Dakar", en: "The historic Dakar Rally tracks", fr: "Les pistes historiques du Rallye Dakar" },
+      body: {
+        es: "Entre Erfoud y el Erg Chebbi existen varias pistas usadas por el Rally Dakar en las ediciones marroquíes (hasta 2007). Cruzan hamadas y oueds secos, convirtiéndolas en rutas icónicas para 4x4 y motos de aventura.",
+        en: "Between Erfoud and the Erg Chebbi, several tracks were used by the Dakar Rally during its Moroccan editions (until 2007). They cross hamadas and dry wadis, making them iconic routes for 4x4 and adventure motorbikes.",
+        fr: "Entre Erfoud et l'Erg Chebbi, plusieurs pistes ont été utilisées par le Rallye Dakar lors des éditions marocaines (jusqu'en 2007). Elles traversent hamadas et oueds secs, devenues mythiques pour 4x4 et motos d'aventure.",
+      },
+    },
+    {
+      title: { es: "Erg Chebbi: dormir bajo las estrellas", en: "Erg Chebbi: sleeping under the stars", fr: "Erg Chebbi : dormir sous les étoiles" },
+      body: {
+        es: "Uno de los dos grandes ergs del desierto marroquí, sus dunas pueden alcanzar hasta 150 metros de altura. La pureza atmosférica y la ausencia de contaminación lumínica lo convierten en uno de los mejores cielos estrellados del norte de África.",
+        en: "One of the two great ergs of the Moroccan desert, with dunes reaching up to 150 metres. The atmospheric clarity and absence of light pollution make it one of the best starry skies in North Africa.",
+        fr: "L'un des deux grands ergs du désert marocain, ses dunes atteignent 150 mètres. La pureté atmosphérique et l'absence de pollution lumineuse en font l'un des plus beaux ciels étoilés d'Afrique du Nord.",
+      },
+    },
+  ],
+};
+
+export const DAY_MEM23_RETURN_MARRAKECH = {
+  route_id: "mem23-return-marrakech",
+  id: "dia-3",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Amanecer · Merdani · Alnif · Regreso a Marrakech", en: "Sunrise · Merdani · Alnif · Return to Marrakech", fr: "Lever du soleil · Merdani · Alnif · Retour à Marrakech" },
+  body: {
+    es: "«Cita con el Amanecer». Recomendable madrugar para caminar hasta lo más alto de las dunas y contemplar la salida del sol. Desayuno beduino y regreso al coche, que nos llevará a rodear el Erg hasta el pueblo abandonado de Merdani. Emprenderemos el camino de regreso a Marrakech pasando por la localidad de Alnif y disfrutando de una gran variedad de paisajes. Será un día de traslado largo pero escénico. Llegada a Marrakech y fin de nuestros servicios.",
+    en: "«A date with the Sunrise». We recommend an early walk to the top of the dunes for sunrise. Bedouin breakfast and back to the vehicle for a drive around the Erg to the abandoned village of Merdani. We set off back to Marrakech via Alnif, enjoying a wide variety of landscapes. A long but scenic transfer day. Arrival in Marrakech and end of our services.",
+    fr: "« Rendez-vous avec l'aube ». Il est recommandé de se lever tôt pour monter au sommet des dunes admirer le lever du soleil. Petit déjeuner bédouin puis retour au véhicule, qui nous fait contourner l'Erg jusqu'au village abandonné de Merdani. Nous prenons le chemin du retour vers Marrakech en passant par Alnif, profitant d'une grande variété de paysages. Journée de transfert longue mais scénique. Arrivée à Marrakech et fin de nos services.",
+  },
+  culture: [
+    {
+      title: { es: "Merdani: el pueblo abandonado", en: "Merdani: the abandoned village", fr: "Merdani : le village abandonné" },
+      body: {
+        es: "Antiguo poblado minero hoy parcialmente abandonado, junto a las minas de M'Fis. Una parada fotográfica imprescindible para entender la vida en los confines del Sahara y la historia del kohl, el plomo y el cobre extraídos en la región.",
+        en: "An old mining village, today partly abandoned, next to the M'Fis mines. A must-stop for photographers — and a window into life on the edge of the Sahara and the regional history of kohl, lead and copper mining.",
+        fr: "Ancien village minier aujourd'hui partiellement abandonné, près des mines de M'Fis. Une halte photo incontournable et une fenêtre sur la vie aux confins du Sahara et l'histoire du kohl, du plomb et du cuivre extraits dans la région.",
+      },
+    },
+    {
+      title: { es: "Alnif y la ruta de los fósiles", en: "Alnif and the fossil road", fr: "Alnif et la route des fossiles" },
+      body: {
+        es: "Pequeña localidad bereber del Anti-Atlas conocida internacionalmente por sus yacimientos de trilobites del periodo Devónico, algunos de los más completos del mundo. Es punto de paso obligado en la travesía desde el desierto al Atlas.",
+        en: "A small Berber town in the Anti-Atlas, internationally known for its Devonian trilobite deposits — among the most complete in the world. A mandatory stop on the crossing from the desert to the Atlas.",
+        fr: "Petite ville berbère de l'Anti-Atlas, mondialement connue pour ses gisements de trilobites du Dévonien — parmi les plus complets au monde. Halte obligée sur la traversée du désert vers l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Volver a Marrakech con el desierto a cuestas", en: "Returning to Marrakech with the desert in your bones", fr: "Revenir à Marrakech avec le désert dans les os" },
+      body: {
+        es: "La travesía de regreso ofrece una variedad de paisajes única: del Sahara al Anti-Atlas, valles de palmeras y, finalmente, el llano del Haouz. Una despedida en movimiento del sur de Marruecos hasta el bullicio de Djemaa el-Fna.",
+        en: "The return crossing offers a unique variety of landscapes — from the Sahara to the Anti-Atlas, palm valleys, and finally the Haouz plain. A moving farewell to southern Morocco all the way back to the buzz of Djemaa el-Fna.",
+        fr: "Le retour offre une variété unique de paysages — du Sahara à l'Anti-Atlas, vallées de palmiers, puis la plaine du Haouz. Un adieu en mouvement au sud du Maroc jusqu'à l'effervescence de Djemaa el-Fna.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MEM_23 = {
+  routeId: "tourMarrakechLoop23",
+  duration_key: "mem2n3d",
+  duration: { es: "2 noches / 3 días", en: "2 nights / 3 days", fr: "2 nuits / 3 jours" },
+  prices: { low: 590, mid: 690, high: 790, premium: 950 },
+  reverse: false,
+  days: [
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM23_TODRA_BIVOUAC,
+    DAY_MEM23_RETURN_MARRAKECH,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 2",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer todos los días del itinerario",
+        "Visita a la Kasbah de Aït Ben Haddou",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "Desert «picnic» on day 2",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver every day of the itinerary",
+        "Visit to the Aït Ben Haddou Kasbah",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 2",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur tous les jours de l'itinéraire",
+        "Visite de la Kasbah d'Aït Ben Haddou",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía salvo la indicada",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Suplemento opcional para añadir cancelación al seguro",
+      ],
+      en: [
+        "Drinks",
+        "Lunches except the one stated",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Optional supplement to add cancellation to the insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners sauf celui indiqué",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Supplément en option pour ajouter l'annulation à l'assurance",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Vueling, Ryanair y otras compañías de bajo coste con vuelos directos a Marrakech",
+        "Tarifas calculadas según ocupación del vehículo (4x4 o minibús); el coste se reparte entre los ocupantes",
+        "Precios basados en habitaciones dobles y triples · Suplemento individual 130 €",
+        "Descuento niños 3-11 años compartiendo habitación con dos adultos: 140 € baja · 150 € alta",
+        "Chóferes de habla española limitados, sobre todo en temporada alta — se recomienda reservar con antelación",
+        "Los guías titulados están reservados para las medinas, no para las rutas",
+        "Pasaporte vigente mínimo 6 meses para viajar a Marruecos",
+        "Salida en quads opcional: 90 € por vehículo (circuito de 2 horas)",
+        "Seguro de cancelación opcional: 45 € por persona para viajes de hasta 9 días",
+      ],
+      en: [
+        "Flight options: Vueling, Ryanair and other low-cost carriers fly direct to Marrakech",
+        "Rates calculated based on vehicle (4x4 or minibus) occupancy; the cost is split between occupants",
+        "Prices based on double and triple rooms · Single supplement €130",
+        "Children 3-11 sharing room with two adults: €140 low season · €150 high season",
+        "Spanish-speaking drivers limited, especially in high season — book well in advance",
+        "Official guides are reserved for the medinas, not for the routes",
+        "Passport valid at least 6 months to travel to Morocco",
+        "Optional quad ride: €90 per vehicle (2-hour circuit)",
+        "Optional cancellation insurance: €45 per person for trips up to 9 days",
+      ],
+      fr: [
+        "Options de vols : Vueling, Ryanair et autres compagnies low-cost en vol direct vers Marrakech",
+        "Tarifs calculés selon l'occupation du véhicule (4x4 ou minibus) ; le coût se partage entre les occupants",
+        "Tarifs basés sur chambres doubles et triples · Supplément individuel 130 €",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 140 € basse · 150 € haute",
+        "Chauffeurs hispanophones limités, surtout en haute saison — réserver à l'avance",
+        "Les guides officiels sont réservés aux médinas, pas aux itinéraires",
+        "Passeport valable au moins 6 mois pour voyager au Maroc",
+        "Quads en option : 90 € par véhicule (circuit de 2 heures)",
+        "Assurance annulation en option : 45 € par personne pour les voyages jusqu'à 9 jours",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria (pasaporte se puede enviar más adelante)",
+        "Pago por transferencia bancaria o tarjeta Visa",
+        "30% del importe total en el momento de la reserva · 70% restante hasta 30 días antes de la salida",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Las condiciones cubren los servicios terrestres; los vuelos se rigen por la política de cada aerolínea",
+        "El seguro de cancelación no se reembolsa en ningún caso",
+      ],
+      en: [
+        "Compulsory booking form (passport may be sent later)",
+        "Payment by bank transfer or Visa card",
+        "30% of total at booking · remaining 70% up to 30 days before departure",
+        "If the chosen flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Conditions cover land services; flights are governed by each airline's policy",
+        "Cancellation insurance is non-refundable under any circumstances",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire (le passeport peut être envoyé plus tard)",
+        "Paiement par virement bancaire ou carte Visa",
+        "30 % du total à la réservation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol choisi requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les conditions couvrent les services terrestres ; les vols suivent la politique de chaque compagnie",
+        "L'assurance annulation n'est en aucun cas remboursable",
+      ],
+    },
+  },
+};
+

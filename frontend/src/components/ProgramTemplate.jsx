@@ -472,6 +472,60 @@ const VARIANT_COPY = {
       ],
     },
   },
+  // Marrakech → Erg Chebbi → Marrakech (bucle, entrada y salida Marrakech)
+  mem: {
+    es: {
+      title: "Escapada al Erg Chebbi desde Marrakech.",
+      eyebrow_prefix: "Circuito · Marrakech ↻ Erg Chebbi",
+      place: "Marrakech · Alto Atlas · Erg Chebbi · Marrakech",
+      subtitle: "Una escapada exprés desde Marrakech al corazón del Sahara, cruzando el Alto Atlas, Aït Ben Haddou y las Gargantas del Todra.",
+      hero_image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+      airports: "Entrada y salida Marrakech",
+      quick_airports: "Marrakech",
+      quick_places: "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Ouarzazate · Boumalne Dades · Tinerhir · Todra · Erfoud · Erg Chebbi · Merdani · Alnif · Marrakech",
+      highlights: "Tizi n'Tichka · Aït Ben Haddou · Todra · Erg Chebbi · Bivouac",
+      description_title: "Una aventura completa, en pocos días.",
+      description: [
+        "Embárcate en una escapada inolvidable desde Marrakech hacia el majestuoso desierto del Erg Chebbi, un viaje que combina paisajes impresionantes del Alto Atlas, rincones emblemáticos como Aït Ben Haddou, valles cargados de vida y la inmensidad silenciosa del Sahara.",
+        "A lo largo del recorrido descubrirás pueblos bereberes, antiguas kasbahs, gargantas espectaculares y pistas legendarias del Rally Dakar, hasta adentrarte en el corazón de las dunas a lomos de un dromedario para vivir una puesta de sol única y dormir en un bivouac bajo las estrellas.",
+        "Una aventura completa y enriquecedora diseñada para quienes desean conectar con la esencia más auténtica de Marruecos.",
+      ],
+    },
+    en: {
+      title: "Erg Chebbi escape from Marrakech.",
+      eyebrow_prefix: "Circuit · Marrakech ↻ Erg Chebbi",
+      place: "Marrakech · High Atlas · Erg Chebbi · Marrakech",
+      subtitle: "A short escape from Marrakech to the heart of the Sahara, crossing the High Atlas, Aït Ben Haddou and the Todra Gorges.",
+      hero_image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+      airports: "In & out Marrakech",
+      quick_airports: "Marrakech",
+      quick_places: "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Ouarzazate · Boumalne Dades · Tinerhir · Todra · Erfoud · Erg Chebbi · Merdani · Alnif · Marrakech",
+      highlights: "Tizi n'Tichka · Aït Ben Haddou · Todra · Erg Chebbi · Bivouac",
+      description_title: "A complete adventure, in just a few days.",
+      description: [
+        "Set off on an unforgettable escape from Marrakech to the majestic Erg Chebbi desert — a journey blending High Atlas landscapes, iconic places like Aït Ben Haddou, lush valleys and the silent vastness of the Sahara.",
+        "Along the way you will discover Berber villages, ancient kasbahs, spectacular gorges and the legendary Dakar Rally tracks, before riding into the heart of the dunes on camelback for a unique sunset and a night at a bivouac under the stars.",
+        "A complete and enriching adventure designed for travellers who want to connect with the most authentic essence of Morocco.",
+      ],
+    },
+    fr: {
+      title: "Escapade à l'Erg Chebbi depuis Marrakech.",
+      eyebrow_prefix: "Circuit · Marrakech ↻ Erg Chebbi",
+      place: "Marrakech · Haut Atlas · Erg Chebbi · Marrakech",
+      subtitle: "Une escapade courte depuis Marrakech au cœur du Sahara, en traversant le Haut Atlas, Aït Ben Haddou et les Gorges du Todra.",
+      hero_image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+      airports: "Arrivée et sortie Marrakech",
+      quick_airports: "Marrakech",
+      quick_places: "Marrakech · Tizi n'Tichka · Aït Ben Haddou · Ouarzazate · Boumalne Dadès · Tinerhir · Todra · Erfoud · Erg Chebbi · Merdani · Alnif · Marrakech",
+      highlights: "Tizi n'Tichka · Aït Ben Haddou · Todra · Erg Chebbi · Bivouac",
+      description_title: "Une aventure complète, en quelques jours.",
+      description: [
+        "Embarquez pour une escapade inoubliable de Marrakech vers le majestueux désert de l'Erg Chebbi — un voyage mêlant paysages du Haut Atlas, lieux emblématiques comme Aït Ben Haddou, vallées vivantes et l'immensité silencieuse du Sahara.",
+        "En chemin, vous découvrirez villages berbères, anciennes kasbahs, gorges spectaculaires et les pistes mythiques du Rallye Dakar, avant de pénétrer au cœur des dunes à dos de dromadaire pour un coucher de soleil unique et une nuit en bivouac sous les étoiles.",
+        "Une aventure complète et enrichissante, conçue pour ceux qui souhaitent se connecter à l'essence la plus authentique du Maroc.",
+      ],
+    },
+  },
 };
 
 const LABELS = {
@@ -484,7 +538,7 @@ const LABELS = {
     quick_overline: "Información rápida", quick_title: "Lo esencial del viaje.",
     card_duration: "Duración", card_places: "Lugares", card_airports: "Aeropuertos",
     card_type: "Tipo", card_experiences: "Experiencias",
-    type_da: "Desierto + Atlas", type_ad: "Atlas + Desierto", type_frz: "Fez · Erg Chebbi · Marrakech", type_frm: "Marrakech · Erg Chebbi · Fez", type_me: "Marrakech · Atlas · Erg Chebbi", type_em: "Erg Chebbi · Atlas · Marrakech", type_atlas: "Alto Atlas · Drâa", type_desierto: "Sáhara · Erg Chebbi",
+    type_da: "Desierto + Atlas", type_ad: "Atlas + Desierto", type_frz: "Fez · Erg Chebbi · Marrakech", type_frm: "Marrakech · Erg Chebbi · Fez", type_me: "Marrakech · Atlas · Erg Chebbi", type_em: "Erg Chebbi · Atlas · Marrakech", type_mem: "Marrakech · Erg Chebbi · Marrakech", type_atlas: "Alto Atlas · Drâa", type_desierto: "Sáhara · Erg Chebbi",
     experiences_value: "4x4 · dromedarios · bivouac · pueblos bereberes · gargantas · oasis",
     itinerary_overline: "Itinerario completo", itinerary_title: "Día a día, sin atajos.",
     culture_label: "Bloques culturales destacados",
@@ -514,7 +568,7 @@ const LABELS = {
     quick_overline: "Quick facts", quick_title: "The essentials.",
     card_duration: "Duration", card_places: "Places", card_airports: "Airports",
     card_type: "Type", card_experiences: "Experiences",
-    type_da: "Desert + Atlas", type_ad: "Atlas + Desert", type_frz: "Fez · Erg Chebbi · Marrakech", type_frm: "Marrakech · Erg Chebbi · Fez", type_me: "Marrakech · Atlas · Erg Chebbi", type_em: "Erg Chebbi · Atlas · Marrakech", type_atlas: "High Atlas · Drâa", type_desierto: "Sahara · Erg Chebbi",
+    type_da: "Desert + Atlas", type_ad: "Atlas + Desert", type_frz: "Fez · Erg Chebbi · Marrakech", type_frm: "Marrakech · Erg Chebbi · Fez", type_me: "Marrakech · Atlas · Erg Chebbi", type_em: "Erg Chebbi · Atlas · Marrakech", type_mem: "Marrakech · Erg Chebbi · Marrakech", type_atlas: "High Atlas · Drâa", type_desierto: "Sahara · Erg Chebbi",
     experiences_value: "4x4 · camels · bivouac · Berber villages · gorges · oases",
     itinerary_overline: "Full itinerary", itinerary_title: "Day by day, no shortcuts.",
     culture_label: "Cultural highlights", wellness_label: "Hotel wellness",
@@ -648,7 +702,7 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
     { Icon: Clock,    label: t.card_duration,   value: pick(program.duration, lang) },
     { Icon: MapPin,   label: t.card_places,     value: vt.quick_places },
     { Icon: Plane,    label: t.card_airports,   value: vt.quick_airports },
-    { Icon: Mountain, label: t.card_type,       value: variant === "frz" ? (t.type_frz || "Fez · Erg Chebbi · Marrakech") : variant === "frm" ? (t.type_frm || "Marrakech · Erg Chebbi · Fez") : variant === "me" ? (t.type_me || "Marrakech · Atlas · Erg Chebbi") : variant === "em" ? (t.type_em || "Erg Chebbi · Atlas · Marrakech") : variant === "atlas" ? (t.type_atlas || "Alto Atlas · Drâa") : variant === "desierto" ? (t.type_desierto || "Sáhara · Erg Chebbi") : (variant === "ad" ? t.type_ad : t.type_da) },
+    { Icon: Mountain, label: t.card_type,       value: variant === "frz" ? (t.type_frz || "Fez · Erg Chebbi · Marrakech") : variant === "frm" ? (t.type_frm || "Marrakech · Erg Chebbi · Fez") : variant === "me" ? (t.type_me || "Marrakech · Atlas · Erg Chebbi") : variant === "em" ? (t.type_em || "Erg Chebbi · Atlas · Marrakech") : variant === "mem" ? (t.type_mem || "Marrakech · Erg Chebbi · Marrakech") : variant === "atlas" ? (t.type_atlas || "Alto Atlas · Drâa") : variant === "desierto" ? (t.type_desierto || "Sáhara · Erg Chebbi") : (variant === "ad" ? t.type_ad : t.type_da) },
     { Icon: Sparkles, label: t.card_experiences,value: t.experiences_value },
   ];
   return (

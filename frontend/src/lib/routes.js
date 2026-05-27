@@ -31,6 +31,7 @@ export const ROUTES = {
   tourMarrakechErg67:  { es: "viajes/marrakech_ergchebbi/programa_6n_7d", en: "tours/marrakech-ergchebbi/program-6n-7d", fr: "voyages/marrakech-ergchebbi/programme-6n-7j" },
   tourMarrakechErg78:  { es: "viajes/marrakech_ergchebbi/programa_7n_8d", en: "tours/marrakech-ergchebbi/program-7n-8d", fr: "voyages/marrakech-ergchebbi/programme-7n-8j" },
   tourMarrakechLoopHub:{ es: "viajes/marrakech_ergchebbi_marrakech", en: "tours/marrakech-ergchebbi-marrakech", fr: "voyages/marrakech-ergchebbi-marrakech" },
+  tourMarrakechLoop23: { es: "viajes/marrakech_ergchebbi_marrakech/programa_2n_3d", en: "tours/marrakech-ergchebbi-marrakech/program-2n-3d", fr: "voyages/marrakech-ergchebbi-marrakech/programme-2n-3j" },
   tourMarrakechEssHub: { es: "viajes/sur/marrakech_essaouira", en: "tours/south/marrakech-essaouira", fr: "voyages/sud/marrakech-essaouira" },
   tourUpcoming:       { es: "proximas_salidas", en: "upcoming-departures", fr: "prochains-departs" },
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },

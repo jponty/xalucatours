@@ -325,6 +325,12 @@ export const HUB_MARRAKECH_LOOP = {
     group_a: { es: "Marrakech → Erg Chebbi → Marrakech", en: "Marrakech → Erg Chebbi → Marrakech", fr: "Marrakech → Erg Chebbi → Marrakech" },
   },
   programs: [
+    { id: "mem-2-3", direction: "a", nights: "2n3d", accent: "#5A6B4F",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechLoop23",
+      blurb: { es: "Escapada de 2 noches y 3 días desde Marrakech al desierto del Erg Chebbi y vuelta a Marrakech.",
+               en: "Short 2-night/3-day escape from Marrakech to the Erg Chebbi desert and back to Marrakech.",
+               fr: "Escapade courte de 2 nuits et 3 jours de Marrakech au désert de l'Erg Chebbi et retour à Marrakech." } },
     { id: "mem-5-6", direction: "a", nights: "5n6d", accent: "#C16542",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
       blurb: { es: "Viaje de 5 noches y 6 días desde Marrakech hasta el desierto del Erg Chebbi y de vuelta a Marrakech.",
