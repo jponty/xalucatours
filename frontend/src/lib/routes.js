@@ -97,6 +97,7 @@ export const ROUTES = {
   tourCiudadesImperiales45:    { es: "viajes/norte/ciudades_imperiales/programa_4n_5d",     en: "tours/northern/imperial-cities/program-4n-5d",     fr: "voyages/nord/cites-imperiales/programme-4n-5j" },
   tourCiudadesImperiales67:    { es: "viajes/norte/ciudades_imperiales/programa_6n_7d",     en: "tours/northern/imperial-cities/program-6n-7d",     fr: "voyages/nord/cites-imperiales/programme-6n-7j" },
   tourCiudadesImperialesRif67: { es: "viajes/norte/ciudadesimperiales_rif/programa_6n_7d", en: "tours/northern/imperial-cities-rif/program-6n-7d", fr: "voyages/nord/cites-imperiales-rif/programme-6n-7j" },
+  tourCiudadesImperialesRif78: { es: "viajes/norte/ciudadesimperiales_rif/programa_7n_8d", en: "tours/northern/imperial-cities-rif/program-7n-8d", fr: "voyages/nord/cites-imperiales-rif/programme-7n-8j" },
   tourNorteTangerFez:          { es: "viajes/norte/tanger_fez",          en: "tours/northern/tangier-fez",     fr: "voyages/nord/tanger-fes" },
   tourTangerFez45:             { es: "viajes/norte/tanger_fez/programa_4n_5d", en: "tours/northern/tangier-fez/program-4n-5d", fr: "voyages/nord/tanger-fes/programme-4n-5j" },
   tourTangerFez56:             { es: "viajes/norte/tanger_fez/programa_5n_6d", en: "tours/northern/tangier-fez/program-5n-6d", fr: "voyages/nord/tanger-fes/programme-5n-6j" },

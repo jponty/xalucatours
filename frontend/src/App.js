@@ -96,6 +96,7 @@ import NorteTangerFezHubPage from "@/pages/NorteTangerFezHubPage";
 import CiudadesImperiales45Page from "@/pages/CiudadesImperiales45Page";
 import CiudadesImperiales67Page from "@/pages/CiudadesImperiales67Page";
 import CiudadesImperialesRif67Page from "@/pages/CiudadesImperialesRif67Page";
+import CiudadesImperialesRif78Page from "@/pages/CiudadesImperialesRif78Page";
 import TangerFez45Page from "@/pages/TangerFez45Page";
 import TangerFez56Page from "@/pages/TangerFez56Page";
 import FezTanger56Page from "@/pages/FezTanger56Page";
@@ -175,6 +176,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourCiudadesImperiales45")    return <CiudadesImperiales45Page />;
   if (routeId === "tourCiudadesImperiales67")    return <CiudadesImperiales67Page />;
   if (routeId === "tourCiudadesImperialesRif67") return <CiudadesImperialesRif67Page />;
+  if (routeId === "tourCiudadesImperialesRif78") return <CiudadesImperialesRif78Page />;
   if (routeId === "tourNorteTangerFez")          return <NorteTangerFezHubPage />;
   if (routeId === "tourTangerFez45")             return <TangerFez45Page />;
   if (routeId === "tourTangerFez56")             return <TangerFez56Page />;

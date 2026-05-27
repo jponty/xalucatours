@@ -1,9 +1,9 @@
 // Ciudades Imperiales + Rif · 6 nights / 7 days · Tánger → Tetuán → Chefchaouen → Meknes → Fez → Marrakech
 const T = (es, en, fr) => ({ es, en, fr });
 
-const DAY_01 = {
-  route_id: "cirf67-tanger-tetuan",
-  id: "cirf67-d1",
+export const DAY_CIRF_TANGER_TETUAN = {
+  route_id: "cirf-tanger-tetuan",
+  id: "cirf-d1",
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: T(
@@ -28,9 +28,9 @@ const DAY_01 = {
   ],
 };
 
-const DAY_02 = {
-  route_id: "cirf67-chefchaouen",
-  id: "cirf67-d2",
+export const DAY_CIRF_CHEFCHAOUEN = {
+  route_id: "cirf-chefchaouen",
+  id: "cirf-d2",
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: T(
@@ -90,9 +90,9 @@ const DAY_03 = {
   ],
 };
 
-const DAY_04 = {
-  route_id: "cirf67-fez-medina",
-  id: "cirf67-d4",
+export const DAY_CIRF_FEZ_MEDINA = {
+  route_id: "cirf-fez-medina",
+  id: "cirf-d-fez",
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
@@ -125,9 +125,9 @@ const DAY_04 = {
   ],
 };
 
-const DAY_05 = {
-  route_id: "cirf67-medio-atlas-marrakech",
-  id: "cirf67-d5",
+export const DAY_CIRF_FEZ_MARRAKECH = {
+  route_id: "cirf-fez-marrakech",
+  id: "cirf-d-fmrk",
   image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T(
@@ -152,9 +152,9 @@ const DAY_05 = {
   ],
 };
 
-const DAY_06 = {
-  route_id: "cirf67-marrakech",
-  id: "cirf67-d6",
+export const DAY_CIRF_MARRAKECH_MEDINA = {
+  route_id: "cirf-marrakech-medina",
+  id: "cirf-d-mrk",
   image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
@@ -179,9 +179,9 @@ const DAY_06 = {
   ],
 };
 
-const DAY_07 = {
-  route_id: "cirf67-return",
-  id: "cirf67-d7",
+export const DAY_CIRF_RETURN_MARRAKECH = {
+  route_id: "cirf-return",
+  id: "cirf-d-ret",
   image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Marrakech", "Return from Marrakech", "Retour depuis Marrakech"),
@@ -268,7 +268,7 @@ export const PROGRAM_CI_RIF_67 = {
     { day: 6, lat: 31.6258, lng: -7.9892, type: "unesco",  name: T("Marrakech · Jemaa el-Fna · Koutoubia", "Marrakech · Jemaa el-Fna · Koutoubia", "Marrakech · Jemaa el-Fna · Koutoubia") },
     { day: 7, lat: 31.6069, lng: -8.0363, type: "airport", name: T("Marrakech · Aeropuerto · Regreso", "Marrakech · Airport · Return", "Marrakech · Aéroport · Retour") },
   ],
-  days: [DAY_01, DAY_02, DAY_03, DAY_04, DAY_05, DAY_06, DAY_07],
+  days: [DAY_CIRF_TANGER_TETUAN, DAY_CIRF_CHEFCHAOUEN, DAY_03, DAY_CIRF_FEZ_MEDINA, DAY_CIRF_FEZ_MARRAKECH, DAY_CIRF_MARRAKECH_MEDINA, DAY_CIRF_RETURN_MARRAKECH],
   details: {
     includes: {
       es: [
