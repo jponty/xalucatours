@@ -34,6 +34,7 @@ import MarrakechErg67Page from "@/pages/MarrakechErg67Page";
 import MarrakechErg78Page from "@/pages/MarrakechErg78Page";
 import ErgMarrakech67Page from "@/pages/ErgMarrakech67Page";
 import ErgMarrakech78Page from "@/pages/ErgMarrakech78Page";
+import ErgMarrakech45Page from "@/pages/ErgMarrakech45Page";
 import MarrakechLoop23Page from "@/pages/MarrakechLoop23Page";
 import MarrakechLoop34Page from "@/pages/MarrakechLoop34Page";
 import MarrakechLoop45Page from "@/pages/MarrakechLoop45Page";
@@ -137,6 +138,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourMarrakechErg78")   return <MarrakechErg78Page />;
   if (routeId === "tourErgMarrakech67")   return <ErgMarrakech67Page />;
   if (routeId === "tourErgMarrakech78")   return <ErgMarrakech78Page />;
+  if (routeId === "tourErgMarrakech45")   return <ErgMarrakech45Page />;
   if (routeId === "tourMarrakechLoop23")  return <MarrakechLoop23Page />;
   if (routeId === "tourMarrakechLoop34")  return <MarrakechLoop34Page />;
   if (routeId === "tourMarrakechLoop45")  return <MarrakechLoop45Page />;
