@@ -86,7 +86,13 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
 ## Recent additions (Feb 2026 — session, latest)
-- **Emergent Object Storage integration** (Feb 2026, latest):
+- **Biblioteca de imágenes reutilizable** (Feb 2026, latest):
+  - New backend `GET /api/files?limit=&skip=&q=` — lists every previously-uploaded image (most recent first), excludes soft-deleted, supports filename / slot-id search. Returns `{items, total, has_more, limit, skip}`.
+  - New frontend `components/ImageLibraryPicker.jsx` — modal-over-modal grid picker with search, debounced 250 ms, esc/backdrop close, hover overlay "Usar esta".
+  - `EditableImage.jsx` now exposes a **"Biblioteca"** button next to the upload dropzone. Selecting a thumbnail calls `PUT /api/slots/{slot}` (no re-upload), updates parent + local mirror, and closes the picker — same photo can be reused across pages without bumping storage usage.
+  - Verified via curl: 4 files listed (test pixels + 1 real upload), `q=library` returns 2 matches.
+
+- **Emergent Object Storage integration** (Feb 2026):
   - Backend now persists CMS image uploads to **Emergent Object Storage** (cloud, stateless) instead of the local `backend/uploads/` disk.
   - New module `backend/storage.py` (`init_storage`, `put_object`, `get_object`) — session-scoped key, auto-refresh on 403.
   - `POST /api/slots/{slot_id}/upload` rewritten: validates MIME + 8 MB cap → uploads to `xaluca/slots/{slot_id}/{uuid}.{ext}` → stores `storage_path` + metadata in `image_slots` collection (Mongo) and bookkeeping in `files` collection (with `is_deleted` soft-delete flag).

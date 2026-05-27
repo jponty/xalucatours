@@ -4,9 +4,11 @@ import Cropper from "react-easy-crop";
 import {
   Pencil, X, Upload, Check, Loader2, AlertCircle, RotateCcw, ImageOff,
   ChevronLeft, ChevronRight, Images, Layers, RotateCw, Maximize2, Target,
+  Library,
 } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useEditableGroup } from "@/contexts/EditableGroupContext";
+import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -442,6 +444,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
   const [busy, setBusy] = useState(false);
   const [busyAll, setBusyAll] = useState(false);
   const [error, setError] = useState(null);
+  const [showLibrary, setShowLibrary] = useState(false);
   const inputSingleRef = useRef(null);
   const inputMultiRef = useRef(null);
 
@@ -600,6 +603,42 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
     // Clear draft for this slot — it's now persisted
     draftsRef.current.set(slot, newDraft());
     return newUrl;
+  };
+
+  /* ---- Library reuse — pick a previously-uploaded image without
+         re-cropping. Persist via PUT /api/slots/{slot}. ---- */
+  const useLibraryImage = async (libItem) => {
+    if (!libItem?.url) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const slot = current.slot;
+      const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: libItem.url,
+          alt: libItem.original_filename || null,
+          source: "library",
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail || "No se pudo aplicar la imagen.");
+      }
+      const data = await res.json();
+      const newUrl = data.url || libItem.url;
+      const it = items.find((i) => i.slot === slot);
+      it?.setUrl?.(newUrl);
+      setSlotUrls((p) => ({ ...p, [slot]: newUrl }));
+      draftsRef.current.set(slot, newDraft());
+      setShowLibrary(false);
+      rerender();
+    } catch (e) {
+      setError(e?.message || "Error al usar la imagen de la biblioteca.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const onSaveCurrent = async () => {
@@ -855,9 +894,20 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
 
               {/* Upload zone */}
               <div>
-                <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2">
-                  {slotUrls[current.slot] ? "Subir nueva imagen" : "Subir imagen"}
-                </span>
+                <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
+                  <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
+                    {slotUrls[current.slot] ? "Subir nueva imagen" : "Subir imagen"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowLibrary(true)}
+                    data-testid={`edit-modal-open-library-${current.slot}`}
+                    className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#2C2621] hover:text-[#C16542] border-b border-[#2C2621]/30 hover:border-[#C16542] pb-0.5 transition-colors"
+                  >
+                    <Library className="w-3.5 h-3.5" strokeWidth={1.7} />
+                    Biblioteca
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -1250,6 +1300,13 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
           </div>
         </div>
       </aside>
+
+      {/* Library picker — modal-over-modal */}
+      <ImageLibraryPicker
+        open={showLibrary}
+        onClose={() => setShowLibrary(false)}
+        onSelect={useLibraryImage}
+      />
     </div>
     ),
     document.body,

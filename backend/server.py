@@ -307,6 +307,56 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     return {"slot_id": slot_id, **doc}
 
 
+@api_router.get("/files")
+async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None):
+    """Lists every previously-uploaded image (most recent first) for the
+    CMS image-library picker. Soft-deleted files are excluded. Supports
+    a simple case-insensitive substring search on the original filename
+    or slot id via `q`."""
+    limit = max(1, min(int(limit or 60), 200))
+    skip = max(0, int(skip or 0))
+
+    query: Dict = {"is_deleted": {"$ne": True}}
+    if q:
+        safe = q.strip()[:80]
+        # Escape regex special chars to avoid injection / parser errors.
+        import re
+        safe_re = re.escape(safe)
+        query["$or"] = [
+            {"original_filename": {"$regex": safe_re, "$options": "i"}},
+            {"slot_id": {"$regex": safe_re, "$options": "i"}},
+        ]
+
+    cursor = (
+        db.files
+        .find(query, {"_id": 0})
+        .sort("created_at", -1)
+        .skip(skip)
+        .limit(limit + 1)  # one extra to detect "has more"
+    )
+    items_raw = await cursor.to_list(limit + 1)
+    has_more = len(items_raw) > limit
+    items_raw = items_raw[:limit]
+
+    items = [
+        {
+            "id": it.get("id"),
+            "url": f"/api/files/{it['storage_path']}",
+            "storage_path": it["storage_path"],
+            "original_filename": it.get("original_filename"),
+            "content_type": it.get("content_type"),
+            "size": it.get("size"),
+            "slot_id": it.get("slot_id"),
+            "created_at": it.get("created_at"),
+        }
+        for it in items_raw
+        if it.get("storage_path")
+    ]
+
+    total = await db.files.count_documents(query)
+    return {"items": items, "total": total, "has_more": has_more, "limit": limit, "skip": skip}
+
+
 @api_router.get("/files/{path:path}")
 async def download_file(path: str):
     """Public proxy that streams an object from Emergent storage.
