@@ -86,6 +86,17 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
 ## Recent additions (Feb 2026 — session, latest)
+- **Panel "Used in" en el diálogo de eliminar** (Feb 2026, latest):
+  - Nuevo endpoint `GET /api/files/{id}/usage` que busca en `image_slots` toda referencia al `storage_path` (uploads directos + reusos vía library).
+  - `ImageLibraryPicker` **precarga las usages** en bloque (lazy, throttle 30 ids) al abrirse y refresca tras delete/upload.
+  - Cada miniatura muestra un **badge superior izquierdo** con el contador de usos (`Eye + N`). Verde si > 0, neutro si 0.
+  - El **diálogo de confirmación** ahora incluye un panel "Used in":
+    - Si count === 0 → "No se usa en ninguna página, se puede eliminar".
+    - Si count > 0 → banner ámbar "Atención: esta imagen se usa en N páginas" + lista scrolleable de `slot_id` con enlaces "ver" externos (mapeo `slotToPath`) + botón cambiado a **"Eliminar de todos modos"** (color rojo oscuro).
+  - Bug descubierto y arreglado durante la verificación: el `LibraryThumb` no recibía el prop `usage` en la grid (regresión en una edit anterior).
+  - Verificado en navegador real: badges visibles (1 y 3), panel correctamente mostrado con slot_id `home.hero.3 · LIBRARY` y enlace "ver".
+
+
 - **Image Library — gestión completa** (Feb 2026, latest):
   - Backend: `POST /api/library/upload` (bulk hasta 30 archivos, valida MIME y 8 MB por archivo, devuelve uploaded+skipped); `PATCH /api/files/{id}` (rename + tags normalizadas: lowercase/trim/dedup, máx 20 tags); `DELETE /api/files/{id}` (soft-delete); `POST /api/files/{id}/replace` (sube nuevos bytes manteniendo el id); `GET /api/library/tags` (chips con count); `GET /api/files?tag=duna` (filtro por tag).
   - Frontend: rewrite de `ImageLibraryPicker.jsx` con bulk-upload (`Subir varias`), chips de tags (`Todas` + por tag), búsqueda por nombre/tag/slot, hover actions por miniatura (reemplazar / renombrar / eliminar), drawer inline de edición (nombre + tags coma-separadas), banner verde de confirmación tras upload.

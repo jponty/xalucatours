@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import {
   Library, Search, X, Loader2, Check, AlertCircle, UploadCloud,
-  Trash2, Pencil, Replace, Tag, ChevronRight,
+  Trash2, Pencil, Replace, Tag, ChevronRight, Eye, ExternalLink,
 } from "lucide-react";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
@@ -28,6 +28,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   const [refreshTick, setRefreshTick] = useState(0);
   const [editing, setEditing] = useState(null); // {id, original_filename, tags, ...}
   const [confirmDelete, setConfirmDelete] = useState(null); // item to confirm
+  const [usageById, setUsageById] = useState({}); // {id: count}
   const bulkInputRef = useRef(null);
   const replaceInputRef = useRef(null);
   const replaceForIdRef = useRef(null);
@@ -71,6 +72,37 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
       .catch(() => setTags([]));
   }, [open, refreshTick]);
 
+  /* ---- Lazy-load usage counts for visible items ---- */
+  useEffect(() => {
+    if (!open || items.length === 0) return;
+    let cancelled = false;
+    const idsToFetch = items
+      .map((it) => it.id)
+      .filter((id) => id && !(id in usageById))
+      .slice(0, 30); // throttle initial bulk
+    if (idsToFetch.length === 0) return;
+    Promise.all(idsToFetch.map(async (id) => {
+      try {
+        const res = await fetch(`${API}/api/files/${id}/usage`);
+        if (!res.ok) return [id, null];
+        const data = await res.json();
+        return [id, data];
+      } catch {
+        return [id, null];
+      }
+    })).then((pairs) => {
+      if (cancelled) return;
+      setUsageById((prev) => {
+        const next = { ...prev };
+        for (const [id, data] of pairs) {
+          next[id] = data || { count: 0, slots: [] };
+        }
+        return next;
+      });
+    });
+    return () => { cancelled = true; };
+  }, [open, items, usageById]);
+
   /* ---- Bulk upload ---- */
   const handleBulkUpload = useCallback(async (fileList) => {
     if (!fileList || fileList.length === 0) return;
@@ -101,6 +133,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setItems((arr) => arr.filter((i) => i.id !== item.id));
       setConfirmDelete(null);
+      setUsageById((prev) => { const n = { ...prev }; delete n[item.id]; return n; });
       setUploadResult({ deletedName: item.original_filename || "Imagen" });
       setTimeout(() => setUploadResult(null), 3500);
       setRefreshTick((n) => n + 1);
@@ -332,6 +365,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                 <LibraryThumb
                   key={it.id || it.storage_path}
                   item={it}
+                  usage={usageById[it.id]}
                   onSelect={onSelect}
                   onDelete={() => setConfirmDelete(it)}
                   onEdit={() => setEditing(it)}
@@ -396,6 +430,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         {confirmDelete && (
           <ConfirmDeleteDialog
             item={confirmDelete}
+            usage={usageById[confirmDelete.id]}
             onCancel={() => setConfirmDelete(null)}
             onConfirm={() => handleDelete(confirmDelete)}
           />
@@ -408,11 +443,12 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
 /* ============================================================
    LibraryThumb
 ============================================================ */
-function LibraryThumb({ item, onSelect, onDelete, onEdit, onReplace }) {
+function LibraryThumb({ item, usage, onSelect, onDelete, onEdit, onReplace }) {
   const fullUrl = item.url?.startsWith("http") ? item.url : `${API}${item.url}`;
   const niceName = item.original_filename || item.slot_id || item.storage_path?.split("/").pop();
   const sizeKb = item.size ? Math.max(1, Math.round(item.size / 1024)) : null;
   const tags = item.tags || [];
+  const usageCount = usage?.count ?? null;
 
   return (
     <div
@@ -438,6 +474,22 @@ function LibraryThumb({ item, onSelect, onDelete, onEdit, onReplace }) {
             Usar esta
           </span>
         </div>
+
+        {/* Usage badge — visible always, top-left */}
+        {usageCount !== null && (
+          <span
+            data-testid={`image-library-usage-${(item.id || "x").slice(0, 24)}`}
+            className={`absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 text-[9px] tracking-[0.18em] uppercase font-semibold backdrop-blur-md ${
+              usageCount > 0
+                ? "bg-[#5A6B4F]/90 text-[#FDFBF7]"
+                : "bg-[#1A1513]/55 text-[#FDFBF7]/80"
+            }`}
+            title={usageCount > 0 ? `Usada en ${usageCount} ${usageCount === 1 ? "página" : "páginas"}` : "Sin usar"}
+          >
+            <Eye className="w-3 h-3" strokeWidth={1.8} />
+            {usageCount > 0 ? usageCount : "0"}
+          </span>
+        )}
       </button>
 
       {/* Manage actions */}
@@ -600,7 +652,7 @@ function EditDrawer({ item, onCancel, onSave }) {
 /* ============================================================
    Inline delete confirmation
 ============================================================ */
-function ConfirmDeleteDialog({ item, onCancel, onConfirm }) {
+function ConfirmDeleteDialog({ item, usage, onCancel, onConfirm }) {
   const [busy, setBusy] = useState(false);
   const submit = async () => {
     setBusy(true);
@@ -610,15 +662,22 @@ function ConfirmDeleteDialog({ item, onCancel, onConfirm }) {
       setBusy(false);
     }
   };
+
+  const usageCount = usage?.count ?? null;
+  const slots = usage?.slots || [];
+  const isDangerous = usageCount && usageCount > 0;
+
   return (
     <div
       data-testid="image-library-confirm-delete"
       className="absolute inset-0 z-10 flex items-center justify-center bg-[#1A1513]/65 backdrop-blur-sm p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
     >
-      <div className="w-full max-w-md bg-[#FDFBF7] shadow-xl border border-[#2C2621]/15 overflow-hidden">
+      <div className="w-full max-w-lg max-h-[85vh] bg-[#FDFBF7] shadow-xl border border-[#2C2621]/15 overflow-hidden flex flex-col">
         <div className="flex items-start gap-4 p-6">
-          <span className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#C16542]/15 text-[#C16542] flex-shrink-0">
+          <span className={`inline-flex items-center justify-center w-11 h-11 rounded-full flex-shrink-0 ${
+            isDangerous ? "bg-[#C16542]/20 text-[#C16542]" : "bg-[#C16542]/15 text-[#C16542]"
+          }`}>
             <Trash2 className="w-5 h-5" strokeWidth={1.7} />
           </span>
           <div className="min-w-0">
@@ -628,12 +687,72 @@ function ConfirmDeleteDialog({ item, onCancel, onConfirm }) {
             <p className="text-sm text-[#5C5248] mt-2 leading-relaxed">
               «<span className="text-[#2C2621] font-medium">{item.original_filename || "Imagen"}</span>» quedará oculta de la biblioteca y de las páginas que la utilicen.
             </p>
-            <p className="text-[11px] text-[#5C5248]/70 mt-3">
-              Esta acción puede deshacerse desde el panel de administración.
-            </p>
           </div>
         </div>
-        <div className="px-6 py-4 bg-[#F2EBE1]/40 border-t border-[#2C2621]/10 flex items-center justify-end gap-3">
+
+        {/* Used-in panel */}
+        <div
+          data-testid="image-library-confirm-usage"
+          className={`mx-6 mb-4 border ${isDangerous ? "border-[#C16542]/40 bg-[#FBE4DC]/40" : "border-[#2C2621]/12 bg-[#F2EBE1]/40"}`}
+        >
+          {usageCount === null ? (
+            <div className="px-4 py-3 flex items-center gap-2 text-[12px] text-[#5C5248]">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={1.6} />
+              <span>Comprobando dónde se usa esta imagen…</span>
+            </div>
+          ) : usageCount === 0 ? (
+            <div className="px-4 py-3 flex items-center gap-2 text-[12px] text-[#5C5248]">
+              <Check className="w-3.5 h-3.5 text-[#5A6B4F]" strokeWidth={2} />
+              <span>No se usa en ninguna página — se puede eliminar sin afectar al sitio.</span>
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              <div className="px-4 py-3 flex items-center gap-2 text-[12px] text-[#7C3B23] border-b border-[#C16542]/25 bg-[#FBE4DC]/60">
+                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
+                <span>
+                  <strong>Atención:</strong> esta imagen se usa en{" "}
+                  <strong>{usageCount}</strong> {usageCount === 1 ? "página" : "páginas"}. Al eliminarla, esas páginas mostrarán un hueco vacío.
+                </span>
+              </div>
+              <ul className="max-h-44 overflow-y-auto px-2 py-2 text-[12px] divide-y divide-[#2C2621]/8">
+                {slots.slice(0, 30).map((s) => {
+                  const pageHref = slotToPath(s.slot_id);
+                  return (
+                    <li
+                      key={s.slot_id}
+                      data-testid={`image-library-usage-slot-${(s.slot_id || "x").slice(0, 30)}`}
+                      className="px-2 py-2 flex items-center justify-between gap-3"
+                    >
+                      <div className="min-w-0">
+                        <code className="text-[11px] text-[#2C2621] font-mono truncate block">{s.slot_id}</code>
+                        {s.source && (
+                          <span className="text-[10px] text-[#5C5248] tracking-[0.15em] uppercase">{s.source}</span>
+                        )}
+                      </div>
+                      {pageHref && (
+                        <a
+                          href={pageHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase text-[#C16542] hover:text-[#7C3B23] flex-shrink-0"
+                        >
+                          ver <ExternalLink className="w-3 h-3" strokeWidth={1.8} />
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+                {slots.length > 30 && (
+                  <li className="px-2 py-2 text-[11px] text-[#5C5248] italic">
+                    …y {slots.length - 30} más
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="px-6 py-4 bg-[#F2EBE1]/40 border-t border-[#2C2621]/10 flex items-center justify-end gap-3 mt-auto">
           <button
             type="button"
             onClick={onCancel}
@@ -648,15 +767,56 @@ function ConfirmDeleteDialog({ item, onCancel, onConfirm }) {
             onClick={submit}
             disabled={busy}
             data-testid="image-library-confirm-yes"
-            className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-2.5 text-[10px] tracking-[0.25em] uppercase disabled:opacity-50 transition-colors"
+            className={`inline-flex items-center gap-2 text-[#FDFBF7] px-5 py-2.5 text-[10px] tracking-[0.25em] uppercase disabled:opacity-50 transition-colors ${
+              isDangerous
+                ? "bg-[#7C3B23] hover:bg-[#5A2A19]"
+                : "bg-[#C16542] hover:bg-[#A35133]"
+            }`}
           >
             {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" strokeWidth={2} />}
-            Eliminar
+            {isDangerous ? "Eliminar de todos modos" : "Eliminar"}
           </button>
         </div>
       </div>
     </div>
   );
+}
+
+/* ----------------------------------------------------------------
+   slotToPath — best-effort heuristic that maps a CMS slot_id to
+   the public URL of the page that probably renders it. Slot ids
+   follow the pattern `{section}.{...}` (e.g. `surdemarruecos.hero.image`,
+   `findeano-2026.itinerary.day-1`). We split on `.` / `:` and try to
+   match the first segment to a known route slug.
+---------------------------------------------------------------- */
+const SLOT_PREFIX_TO_PATH = {
+  // /viajes/* sections
+  surdemarruecos:             "/viajes/surdemarruecos",
+  nortedemarruecos:           "/viajes/nortedemarruecos",
+  marruecos:                  "/viajes/marruecos",
+  escapadas:                  "/viajes/escapadas",
+  aventura:                   "/viajes/aventura",
+  "aventura-enduro":          "/viajes/aventura/enduro",
+  // hubs sur
+  "atlas-desierto":           "/viajes/sur/atlas_desierto",
+  "desierto-atlas":           "/viajes/sur/desierto_atlas",
+  "marrakech-erg":            "/viajes/sur/marrakech_ergchebbi",
+  "marrakech-loop":           "/viajes/marrakech_ergchebbi_marrakech",
+  "marrakech-essaouira":      "/viajes/sur/marrakech_essaouira",
+  "errachidia-atlas-fez":     "/viajes/sur/errachidia-atlas-fez",
+  // Marketing
+  home:                       "/",
+  contact:                    "/contacto",
+  "proximas-salidas":         "/proximas_salidas",
+  "findeano-2026":            "/findeano2025",
+  "findeano2025":             "/findeano2025",
+};
+function slotToPath(slot_id) {
+  if (!slot_id) return null;
+  const head = slot_id.split(/[.:]/, 1)[0];
+  if (SLOT_PREFIX_TO_PATH[head]) return SLOT_PREFIX_TO_PATH[head];
+  if (slot_id.startsWith("/")) return slot_id;
+  return null;
 }
 
 /* ============================================================
