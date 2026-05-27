@@ -84,6 +84,7 @@ import {
   EscapadaFez23Page,
   EscapadaFez34Page,
   EscapadaFezSidiali34Page,
+  EscapadaFezSidiali45Page,
   EscapadaMarrakechPage,
   EscapadaMarrakech23Page,
   EscapadaRakAgafay34Page,
@@ -163,6 +164,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourEscapadaFez23")      return <EscapadaFez23Page />;
   if (routeId === "tourEscapadaFez34")      return <EscapadaFez34Page />;
   if (routeId === "tourEscapadaFezSidiali34") return <EscapadaFezSidiali34Page />;
+  if (routeId === "tourEscapadaFezSidiali45") return <EscapadaFezSidiali45Page />;
   if (routeId === "tourEscapadaMarrakech")  return <EscapadaMarrakechPage />;
   if (routeId === "tourEscapadaMarrakech23")return <EscapadaMarrakech23Page />;
   if (routeId === "tourEscapadaRakAgafay34")return <EscapadaRakAgafay34Page />;

@@ -5,9 +5,9 @@ import { DAY_FEZ_ARRIVAL, DAY_FEZ_MEDINA } from "@/lib/programs/escapadaFez23";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
-const DAY_MEKNES = {
-  route_id: "escfez34-meknes",
-  id: "escfez34-d3",
+export const DAY_MEKNES = {
+  route_id: "esc-meknes",
+  id: "esc-meknes-d",
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T(

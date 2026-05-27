@@ -83,6 +83,7 @@ export const ROUTES = {
   tourEscapadaFez23:      { es: "viajes/escapadas/fez/programa_2n_3d",       en: "tours/short-escapes/fez/program-2n-3d",        fr: "voyages/escapades-courtes/fes/programme-2n-3j" },
   tourEscapadaFez34:      { es: "viajes/escapadas/fez/programa_3n_4d",       en: "tours/short-escapes/fez/program-3n-4d",        fr: "voyages/escapades-courtes/fes/programme-3n-4j" },
   tourEscapadaFezSidiali34: { es: "viajes/escapadas/fez_sidiali/programa_3n_4d", en: "tours/short-escapes/fez-sidiali/program-3n-4d", fr: "voyages/escapades-courtes/fes-sidiali/programme-3n-4j" },
+  tourEscapadaFezSidiali45: { es: "viajes/escapadas/fez_sidiali/programa_4n_5d", en: "tours/short-escapes/fez-sidiali/program-4n-5d", fr: "voyages/escapades-courtes/fes-sidiali/programme-4n-5j" },
   tourEscapadaMarrakech:  { es: "viajes/escapadas/marrakech",               en: "tours/short-escapes/marrakech",                fr: "voyages/escapades-courtes/marrakech" },
   tourEscapadaMarrakech23:{ es: "viajes/escapadas/marrakech/programa_2n_3d", en: "tours/short-escapes/marrakech/program-2n-3d", fr: "voyages/escapades-courtes/marrakech/programme-2n-3j" },
   tourEscapadaRakAgafay34:{ es: "viajes/escapadas/marrakech_agafay/programa_3n_4d", en: "tours/short-escapes/marrakech-agafay/program-3n-4d", fr: "voyages/escapades-courtes/marrakech-agafay/programme-3n-4j" },

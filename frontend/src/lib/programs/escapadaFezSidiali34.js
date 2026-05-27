@@ -5,7 +5,7 @@ import { DAY_FEZ_ARRIVAL, DAY_FEZ_MEDINA } from "@/lib/programs/escapadaFez23";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
-const DAY_FEZ_SIDIALI = {
+export const DAY_FEZ_SIDIALI = {
   route_id: "escfs34-fez-sidiali",
   id: "escfs34-d3",
   image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",

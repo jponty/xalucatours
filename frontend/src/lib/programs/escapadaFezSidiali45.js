@@ -1,0 +1,182 @@
+// Fez + Meknès + Volubilis + Aguelmame Sidi Ali · 4 nights / 5 days
+// Combines two reusable blocks: arrival + medina (escapadaFez23),
+// Meknès / Volubilis / Moulay Idriss (escapadaFez34) and the Middle
+// Atlas → Sidi Ali drive (escapadaFezSidiali34) + return.
+import { DAY_FEZ_ARRIVAL, DAY_FEZ_MEDINA } from "@/lib/programs/escapadaFez23";
+import { DAY_MEKNES } from "@/lib/programs/escapadaFez34";
+import { DAY_FEZ_SIDIALI } from "@/lib/programs/escapadaFezSidiali34";
+
+const T = (es, en, fr) => ({ es, en, fr });
+
+const DAY_RETURN = {
+  route_id: "escfs45-return",
+  id: "escfs45-d5",
+  image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5C5248",
+  title: T("Sidi Ali · regreso desde el aeropuerto de Fez", "Sidi Ali · return from Fez airport", "Sidi Ali · retour depuis l'aéroport de Fès"),
+  body: {
+    es: "Después del desayuno en el hotel — recomendamos madrugar para disfrutar del amanecer sobre el lago y, si el tiempo acompaña, asomarse al cráter del volcán cercano —, traslado por el Medio Atlas hasta el aeropuerto de Fez para tomar el vuelo de regreso. Nota: la jornada incluye un desplazamiento por carretera de aproximadamente 2 h 30 min.",
+    en: "After breakfast at the hotel — we recommend an early start to enjoy the sunrise over the lake and, weather permitting, a peek at the nearby volcanic crater —, transfer through the Middle Atlas to Fez airport for the return flight. Note: this day includes a 2 h 30 min road transfer.",
+    fr: "Après le petit-déjeuner à l'hôtel — nous recommandons un lever matinal pour profiter du lever du soleil sur le lac et, si le temps le permet, jeter un œil au cratère volcanique voisin —, transfert à travers le Moyen Atlas jusqu'à l'aéroport de Fès pour le vol retour. Note : la journée inclut un transfert routier d'environ 2 h 30.",
+  },
+};
+
+export const PROGRAM_ESCAPADA_FEZ_SIDIALI_45 = {
+  routeId: "tourEscapadaFezSidiali45",
+  duration_key: "fs4n5d",
+  duration: T("4 noches / 5 días", "4 nights / 5 days", "4 nuits / 5 jours"),
+  prices: { low: 890, mid: 990, high: 1090, premium: 1190 },
+  route: [
+    { day: 1, lat: 33.9273, lng: -4.9779, type: "airport", name: T("Fez · Aeropuerto", "Fez · Airport", "Fès · Aéroport") },
+    { day: 1, lat: 34.0651, lng: -4.9760, type: "city",    name: T("Fez · Riad en la Medina", "Fez · Medina riad", "Fès · Riad dans la médina") },
+    { day: 2, lat: 34.0633, lng: -4.9737, type: "city",    name: T("Fez-el Bali · Medina UNESCO", "Fez-el Bali · UNESCO Medina", "Fès-el Bali · médina UNESCO") },
+    { day: 3, lat: 33.8956, lng: -5.5473, type: "city",    name: T("Meknès · Medina UNESCO", "Meknès · UNESCO Medina", "Meknès · médina UNESCO") },
+    { day: 3, lat: 34.0742, lng: -5.5550, type: "unesco",  name: T("Volubilis · ruinas romanas", "Volubilis · Roman ruins", "Volubilis · ruines romaines") },
+    { day: 3, lat: 34.0553, lng: -5.5223, type: "kasbah",  name: T("Moulay Idriss · ciudad santa", "Moulay Idriss · holy city", "Moulay Idriss · ville sainte") },
+    { day: 4, lat: 33.5333, lng: -5.1100, type: "city",    name: T("Ifrane · «la pequeña Suiza»", "Ifrane · «little Switzerland»", "Ifrane · « la petite Suisse »") },
+    { day: 4, lat: 33.0500, lng: -4.9650, type: "lake",    name: T("Aguelmame Sidi Ali", "Aguelmame Sidi Ali", "Aguelmame Sidi Ali") },
+    { day: 5, lat: 33.9273, lng: -4.9779, type: "airport", name: T("Fez · Aeropuerto · Regreso", "Fez · Airport · Return", "Fès · Aéroport · Retour") },
+  ],
+  days: [DAY_FEZ_ARRIVAL, DAY_FEZ_MEDINA, DAY_MEKNES, DAY_FEZ_SIDIALI, DAY_RETURN],
+  details: {
+    includes: {
+      es: [
+        "Tres noches en Fez en Riad en la Medina u Hotel 4★ en régimen de Media Pensión",
+        "Una noche en Aguelmame Sidi Ali en Hotel Xaluca Spa Aguelmame Sidi Ali en régimen de Media Pensión",
+        "Comida en restaurante tradicional de la Medina de Fez (día 2)",
+        "Comida en Hotel Xaluca Spa Aguelmame Sidi Ali (día 4)",
+        "Visita guiada de Fez (día 2)",
+        "Entrada a la Madraza",
+        "Vehículo turismo con chófer del día 3 al día 5",
+        "Visita guiada de Meknès (medio día)",
+        "Visita de Volubilis con entrada y guía oficial",
+        "Transfers desde y hacia el aeropuerto de Fez",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Three nights in Fez in a Medina riad or 4★ hotel · half board",
+        "One night at Hotel Xaluca Spa Aguelmame Sidi Ali · half board",
+        "Lunch at a traditional restaurant in the Fez medina (day 2)",
+        "Lunch at Hotel Xaluca Spa Aguelmame Sidi Ali (day 4)",
+        "Guided tour of Fez (day 2)",
+        "Madrasa admission",
+        "Car with driver from day 3 to day 5",
+        "Guided tour of Meknès (half day)",
+        "Volubilis admission and licensed guide",
+        "Airport transfers from and to Fez airport",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Trois nuits à Fès en riad de la médina ou hôtel 4★ · demi-pension",
+        "Une nuit à l'Hôtel Xaluca Spa Aguelmame Sidi Ali · demi-pension",
+        "Déjeuner dans un restaurant traditionnel de la médina de Fès (jour 2)",
+        "Déjeuner à l'Hôtel Xaluca Spa Aguelmame Sidi Ali (jour 4)",
+        "Visite guidée de Fès (jour 2)",
+        "Entrée à la Médersa",
+        "Voiture avec chauffeur du jour 3 au jour 5",
+        "Visite guidée de Meknès (demi-journée)",
+        "Volubilis : entrée et guide diplômé",
+        "Transferts depuis et vers l'aéroport de Fès",
+        "Assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Las bebidas",
+        "Las comidas a mediodía no especificadas",
+        "Visitas o guías no detalladas",
+        "Otros extras personales (masajes, hammam, etc.)",
+        "El vuelo (salvo que se indique lo contrario)",
+        "Suplemento opcional para seguro de cancelación · 45 € por persona para viajes de hasta 9 días",
+      ],
+      en: [
+        "Drinks",
+        "Lunches not specified",
+        "Tours or guides not detailed",
+        "Personal extras (massages, hammam, etc.)",
+        "Flights (unless otherwise stated)",
+        "Optional cancellation insurance · €45 per person for trips up to 9 days",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners non spécifiés",
+        "Visites ou guides non détaillés",
+        "Extras personnels (massages, hammam, etc.)",
+        "Le vol (sauf mention contraire)",
+        "Assurance annulation en option · 45 € par personne pour les voyages jusqu'à 9 jours",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Ryanair o Air Arabia.",
+        "Las tarifas dependen de la ocupación del vehículo. Viaje en vehículo turismo con chófer.",
+        "Tarifas basadas en habitaciones dobles y triples. Suplemento individual: 200 €.",
+        "Descuento niños (3-11 años) compartiendo habitación con dos adultos: 230 €.",
+        "Los chóferes hispanohablantes son limitados — reservar con antelación.",
+        "Los guías oficiales se utilizan únicamente en las Medinas, no para las rutas.",
+        "El nombre del riad se confirma tras la reserva.",
+        "No se recomienda realizar la visita guiada de Fez en viernes (día de oración).",
+        "Actividades opcionales: quads 90 € por vehículo (circuito de dos horas).",
+        "Pasaporte obligatorio con vigencia mínima de 6 meses.",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Ryanair or Air Arabia.",
+        "Rates depend on vehicle occupancy. Travel in car with driver.",
+        "Rates based on double and triple rooms. Single supplement: €200.",
+        "Children discount (3-11) sharing room with two adults: €230.",
+        "Spanish-speaking drivers are limited — book early.",
+        "Official guides are reserved for medina visits only.",
+        "Riad name is confirmed after booking.",
+        "We do not recommend the Fez guided tour on Fridays (prayer day).",
+        "Optional quads: €90 per vehicle (2-hour circuit).",
+        "Valid passport required with at least 6 months remaining.",
+      ],
+      fr: [
+        "Options de vol : Royal Air Maroc, Ryanair ou Air Arabia.",
+        "Tarifs selon l'occupation du véhicule. Voyage en voiture avec chauffeur.",
+        "Tarifs base chambre double et triple. Supplément single : 200 €.",
+        "Réduction enfants (3-11 ans) partageant avec deux adultes : 230 €.",
+        "Chauffeurs hispanophones limités — réserver tôt.",
+        "Les guides officiels sont réservés aux visites des médinas.",
+        "Le nom du riad est confirmé après la réservation.",
+        "Nous déconseillons la visite guidée de Fès le vendredi.",
+        "Quads en option : 90 € par véhicule (circuit de 2 h).",
+        "Passeport valable au moins 6 mois.",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria. Pago por transferencia o Visa.",
+        "Reserva: 30% del importe total al confirmar.",
+        "Pago final: 70% restante hasta 30 días antes de la salida.",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del vuelo + 30% de los servicios de tierra al reservar.",
+        "Cancelación 45 días antes de la salida: 30% del importe total.",
+        "Cancelación 21 días antes de la salida: 100% del importe total.",
+        "Penalización fija de 50 € por reserva en concepto de gastos de gestión.",
+        "Estas condiciones aplican sólo a los servicios de tierra. Los vuelos se rigen por las condiciones de cada compañía aérea. El seguro de cancelación no se reembolsa.",
+      ],
+      en: [
+        "Compulsory booking form. Payment by bank transfer or Visa.",
+        "Booking: 30% at confirmation.",
+        "Final payment: 70% balance up to 30 days before departure.",
+        "If the chosen flight requires immediate ticketing: 100% of the flight + 30% of land services at booking.",
+        "Cancellation 45 days before departure: 30% of the total.",
+        "Cancellation 21 days before departure: 100% of the total.",
+        "Fixed €50 per booking management fee.",
+        "Conditions apply to land services only. Cancellation insurance is non-refundable.",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire. Paiement par virement ou Visa.",
+        "Réservation : 30 % à la confirmation.",
+        "Paiement final : solde de 70 % jusqu'à 30 jours avant le départ.",
+        "Si le vol exige une émission immédiate : 100 % du vol + 30 % des services terrestres à la réservation.",
+        "Annulation 45 jours avant : 30 % du total.",
+        "Annulation 21 jours avant : 100 % du total.",
+        "Pénalité fixe de 50 € par réservation pour frais de gestion.",
+        "Conditions applicables aux services terrestres uniquement. L'assurance annulation n'est pas remboursable.",
+      ],
+    },
+  },
+};
+
+export default PROGRAM_ESCAPADA_FEZ_SIDIALI_45;
