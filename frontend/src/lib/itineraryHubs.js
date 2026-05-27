@@ -1098,3 +1098,83 @@ export const HUB_ATLAS_DESIERTO_FEZ = {
   ],
 };
 
+// ============================================================
+// Hub Escapadas Cortas · Marrakech → Erg Chebbi → Marrakech
+// Compact "escapada" entry that surfaces only the 2n/3d, 3n/4d and 4n/5d
+// loop variants. Reuses the existing tourMarrakechLoop23/34/45 programs.
+// ============================================================
+export const HUB_ESCAPADA_RAK_ERG_RAK = {
+  id: "escapada-rak-erg-rak",
+  hero: {
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Escapadas Marruecos", en: "Morocco short escapes", fr: "Escapades Maroc" },
+    place: { es: "Marrakech · Atlas · Erg Chebbi · Marrakech", en: "Marrakech · Atlas · Erg Chebbi · Marrakech", fr: "Marrakech · Atlas · Erg Chebbi · Marrakech" },
+    title: {
+      es: "Escapadas de 3 a 5 días a Marrakech y al desierto del Erg Chebbi.",
+      en: "Short 3 to 5-day escapes to Marrakech and the Erg Chebbi desert.",
+      fr: "Escapades de 3 à 5 jours à Marrakech et au désert de l'Erg Chebbi.",
+    },
+    subtitle: {
+      es: "Marrakech, puerta del Sáhara — pasa al menos una noche bajo las estrellas en las dunas del Erg Chebbi antes de volver a la ciudad roja.",
+      en: "Marrakech, gateway to the Sahara — spend at least one night under the stars on the Erg Chebbi dunes before returning to the red city.",
+      fr: "Marrakech, porte du Sahara — passez au moins une nuit sous les étoiles sur les dunes de l'Erg Chebbi avant de regagner la ville rouge.",
+    },
+  },
+  intro: {
+    overline: { es: "Marrakech – Erg Chebbi – Marrakech", en: "Marrakech – Erg Chebbi – Marrakech", fr: "Marrakech – Erg Chebbi – Marrakech" },
+    title: {
+      es: "Marrakech y el Sáhara, en pocas noches.",
+      en: "Marrakech and the Sahara, in just a few nights.",
+      fr: "Marrakech et le Sahara, en quelques nuits.",
+    },
+    body: {
+      es: [
+        "Marrakech, en el centro de Marruecos, sigue siendo uno de los destinos más populares del país: alberga monumentos imprescindibles como la Medina, la mezquita Koutoubia o la mítica plaza Jemaa el-Fna.",
+        "Pero más allá de la ciudad, Marrakech es también la puerta de entrada al Sáhara y a las imponentes dunas del Erg Chebbi.",
+        "Un viaje a Marruecos no está completo sin pasar al menos una noche durmiendo en el desierto, entre las dunas más altas del país.",
+      ],
+      en: [
+        "Marrakech, in the centre of Morocco, remains one of the country's most popular destinations: home to landmarks like the Medina, the Koutoubia mosque and the legendary Jemaa el-Fna square.",
+        "But beyond the city, Marrakech is also the gateway to the Sahara and the towering Erg Chebbi dunes.",
+        "A trip to Morocco is not complete without at least one night sleeping in the desert, among the country's tallest dunes.",
+      ],
+      fr: [
+        "Marrakech, au centre du Maroc, reste l'une des destinations les plus populaires du pays : médina, mosquée Koutoubia ou la mythique place Jemaa el-Fna.",
+        "Mais au-delà de la ville, Marrakech est aussi la porte du Sahara et des dunes spectaculaires de l'Erg Chebbi.",
+        "Un voyage au Maroc ne serait pas complet sans au moins une nuit dans le désert, parmi les plus hautes dunes du pays.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de escapada", en: "Short escape options", fr: "Options d'escapade" },
+    title: { es: "Elige tu escapada.", en: "Choose your short escape.", fr: "Choisissez votre escapade." },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this journey.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles.",
+    },
+    group_a: { es: "Marrakech → Erg Chebbi → Marrakech", en: "Marrakech → Erg Chebbi → Marrakech", fr: "Marrakech → Erg Chebbi → Marrakech" },
+  },
+  programs: [
+    { id: "esc-mem-2-3", direction: "a", nights: "2n3d", accent: "#5A6B4F",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechLoop23",
+      blurb: { es: "Viaje de 2 noches y 3 días descubriendo Marrakech y el desierto del Erg Chebbi.",
+               en: "2-night/3-day trip discovering Marrakech and the Erg Chebbi desert.",
+               fr: "Voyage de 2 nuits et 3 jours pour découvrir Marrakech et le désert de l'Erg Chebbi." } },
+    { id: "esc-mem-3-4", direction: "a", nights: "3n4d", accent: "#7C8B5C",
+      image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechLoop34",
+      blurb: { es: "Viaje de 3 noches y 4 días descubriendo Marrakech y el desierto del Erg Chebbi, con noche extra en Kasbah Xaluca.",
+               en: "3-night/4-day trip with Marrakech, the Erg Chebbi desert and an extra night at Kasbah Xaluca.",
+               fr: "Voyage de 3 nuits et 4 jours avec Marrakech, l'Erg Chebbi et une nuit supplémentaire au Kasbah Xaluca." } },
+    { id: "esc-mem-4-5", direction: "a", nights: "4n5d", accent: "#D97742",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechLoop45",
+      blurb: { es: "Viaje de 4 noches y 5 días con día completo en el Alto Atlas Central y dos noches en Kasbah Xaluca antes del bivouac.",
+               en: "4-night/5-day trip with a full Central High Atlas day and two nights at Kasbah Xaluca before the bivouac.",
+               fr: "Voyage de 4 nuits et 5 jours avec une journée complète dans le Haut Atlas Central et deux nuits au Kasbah Xaluca." } },
+  ],
+};
+
+

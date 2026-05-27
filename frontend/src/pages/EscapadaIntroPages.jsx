@@ -8,9 +8,17 @@ import {
 } from "@/lib/escapadasIntros";
 import { PROGRAM_ATLAS_34 } from "@/lib/programs/escapadaAtlas34";
 import { PROGRAM_DESIERTO_34 } from "@/lib/programs/escapadaDesierto34";
+import { PROGRAM_ESCAPADA_FEZ_23 } from "@/lib/programs/escapadaFez23";
+import { PROGRAM_ESCAPADA_FEZ_34 } from "@/lib/programs/escapadaFez34";
+import { PROGRAM_ESCAPADA_MARRAKECH_23 } from "@/lib/programs/escapadaMarrakech23";
+import { PROGRAM_ESCAPADA_RAK_AGAFAY_34 } from "@/lib/programs/escapadaRakAgafay34";
 
 export const EscapadaDesierto34Page = () => <ProgramTemplate program={PROGRAM_DESIERTO_34} variant="desierto" />;
 export const EscapadaAtlas34Page    = () => <ProgramTemplate program={PROGRAM_ATLAS_34}    variant="atlas" />;
+export const EscapadaFez23Page      = () => <ProgramTemplate program={PROGRAM_ESCAPADA_FEZ_23} variant="fez" />;
+export const EscapadaFez34Page      = () => <ProgramTemplate program={PROGRAM_ESCAPADA_FEZ_34} variant="fez" />;
+export const EscapadaMarrakech23Page= () => <ProgramTemplate program={PROGRAM_ESCAPADA_MARRAKECH_23} variant="rak" />;
+export const EscapadaRakAgafay34Page= () => <ProgramTemplate program={PROGRAM_ESCAPADA_RAK_AGAFAY_34} variant="raga" />;
 export const EscapadaFezPage        = () => <EscapadaIntroPage data={ESCAPADA_FEZ}         accent="#A07042" />;
 export const EscapadaMarrakechPage  = () => <EscapadaIntroPage data={ESCAPADA_MARRAKECH}   accent="#D97742" />;
 export const EscapadaTangerPage     = () => <EscapadaIntroPage data={ESCAPADA_TANGER}      accent="#5A7F9C" />;

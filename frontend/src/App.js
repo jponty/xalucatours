@@ -81,9 +81,14 @@ import {
   EscapadaDesierto34Page,
   EscapadaAtlas34Page,
   EscapadaFezPage,
+  EscapadaFez23Page,
+  EscapadaFez34Page,
   EscapadaMarrakechPage,
+  EscapadaMarrakech23Page,
+  EscapadaRakAgafay34Page,
   EscapadaTangerPage,
 } from "@/pages/EscapadaIntroPages";
+import EscapadaRakErgRakHubPage from "@/pages/EscapadaRakErgRakHubPage";
 import NorteCiudadesImperialesHubPage from "@/pages/NorteCiudadesImperialesHubPage";
 import NorteTangerFezHubPage from "@/pages/NorteTangerFezHubPage";
 import CiudadesImperiales45Page from "@/pages/CiudadesImperiales45Page";
@@ -154,7 +159,12 @@ const LocalizedRouter = () => {
   if (routeId === "tourEscapadaDesierto34") return <EscapadaDesierto34Page />;
   if (routeId === "tourEscapadaAtlas34")    return <EscapadaAtlas34Page />;
   if (routeId === "tourEscapadaFez")        return <EscapadaFezPage />;
+  if (routeId === "tourEscapadaFez23")      return <EscapadaFez23Page />;
+  if (routeId === "tourEscapadaFez34")      return <EscapadaFez34Page />;
   if (routeId === "tourEscapadaMarrakech")  return <EscapadaMarrakechPage />;
+  if (routeId === "tourEscapadaMarrakech23")return <EscapadaMarrakech23Page />;
+  if (routeId === "tourEscapadaRakAgafay34")return <EscapadaRakAgafay34Page />;
+  if (routeId === "tourEscapadaRakErgRakHub")return <EscapadaRakErgRakHubPage />;
   if (routeId === "tourEscapadaTanger")     return <EscapadaTangerPage />;
   if (routeId === "tourNorteCiudadesImperiales") return <NorteCiudadesImperialesHubPage />;
   if (routeId === "tourCiudadesImperiales45")    return <CiudadesImperiales45Page />;
