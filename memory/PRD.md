@@ -86,7 +86,14 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
 ## Recent additions (Feb 2026 — session, latest)
-- **Biblioteca de imágenes reutilizable** (Feb 2026, latest):
+- **Image Library — gestión completa** (Feb 2026, latest):
+  - Backend: `POST /api/library/upload` (bulk hasta 30 archivos, valida MIME y 8 MB por archivo, devuelve uploaded+skipped); `PATCH /api/files/{id}` (rename + tags normalizadas: lowercase/trim/dedup, máx 20 tags); `DELETE /api/files/{id}` (soft-delete); `POST /api/files/{id}/replace` (sube nuevos bytes manteniendo el id); `GET /api/library/tags` (chips con count); `GET /api/files?tag=duna` (filtro por tag).
+  - Frontend: rewrite de `ImageLibraryPicker.jsx` con bulk-upload (`Subir varias`), chips de tags (`Todas` + por tag), búsqueda por nombre/tag/slot, hover actions por miniatura (reemplazar / renombrar / eliminar), drawer inline de edición (nombre + tags coma-separadas), banner verde de confirmación tras upload.
+  - Header: nuevo icono `Library` (`header-library-toggle`) que solo aparece cuando `imageEditMode === true` — atajo directo a la biblioteca desde cualquier página, sin necesidad de abrir un slot.
+  - Soft-delete: los bytes permanecen en Emergent storage (no hay API DELETE) pero quedan ocultos en listings — comportamiento esperado del playbook.
+  - Verificado por testing agent iteration_11: **24/24 PASS** (7 backend + 17 frontend), sin issues.
+
+- **Biblioteca de imágenes reutilizable** (Feb 2026):
   - New backend `GET /api/files?limit=&skip=&q=` — lists every previously-uploaded image (most recent first), excludes soft-deleted, supports filename / slot-id search. Returns `{items, total, has_more, limit, skip}`.
   - New frontend `components/ImageLibraryPicker.jsx` — modal-over-modal grid picker with search, debounced 250 ms, esc/backdrop close, hover overlay "Usar esta".
   - `EditableImage.jsx` now exposes a **"Biblioteca"** button next to the upload dropzone. Selecting a thumbnail calls `PUT /api/slots/{slot}` (no re-upload), updates parent + local mirror, and closes the picker — same photo can be reused across pages without bumping storage usage.
