@@ -1199,6 +1199,133 @@ export const DAY_EM_MARRAKECH_VISIT = {
   ],
 };
 
+/* ============================================================
+   Erg Chebbi → Marrakech · 4 noches / 5 días (versión express).
+   Reutiliza días EM (1, 6 y 7) + un único día de Atlas central
+   por las gargantas del Todra y el valle del Dades.
+============================================================ */
+
+export const PROGRAM_EM_45 = {
+  routeId: "tourErgMarrakech45",
+  duration_key: "em4n5d",
+  duration: { es: "4 noches / 5 días", en: "4 nights / 5 days", fr: "4 nuits / 5 jours" },
+  prices: { low: 1190, mid: 1390, high: 1590, premium: 1890 },
+  reverse: true,
+  days: [
+    DAY_EM_ARRIVAL_ERFOUD,
+    DAY_DESERT_BIVOUAC,
+    DAY_TODRA_DADES,
+    DAY_EM_AITBEN_MARRAKECH,
+    DAY_EM_MARRAKECH_VISIT,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Erfoud en Kasbah Xaluca en media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en media pensión",
+        "Una noche en Hotel Xaluca Dades en media pensión",
+        "Una noche en Marrakech en alojamiento y desayuno (Riad o Hotel 5*)",
+        "Picnic en el desierto el día 2",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 2 al día 4",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Errachidia y Marrakech",
+        "Combustible",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Erfoud at Kasbah Xaluca, half board",
+        "One night in Erg Chebbi at luxury bivouac, half board",
+        "One night at Hotel Xaluca Dades, half board",
+        "One night in Marrakech, bed and breakfast (Riad or 5* Hotel)",
+        "Desert picnic on day 2",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 2 to day 4",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Errachidia and Marrakech",
+        "Fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Erfoud au Kasbah Xaluca en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Une nuit à l'Hôtel Xaluca Dadès en demi-pension",
+        "Une nuit à Marrakech en logement et petit déjeuner (Riad ou Hôtel 5*)",
+        "Pique-nique dans le désert le jour 2",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 2 au jour 4",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Errachidia et Marrakech",
+        "Carburant",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: ["Bebidas", "Comidas de mediodía no indicadas", "Cenas en Marrakech", "Extras personales", "Vuelos internacionales", "Seguro de cancelación"],
+      en: ["Drinks", "Lunches not stated", "Dinners in Marrakech", "Personal extras", "International flights", "Cancellation insurance"],
+      fr: ["Boissons", "Déjeuners non indiqués", "Dîners à Marrakech", "Extras personnels", "Vols internationaux", "Assurance annulation"],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Suplemento habitación individual: 300 €",
+        "Descuento niños 3-11 años: 205 € baja · 215 € alta",
+        "Guías compartidos en temporada alta",
+        "Chóferes de habla española limitados — consulta disponibilidad",
+        "Pasaporte vigente mínimo 3 meses desde la fecha de regreso",
+        "Actividades opcionales: Quads 70 € por vehículo · Spa y masajes bajo reserva",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Single-room supplement: €300",
+        "Child discount 3-11: €205 low season · €215 high season",
+        "Shared guides in high season",
+        "Spanish-speaking drivers limited — check availability",
+        "Passport valid at least 3 months from return date",
+        "Optional activities: Quads €70 per vehicle · Spa and massages on request",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Supplément chambre individuelle : 300 €",
+        "Remise enfant 3-11 ans : 205 € basse · 215 € haute",
+        "Guides partagés en haute saison",
+        "Chauffeurs hispanophones limités — consultez la disponibilité",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Activités en option : Quads 70 € par véhicule · Spa et massages sur réservation",
+      ],
+    },
+    terms: {
+      es: [
+        "Pago: 30% en el momento de la reserva · 70% restante hasta 30 días antes del viaje",
+        "Si el vuelo requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva",
+        "Los seguros no son reembolsables",
+      ],
+      en: [
+        "Payment: 30% at booking · remaining 70% up to 30 days before the trip",
+        "If the flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking",
+        "Insurances are non-refundable",
+      ],
+      fr: [
+        "Paiement : 30 % à la réservation · 70 % restants jusqu'à 30 jours avant le voyage",
+        "Si le vol requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation",
+        "Les assurances ne sont pas remboursables",
+      ],
+    },
+  },
+};
+
 export const PROGRAM_EM_67 = {
   routeId: "tourErgMarrakech67",
   duration_key: "em6n7d",
