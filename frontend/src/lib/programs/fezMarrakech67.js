@@ -110,7 +110,7 @@ export const DAY_04_AMANECER_KHAMLIA_RISSANI_RELAX = {
   ],
 };
 
-const DAY_07_MARRAKECH_MEDINA_RETURN = {
+export const DAY_07_MARRAKECH_MEDINA_RETURN = {
   route_id: "frz67-marrakech-medina-return",
   id: "frz67-d7",
   image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2000&q=85",

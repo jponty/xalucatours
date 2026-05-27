@@ -719,9 +719,9 @@ export const HUB_GRANSUR_FEZ_SIDIALI_RAK = {
     group_b: T("Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fez", "Marrakech → Sidi Ali → Fès"),
   },
   programs: [
-    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Marrakech") },
-    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Fez","Marrakech") },
-    { id: "fsm-9-10", direction: "a", nights: "9n10d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(9,10)("Fez","Marrakech") },
+    { id: "fsm-7-8",  direction: "a", nights: "7n8d",  accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", link: "tourFezSidialiRak78",  blurb: BLURB_SIDI(7,8)("Fez","Marrakech") },
+    { id: "fsm-8-9",  direction: "a", nights: "8n9d",  accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", link: "tourFezSidialiRak89",  blurb: BLURB_SIDI(8,9)("Fez","Marrakech") },
+    { id: "fsm-9-10", direction: "a", nights: "9n10d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", link: "tourFezSidialiRak910", blurb: BLURB_SIDI(9,10)("Fez","Marrakech") },
     { id: "msf-7-8",  direction: "b", nights: "7n8d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Marrakech","Fez") },
     { id: "msf-8-9",  direction: "b", nights: "8n9d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(8,9)("Marrakech","Fez") },
     { id: "msf-9-10", direction: "b", nights: "9n10d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(9,10)("Marrakech","Fez") },
@@ -962,3 +962,139 @@ export const HUB_NORTE_TANGER_FEZ = {
     { id: "tf-5-6", direction: "b", nights: "5n6d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourTangerFez56", blurb: BLURB_FT(5, 6) },
   ],
 };
+
+/* ============================================================
+   Hub · Marrakech → Fez · "Rak → Fez" (Gran Sur en sentido inverso)
+   ----
+   Specifically dedicated to the reverse direction of the Gran Sur
+   route. All 4 program detail pages already exist.
+============================================================ */
+
+const BLURB_RF = (n, d) => ({
+  es: `Viaje de ${n} noches y ${d} días desde Marrakech hasta Fez.`,
+  en: `${n}-night/${d}-day journey from Marrakech to Fez.`,
+  fr: `Voyage de ${n} nuits et ${d} jours de Marrakech à Fès.`,
+});
+
+export const HUB_GRANSUR_RAK_FEZ = {
+  id: "gransur-rak-fez",
+  hero: {
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
+    place: { es: "Marrakech · Aït Ben Haddou · Erg Chebbi · Medio Atlas · Fez", en: "Marrakech · Aït Ben Haddou · Erg Chebbi · Middle Atlas · Fez", fr: "Marrakech · Aït Ben Haddou · Erg Chebbi · Moyen Atlas · Fès" },
+    title: { es: "Déjate sorprender por la magia del gran sur.", en: "Be amazed by the magic of the great south.", fr: "Laissez-vous surprendre par la magie du grand sud." },
+    subtitle: {
+      es: "La ruta de las mil kasbahs en sentido inverso — de Marrakech a Fez cruzando palmeras, cañones y dunas.",
+      en: "The thousand-kasbahs route in reverse — from Marrakech to Fez crossing palm groves, canyons and dunes.",
+      fr: "La route des mille kasbahs à l'envers — de Marrakech à Fès, à travers palmeraies, canyons et dunes.",
+    },
+  },
+  intro: {
+    overline: { es: "Marrakech – Fez", en: "Marrakech – Fez", fr: "Marrakech – Fès" },
+    title: {
+      es: "La ruta de las mil kasbahs.",
+      en: "The road of a thousand kasbahs.",
+      fr: "La route des mille kasbahs.",
+    },
+    body: {
+      es: [
+        "Probablemente una de las rutas más fascinantes que se puedan hacer en Marruecos.",
+        "A medida que dejamos las montañas cubiertas de nieve del Alto Atlas, el paisaje va cambiando: palmerales, cañones, gargantas y valles coronados por kasbahs nos acompañan hasta llegar a las dunas del Gran Erg Chebbi.",
+        "El círculo se cierra en Fez, la medina más antigua y mejor conservada del mundo árabe.",
+      ],
+      en: [
+        "Arguably one of the most fascinating routes you can do in Morocco.",
+        "As we leave the snow-capped High Atlas behind, the landscape changes: palm groves, canyons, gorges and valleys crowned with kasbahs accompany us all the way to the dunes of the Great Erg Chebbi.",
+        "The circle closes in Fez, the oldest and best-preserved medina in the Arab world.",
+      ],
+      fr: [
+        "Probablement l'une des routes les plus fascinantes que l'on puisse faire au Maroc.",
+        "À mesure que nous laissons derrière nous les montagnes enneigées du Haut Atlas, le paysage change : palmeraies, canyons, gorges et vallées couronnées de kasbahs nous accompagnent jusqu'aux dunes du Grand Erg Chebbi.",
+        "Le cercle se referme à Fès, la plus ancienne médina la mieux conservée du monde arabe.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de viaje · ruta de las mil kasbahs · Marrakech → Fez", en: "Thousand-kasbahs options · Marrakech → Fez", fr: "Options route des mille kasbahs · Marrakech → Fès" },
+    title: { es: "Elige tu travesía.", en: "Choose your route.", fr: "Choisissez votre itinéraire." },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this journey.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    },
+    group_a: { es: "Marrakech → Fez", en: "Marrakech → Fez", fr: "Marrakech → Fès" },
+  },
+  programs: [
+    { id: "mf-6-7",  direction: "a", nights: "6n7d",  accent: "#C16542", image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez67",  blurb: BLURB_RF(6, 7) },
+    { id: "mf-7-8",  direction: "a", nights: "7n8d",  accent: "#D97742", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez78",  blurb: BLURB_RF(7, 8) },
+    { id: "mf-8-9",  direction: "a", nights: "8n9d",  accent: "#A07042", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez89",  blurb: BLURB_RF(8, 9) },
+    { id: "mf-9-10", direction: "a", nights: "9n10d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourMarrakechFez910", blurb: BLURB_RF(9, 10) },
+  ],
+};
+
+/* ============================================================
+   Hub · Atlas – Desierto – Medio Atlas – Fez
+   ----
+   Bidirectional Ouarzazate ↔ Fez crossing through the desert and
+   the Middle Atlas. The 6 program detail pages are not built yet —
+   option CTAs land on the contact form (no `link:`).
+============================================================ */
+
+const BLURB_AF = (n, d, from, to) => ({
+  es: `Viaje de ${n} noches y ${d} días desde ${from} hasta ${to} pasando por el desierto y el Medio Atlas.`,
+  en: `${n}-night/${d}-day journey from ${from} to ${to} through the desert and the Middle Atlas.`,
+  fr: `Voyage de ${n} nuits et ${d} jours de ${from} à ${to} à travers le désert et le Moyen Atlas.`,
+});
+
+export const HUB_ATLAS_DESIERTO_FEZ = {
+  id: "atlas-desierto-fez",
+  hero: {
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
+    place: { es: "Alto Atlas · Desierto · Medio Atlas · Fez", en: "High Atlas · Desert · Middle Atlas · Fez", fr: "Haut Atlas · Désert · Moyen Atlas · Fès" },
+    title: { es: "Del Alto Atlas a Fez, atravesando el desierto.", en: "From the High Atlas to Fez, across the desert.", fr: "Du Haut Atlas à Fès, à travers le désert." },
+    subtitle: {
+      es: "Descubre el sur de Marruecos desde el Alto Atlas hasta Fez · salidas diarias durante todo el año.",
+      en: "Discover southern Morocco from the High Atlas to Fez · daily departures all year round.",
+      fr: "Découvrez le sud du Maroc du Haut Atlas à Fès · départs quotidiens toute l'année.",
+    },
+  },
+  intro: {
+    overline: { es: "Atlas – Desierto – Medio Atlas – Fez", en: "Atlas – Desert – Middle Atlas – Fez", fr: "Atlas – Désert – Moyen Atlas – Fès" },
+    title: { es: "De cumbre a cumbre, atravesando el Sahara.", en: "From summit to summit, across the Sahara.", fr: "De sommet en sommet, à travers le Sahara." },
+    body: {
+      es: [
+        "Una travesía completa del sur del país: desde las cumbres nevadas del Alto Atlas, las kasbahs del Valle del Dades y el desierto del Erg Chebbi, hasta los cedros gigantes del Medio Atlas y la medina UNESCO de Fez.",
+        "El circuito se puede realizar en ambos sentidos — Ouarzazate → Fez o Fez → Ouarzazate — con 5, 6 o 7 noches en función del tiempo disponible.",
+      ],
+      en: [
+        "A full crossing of southern Morocco: from the snow-capped peaks of the High Atlas, the kasbahs of the Dades Valley and the Erg Chebbi desert, to the giant cedars of the Middle Atlas and the UNESCO medina of Fez.",
+        "The circuit can be done in either direction — Ouarzazate → Fez or Fez → Ouarzazate — with 5, 6 or 7 nights depending on time available.",
+      ],
+      fr: [
+        "Une traversée complète du sud du Maroc : des sommets enneigés du Haut Atlas, des kasbahs de la Vallée du Dadès et du désert de l'Erg Chebbi, aux cèdres géants du Moyen Atlas et à la médina UNESCO de Fès.",
+        "Le circuit peut s'effectuer dans les deux sens — Ouarzazate → Fès ou Fès → Ouarzazate — avec 5, 6 ou 7 nuits selon le temps disponible.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de viaje · Alto Atlas → Fez", en: "Options · High Atlas → Fez", fr: "Options · Haut Atlas → Fès" },
+    title: { es: "Elige tu travesía.", en: "Choose your route.", fr: "Choisissez votre itinéraire." },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this journey.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    },
+    group_a: { es: "Ouarzazate → Fez", en: "Ouarzazate → Fez", fr: "Ouarzazate → Fès" },
+    group_b: { es: "Fez → Ouarzazate", en: "Fez → Ouarzazate", fr: "Fès → Ouarzazate" },
+  },
+  programs: [
+    { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#C16542", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_AF(5, 6, "Ouarzazate", "Fez") },
+    { id: "of-6-7", direction: "a", nights: "6n7d", accent: "#D97742", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_AF(6, 7, "Ouarzazate", "Fez") },
+    { id: "of-7-8", direction: "a", nights: "7n8d", accent: "#A07042", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_AF(7, 8, "Ouarzazate", "Fez") },
+    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_AF(5, 6, "Fez", "Ouarzazate") },
+    { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_AF(6, 7, "Fez", "Ouarzazate") },
+    { id: "fo-7-8", direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_AF(7, 8, "Fez", "Ouarzazate") },
+  ],
+};
+

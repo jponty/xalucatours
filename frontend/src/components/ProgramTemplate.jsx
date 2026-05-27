@@ -703,6 +703,60 @@ const VARIANT_COPY = {
       ],
     },
   },
+  // Fez → Sidi Ali → Marrakech (Gran Sur extendido con Medio Atlas)
+  fzs: {
+    es: {
+      title: "Fez, Sidi Ali y la travesía hasta Marrakech.",
+      eyebrow_prefix: "Circuito Gran Sur · Fez → Sidi Ali → Marrakech",
+      place: "Fez · Medio Atlas · Sidi Ali · Erg Chebbi · Marrakech",
+      subtitle: "La gran travesía clásica enriquecida con el lago alpino de Aguelmame Sidi Ali — más altitud, más contraste, más Marruecos.",
+      hero_image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+      airports: "Entrada Fez · Salida Marrakech",
+      quick_airports: "Fez / Marrakech",
+      quick_places: "Fez · Ifrane · Aguelmame Sidi Ali · Valle del Ziz · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Tinerhir · Boumalne Dades · Aït Ben Haddou · Marrakech",
+      highlights: "Medina UNESCO · Cedros · Lago Sidi Ali · Erg Chebbi · Todra · Aït Ben Haddou",
+      description_title: "Cultura, montaña, oasis, desierto y ciudad imperial.",
+      description: [
+        "Una versión más amplia y serena de la ruta clásica Fez – Marrakech, con una noche extra en el corazón del Medio Atlas, a 2.200 m de altitud, junto al lago natural más profundo de Marruecos.",
+        "El recorrido en 4x4 cruza el bosque de cedros gigantes, alimenta a los macacos magot, atraviesa los diez millones de palmeras del Valle del Ziz y desemboca en el Erg Chebbi para vivir una noche bajo las estrellas del Sahara.",
+        "Y de vuelta a la civilización: Gargantas del Todra, Aït Ben Haddou y Marrakech — la guinda imperial que cierra el círculo.",
+      ],
+    },
+    en: {
+      title: "Fez, Sidi Ali and the great Marrakech crossing.",
+      eyebrow_prefix: "Grand South circuit · Fez → Sidi Ali → Marrakech",
+      place: "Fez · Middle Atlas · Sidi Ali · Erg Chebbi · Marrakech",
+      subtitle: "The classic Grand South crossing enriched with the alpine lake of Aguelmame Sidi Ali — more altitude, more contrast, more Morocco.",
+      hero_image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+      airports: "In Fez · Out Marrakech",
+      quick_airports: "Fez / Marrakech",
+      quick_places: "Fez · Ifrane · Aguelmame Sidi Ali · Ziz Valley · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Tinerhir · Boumalne Dades · Aït Ben Haddou · Marrakech",
+      highlights: "UNESCO Medina · Cedars · Sidi Ali Lake · Erg Chebbi · Todra · Aït Ben Haddou",
+      description_title: "Culture, mountain, oasis, desert and imperial city.",
+      description: [
+        "A broader, more serene version of the classic Fez – Marrakech route, with an extra night in the heart of the Middle Atlas, at 2,200 m altitude, beside Morocco's deepest natural lake.",
+        "The 4x4 journey crosses the giant cedar forest, feeds the Barbary macaques, threads the ten million palms of the Ziz Valley and reaches the Erg Chebbi for a night under the stars of the Sahara.",
+        "And back to civilisation: Todra Gorges, Aït Ben Haddou and Marrakech — the imperial finale that closes the circle.",
+      ],
+    },
+    fr: {
+      title: "Fès, Sidi Ali et la grande traversée vers Marrakech.",
+      eyebrow_prefix: "Circuit Grand Sud · Fès → Sidi Ali → Marrakech",
+      place: "Fès · Moyen Atlas · Sidi Ali · Erg Chebbi · Marrakech",
+      subtitle: "La grande traversée classique enrichie du lac alpin d'Aguelmame Sidi Ali — plus d'altitude, plus de contraste, plus de Maroc.",
+      hero_image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+      airports: "Arrivée Fès · Sortie Marrakech",
+      quick_airports: "Fès / Marrakech",
+      quick_places: "Fès · Ifrane · Aguelmame Sidi Ali · Vallée du Ziz · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Tinerhir · Boumalne Dadès · Aït Ben Haddou · Marrakech",
+      highlights: "Médina UNESCO · Cèdres · Lac Sidi Ali · Erg Chebbi · Todra · Aït Ben Haddou",
+      description_title: "Culture, montagne, oasis, désert et ville impériale.",
+      description: [
+        "Une version plus ample et plus sereine de la route classique Fès – Marrakech, avec une nuit supplémentaire au cœur du Moyen Atlas, à 2 200 m d'altitude, au bord du lac naturel le plus profond du Maroc.",
+        "Le voyage en 4x4 traverse la forêt de cèdres géants, nourrit les macaques de Barbarie, parcourt les dix millions de palmiers de la Vallée du Ziz et atteint l'Erg Chebbi pour une nuit sous les étoiles du Sahara.",
+        "Et retour à la civilisation : Gorges du Todra, Aït Ben Haddou et Marrakech — l'apothéose impériale qui clôt le cercle.",
+      ],
+    },
+  },
 };
 
 const LABELS = {
