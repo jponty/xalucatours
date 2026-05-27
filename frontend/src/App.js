@@ -54,6 +54,8 @@ import GransurFezSidialiRakHubPage from "@/pages/GransurFezSidialiRakHubPage";
 import GransurOuarzaFezHubPage from "@/pages/GransurOuarzaFezHubPage";
 import GransurTangerRakHubPage from "@/pages/GransurTangerRakHubPage";
 import FezMarrakech910Page from "@/pages/FezMarrakech910Page";
+import FezMarrakech67Page from "@/pages/FezMarrakech67Page";
+import FezMarrakech89Page from "@/pages/FezMarrakech89Page";
 import MarrakechFez67Page from "@/pages/MarrakechFez67Page";
 import MarrakechFez78Page from "@/pages/MarrakechFez78Page";
 import MarrakechFez89Page from "@/pages/MarrakechFez89Page";
@@ -109,6 +111,8 @@ const LocalizedRouter = () => {
   if (routeId === "tourGransurOuarzaFez")  return <GransurOuarzaFezHubPage />;
   if (routeId === "tourGransurTangerRak")  return <GransurTangerRakHubPage />;
   if (routeId === "tourFezRak910")         return <FezMarrakech910Page />;
+  if (routeId === "tourFezRak89")          return <FezMarrakech89Page />;
+  if (routeId === "tourFezRak67")          return <FezMarrakech67Page />;
   if (routeId === "tourMarrakechFez67")    return <MarrakechFez67Page />;
   if (routeId === "tourMarrakechFez78")    return <MarrakechFez78Page />;
   if (routeId === "tourMarrakechFez89")    return <MarrakechFez89Page />;

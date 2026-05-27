@@ -50,6 +50,8 @@ export const ROUTES = {
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },
   tourGransurFezRak:      { es: "viajes/gransur/fez-rak",            en: "tours/grand-south/fez-marrakech",            fr: "voyages/grand-sud/fes-marrakech" },
   tourFezRak910:          { es: "viajes/gransur/fez_marrakech/programa_9n_10d", en: "tours/grand-south/fez-marrakech/program-9n-10d", fr: "voyages/grand-sud/fes-marrakech/programme-9n-10j" },
+  tourFezRak89:           { es: "viajes/gransur/fez_marrakech/programa_8n_9d",  en: "tours/grand-south/fez-marrakech/program-8n-9d",  fr: "voyages/grand-sud/fes-marrakech/programme-8n-9j" },
+  tourFezRak67:           { es: "viajes/gransur/fez_marrakech/programa_6n_7d",  en: "tours/grand-south/fez-marrakech/program-6n-7d",  fr: "voyages/grand-sud/fes-marrakech/programme-6n-7j" },
   tourMarrakechFez67:     { es: "viajes/gransur/marrakech_fez/programa_6n_7d",  en: "tours/grand-south/marrakech-fez/program-6n-7d",  fr: "voyages/grand-sud/marrakech-fes/programme-6n-7j" },
   tourMarrakechFez78:     { es: "viajes/gransur/marrakech_fez/programa_7n_8d",  en: "tours/grand-south/marrakech-fez/program-7n-8d",  fr: "voyages/grand-sud/marrakech-fes/programme-7n-8j" },
   tourMarrakechFez89:     { es: "viajes/gransur/marrakech_fez/programa_8n_9d",  en: "tours/grand-south/marrakech-fez/program-8n-9d",  fr: "voyages/grand-sud/marrakech-fes/programme-8n-9j" },

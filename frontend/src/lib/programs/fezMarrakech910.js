@@ -7,7 +7,7 @@ const T = (es, en, fr) => ({ es, en, fr });
    Days
 ============================================================ */
 
-const DAY_01_ARRIVAL_FEZ = {
+export const DAY_01_ARRIVAL_FEZ = {
   route_id: "frz910-arrival-fez",
   id: "frz910-d1",
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
@@ -77,7 +77,7 @@ const DAY_02_FEZ_MEDIO_ATLAS_ERFOUD = {
   ],
 };
 
-const DAY_03_ERFOUD_ERG_BIVOUAC = {
+export const DAY_03_ERFOUD_ERG_BIVOUAC = {
   route_id: "desert-bivouac",
   id: "frz910-d3",
   image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
@@ -188,7 +188,7 @@ const DAY_05_RISSANI_RELAX = {
   ],
 };
 
-const DAY_06_TODRA_DADES = {
+export const DAY_06_TODRA_DADES = {
   route_id: "frz910-todra-dades",
   id: "frz910-d6",
   image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
@@ -223,7 +223,7 @@ const DAY_06_TODRA_DADES = {
   ],
 };
 
-const DAY_07_MGOUN_ATLAS = {
+export const DAY_07_MGOUN_ATLAS = {
   route_id: "frz910-mgoun-atlas",
   id: "frz910-d7",
   image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
@@ -258,7 +258,7 @@ const DAY_07_MGOUN_ATLAS = {
   ],
 };
 
-const DAY_08_AITBENHADDOU_MARRAKECH = {
+export const DAY_08_AITBENHADDOU_MARRAKECH = {
   route_id: "frz910-aitbenhaddou-marrakech",
   id: "frz910-d8",
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
@@ -293,7 +293,7 @@ const DAY_08_AITBENHADDOU_MARRAKECH = {
   ],
 };
 
-const DAY_09_MARRAKECH_MEDINA = {
+export const DAY_09_MARRAKECH_MEDINA = {
   route_id: "frz910-marrakech-medina",
   id: "frz910-d9",
   image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2000&q=85",
@@ -328,7 +328,7 @@ const DAY_09_MARRAKECH_MEDINA = {
   ],
 };
 
-const DAY_10_MARRAKECH_RETURN = {
+export const DAY_10_MARRAKECH_RETURN = {
   route_id: "frz910-marrakech-return",
   id: "frz910-d10",
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
