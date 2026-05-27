@@ -1,0 +1,82 @@
+{
+  "summary": "Frontend-only verification of Phase 1 'Opción B' for Xaluca Tours: global <Breadcrumbs/> + <HubPeerNav/> across the Sur de Marruecos section. ALL 11 review_request criteria PASS on ES, EN and FR. Zero console errors, zero React pageerror events across the full run.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_features": {
+    "breadcrumbs_es_section": {
+      "/viajes/surdemarruecos": "Inicio › Viajes › Sur de Marruecos (bc-home, bc-tours, bc-section-current)"
+    },
+    "breadcrumbs_es_hubs_7_of_7": {
+      "/viajes/sur/atlas_desierto": "… › Atlas – Desierto",
+      "/viajes/sur/desierto_atlas": "… › Circuitos combinados Desierto + Atlas",
+      "/viajes/sur/marrakech_ergchebbi": "… › Marrakech – Erg Chebbi",
+      "/viajes/ergchebbi_marrakech": "… › Erg Chebbi – Marrakech",
+      "/viajes/marrakech_ergchebbi_marrakech": "… › Marrakech – Erg Chebbi – Marrakech",
+      "/viajes/sur/marrakech_essaouira": "… › Marrakech – Essaouira",
+      "/viajes/sur/errachidia-atlas-fez": "… › Errachidia – Alto Atlas – Fez"
+    },
+    "breadcrumbs_es_programs_7_of_7": {
+      "/viajes/atlas_desierto/programa_4n_5d": "… › Atlas – Desierto › 4 noches · 5 días",
+      "/viajes/desierto_atlas/programa_5n_6d": "… › Atlas – Desierto › 5 noches · 6 días",
+      "/viajes/marrakech_ergchebbi/programa_6n_7d": "… › Marrakech – Erg Chebbi › 6 noches · 7 días",
+      "/viajes/ergchebbi_marrakech/programa_7n_8d": "… › Marrakech – Erg Chebbi › 7 noches · 8 días",
+      "/viajes/marrakech_ergchebbi_marrakech/programa_3n_4d": "… › Marrakech – Erg Chebbi – Marrakech › 3 noches · 4 días",
+      "/viajes/marrakech_essaouira/programa_4n_5d": "… › Marrakech – Essaouira › 4 noches · 5 días",
+      "/viajes/errachidia-atlas-fez/programa_5n_6d": "… › Errachidia – Alto Atlas – Fez › 5 noches · 6 días"
+    },
+    "breadcrumb_links": {
+      "bc-home href": "/",
+      "bc-tours href": "/viajes",
+      "bc-section href": "/viajes/surdemarruecos (verified click navigates)",
+      "bc-hub href": "/viajes/sur/atlas_desierto",
+      "bc-program-current tag": "SPAN (correct — current item, not a link)"
+    },
+    "testids_present": ["breadcrumbs", "bc-home", "bc-tours", "bc-section", "bc-hub", "bc-program-current"],
+    "home_no_breadcrumb": "Confirmed: no [data-testid='breadcrumbs'] on '/'",
+    "hub_peer_nav": {
+      "data-testid='hub-peer-nav'": "Present on /viajes/atlas_desierto/programa_4n_5d",
+      "data-testid='hub-peer-nav-back' href": "/viajes/sur/atlas_desierto",
+      "peer_cards_count": 5,
+      "first_card_testid": "hub-peer-program-ad-5-6",
+      "first_card_href": "/viajes/atlas_desierto/programa_5n_6d",
+      "click_volver_al_hub": "Navigates to hub page; bc-hub-current = 'Atlas – Desierto' ✓",
+      "click_peer_card": "Navigates to /viajes/atlas_desierto/programa_5n_6d; bc-program-current updates to '5 noches · 6 días' ✓"
+    },
+    "trilingual_en": {
+      "/en/tours/southern-morocco": "Home › Tours › Southern Morocco ✓",
+      "/en/tours/atlas-desert/program-4n-5d": "Home › Tours › Southern Morocco › Atlas – Desert › 4 nights · 5 days ✓"
+    },
+    "trilingual_fr": {
+      "/fr/voyages/sud-du-maroc": "Accueil › Voyages › Sud du Maroc ✓",
+      "/fr/voyages/atlas-desert/programme-4n-5j": "Accueil › Voyages › Sud du Maroc › Atlas – Désert › 4 nuits · 5 jours ✓"
+    },
+    "regression": {
+      "/viajes/nortedemarruecos": "Loads; section breadcrumb renders (Norte section label exists in SECTIONS map — acceptable per implementation comment)",
+      "/viajes/norte/ciudades_imperiales/programa_4n_5d": "Loads; NO breadcrumb (hub not yet wired in SECTION_HUBS — expected per Phase 1 scope)",
+      "/viajes/escapadas": "Loads; section breadcrumb renders (Escapadas section label exists)",
+      "/contacto": "Loads; NO breadcrumb (unknown route) — expected",
+      "console_errors_total": 0,
+      "pageerror_events_total": 0
+    }
+  },
+  "test_report_links": ["/app/test_reports/iteration_8.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "programNav.js: section/hub/program lookup maps are built deterministically and idempotently. The `if (p.link && !PROGRAM_NAV[p.link])` guard on line 56 correctly prevents collisions when the same program slug is referenced by multiple hubs.",
+    "Breadcrumbs.jsx: returns null on routeId === 'home' or unwired routes (only home in trail → suppressed by length<2 check), which keeps the homepage and unrelated pages clean. Active item correctly renders as <span aria-current='page'> with testid suffix '-current'.",
+    "HubPeerNav.jsx: lookupProgram→peerPrograms→pathFor chain is clean; renders an 'empty' message gracefully if a hub had a single program (none currently do — confirmed 5 peers on atlas_desierto/4n_5d).",
+    "Minor (non-blocking): Breadcrumbs absolute-positions itself over the hero with top padding 88/96px. On hub pages where the hero is the first section this lays out correctly. If a future Sur page lacks a hero (full-bleed), the breadcrumb may overlay normal body text — recommend a defensive `position: relative` wrapper or a fallback static layout when the parent has no hero. No visual regression observed today."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (frontend-only scope)", "frontend": "100% — 11/11 review_request criteria pass" },
+  "test_credentials": "n/a",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 8 fully green for Phase 1 'Opción B' (Breadcrumbs + HubPeerNav) across the Sur de Marruecos section in ES/EN/FR. Available testids: 'breadcrumbs' on the <nav>, plus per-item children 'bc-home', 'bc-tours', 'bc-section' (or '-current' suffix when it is the last/current node), 'bc-hub' (or 'bc-hub-current'), 'bc-program-current'. HubPeerNav exposes 'hub-peer-nav', 'hub-peer-nav-back', and 'hub-peer-program-{id}' (e.g. 'hub-peer-program-ad-5-6'). Programs wired in PROGRAM_NAV are the 22+ Sur programs whose hubs are listed in SECTION_HUBS.tourSouth. Future hubs (Norte/Escapadas/Gran Sur) intentionally return null from <Breadcrumbs/> for their PROGRAM pages (only the section-level pages render breadcrumb because their section label exists in the SECTIONS map). The breadcrumb absolute-positions over the hero with a glass strip — verified visually rendered fine on every tested page.",
+  "rca of the issue": "n/a — no issues found"
+}

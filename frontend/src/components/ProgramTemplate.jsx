@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
   Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { pathFor } from "@/lib/routes";
+import { pathFor, resolvePath } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { StickyNav } from "@/components/JourneyPageSections";
 import { SHARED_SEASONS, SHARED_DETAILS } from "@/lib/programData";
@@ -14,6 +14,7 @@ import { DayGallery } from "@/components/DayGallery";
 import { TripOverview } from "@/components/TripOverview";
 import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
+import HubPeerNav from "@/components/HubPeerNav";
 import { EditableSection, E, EImg } from "@/components/EditableSection";
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
@@ -1531,6 +1532,8 @@ const ContactBand = ({ t, lang }) => (
 ============================================================ */
 export default function ProgramTemplate({ program, variant = "da" }) {
   const { lang } = useLanguage();
+  const location = useLocation();
+  const { routeId } = resolvePath(location.pathname);
   const t = LABELS[lang] || LABELS.es;
   const baseVt = (VARIANT_COPY[variant] && VARIANT_COPY[variant][lang]) || VARIANT_COPY.da.es;
   // Per-program meta overrides VARIANT_COPY (trilingual `meta: { es, en, fr }`)
@@ -1564,6 +1567,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       <TripOverview days={program.days} />
       <Pricing t={t} lang={lang} program={program} />
       <DetailsAccordion t={t} lang={lang} program={program} />
+      <HubPeerNav routeId={routeId} />
       <ContactBand t={t} lang={lang} />
       <div id="form"><ContactForm /></div>
     </div>
