@@ -29,6 +29,7 @@ import AtlasDesiertoHubPage from "@/pages/AtlasDesiertoHubPage";
 import MarrakechErgChebbiHubPage from "@/pages/MarrakechErgChebbiHubPage";
 import ErgChebbiMarrakechHubPage from "@/pages/ErgChebbiMarrakechHubPage";
 import MarrakechErg45Page from "@/pages/MarrakechErg45Page";
+import MarrakechErg56Page from "@/pages/MarrakechErg56Page";
 import MarrakechErg67Page from "@/pages/MarrakechErg67Page";
 import MarrakechErg78Page from "@/pages/MarrakechErg78Page";
 import ErgMarrakech67Page from "@/pages/ErgMarrakech67Page";
@@ -131,6 +132,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourAtlasDesierto56")  return <AtlasDesierto56Page />;
   if (routeId === "tourAtlasDesierto67")  return <AtlasDesierto67Page />;
   if (routeId === "tourMarrakechErg45")   return <MarrakechErg45Page />;
+  if (routeId === "tourMarrakechErg56")   return <MarrakechErg56Page />;
   if (routeId === "tourMarrakechErg67")   return <MarrakechErg67Page />;
   if (routeId === "tourMarrakechErg78")   return <MarrakechErg78Page />;
   if (routeId === "tourErgMarrakech67")   return <ErgMarrakech67Page />;

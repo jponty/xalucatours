@@ -221,6 +221,7 @@ export const HUB_MARRAKECH_ERG = {
                fr: "Voyage de 4 nuits et 5 jours de Marrakech au désert de l'Erg Chebbi." } },
     { id: "me-5-6", direction: "a", nights: "5n6d", accent: "#D97742",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      link: "tourMarrakechErg56",
       blurb: { es: "Viaje de 5 noches y 6 días desde Marrakech hasta el desierto del Erg Chebbi.",
                en: "5-night/6-day journey from Marrakech to the Erg Chebbi desert.",
                fr: "Voyage de 5 nuits et 6 jours de Marrakech au désert de l'Erg Chebbi." } },

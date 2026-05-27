@@ -3934,3 +3934,191 @@ export const PROGRAM_FAE_56 = {
   },
 };
 
+
+/* ============================================================
+   Marrakech → Erg Chebbi · 5 noches / 6 días
+   Reutiliza días MEM (1, 2, 3, 4 y 5) + cierre por el Valle
+   del Ziz hasta el aeropuerto de Errachidia.
+============================================================ */
+
+export const PROGRAM_ME_56 = {
+  routeId: "tourMarrakechErg56",
+  duration_key: "me5n6d",
+  duration: { es: "5 noches / 6 días", en: "5 nights / 6 days", fr: "5 nuits / 6 jours" },
+  prices: { low: 1190, mid: 1390, high: 1590, premium: 1890 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Marrakech – Erg Chebbi.",
+      description_title: "Un viaje auténtico para descubrir el sur de Marruecos.",
+      description: [
+        "«Marrakech – Erg Chebbi» es un viaje auténtico para descubrir el sur de Marruecos.",
+        "La ruta comienza en Marrakech, una ciudad llena de colores, artesanos, plazas vibrantes y aromas inolvidables. Desde allí se atraviesa el Alto Atlas en vehículo 4x4, descubriendo pueblos bereberes, gargantas, oasis, kasbahs históricas y paisajes de montaña.",
+        "Finalmente se llega al Desierto del Erg Chebbi, con sus dunas infinitas y su atmósfera mágica, donde se vive la experiencia de dormir bajo las estrellas.",
+      ],
+    },
+    en: {
+      title: "Marrakech – Erg Chebbi.",
+      description_title: "An authentic journey to discover southern Morocco.",
+      description: [
+        "«Marrakech – Erg Chebbi» is an authentic journey to discover southern Morocco.",
+        "The route begins in Marrakech — a city full of colour, artisans, vibrant squares and unforgettable aromas. From there we cross the High Atlas in a 4x4, discovering Berber villages, gorges, oases, historic kasbahs and mountain landscapes.",
+        "Finally we reach the Erg Chebbi desert, with its endless dunes and magical atmosphere, where we experience sleeping under the stars.",
+      ],
+    },
+    fr: {
+      title: "Marrakech – Erg Chebbi.",
+      description_title: "Un voyage authentique pour découvrir le sud du Maroc.",
+      description: [
+        "« Marrakech – Erg Chebbi » est un voyage authentique pour découvrir le sud du Maroc.",
+        "L'itinéraire commence à Marrakech — ville colorée, parsemée d'artisans, aux places vibrantes et aux parfums inoubliables. De là, nous traversons le Haut Atlas en 4x4, à la découverte de villages berbères, gorges, oasis, kasbahs historiques et paysages de montagne.",
+        "Enfin, nous atteignons le désert de l'Erg Chebbi, aux dunes infinies et à l'atmosphère magique, pour vivre l'expérience d'une nuit sous les étoiles.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM56_ARRIVAL_MARRAKECH,
+    DAY_MEM56_MARRAKECH_VISIT,
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM23_TODRA_BIVOUAC,
+    DAY_MEM34_KHAMLIA_KASBAH,
+    DAY_ME_ZIZ_ERRACHIDIA,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Dos noches en Marrakech en Riad u Hotel 5* en régimen de alojamiento y desayuno",
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Una noche en Erfoud en Kasbah Xaluca en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 4",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 3 al día 6",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Marrakech y Errachidia",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Two nights in Marrakech in a Riad or 5* Hotel, bed and breakfast",
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "One night in Erfoud at Kasbah Xaluca, half board",
+        "Desert «picnic» on day 4",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 3 to day 6",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Marrakech and Errachidia",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Deux nuits à Marrakech en Riad ou Hôtel 5* en logement et petit déjeuner",
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Une nuit à Erfoud au Kasbah Xaluca en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 4",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 3 au jour 6",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Marrakech et Errachidia",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía no especificadas",
+        "Cenas en Marrakech",
+        "Extras personales",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches not specified",
+        "Dinners in Marrakech",
+        "Personal extras",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners non spécifiés",
+        "Dîners à Marrakech",
+        "Extras personnels",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Precios calculados según ocupación del 4x4 — el coste se reparte entre los ocupantes",
+        "Habitaciones dobles y triples · Suplemento individual 400 €",
+        "Descuento niños 3-11 años: 205 € baja · 215 € alta",
+        "Guías locales compartidos en temporada alta",
+        "Chóferes de habla española limitados — se recomienda reservar con antelación",
+        "Pasaporte con un mínimo de 3 meses de validez desde la fecha de regreso",
+        "Actividades opcionales: Quads 70 € por vehículo (circuito de 1 hora)",
+        "Seguro de cancelación opcional: 30 € por persona para viajes de hasta 10 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Prices calculated based on 4x4 occupancy — the cost is split between occupants",
+        "Double and triple rooms · Single supplement €400",
+        "Children 3-11 discount: €205 low season · €215 high season",
+        "Local guides may be shared in high season",
+        "Spanish-speaking drivers limited — book in advance",
+        "Passport valid for at least 3 months from the return date",
+        "Optional activities: Quads €70 per vehicle (1-hour circuit)",
+        "Optional cancellation insurance: €30 per person for trips up to 10 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Tarifs calculés selon l'occupation du 4x4 — le coût se partage entre les occupants",
+        "Chambres doubles et triples · Supplément individuel 400 €",
+        "Remise enfants 3-11 ans : 205 € basse · 215 € haute",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Chauffeurs hispanophones limités — réserver à l'avance",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Activités en option : Quads 70 € par véhicule (circuit de 1 heure)",
+        "Assurance annulation en option : 30 € par personne pour les voyages jusqu'à 10 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "30% del importe total al confirmar la reserva",
+        "70% restante hasta 30 días antes de la salida",
+        "Si el vuelo requiere emisión inmediata: 100% de los vuelos + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Los seguros de cancelación no son reembolsables",
+      ],
+      en: [
+        "30% of total at booking confirmation",
+        "Remaining 70% up to 30 days before departure",
+        "If the flight requires immediate issuance: 100% of flights + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Cancellation insurances are non-refundable",
+      ],
+      fr: [
+        "30 % du total à la confirmation",
+        "70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol requiert une émission immédiate : 100 % des vols + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les assurances annulation ne sont pas remboursables",
+      ],
+    },
+  },
+};
+
