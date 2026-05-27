@@ -47,6 +47,7 @@ export const ROUTES = {
   tourErrAtlasFez56: { es: "viajes/errachidia-atlas-fez/programa_5n_6d", en: "tours/errachidia-atlas-fez/program-5n-6d", fr: "voyages/errachidia-atlas-fes/programme-5n-6j" },
   tourFezAtlasErr56: { es: "viajes/fez-atlas-errachidia/programa_5n_6d", en: "tours/fez-atlas-errachidia/program-5n-6d", fr: "voyages/fes-atlas-errachidia/programme-5n-6j" },
   tourUpcoming:       { es: "proximas_salidas", en: "upcoming-departures", fr: "prochains-departs" },
+  tourFinDeAno2025:   { es: "findeano2025",     en: "newyear2025",          fr: "nouvelan2025" },
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },
   tourGransurFezRak:      { es: "viajes/gransur/fez-rak",            en: "tours/grand-south/fez-marrakech",            fr: "voyages/grand-sud/fes-marrakech" },
   tourFezRak910:          { es: "viajes/gransur/fez_marrakech/programa_9n_10d", en: "tours/grand-south/fez-marrakech/program-9n-10d", fr: "voyages/grand-sud/fes-marrakech/programme-9n-10j" },

@@ -94,6 +94,7 @@ import EscapadaRakErgRakHubPage from "@/pages/EscapadaRakErgRakHubPage";
 import AventuraEnduroHubPage from "@/pages/AventuraEnduroHubPage";
 import EnduroAventura45Page from "@/pages/EnduroAventura45Page";
 import EnduroAventura67Page from "@/pages/EnduroAventura67Page";
+import FinDeAno2026Page from "@/pages/FinDeAno2026Page";
 import NorteCiudadesImperialesHubPage from "@/pages/NorteCiudadesImperialesHubPage";
 import NorteTangerFezHubPage from "@/pages/NorteTangerFezHubPage";
 import CiudadesImperiales45Page from "@/pages/CiudadesImperiales45Page";
@@ -126,6 +127,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourAventuraEnduroHub") return <AventuraEnduroHubPage />;
   if (routeId === "tourEnduroAventura45")  return <EnduroAventura45Page />;
   if (routeId === "tourEnduroAventura67")  return <EnduroAventura67Page />;
+  if (routeId === "tourFinDeAno2025")      return <FinDeAno2026Page />;
   if (routeId === "tourShort")     return <EscapadasPage />;
   if (routeId === "tourBespoke")   return <ViajesAMedidaPage />;
   if (routeId === "tourAtlasDesiertoHub") return <AtlasDesiertoHubPage />;
