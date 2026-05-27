@@ -111,8 +111,9 @@ export const EditableImage = ({
         const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`);
         const data = await res.json();
         if (!cancelled && data && data.url) setUrl(data.url);
-      } catch (e) {
-        /* keep fallback */
+      } catch (err) {
+        // Slot not yet persisted or upstream offline — keep fallback.
+        console.debug(`[image_slots] fetch failed for ${slot}:`, err);
       }
     })();
     return () => { cancelled = true; };

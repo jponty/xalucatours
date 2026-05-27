@@ -14,6 +14,21 @@ import { DayGallery } from "@/components/DayGallery";
 import { TripOverview } from "@/components/TripOverview";
 import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
+import { EditableSection, E, EImg } from "@/components/EditableSection";
+
+/* Pull a trilingual field {es,en,fr} out of a program's `meta` override
+ * or fall back to the variant copy block. Used to feed defaults={...}
+ * to inline <E> editors so editing persists per language. */
+const metaAllLangs = (program, variant, field) => {
+  const out = {};
+  for (const lg of ["es", "en", "fr"]) {
+    out[lg] =
+      (program?.meta && program.meta[lg] && program.meta[lg][field]) ??
+      (VARIANT_COPY[variant] && VARIANT_COPY[variant][lg] && VARIANT_COPY[variant][lg][field]) ??
+      "";
+  }
+  return out;
+};
 
 /* ============================================================
    Trilingual labels & copy variants (Desierto→Atlas vs Atlas→Desierto)
