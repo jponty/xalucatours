@@ -25,6 +25,7 @@ export const ROUTES = {
   tourMarrakechErgHub: { es: "viajes/sur/marrakech_ergchebbi", en: "tours/south/marrakech-ergchebbi", fr: "voyages/sud/marrakech-ergchebbi" },
   tourErgChebbiMarrakechHub: { es: "viajes/ergchebbi_marrakech", en: "tours/ergchebbi-marrakech", fr: "voyages/ergchebbi-marrakech" },
   tourErgMarrakech45:  { es: "viajes/ergchebbi_marrakech/programa_4n_5d", en: "tours/ergchebbi-marrakech/program-4n-5d", fr: "voyages/ergchebbi-marrakech/programme-4n-5j" },
+  tourErgMarrakech67:  { es: "viajes/ergchebbi_marrakech/programa_6n_7d", en: "tours/ergchebbi-marrakech/program-6n-7d", fr: "voyages/ergchebbi-marrakech/programme-6n-7j" },
   tourMarrakechErg45:  { es: "viajes/marrakech_ergchebbi/programa_4n_5d", en: "tours/marrakech-ergchebbi/program-4n-5d", fr: "voyages/marrakech-ergchebbi/programme-4n-5j" },
   tourMarrakechErg67:  { es: "viajes/marrakech_ergchebbi/programa_6n_7d", en: "tours/marrakech-ergchebbi/program-6n-7d", fr: "voyages/marrakech-ergchebbi/programme-6n-7j" },
   tourMarrakechErg78:  { es: "viajes/marrakech_ergchebbi/programa_7n_8d", en: "tours/marrakech-ergchebbi/program-7n-8d", fr: "voyages/marrakech-ergchebbi/programme-7n-8j" },

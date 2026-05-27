@@ -1073,3 +1073,278 @@ export const PROGRAM_ME_78 = {
     DAY_ME_ZIZ_ERRACHIDIA,
   ],
 };
+
+/* ============================================================
+   Erg Chebbi → Marrakech · 6 noches / 7 días
+   Entrada por Errachidia, dos noches en Erfoud (Kasbah Xaluca),
+   bivouac en el Erg Chebbi, dos noches en Boumalne Dades (Xaluca
+   Dades), atravesando el Atlas Central hasta Aït Ben Haddou y
+   Marrakech, con visita guiada a la medina en el último día.
+============================================================ */
+
+export const DAY_EM_ARRIVAL_ERFOUD = {
+  route_id: "em-arrival-erfoud",
+  id: "dia-1",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#C16542",
+  title: { es: "Casablanca · Errachidia · Erfoud", en: "Casablanca · Errachidia · Erfoud", fr: "Casablanca · Errachidia · Erfoud" },
+  body: {
+    es: "Salida desde el aeropuerto de origen en dirección a Casablanca, con la posible diferencia horaria según la época del año. Conexión con el vuelo Casablanca – Errachidia. Llegada a Errachidia, trámites de pasaporte y recogida de equipajes. Traslado por carretera hasta Erfoud, conocida como «La Puerta del Desierto». Llegada a Kasbah Hotel Xaluca, un hotel emblemático del sur de Marruecos. Cena y alojamiento.",
+    en: "Departure from your home airport towards Casablanca — mind the possible seasonal time difference. Connection with the Casablanca – Errachidia flight. Arrival in Errachidia, passport check and luggage collection. Road transfer to Erfoud, known as «The Gate of the Desert». Arrival at Kasbah Hotel Xaluca, an emblematic hotel of southern Morocco. Dinner and overnight.",
+    fr: "Départ de votre aéroport d'origine vers Casablanca — attention au décalage horaire éventuel selon la saison. Correspondance avec le vol Casablanca – Errachidia. Arrivée à Errachidia, formalités de passeport et récupération des bagages. Transfert routier vers Erfoud, « la Porte du Désert ». Arrivée au Kasbah Hotel Xaluca, hôtel emblématique du sud du Maroc. Dîner et nuit.",
+  },
+  culture: [
+    {
+      title: { es: "Casablanca y el cambio horario", en: "Casablanca and the time difference", fr: "Casablanca et le décalage horaire" },
+      body: {
+        es: "Marruecos sigue UTC+1 gran parte del año, pero durante el Ramadán cambia temporalmente a UTC+0. Conviene verificar el huso horario antes del viaje y al llegar para coordinar conexiones.",
+        en: "Morocco follows UTC+1 for most of the year, but during Ramadan it temporarily switches to UTC+0. It is wise to check local time before departure and on arrival to coordinate connections.",
+        fr: "Le Maroc suit UTC+1 la majeure partie de l'année, mais passe temporairement à UTC+0 pendant le Ramadan. Il convient de vérifier l'heure locale avant le départ et à l'arrivée.",
+      },
+    },
+    {
+      title: { es: "Errachidia, puerta del Tafilalet", en: "Errachidia, gateway to the Tafilalet", fr: "Errachidia, porte du Tafilalet" },
+      body: {
+        es: "Principal acceso aéreo al oasis del Tafilalet y región histórica de la dinastía alauí, la actual familia real marroquí. Su aeropuerto Moulay Ali Cherif fue inicialmente una base militar francesa antes de pasar a uso civil.",
+        en: "The main air gateway to the Tafilalet oasis and to the historical region of the Alawi dynasty — Morocco's current royal family. Its Moulay Ali Cherif Airport began life as a French military base before becoming civilian.",
+        fr: "Principal accès aérien à l'oasis du Tafilalet et à la région historique de la dynastie alaouite, l'actuelle famille royale marocaine. Son aéroport Moulay Ali Cherif fut d'abord une base militaire française.",
+      },
+    },
+    {
+      title: { es: "Erfoud, capital mundial de los fósiles", en: "Erfoud, world capital of fossils", fr: "Erfoud, capitale mondiale des fossiles" },
+      body: {
+        es: "Ciudad famosa por sus fósiles devónicos de más de 360 millones de años y conocida como «la Puerta del Desierto», puerta de entrada al gran Erg Chebbi y base logística de todas las expediciones al Sahara marroquí.",
+        en: "A city famous for its Devonian fossils — more than 360 million years old — and known as «the Gate of the Desert», the gateway to the great Erg Chebbi and logistics hub for every Moroccan Sahara expedition.",
+        fr: "Ville célèbre pour ses fossiles dévoniens de plus de 360 millions d'années et connue comme « la Porte du Désert », porte d'entrée du grand Erg Chebbi et base logistique de toutes les expéditions au Sahara marocain.",
+      },
+    },
+  ],
+};
+
+export const DAY_EM_AITBEN_MARRAKECH = {
+  route_id: "em-aitben-marrakech",
+  id: "dia-6",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#C16542",
+  title: { es: "Aït Ben Haddou · Tizi n'Tichka · Marrakech", en: "Aït Ben Haddou · Tizi n'Tichka · Marrakech", fr: "Aït Ben Haddou · Tizi n'Tichka · Marrakech" },
+  body: {
+    es: "Salida hacia Marrakech atravesando el Alto Atlas. Por el camino visitaremos la Kasbah de Aït Ben Haddou, Patrimonio de la Humanidad y uno de los escenarios cinematográficos más famosos de África. Cruzaremos el Tizi n'Tichka, el puerto de carretera asfaltado más alto de Marruecos, situado a 2.260 metros. Llegada a Marrakech, recogida en el riad u hotel y primera toma de contacto con la Plaza Djemaa el-Fna, Patrimonio Cultural Inmaterial de la UNESCO, especialmente vibrante al caer la noche. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "Drive to Marrakech across the High Atlas. Along the way, visit the Aït Ben Haddou Kasbah — UNESCO World Heritage and one of the most famous film sets in Africa. We cross the Tizi n'Tichka, Morocco's highest tarmac road pass at 2,260 metres. Arrival in Marrakech, check-in at the riad or hotel and a first encounter with Djemaa el-Fna Square — UNESCO Intangible Cultural Heritage — especially vibrant at nightfall. Overnight at a Riad in the Medina or 5* Hotel.",
+    fr: "Route vers Marrakech à travers le Haut Atlas. En chemin, visite de la Kasbah d'Aït Ben Haddou — Patrimoine de l'Humanité et l'un des décors de cinéma les plus célèbres d'Afrique. Franchissement du Tizi n'Tichka, le col routier asphalté le plus haut du Maroc, à 2 260 mètres. Arrivée à Marrakech, accueil au riad ou à l'hôtel et première rencontre avec la place Djemaa el-Fna — Patrimoine Culturel Immatériel de l'UNESCO — particulièrement vibrante à la nuit tombée. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "Aït Ben Haddou: ksar milenario y plató de cine", en: "Aït Ben Haddou: ancient ksar and film set", fr: "Aït Ben Haddou : ksar millénaire et plateau de cinéma" },
+      body: {
+        es: "Patrimonio de la Humanidad desde 1987 y uno de los mejores ejemplos de arquitectura tradicional de adobe del sur marroquí. Ha sido escenario de superproducciones como Gladiator, La Momia, Juego de Tronos o Kingdom of Heaven.",
+        en: "UNESCO World Heritage since 1987 and one of the finest examples of traditional southern-Moroccan adobe architecture. It has hosted blockbusters such as Gladiator, The Mummy, Game of Thrones and Kingdom of Heaven.",
+        fr: "Patrimoine de l'Humanité depuis 1987 et l'un des plus beaux exemples d'architecture traditionnelle en pisé du sud marocain. Décor de superproductions comme Gladiator, La Momie, Game of Thrones ou Kingdom of Heaven.",
+      },
+    },
+    {
+      title: { es: "Tizi n'Tichka: el paso asfaltado más alto de Marruecos", en: "Tizi n'Tichka: Morocco's highest tarmac pass", fr: "Tizi n'Tichka : le col asphalté le plus haut du Maroc" },
+      body: {
+        es: "Con 2.260 m de altitud, el Tizi n'Tichka conecta Marrakech con el sur. Su ascenso permite ver cómo el paisaje cambia radicalmente: del entorno lunar del lado sur a los bosques y tierras fértiles del valle del Ourika al norte.",
+        en: "At 2,260 m, the Tizi n'Tichka links Marrakech with the south. The drive shows how the landscape changes dramatically — from a lunar south side to the forests and fertile fields of the Ourika valley to the north.",
+        fr: "Avec 2 260 m d'altitude, le Tizi n'Tichka relie Marrakech au sud. La montée révèle un changement radical de paysage — du versant sud quasi lunaire aux forêts et terres fertiles de la vallée de l'Ourika au nord.",
+      },
+    },
+    {
+      title: { es: "Djemaa el-Fna al caer la noche", en: "Djemaa el-Fna at nightfall", fr: "Djemaa el-Fna à la nuit tombée" },
+      body: {
+        es: "Patrimonio Cultural Inmaterial de la UNESCO y uno de los grandes espacios culturales del Magreb. De noche se transforma en un gran escenario gastronómico y cultural con decenas de puestos de comida y espectáculos espontáneos.",
+        en: "UNESCO Intangible Cultural Heritage and one of the great cultural spaces of the Maghreb. At night it transforms into a vast gastronomic and cultural stage with dozens of food stalls and impromptu shows.",
+        fr: "Patrimoine Culturel Immatériel de l'UNESCO et l'un des grands espaces culturels du Maghreb. La nuit, elle se transforme en vaste scène gastronomique et culturelle avec des dizaines de stands et de spectacles improvisés.",
+      },
+    },
+  ],
+};
+
+export const DAY_EM_MARRAKECH_VISIT = {
+  route_id: "em-marrakech-visit",
+  id: "dia-7",
+  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
+  body: {
+    es: "Día dedicado a descubrir Marrakech con visita guiada a pie por la Medina con un guía local. Empezaremos admirando el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y seguiremos con el Palacio de la Bahía. Recorreremos los zocos tradicionales viendo en acción a tejedores de alfombras, fabricantes de babuchas y una infinita variedad de artesanos. Visita a una farmacia bereber y regreso a Djemaa el-Fna. Tiempo libre para el arte del regateo o para descubrir los rincones más recónditos de la Medina. Traslado al aeropuerto de Marrakech para coger el vuelo de regreso.",
+    en: "A full day to discover Marrakech with a guided walking tour of the Medina led by a local guide. We start with the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We wander the traditional souks watching carpet weavers, babouche makers and a vast range of artisans at work. Visit a Berber pharmacy and return to Djemaa el-Fna. Free time for the art of bargaining or to discover the Medina's hidden corners. Transfer to Marrakech airport for the return flight.",
+    fr: "Journée dédiée à la découverte de Marrakech avec visite guidée à pied de la Médina par un guide local. Nous commençons par le minaret de la Koutoubia — jumeau de la Giralda de Séville — puis le Palais de la Bahia. Nous parcourons les souks traditionnels en observant tisserands de tapis, fabricants de babouches et une infinité d'artisans. Visite d'une pharmacie berbère et retour à Djemaa el-Fna. Temps libre pour l'art du marchandage ou pour découvrir les recoins cachés de la Médina. Transfert à l'aéroport de Marrakech pour le vol de retour.",
+  },
+  culture: [
+    {
+      title: { es: "La Koutoubia: el alminar que inspiró a la Giralda", en: "Koutoubia: the minaret that inspired the Giralda", fr: "La Koutoubia : le minaret qui inspira la Giralda" },
+      body: {
+        es: "La Mezquita de la Koutoubia fue construida en el siglo XII por los almohades y su alminar está considerado una obra maestra de la arquitectura islámica. Su diseño sirvió de modelo para la Giralda de Sevilla y la Torre Hassan de Rabat.",
+        en: "Built in the 12th century by the Almohads, the Koutoubia minaret is considered a masterpiece of Islamic architecture. Its design served as the model for Seville's Giralda and Rabat's Hassan Tower.",
+        fr: "Construite au XIIᵉ siècle par les Almohades, la mosquée de la Koutoubia possède un minaret considéré comme un chef-d'œuvre de l'architecture islamique. Son dessin servit de modèle à la Giralda de Séville et à la Tour Hassan de Rabat.",
+      },
+    },
+    {
+      title: { es: "Los zocos de Marrakech", en: "The souks of Marrakech", fr: "Les souks de Marrakech" },
+      body: {
+        es: "Uno de los mercados artesanales más extensos y antiguos del norte de África, dividido en sectores especializados — curtidores, cesteros, tintoreros, herreros, joyeros — manteniendo viva la tradición de oficios medievales.",
+        en: "One of North Africa's largest and oldest artisan markets, divided into specialised quarters — tanners, basket weavers, dyers, blacksmiths, jewellers — keeping medieval crafts alive.",
+        fr: "L'un des marchés artisanaux les plus vastes et les plus anciens d'Afrique du Nord, divisé en quartiers spécialisés — tanneurs, vanniers, teinturiers, forgerons, bijoutiers — perpétuant des métiers médiévaux.",
+      },
+    },
+    {
+      title: { es: "Djemaa el-Fna", en: "Djemaa el-Fna", fr: "Djemaa el-Fna" },
+      body: {
+        es: "Patrimonio cultural vivo reconocido por la UNESCO por sus tradiciones orales y espectáculos populares — cuentacuentos, músicos, acróbatas, herbolarios y artistas callejeros que se renuevan cada día.",
+        en: "A living cultural heritage recognised by UNESCO for its oral traditions and popular shows — storytellers, musicians, acrobats, herbalists and street artists who renew the square every day.",
+        fr: "Patrimoine culturel vivant reconnu par l'UNESCO pour ses traditions orales et spectacles populaires — conteurs, musiciens, acrobates, herboristes et artistes de rue qui renouvellent la place chaque jour.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_EM_67 = {
+  routeId: "tourErgMarrakech67",
+  duration_key: "em6n7d",
+  duration: { es: "6 noches / 7 días", en: "6 nights / 7 days", fr: "6 nuits / 7 jours" },
+  prices: { low: 1490, mid: 1790, high: 2090, premium: 2490 },
+  reverse: false,
+  days: [
+    DAY_EM_ARRIVAL_ERFOUD,
+    DAY_DESERT_BIVOUAC,
+    DAY_KHAMLIA_RISSANI,
+    DAY_TODRA_DADES,
+    DAY_ATLAS_MGOUN,
+    DAY_EM_AITBEN_MARRAKECH,
+    DAY_EM_MARRAKECH_VISIT,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Dos noches en Erfoud en Kasbah Xaluca en media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en media pensión",
+        "Dos noches en Hotel Xaluca Dades en media pensión",
+        "Una noche en Marrakech en alojamiento y desayuno (Riad o Hotel 5*)",
+        "Picnic en el desierto el día 2",
+        "Comida en «Gîte d'Étape» el día 5",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 2 al día 6",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Errachidia y Marrakech",
+        "Combustible",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Two nights in Erfoud at Kasbah Xaluca, half board",
+        "One night in Erg Chebbi at luxury bivouac, half board",
+        "Two nights at Hotel Xaluca Dades, half board",
+        "One night in Marrakech, bed and breakfast (Riad or 5* Hotel)",
+        "Desert picnic on day 2",
+        "Lunch at a «Gîte d'Étape» on day 5",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 2 to day 6",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Errachidia and Marrakech",
+        "Fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Deux nuits à Erfoud au Kasbah Xaluca en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Deux nuits à l'Hôtel Xaluca Dadès en demi-pension",
+        "Une nuit à Marrakech en logement et petit déjeuner (Riad ou Hôtel 5*)",
+        "Pique-nique dans le désert le jour 2",
+        "Déjeuner en « Gîte d'Étape » le jour 5",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 2 au jour 6",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Errachidia et Marrakech",
+        "Carburant",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía salvo las indicadas",
+        "Cenas en Marrakech",
+        "Extras personales",
+        "Vuelos internacionales",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches except where stated",
+        "Dinners in Marrakech",
+        "Personal extras",
+        "International flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners sauf ceux indiqués",
+        "Dîners à Marrakech",
+        "Extras personnels",
+        "Vols internationaux",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Suplemento habitación individual: 380 €",
+        "Descuento niños: 290 € en temporada baja · 310 € en temporada alta",
+        "Guías compartidos en temporada alta",
+        "Chóferes de habla española limitados — consulta disponibilidad",
+        "Pasaporte vigente mínimo 3 meses desde la fecha de regreso",
+        "Actividades opcionales: Quads 70 € por vehículo · Spa y masajes bajo reserva",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Single-room supplement: €380",
+        "Child discount: €290 in low season · €310 in high season",
+        "Shared guides in high season",
+        "Spanish-speaking drivers limited — check availability",
+        "Passport valid at least 3 months from the return date",
+        "Optional activities: Quads €70 per vehicle · Spa and massages by reservation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Supplément chambre individuelle : 380 €",
+        "Remise enfant : 290 € basse saison · 310 € haute saison",
+        "Guides partagés en haute saison",
+        "Chauffeurs hispanophones limités — consultez la disponibilité",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Activités en option : Quads 70 € par véhicule · Spa et massages sur réservation",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria",
+        "Pago: 30% en el momento de la reserva · 70% restante hasta 30 días antes del viaje",
+        "Si el vuelo requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva",
+        "Los seguros no son reembolsables",
+      ],
+      en: [
+        "Compulsory booking form",
+        "Payment: 30% at booking · remaining 70% up to 30 days before the trip",
+        "If the flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking",
+        "Insurances are non-refundable",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire",
+        "Paiement : 30 % à la réservation · 70 % restants jusqu'à 30 jours avant le voyage",
+        "Si le vol requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation",
+        "Les assurances ne sont pas remboursables",
+      ],
+    },
+  },
+};

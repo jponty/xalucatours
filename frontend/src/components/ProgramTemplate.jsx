@@ -418,6 +418,60 @@ const VARIANT_COPY = {
       ],
     },
   },
+  // Erg Chebbi → Marrakech (entrada Errachidia, salida Marrakech)
+  em: {
+    es: {
+      title: "Erg Chebbi y la ciudad roja de Marrakech.",
+      eyebrow_prefix: "Circuito · Erg Chebbi → Marrakech",
+      place: "Erg Chebbi · Alto Atlas · Marrakech",
+      subtitle: "De las dunas del Sahara a Marrakech, atravesando el Alto Atlas, el Valle del Dadès y Aït Ben Haddou.",
+      hero_image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+      airports: "Entrada Errachidia · Salida Marrakech",
+      quick_airports: "Errachidia / Marrakech",
+      quick_places: "Errachidia · Erfoud · Erg Chebbi · Merdani · Rissani · Tinerhir · Boumalne Dades · Aït Ben Haddou · Marrakech",
+      highlights: "Erg Chebbi · Khamlia · Todra · M'Goun · Aït Ben Haddou · Djemaa el-Fna",
+      description_title: "Un circuito auténtico para conocer el sur de Marruecos.",
+      description: [
+        "«Erg Chebbi – Marrakech» es un viaje de lo más auténtico para conocer el sur del país. Esta ruta nos despierta en el Desierto del Erg Chebbi, un espectáculo para los sentidos, con interminables dunas y ese halo mágico que desprenden los lugares especiales, permitiéndonos pasar una noche inolvidable bajo las estrellas.",
+        "Continuaremos con nuestro 4x4 hacia el Alto Atlas, descubriendo los paisajes a nuestro paso, deteniéndonos a contemplar su belleza, a conversar con los aldeanos y a disfrutar sin prisas de sus pueblos perdidos y de sus gargantas inmensas.",
+        "La ruta finalizará en Marrakech, una ciudad llena de colores, salpicada de artesanos y artistas, de plazas maravillosas y de aromas que marcarán nuestro recuerdo.",
+      ],
+    },
+    en: {
+      title: "Erg Chebbi and the red city of Marrakech.",
+      eyebrow_prefix: "Circuit · Erg Chebbi → Marrakech",
+      place: "Erg Chebbi · High Atlas · Marrakech",
+      subtitle: "From the Sahara dunes to Marrakech, crossing the High Atlas, the Dadès Valley and Aït Ben Haddou.",
+      hero_image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+      airports: "In Errachidia · Out Marrakech",
+      quick_airports: "Errachidia / Marrakech",
+      quick_places: "Errachidia · Erfoud · Erg Chebbi · Merdani · Rissani · Tinerhir · Boumalne Dades · Aït Ben Haddou · Marrakech",
+      highlights: "Erg Chebbi · Khamlia · Todra · M'Goun · Aït Ben Haddou · Djemaa el-Fna",
+      description_title: "An authentic circuit to discover southern Morocco.",
+      description: [
+        "«Erg Chebbi – Marrakech» is one of the most authentic journeys through the south of the country. The route wakes us up in the Erg Chebbi desert — a feast for the senses, with endless dunes and that magical halo special places radiate — for an unforgettable night under the stars.",
+        "We continue in our 4x4 towards the High Atlas, discovering the landscapes as we go, stopping to admire their beauty, to chat with villagers, and to enjoy — without rush — the hidden hamlets and immense gorges.",
+        "The route ends in Marrakech, a city full of colour, scattered with artisans and artists, marvellous squares and aromas that will linger in our memory.",
+      ],
+    },
+    fr: {
+      title: "Erg Chebbi et la ville rouge de Marrakech.",
+      eyebrow_prefix: "Circuit · Erg Chebbi → Marrakech",
+      place: "Erg Chebbi · Haut Atlas · Marrakech",
+      subtitle: "Des dunes du Sahara à Marrakech, en traversant le Haut Atlas, la Vallée du Dadès et Aït Ben Haddou.",
+      hero_image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+      airports: "Arrivée Errachidia · Sortie Marrakech",
+      quick_airports: "Errachidia / Marrakech",
+      quick_places: "Errachidia · Erfoud · Erg Chebbi · Merdani · Rissani · Tinerhir · Boumalne Dadès · Aït Ben Haddou · Marrakech",
+      highlights: "Erg Chebbi · Khamlia · Todra · M'Goun · Aït Ben Haddou · Djemaa el-Fna",
+      description_title: "Un circuit authentique pour découvrir le sud du Maroc.",
+      description: [
+        "« Erg Chebbi – Marrakech » est l'un des voyages les plus authentiques pour découvrir le sud du pays. L'itinéraire nous réveille dans le désert de l'Erg Chebbi, un spectacle pour les sens, avec ses dunes infinies et ce halo magique propre aux lieux d'exception — pour une nuit inoubliable sous les étoiles.",
+        "Nous poursuivons en 4x4 vers le Haut Atlas, à la découverte des paysages, en discutant avec les villageois et en savourant sans hâte les villages perdus et les gorges immenses.",
+        "L'itinéraire s'achève à Marrakech, ville colorée parsemée d'artisans et d'artistes, aux places merveilleuses et aux parfums qui marqueront notre mémoire.",
+      ],
+    },
+  },
 };
 
 const LABELS = {
