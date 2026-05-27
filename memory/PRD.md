@@ -182,3 +182,20 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Self-contained: no edits required to the global Breadcrumbs system or `programNav.js`.
 - Reusable `MonthBar` and `parseBestMonths` helpers inside the page for the visual scheduling components.
 - Tested: ES/EN/FR routes render correctly; SideMenu "Guías" cluster expands and navigates; tab switching, month expansion, and Leaflet popups all functional.
+
+
+## Floating "Best month for my trip" FAB (Feb 2026)
+- New component `components/BestMonthFab.jsx`, mounted globally inside `Layout.jsx`.
+- Floating pill `bottom-24 right-6` (sits above the "Made with Emergent" badge), glassmorphic dark theme with the region's accent colour on the icon badge.
+- Smart `routeToRegion(routeId)` mapping picks the relevant climate region per page: Sur / desert / gran-sur / Erg Chebbi / Marrakech routes → **sahara**; Marrakech-Essaouira → **coast**; Aventura / Enduro / Atlas-Fez / Errachidia-Atlas-Fez → **atlas**; Bespoke / Marrakech escapes → **marrakech**; Norte / imperial cities / Tangier / Fez / Chefchaouen escapes → **north**.
+- Hidden on: `home`, `contact`, `whenToTravel`, `planTrip`, `appointment`, `toursLanding`, `catalog`, `morocco`, `events`, `about`, `whatWeDo`, `whatToSee`, `upcomingDepartures`, and any unknown route.
+- Side modal (460–520px from the right) opens with:
+  - Eyebrow "Tu mejor ventana / Your sweet spot / Votre meilleure fenêtre" in region accent
+  - Region name as big serif title in accent colour
+  - 12-month visual `MonthBar` highlighting the best window
+  - Best / Avoid month strings from `bestTimeData.REGIONS`
+  - Climate body excerpt with left border in accent colour
+  - "Dos meses destacados" — pulls the first two best-window months from `bestTimeData.MONTHS` with their `temp` + `highlight`
+  - Sticky bottom CTAs: "Planificar mi viaje" (→ `planTrip`, primary orange) and "Ver guía completa" (→ `whenToTravel`, outline)
+- Trilingual via the existing `pick()` helper.
+- Tested on Sur (Sáhara), Norte (Rif y Tánger), Aventura (Alto Atlas), Marrakech-Essaouira (Costa atlántica), EN `/en/tours/adventure` (High Atlas). FAB correctly hidden on `/`, `/cuando-viajar`, `/contacto`.

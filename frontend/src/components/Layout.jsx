@@ -3,6 +3,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
 import FloatingLanguageSwitcher from "./FloatingLanguageSwitcher";
+import BestMonthFab from "./BestMonthFab";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Layout = ({ children }) => {
@@ -13,6 +14,7 @@ export const Layout = ({ children }) => {
       <main>{children}</main>
       <Footer />
       <FloatingLanguageSwitcher />
+      <BestMonthFab />
       <Toaster position="bottom-right" />
     </div>
   );
