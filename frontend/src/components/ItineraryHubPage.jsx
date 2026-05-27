@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, ArrowLeftRight, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import {
@@ -172,19 +172,44 @@ export default function ItineraryHubPage({ hub }) {
 
   return (
     <div data-testid={`hub-page-${hub.id}`}>
-      <JourneyHero
-        image={hub.hero.image}
-        eyebrow={pick(hub.hero.eyebrow, lang)}
-        place={pick(hub.hero.place, lang)}
-        title={heroTitle}
-        subtitle={pick(hub.hero.subtitle, lang)}
-        primaryCta={t.cta_primary}
-        primaryHref="#options"
-        secondaryCta={t.cta_secondary}
-        secondaryHref="#community"
-        scroll={t.scroll}
-        testid={`hub-hero-${hub.id}`}
-      />
+      <div className="relative">
+        <JourneyHero
+          image={hub.hero.image}
+          eyebrow={pick(hub.hero.eyebrow, lang)}
+          place={pick(hub.hero.place, lang)}
+          title={heroTitle}
+          subtitle={pick(hub.hero.subtitle, lang)}
+          primaryCta={t.cta_primary}
+          primaryHref="#options"
+          secondaryCta={t.cta_secondary}
+          secondaryHref="#community"
+          scroll={t.scroll}
+          testid={`hub-hero-${hub.id}`}
+        />
+        {hub.oppositeHub && (
+          <Link
+            to={pathFor(lang, hub.oppositeHub.routeId)}
+            data-testid={`hub-opposite-toggle-${hub.id}`}
+            className="hidden md:inline-flex absolute right-6 lg:right-10 top-28 lg:top-32 z-20 items-center gap-3 px-4 py-2.5 bg-[#FDFBF7]/12 hover:bg-[#FDFBF7] hover:text-[#1A1513] backdrop-blur-md border border-[#FDFBF7]/35 text-[#FDFBF7] text-[10.5px] tracking-[0.28em] uppercase transition-colors duration-300"
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <span>{pick(hub.oppositeHub.label, lang)}</span>
+          </Link>
+        )}
+      </div>
+
+      {hub.oppositeHub && (
+        <div className="md:hidden bg-[#2C2621] text-[#FDFBF7]">
+          <Link
+            to={pathFor(lang, hub.oppositeHub.routeId)}
+            data-testid={`hub-opposite-toggle-mobile-${hub.id}`}
+            className="flex items-center justify-center gap-3 px-5 py-3.5 text-[10px] tracking-[0.28em] uppercase hover:bg-[#3A2E25] transition-colors"
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <span>{pick(hub.oppositeHub.label, lang)}</span>
+          </Link>
+        </div>
+      )}
 
       <StickyNav items={navItems} testid={`hub-nav-${hub.id}`} />
 

@@ -124,6 +124,14 @@ export const HUB_MARRAKECH_ERG = {
     group_a: { es: "Marrakech → Erg Chebbi", en: "Marrakech → Erg Chebbi", fr: "Marrakech → Erg Chebbi" },
     group_b: { es: "Erg Chebbi → Marrakech", en: "Erg Chebbi → Marrakech", fr: "Erg Chebbi → Marrakech" },
   },
+  oppositeHub: {
+    routeId: "tourErgChebbiMarrakechHub",
+    label: {
+      es: "Solo sentido inverso · Erg Chebbi → Marrakech",
+      en: "Reverse direction only · Erg Chebbi → Marrakech",
+      fr: "Sens inverse uniquement · Erg Chebbi → Marrakech",
+    },
+  },
   programs: [
     { id: "me-4-5", direction: "a", nights: "4n5d", accent: "#C16542",
       image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
@@ -230,6 +238,14 @@ export const HUB_ERGCHEBBI_MARRAKECH = {
     // Single direction → we hide the direction groups
     group_a: null,
     group_b: null,
+  },
+  oppositeHub: {
+    routeId: "tourMarrakechErgHub",
+    label: {
+      es: "Ver sentido inverso · Marrakech → Erg Chebbi",
+      en: "See reverse direction · Marrakech → Erg Chebbi",
+      fr: "Voir le sens inverse · Marrakech → Erg Chebbi",
+    },
   },
   programs: [
     { id: "em-4-5", nights: "4n5d", accent: "#5A6B4F",
