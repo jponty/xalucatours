@@ -86,6 +86,13 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
 ## Recent additions (Feb 2026 — session, latest)
+- **Phase 1 "Opción B" · Sur de Marruecos navigation & cross-linking** (Feb 2026, latest):
+  - New global `<Breadcrumbs />` mounted in `Layout.jsx` — auto-detects routeId via `resolvePath()` and renders a glassy strip over the hero. Trail: `Inicio › Viajes › <Sección> › <Hub> › <Programa>`. Trilingual (es/en/fr). Hidden on home & unwired routes.
+  - New `<HubPeerNav />` at the bottom of every Sur program page (`ProgramTemplate.jsx`, before the contact form): "Volver al hub" CTA + grid of peer programs from the same hub.
+  - New lookup map `lib/programNav.js`: `SECTION_HUBS.tourSouth` lists the 7 Sur hubs; derived `HUB_NAV` + `PROGRAM_NAV` indexes drive the breadcrumb & peer-nav lookups. Phase 2/3/4 will simply add more entries to `SECTION_HUBS`.
+  - Testids: `breadcrumbs`, `bc-home`, `bc-tours`, `bc-section[-current]`, `bc-hub[-current]`, `bc-program-current`, `hub-peer-nav`, `hub-peer-nav-back`, `hub-peer-program-{id}`.
+  - Verified by `testing_agent_v3_fork` iteration_8.json: 11/11 criteria PASS in ES/EN/FR, zero console errors.
+
 - **Marrakech → Sidi Ali → Fez family** — created the three Gran-Sur itineraries that climb back from the desert through Aguelmane Sidi Ali on the way to Fez:
   - `/viajes/gransur/marrakech_sidiali_fez/programa_7n_8d` (`PROGRAM_MSF_78`, ~2090–3090 €, 7n/8d, Fez return on day 8)
   - `/viajes/gransur/marrakech_sidiali_fez/programa_8n_9d` (`PROGRAM_MSF_89`, ~2290–3290 €, adds 1 Fez riad night)
