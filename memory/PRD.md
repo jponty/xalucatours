@@ -85,6 +85,14 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Stripe Checkout for `/proximas_salidas` deposits
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
+## Recent additions (Feb 2026 — session, latest)
+- **Marrakech → Sidi Ali → Fez family** — created the three Gran-Sur itineraries that climb back from the desert through Aguelmane Sidi Ali on the way to Fez:
+  - `/viajes/gransur/marrakech_sidiali_fez/programa_7n_8d` (`PROGRAM_MSF_78`, ~2090–3090 €, 7n/8d, Fez return on day 8)
+  - `/viajes/gransur/marrakech_sidiali_fez/programa_8n_9d` (`PROGRAM_MSF_89`, ~2290–3290 €, adds 1 Fez riad night)
+  - `/viajes/gransur/marrakech_sidiali_fez/programa_9n_10d` (`PROGRAM_MSF_910`, ~2490–3490 €, adds Boumalne M'Goun day)
+- Modular reuse from `marrakechFezShared`, `marrakechFez67` and `ouarzazateSidialiFez67`. Two brand-new shared days: `DAY_MSF_ZIZ_SIDIALI`, `DAY_MSF_SIDIALI_IFRANE_FEZ_RETURN` (78); `DAY_MSF_SIDIALI_FEZ_MEDINA`, `DAY_MSF_FEZ_RETURN` (89 + 910 reuse). All trilingual (es/en/fr).
+- Routes registered in `lib/routes.js`, page components wired in `App.js`. ⚠️ Pending: `marrakech_sidiali_fez` hub page (P2) to surface the three variants from a single landing.
+
 ## Recent additions (Feb 2026 — session)
 - **Day map interactive carousel** — Selecting a landmark on the map or the side list reveals an editorial card carousel below the map: vertical 4:5 cards, each with image + title + short curiosity (trilingual). 28 landmarks × 3-4 cards in `lib/landmarkGalleries.js`. Component: `components/LandmarkCarousel.jsx`.
 - Increased spacing between "Bloques culturales destacados" and "Mapa del día" sections (`mt-12 md:mt-16 pt-14 md:pt-20`).

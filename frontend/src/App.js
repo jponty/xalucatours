@@ -73,6 +73,9 @@ import MarrakechFez67Page from "@/pages/MarrakechFez67Page";
 import MarrakechFez78Page from "@/pages/MarrakechFez78Page";
 import MarrakechFez89Page from "@/pages/MarrakechFez89Page";
 import MarrakechFez910Page from "@/pages/MarrakechFez910Page";
+import MarrakechSidialiFez78Page from "@/pages/MarrakechSidialiFez78Page";
+import MarrakechSidialiFez89Page from "@/pages/MarrakechSidialiFez89Page";
+import MarrakechSidialiFez910Page from "@/pages/MarrakechSidialiFez910Page";
 import {
   EscapadaDesierto34Page,
   EscapadaAtlas34Page,
@@ -143,6 +146,9 @@ const LocalizedRouter = () => {
   if (routeId === "tourMarrakechFez78")    return <MarrakechFez78Page />;
   if (routeId === "tourMarrakechFez89")    return <MarrakechFez89Page />;
   if (routeId === "tourMarrakechFez910")   return <MarrakechFez910Page />;
+  if (routeId === "tourMarrakechSidialiFez78")  return <MarrakechSidialiFez78Page />;
+  if (routeId === "tourMarrakechSidialiFez89")  return <MarrakechSidialiFez89Page />;
+  if (routeId === "tourMarrakechSidialiFez910") return <MarrakechSidialiFez910Page />;
   if (routeId === "tourEscapadaDesierto34") return <EscapadaDesierto34Page />;
   if (routeId === "tourEscapadaAtlas34")    return <EscapadaAtlas34Page />;
   if (routeId === "tourEscapadaFez")        return <EscapadaFezPage />;
