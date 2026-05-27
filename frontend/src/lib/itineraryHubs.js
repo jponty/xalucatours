@@ -493,6 +493,7 @@ export const HUB_ERRACHIDIA_ATLAS_FEZ = {
                fr: "Voyage de 5 nuits et 6 jours d'Errachidia à Fès." } },
     { id: "fae-5-6", direction: "b", nights: "5n6d", accent: "#5A7F9C",
       image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      link: "tourFezAtlasErr56",
       blurb: { es: "Viaje de 5 noches y 6 días desde Fez hasta Errachidia.",
                en: "5-night/6-day journey from Fez to Errachidia.",
                fr: "Voyage de 5 nuits et 6 jours de Fès à Errachidia." } },

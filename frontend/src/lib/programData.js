@@ -3626,3 +3626,311 @@ export const PROGRAM_MES_67 = {
   },
 };
 
+
+/* ============================================================
+   Fez → Atlas → Errachidia · 5 noches / 6 días
+   De la medina medieval de Fez al desierto, atravesando los
+   cedros del Medio Atlas y el lago Aguelmame Sidi Ali.
+============================================================ */
+
+export const DAY_FAE_ARRIVAL_FEZ = {
+  route_id: "fae-arrival-fez",
+  id: "dia-1",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5A7F9C",
+  title: { es: "Llegada a Fez", en: "Arrival in Fez", fr: "Arrivée à Fès" },
+  body: {
+    es: "Vuelo desde el aeropuerto de origen hacia Fez. Recepción en el aeropuerto y traslado al Riad en la Medina o Hotel 4*. Cena y alojamiento. Dependiendo de la hora de llegada, la visita guiada de Fez puede adelantarse a este mismo día — un primer paseo nocturno por la Medina, la mejor manera de adentrarse en una de las ciudades imperiales más fascinantes del Magreb.",
+    en: "Flight from your home airport to Fez. Reception at the airport and transfer to a Riad in the Medina or 4* Hotel. Dinner and overnight. Depending on your arrival time, the guided tour of Fez can be brought forward to this day — a first evening walk through the Medina, the best way to step into one of the Maghreb's most fascinating imperial cities.",
+    fr: "Vol depuis votre aéroport d'origine vers Fès. Accueil à l'aéroport et transfert au Riad dans la Médina ou Hôtel 4*. Dîner et nuit. Selon l'heure d'arrivée, la visite guidée de Fès peut être avancée à cette journée — une première balade nocturne dans la Médina, idéale pour entrer dans l'une des villes impériales les plus fascinantes du Maghreb.",
+  },
+  culture: [
+    {
+      title: { es: "Fez el-Bali: la medina más antigua del mundo", en: "Fez el-Bali: the world's oldest medina", fr: "Fès el-Bali : la plus ancienne médina au monde" },
+      body: {
+        es: "Fundada en el siglo IX, Fez el-Bali es la medina amurallada más antigua del mundo en activo. Patrimonio de la UNESCO, alberga más de 9.000 callejones, decenas de mezquitas y la Universidad Al Quaraouiyine, la más antigua del planeta aún en funcionamiento (859 d.C.).",
+        en: "Founded in the 9th century, Fez el-Bali is the world's oldest active walled medina. UNESCO World Heritage, it shelters more than 9,000 alleys, dozens of mosques and Al Quaraouiyine University — the oldest continuously operating university in the world (859 AD).",
+        fr: "Fondée au IXᵉ siècle, Fès el-Bali est la plus ancienne médina fortifiée au monde encore en activité. Patrimoine de l'UNESCO, elle abrite plus de 9 000 ruelles, des dizaines de mosquées et l'université Al Quaraouiyine, la plus ancienne université en activité au monde (859 ap. J.-C.).",
+      },
+    },
+    {
+      title: { es: "Aeropuerto Fès-Saïs", en: "Fès-Saïs Airport", fr: "Aéroport Fès-Saïs" },
+      body: {
+        es: "El aeropuerto internacional Fès-Saïs (FEZ), a unos 15 km del centro, conecta con Casablanca, Marrakech, París, Madrid, Bruselas y otras capitales europeas. Una puerta de entrada cómoda para iniciar el viaje en el norte del país.",
+        en: "Fès-Saïs International Airport (FEZ), about 15 km from the centre, connects to Casablanca, Marrakech, Paris, Madrid, Brussels and other European capitals — a convenient entry point to start your journey from northern Morocco.",
+        fr: "L'aéroport international Fès-Saïs (FEZ), à environ 15 km du centre, relie Casablanca, Marrakech, Paris, Madrid, Bruxelles et d'autres capitales européennes — une porte d'entrée pratique pour commencer le voyage par le nord du Maroc.",
+      },
+    },
+    {
+      title: { es: "Dormir en un riad de Fez", en: "Sleeping at a Fez riad", fr: "Dormir dans un riad de Fès" },
+      body: {
+        es: "Los riads de Fez son antiguas casas-palacio centenarias organizadas en torno a un patio interior con fuentes y zellige. Hoy convertidos en hoteles boutique, ofrecen una experiencia íntima y muy diferente a los hoteles convencionales.",
+        en: "Fez riads are centuries-old palatial houses arranged around an inner courtyard with fountains and zellige tilework. Today turned into boutique hotels, they offer an intimate experience far removed from conventional hotels.",
+        fr: "Les riads de Fès sont d'anciennes maisons-palais centenaires organisées autour d'un patio intérieur orné de fontaines et de zellige. Aujourd'hui convertis en hôtels-boutiques, ils offrent une expérience intime, loin des hôtels conventionnels.",
+      },
+    },
+  ],
+};
+
+export const DAY_FAE_FEZ_SIDIALI = {
+  route_id: "fae-fez-sidiali",
+  id: "dia-2",
+  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  accent: "#7C8B5C",
+  title: { es: "Fez · Medio Atlas · Aguelmame Sidi Ali", en: "Fez · Middle Atlas · Aguelmame Sidi Ali", fr: "Fès · Moyen Atlas · Aguelmame Sidi Ali" },
+  body: {
+    es: "Por la mañana visita guiada a pie por la Medina de Fez: zocos, centros artesanales, mezquitas y palacios históricos. Visitaremos el barrio de los curtidores Chouara, la Madrasa Bou Inania, la Fuente Nejjarine y la puerta azul de Bab Boujloud. Por la tarde salida en vehículo 4x4 con chófer atravesando el Medio Atlas: paso por Ifrane, la «pequeña Suiza» marroquí, bosques de cedros gigantes donde con suerte avistaremos monos magot en libertad. Llegada a Aguelmame Sidi Ali, a 2.200 m de altitud, junto al lago natural más profundo de Marruecos. Cena y noche en Xaluca Lake Sidi Ali, antiguo refugio de caza y pesca reconvertido en hotel boutique de montaña.",
+    en: "Morning guided walking tour of the Fez Medina: souks, artisan workshops, mosques and historic palaces. We visit the Chouara tanners' quarter, the Bou Inania Madrasa, the Nejjarine fountain and the blue gate of Bab Boujloud. In the afternoon departure by 4x4 with driver across the Middle Atlas: passing through Ifrane, Morocco's «little Switzerland», and the giant cedar forests where we may spot free-roaming Barbary macaques. Arrival at Aguelmame Sidi Ali, at 2,200 m altitude, beside Morocco's deepest natural lake. Dinner and overnight at Xaluca Lake Sidi Ali — a former hunting and fishing lodge turned mountain boutique hotel.",
+    fr: "Le matin, visite guidée à pied de la Médina de Fès : souks, ateliers d'artisans, mosquées et palais historiques. Visite du quartier des tanneurs Chouara, de la Madrasa Bou Inania, de la fontaine Nejjarine et de la porte bleue Bab Boujloud. L'après-midi, départ en 4x4 avec chauffeur à travers le Moyen Atlas : passage par Ifrane, la « petite Suisse » marocaine, et les forêts de cèdres géants où, avec un peu de chance, nous apercevrons des macaques de Barbarie en liberté. Arrivée à Aguelmame Sidi Ali, à 2 200 m d'altitude, au bord du lac naturel le plus profond du Maroc. Dîner et nuit au Xaluca Lake Sidi Ali, ancien refuge de chasse et de pêche reconverti en hôtel-boutique de montagne.",
+  },
+  culture: [
+    {
+      title: { es: "Curtidores de Chouara", en: "Chouara tanners", fr: "Tanneurs de Chouara" },
+      body: {
+        es: "Las célebres tinas de colores del barrio Chouara llevan funcionando desde el siglo XI con técnicas medievales casi inalteradas. Las pieles se tratan con cal, sal, excrementos de paloma y tintes naturales antes de exportarse en todo el mundo.",
+        en: "The famous coloured vats of the Chouara quarter have been in use since the 11th century with almost unchanged medieval techniques. Hides are treated with lime, salt, pigeon droppings and natural dyes before being exported worldwide.",
+        fr: "Les célèbres cuves colorées du quartier Chouara fonctionnent depuis le XIᵉ siècle avec des techniques médiévales quasi inchangées. Les peaux sont traitées à la chaux, au sel, aux fientes de pigeon et aux teintures naturelles avant d'être exportées dans le monde entier.",
+      },
+    },
+    {
+      title: { es: "Ifrane, la pequeña Suiza marroquí", en: "Ifrane, the Moroccan little Switzerland", fr: "Ifrane, la petite Suisse marocaine" },
+      body: {
+        es: "Construida por los franceses en los años 30 a 1.665 m de altitud, Ifrane sorprende con sus tejados a dos aguas, sus calles arboladas y su nieve invernal. Alberga la prestigiosa universidad Al Akhawayn y es base para visitar los bosques de cedros del Atlas.",
+        en: "Built by the French in the 1930s at 1,665 m altitude, Ifrane surprises with its pitched roofs, tree-lined streets and winter snow. It hosts the prestigious Al Akhawayn University and serves as a base for visiting the Atlas cedar forests.",
+        fr: "Construite par les Français dans les années 1930 à 1 665 m d'altitude, Ifrane surprend avec ses toits à deux pentes, ses rues arborées et sa neige hivernale. Elle accueille la prestigieuse université Al Akhawayn et sert de base aux forêts de cèdres de l'Atlas.",
+      },
+    },
+    {
+      title: { es: "Aguelmame Sidi Ali y los cedros del Atlas", en: "Aguelmame Sidi Ali and the Atlas cedars", fr: "Aguelmame Sidi Ali et les cèdres de l'Atlas" },
+      body: {
+        es: "El lago Sidi Ali, formado en un cráter volcánico a 2.080 m, es el más profundo de Marruecos. Lo rodea un bosque endémico de cedros del Atlas (Cedrus atlantica) habitado por los famosos monos magot, una de las pocas poblaciones silvestres del mundo.",
+        en: "Sidi Ali lake, formed in a volcanic crater at 2,080 m, is the deepest in Morocco. It is surrounded by an endemic forest of Atlas cedars (Cedrus atlantica) inhabited by the famous Barbary macaques — one of the world's few wild populations.",
+        fr: "Le lac Sidi Ali, formé dans un cratère volcanique à 2 080 m, est le plus profond du Maroc. Il est entouré d'une forêt endémique de cèdres de l'Atlas (Cedrus atlantica) habitée par les célèbres macaques de Barbarie — l'une des rares populations sauvages au monde.",
+      },
+    },
+  ],
+};
+
+export const DAY_FAE_SIDIALI_ERFOUD = {
+  route_id: "fae-sidiali-erfoud",
+  id: "dia-3",
+  image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Aguelmame Sidi Ali · Valle del Ziz · Erfoud", en: "Aguelmame Sidi Ali · Ziz Valley · Erfoud", fr: "Aguelmame Sidi Ali · Vallée du Ziz · Erfoud" },
+  body: {
+    es: "Mañana libre para disfrutar del entorno natural: caminata por las orillas del lago, observación de aves migratorias, paseos por el Parque Nacional de Khenifra o simplemente desconectar entre las montañas. Comida incluida en el hotel. Por la tarde retomamos el 4x4 hacia el sur, atravesando los pasos del Alto Atlas y descendiendo por el espectacular Valle del Ziz, una cinta verde de más de diez millones de palmeras encajada entre paredes rocosas. Llegada a Erfoud, «la Puerta del Desierto». Cena y noche en Kasbah Xaluca, hotel emblemático del sur de Marruecos.",
+    en: "Free morning to enjoy the natural surroundings: lakeside walks, migratory bird watching, hikes in the Khenifra National Park or simply unwinding among the mountains. Lunch included at the hotel. In the afternoon we hit the 4x4 again heading south, crossing the High Atlas passes and descending into the spectacular Ziz Valley — a green ribbon of more than ten million palm trees set between rock walls. Arrival in Erfoud, «the Gate of the Desert». Dinner and overnight at Kasbah Xaluca, an emblematic hotel of southern Morocco.",
+    fr: "Matinée libre pour profiter du cadre naturel : balades au bord du lac, observation des oiseaux migrateurs, randonnées dans le Parc National de Khénifra ou simplement détente en montagne. Déjeuner inclus à l'hôtel. L'après-midi, nous repartons en 4x4 vers le sud, franchissons les cols du Haut Atlas et descendons la spectaculaire Vallée du Ziz — ruban vert de plus de dix millions de palmiers serré entre les parois rocheuses. Arrivée à Erfoud, « la Porte du Désert ». Dîner et nuit à la Kasbah Xaluca, hôtel emblématique du sud du Maroc.",
+  },
+  culture: [
+    {
+      title: { es: "Parque Nacional de Khenifra", en: "Khenifra National Park", fr: "Parc National de Khénifra" },
+      body: {
+        es: "Creado en 2008, este parque del Medio Atlas protege 84.000 hectáreas de cedros, robles y encinares. Es refugio de monos magot, ciervos rojos, jabalíes y más de 80 especies de aves — incluida el águila real.",
+        en: "Created in 2008, this Middle Atlas park protects 84,000 hectares of cedars, oaks and holm oaks. It shelters Barbary macaques, red deer, wild boar and over 80 bird species — including the golden eagle.",
+        fr: "Créé en 2008, ce parc du Moyen Atlas protège 84 000 hectares de cèdres, chênes et yeuses. Il abrite macaques, cerfs rouges, sangliers et plus de 80 espèces d'oiseaux — dont l'aigle royal.",
+      },
+    },
+    {
+      title: { es: "Valle del Ziz: el río que dio vida al Tafilalet", en: "Ziz Valley: the river that brought life to Tafilalet", fr: "Vallée du Ziz : la rivière qui donna vie au Tafilalet" },
+      body: {
+        es: "El río Ziz, que nace en el Alto Atlas y desemboca en el Sahara argelino, atraviesa uno de los paisajes más fotogénicos de Marruecos. Sus diez millones de palmeras forman el oasis del Tafilalet, cuna histórica de la dinastía alauí.",
+        en: "The Ziz river, born in the High Atlas and ending in the Algerian Sahara, crosses one of Morocco's most photogenic landscapes. Its ten million palm trees form the Tafilalet oasis — historic cradle of the Alawi dynasty.",
+        fr: "La rivière Ziz, née dans le Haut Atlas et se perdant dans le Sahara algérien, traverse l'un des paysages les plus photogéniques du Maroc. Ses dix millions de palmiers forment l'oasis du Tafilalet — berceau historique de la dynastie alaouite.",
+      },
+    },
+    {
+      title: { es: "Erfoud, capital mundial de los fósiles", en: "Erfoud, world capital of fossils", fr: "Erfoud, capitale mondiale des fossiles" },
+      body: {
+        es: "Ciudad famosa por sus fósiles devónicos de más de 360 millones de años. Es base logística de todas las expediciones al Erg Chebbi y se conoce como «la Puerta del Desierto».",
+        en: "A city famous for its Devonian fossils — more than 360 million years old. The logistics base for all Erg Chebbi expeditions, known as «the Gate of the Desert».",
+        fr: "Ville célèbre pour ses fossiles dévoniens de plus de 360 millions d'années. Base logistique de toutes les expéditions à l'Erg Chebbi, connue comme « la Porte du Désert ».",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_FAE_56 = {
+  routeId: "tourFezAtlasErr56",
+  duration_key: "fae5n6d",
+  duration: { es: "5 noches / 6 días", en: "5 nights / 6 days", fr: "5 nuits / 6 jours" },
+  prices: { low: 1290, mid: 1490, high: 1690, premium: 1990 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Fez – Alto Atlas – Errachidia.",
+      description_title: "Cultura, montaña, lago y desierto.",
+      description: [
+        "Explora la fascinante historia de Fez, considerada una de las medinas mejor conservadas del mundo, con sus callejuelas medievales, zocos y mezquitas históricas.",
+        "El viaje continúa hacia el entorno natural de Aguelmame Sidi Ali, donde se encuentra un antiguo refugio de caza y pesca reconvertido en hotel boutique de montaña.",
+        "Una experiencia que combina cultura, naturaleza, desierto, oasis, montañas del Atlas y tradiciones bereberes.",
+      ],
+    },
+    en: {
+      title: "Fez – High Atlas – Errachidia.",
+      description_title: "Culture, mountain, lake and desert.",
+      description: [
+        "Explore the fascinating history of Fez, considered one of the best-preserved medinas in the world, with its medieval alleys, souks and historic mosques.",
+        "The journey continues to the natural setting of Aguelmame Sidi Ali, home to a former hunting and fishing lodge turned mountain boutique hotel.",
+        "An experience blending culture, nature, desert, oasis, Atlas mountains and Berber traditions.",
+      ],
+    },
+    fr: {
+      title: "Fès – Haut Atlas – Errachidia.",
+      description_title: "Culture, montagne, lac et désert.",
+      description: [
+        "Explorez l'histoire fascinante de Fès, considérée comme l'une des médinas les mieux préservées au monde, avec ses ruelles médiévales, ses souks et ses mosquées historiques.",
+        "Le voyage se poursuit vers le cadre naturel d'Aguelmame Sidi Ali, où un ancien refuge de chasse et de pêche reconverti en hôtel-boutique de montagne vous attend.",
+        "Une expérience qui mêle culture, nature, désert, oasis, montagnes de l'Atlas et traditions berbères.",
+      ],
+    },
+  },
+  days: [
+    DAY_FAE_ARRIVAL_FEZ,
+    DAY_FAE_FEZ_SIDIALI,
+    DAY_FAE_SIDIALI_ERFOUD,
+    DAY_DESERT_BIVOUAC,
+    DAY_KHAMLIA_RISSANI,
+    DAY_ME_ZIZ_ERRACHIDIA,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Fez en Riad u Hotel 4* en régimen de media pensión",
+        "Una noche en Xaluca Lake Sidi Ali en régimen de media pensión",
+        "Dos noches en Kasbah Xaluca en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac en régimen de media pensión",
+        "Comida en Xaluca Lake Sidi Ali el día 3",
+        "Comida «picnic» en el desierto el día 4",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 2 al día 6",
+        "Visita guiada de Fez (½ día) con guía local",
+        "Transfers de aeropuerto en Fez y Errachidia",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Fez in a Riad or 4* Hotel, half board",
+        "One night at Xaluca Lake Sidi Ali, half board",
+        "Two nights at Kasbah Xaluca, half board",
+        "One night in Erg Chebbi at a bivouac, half board",
+        "Lunch at Xaluca Lake Sidi Ali on day 3",
+        "Desert «picnic» on day 4",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 2 to day 6",
+        "Half-day guided tour of Fez with local guide",
+        "Airport transfers in Fez and Errachidia",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Fès en Riad ou Hôtel 4* en demi-pension",
+        "Une nuit au Xaluca Lake Sidi Ali en demi-pension",
+        "Deux nuits à la Kasbah Xaluca en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac en demi-pension",
+        "Déjeuner au Xaluca Lake Sidi Ali le jour 3",
+        "Déjeuner « pique-nique » dans le désert le jour 4",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 2 au jour 6",
+        "Visite guidée d'une demi-journée de Fès avec guide local",
+        "Transferts aéroport à Fès et Errachidia",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía excepto las dos detalladas",
+        "Cenas no especificadas",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Seguro de cancelación",
+      ],
+      en: [
+        "Drinks",
+        "Lunches except the two stated",
+        "Dinners not specified",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Cancellation insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners sauf les deux indiqués",
+        "Dîners non spécifiés",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Assurance annulation",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Precios calculados según ocupación del 4x4 — el coste se reparte entre los ocupantes",
+        "Habitaciones dobles y triples · Suplemento individual 310 €",
+        "Descuento niños 3-11 años: 315 € baja · 325 € alta",
+        "Guías locales compartidos en temporada alta",
+        "Chóferes de habla española limitados — se recomienda reservar con antelación",
+        "Guías oficiales únicamente para visitas en medinas, no para las rutas",
+        "Pasaporte obligatorio con mínimo 6 meses de validez",
+        "Actividades opcionales: Quads 90 € por vehículo (circuito de 2 horas)",
+        "Seguro de cancelación opcional: 45 € por persona para viajes de hasta 9 días — debe contratarse al confirmar",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Prices calculated based on 4x4 occupancy — the cost is split between occupants",
+        "Double and triple rooms · Single supplement €310",
+        "Children 3-11 discount: €315 low season · €325 high season",
+        "Local guides may be shared in high season",
+        "Spanish-speaking drivers limited — book in advance",
+        "Official guides only for medina visits, not for routes",
+        "Passport valid at least 6 months required",
+        "Optional activities: Quads €90 per vehicle (2-hour circuit)",
+        "Optional cancellation insurance: €45 per person for trips up to 9 days — must be taken out at confirmation",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Tarifs calculés selon l'occupation du 4x4 — le coût se partage entre les occupants",
+        "Chambres doubles et triples · Supplément individuel 310 €",
+        "Remise enfants 3-11 ans : 315 € basse · 325 € haute",
+        "Guides locaux susceptibles d'être partagés en haute saison",
+        "Chauffeurs hispanophones limités — réserver à l'avance",
+        "Guides officiels uniquement pour les médinas, pas pour les itinéraires",
+        "Passeport valable au moins 6 mois obligatoire",
+        "Activités en option : Quads 90 € par véhicule (circuit de 2 heures)",
+        "Assurance annulation en option : 45 € par personne pour les voyages jusqu'à 9 jours — à souscrire à la confirmation",
+      ],
+    },
+    terms: {
+      es: [
+        "30% del importe total al confirmar la reserva",
+        "70% restante hasta 30 días antes de la salida",
+        "Si el vuelo requiere emisión inmediata: 100% de los vuelos + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Los seguros de cancelación no son reembolsables",
+      ],
+      en: [
+        "30% of total at booking confirmation",
+        "Remaining 70% up to 30 days before departure",
+        "If the flight requires immediate issuance: 100% of flights + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Cancellation insurances are non-refundable",
+      ],
+      fr: [
+        "30 % du total à la confirmation",
+        "70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol requiert une émission immédiate : 100 % des vols + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les assurances annulation ne sont pas remboursables",
+      ],
+    },
+  },
+};
+

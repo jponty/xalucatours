@@ -41,6 +41,7 @@ export const ROUTES = {
   tourMarrakechEss45: { es: "viajes/marrakech_essaouira/programa_4n_5d", en: "tours/marrakech-essaouira/program-4n-5d", fr: "voyages/marrakech-essaouira/programme-4n-5j" },
   tourMarrakechEss67: { es: "viajes/marrakech_essaouira/programa_6n_7d", en: "tours/marrakech-essaouira/program-6n-7d", fr: "voyages/marrakech-essaouira/programme-6n-7j" },
   tourErrAtlasFezHub: { es: "viajes/sur/errachidia-atlas-fez", en: "tours/south/errachidia-atlas-fez", fr: "voyages/sud/errachidia-atlas-fes" },
+  tourFezAtlasErr56: { es: "viajes/fez-atlas-errachidia/programa_5n_6d", en: "tours/fez-atlas-errachidia/program-5n-6d", fr: "voyages/fes-atlas-errachidia/programme-5n-6j" },
   tourUpcoming:       { es: "proximas_salidas", en: "upcoming-departures", fr: "prochains-departs" },
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },
   tourGransurFezRak:      { es: "viajes/gransur/fez-rak",            en: "tours/grand-south/fez-marrakech",            fr: "voyages/grand-sud/fes-marrakech" },
