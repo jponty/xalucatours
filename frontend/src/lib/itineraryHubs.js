@@ -266,6 +266,7 @@ export const HUB_ERGCHEBBI_MARRAKECH = {
                fr: "Voyage de 6 nuits et 7 jours d'Errachidia à Marrakech." } },
     { id: "em-7-8", nights: "7n8d", accent: "#3A4A5F",
       image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
+      link: "tourErgMarrakech78",
       blurb: { es: "Viaje de 7 noches y 8 días desde Errachidia hasta Marrakech.",
                en: "7-night/8-day journey from Errachidia to Marrakech.",
                fr: "Voyage de 7 nuits et 8 jours d'Errachidia à Marrakech." } },

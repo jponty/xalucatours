@@ -1348,3 +1348,294 @@ export const PROGRAM_EM_67 = {
     },
   },
 };
+
+
+/* ============================================================
+   Erg Chebbi → Marrakech · 7 noches / 8 días
+   Misma travesía que la 6n/7d pero con día completo extra en
+   Marrakech: llegada el día 6 + visita guiada a la Medina el
+   día 7 + traslado al aeropuerto el día 8.
+============================================================ */
+
+export const DAY_EM78_AITBEN_MARRAKECH = {
+  route_id: "em78-aitben-marrakech",
+  id: "dia-6",
+  image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+  accent: "#C16542",
+  title: { es: "Aït Ben Haddou · Tizi n'Tichka · Marrakech", en: "Aït Ben Haddou · Tizi n'Tichka · Marrakech", fr: "Aït Ben Haddou · Tizi n'Tichka · Marrakech" },
+  body: {
+    es: "Último día de 4x4 con unos 310 km por delante, recompensados por la espectacularidad del paisaje. Saldremos en dirección Marrakech. Por el camino visitaremos la Kasbah de Aït Ben Haddou, Patrimonio de la Humanidad por la UNESCO y escenario de numerosas producciones cinematográficas. Cruzaremos el Tizi n'Tichka, el puerto de carretera asfaltado más alto del país, dejando atrás el paisaje lunar para dar paso a los verdes y ocres del norte. Llegada a Marrakech por la tarde. Primera toma de contacto con la inigualable Plaza Djemaa el-Fna, que a esta hora se llena de recitadores, adivinadores, malabaristas, danzantes, encantadores de serpientes y, al anochecer, pequeñas paraditas de comida iluminadas al aire libre. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "Last day in the 4x4 with about 310 km ahead, generously rewarded by the landscape. Drive towards Marrakech. Along the way, visit the Aït Ben Haddou Kasbah — UNESCO World Heritage and the backdrop of countless film productions. We cross the Tizi n'Tichka, Morocco's highest tarmac road pass, leaving the lunar scenery behind as the greens and ochres of the north take over. Arrival in Marrakech in the afternoon. First contact with the unique Djemaa el-Fna Square, which at this hour fills with reciters, fortune-tellers, jugglers, dancers, snake charmers and, at nightfall, small lit-up food stalls in the open air. Overnight in a Riad in the Medina or 5* Hotel.",
+    fr: "Dernier jour en 4x4 avec environ 310 km devant nous, largement récompensés par le paysage. Route vers Marrakech. En chemin, visite de la Kasbah d'Aït Ben Haddou — Patrimoine de l'Humanité de l'UNESCO et décor de nombreuses productions cinématographiques. Franchissement du Tizi n'Tichka, col routier asphalté le plus haut du pays — le paysage lunaire laisse place aux verts et ocres du nord. Arrivée à Marrakech dans l'après-midi. Premier contact avec l'incomparable place Djemaa el-Fna, qui à cette heure se remplit de récitants, devins, jongleurs, danseurs, charmeurs de serpents et, à la tombée de la nuit, de petites échoppes de cuisine éclairées en plein air. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "Aït Ben Haddou: ksar milenario y plató de cine", en: "Aït Ben Haddou: ancient ksar and film set", fr: "Aït Ben Haddou : ksar millénaire et plateau de cinéma" },
+      body: {
+        es: "Patrimonio de la Humanidad desde 1987 y uno de los mejores ejemplos de arquitectura tradicional de adobe del sur marroquí. Ha sido escenario de superproducciones como Gladiator, La Momia, Juego de Tronos o Kingdom of Heaven.",
+        en: "UNESCO World Heritage since 1987 and one of the finest examples of traditional southern-Moroccan adobe architecture. It has hosted blockbusters such as Gladiator, The Mummy, Game of Thrones and Kingdom of Heaven.",
+        fr: "Patrimoine de l'Humanité depuis 1987 et l'un des plus beaux exemples d'architecture traditionnelle en pisé du sud marocain. Décor de superproductions comme Gladiator, La Momie, Game of Thrones ou Kingdom of Heaven.",
+      },
+    },
+    {
+      title: { es: "Tizi n'Tichka: el paso asfaltado más alto de Marruecos", en: "Tizi n'Tichka: Morocco's highest tarmac pass", fr: "Tizi n'Tichka : le col asphalté le plus haut du Maroc" },
+      body: {
+        es: "Con 2.260 m de altitud, el Tizi n'Tichka es el puerto de carretera asfaltado más alto del país. Su ascenso permite ver cómo el paisaje cambia radicalmente: del entorno lunar del lado sur a los bosques y tierras fértiles del valle del Ourika al norte.",
+        en: "At 2,260 m, the Tizi n'Tichka is Morocco's highest tarmac mountain pass. The drive shows how the landscape changes dramatically — from the lunar south side to the forests and fertile fields of the Ourika valley to the north.",
+        fr: "Avec 2 260 m d'altitude, le Tizi n'Tichka est le col routier asphalté le plus haut du pays. La montée révèle un changement radical de paysage — du versant sud quasi lunaire aux forêts et terres fertiles de la vallée de l'Ourika au nord.",
+      },
+    },
+    {
+      title: { es: "Djemaa el-Fna al caer la noche", en: "Djemaa el-Fna at nightfall", fr: "Djemaa el-Fna à la nuit tombée" },
+      body: {
+        es: "Patrimonio Cultural Inmaterial de la UNESCO. Al anochecer la plaza se transforma en un gran escenario gastronómico y cultural con decenas de paraditas de comida iluminadas al aire libre y espectáculos espontáneos.",
+        en: "UNESCO Intangible Cultural Heritage. At nightfall the square transforms into a vast gastronomic and cultural stage with dozens of lit-up open-air food stalls and impromptu shows.",
+        fr: "Patrimoine Culturel Immatériel de l'UNESCO. À la tombée de la nuit, la place se transforme en vaste scène gastronomique et culturelle avec des dizaines d'échoppes éclairées en plein air et des spectacles improvisés.",
+      },
+    },
+  ],
+};
+
+export const DAY_EM78_MEDINA = {
+  route_id: "em78-medina",
+  id: "dia-7",
+  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  accent: "#A07042",
+  title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
+  body: {
+    es: "Día completo dedicado a Marrakech. Visita guiada a pie por la Medina con un guía local. Empezaremos admirando el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y seguiremos con el Palacio de la Bahía. Nos adentraremos por las callejuelas del zoco donde veremos a diferentes artesanos en acción: tejedores de alfombras, fabricantes de babuchas y una infinita variedad de artesanía de calidad. Visitaremos una farmacia bereber, donde nos enseñarán sus «secretillos». Saldremos nuevamente a la Plaza Djemaa el-Fna, cuyo ambiente diurno es totalmente distinto al nocturno. Por la tarde, tiempo libre para practicar el arte del regateo o descubrir los rincones más recónditos de la Medina por nuestra cuenta. Alojamiento en Riad en la Medina u Hotel 5*.",
+    en: "A full day in Marrakech. Guided walking tour of the Medina with a local guide. We start at the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We dive into the alleys of the souk to watch different artisans at work: carpet weavers, babouche makers and a vast range of quality crafts. We visit a Berber pharmacy where they share their «little secrets». We return to Djemaa el-Fna Square, whose daytime atmosphere is completely different from the night. Free afternoon to practise the art of bargaining or to discover the Medina's hidden corners on your own. Overnight in a Riad in the Medina or 5* Hotel.",
+    fr: "Journée complète dédiée à Marrakech. Visite guidée à pied de la Médina avec un guide local. Nous commençons par le minaret de la Koutoubia — jumeau de la Giralda de Séville — puis le Palais de la Bahia. Nous nous enfonçons dans les ruelles du souk pour observer différents artisans à l'œuvre : tisserands de tapis, fabricants de babouches et une infinité d'artisanat de qualité. Visite d'une pharmacie berbère, où l'on partage ses « petits secrets ». Retour à la place Djemaa el-Fna, dont l'ambiance diurne est totalement différente de celle de la nuit. Après-midi libre pour pratiquer l'art du marchandage ou découvrir les recoins cachés de la Médina à votre rythme. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  culture: [
+    {
+      title: { es: "La Koutoubia: el alminar que inspiró a la Giralda", en: "Koutoubia: the minaret that inspired the Giralda", fr: "La Koutoubia : le minaret qui inspira la Giralda" },
+      body: {
+        es: "La Mezquita de la Koutoubia fue construida en el siglo XII por los almohades y su alminar está considerado una obra maestra de la arquitectura islámica. Su diseño sirvió de modelo para la Giralda de Sevilla y la Torre Hassan de Rabat.",
+        en: "Built in the 12th century by the Almohads, the Koutoubia minaret is considered a masterpiece of Islamic architecture. Its design served as the model for Seville's Giralda and Rabat's Hassan Tower.",
+        fr: "Construite au XIIᵉ siècle par les Almohades, la mosquée de la Koutoubia possède un minaret considéré comme un chef-d'œuvre de l'architecture islamique. Son dessin servit de modèle à la Giralda de Séville et à la Tour Hassan de Rabat.",
+      },
+    },
+    {
+      title: { es: "Los zocos y la artesanía", en: "The souks and the crafts", fr: "Les souks et l'artisanat" },
+      body: {
+        es: "Uno de los mercados artesanales más extensos del norte de África, dividido en sectores especializados — curtidores, cesteros, tintoreros, herreros, joyeros — manteniendo viva la tradición de oficios medievales.",
+        en: "One of North Africa's largest artisan markets, divided into specialised quarters — tanners, basket weavers, dyers, blacksmiths, jewellers — keeping medieval crafts alive.",
+        fr: "L'un des plus vastes marchés artisanaux d'Afrique du Nord, divisé en quartiers spécialisés — tanneurs, vanniers, teinturiers, forgerons, bijoutiers — perpétuant des métiers médiévaux.",
+      },
+    },
+    {
+      title: { es: "La farmacia bereber", en: "The Berber pharmacy", fr: "La pharmacie berbère" },
+      body: {
+        es: "Las farmacias bereberes mantienen una tradición ancestral de herboristería del Atlas: aceite de argán, ghassoul, nigella, azahar y decenas de plantas usadas para cuidar piel, cabello, digestiones y dolencias menores.",
+        en: "Berber pharmacies maintain an ancestral Atlas herbalism tradition: argan oil, ghassoul clay, nigella, orange blossom and dozens of plants used for skin, hair, digestion and minor ailments.",
+        fr: "Les pharmacies berbères perpétuent une tradition ancestrale d'herboristerie de l'Atlas : huile d'argan, ghassoul, nigelle, fleur d'oranger et des dizaines de plantes utilisées pour la peau, les cheveux, la digestion et les maux mineurs.",
+      },
+    },
+  ],
+};
+
+export const DAY_EM78_DEPARTURE = {
+  route_id: "em78-departure",
+  id: "dia-8",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5A6B4F",
+  title: { es: "Marrakech · regreso", en: "Marrakech · return", fr: "Marrakech · retour" },
+  body: {
+    es: "A la hora convenida, traslado al aeropuerto de Marrakech para coger el vuelo de regreso al punto de origen, llevándonos con nosotros los aromas, los colores y la calidez de la hospitalidad marroquí.",
+    en: "At the agreed time, transfer to Marrakech airport for the return flight home, carrying with us the aromas, colours and warmth of Moroccan hospitality.",
+    fr: "À l'heure convenue, transfert à l'aéroport de Marrakech pour le vol de retour, emportant avec nous les arômes, les couleurs et la chaleur de l'hospitalité marocaine.",
+  },
+  culture: [
+    {
+      title: { es: "Aeropuerto Menara de Marrakech", en: "Marrakech Menara airport", fr: "Aéroport Menara de Marrakech" },
+      body: {
+        es: "Inaugurado en su forma moderna en 2008, el aeropuerto Menara es una de las grandes puertas de entrada de Marruecos y un referente arquitectónico por su celosía geométrica inspirada en el zellige tradicional.",
+        en: "Opened in its modern form in 2008, Menara airport is one of Morocco's main gateways and an architectural landmark thanks to its geometric lattice façade inspired by traditional zellige.",
+        fr: "Inauguré dans sa forme moderne en 2008, l'aéroport Menara est l'une des grandes portes d'entrée du Maroc et une référence architecturale grâce à sa façade en moucharabieh inspirée du zellige traditionnel.",
+      },
+    },
+    {
+      title: { es: "Una despedida con sabor", en: "A flavoured farewell", fr: "Un adieu plein de saveurs" },
+      body: {
+        es: "Antes del vuelo, conviene reservar tiempo para llevarnos a casa los últimos souvenirs gastronómicos: dátiles medjoul, té verde, especias, aceite de argán o agua de azahar son las despedidas más auténticas de Marruecos.",
+        en: "Before the flight, leave time to take home the last edible souvenirs: Medjool dates, green tea, spices, argan oil or orange-blossom water are Morocco's most authentic farewells.",
+        fr: "Avant le vol, prévoyez du temps pour emporter les derniers souvenirs gastronomiques : dattes medjoul, thé vert, épices, huile d'argan ou eau de fleur d'oranger — les adieux les plus authentiques du Maroc.",
+      },
+    },
+    {
+      title: { es: "Volver siempre es una buena idea", en: "Coming back is always a good idea", fr: "Revenir est toujours une bonne idée" },
+      body: {
+        es: "Marruecos es un país de viajes que se repiten. Cada región — el Sahara, el Atlas, las medinas, el Atlántico — pide su propio viaje. Quien lo descubre, vuelve.",
+        en: "Morocco is a country of repeat journeys. Each region — Sahara, Atlas, medinas, Atlantic coast — calls for its own trip. Those who discover it, come back.",
+        fr: "Le Maroc est un pays de voyages que l'on répète. Chaque région — Sahara, Atlas, médinas, côte atlantique — appelle son propre voyage. Ceux qui le découvrent reviennent.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_EM_78 = {
+  routeId: "tourErgMarrakech78",
+  duration_key: "em7n8d",
+  duration: { es: "7 noches / 8 días", en: "7 nights / 8 days", fr: "7 nuits / 8 jours" },
+  prices: { low: 1690, mid: 1990, high: 2390, premium: 2790 },
+  reverse: false,
+  days: [
+    DAY_EM_ARRIVAL_ERFOUD,
+    DAY_DESERT_BIVOUAC,
+    DAY_KHAMLIA_RISSANI,
+    DAY_TODRA_DADES,
+    DAY_ATLAS_MGOUN,
+    DAY_EM78_AITBEN_MARRAKECH,
+    DAY_EM78_MEDINA,
+    DAY_EM78_DEPARTURE,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Dos noches en Erfoud en Kasbah Xaluca en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Dos noches en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Dos noches en Marrakech en Riad en la Medina u Hotel 5* en régimen de alojamiento y desayuno",
+        "Comida «picnic» en el Desierto el día 2",
+        "Comida en una «Gîte d'Étape» en la montaña el día 5",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer del día 2 al día 6 (ambos incluidos)",
+        "Visita guiada por la Medina de Marrakech con guía local",
+        "Visitas a la Kasbah de Aït Ben Haddou y al Palacio de la Bahía",
+        "Transfers de aeropuerto en Errachidia y Marrakech",
+        "Combustible de los vehículos",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "Two nights in Erfoud at Kasbah Xaluca, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "Two nights at Hotel Xaluca Dades 4*, half board",
+        "Two nights in Marrakech in a Riad in the Medina or 5* Hotel, bed and breakfast",
+        "Desert «picnic» on day 2",
+        "Mountain lunch at a «Gîte d'Étape» on day 5",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver from day 2 to day 6 (both included)",
+        "Guided walking tour of the Marrakech Medina with local guide",
+        "Visits to the Aït Ben Haddou Kasbah and the Bahia Palace",
+        "Airport transfers in Errachidia and Marrakech",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Deux nuits à Erfoud au Kasbah Xaluca en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Deux nuits à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Deux nuits à Marrakech en Riad dans la Médina ou Hôtel 5* en logement et petit déjeuner",
+        "Déjeuner « pique-nique » dans le désert le jour 2",
+        "Déjeuner en « Gîte d'Étape » en montagne le jour 5",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur du jour 2 au jour 6 (les deux inclus)",
+        "Visite guidée de la Médina de Marrakech avec guide local",
+        "Visites de la Kasbah d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroport à Errachidia et Marrakech",
+        "Carburant des véhicules",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía salvo las indicadas",
+        "Cenas en Marrakech",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos internacionales",
+        "Suplemento opcional para añadir cancelación al seguro",
+      ],
+      en: [
+        "Drinks",
+        "Lunches except where stated",
+        "Dinners in Marrakech",
+        "Personal extras (quads, massages, etc.)",
+        "International flights",
+        "Optional supplement to add cancellation to the insurance",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners sauf ceux indiqués",
+        "Dîners à Marrakech",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols internationaux",
+        "Supplément en option pour ajouter l'annulation à l'assurance",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Tarifas calculadas según la ocupación del 4x4; el coste se reparte entre los ocupantes",
+        "Habitaciones dobles y triples · Suplemento individual 495 €",
+        "Descuento niños 3-11 años compartiendo habitación con dos adultos: 300 € baja · 315 € alta",
+        "En caso de alta ocupación se propondrán alojamientos alternativos con previo aviso",
+        "Guías compartidos en temporada alta · chóferes de habla española limitados",
+        "Pasaporte vigente mínimo 3 meses desde la fecha de regreso",
+        "Quads opcionales 70 € por vehículo (circuito 1h) · Spa y masajes en recepción del hotel",
+        "El mercado de Rissani se celebra martes, jueves y domingos",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Rates calculated based on 4x4 occupancy; cost is split between occupants",
+        "Double and triple rooms · Single supplement €495",
+        "Children 3-11 sharing room with two adults: €300 low season · €315 high season",
+        "During high-occupancy dates, alternative accommodation may be proposed in advance",
+        "Shared guides in high season · Spanish-speaking drivers limited",
+        "Passport valid at least 3 months from the return date",
+        "Optional quads €70 per vehicle (1h circuit) · Spa and massages at hotel reception",
+        "Rissani market runs Tuesday, Thursday and Sunday",
+      ],
+      fr: [
+        "Options de vols : Royal Air Maroc, Vueling, Air Arabia, Ryanair",
+        "Tarifs calculés selon l'occupation du 4x4 ; le coût est partagé entre les occupants",
+        "Chambres doubles et triples · Supplément individuel 495 €",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 300 € basse · 315 € haute",
+        "En cas de forte occupation, des alternatives d'hébergement seront proposées au préalable",
+        "Guides partagés en haute saison · chauffeurs hispanophones limités",
+        "Passeport valable au moins 3 mois après la date de retour",
+        "Quads en option 70 € par véhicule (circuit 1h) · Spa et massages à la réception",
+        "Le marché de Rissani a lieu mardi, jeudi et dimanche",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria (pasaporte se puede enviar más adelante)",
+        "Pago por transferencia bancaria o tarjeta Visa",
+        "30% del importe total en el momento de la reserva · 70% restante hasta 30 días antes",
+        "Si el vuelo requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Las condiciones cubren los servicios terrestres; los vuelos se rigen por la política de cada aerolínea",
+        "Los seguros no se reembolsan",
+        "Seguro de cancelación opcional: 30 € por persona para viajes de hasta 10 días, contratable solo en la confirmación",
+      ],
+      en: [
+        "Compulsory booking form (passport may be sent later)",
+        "Payment by bank transfer or Visa card",
+        "30% of total at booking · remaining 70% up to 30 days before departure",
+        "If the flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Conditions cover land services; flights are governed by each airline's policy",
+        "Insurances are non-refundable",
+        "Optional cancellation insurance: €30 per person for trips up to 10 days, only at confirmation time",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire (le passeport peut être envoyé plus tard)",
+        "Paiement par virement bancaire ou carte Visa",
+        "30 % du total à la réservation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les conditions couvrent les services terrestres ; les vols suivent la politique de chaque compagnie",
+        "Les assurances ne sont pas remboursables",
+        "Assurance annulation en option : 30 € par personne pour les voyages jusqu'à 10 jours, à souscrire uniquement à la confirmation",
+      ],
+    },
+  },
+};
