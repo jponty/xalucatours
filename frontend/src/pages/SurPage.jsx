@@ -32,7 +32,7 @@ import VideoSection from "@/components/VideoSection";
 ---------------------------------------------------------------- */
 const SUR_VIDEOS = {
   kasbahs: {
-    src: "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4",
+    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     poster: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "La ruta de las mil kasbahs", en: "The thousand-kasbahs route", fr: "La route des mille kasbahs" },
     title: {
@@ -47,7 +47,7 @@ const SUR_VIDEOS = {
     },
   },
   desierto: {
-    src: "https://videos.pexels.com/video-files/5746252/5746252-hd_1920_1080_30fps.mp4",
+    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
     poster: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "La puerta del desierto", en: "The gate of the desert", fr: "La porte du désert" },
     title: {
@@ -62,7 +62,7 @@ const SUR_VIDEOS = {
     },
   },
   ciudadDesierto: {
-    src: "https://videos.pexels.com/video-files/2257018/2257018-uhd_3840_2160_25fps.mp4",
+    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
     poster: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "Marrakech, el Alto Atlas y el Sahara", en: "Marrakech, the High Atlas and the Sahara", fr: "Marrakech, le Haut Atlas et le Sahara" },
     title: {

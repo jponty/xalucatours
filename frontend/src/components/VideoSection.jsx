@@ -88,6 +88,7 @@ export default function VideoSection({
             autoPlay={autoPlay}
             preload="metadata"
             onLoadedData={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
             className="absolute inset-0 w-full h-full object-cover"
           />
 

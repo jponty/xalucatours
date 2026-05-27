@@ -86,7 +86,17 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - Replace remaining non-Moroccan Unsplash IDs in landmark galleries (e.g. `oasis-picnic` card 1) with verified Moroccan-only photos.
 
 ## Recent additions (Feb 2026 — session, latest)
-- **Phase 1 "Opción B" · Sur de Marruecos navigation & cross-linking** (Feb 2026, latest):
+- **Aventura → Enduro hub + videos en Sur** (Feb 2026, latest):
+  - New **Enduro hub** `/viajes/aventura/enduro` (`AventuraEnduroHubPage` → `ItineraryHubPage` + `HUB_AVENTURA_ENDURO`) with two programmes:
+    - `/viajes/aventura/enduro/programa_4n_5d` — 5 days (`PROGRAM_ENDURO_45`): Llegada · Oasis · La Momia · Grandes Dunas · Regreso.
+    - `/viajes/aventura/enduro/programa_6n_7d` — 7 days (`PROGRAM_ENDURO_67`): Llegada · Kemkem · Saghro · Atlas · Anti Atlas · Bereberes · Regreso.
+  - Both routes trilingual (es/en/fr). New variant `enduro` registered in `ProgramTemplate.jsx` (`type_enduro` LABELS + QuickInfo case).
+  - Aventura section wired into `programNav.js` → breadcrumbs `Inicio › Viajes › Aventura › Enduro por Marruecos › [Programa]` + HubPeerNav between programs.
+  - `AventuraPage.jsx` now exposes the new hub via the "Enduro en el desierto" experience card + a dedicated "Ver opciones de enduro" CTA below the Enduro editorial.
+  - New cinematic `<VideoSection />` (`components/VideoSection.jsx`) with autoplay-muted, play/pause + mute controls, IntersectionObserver auto-pause, rounded corners and glass overlay. Inserted below the 3 main editorials of `/viajes/surdemarruecos` (Mil Kasbahs · Puerta del Desierto · Marrakech+Atlas+Sahara). Video sources centralised in `SUR_VIDEOS` dict (Google sample CDN — easy to swap from edit mode).
+  - Verified by `testing_agent_v3_fork` iteration_9.json: 10/10 PASS across ES/EN/FR + mobile responsive, breadcrumbs + peer-nav + controls work; only side-issue was Pexels-CDN 403s, fixed by switching to `commondatastorage.googleapis.com/gtv-videos-bucket` sample videos and adding `onError` fallback in `VideoSection`.
+
+- **Phase 1 "Opción B" · Sur de Marruecos navigation & cross-linking** (Feb 2026):
   - New global `<Breadcrumbs />` mounted in `Layout.jsx` — auto-detects routeId via `resolvePath()` and renders a glassy strip over the hero. Trail: `Inicio › Viajes › <Sección> › <Hub> › <Programa>`. Trilingual (es/en/fr). Hidden on home & unwired routes.
   - New `<HubPeerNav />` at the bottom of every Sur program page (`ProgramTemplate.jsx`, before the contact form): "Volver al hub" CTA + grid of peer programs from the same hub.
   - New lookup map `lib/programNav.js`: `SECTION_HUBS.tourSouth` lists the 7 Sur hubs; derived `HUB_NAV` + `PROGRAM_NAV` indexes drive the breadcrumb & peer-nav lookups. Phase 2/3/4 will simply add more entries to `SECTION_HUBS`.
