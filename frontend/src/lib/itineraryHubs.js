@@ -777,8 +777,8 @@ export const HUB_GRANSUR_OUARZA_FEZ = {
     { id: "of-5-6", direction: "a", nights: "5n6d", accent: "#A07042", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Ouarzazate","Fez") },
     { id: "of-6-7", direction: "a", nights: "6n7d", accent: "#D97742", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(6,7)("Ouarzazate","Fez") },
     { id: "of-7-8", direction: "a", nights: "7n8d", accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Ouarzazate","Fez") },
-    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(5,6)("Fez","Ouarzazate") },
-    { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(6,7)("Fez","Ouarzazate") },
+    { id: "fo-5-6", direction: "b", nights: "5n6d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", link: "tourFezSidialiOzz56", blurb: BLURB_SIDI(5,6)("Fez","Ouarzazate") },
+    { id: "fo-6-7", direction: "b", nights: "6n7d", accent: "#7C8B5C", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85", link: "tourFezSidialiOzz67", blurb: BLURB_SIDI(6,7)("Fez","Ouarzazate") },
     { id: "fo-7-8", direction: "b", nights: "7n8d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_SIDI(7,8)("Fez","Ouarzazate") },
   ],
 };
@@ -831,8 +831,8 @@ export const HUB_GRANSUR_TANGER_RAK = {
     group_a: T("Tánger → Marrakech", "Tangier → Marrakech", "Tanger → Marrakech"),
   },
   programs: [
-    { id: "tr-8-9",  direction: "a", nights: "8n9d",  accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_KASBAH(8,9)("Tánger","Marrakech") },
-    { id: "tr-9-10", direction: "a", nights: "9n10d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", blurb: BLURB_KASBAH(9,10)("Tánger","Marrakech") },
+    { id: "tr-8-9",  direction: "a", nights: "8n9d",  accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85", link: "tourTangerRak89",  blurb: BLURB_KASBAH(8,9)("Tánger","Marrakech") },
+    { id: "tr-9-10", direction: "a", nights: "9n10d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85", link: "tourTangerRak910", blurb: BLURB_KASBAH(9,10)("Tánger","Marrakech") },
   ],
 };
 
