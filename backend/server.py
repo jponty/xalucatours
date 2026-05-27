@@ -479,6 +479,40 @@ async def list_library_tags():
     return {"tags": [{"name": r["_id"], "count": r["count"]} for r in rows if r.get("_id")]}
 
 
+@api_router.get("/files/{file_id}/usage")
+async def file_usage(file_id: str):
+    """Returns every slot whose stored image URL points at this file.
+    Used by the library picker to show 'Usada en N páginas' before
+    delete/replace, so editors don't break live pages by accident."""
+    record = await db.files.find_one({"id": file_id}, {"_id": 0})
+    if not record:
+        raise HTTPException(status_code=404, detail="File not found.")
+    storage_path = record.get("storage_path")
+    if not storage_path:
+        return {"file_id": file_id, "count": 0, "slots": []}
+
+    # Match either by explicit storage_path field (uploads from /slots/{id}/upload)
+    # or by URL containing the storage path (library reuse via PUT /slots/{id}).
+    cursor = db.image_slots.find(
+        {"$or": [
+            {"storage_path": storage_path},
+            {"url": {"$regex": f"/{storage_path}$"}},
+        ]},
+        {"_id": 1, "url": 1, "updated_at": 1, "source": 1},
+    )
+    docs = await cursor.to_list(500)
+    slots = [
+        {
+            "slot_id": d["_id"],
+            "url": d.get("url"),
+            "source": d.get("source"),
+            "updated_at": d.get("updated_at"),
+        }
+        for d in docs
+    ]
+    return {"file_id": file_id, "count": len(slots), "slots": slots}
+
+
 @api_router.get("/files")
 async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, tag: Optional[str] = None):
     """Lists every previously-uploaded image (most recent first) for the

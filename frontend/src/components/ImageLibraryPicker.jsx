@@ -27,6 +27,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   const [uploadResult, setUploadResult] = useState(null);
   const [refreshTick, setRefreshTick] = useState(0);
   const [editing, setEditing] = useState(null); // {id, original_filename, tags, ...}
+  const [confirmDelete, setConfirmDelete] = useState(null); // item to confirm
   const bulkInputRef = useRef(null);
   const replaceInputRef = useRef(null);
   const replaceForIdRef = useRef(null);
@@ -95,14 +96,17 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   /* ---- Delete ---- */
   const handleDelete = useCallback(async (item) => {
     if (!item?.id) return;
-    if (!window.confirm(`¿Eliminar "${item.original_filename || "esta imagen"}" de la biblioteca?`)) return;
     try {
       const res = await fetch(`${API}/api/files/${item.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setItems((arr) => arr.filter((i) => i.id !== item.id));
+      setConfirmDelete(null);
+      setUploadResult({ deletedName: item.original_filename || "Imagen" });
+      setTimeout(() => setUploadResult(null), 3500);
       setRefreshTick((n) => n + 1);
     } catch (err) {
       setError(err.message || "No se pudo eliminar.");
+      setConfirmDelete(null);
     }
   }, []);
 
@@ -173,6 +177,14 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
     if (activeTag) return `${items.length} foto${items.length === 1 ? "" : "s"} con #${activeTag}`;
     return `${items.length} foto${items.length === 1 ? "" : "s"} disponibles`;
   }, [loading, items.length, activeTag]);
+
+  /* ---- ESC also closes confirm dialog ---- */
+  useEffect(() => {
+    if (!confirmDelete) return;
+    const onKey = (e) => { if (e.key === "Escape") setConfirmDelete(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [confirmDelete]);
 
   if (!open) return null;
 
@@ -280,12 +292,16 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         {/* Grid */}
         <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
           {uploadResult && (
-            <div className="mb-4 flex items-center gap-3 p-3 bg-[#E8EFE5] border border-[#5A6B4F]/40 text-[#3E4D34] text-sm">
+            <div className="mb-4 flex items-center gap-3 p-3 bg-[#E8EFE5] border border-[#5A6B4F]/40 text-[#3E4D34] text-sm" data-testid="image-library-banner">
               <Check className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
-              <span>
-                {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"} subida{uploadResult.count === 1 ? "" : "s"}.
-                {uploadResult.skipped > 0 && ` (${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"})`}
-              </span>
+              {uploadResult.deletedName ? (
+                <span>«{uploadResult.deletedName}» eliminada de la biblioteca.</span>
+              ) : (
+                <span>
+                  {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"} subida{uploadResult.count === 1 ? "" : "s"}.
+                  {uploadResult.skipped > 0 && ` (${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"})`}
+                </span>
+              )}
             </div>
           )}
           {error && (
@@ -317,7 +333,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                   key={it.id || it.storage_path}
                   item={it}
                   onSelect={onSelect}
-                  onDelete={handleDelete}
+                  onDelete={() => setConfirmDelete(it)}
                   onEdit={() => setEditing(it)}
                   onReplace={() => askReplace(it)}
                 />
@@ -372,6 +388,16 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
             item={editing}
             onCancel={() => setEditing(null)}
             onSave={saveEdit}
+          />
+        )}
+
+        {/* Inline delete confirmation (replaces window.confirm which is
+            blocked inside the preview iframe) */}
+        {confirmDelete && (
+          <ConfirmDeleteDialog
+            item={confirmDelete}
+            onCancel={() => setConfirmDelete(null)}
+            onConfirm={() => handleDelete(confirmDelete)}
           />
         )}
       </div>
@@ -567,6 +593,68 @@ function EditDrawer({ item, onCancel, onSave }) {
           </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+/* ============================================================
+   Inline delete confirmation
+============================================================ */
+function ConfirmDeleteDialog({ item, onCancel, onConfirm }) {
+  const [busy, setBusy] = useState(false);
+  const submit = async () => {
+    setBusy(true);
+    try {
+      await onConfirm();
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div
+      data-testid="image-library-confirm-delete"
+      className="absolute inset-0 z-10 flex items-center justify-center bg-[#1A1513]/65 backdrop-blur-sm p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+    >
+      <div className="w-full max-w-md bg-[#FDFBF7] shadow-xl border border-[#2C2621]/15 overflow-hidden">
+        <div className="flex items-start gap-4 p-6">
+          <span className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#C16542]/15 text-[#C16542] flex-shrink-0">
+            <Trash2 className="w-5 h-5" strokeWidth={1.7} />
+          </span>
+          <div className="min-w-0">
+            <h4 className="font-serif-x text-xl text-[#2C2621] leading-tight">
+              ¿Eliminar esta imagen?
+            </h4>
+            <p className="text-sm text-[#5C5248] mt-2 leading-relaxed">
+              «<span className="text-[#2C2621] font-medium">{item.original_filename || "Imagen"}</span>» quedará oculta de la biblioteca y de las páginas que la utilicen.
+            </p>
+            <p className="text-[11px] text-[#5C5248]/70 mt-3">
+              Esta acción puede deshacerse desde el panel de administración.
+            </p>
+          </div>
+        </div>
+        <div className="px-6 py-4 bg-[#F2EBE1]/40 border-t border-[#2C2621]/10 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={busy}
+            data-testid="image-library-confirm-cancel"
+            className="text-[10px] tracking-[0.25em] uppercase text-[#5C5248] hover:text-[#2C2621] disabled:opacity-50"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={submit}
+            disabled={busy}
+            data-testid="image-library-confirm-yes"
+            className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-2.5 text-[10px] tracking-[0.25em] uppercase disabled:opacity-50 transition-colors"
+          >
+            {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" strokeWidth={2} />}
+            Eliminar
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
