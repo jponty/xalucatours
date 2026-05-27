@@ -168,3 +168,17 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 ## Testing status
 - `iteration_4.json` (Feb 2026): 14 pages passed flawlessly.
 - Latest (Feb 2026): All 4 new gran-sur hubs render with correct option counts (8/6/6/2); MarruecosPage editorial intro + pillars + catalog + community CTA visually verified; Sur block titles match user spec and CTAs land on correct hubs.
+
+
+## Editorial guide — Cuándo viajar a Marruecos (Feb 2026)
+- New top-level cluster "Guías de viaje" in `lib/menu.js` (icon `book-open`).
+- New trilingual route `whenToTravel`:
+  - es: `/cuando-viajar`
+  - en: `/en/when-to-travel`
+  - fr: `/fr/quand-partir`
+- Page: `pages/WhenToTravelPage.jsx`. Content lives in `lib/bestTimeData.js` (HERO, INTRO, 4 SEASONS, 5 REGIONS, 6 TRAVEL_STYLES, 12 MONTHS, FAQ, INTERNAL_LINKS) — fully trilingual.
+- Sections rendered: cinematic hero w/ slow-zoom + breadcrumb chip (Inicio › Guías › Cuándo viajar) → editorial intro (asymmetric 5/7 grid) → 4 seasons in alternating left/right blocks color-coded by accent → 5 climate region cards + region×month visual strip (Jan–Dec bars per region) → travel-style matrix as 6 shadcn Tabs (Desierto / Senderismo / Ciudades / Playa & surf / Lujo / Fotografía) each with `MonthBar`, body, and a contextual "suggested itinerary" link to existing hubs → 12-month timeline grid (4×3 on desktop, click-to-expand detail panel) on dark `#1A1513` background → interactive Leaflet map with 5 colored `CircleMarker` per climate region + popup with best/avoid months → shadcn Accordion FAQ → internal cross-links to all main hubs (Sur, Norte, Escapadas, Marruecos, Aventura, Fin de Año) → final "Plan your trip" CTA band.
+- New icons registered in `SideMenu.jsx`: `BookOpen`, `Sunrise`.
+- Self-contained: no edits required to the global Breadcrumbs system or `programNav.js`.
+- Reusable `MonthBar` and `parseBestMonths` helpers inside the page for the visual scheduling components.
+- Tested: ES/EN/FR routes render correctly; SideMenu "Guías" cluster expands and navigates; tab switching, month expansion, and Leaflet popups all functional.

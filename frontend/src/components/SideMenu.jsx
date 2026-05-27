@@ -5,6 +5,7 @@ import {
   Home, CalendarClock, Compass, MapPin, Sparkles,
   Sun, Globe2, Mountain, Wind, MountainSnow, Scissors,
   CalendarDays, Users, Landmark, Wand2,
+  BookOpen, Sunrise,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { MENU_TREE } from "@/lib/menu";
@@ -17,6 +18,7 @@ const ICONS = {
   "mountain": Mountain, "wind": Wind, "mountain-snow": MountainSnow,
   "scissors": Scissors, "calendar-days": CalendarDays, "users": Users,
   "landmark": Landmark, "mail": Mail, "wand-2": Wand2,
+  "book-open": BookOpen, "sunrise": Sunrise,
 };
 const Icon = ({ name, className = "w-4 h-4", strokeWidth = 1.5 }) => {
   const C = ICONS[name];

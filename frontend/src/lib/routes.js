@@ -119,6 +119,9 @@ export const ROUTES = {
 
   morocco:            { es: "marruecos",                 en: "morocco",                  fr: "maroc" },
   contact:            { es: "contacto",                  en: "contact",                  fr: "contact" },
+
+  // Editorial guides
+  whenToTravel:       { es: "cuando-viajar",             en: "when-to-travel",           fr: "quand-partir" },
 };
 
 /* Build a URL for a given language + routeId.
