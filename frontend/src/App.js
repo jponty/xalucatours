@@ -45,6 +45,7 @@ import MarrakechEssaouira45Page from "@/pages/MarrakechEssaouira45Page";
 import MarrakechEssaouira67Page from "@/pages/MarrakechEssaouira67Page";
 import ErrachidiaAtlasFezHubPage from "@/pages/ErrachidiaAtlasFezHubPage";
 import FezAtlasErrachidia56Page from "@/pages/FezAtlasErrachidia56Page";
+import DesiertoAtlasHubPage from "@/pages/DesiertoAtlasHubPage";
 import GransurFezRakHubPage from "@/pages/GransurFezRakHubPage";
 import GransurFezSidialiRakHubPage from "@/pages/GransurFezSidialiRakHubPage";
 import GransurOuarzaFezHubPage from "@/pages/GransurOuarzaFezHubPage";
@@ -99,6 +100,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourMarrakechEss67")   return <MarrakechEssaouira67Page />;
   if (routeId === "tourErrAtlasFezHub")   return <ErrachidiaAtlasFezHubPage />;
   if (routeId === "tourFezAtlasErr56")    return <FezAtlasErrachidia56Page />;
+  if (routeId === "tourDesiertoAtlasHub") return <DesiertoAtlasHubPage />;
   if (routeId === "tourGransurFezRak")     return <GransurFezRakHubPage />;
   if (routeId === "tourGransurFezSidiali") return <GransurFezSidialiRakHubPage />;
   if (routeId === "tourGransurOuarzaFez")  return <GransurOuarzaFezHubPage />;

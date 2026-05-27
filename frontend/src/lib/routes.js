@@ -22,6 +22,7 @@ export const ROUTES = {
   tourAtlasDesierto56:{ es: "viajes/atlas_desierto/programa_5n_6d", en: "tours/atlas-desert/program-5n-6d", fr: "voyages/atlas-desert/programme-5n-6j" },
   tourAtlasDesierto67:{ es: "viajes/atlas_desierto/programa_6n_7d", en: "tours/atlas-desert/program-6n-7d", fr: "voyages/atlas-desert/programme-6n-7j" },
   tourAtlasDesiertoHub:{ es: "viajes/sur/atlas_desierto", en: "tours/south/atlas-desert", fr: "voyages/sud/atlas-desert" },
+  tourDesiertoAtlasHub:{ es: "viajes/sur/desierto_atlas", en: "tours/south/desert-atlas", fr: "voyages/sud/desert-atlas" },
   tourMarrakechErgHub: { es: "viajes/sur/marrakech_ergchebbi", en: "tours/south/marrakech-ergchebbi", fr: "voyages/sud/marrakech-ergchebbi" },
   tourErgChebbiMarrakechHub: { es: "viajes/ergchebbi_marrakech", en: "tours/ergchebbi-marrakech", fr: "voyages/ergchebbi-marrakech" },
   tourErgMarrakech45:  { es: "viajes/ergchebbi_marrakech/programa_4n_5d", en: "tours/ergchebbi-marrakech/program-4n-5d", fr: "voyages/ergchebbi-marrakech/programme-4n-5j" },

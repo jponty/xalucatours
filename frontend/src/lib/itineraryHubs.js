@@ -69,6 +69,87 @@ export const HUB_ATLAS_DESIERTO = {
   ],
 };
 
+
+export const HUB_DESIERTO_ATLAS = {
+  id: "desierto-atlas",
+  hero: {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
+    place: { es: "Errachidia · Erg Chebbi · Alto Atlas · Ouarzazate", en: "Errachidia · Erg Chebbi · High Atlas · Ouarzazate", fr: "Errachidia · Erg Chebbi · Haut Atlas · Ouarzazate" },
+    title: {
+      es: "Circuitos combinados Desierto + Atlas.",
+      en: "Combined Desert + Atlas circuits.",
+      fr: "Circuits combinés Désert + Atlas.",
+    },
+    subtitle: {
+      es: "Empieza en Erfoud, atraviesa el Erg Chebbi y descubre el Alto Atlas marroquí.",
+      en: "Start in Erfoud, cross the Erg Chebbi and discover Morocco's High Atlas.",
+      fr: "Commencez à Erfoud, traversez l'Erg Chebbi et découvrez le Haut Atlas marocain.",
+    },
+  },
+  intro: {
+    overline: { es: "Desierto + Atlas", en: "Desert + Atlas", fr: "Désert + Atlas" },
+    title: {
+      es: "Una experiencia mágica desde el desierto hasta las cumbres.",
+      en: "A magical experience from the desert to the summits.",
+      fr: "Une expérience magique du désert aux sommets.",
+    },
+    body: {
+      es: [
+        "¿Quieres desconectar unos días y vivir una experiencia mágica? Te proponemos una escapada al desierto de dunas más cercano a Europa: el desierto del Erg Chebbi, en el sur de Marruecos.",
+        "Nuestra ruta empieza en Erfoud, ciudad conocida como «la puerta del desierto», donde nos adentraremos en el desierto en un vehículo 4x4 con chófer. Las tradiciones ancestrales de sus gentes, sus mercados, sus colores y una noche bajo las estrellas convertirán nuestra estancia en una experiencia única.",
+        "Después continuaremos hacia la cordillera del Alto Atlas, atravesando valles y gargantas, para recorrer algunos poblados Imazighen donde el tiempo parece haberse detenido. Sin duda, será un viaje inolvidable.",
+      ],
+      en: [
+        "Want to disconnect for a few days and live a magical experience? We propose an escape to the dune desert closest to Europe: the Erg Chebbi desert in southern Morocco.",
+        "Our route starts in Erfoud, known as «the gate of the desert», where we head into the desert in a 4x4 with driver. The ancestral traditions of its people, its markets, its colours and a night under the stars will turn this trip into a unique experience.",
+        "Then we continue towards the High Atlas range, crossing valleys and gorges to explore Imazighen villages where time seems to have stopped. Without doubt, an unforgettable journey.",
+      ],
+      fr: [
+        "Vous voulez déconnecter quelques jours et vivre une expérience magique ? Nous vous proposons une escapade vers le désert de dunes le plus proche d'Europe : le désert de l'Erg Chebbi, dans le sud du Maroc.",
+        "Notre itinéraire commence à Erfoud, « la porte du désert », où nous pénétrons dans le désert en 4x4 avec chauffeur. Les traditions ancestrales de ses habitants, ses marchés, ses couleurs et une nuit sous les étoiles transforment ce séjour en une expérience unique.",
+        "Nous poursuivons ensuite vers la cordillère du Haut Atlas, en traversant vallées et gorges pour parcourir des villages imazighen où le temps semble s'être arrêté. Sans aucun doute, un voyage inoubliable.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de viaje combinado Desierto + Atlas", en: "Combined Desert + Atlas options", fr: "Options combinées Désert + Atlas" },
+    title: {
+      es: "Elige tu travesía.",
+      en: "Choose your route.",
+      fr: "Choisissez votre itinéraire.",
+    },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this journey.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    },
+    group_a: { es: "Desierto + Atlas", en: "Desert + Atlas", fr: "Désert + Atlas" },
+    group_b: null,
+  },
+  programs: [
+    { id: "da-4-5", direction: "a", nights: "4n5d", accent: "#5A6B4F",
+      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
+      link: "tourDesiertoAtlas45",
+      blurb: { es: "Viaje de 4 noches y 5 días por el desierto y el Atlas de Marruecos.",
+               en: "4-night/5-day journey through the desert and the Atlas of Morocco.",
+               fr: "Voyage de 4 nuits et 5 jours par le désert et l'Atlas du Maroc." } },
+    { id: "da-5-6", direction: "a", nights: "5n6d", accent: "#7C8B5C",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      link: "tourDesiertoAtlas56",
+      blurb: { es: "Viaje de 5 noches y 6 días por el desierto y el Atlas de Marruecos.",
+               en: "5-night/6-day journey through the desert and the Atlas of Morocco.",
+               fr: "Voyage de 5 nuits et 6 jours par le désert et l'Atlas du Maroc." } },
+    { id: "da-6-7", direction: "a", nights: "6n7d", accent: "#3A4A5F",
+      image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
+      link: "tourDesiertoAtlas67",
+      blurb: { es: "Viaje de 6 noches y 7 días por el desierto y el Atlas de Marruecos.",
+               en: "6-night/7-day journey through the desert and the Atlas of Morocco.",
+               fr: "Voyage de 6 nuits et 7 jours par le désert et l'Atlas du Maroc." } },
+  ],
+};
+
+
 export const HUB_MARRAKECH_ERG = {
   id: "marrakech-erg",
   hero: {
