@@ -2171,3 +2171,223 @@ export const PROGRAM_MEM_34 = {
   },
 };
 
+
+/* ============================================================
+   Marrakech → Erg Chebbi → Marrakech · 4 noches / 5 días
+   Suma un día completo de Alto Atlas Central (Boutaghrar +
+   Dadès + Todra + Erfoud) entre Boumalne Dades y el bivouac.
+============================================================ */
+
+export const DAY_MEM45_ATLAS_CENTRAL = {
+  route_id: "mem45-atlas-central",
+  id: "dia-2",
+  image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+  accent: "#7C8B5C",
+  title: { es: "Alto Atlas Central · Dadès · Todra · Erfoud", en: "Central High Atlas · Dadès · Todra · Erfoud", fr: "Haut Atlas Central · Dadès · Todra · Erfoud" },
+  body: {
+    es: "Esta mañana nos adentraremos por pistas en lo más profundo del Alto Atlas Central, descubriendo paisajes espectaculares. Visitaremos poblados bereberes como Boutaghrar, donde parece haberse detenido el tiempo. Veremos montañas, cañones y valles, así como las grutas donde aún habitan nómadas en las montañas. Recorreremos el Valle del Dades hasta sus gargantas y llegaremos al mirador donde tomaremos un té, con parada en las «Patas de Mono». Por la tarde continuaremos hacia Tinerhir, pequeña y próspera población con sus casas rosas y palmerales, punto de partida ideal para adentrarnos en las famosas Gargantas del Todra, donde podremos caminar siguiendo el curso del río. Más tarde seguiremos hasta Erfoud, conocida como «la Puerta del Desierto». Alojamiento y cena en Kasbah Xaluca, catalogada como única en Marruecos por sus peculiares características.",
+    en: "This morning we head off-road into the heart of the Central High Atlas, discovering spectacular landscapes. We visit Berber villages such as Boutaghrar, where time seems to have stopped. We see mountains, canyons and valleys, as well as caves still inhabited by nomad families. We drive the Dadès Valley to its gorges and reach the viewpoint for tea, stopping at the «Monkey Paws». In the afternoon we continue to Tinerhir, a small and prosperous town of pink houses and palm groves — the ideal starting point to enter the famous Todra Gorges, where we walk along the riverbed. We then continue to Erfoud, known as «the Gate of the Desert». Dinner and overnight at Kasbah Xaluca, listed as unique in Morocco for its singular character.",
+    fr: "Ce matin, nous nous enfonçons sur pistes au cœur du Haut Atlas Central, à la découverte de paysages spectaculaires. Visite de villages berbères comme Boutaghrar, où le temps semble s'être arrêté. Montagnes, canyons, vallées et grottes encore habitées par des familles nomades. Nous parcourons la Vallée du Dadès jusqu'à ses gorges et atteignons le mirador pour un thé, avec arrêt aux « Pattes de Singe ». L'après-midi, poursuite vers Tinerhir, petite ville prospère aux maisons roses et palmeraies — point de départ idéal pour les célèbres Gorges du Todra, où nous marchons en suivant le cours de la rivière. Continuation vers Erfoud, « la Porte du Désert ». Dîner et nuit à la Kasbah Xaluca, classée unique au Maroc.",
+  },
+  culture: [
+    {
+      title: { es: "Boutaghrar y los nómadas trogloditas", en: "Boutaghrar and the troglodyte nomads", fr: "Boutaghrar et les nomades troglodytes" },
+      body: {
+        es: "En la zona de Boutaghrar todavía viven familias bereberes Aït Atta en grutas y casas trogloditas, una tradición de siglos. Suelen recibir con hospitalidad a los viajeros y muestran cómo mantienen modos de vida nómadas o seminomádas en pleno Alto Atlas Central.",
+        en: "In Boutaghrar, Aït Atta Berber families still live in caves and troglodyte houses — a centuries-old tradition. They welcome travellers with hospitality and reveal how they preserve nomadic or semi-nomadic ways of life in the very heart of the Central High Atlas.",
+        fr: "À Boutaghrar, des familles berbères Aït Atta vivent encore dans des grottes et maisons troglodytes — une tradition séculaire. Elles accueillent les voyageurs avec hospitalité au cœur du Haut Atlas Central.",
+      },
+    },
+    {
+      title: { es: "Valle del Dadès y las «Patas de Mono»", en: "Dadès Valley & the «Monkey Paws»", fr: "Vallée du Dadès et les « Pattes de Singe »" },
+      body: {
+        es: "Formaciones geológicas creadas por la erosión durante millones de años, con un aspecto casi extraterrestre. El cañón del Dadès es uno de los recorridos paisajísticos más espectaculares del sur de Marruecos.",
+        en: "Geological formations sculpted by erosion over millions of years, with an almost otherworldly appearance. The Dadès canyon is one of southern Morocco's most spectacular drives.",
+        fr: "Formations géologiques sculptées par l'érosion pendant des millions d'années, d'aspect presque extraterrestre. Le canyon du Dadès est l'un des parcours paysagers les plus spectaculaires du sud marocain.",
+      },
+    },
+    {
+      title: { es: "Gargantas del Todra", en: "The Todra Gorges", fr: "Les Gorges du Todra" },
+      body: {
+        es: "Uno de los desfiladeros más impresionantes de Marruecos, con paredes verticales de hasta 160 metros en su tramo más estrecho. El río Todra esculpió estas paredes durante millones de años — meca mundial de la escalada.",
+        en: "One of Morocco's most impressive canyons, with vertical walls up to 160 metres high at their narrowest point. The Todra river carved these walls over millions of years — a world-class climbing destination.",
+        fr: "L'un des canyons les plus impressionnants du Maroc, avec des parois verticales pouvant atteindre 160 mètres dans la partie la plus étroite. La rivière Todra a sculpté ces parois pendant des millions d'années — destination mondiale de l'escalade.",
+      },
+    },
+  ],
+};
+
+export const PROGRAM_MEM_45 = {
+  routeId: "tourMarrakechLoop45",
+  duration_key: "mem4n5d",
+  duration: { es: "4 noches / 5 días", en: "4 nights / 5 days", fr: "4 nuits / 5 jours" },
+  prices: { low: 990, mid: 1150, high: 1350, premium: 1590 },
+  reverse: false,
+  meta: {
+    es: {
+      title: "Escapa al desierto del Erg Chebbi desde Marrakech.",
+      description_title: "Marruecos en profundidad, desde Marrakech.",
+      description: [
+        "Descubre Marruecos en profundidad con esta escapada de 4 noches y 5 días desde Marrakech hacia el impresionante desierto del Erg Chebbi, un viaje que combina montañas majestuosas, pueblos bereberes, kasbahs históricas y la magia del Sahara en su versión más auténtica.",
+        "Cruzarás el Alto Atlas por el mítico Tizi n'Tichka, explorarás valles, gargantas y pistas legendarias del Rally Dakar, convivirás con nómadas, caminarás entre cañones y palmerales, y te adentrarás en el mar de dunas a lomos de un dromedario para vivir una puesta de sol inolvidable y dormir en un bivouac bajo un cielo repleto de estrellas.",
+        "Completarás la experiencia con música Gnawa en Khamlia, mercados tradicionales en Rissani y momentos de relax en Kasbah Xaluca.",
+      ],
+    },
+    en: {
+      title: "Escape to the Erg Chebbi desert from Marrakech.",
+      description_title: "Morocco in depth, from Marrakech.",
+      description: [
+        "Discover Morocco in depth with this 4-night/5-day escape from Marrakech to the stunning Erg Chebbi desert — a journey that blends majestic mountains, Berber villages, historic kasbahs and the magic of the Sahara at its most authentic.",
+        "You will cross the High Atlas through the legendary Tizi n'Tichka, explore valleys, gorges and famous Dakar Rally tracks, meet nomads, walk through canyons and palm groves, and ride into the sea of dunes on camelback for an unforgettable sunset and a night at a bivouac under a star-filled sky.",
+        "The experience is rounded off with Gnawa music in Khamlia, traditional markets in Rissani and relaxing moments at Kasbah Xaluca.",
+      ],
+    },
+    fr: {
+      title: "Escapade au désert de l'Erg Chebbi depuis Marrakech.",
+      description_title: "Le Maroc en profondeur, depuis Marrakech.",
+      description: [
+        "Découvrez le Maroc en profondeur avec cette escapade de 4 nuits et 5 jours depuis Marrakech vers l'impressionnant désert de l'Erg Chebbi — un voyage qui mêle montagnes majestueuses, villages berbères, kasbahs historiques et la magie du Sahara dans sa version la plus authentique.",
+        "Vous franchirez le Haut Atlas par le mythique Tizi n'Tichka, explorerez vallées, gorges et pistes légendaires du Rallye Dakar, rencontrerez des nomades, marcherez entre canyons et palmeraies, et pénétrerez dans la mer de dunes à dos de dromadaire pour un coucher de soleil inoubliable et une nuit en bivouac sous un ciel étoilé.",
+        "L'expérience se complète avec la musique Gnawa à Khamlia, les marchés traditionnels de Rissani et des moments de détente à la Kasbah Xaluca.",
+      ],
+    },
+  },
+  days: [
+    DAY_MEM23_ATLAS_DADES,
+    DAY_MEM45_ATLAS_CENTRAL,
+    DAY_DESERT_BIVOUAC,
+    DAY_MEM34_KHAMLIA_KASBAH,
+    DAY_MEM34_RETURN_MARRAKECH,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Boumalne Dades en Hotel Xaluca Dades 4* en régimen de media pensión",
+        "Dos noches en Erfoud en Kasbah Xaluca en régimen de media pensión",
+        "Una noche en Erg Chebbi en bivouac de lujo en régimen de media pensión",
+        "Comida «picnic» en el desierto el día 3",
+        "Excursión en dromedario en el Erg Chebbi",
+        "Vehículo 4x4 con chófer todos los días del itinerario",
+        "Visita a la Kasbah de Aït Ben Haddou",
+        "Combustible del vehículo",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Boumalne Dades at Hotel Xaluca Dades 4*, half board",
+        "Two nights in Erfoud at Kasbah Xaluca, half board",
+        "One night in Erg Chebbi at a luxury bivouac, half board",
+        "Desert «picnic» on day 3",
+        "Camel ride in the Erg Chebbi",
+        "Private 4x4 with driver every day of the itinerary",
+        "Visit to the Aït Ben Haddou Kasbah",
+        "Vehicle fuel",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès 4* en demi-pension",
+        "Deux nuits à Erfoud au Kasbah Xaluca en demi-pension",
+        "Une nuit à l'Erg Chebbi en bivouac de luxe en demi-pension",
+        "Déjeuner « pique-nique » dans le désert le jour 3",
+        "Balade à dromadaire à l'Erg Chebbi",
+        "Véhicule 4x4 avec chauffeur tous les jours de l'itinéraire",
+        "Visite de la Kasbah d'Aït Ben Haddou",
+        "Carburant du véhicule",
+        "Assurance assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas de mediodía salvo la indicada",
+        "Extras personales (quads, masajes, etc.)",
+        "Vuelos",
+        "Suplemento opcional para añadir cancelación al seguro (incluye COVID — 20 € por persona para viajes hasta 12 días)",
+      ],
+      en: [
+        "Drinks",
+        "Lunches except the one stated",
+        "Personal extras (quads, massages, etc.)",
+        "Flights",
+        "Optional supplement to add cancellation cover including COVID (€20 per person for trips up to 12 days)",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners sauf celui indiqué",
+        "Extras personnels (quads, massages, etc.)",
+        "Vols",
+        "Supplément en option pour ajouter l'annulation à l'assurance, COVID inclus (20 € par personne pour les voyages jusqu'à 12 jours)",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Vueling, Ryanair y otras compañías de bajo coste con vuelos directos a Marrakech",
+        "Tarifas calculadas según ocupación del vehículo (4x4 o minibús); el coste se reparte entre los ocupantes",
+        "Precios basados en habitaciones dobles y triples · Suplemento individual 130 €",
+        "Descuento niños 3-11 años compartiendo habitación con dos adultos: 160 € baja · 190 € alta",
+        "Chóferes de habla española limitados, sobre todo en temporada alta — se recomienda reservar con antelación",
+        "Los guías titulados están reservados para las medinas, no para las rutas",
+        "Pasaporte vigente mínimo 6 meses para viajar a Marruecos",
+        "Posibilidad de bivouac de lujo, privado o no, con «Mechui» (cordero al horno tradicional) — consultar número mínimo de personas",
+        "Más información sobre alojamientos y servicios en xaluca.com",
+      ],
+      en: [
+        "Flight options: Vueling, Ryanair and other low-cost carriers fly direct to Marrakech",
+        "Rates calculated based on vehicle (4x4 or minibus) occupancy; the cost is split between occupants",
+        "Prices based on double and triple rooms · Single supplement €130",
+        "Children 3-11 sharing room with two adults: €160 low season · €190 high season",
+        "Spanish-speaking drivers limited, especially in high season — book well in advance",
+        "Official guides are reserved for the medinas, not for the routes",
+        "Passport valid at least 6 months to travel to Morocco",
+        "Optional luxury bivouac — private or shared — with traditional «Mechui» roast lamb; ask about minimum group size",
+        "More info on accommodation and services at xaluca.com",
+      ],
+      fr: [
+        "Options de vols : Vueling, Ryanair et autres compagnies low-cost en vol direct vers Marrakech",
+        "Tarifs calculés selon l'occupation du véhicule (4x4 ou minibus) ; le coût se partage entre les occupants",
+        "Tarifs basés sur chambres doubles et triples · Supplément individuel 130 €",
+        "Remise enfants 3-11 ans en chambre partagée avec deux adultes : 160 € basse · 190 € haute",
+        "Chauffeurs hispanophones limités, surtout en haute saison — réserver à l'avance",
+        "Les guides officiels sont réservés aux médinas, pas aux itinéraires",
+        "Passeport valable au moins 6 mois pour voyager au Maroc",
+        "Possibilité de bivouac de luxe, privé ou partagé, avec « Mechui » traditionnel — consulter le nombre minimum de personnes",
+        "Plus d'infos sur les hébergements et services sur xaluca.com",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria (pasaporte se puede enviar más adelante)",
+        "Pago por transferencia bancaria o tarjeta Visa",
+        "30% del importe total en el momento de la reserva · 70% restante hasta 30 días antes de la salida",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios terrestres",
+        "Cancelación 45 días antes: 30% de gastos",
+        "Cancelación 21 días antes: 100% de gastos",
+        "Penalización fija de 50 € por reserva como gastos de gestión",
+        "Las condiciones cubren los servicios terrestres; los vuelos se rigen por la política de cada aerolínea",
+        "El seguro de cancelación no se reembolsa en ningún caso",
+      ],
+      en: [
+        "Compulsory booking form (passport may be sent later)",
+        "Payment by bank transfer or Visa card",
+        "30% of total at booking · remaining 70% up to 30 days before departure",
+        "If the chosen flight requires immediate issuance: 100% of the ticket + 30% of land services",
+        "Cancellation 45 days before: 30% of costs",
+        "Cancellation 21 days before: 100% of costs",
+        "Fixed €50 penalty per booking as administrative fee",
+        "Conditions cover land services; flights are governed by each airline's policy",
+        "Cancellation insurance is non-refundable under any circumstances",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire (le passeport peut être envoyé plus tard)",
+        "Paiement par virement bancaire ou carte Visa",
+        "30 % du total à la réservation · 70 % restants jusqu'à 30 jours avant le départ",
+        "Si le vol choisi requiert une émission immédiate : 100 % du billet + 30 % des services terrestres",
+        "Annulation 45 jours avant : 30 % de frais",
+        "Annulation 21 jours avant : 100 % de frais",
+        "Pénalité fixe de 50 € par réservation au titre des frais de gestion",
+        "Les conditions couvrent les services terrestres ; les vols suivent la politique de chaque compagnie",
+        "L'assurance annulation n'est en aucun cas remboursable",
+      ],
+    },
+  },
+};
+
