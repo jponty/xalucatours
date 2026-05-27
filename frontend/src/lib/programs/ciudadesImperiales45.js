@@ -1,9 +1,9 @@
 // Ciudades Imperiales · 4 nights / 5 days · Casablanca → Rabat → Volubilis → Meknes → Fez
 const T = (es, en, fr) => ({ es, en, fr });
 
-const DAY_01 = {
-  route_id: "ci45-casa-rabat",
-  id: "ci45-d1",
+export const DAY_CI_CASA_RABAT = {
+  route_id: "ci-casa-rabat",
+  id: "ci-d1",
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T("Casablanca · Mezquita Hassan II · Rabat", "Casablanca · Hassan II Mosque · Rabat", "Casablanca · mosquée Hassan II · Rabat"),
@@ -24,9 +24,9 @@ const DAY_01 = {
   ],
 };
 
-const DAY_02 = {
-  route_id: "ci45-volubilis-meknes",
-  id: "ci45-d2",
+export const DAY_CI_VOLUBILIS_MEKNES = {
+  route_id: "ci-volubilis-meknes",
+  id: "ci-d2",
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T("Rabat · Volubilis · Moulay Idriss · Meknes", "Rabat · Volubilis · Moulay Idriss · Meknes", "Rabat · Volubilis · Moulay Idriss · Meknès"),
@@ -55,9 +55,9 @@ const DAY_02 = {
   ],
 };
 
-const DAY_03 = {
-  route_id: "ci45-meknes-fez",
-  id: "ci45-d3",
+export const DAY_CI_MEKNES_FEZ = {
+  route_id: "ci-meknes-fez",
+  id: "ci-d3",
   image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#D4A373",
   title: T("Meknes · Bab al Mansour · Heri es Souani · Fez", "Meknes · Bab al Mansour · Heri es Souani · Fez", "Meknès · Bab al Mansour · Heri es Souani · Fès"),
@@ -78,9 +78,9 @@ const DAY_03 = {
   ],
 };
 
-const DAY_04 = {
-  route_id: "ci45-fez-medina",
-  id: "ci45-d4",
+export const DAY_CI_FEZ_MEDINA = {
+  route_id: "ci-fez-medina",
+  id: "ci-d4",
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T("Fez · la capital cultural de Marruecos", "Fez · Morocco's cultural capital", "Fès · capitale culturelle du Maroc"),
@@ -191,7 +191,7 @@ export const PROGRAM_CI_45 = {
     { day: 4, lat: 34.0635, lng: -4.9737, type: "unesco",  name: T("Fez el-Bali · medina UNESCO", "Fez el-Bali · UNESCO medina", "Fès el-Bali · médina UNESCO") },
     { day: 5, lat: 33.9273, lng: -4.9779, type: "airport", name: T("Fez · Aeropuerto · Regreso", "Fez · Airport · Return", "Fès · Aéroport · Retour") },
   ],
-  days: [DAY_01, DAY_02, DAY_03, DAY_04, DAY_05],
+  days: [DAY_CI_CASA_RABAT, DAY_CI_VOLUBILIS_MEKNES, DAY_CI_MEKNES_FEZ, DAY_CI_FEZ_MEDINA, DAY_05],
   details: {
     includes: {
       es: [

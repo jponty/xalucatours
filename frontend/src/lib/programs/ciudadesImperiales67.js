@@ -1,0 +1,321 @@
+// Ciudades Imperiales · 6 nights / 7 days · Casablanca → Rabat → Meknes → Fez → Atlas → Marrakech
+// Reuses the first 4 days from ciudadesImperiales45 (Casa/Rabat,
+// Volubilis/Meknes, Meknes/Fez, Fez medina) and adds the Middle Atlas
+// crossing to Marrakech + 2-night Marrakech stay with a guided medina visit.
+import {
+  DAY_CI_CASA_RABAT,
+  DAY_CI_VOLUBILIS_MEKNES,
+  DAY_CI_MEKNES_FEZ,
+  DAY_CI_FEZ_MEDINA,
+} from "@/lib/programs/ciudadesImperiales45";
+
+const T = (es, en, fr) => ({ es, en, fr });
+
+const DAY_05 = {
+  route_id: "ci67-fez-marrakech",
+  id: "ci67-d5",
+  image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+  accent: "#7C8B5C",
+  title: T(
+    "Fez · Ifrane · cedros · Beni Mellal · Marrakech",
+    "Fez · Ifrane · cedars · Beni Mellal · Marrakech",
+    "Fès · Ifrane · cèdres · Beni Mellal · Marrakech",
+  ),
+  body: {
+    es: "Hoy nos espera una larga jornada con kilómetros por delante, pero nos compensará la variedad y el contraste de paisajes. Recorreremos la Cordillera del Medio Atlas en dirección a Marrakech. Primera parada en Ifrane — «la pequeña Suiza» — con su sorprendente arquitectura alpina y, con suerte, podremos ver a los macacos de Berbería que habitan en sus bosques de cedros gigantes. Continuaremos por Azrou, Khenifra y los pueblos bereberes que dejaremos a nuestro paso. Beni Mellal — uno de los lugares poblados más antiguos del norte de África — será nuestra siguiente parada antes de llegar a Marrakech, capital turística por excelencia. Recomendamos una primera toma de contacto con la mítica Plaza Djemaa el-Fna: al atardecer la plaza se llena de recitadores, adivinadores, malabaristas, sacamuelas, danzantes y encantadores de serpientes; al caer la noche se montan los puestos tradicionales de comida iluminados al aire libre. Alojamiento en Riad en la Medina de Marrakech u Hotel 5★. Nota: consultar alternativas opcionales para hacer este trayecto en avión o bien ampliar una noche pasándola en el Lago Bin el Ouidane, repartiendo los kilómetros en dos jornadas.",
+    en: "A long day with many kilometres ahead — repaid by the sheer variety and contrast of landscapes. We cross the Middle Atlas range heading to Marrakech. First stop at Ifrane — «little Switzerland» — with its striking Alpine architecture, where, with luck, we may spot the Barbary macaques living in the giant cedar forests. Onwards through Azrou, Khenifra and the Berber villages along the way. Beni Mellal — one of the oldest inhabited places in North Africa — is our next stop before reaching Marrakech, the country's most touristed capital. We recommend a first encounter with the legendary Jemaa el-Fna square: at dusk it fills with storytellers, fortune-tellers, jugglers, snake charmers and dancers; at nightfall the traditional food stalls light up. Overnight in a Medina riad or 5★ hotel. Note: alternatives include doing this leg by plane or adding an extra night at Bin el Ouidane Lake to split the drive in two.",
+    fr: "Longue étape avec de nombreux kilomètres devant nous — compensée par la diversité et le contraste des paysages. Nous traversons le Moyen Atlas en direction de Marrakech. Premier arrêt à Ifrane — « la petite Suisse » — avec son architecture alpine, où, avec un peu de chance, nous apercevrons les macaques de Barbarie qui peuplent les forêts de cèdres géants. Continuation par Azrou, Khenifra et les villages berbères. Beni Mellal — l'un des plus anciens lieux habités d'Afrique du Nord — sera notre prochaine étape avant d'arriver à Marrakech. Nous recommandons une première rencontre avec la mythique place Jemaa el-Fna : à la tombée du jour elle se remplit de conteurs, devins, jongleurs, charmeurs de serpents et danseurs ; à la nuit, les échoppes traditionnelles s'illuminent. Nuit en riad de la médina ou hôtel 5★. Note : alternatives en avion ou nuit supplémentaire au lac Bin el Ouidane pour scinder le trajet.",
+  },
+  culture: [
+    {
+      title: T("Ifrane · la pequeña Suiza marroquí", "Ifrane · little Moroccan Switzerland", "Ifrane · la petite Suisse marocaine"),
+      body: T(
+        "A 1.665 m de altitud, diseñada por arquitectos franceses en los años 30 con tejados a dos aguas — un pueblo alpino en pleno Marruecos.",
+        "At 1,665 m, designed by French architects in the 1930s with pitched roofs — an Alpine village in the heart of Morocco.",
+        "À 1 665 m d'altitude, conçue par des architectes français dans les années 1930 avec ses toits en pente.",
+      ),
+    },
+    {
+      title: T("Cedros del Atlas y monos magot", "Atlas cedars and Barbary macaques", "Cèdres de l'Atlas et macaques de Barbarie"),
+      body: T(
+        "Los bosques del Medio Atlas son uno de los últimos santuarios del macaco de Berbería, la única especie de primate que vive de forma silvestre al norte del Sáhara.",
+        "The Middle Atlas forests are one of the last sanctuaries of the Barbary macaque, the only primate species living wild north of the Sahara.",
+        "Les forêts du Moyen Atlas constituent l'un des derniers sanctuaires du macaque de Barbarie.",
+      ),
+    },
+    {
+      title: T("Djemaa el-Fna · obra maestra UNESCO", "Jemaa el-Fna · UNESCO masterpiece", "Jemaa el-Fna · chef-d'œuvre UNESCO"),
+      body: T(
+        "Reconocida en 2001 como obra maestra del patrimonio oral e inmaterial de la humanidad — la plaza más viva de África, distinta de día y de noche.",
+        "Recognised in 2001 as a masterpiece of the oral and intangible heritage of humanity — the most alive square in Africa.",
+        "Reconnue en 2001 chef-d'œuvre du patrimoine oral et immatériel de l'humanité.",
+      ),
+    },
+  ],
+};
+
+const DAY_06 = {
+  route_id: "ci67-marrakech-medina",
+  id: "ci67-d6",
+  image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2000&q=85",
+  accent: "#D4A373",
+  title: T(
+    "Marrakech · Koutoubia · Palacio de la Bahía · zocos",
+    "Marrakech · Koutoubia · Bahia Palace · souks",
+    "Marrakech · Koutoubia · Palais de la Bahia · souks",
+  ),
+  body: {
+    es: "Esta mañana visitaremos a pie la Medina de Marrakech con un guía local. Empezaremos admirando el Alminar de la Koutoubia — hermana gemela de la Giralda de Sevilla — y seguiremos visitando el Palacio de la Bahía, uno de los ejemplos más destacados de la arquitectura marroquí del siglo XIX. Nos adentraremos por las callejuelas del Zoco, donde podremos ver a los artesanos en acción — tejedores de alfombras, fabricantes de babuchas, talleres de cuero, madera y metales — y visitaremos una farmacia bereber donde nos enseñarán sus «secretillos» naturales. Saldremos nuevamente a la Plaza Djemaa el-Fna, donde el ambiente diurno es totalmente distinto al de la noche anterior. Por la tarde, tiempo libre para practicar el arte del regateo o descubrir los rincones más recónditos de la Medina a nuestro aire. Alojamiento en Riad en la Medina u Hotel 5★. Nota: la visita guiada se puede ampliar bajo petición para incluir la Madraza Ben Youssef, las Tumbas Saadíes o los Jardines Majorelle.",
+    en: "This morning we walk through the Marrakech medina with a local guide. We begin admiring the Koutoubia minaret — twin sister of Seville's Giralda — and continue to the Bahia Palace, one of the finest examples of 19th-century Moroccan architecture. We enter the narrow alleys of the souk to see artisans in action — carpet weavers, babouche makers, leather, wood and metal workshops — and visit a Berber pharmacy where we discover their natural «secrets». We return to Jemaa el-Fna square, where the daytime atmosphere is completely different from the previous night. In the afternoon, free time to haggle or explore the most hidden corners of the medina at your own pace. Overnight in a Medina riad or 5★ hotel. Note: the guided tour can be extended on request to include the Ben Youssef Madrasa, the Saadian Tombs or the Majorelle Gardens.",
+    fr: "Ce matin, visite à pied de la médina de Marrakech avec un guide local. Nous commençons par admirer le minaret de la Koutoubia — sœur jumelle de la Giralda — et poursuivons par le Palais de la Bahia, l'un des plus beaux exemples de l'architecture marocaine du XIXe siècle. Plongée dans les ruelles du souk pour voir les artisans à l'œuvre — tisserands de tapis, babouchiers, ateliers de cuir, bois et métaux — et visite d'une pharmacie berbère et de ses « secrets » naturels. Retour sur Jemaa el-Fna, dont l'ambiance diurne contraste avec la nuit. L'après-midi, temps libre pour marchander ou explorer la médina à votre rythme. Nuit en riad de la médina ou hôtel 5★. Note : la visite guidée peut être prolongée sur demande pour inclure la médersa Ben Youssef, les tombeaux saadiens ou les jardins Majorelle.",
+  },
+  culture: [
+    {
+      title: T("Koutoubia · hermana gemela de la Giralda", "Koutoubia · twin sister of the Giralda", "Koutoubia · sœur jumelle de la Giralda"),
+      body: T(
+        "El alminar de 77 m fue construido por los almohades en el siglo XII, junto con la Giralda de Sevilla y la Torre Hassan de Rabat, por el mismo arquitecto.",
+        "The 77-m minaret was built by the Almohads in the 12th century — alongside Seville's Giralda and Rabat's Hassan Tower — by the same architect.",
+        "Le minaret de 77 m fut construit par les Almohades au XIIe siècle, avec la Giralda et la tour Hassan, par le même architecte.",
+      ),
+    },
+    {
+      title: T("Palacio de la Bahía · el palacio de la favorita", "Bahia Palace · the favourite's palace", "Palais de la Bahia · le palais de la favorite"),
+      body: T(
+        "Construido a finales del s.XIX por Si Moussa para su esposa preferida — 8.000 m² de patios, jardines y artesonados de cedro pintado a mano.",
+        "Built in the late 19th century by Si Moussa for his favourite wife — 8,000 m² of patios, gardens and hand-painted cedar coffered ceilings.",
+        "Bâti fin XIXe par Si Moussa pour son épouse favorite — 8 000 m² de patios, jardins et plafonds en cèdre peint à la main.",
+      ),
+    },
+  ],
+};
+
+const DAY_07 = {
+  route_id: "ci67-return",
+  id: "ci67-d7",
+  image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+  accent: "#5C5248",
+  title: T("Regreso desde Marrakech", "Return from Marrakech", "Retour depuis Marrakech"),
+  body: {
+    es: "A la hora convenida, recogida en el riad y traslado al aeropuerto de Marrakech para tomar el vuelo de regreso.",
+    en: "At the agreed time, pick-up at the riad and transfer to Marrakech airport for the return flight.",
+    fr: "À l'heure convenue, prise en charge au riad et transfert à l'aéroport de Marrakech pour le vol retour.",
+  },
+};
+
+export const PROGRAM_CI_67 = {
+  routeId: "tourCiudadesImperiales67",
+  duration_key: "ci6n7d",
+  duration: T("6 noches / 7 días", "6 nights / 7 days", "6 nuits / 7 jours"),
+  prices: { low: 1290, mid: 1490, high: 1690, premium: 1890 },
+  meta: {
+    es: {
+      title: "Ciudades imperiales · de Casablanca a Marrakech.",
+      eyebrow_prefix: "Circuito · Ciudades imperiales de Marruecos",
+      place: "Casablanca · Rabat · Meknes · Fez · Marrakech",
+      subtitle: "Siete días de norte a sur del país recorriendo los cuatro grandes tesoros imperiales — del Atlántico al pie del Atlas.",
+      hero_image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+      airports: "Entrada Casablanca · Salida Marrakech",
+      quick_airports: "Casablanca / Marrakech",
+      quick_places: "Casablanca · Rabat · Volubilis · Moulay Idriss · Meknes · Fez · Marrakech",
+      highlights: "Hassan II · Chellah · Volubilis · Meknes · Fez el-Bali · Djemaa el-Fna",
+      description_title: "Cuatro capitales, mil años de historia.",
+      description: [
+        "Marruecos posee un rico legado histórico y arquitectónico que podemos apreciar especialmente en sus llamadas «Ciudades Imperiales».",
+        "Para quienes desean hacer una inmersión profunda en el Marruecos más cultural, este circuito recorre el país de norte a sur descubriendo algunos de sus tesoros más preciados: Casablanca, Rabat, Meknès, Fez y Marrakech.",
+        "Una semana entre medinas Patrimonio UNESCO, palacios, mausoleos, mosaicos romanos y la travesía del Medio Atlas con sus cedros gigantes.",
+      ],
+    },
+    en: {
+      title: "Imperial cities · from Casablanca to Marrakech.",
+      eyebrow_prefix: "Circuit · Imperial cities of Morocco",
+      place: "Casablanca · Rabat · Meknes · Fez · Marrakech",
+      subtitle: "Seven days from north to south across the four great imperial treasures — from the Atlantic to the foot of the Atlas.",
+      hero_image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+      airports: "In Casablanca · Out Marrakech",
+      quick_airports: "Casablanca / Marrakech",
+      quick_places: "Casablanca · Rabat · Volubilis · Moulay Idriss · Meknes · Fez · Marrakech",
+      highlights: "Hassan II · Chellah · Volubilis · Meknes · Fez el-Bali · Jemaa el-Fna",
+      description_title: "Four capitals, a thousand years of history.",
+      description: [
+        "Morocco holds a rich historic and architectural legacy especially visible in its «Imperial Cities».",
+        "For those who want a deep dive into Morocco's most cultural face, this circuit travels the country from north to south discovering some of its most precious treasures: Casablanca, Rabat, Meknès, Fez and Marrakech.",
+        "A week through UNESCO medinas, palaces, mausoleums, Roman mosaics and the Middle Atlas crossing with its giant cedars.",
+      ],
+    },
+    fr: {
+      title: "Cités impériales · de Casablanca à Marrakech.",
+      eyebrow_prefix: "Circuit · Cités impériales du Maroc",
+      place: "Casablanca · Rabat · Meknès · Fès · Marrakech",
+      subtitle: "Sept jours du nord au sud à travers les quatre grands trésors impériaux — de l'Atlantique au pied de l'Atlas.",
+      hero_image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+      airports: "Arrivée Casablanca · Sortie Marrakech",
+      quick_airports: "Casablanca / Marrakech",
+      quick_places: "Casablanca · Rabat · Volubilis · Moulay Idriss · Meknès · Fès · Marrakech",
+      highlights: "Hassan II · Chellah · Volubilis · Meknès · Fès el-Bali · Jemaa el-Fna",
+      description_title: "Quatre capitales, mille ans d'histoire.",
+      description: [
+        "Le Maroc conserve un riche héritage historique et architectural particulièrement visible dans ses « cités impériales ».",
+        "Pour ceux qui veulent une plongée profonde dans le Maroc le plus culturel, ce circuit traverse le pays du nord au sud à la découverte de ses trésors les plus précieux : Casablanca, Rabat, Meknès, Fès et Marrakech.",
+        "Une semaine entre médinas UNESCO, palais, mausolées, mosaïques romaines et la traversée du Moyen Atlas et de ses cèdres géants.",
+      ],
+    },
+  },
+  route: [
+    { day: 1, lat: 33.5731, lng: -7.5898, type: "city",    name: T("Casablanca · Hassan II", "Casablanca · Hassan II", "Casablanca · Hassan II") },
+    { day: 1, lat: 34.0209, lng: -6.8416, type: "city",    name: T("Rabat", "Rabat", "Rabat") },
+    { day: 2, lat: 34.0731, lng: -5.5547, type: "unesco",  name: T("Volubilis · ruinas romanas", "Volubilis · Roman ruins", "Volubilis · ruines romaines") },
+    { day: 2, lat: 33.8930, lng: -5.5473, type: "city",    name: T("Moulay Idriss · Meknes", "Moulay Idriss · Meknes", "Moulay Idriss · Meknès") },
+    { day: 3, lat: 33.9716, lng: -5.5481, type: "kasbah",  name: T("Meknes · Bab al Mansour", "Meknes · Bab al Mansour", "Meknès · Bab al Mansour") },
+    { day: 3, lat: 34.0651, lng: -4.9760, type: "city",    name: T("Fez · Riad en la medina", "Fez · Medina riad", "Fès · Riad de la médina") },
+    { day: 4, lat: 34.0635, lng: -4.9737, type: "unesco",  name: T("Fez el-Bali · medina UNESCO", "Fez el-Bali · UNESCO medina", "Fès el-Bali · médina UNESCO") },
+    { day: 5, lat: 33.5333, lng: -5.1100, type: "city",    name: T("Ifrane · «la pequeña Suiza»", "Ifrane · «little Switzerland»", "Ifrane · « la petite Suisse »") },
+    { day: 5, lat: 32.3373, lng: -6.3498, type: "city",    name: T("Beni Mellal · Marrakech", "Beni Mellal · Marrakech", "Beni Mellal · Marrakech") },
+    { day: 6, lat: 31.6244, lng: -7.9926, type: "city",    name: T("Marrakech · Koutoubia · Palacio de la Bahía", "Marrakech · Koutoubia · Bahia Palace", "Marrakech · Koutoubia · Palais de la Bahia") },
+    { day: 7, lat: 31.6069, lng: -8.0363, type: "airport", name: T("Marrakech · Aeropuerto · Regreso", "Marrakech · Airport · Return", "Marrakech · Aéroport · Retour") },
+  ],
+  days: [DAY_CI_CASA_RABAT, DAY_CI_VOLUBILIS_MEKNES, DAY_CI_MEKNES_FEZ, DAY_CI_FEZ_MEDINA, DAY_05, DAY_06, DAY_07],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Rabat en Riad u Hotel 4★ · Media Pensión",
+        "Una noche en Meknes en Riad u Hotel 4★ · Media Pensión",
+        "Dos noches en Fez en Riad en la Medina u Hotel 4★ · Media Pensión",
+        "Dos noches en Marrakech en Riad en la Medina u Hotel 5★ · Alojamiento y Desayuno",
+        "Vehículo con chófer del día 1 al día 5 del itinerario, ambos incluidos",
+        "Visita de la Mezquita Hassan II en Casablanca",
+        "Visita con guía local en Rabat · Entrada al Chellah",
+        "Visita de Volubilis con entrada y guía",
+        "Visita con guía local en Meknes · Entradas a Heri es Souani y Habs Qara",
+        "Visita con guía local en Fez · Entrada a la Madraza",
+        "Visita con guía local en Marrakech · Entrada al Palacio de la Bahía",
+        "Transfers desde y hacia aeropuertos",
+        "Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Rabat in a riad or 4★ hotel · half board",
+        "One night in Meknes in a riad or 4★ hotel · half board",
+        "Two nights in Fez in a medina riad or 4★ hotel · half board",
+        "Two nights in Marrakech in a Medina riad or 5★ hotel · bed & breakfast",
+        "Vehicle with driver from day 1 to day 5 inclusive",
+        "Visit to the Hassan II Mosque in Casablanca",
+        "Guided tour of Rabat · Chellah entrance fee",
+        "Guided tour and entrance fee to Volubilis",
+        "Guided tour of Meknes · Entrance fees to Heri es Souani and Habs Qara",
+        "Guided tour of Fez · Madrasa entrance fee",
+        "Guided tour of Marrakech · Bahia Palace entrance fee",
+        "Airport transfers",
+        "Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Rabat en riad ou hôtel 4★ · demi-pension",
+        "Une nuit à Meknès en riad ou hôtel 4★ · demi-pension",
+        "Deux nuits à Fès en riad de la médina ou hôtel 4★ · demi-pension",
+        "Deux nuits à Marrakech en riad de la médina ou hôtel 5★ · petit-déjeuner",
+        "Véhicule avec chauffeur du jour 1 au jour 5 inclus",
+        "Visite de la mosquée Hassan II à Casablanca",
+        "Visite guidée de Rabat · Entrée du Chellah",
+        "Visite guidée et entrée à Volubilis",
+        "Visite guidée de Meknès · Entrées à Heri es Souani et Habs Qara",
+        "Visite guidée de Fès · Entrée à la médersa",
+        "Visite guidée de Marrakech · Entrée au Palais de la Bahia",
+        "Transferts aéroport",
+        "Assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Bebidas",
+        "Comidas del mediodía",
+        "Visitas o guías no detalladas en el incluye",
+        "Extras personales (hammam, masajes, etc.)",
+        "El vuelo (salvo que se indique lo contrario)",
+        "Suplemento opcional para seguro de cancelación · 45 € por persona para viajes de hasta 9 días",
+      ],
+      en: [
+        "Drinks",
+        "Lunches",
+        "Tours or guides not detailed",
+        "Personal extras (hammam, massages, etc.)",
+        "Flights (unless otherwise stated)",
+        "Optional cancellation insurance · €45 per person for trips up to 9 days",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners",
+        "Visites ou guides non détaillés",
+        "Extras personnels (hammam, massages, etc.)",
+        "Le vol (sauf mention contraire)",
+        "Assurance annulation en option · 45 € par personne pour les voyages jusqu'à 9 jours",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc vía Casablanca, Vueling o Ryanair con vuelos directos desde las principales ciudades.",
+        "Las tarifas dependen de la ocupación del vehículo turismo o 4x4 que nos acompaña durante todo el recorrido.",
+        "Tarifas basadas en habitaciones dobles y triples. Suplemento individual: 370 €.",
+        "Descuento niños (3-11 años) compartiendo habitación con dos adultos: 185 €.",
+        "En temporada alta, los guías locales de las medinas pueden compartirse con otros viajeros.",
+        "Los chóferes hispanohablantes son limitados — reservar con antelación.",
+        "El viaje se realiza en vehículo turismo o 4x4 con chófer. Los guías oficiales se reservan exclusivamente para las medinas, no para las rutas.",
+        "Consultar alternativas opcionales para hacer el trayecto Fez-Marrakech en avión, o bien ampliar una noche en el Lago Bin el Ouidane.",
+        "Pasaporte obligatorio con vigencia mínima de 6 meses.",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc via Casablanca, Vueling or Ryanair with direct flights from major cities.",
+        "Rates depend on the occupancy of the car or 4x4 used throughout the route.",
+        "Rates based on double and triple rooms. Single supplement: €370.",
+        "Children discount (3-11) sharing room with two adults: €185.",
+        "In high season, medina guides may be shared with other travellers.",
+        "Spanish-speaking drivers are limited — book early.",
+        "Travel by car or 4x4 with driver. Official guides are reserved for medina visits only.",
+        "Alternatives available: Fez-Marrakech leg by plane or extra night at Bin el Ouidane Lake.",
+        "Valid passport required with at least 6 months remaining.",
+      ],
+      fr: [
+        "Options de vol : Royal Air Maroc via Casablanca, Vueling ou Ryanair.",
+        "Tarifs selon l'occupation de la voiture ou du 4x4 utilisé pendant tout le parcours.",
+        "Tarifs base chambre double et triple. Supplément single : 370 €.",
+        "Réduction enfants (3-11 ans) partageant avec deux adultes : 185 €.",
+        "En haute saison, les guides de médina peuvent être partagés.",
+        "Chauffeurs hispanophones limités — réserver tôt.",
+        "Voyage en voiture ou 4x4 avec chauffeur. Les guides officiels sont réservés aux médinas.",
+        "Alternatives : trajet Fès-Marrakech en avion ou nuit supplémentaire au lac Bin el Ouidane.",
+        "Passeport valable au moins 6 mois.",
+      ],
+    },
+    terms: {
+      es: [
+        "Ficha de inscripción obligatoria. Pago por transferencia o Visa.",
+        "Reserva: 30% del importe total al confirmar.",
+        "Pago final: 70% restante hasta 30 días antes de la salida.",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del vuelo + 30% de los servicios de tierra al reservar.",
+        "Cancelación 45 días antes de la salida: 30% del importe total.",
+        "Cancelación 21 días antes de la salida: 100% del importe total.",
+        "Penalización fija de 50 € por reserva en concepto de gastos de gestión.",
+        "Estas condiciones aplican sólo a los servicios de tierra. Los vuelos se rigen por las condiciones de cada compañía aérea. El seguro de cancelación no se reembolsa.",
+      ],
+      en: [
+        "Compulsory booking form. Payment by bank transfer or Visa.",
+        "Booking: 30% at confirmation.",
+        "Final payment: 70% balance up to 30 days before departure.",
+        "If the chosen flight requires immediate ticketing: 100% of the flight + 30% of land services at booking.",
+        "Cancellation 45 days before departure: 30% of the total.",
+        "Cancellation 21 days before departure: 100% of the total.",
+        "Fixed €50 per booking management fee.",
+        "Conditions apply to land services only. Cancellation insurance is non-refundable.",
+      ],
+      fr: [
+        "Fiche d'inscription obligatoire. Paiement par virement ou Visa.",
+        "Réservation : 30 % à la confirmation.",
+        "Paiement final : solde de 70 % jusqu'à 30 jours avant le départ.",
+        "Si le vol exige une émission immédiate : 100 % du vol + 30 % des services terrestres à la réservation.",
+        "Annulation 45 jours avant : 30 % du total.",
+        "Annulation 21 jours avant : 100 % du total.",
+        "Pénalité fixe de 50 € par réservation pour frais de gestion.",
+        "Conditions applicables aux services terrestres uniquement. L'assurance annulation n'est pas remboursable.",
+      ],
+    },
+  },
+};
+
+export default PROGRAM_CI_67;
