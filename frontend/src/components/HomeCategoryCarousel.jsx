@@ -4,6 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users } 
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* ============================================================
    HomeCategoryCarousel — title + lede + horizontal trip cards + CTA
@@ -157,6 +158,8 @@ export const HomeCategoryCarousel = ({
   accent = "#C16542",
   compactMeta = false,
   cardCtaLabel,
+  slotPrefix,           // if provided (e.g. "home.south"), the eyebrow / title /
+                        // description / cta become EditableText slots
 }) => {
   const { lang } = useLanguage();
   const tx = LABELS[lang] || LABELS.es;
@@ -215,23 +218,51 @@ export const HomeCategoryCarousel = ({
                 style={{ color: accent, fontWeight: 600 }}
               >
                 <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-                {pick(eyebrow, lang)}
+                {slotPrefix ? (
+                  <EditableText
+                    slot={`${slotPrefix}.eyebrow`}
+                    defaults={eyebrow}
+                    multiline={false}
+                  />
+                ) : (
+                  pick(eyebrow, lang)
+                )}
                 <span className="w-8 h-px" style={{ background: accent, opacity: 0.55 }} />
               </span>
             )}
-            <h2
-              className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.08] tracking-tight mt-5"
-              style={{ color: palette.ink }}
-            >
-              {pick(title, lang)}
-            </h2>
-            {description && (
-              <p
-                className="mt-5 text-[15px] md:text-base leading-[1.8] max-w-xl"
-                style={{ color: palette.mute, opacity: isDark ? 0.75 : 1 }}
+            {slotPrefix ? (
+              <EditableText
+                as="h2"
+                slot={`${slotPrefix}.title`}
+                defaults={title}
+                className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.08] tracking-tight mt-5 block"
+                style={{ color: palette.ink }}
+              />
+            ) : (
+              <h2
+                className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.08] tracking-tight mt-5"
+                style={{ color: palette.ink }}
               >
-                {pick(description, lang)}
-              </p>
+                {pick(title, lang)}
+              </h2>
+            )}
+            {description && (
+              slotPrefix ? (
+                <EditableText
+                  as="p"
+                  slot={`${slotPrefix}.description`}
+                  defaults={description}
+                  className="mt-5 text-[15px] md:text-base leading-[1.8] max-w-xl block"
+                  style={{ color: palette.mute, opacity: isDark ? 0.75 : 1 }}
+                />
+              ) : (
+                <p
+                  className="mt-5 text-[15px] md:text-base leading-[1.8] max-w-xl"
+                  style={{ color: palette.mute, opacity: isDark ? 0.75 : 1 }}
+                >
+                  {pick(description, lang)}
+                </p>
+              )
             )}
           </div>
 

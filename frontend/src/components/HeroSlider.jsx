@@ -3,7 +3,9 @@ import { ArrowRight, Compass, Phone, Mail, ChevronLeft, ChevronRight } from "luc
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { CONTACT } from "@/lib/data";
+import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 const SLIDES = [
   { image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
@@ -18,7 +20,8 @@ const SLIDES = [
 
 export const HeroSlider = () => {
   const { t, lang } = useLanguage();
-  const { editMode } = useEditMode();
+  const { imageEditMode, textEditMode } = useEditMode();
+  const editMode = imageEditMode || textEditMode;
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
@@ -94,29 +97,40 @@ export const HeroSlider = () => {
             <div className="max-w-3xl">
               <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
                 <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-                <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">
-                  {t("hero_eyebrow")}
-                </span>
+                <EditableText
+                  slot="home.hero.eyebrow"
+                  defaults={translations.hero_eyebrow}
+                  multiline={false}
+                  className="text-[11px] tracking-[0.35em] uppercase font-semibold"
+                />
                 <span className="w-8 h-px bg-[#D4A373]/50" />
                 <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">
                   {SLIDES[idx].place[lang] || SLIDES[idx].place.es}
                 </span>
               </div>
 
-              <h1
+              <EditableText
                 key={`title-${idx}`}
-                className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6"
-              >
-                {t("hero_title")}
-              </h1>
+                as="h1"
+                slot="home.hero.title"
+                defaults={translations.hero_title}
+                multiline={false}
+                className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6 block"
+              />
 
-              <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
-                {t("hero_sub")}
-              </p>
+              <EditableText
+                as="p"
+                slot="home.hero.sub"
+                defaults={translations.hero_sub}
+                className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image block"
+              />
 
-              <p className="fade-up fade-up-delay-3 mt-4 max-w-2xl text-sm md:text-base text-[#FDFBF7]/75 leading-relaxed text-on-image">
-                {t("hero_support")}
-              </p>
+              <EditableText
+                as="p"
+                slot="home.hero.support"
+                defaults={translations.hero_support}
+                className="fade-up fade-up-delay-3 mt-4 max-w-2xl text-sm md:text-base text-[#FDFBF7]/75 leading-relaxed text-on-image block"
+              />
 
               <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
                 <a
@@ -124,7 +138,11 @@ export const HeroSlider = () => {
                   data-testid="hero-cta-primary"
                   className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
-                  {t("cta_plan")}
+                  <EditableText
+                    slot="home.hero.cta_primary"
+                    defaults={translations.cta_plan}
+                    multiline={false}
+                  />
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
                 </a>
                 <a
@@ -132,7 +150,11 @@ export const HeroSlider = () => {
                   data-testid="hero-cta-secondary"
                   className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                 >
-                  {t("cta_explore_routes")}
+                  <EditableText
+                    slot="home.hero.cta_secondary"
+                    defaults={translations.cta_explore_routes}
+                    multiline={false}
+                  />
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </a>
               </div>
@@ -140,9 +162,12 @@ export const HeroSlider = () => {
               {/* Quick contact pill */}
               <div className="fade-up fade-up-delay-4 mt-10 inline-flex flex-wrap items-center gap-x-6 gap-y-3 bg-[#1A1513]/55 backdrop-blur-md border border-[#FDFBF7]/15 px-5 py-3"
                    data-testid="hero-quick-contact">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
-                  {t("hero_quick")}
-                </span>
+                <EditableText
+                  slot="home.hero.quick_label"
+                  defaults={translations.hero_quick}
+                  multiline={false}
+                  className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]"
+                />
                 <a
                   href={`tel:${CONTACT.phoneRaw}`}
                   data-testid="hero-phone"

@@ -8,8 +8,8 @@ import logging
 import asyncio
 import httpx
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
-from typing import List, Optional
+from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
+from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone, timedelta
 
@@ -285,6 +285,73 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         upsert=True,
     )
     return {"slot_id": slot_id, **doc, "filename": filename}
+
+
+# ---------- Text slots (admin inline editing) ----------
+# Stored in collection `text_slots` as a single document per slot id
+# (e.g. "home.hero.title") with { values: {es, en, fr}, updated_at }.
+# Values is a language map; missing languages fall back to the placeholder
+# default rendered client-side.
+class TextSlotPayload(BaseModel):
+    values: Dict[str, Optional[str]] = Field(
+        default_factory=dict,
+        description="Language code → text (e.g. {'es': '...', 'en': '...', 'fr': '...'})",
+    )
+
+    @field_validator("values")
+    @classmethod
+    def _trim_and_limit(cls, v: Dict[str, Optional[str]]):
+        out: Dict[str, Optional[str]] = {}
+        for lang, txt in (v or {}).items():
+            if not isinstance(lang, str) or len(lang) > 5:
+                raise ValueError(f"Invalid language code: {lang}")
+            if txt is None:
+                out[lang] = None
+                continue
+            if not isinstance(txt, str):
+                raise ValueError("Text value must be a string")
+            # Cap to a safe length per language — long enough for paragraphs
+            t = txt.replace("\r\n", "\n").replace("\r", "\n")
+            if len(t) > 5000:
+                raise ValueError("Text exceeds 5000 characters")
+            out[lang] = t
+        return out
+
+
+@api_router.get("/text_slots/{slot_id}")
+async def get_text_slot(slot_id: str):
+    doc = await db.text_slots.find_one({"_id": slot_id}, {"_id": 0})
+    if not doc:
+        return {"slot_id": slot_id, "values": {}}
+    return {"slot_id": slot_id, **doc}
+
+
+@api_router.put("/text_slots/{slot_id}")
+async def put_text_slot(slot_id: str, payload: TextSlotPayload):
+    doc = {
+        "values": payload.values,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.text_slots.update_one(
+        {"_id": slot_id},
+        {"$set": doc},
+        upsert=True,
+    )
+    return {"slot_id": slot_id, **doc}
+
+
+@api_router.get("/text_slots")
+async def list_text_slots():
+    """Return every saved text slot as a dict {slot_id: values}. Used by
+    the frontend to hydrate copy without one request per slot on first
+    render."""
+    cursor = db.text_slots.find({}, {"updated_at": 0})
+    items: Dict[str, Dict[str, Optional[str]]] = {}
+    async for doc in cursor:
+        slot_id = doc.get("_id")
+        if slot_id:
+            items[slot_id] = doc.get("values") or {}
+    return {"slots": items}
 
 
 app.include_router(api_router)

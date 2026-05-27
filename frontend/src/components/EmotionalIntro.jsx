@@ -2,7 +2,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
+import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* Curated Moroccan-only Unsplash imagery — each frame carries a
    trilingual caption to keep the editorial feel of the original. */
@@ -78,25 +80,43 @@ export const EmotionalIntro = () => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-16 items-center">
           <div className="md:col-span-6 lg:col-span-7 order-2 md:order-1">
-            <span className="overline">{t("intro_overline")}</span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {t("intro_title")}
-            </h2>
+            <EditableText
+              slot="home.intro.overline"
+              defaults={translations.intro_overline}
+              multiline={false}
+              className="overline"
+            />
+            <EditableText
+              as="h2"
+              slot="home.intro.title"
+              defaults={translations.intro_title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block"
+            />
 
             <div className="mt-10 space-y-6 text-base md:text-lg leading-relaxed text-[#5C5248] max-w-2xl">
-              <p className="font-serif-x-italic text-xl md:text-2xl text-[#2C2621] leading-[1.4]">
-                {t("intro_p1")}
-              </p>
-              <p>{t("intro_p2")}</p>
-              <p>{t("intro_p3")}</p>
-              <p className="font-serif-x text-2xl md:text-3xl text-[#C16542] leading-[1.2]">
-                {t("intro_p4")}
-              </p>
+              <EditableText
+                as="p"
+                slot="home.intro.p1"
+                defaults={translations.intro_p1}
+                className="font-serif-x-italic text-xl md:text-2xl text-[#2C2621] leading-[1.4] block"
+              />
+              <EditableText as="p" slot="home.intro.p2" defaults={translations.intro_p2} className="block" />
+              <EditableText as="p" slot="home.intro.p3" defaults={translations.intro_p3} className="block" />
+              <EditableText
+                as="p"
+                slot="home.intro.p4"
+                defaults={translations.intro_p4}
+                className="font-serif-x text-2xl md:text-3xl text-[#C16542] leading-[1.2] block"
+              />
             </div>
 
-            <p className="mt-10 text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
-              {t("intro_signature")}
-            </p>
+            <EditableText
+              as="p"
+              slot="home.intro.signature"
+              defaults={translations.intro_signature}
+              multiline={false}
+              className="mt-10 text-[10px] tracking-[0.3em] uppercase text-[#5C5248] block"
+            />
           </div>
 
           {/* Autoplay image carousel */}

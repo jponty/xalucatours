@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import Cropper from "react-easy-crop";
 import {
   Pencil, X, Upload, Check, Loader2, AlertCircle, RotateCcw, ImageOff,
-  ChevronLeft, ChevronRight, Images, Layers,
+  ChevronLeft, ChevronRight, Images, Layers, RotateCw, Maximize2, Target,
 } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useEditableGroup } from "@/contexts/EditableGroupContext";
@@ -206,7 +206,8 @@ export const EditableImage = ({
 /* ============================================================
    Helpers — image loading + canvas crop
 ============================================================ */
-const CROP_OUTPUT_SIZE = 1800;
+const CROP_OUTPUT_SIZE = 2400; // longer side in px of the saved crop — hi-DPI ready
+const CROP_OUTPUT_QUALITY = 0.94;
 
 const loadImage = (src) =>
   new Promise((resolve, reject) => {
@@ -217,10 +218,34 @@ const loadImage = (src) =>
     img.src = src;
   });
 
-const cropImageToBlob = async (imageSrc, croppedAreaPixels) => {
+/* Crop + optional rotation. The cropper returns croppedAreaPixels in
+   the rotated source-image coordinate space, so we draw the image into
+   a rotated intermediate canvas first and then crop from that. */
+const cropImageToBlob = async (imageSrc, croppedAreaPixels, rotation = 0) => {
   const image = await loadImage(imageSrc);
+  const rot = ((rotation % 360) + 360) % 360;
+  const radians = (rot * Math.PI) / 180;
+
+  // Rotate into an intermediate canvas sized to the bounding box.
+  const sin = Math.abs(Math.sin(radians));
+  const cos = Math.abs(Math.cos(radians));
+  const rotW = image.width * cos + image.height * sin;
+  const rotH = image.width * sin + image.height * cos;
+
+  const rotCanvas = document.createElement("canvas");
+  rotCanvas.width = rotW;
+  rotCanvas.height = rotH;
+  const rotCtx = rotCanvas.getContext("2d");
+  rotCtx.imageSmoothingEnabled = true;
+  rotCtx.imageSmoothingQuality = "high";
+  rotCtx.translate(rotW / 2, rotH / 2);
+  rotCtx.rotate(radians);
+  rotCtx.drawImage(image, -image.width / 2, -image.height / 2);
+
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
 
   const ratio = croppedAreaPixels.width / croppedAreaPixels.height;
   let outW = croppedAreaPixels.width;
@@ -237,7 +262,7 @@ const cropImageToBlob = async (imageSrc, croppedAreaPixels) => {
   canvas.width = outW;
   canvas.height = outH;
   ctx.drawImage(
-    image,
+    rotCanvas,
     croppedAreaPixels.x,
     croppedAreaPixels.y,
     croppedAreaPixels.width,
@@ -248,7 +273,7 @@ const cropImageToBlob = async (imageSrc, croppedAreaPixels) => {
     canvas.toBlob(
       (blob) => (blob ? resolve(blob) : reject(new Error("Canvas to blob failed"))),
       "image/jpeg",
-      0.92,
+      CROP_OUTPUT_QUALITY,
     );
   });
 };
@@ -276,6 +301,63 @@ const uploadBlobToSlot = async (slot, blob, filename) => {
 const safeFilename = (slot) => `${slot.replace(/[^a-z0-9._-]/gi, "_")}.jpg`;
 
 /* ============================================================
+   LivePreview — final result preview at the placeholder's aspect
+   ------------------------------------------------------------
+   CSS-only render: the image is scaled / positioned via percentages
+   derived from the cropper's `croppedAreaPercent`. No canvas redraws
+   per frame, so the preview tracks drag / zoom / rotation smoothly.
+============================================================ */
+const LivePreview = ({ imageSrc, croppedAreaPercent, ratio, ratioCode, slot }) => {
+  if (!imageSrc) return null;
+  const area = croppedAreaPercent || { x: 0, y: 0, width: 100, height: 100 };
+
+  const w = area.width || 100;
+  const h = area.height || 100;
+  const imgStyle = {
+    position: "absolute",
+    width: `${(100 / w) * 100}%`,
+    height: `${(100 / h) * 100}%`,
+    left: `${-(area.x / w) * 100}%`,
+    top: `${-(area.y / h) * 100}%`,
+    objectFit: "fill",
+  };
+
+  return (
+    <div
+      data-testid={`edit-modal-live-preview-${slot}`}
+      className="border border-[#2C2621]/12 bg-[#FDFBF7]"
+    >
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#2C2621]/10 bg-[#F8F2E6]">
+        <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
+          <Maximize2 className="w-3 h-3" strokeWidth={1.8} />
+          Vista previa final · {ratioCode}
+        </span>
+        <span className="text-[10px] tracking-[0.25em] uppercase text-[#9C8E78]">
+          tiempo real
+        </span>
+      </div>
+      <div className="p-3 bg-[repeating-linear-gradient(45deg,#F2EBE1_0_8px,#FDFBF7_8px_16px)] flex justify-center">
+        <div
+          className="relative overflow-hidden bg-[#1A1513] shadow-[0_18px_40px_-20px_rgba(0,0,0,0.4)]"
+          style={{
+            height: 180,
+            width: Math.round(180 * ratio),
+            maxWidth: "100%",
+          }}
+        >
+          <img
+            src={imageSrc}
+            alt="Vista previa final"
+            style={imgStyle}
+            draggable={false}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ============================================================
    EditModal — gallery-aware uploader
    ------------------------------------------------------------
    Two modes:
@@ -287,10 +369,30 @@ const newDraft = () => ({
   imageSrc: null,
   crop: { x: 0, y: 0 },
   zoom: 1,
+  minZoom: 1,
+  rotation: 0,
+  overrideRatio: null, // null = use placeholder default
   croppedAreaPixels: null,
+  croppedAreaPercent: null,
+  mediaSize: null,
   fileName: null,
   dirty: false,
 });
+
+/* Preset aspect ratios offered in the cropper. The placeholder default is
+   always available as a special "Placeholder" preset which is the
+   recommended option. */
+const RATIO_PRESETS = [
+  { code: "21:9",  value: 21 / 9 },
+  { code: "16:9",  value: 16 / 9 },
+  { code: "3:2",   value: 3 / 2 },
+  { code: "4:3",   value: 4 / 3 },
+  { code: "1:1",   value: 1 },
+  { code: "4:5",   value: 4 / 5 },
+  { code: "3:4",   value: 3 / 4 },
+  { code: "2:3",   value: 2 / 3 },
+  { code: "9:16",  value: 9 / 16 },
+];
 
 const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) => {
   // Build the list of items the modal operates on. In single mode we
@@ -355,8 +457,10 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
   }, [onClose]);
 
   const currentDraft = getDraft(current.slot);
-  const ratio = parseRatio(current.aspectRatio);
-  const rLabel = ratioLabel(current.aspectRatio);
+  const placeholderRatio = parseRatio(current.aspectRatio);
+  const ratio = currentDraft.overrideRatio || placeholderRatio;
+  const rLabel = ratioLabel(ratio);
+  const isOverridden = currentDraft.overrideRatio && Math.abs(currentDraft.overrideRatio - placeholderRatio) > 0.001;
 
   // Lock body scroll + ESC to close
   useEffect(() => {
@@ -384,8 +488,27 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
   }, [requestClose, isGallery, items.length]);
 
   const onCropComplete = useCallback(
-    (_, areaPixels) => {
-      mutateDraft(current.slot, { croppedAreaPixels: areaPixels });
+    (croppedArea, croppedAreaPixels) => {
+      mutateDraft(current.slot, {
+        croppedAreaPixels,
+        croppedAreaPercent: croppedArea,
+      });
+    },
+    [current.slot], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // Called by react-easy-crop once the image is loaded. We capture the
+  // image dimensions so the rotation logic (which swaps width/height)
+  // and the smart objectFit can work correctly. Coverage of the crop
+  // frame is guaranteed by objectFit, so we always start at zoom=1.
+  const onMediaLoaded = useCallback(
+    (mediaSize) => {
+      mutateDraft(current.slot, {
+        mediaSize,
+        minZoom: 1,
+        zoom: 1,
+        crop: { x: 0, y: 0 },
+      });
     },
     [current.slot], // eslint-disable-line react-hooks/exhaustive-deps
   );
@@ -467,7 +590,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
     if (!d.imageSrc || !d.croppedAreaPixels) {
       throw new Error("No hay imagen para guardar en este espacio.");
     }
-    const blob = await cropImageToBlob(d.imageSrc, d.croppedAreaPixels);
+    const blob = await cropImageToBlob(d.imageSrc, d.croppedAreaPixels, d.rotation || 0);
     const newUrl = await uploadBlobToSlot(slot, blob, safeFilename(slot));
     // Update parent child + local mirror
     const it = items.find((i) => i.slot === slot);
@@ -817,56 +940,215 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
             <>
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
-                  Encuadra la imagen · arrastra para mover · usa el zoom
+                  Encuadra para el formato <strong className="text-[#C16542] tracking-[0.25em]">{rLabel.code}</strong>
                 </span>
                 <button
                   type="button"
                   onClick={resetCurrent}
                   className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#5C5248] hover:text-[#C16542] transition-colors"
+                  data-testid={`edit-modal-change-image-${current.slot}`}
                 >
                   <RotateCcw className="w-3 h-3" strokeWidth={1.7} />
                   Cambiar imagen
                 </button>
               </div>
+
+              {/* Aspect ratio selector — placeholder default is highlighted
+                  in terracotta. Users may pick a non-default preset but
+                  the image will then need to be re-fitted by CSS in the
+                  page itself, so we keep the recommended option obvious. */}
+              <div
+                data-testid={`edit-modal-ratio-presets-${current.slot}`}
+                className="flex items-center gap-1.5 flex-wrap"
+              >
+                <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mr-1">
+                  Formato
+                </span>
+                <button
+                  type="button"
+                  onClick={() => mutateDraft(current.slot, {
+                    overrideRatio: null,
+                    crop: { x: 0, y: 0 },
+                    zoom: 1,
+                  })}
+                  data-testid={`edit-modal-ratio-preset-placeholder-${current.slot}`}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors ${
+                    !isOverridden
+                      ? "bg-[#C16542] text-[#FDFBF7] border border-[#C16542]"
+                      : "bg-transparent text-[#5C5248] border border-[#2C2621]/20 hover:border-[#C16542] hover:text-[#C16542]"
+                  }`}
+                  title={`Recomendado para este espacio · ${ratioLabel(placeholderRatio).code}`}
+                >
+                  <Target className="w-3 h-3" strokeWidth={1.8} />
+                  Placeholder · {ratioLabel(placeholderRatio).code}
+                </button>
+                {RATIO_PRESETS
+                  .filter((p) => Math.abs(p.value - placeholderRatio) > 0.001)
+                  .map((p) => {
+                    const active = isOverridden && Math.abs(currentDraft.overrideRatio - p.value) < 0.001;
+                    return (
+                      <button
+                        key={p.code}
+                        type="button"
+                        onClick={() => mutateDraft(current.slot, {
+                          overrideRatio: p.value,
+                          crop: { x: 0, y: 0 },
+                          zoom: 1,
+                        })}
+                        data-testid={`edit-modal-ratio-preset-${p.code.replace(":", "x")}-${current.slot}`}
+                        className={`inline-flex items-center px-2.5 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors ${
+                          active
+                            ? "bg-[#2C2621] text-[#FDFBF7] border border-[#2C2621]"
+                            : "bg-transparent text-[#5C5248] border border-[#2C2621]/15 hover:border-[#2C2621] hover:text-[#2C2621]"
+                        }`}
+                      >
+                        {p.code}
+                      </button>
+                    );
+                })}
+              </div>
+
+              {isOverridden && (
+                <div className="flex items-start gap-2 p-2.5 bg-[#FDF5EB] border border-[#C16542]/25 text-[11px] text-[#A35133]">
+                  <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.7} />
+                  <span>
+                    Has elegido un formato distinto al recomendado para este espacio
+                    ({ratioLabel(placeholderRatio).code}). La página recortará la imagen para encajarla.
+                  </span>
+                </div>
+              )}
+              {/* Cropper — locked to the placeholder aspect ratio.
+                  objectFit is chosen dynamically so the image always covers
+                  the frame at zoom=1 (no letterbox, no dead space in the
+                  cropped area). */}
               <div
                 data-testid={`edit-modal-cropper-${current.slot}`}
                 className="relative bg-[#1A1513] overflow-hidden"
-                style={{ aspectRatio: ratio, maxHeight: "55vh" }}
+                style={{ aspectRatio: ratio, maxHeight: "44vh" }}
               >
                 <Cropper
                   image={currentDraft.imageSrc}
                   crop={currentDraft.crop}
                   zoom={currentDraft.zoom}
+                  rotation={currentDraft.rotation || 0}
                   aspect={ratio}
                   minZoom={1}
                   maxZoom={5}
+                  zoomSpeed={0.5}
                   showGrid={true}
+                  restrictPosition={true}
                   onCropChange={(c) => mutateDraft(current.slot, { crop: c })}
                   onZoomChange={(z) => mutateDraft(current.slot, { zoom: z })}
+                  onRotationChange={(r) => mutateDraft(current.slot, { rotation: r })}
                   onCropComplete={onCropComplete}
-                  objectFit="contain"
-                />
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] shrink-0">
-                  Zoom
-                </span>
-                <input
-                  type="range"
-                  min={1}
-                  max={5}
-                  step={0.01}
-                  value={currentDraft.zoom}
-                  onChange={(e) =>
-                    mutateDraft(current.slot, { zoom: parseFloat(e.target.value) })
+                  onMediaLoaded={onMediaLoaded}
+                  objectFit={
+                    currentDraft.mediaSize
+                      ? (currentDraft.mediaSize.width / currentDraft.mediaSize.height) > ratio
+                        ? "vertical-cover"
+                        : "horizontal-cover"
+                      : "horizontal-cover"
                   }
-                  className="flex-1 accent-[#C16542]"
-                  data-testid={`edit-modal-zoom-${current.slot}`}
                 />
-                <span className="text-[11px] text-[#5C5248] tabular-nums w-10 text-right">
-                  {currentDraft.zoom.toFixed(2)}×
+                {/* Crop-frame badge so the admin always sees the exact ratio */}
+                <span className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 bg-[#FDFBF7]/95 text-[#2C2621] text-[10px] tracking-[0.25em] uppercase px-2 py-1 pointer-events-none">
+                  Marco · {rLabel.code}
                 </span>
               </div>
+
+              {/* Quick actions */}
+              <div className="flex items-center gap-2 flex-wrap" data-testid={`edit-modal-quick-actions-${current.slot}`}>
+                <button
+                  type="button"
+                  onClick={() => mutateDraft(current.slot, {
+                    crop: { x: 0, y: 0 },
+                    zoom: 1,
+                    rotation: 0,
+                  })}
+                  data-testid={`edit-modal-center-${current.slot}`}
+                  className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 py-2 transition-colors"
+                >
+                  <Target className="w-3 h-3" strokeWidth={1.8} />
+                  Centrar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => mutateDraft(current.slot, { zoom: 1 })}
+                  data-testid={`edit-modal-fit-${current.slot}`}
+                  className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 py-2 transition-colors"
+                >
+                  <Maximize2 className="w-3 h-3" strokeWidth={1.8} />
+                  Ajustar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => mutateDraft(current.slot, {
+                    rotation: ((currentDraft.rotation || 0) + 90) % 360,
+                    zoom: 1,
+                    crop: { x: 0, y: 0 },
+                  })}
+                  data-testid={`edit-modal-rotate-${current.slot}`}
+                  className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 py-2 transition-colors"
+                  title="Rotar 90°"
+                >
+                  <RotateCw className="w-3 h-3" strokeWidth={1.8} />
+                  Rotar
+                </button>
+              </div>
+
+              {/* Zoom + rotation sliders */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] shrink-0 w-14">
+                    Zoom
+                  </span>
+                  <input
+                    type="range"
+                    min={1}
+                    max={5}
+                    step={0.01}
+                    value={currentDraft.zoom}
+                    onChange={(e) =>
+                      mutateDraft(current.slot, { zoom: parseFloat(e.target.value) })
+                    }
+                    className="flex-1 accent-[#C16542]"
+                    data-testid={`edit-modal-zoom-${current.slot}`}
+                  />
+                  <span className="text-[11px] text-[#5C5248] tabular-nums w-12 text-right">
+                    {currentDraft.zoom.toFixed(2)}×
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] shrink-0 w-14">
+                    Rotar
+                  </span>
+                  <input
+                    type="range"
+                    min={-180}
+                    max={180}
+                    step={1}
+                    value={currentDraft.rotation || 0}
+                    onChange={(e) =>
+                      mutateDraft(current.slot, { rotation: parseFloat(e.target.value) })
+                    }
+                    className="flex-1 accent-[#C16542]"
+                    data-testid={`edit-modal-rotation-${current.slot}`}
+                  />
+                  <span className="text-[11px] text-[#5C5248] tabular-nums w-12 text-right">
+                    {Math.round(currentDraft.rotation || 0)}°
+                  </span>
+                </div>
+              </div>
+
+              {/* Live final preview — exactly the aspect of the placeholder */}
+              <LivePreview
+                imageSrc={currentDraft.imageSrc}
+                croppedAreaPercent={currentDraft.croppedAreaPercent}
+                rotation={currentDraft.rotation || 0}
+                ratio={ratio}
+                ratioCode={rLabel.code}
+                slot={current.slot}
+              />
             </>
           )}
 

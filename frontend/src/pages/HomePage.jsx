@@ -97,6 +97,7 @@ export default function HomePage() {
       {/* Category carousels — quick access to specific trip pages */}
       <HomeCategoryCarousel
         testid="home-south-carousel"
+        slotPrefix="home.south"
         eyebrow={COPY.south.eyebrow}
         title={COPY.south.title}
         description={COPY.south.description}
@@ -109,6 +110,7 @@ export default function HomePage() {
 
       <HomeCategoryCarousel
         testid="home-full-carousel"
+        slotPrefix="home.full"
         eyebrow={COPY.full.eyebrow}
         title={COPY.full.title}
         description={COPY.full.description}
@@ -121,6 +123,7 @@ export default function HomePage() {
 
       <HomeCategoryCarousel
         testid="home-short-carousel"
+        slotPrefix="home.short"
         eyebrow={COPY.short.eyebrow}
         title={COPY.short.title}
         description={COPY.short.description}
@@ -133,6 +136,7 @@ export default function HomePage() {
 
       <HomeCategoryCarousel
         testid="home-north-carousel"
+        slotPrefix="home.north"
         eyebrow={COPY.north.eyebrow}
         title={COPY.north.title}
         description={COPY.north.description}
@@ -145,6 +149,7 @@ export default function HomePage() {
 
       <HomeCategoryCarousel
         testid="home-upcoming-carousel"
+        slotPrefix="home.upcoming"
         eyebrow={COPY.upcoming.eyebrow}
         title={COPY.upcoming.title}
         description={COPY.upcoming.description}

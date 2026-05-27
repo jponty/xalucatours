@@ -12,7 +12,29 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - **Program detail pages** day-by-day — powered by `components/ProgramTemplate.jsx`
 
 ## Implemented (Feb 2026)
-### Journey landing pages
+
+### Inline CMS — Image & Text editing
+- Two mutually-exclusive admin modes triggered from the header:
+  • Image edit (`<ImagePlus>` icon) — opens `<EditableImage>` overlays
+  • Text edit (`<Type>` icon) — turns every `<EditableText>` into contenteditable
+- Navigation is fully locked while either mode is active (capture-phase JS guard
+  + CSS `pointer-events:none` lockdown on `<a>` + Portal-rendered editor panel).
+- **Image editor** is a slide-in side panel (`createPortal` to `<body>`):
+  - Aspect-ratio selector chip group; "Placeholder" preset highlighted as recommended
+  - Smart objectFit (vertical/horizontal-cover) → cropped frame always filled
+  - Drag + zoom + rotation (continuous slider + 90° quick action)
+  - CSS-based live final-preview at placeholder ratio (no canvas redraw lag)
+  - Bulk upload: drop N files → distributed across the gallery's sibling slots
+  - Save-all button for batched persistence
+  - High-quality output (2400 px JPEG @ 0.94)
+- **Text editor** wraps every key piece of copy in `<EditableText slot="…">`:
+  - 29 slots wired so far across hero, emotional intro, and the 5 home category
+    carousels (eyebrow / title / description × {south, full, short, north, upcoming})
+  - Per-language storage in MongoDB `text_slots` (es / en / fr)
+  - Save-on-blur, ESC to revert, plain-text paste, dirty-ring affordance
+  - Bulk pre-fetch via `/api/text_slots` to hydrate without N round-trips
+- Backend collections: `image_slots`, `text_slots`. Static `/api/uploads/*`.
+
 - `/` — Home with 5 TravelCategory cards routing to regional pages
 - `/viajes/marruecos` — 4 itinerary blocks + intro editorial + WhyXaluca pillars + CatalogTeaser + CommunityCta
 - `/viajes/nortedemarruecos`

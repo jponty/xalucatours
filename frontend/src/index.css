@@ -324,7 +324,6 @@ body.edit-mode-on::after {
     left: 14px;
     z-index: 9000;
     pointer-events: none;
-    background: #C16542;
     color: #FDFBF7;
     font-family: 'Outfit', 'Inter', sans-serif;
     font-size: 10px;
@@ -333,6 +332,31 @@ body.edit-mode-on::after {
     padding: 8px 14px;
     box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.4);
     animation: edit-chip-pulse 2.8s ease-in-out infinite;
+}
+body.edit-mode-image::after {
+    content: "MODO IMÁGENES · navegación bloqueada";
+    background: #C16542;
+}
+body.edit-mode-text::after {
+    content: "MODO TEXTOS · navegación bloqueada";
+    background: #2C2621;
+}
+body.edit-mode-text::before {
+    background: linear-gradient(90deg, #2C2621 0%, #5C5248 50%, #2C2621 100%);
+}
+/* Text-edit affordances — each editable copy shows a subtle ring,
+   sharper on hover, terracotta when dirty.  Cursor becomes text.  */
+body.edit-mode-text [data-testid^="editable-text-"] {
+    cursor: text !important;
+    border-radius: 2px;
+}
+body.edit-mode-text [data-testid^="editable-text-"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #C16542;
+    background: rgba(193, 101, 66, 0.04);
+}
+body.edit-mode-text [data-testid^="editable-text-"]:hover:not(:focus) {
+    box-shadow: 0 0 0 1px rgba(193, 101, 66, 0.7);
 }
 @keyframes edit-band-pulse {
     0%, 100% { opacity: 0.85; }
