@@ -1109,11 +1109,6 @@ export const HUB_ATLAS_DESIERTO_FEZ = {
   ],
 };
 
-// ============================================================
-// Hub Escapadas Cortas · Marrakech → Erg Chebbi → Marrakech
-// Compact "escapada" entry that surfaces only the 2n/3d, 3n/4d and 4n/5d
-// loop variants. Reuses the existing tourMarrakechLoop23/34/45 programs.
-// ============================================================
 export const HUB_ESCAPADA_RAK_ERG_RAK = {
   id: "escapada-rak-erg-rak",
   hero: {
@@ -1189,3 +1184,81 @@ export const HUB_ESCAPADA_RAK_ERG_RAK = {
 };
 
 
+
+/* ============================================================
+   Hub · Aventura · Enduro por Marruecos
+   ----
+   Sub-hub of /viajes/aventura. Currently surfaces the 4n/5d
+   and 6n/7d programmes.
+============================================================ */
+export const HUB_AVENTURA_ENDURO = {
+  id: "aventura-enduro",
+  hero: {
+    image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes de aventura · Sur de Marruecos", en: "Adventure trips · Southern Morocco", fr: "Voyages d'aventure · Sud du Maroc" },
+    place: { es: "Erfoud · Erg Chebbi · Merzouga · Saghro · Anti Atlas", en: "Erfoud · Erg Chebbi · Merzouga · Saghro · Anti-Atlas", fr: "Erfoud · Erg Chebbi · Merzouga · Saghro · Anti-Atlas" },
+    title: { es: "Enduro por Marruecos.", en: "Enduro across Morocco.", fr: "Enduro au Maroc." },
+    subtitle: {
+      es: "Pistas dakarianas, dunas, montañas y oasis sobre una moto de enduro — la libertad del Sahara en estado puro.",
+      en: "Dakar-style tracks, dunes, mountains and oases on an enduro bike — Saharan freedom in its purest form.",
+      fr: "Pistes dakariennes, dunes, montagnes et oasis sur une moto d'enduro — la liberté du Sahara à l'état pur.",
+    },
+  },
+  intro: {
+    overline: { es: "Enduro por Marruecos", en: "Enduro across Morocco", fr: "Enduro au Maroc" },
+    title: {
+      es: "Sigue las huellas de los pilotos dakarianos.",
+      en: "Follow the tracks of the Dakar riders.",
+      fr: "Suivez les traces des pilotes du Dakar.",
+    },
+    body: {
+      es: [
+        "Si te apasiona la aventura, el mundo del motor, la adrenalina y recorrer paisajes abiertos e infinitos, te proponemos una ruta por el sur de Marruecos para disfrutar de varios días sobre una moto de enduro, siguiendo las huellas de los auténticos pilotos dakarianos.",
+        "Atravesarás pistas, oasis, dunas y pueblos bereberes mientras descubres algunos de los rincones más espectaculares del país.",
+        "¡Las sensaciones que vivirás son indescriptibles!",
+      ],
+      en: [
+        "If you are passionate about adventure, motors, adrenaline and crossing open, infinite landscapes, we propose a route in southern Morocco — several days on an enduro bike, following the tracks of the true Dakar pilots.",
+        "You will cross tracks, oases, dunes and Berber villages while discovering some of the country's most spectacular corners.",
+        "The sensations are simply indescribable.",
+      ],
+      fr: [
+        "Si vous êtes passionné(e) d'aventure, de moto, d'adrénaline et de paysages ouverts à l'infini, nous vous proposons un itinéraire dans le sud du Maroc — plusieurs jours sur une moto d'enduro, dans les traces des vrais pilotes du Dakar.",
+        "Vous traverserez pistes, oasis, dunes et villages berbères pour découvrir certains des coins les plus spectaculaires du pays.",
+        "Les sensations vécues sont tout simplement indescriptibles.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de enduro por Marruecos", en: "Enduro options across Morocco", fr: "Options d'enduro au Maroc" },
+    title: { es: "Elige tu travesía.", en: "Choose your ride.", fr: "Choisissez votre itinéraire." },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this trip.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    },
+    group_a: { es: "Aventura + Enduro", en: "Adventure + Enduro", fr: "Aventure + Enduro" },
+  },
+  programs: [
+    {
+      id: "enduro-4-5", direction: "a", nights: "4n5d", accent: "#C16542",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
+      link: "tourEnduroAventura45",
+      blurb: {
+        es: "Viaje de 4 noches y 5 días haciendo enduro por el sur de Marruecos.",
+        en: "4-night/5-day enduro trip across southern Morocco.",
+        fr: "Voyage de 4 nuits et 5 jours en enduro dans le sud du Maroc.",
+      },
+    },
+    {
+      id: "enduro-6-7", direction: "a", nights: "6n7d", accent: "#A07042",
+      image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
+      link: "tourEnduroAventura67",
+      blurb: {
+        es: "Viaje de 6 noches y 7 días haciendo enduro entre el desierto, el Saghro y el Anti Atlas.",
+        en: "6-night/7-day enduro trip between the desert, the Saghro and the Anti-Atlas.",
+        fr: "Voyage de 6 nuits et 7 jours en enduro entre désert, Saghro et Anti-Atlas.",
+      },
+    },
+  ],
+};

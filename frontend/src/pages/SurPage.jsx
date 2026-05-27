@@ -23,6 +23,60 @@ import ContactForm from "@/components/ContactForm";
 import SectionGallery from "@/components/SectionGallery";
 import Testimonials from "@/components/Testimonials";
 import { SUR_GALLERIES } from "@/lib/sectionGalleries";
+import VideoSection from "@/components/VideoSection";
+
+/* ----------------------------------------------------------------
+   Sur de Marruecos — 3 immersive videos paired to the editorial
+   sections. URLs are centralized here so the editor can swap them
+   easily in the future.
+---------------------------------------------------------------- */
+const SUR_VIDEOS = {
+  kasbahs: {
+    src: "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4",
+    poster: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "La ruta de las mil kasbahs", en: "The thousand-kasbahs route", fr: "La route des mille kasbahs" },
+    title: {
+      es: "Fortalezas de adobe, oasis y carreteras del Atlas.",
+      en: "Adobe fortresses, oases and Atlas roads.",
+      fr: "Forteresses en pisé, oasis et routes de l'Atlas.",
+    },
+    caption: {
+      es: "Tomas aéreas y escenas culturales auténticas del sur marroquí.",
+      en: "Aerial shots and authentic cultural scenes from southern Morocco.",
+      fr: "Vues aériennes et scènes culturelles authentiques du sud marocain.",
+    },
+  },
+  desierto: {
+    src: "https://videos.pexels.com/video-files/5746252/5746252-hd_1920_1080_30fps.mp4",
+    poster: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "La puerta del desierto", en: "The gate of the desert", fr: "La porte du désert" },
+    title: {
+      es: "Las dunas de Merzouga al amanecer.",
+      en: "The Merzouga dunes at sunrise.",
+      fr: "Les dunes de Merzouga au lever du soleil.",
+    },
+    caption: {
+      es: "Caminatas entre dunas, atardeceres infinitos y el silencio del Erg Chebbi.",
+      en: "Walks through the dunes, endless sunsets and the silence of the Erg Chebbi.",
+      fr: "Marches dans les dunes, couchers de soleil infinis et silence de l'Erg Chebbi.",
+    },
+  },
+  ciudadDesierto: {
+    src: "https://videos.pexels.com/video-files/2257018/2257018-uhd_3840_2160_25fps.mp4",
+    poster: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Marrakech, el Alto Atlas y el Sahara", en: "Marrakech, the High Atlas and the Sahara", fr: "Marrakech, le Haut Atlas et le Sahara" },
+    title: {
+      es: "De los zocos a las dunas — un mismo viaje, tres mundos.",
+      en: "From the souks to the dunes — one journey, three worlds.",
+      fr: "Des souks aux dunes — un seul voyage, trois mondes.",
+    },
+    caption: {
+      es: "Carreteras panorámicas del Atlas, campamentos bajo cielos estrellados y la energía de Marrakech.",
+      en: "Atlas panoramic roads, camps under starry skies and the energy of Marrakech.",
+      fr: "Routes panoramiques de l'Atlas, campements sous les étoiles et l'énergie de Marrakech.",
+    },
+  },
+};
 
 /* ============================================================
    Trilingual copy for /viajes/surdemarruecos
@@ -224,6 +278,7 @@ export default function SurPage() {
 
       {/* 1. Editorial opener: the route of a thousand kasbahs */}
       <EditorialBlock block={SUR_EDITORIAL[0]} lang={lang} />
+      <VideoSection {...SUR_VIDEOS.kasbahs} testid="sur-video-kasbahs" />
       <SectionGallery {...SUR_GALLERIES[0]} testid="sur-gallery-kasbahs" />
 
       {/* 2. Itineraries overview (4 cards) */}
@@ -245,6 +300,7 @@ export default function SurPage() {
 
       {/* 4. Editorial: gate of the desert */}
       <EditorialBlock block={SUR_EDITORIAL[1]} lang={lang} />
+      <VideoSection {...SUR_VIDEOS.desierto} testid="sur-video-desierto" />
       <SectionGallery {...SUR_GALLERIES[1]} testid="sur-gallery-desierto" />
 
       {/* 5. Itinerary 2: Marrakech -> Errachidia (links to Marrakech-Erg Chebbi hub) */}
@@ -263,6 +319,7 @@ export default function SurPage() {
 
       {/* 6. Editorial: Marrakech, Atlas & Sahara */}
       <EditorialBlock block={SUR_EDITORIAL[2]} lang={lang} />
+      <VideoSection {...SUR_VIDEOS.ciudadDesierto} testid="sur-video-ciudad-desierto" />
       <SectionGallery {...SUR_GALLERIES[2]} testid="sur-gallery-atlas-sahara" />
 
       {/* 7. Itinerary 3: Marrakech loop (links to Marrakech-Erg Chebbi-Marrakech hub) */}

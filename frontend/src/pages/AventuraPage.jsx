@@ -309,7 +309,7 @@ const ExperiencesGrid = ({ t, lang }) => (
                 </dl>
 
                 <Link
-                  to={pathFor(lang, "contact")}
+                  to={e.id === "enduro-desierto" ? pathFor(lang, "tourAventuraEnduroHub") : pathFor(lang, "contact")}
                   data-testid={`aventura-exp-cta-${e.id}`}
                   className="mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 self-start group-hover:gap-3 transition-all duration-300"
                   style={{ borderColor: `${e.accent}66`, color: e.accent }}
@@ -385,6 +385,30 @@ export default function AventuraPage() {
 
       {/* 4. Enduro editorial */}
       <EditorialBlock block={AVENTURA_EDITORIAL[1]} lang={lang} />
+
+      {/* 4.1 Enduro CTA → hub */}
+      <section data-testid="aventura-enduro-cta" className="bg-[#F2EBE1] py-14 md:py-20">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <span className="overline">{{ es: "Opciones de enduro por Marruecos", en: "Enduro options across Morocco", fr: "Options d'enduro au Maroc" }[lang]}</span>
+            <h3 className="font-serif-x text-2xl md:text-3xl text-[#2C2621] mt-3 leading-[1.15]">
+              {{
+                es: "Elige tu travesía sobre la moto.",
+                en: "Choose your motorbike crossing.",
+                fr: "Choisissez votre traversée à moto.",
+              }[lang]}
+            </h3>
+          </div>
+          <Link
+            to={pathFor(lang, "tourAventuraEnduroHub")}
+            data-testid="aventura-enduro-cta-link"
+            className="inline-flex items-center gap-3 bg-[#2C2621] hover:bg-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
+          >
+            {{ es: "Ver opciones de enduro", en: "View enduro options", fr: "Voir les options d'enduro" }[lang]}
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+          </Link>
+        </div>
+      </section>
 
       {/* 4.5 Testimonials · Enduro / motorbike raids */}
       <Testimonials

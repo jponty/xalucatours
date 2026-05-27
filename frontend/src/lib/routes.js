@@ -104,6 +104,9 @@ export const ROUTES = {
   tourFezTanger56:             { es: "viajes/norte/fez_tanger/programa_5n_6d", en: "tours/northern/fez-tangier/program-5n-6d", fr: "voyages/nord/fes-tanger/programme-5n-6j" },
   tourFezTanger67:             { es: "viajes/norte/fez_tanger/programa_6n_7d", en: "tours/northern/fez-tangier/program-6n-7d", fr: "voyages/nord/fes-tanger/programme-6n-7j" },
   tourAdventure:      { es: "viajes/aventura",           en: "tours/adventure",          fr: "voyages/aventure" },
+  tourAventuraEnduroHub:  { es: "viajes/aventura/enduro",                en: "tours/adventure/enduro",                fr: "voyages/aventure/enduro" },
+  tourEnduroAventura45:   { es: "viajes/aventura/enduro/programa_4n_5d", en: "tours/adventure/enduro/program-4n-5d",  fr: "voyages/aventure/enduro/programme-4n-5j" },
+  tourEnduroAventura67:   { es: "viajes/aventura/enduro/programa_6n_7d", en: "tours/adventure/enduro/program-6n-7d",  fr: "voyages/aventure/enduro/programme-6n-7j" },
   upcomingDepartures: { es: "proximas_salidas",          en: "upcoming-departures",      fr: "prochains-departs" },
   tourBespoke:        { es: "viajesamedida",             en: "tailor-made-tours",        fr: "voyages-sur-mesure" },
 

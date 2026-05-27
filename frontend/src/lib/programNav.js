@@ -16,6 +16,7 @@ import {
   HUB_MARRAKECH_LOOP,
   HUB_MARRAKECH_ESSAOUIRA,
   HUB_ERRACHIDIA_ATLAS_FEZ,
+  HUB_AVENTURA_ENDURO,
 } from "@/lib/itineraryHubs";
 
 /* ----- Sections (top-level cluster a hub belongs to) ----- */
@@ -24,6 +25,7 @@ export const SECTIONS = {
   tourNorth:     { label: { es: "Norte de Marruecos",     en: "Northern Morocco",   fr: "Nord du Maroc" } },
   tourShort:     { label: { es: "Escapadas cortas",       en: "Short escapes",      fr: "Escapades courtes" } },
   tourFull:      { label: { es: "Marruecos de norte a sur", en: "Morocco · north to south", fr: "Maroc · nord au sud" } },
+  tourAdventure: { label: { es: "Aventura",               en: "Adventure",          fr: "Aventure" } },
   toursLanding:  { label: { es: "Viajes",                 en: "Tours",              fr: "Voyages" } },
 };
 
@@ -40,6 +42,9 @@ const SECTION_HUBS = {
     { routeId: "tourMarrakechLoopHub",       hub: HUB_MARRAKECH_LOOP },
     { routeId: "tourMarrakechEssHub",        hub: HUB_MARRAKECH_ESSAOUIRA },
     { routeId: "tourErrAtlasFezHub",         hub: HUB_ERRACHIDIA_ATLAS_FEZ },
+  ],
+  tourAdventure: [
+    { routeId: "tourAventuraEnduroHub",      hub: HUB_AVENTURA_ENDURO },
   ],
 };
 
