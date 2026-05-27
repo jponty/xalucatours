@@ -1,7 +1,9 @@
 import React from "react";
 import { Tent, BedDouble, HandHeart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 const CARDS = [
   {
@@ -44,15 +46,26 @@ export const WhatJourneysFeelLike = () => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-16 md:mb-20">
           <div className="md:col-span-7">
-            <span className="overline">{t("feel_overline")}</span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {t("feel_title")}
-            </h2>
+            <EditableText
+              slot="home.feel.overline"
+              defaults={translations.feel_overline}
+              multiline={false}
+              className="overline"
+            />
+            <EditableText
+              as="h2"
+              slot="home.feel.title"
+              defaults={translations.feel_title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block"
+            />
           </div>
           <div className="md:col-span-5">
-            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">
-              {t("feel_sub")}
-            </p>
+            <EditableText
+              as="p"
+              slot="home.feel.sub"
+              defaults={translations.feel_sub}
+              className="text-base md:text-lg text-[#5C5248] leading-relaxed block"
+            />
           </div>
         </div>
 
@@ -83,14 +96,18 @@ export const WhatJourneysFeelLike = () => {
                   </span>
                 </div>
                 <div className="p-8 md:p-10 flex flex-col flex-1">
-                  <h3
-                    className="font-serif-x text-2xl md:text-[26px] leading-[1.1] text-[#2C2621]"
-                  >
-                    {t(c.k_title)}
-                  </h3>
-                  <p className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1">
-                    {t(c.k_body)}
-                  </p>
+                  <EditableText
+                    as="h3"
+                    slot={`home.feel.${c.slug}.title`}
+                    defaults={translations[c.k_title]}
+                    className="font-serif-x text-2xl md:text-[26px] leading-[1.1] text-[#2C2621] block"
+                  />
+                  <EditableText
+                    as="p"
+                    slot={`home.feel.${c.slug}.body`}
+                    defaults={translations[c.k_body]}
+                    className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1 block"
+                  />
                   <span
                     className="mt-6 h-px w-10 transition-all duration-500 group-hover:w-20"
                     style={{ background: c.accent }}

@@ -1,6 +1,8 @@
 import React from "react";
 import { Award, Sparkles, ShieldCheck, MapPinned } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
+import EditableText from "@/components/EditableText";
 
 const CARDS = [
   { num: "01", icon: Award,       k_title: "why_c1_title", k_body: "why_c1_body" },
@@ -10,7 +12,7 @@ const CARDS = [
 ];
 
 export const WhyXaluca = () => {
-  const { t } = useLanguage();
+  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
 
   return (
     <section
@@ -22,10 +24,18 @@ export const WhyXaluca = () => {
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="max-w-3xl">
-          <span className="overline">{t("why_overline")}</span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-            {t("why_title")}
-          </h2>
+          <EditableText
+            slot="home.why.overline"
+            defaults={translations.why_overline}
+            multiline={false}
+            className="overline"
+          />
+          <EditableText
+            as="h2"
+            slot="home.why.title"
+            defaults={translations.why_title}
+            className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block"
+          />
         </div>
 
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
@@ -46,12 +56,18 @@ export const WhyXaluca = () => {
                   <span className="font-serif-x-italic text-3xl text-[#D4A373]/80">{c.num}</span>
                 </div>
 
-                <h3 className="font-serif-x text-xl md:text-2xl leading-[1.1] mt-8 text-[#2C2621]">
-                  {t(c.k_title)}
-                </h3>
-                <p className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1">
-                  {t(c.k_body)}
-                </p>
+                <EditableText
+                  as="h3"
+                  slot={`home.why.${c.num}.title`}
+                  defaults={translations[c.k_title]}
+                  className="font-serif-x text-xl md:text-2xl leading-[1.1] mt-8 text-[#2C2621] block"
+                />
+                <EditableText
+                  as="p"
+                  slot={`home.why.${c.num}.body`}
+                  defaults={translations[c.k_body]}
+                  className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1 block"
+                />
 
                 <span className="mt-6 h-px w-10 bg-[#C16542] group-hover:w-20 transition-all duration-500" />
               </article>

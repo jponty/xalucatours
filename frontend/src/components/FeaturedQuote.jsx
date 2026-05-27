@@ -1,10 +1,11 @@
 import React from "react";
 import { Quote } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
-
+import EditableText from "@/components/EditableText";
 export const FeaturedQuote = () => {
-  const { t } = useLanguage();
+  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
 
   return (
     <section
@@ -26,12 +27,19 @@ export const FeaturedQuote = () => {
       <div className="relative max-w-5xl mx-auto px-6 md:px-12 text-center">
         <Quote className="w-12 h-12 mx-auto text-[#D4A373]/60" strokeWidth={1.2} aria-hidden="true" />
         <blockquote className="mt-8">
-          <p className="font-serif-x-italic text-3xl md:text-4xl lg:text-5xl leading-[1.2] text-[#FDFBF7]">
-            "{t("quote_body")}"
-          </p>
-          <footer className="mt-10 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
-            {t("quote_signature")}
-          </footer>
+          <EditableText
+            as="p"
+            slot="home.quote.body"
+            defaults={translations.quote_body}
+            className="font-serif-x-italic text-3xl md:text-4xl lg:text-5xl leading-[1.2] text-[#FDFBF7] block"
+          />
+          <EditableText
+            as="footer"
+            slot="home.quote.signature"
+            defaults={translations.quote_signature}
+            multiline={false}
+            className="mt-10 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] block"
+          />
         </blockquote>
       </div>
     </section>

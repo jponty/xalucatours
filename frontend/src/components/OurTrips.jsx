@@ -4,6 +4,7 @@ import { ArrowUpRight, Sun, Globe2, Mountain, Wind, MountainSnow, Scissors, Cale
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* ============================================================
    OurTrips — editorial bento grid of trip categories
@@ -251,17 +252,15 @@ export default function OurTrips() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-20">
           <div className="lg:col-span-7">
             <span className="inline-flex items-center gap-3 text-[11px] tracking-[0.35em] uppercase text-[#A07042]">
-              {pick(COPY.eyebrow, lang)}
+              <EditableText slot="home.ourtrips.eyebrow" defaults={COPY.eyebrow} multiline={false} />
               <span className="w-10 h-px bg-[#A07042]/40" />
             </span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {pick(COPY.title, lang)}
-            </h2>
+            <EditableText as="h2" slot="home.ourtrips.title" defaults={COPY.title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block" />
           </div>
           <div className="lg:col-span-5">
-            <p className="text-base md:text-lg text-[#5C5248] leading-[1.75]">
-              {pick(COPY.intro, lang)}
-            </p>
+            <EditableText as="p" slot="home.ourtrips.intro" defaults={COPY.intro}
+              className="text-base md:text-lg text-[#5C5248] leading-[1.75] block" />
           </div>
         </div>
 

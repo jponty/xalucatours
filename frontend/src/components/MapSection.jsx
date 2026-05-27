@@ -3,7 +3,9 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { Compass } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import { MAP_POINTS } from "@/lib/data";
+import EditableText from "@/components/EditableText";
 
 const xalucaPin = L.divIcon({
   className: "xaluca-map-pin",
@@ -26,16 +28,14 @@ export const MapSection = () => {
           <div className="md:col-span-7">
             <span className="overline inline-flex items-center gap-2">
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-              {t("sec_map_overline")}
+              <EditableText slot="home.map.overline" defaults={translations.sec_map_overline} multiline={false} />
             </span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {t("sec_map_title")}
-            </h2>
+            <EditableText as="h2" slot="home.map.title" defaults={translations.sec_map_title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block" />
           </div>
           <div className="md:col-span-5">
-            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">
-              {t("sec_map_sub")}
-            </p>
+            <EditableText as="p" slot="home.map.sub" defaults={translations.sec_map_sub}
+              className="text-base md:text-lg text-[#5C5248] leading-relaxed block" />
           </div>
         </div>
 

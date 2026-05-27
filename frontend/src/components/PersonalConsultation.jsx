@@ -1,11 +1,13 @@
 import React from "react";
 import { Phone, Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import { CONTACT } from "@/lib/data";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 export const PersonalConsultation = () => {
-  const { t } = useLanguage();
+  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
 
   return (
     <section
@@ -27,13 +29,24 @@ export const PersonalConsultation = () => {
           </div>
 
           <div className="md:col-span-7 order-1 md:order-2">
-            <span className="overline">{t("consult_overline")}</span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {t("consult_title")}
-            </h2>
-            <p className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed max-w-2xl">
-              {t("consult_body")}
-            </p>
+            <EditableText
+              slot="home.consult.overline"
+              defaults={translations.consult_overline}
+              multiline={false}
+              className="overline"
+            />
+            <EditableText
+              as="h2"
+              slot="home.consult.title"
+              defaults={translations.consult_title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block"
+            />
+            <EditableText
+              as="p"
+              slot="home.consult.body"
+              defaults={translations.consult_body}
+              className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed max-w-2xl block"
+            />
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
@@ -42,7 +55,11 @@ export const PersonalConsultation = () => {
                 className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
               >
                 <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
-                {t("cta_book_call")}
+                <EditableText
+                  slot="home.consult.cta_call"
+                  defaults={translations.cta_book_call}
+                  multiline={false}
+                />
               </a>
               <a
                 href="#contact"
@@ -50,22 +67,42 @@ export const PersonalConsultation = () => {
                 className="inline-flex items-center gap-3 border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
               >
                 <Calendar className="w-3.5 h-3.5" strokeWidth={1.5} />
-                {t("cta_schedule_visit")}
+                <EditableText
+                  slot="home.consult.cta_visit"
+                  defaults={translations.cta_schedule_visit}
+                  multiline={false}
+                />
               </a>
             </div>
 
             <div className="mt-10 pt-8 border-t border-[#2C2621]/10 grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
-                  {t("office_hours_label")}
-                </p>
-                <p className="mt-2 text-sm text-[#2C2621]">{t("office_hours_value")}</p>
+                <EditableText
+                  as="p"
+                  slot="home.consult.office_hours_label"
+                  defaults={translations.office_hours_label}
+                  multiline={false}
+                  className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] block"
+                />
+                <EditableText
+                  as="p"
+                  slot="home.consult.office_hours_value"
+                  defaults={translations.office_hours_value}
+                  multiline={false}
+                  className="mt-2 text-sm text-[#2C2621] block"
+                />
               </div>
               <div>
                 <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
                   24/7
                 </p>
-                <p className="mt-2 text-sm text-[#2C2621]">{t("contact_24_7")}</p>
+                <EditableText
+                  as="p"
+                  slot="home.consult.24_7"
+                  defaults={translations.contact_24_7}
+                  multiline={false}
+                  className="mt-2 text-sm text-[#2C2621] block"
+                />
               </div>
             </div>
           </div>
@@ -77,7 +114,7 @@ export const PersonalConsultation = () => {
 
 /* ---------------- Community CTA (dark cinematic) ---------------- */
 export const CommunityCTA = () => {
-  const { t } = useLanguage();
+  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
   return (
     <section
       data-testid="community-cta-section"
@@ -96,20 +133,35 @@ export const CommunityCTA = () => {
       <span className="film-grain" />
 
       <div className="relative max-w-5xl mx-auto px-6 md:px-12 py-28 md:py-40 text-center">
-        <span className="overline text-[#D4A373]">{t("community_overline")}</span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5">
-          {t("community_title")}
-        </h2>
-        <p className="mt-8 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed max-w-3xl mx-auto">
-          {t("community_body")}
-        </p>
+        <EditableText
+          slot="home.community.overline"
+          defaults={translations.community_overline}
+          multiline={false}
+          className="overline text-[#D4A373]"
+        />
+        <EditableText
+          as="h2"
+          slot="home.community.title"
+          defaults={translations.community_title}
+          className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 block"
+        />
+        <EditableText
+          as="p"
+          slot="home.community.body"
+          defaults={translations.community_body}
+          className="mt-8 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed max-w-3xl mx-auto block"
+        />
         <div className="mt-12 flex flex-wrap justify-center gap-4">
           <a
             href="#contact"
             data-testid="community-cta-plan"
             className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
-            {t("cta_plan")}
+            <EditableText
+              slot="home.community.cta_plan"
+              defaults={translations.cta_plan}
+              multiline={false}
+            />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
           </a>
           <a
@@ -117,7 +169,11 @@ export const CommunityCTA = () => {
             data-testid="community-cta-specialist"
             className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
-            {t("cta_contact_specialist")}
+            <EditableText
+              slot="home.community.cta_specialist"
+              defaults={translations.cta_contact_specialist}
+              multiline={false}
+            />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
         </div>

@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Play, Film, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* ============================================================
    Editorial video gallery — Morocco through the lens.
@@ -214,17 +215,15 @@ export default function MoroccoVideos() {
           <div className="lg:col-span-7">
             <span className="inline-flex items-center gap-3 text-[#D4A373] text-[11px] tracking-[0.35em] uppercase">
               <Film className="w-3.5 h-3.5" strokeWidth={1.6} />
-              {COPY.overline[lang] || COPY.overline.es}
+              <EditableText slot="home.videos.overline" defaults={COPY.overline} multiline={false} />
               <span className="w-10 h-px bg-[#D4A373]/50" />
             </span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-6 text-[#FDFBF7]">
-              {COPY.title[lang] || COPY.title.es}
-            </h2>
+            <EditableText as="h2" slot="home.videos.title" defaults={COPY.title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-6 text-[#FDFBF7] block" />
           </div>
           <div className="lg:col-span-5">
-            <p className="text-base md:text-lg text-[#FDFBF7]/70 leading-relaxed">
-              {COPY.body[lang] || COPY.body.es}
-            </p>
+            <EditableText as="p" slot="home.videos.body" defaults={COPY.body}
+              className="text-base md:text-lg text-[#FDFBF7]/70 leading-relaxed block" />
             <div className="mt-8 flex items-center gap-3">
               <button
                 type="button"

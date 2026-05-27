@@ -3,7 +3,9 @@ import axios from "axios";
 import { toast } from "sonner";
 import { ArrowRight, Mail, Phone, Check, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
+import EditableText from "@/components/EditableText";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -55,13 +57,12 @@ export const ContactForm = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Left — copy & contact details */}
           <div className="lg:col-span-5">
-            <span className="overline text-[#D4A373]">{t("sec_contact_overline")}</span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5">
-              {t("sec_contact_title")}
-            </h2>
-            <p className="mt-6 text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed">
-              {t("sec_contact_sub")}
-            </p>
+            <EditableText slot="home.contact.overline" defaults={translations.sec_contact_overline}
+              multiline={false} className="overline text-[#D4A373]" />
+            <EditableText as="h2" slot="home.contact.title" defaults={translations.sec_contact_title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 block" />
+            <EditableText as="p" slot="home.contact.sub" defaults={translations.sec_contact_sub}
+              className="mt-6 text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed block" />
 
             <ul className="mt-12 space-y-5 text-sm text-[#FDFBF7]/85">
               <li className="flex items-center gap-4">
@@ -79,17 +80,16 @@ export const ContactForm = () => {
               <li className="flex items-start gap-4">
                 <Clock className="w-4 h-4 mt-0.5 text-[#D4A373]" strokeWidth={1.5} />
                 <span>
-                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">
-                    {t("office_hours_label")}
-                  </span>
-                  {t("office_hours_value")}
+                  <EditableText slot="home.contact.office_hours_label" defaults={translations.office_hours_label}
+                    multiline={false} className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55" />
+                  <EditableText slot="home.contact.office_hours_value" defaults={translations.office_hours_value}
+                    multiline={false} />
                 </span>
               </li>
             </ul>
 
-            <p className="mt-10 text-xs tracking-[0.25em] uppercase text-[#D4A373]/85">
-              {t("contact_24_7")}
-            </p>
+            <EditableText as="p" slot="home.contact.24_7" defaults={translations.contact_24_7} multiline={false}
+              className="mt-10 text-xs tracking-[0.25em] uppercase text-[#D4A373]/85 block" />
           </div>
 
           {/* Right — form */}
@@ -102,15 +102,14 @@ export const ContactForm = () => {
                 <span className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#D4A373]/40 text-[#D4A373] mx-auto">
                   <Check className="w-5 h-5" strokeWidth={1.6} />
                 </span>
-                <h3 className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-6 text-[#FDFBF7]">
-                  {t("form_success")}
-                </h3>
+                <EditableText as="h3" slot="home.contact.form_success" defaults={translations.form_success}
+                  className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-6 text-[#FDFBF7] block" />
                 <button
                   onClick={() => setDone(false)}
                   data-testid="contact-send-another"
                   className="mt-8 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b border-[#D4A373]/40 pb-1 text-[#D4A373] hover:text-[#FDFBF7] hover:border-[#FDFBF7] transition-colors"
                 >
-                  {t("send_another")}
+                  <EditableText slot="home.contact.send_another" defaults={translations.send_another} multiline={false} />
                   <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                 </button>
               </div>
@@ -121,34 +120,34 @@ export const ContactForm = () => {
                 className="bg-[#FDFBF7]/[0.04] border border-[#FDFBF7]/15 p-8 md:p-12 backdrop-blur-sm"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Field label={t("form_name")} testId="form-name">
+                  <Field labelSlot="home.contact.form_name" labelDefaults={translations.form_name} testId="form-name">
                     <input required name="full_name" value={form.full_name} onChange={onChange}
                       data-testid="contact-input-name" className="form-input" />
                   </Field>
 
-                  <Field label={t("form_email")} testId="form-email">
+                  <Field labelSlot="home.contact.form_email" labelDefaults={translations.form_email} testId="form-email">
                     <input required type="email" name="email" value={form.email} onChange={onChange}
                       data-testid="contact-input-email" className="form-input" />
                   </Field>
 
-                  <Field label={t("form_phone")} testId="form-phone">
+                  <Field labelSlot="home.contact.form_phone" labelDefaults={translations.form_phone} testId="form-phone">
                     <input name="phone" value={form.phone} onChange={onChange}
                       data-testid="contact-input-phone" className="form-input" />
                   </Field>
 
-                  <Field label={t("form_dates")} testId="form-dates">
+                  <Field labelSlot="home.contact.form_dates" labelDefaults={translations.form_dates} testId="form-dates">
                     <input name="travel_dates" value={form.travel_dates} onChange={onChange}
                       placeholder="e.g. Oct 12 — Oct 22, 2026"
                       data-testid="contact-input-dates" className="form-input" />
                   </Field>
 
-                  <Field label={t("form_party")} testId="form-party">
+                  <Field labelSlot="home.contact.form_party" labelDefaults={translations.form_party} testId="form-party">
                     <input name="party_size" value={form.party_size} onChange={onChange}
                       placeholder="2 adults"
                       data-testid="contact-input-party" className="form-input" />
                   </Field>
 
-                  <Field label={t("form_interest")} testId="form-interest">
+                  <Field labelSlot="home.contact.form_interest" labelDefaults={translations.form_interest} testId="form-interest">
                     <select name="journey_interest" value={form.journey_interest} onChange={onChange}
                       data-testid="contact-select-journey" className="form-input">
                       <option value="">{t("form_no_preference")}</option>
@@ -160,7 +159,7 @@ export const ContactForm = () => {
                 </div>
 
                 <div className="mt-6">
-                  <Field label={t("form_message")} testId="form-message">
+                  <Field labelSlot="home.contact.form_message" labelDefaults={translations.form_message} testId="form-message">
                     <textarea required name="message" value={form.message} onChange={onChange} rows={5}
                       data-testid="contact-input-message" className="form-input resize-none" />
                   </Field>
@@ -172,7 +171,11 @@ export const ContactForm = () => {
                   data-testid="contact-submit-button"
                   className="mt-8 w-full md:w-auto inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A35133] disabled:opacity-60 disabled:cursor-not-allowed text-[#FDFBF7] px-10 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
-                  {sending ? t("form_sending") : t("form_submit")}
+                  {sending ? (
+                    <EditableText slot="home.contact.form_sending" defaults={translations.form_sending} multiline={false} />
+                  ) : (
+                    <EditableText slot="home.contact.form_submit" defaults={translations.form_submit} multiline={false} />
+                  )}
                   {!sending && <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />}
                 </button>
               </form>
@@ -205,11 +208,14 @@ export const ContactForm = () => {
   );
 };
 
-const Field = ({ label, testId, children }) => (
+const Field = ({ labelSlot, labelDefaults, testId, children }) => (
   <label className="block" data-testid={`${testId}-field`}>
-    <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2">
-      {label}
-    </span>
+    <EditableText
+      slot={labelSlot}
+      defaults={labelDefaults}
+      multiline={false}
+      className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2"
+    />
     {children}
   </label>
 );

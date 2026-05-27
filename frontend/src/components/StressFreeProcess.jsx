@@ -1,6 +1,8 @@
 import React from "react";
 import { ArrowRight, MessagesSquare, Map, Plane } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
+import EditableText from "@/components/EditableText";
 
 const STEPS = [
   { num: "01", icon: MessagesSquare, k_title: "proc_s1_t", k_body: "proc_s1_b" },
@@ -9,7 +11,7 @@ const STEPS = [
 ];
 
 export const StressFreeProcess = () => {
-  const { t } = useLanguage();
+  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
 
   return (
     <section
@@ -22,13 +24,24 @@ export const StressFreeProcess = () => {
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="max-w-3xl">
-          <span className="overline text-[#D4A373]">{t("proc_overline")}</span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5">
-            {t("proc_title")}
-          </h2>
-          <p className="mt-6 text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed">
-            {t("proc_sub")}
-          </p>
+          <EditableText
+            slot="home.process.overline"
+            defaults={translations.proc_overline}
+            multiline={false}
+            className="overline text-[#D4A373]"
+          />
+          <EditableText
+            as="h2"
+            slot="home.process.title"
+            defaults={translations.proc_title}
+            className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 block"
+          />
+          <EditableText
+            as="p"
+            slot="home.process.sub"
+            defaults={translations.proc_sub}
+            className="mt-6 text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed block"
+          />
         </div>
 
         <div className="mt-16 md:mt-20 grid grid-cols-1 md:grid-cols-3 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15">
@@ -48,12 +61,18 @@ export const StressFreeProcess = () => {
                     <Icon className="w-5 h-5" strokeWidth={1.5} />
                   </span>
                 </div>
-                <h3 className="font-serif-x text-2xl md:text-[28px] leading-[1.1] mt-10 text-[#FDFBF7]">
-                  {t(s.k_title)}
-                </h3>
-                <p className="mt-5 text-sm leading-relaxed text-[#FDFBF7]/75 flex-1">
-                  {t(s.k_body)}
-                </p>
+                <EditableText
+                  as="h3"
+                  slot={`home.process.${s.num}.title`}
+                  defaults={translations[s.k_title]}
+                  className="font-serif-x text-2xl md:text-[28px] leading-[1.1] mt-10 text-[#FDFBF7] block"
+                />
+                <EditableText
+                  as="p"
+                  slot={`home.process.${s.num}.body`}
+                  defaults={translations[s.k_body]}
+                  className="mt-5 text-sm leading-relaxed text-[#FDFBF7]/75 flex-1 block"
+                />
                 <span className="mt-8 h-px w-10 bg-[#D4A373]" />
               </article>
             );
@@ -66,7 +85,11 @@ export const StressFreeProcess = () => {
             data-testid="process-cta-start"
             className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
-            {t("cta_start_planning")}
+            <EditableText
+              slot="home.process.cta_start"
+              defaults={translations.cta_start_planning}
+              multiline={false}
+            />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
           </a>
           <a
@@ -74,7 +97,11 @@ export const StressFreeProcess = () => {
             data-testid="process-cta-proposal"
             className="inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
-            {t("cta_request_proposal")}
+            <EditableText
+              slot="home.process.cta_proposal"
+              defaults={translations.cta_request_proposal}
+              multiline={false}
+            />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
         </div>

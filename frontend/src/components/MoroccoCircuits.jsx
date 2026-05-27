@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import { CIRCUITS } from "@/lib/data";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 // Visual companion for each circuit — short summary + image
 const DETAILS = {
@@ -68,13 +70,11 @@ export const MoroccoCircuits = () => {
     >
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="max-w-3xl">
-          <span className="overline">{t("circ_overline")}</span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-            {t("circ_title")}
-          </h2>
-          <p className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed">
-            {t("circ_sub")}
-          </p>
+          <EditableText slot="home.circuits.overline" defaults={translations.circ_overline} multiline={false} className="overline" />
+          <EditableText as="h2" slot="home.circuits.title" defaults={translations.circ_title}
+            className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block" />
+          <EditableText as="p" slot="home.circuits.sub" defaults={translations.circ_sub}
+            className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed block" />
         </div>
 
         {/* Chip filter row */}

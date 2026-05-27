@@ -5,7 +5,9 @@ import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
+import { translations } from "@/lib/i18n";
 import { pathFor } from "@/lib/routes";
+import EditableText from "@/components/EditableText";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
@@ -82,11 +84,18 @@ export const Header = () => {
           <button
             data-testid="header-menu-button"
             onClick={() => setOpen(true)}
+            data-edit-allow="true"
             className="inline-flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
             aria-label={t("nav_menu")}
           >
             <Menu className="w-4 h-4" strokeWidth={1.5} />
-            <span className="hidden sm:inline">{t("nav_menu")}</span>
+            <span className="hidden sm:inline">
+              <EditableText
+                slot="header.nav_menu"
+                defaults={translations.nav_menu}
+                multiline={false}
+              />
+            </span>
           </button>
 
           <BrandMark />
@@ -139,8 +148,12 @@ export const Header = () => {
               data-testid="header-enquire-button"
               className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
-              <span className="hidden sm:inline">{t("cta_plan")}</span>
-              <span className="sm:hidden">{t("nav_contact")}</span>
+              <span className="hidden sm:inline">
+                <EditableText slot="header.cta_plan" defaults={translations.cta_plan} multiline={false} />
+              </span>
+              <span className="sm:hidden">
+                <EditableText slot="header.nav_contact" defaults={translations.nav_contact} multiline={false} />
+              </span>
               <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
             </Link>
           </div>

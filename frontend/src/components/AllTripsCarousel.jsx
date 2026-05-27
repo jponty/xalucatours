@@ -4,6 +4,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* ============================================================
    AllTripsCarousel — quick-access rail with every concrete tour
@@ -163,17 +164,15 @@ export default function AllTripsCarousel() {
           <div className="lg:col-span-7">
             <span className="inline-flex items-center gap-3 text-[11px] tracking-[0.35em] uppercase text-[#A07042]">
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-              {pick(COPY.overline, lang)}
+              <EditableText slot="home.alltrips.overline" defaults={COPY.overline} multiline={false} />
               <span className="w-10 h-px bg-[#A07042]/40" />
             </span>
-            <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {pick(COPY.title, lang)}
-            </h2>
+            <EditableText as="h2" slot="home.alltrips.title" defaults={COPY.title}
+              className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block" />
           </div>
           <div className="lg:col-span-5 lg:text-right">
-            <p className="text-base text-[#5C5248] leading-relaxed lg:max-w-sm lg:ml-auto">
-              {pick(COPY.body, lang)}
-            </p>
+            <EditableText as="p" slot="home.alltrips.body" defaults={COPY.body}
+              className="text-base text-[#5C5248] leading-relaxed lg:max-w-sm lg:ml-auto block" />
             <div className="mt-6 flex items-center gap-3 lg:justify-end">
               <button
                 type="button"

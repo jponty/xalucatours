@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -24,15 +26,13 @@ export const TravelCategories = () => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-16 md:mb-20">
           <div className="md:col-span-7">
-            <span className="overline">{t("cat_overline")}</span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {t("cat_title")}
-            </h2>
+            <EditableText slot="home.cat.overline" defaults={translations.cat_overline} multiline={false} className="overline" />
+            <EditableText as="h2" slot="home.cat.title" defaults={translations.cat_title}
+              className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621] block" />
           </div>
           <div className="md:col-span-5">
-            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">
-              {t("cat_sub")}
-            </p>
+            <EditableText as="p" slot="home.cat.sub" defaults={translations.cat_sub}
+              className="text-base md:text-lg text-[#5C5248] leading-relaxed block" />
           </div>
         </div>
 
@@ -99,12 +99,10 @@ export const TravelCategories = () => {
                   <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
                     {pick(c.region, lang)}
                   </span>
-                  <h3 className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-3 tracking-tight text-[#2C2621]">
-                    {pick(c.title, lang)}
-                  </h3>
-                  <p className="mt-5 text-base text-[#5C5248] leading-relaxed">
-                    {pick(c.summary, lang)}
-                  </p>
+                  <EditableText as="h3" slot={`home.cat.${c.slug}.title`} defaults={c.title}
+                    className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-3 tracking-tight text-[#2C2621] block" />
+                  <EditableText as="p" slot={`home.cat.${c.slug}.summary`} defaults={c.summary}
+                    className="mt-5 text-base text-[#5C5248] leading-relaxed block" />
 
                   {/* Group departure schedule (only on group-departures card) */}
                   {c.departures && (
