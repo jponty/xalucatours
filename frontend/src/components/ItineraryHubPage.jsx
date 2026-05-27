@@ -88,6 +88,7 @@ const Intro = ({ intro, lang }) => (
 const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
   const groupedKeys = Array.from(new Set(programs.map((p) => p.direction)));
   const getLabel = (k) => k === "a" ? pick(options.group_a, lang) : pick(options.group_b, lang);
+  const singleDirection = groupedKeys.length === 1 && (groupedKeys[0] === undefined || !options.group_a);
   return (
     <section id="options" data-testid="hub-options"
              className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
@@ -108,11 +109,13 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
         {groupedKeys.map((k) => {
           const items = programs.filter((p) => p.direction === k);
           return (
-            <div key={k} className="mb-14 last:mb-0">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="font-serif-x text-2xl md:text-3xl text-[#2C2621]">{getLabel(k)}</span>
-                <span className="flex-1 h-px bg-[#2C2621]/15" />
-              </div>
+            <div key={k ?? "single"} className="mb-14 last:mb-0">
+              {!singleDirection && (
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="font-serif-x text-2xl md:text-3xl text-[#2C2621]">{getLabel(k)}</span>
+                  <span className="flex-1 h-px bg-[#2C2621]/15" />
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {items.map((p) => (
                   <Link
@@ -127,7 +130,7 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                     <span className="film-grain" />
                     <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
                       <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
-                        {getLabel(k)}
+                        {singleDirection ? pick(options.overline, lang) : getLabel(k)}
                       </span>
                       <h3 className="font-serif-x text-2xl md:text-[28px] leading-[1.05] mt-3 inline-flex items-center gap-3">
                         <Clock className="w-5 h-5 text-[#D4A373]" strokeWidth={1.4} />

@@ -168,6 +168,93 @@ export const HUB_MARRAKECH_ERG = {
   ],
 };
 
+/* ============================================================
+   HUB · Erg Chebbi → Marrakech
+   Reverse-direction hub: same 4 durations as MARRAKECH_ERG but
+   only the desert-first variants are presented, with their own
+   intro copy and place chips.
+============================================================ */
+export const HUB_ERGCHEBBI_MARRAKECH = {
+  id: "ergchebbi-marrakech",
+  hero: {
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
+    place: { es: "Erg Chebbi · Atlas · Marrakech", en: "Erg Chebbi · Atlas · Marrakech", fr: "Erg Chebbi · Atlas · Marrakech" },
+    title: {
+      es: "Erg Chebbi – Marrakech.",
+      en: "Erg Chebbi – Marrakech.",
+      fr: "Erg Chebbi – Marrakech.",
+    },
+    subtitle: {
+      es: "De las dunas del Sahara a la ciudad roja — el sur de Marruecos en dirección inversa, empezando por una noche bajo las estrellas.",
+      en: "From the Sahara dunes to the red city — southern Morocco in reverse, starting with a night under the stars.",
+      fr: "Des dunes du Sahara à la ville rouge — le sud du Maroc en sens inverse, en commençant par une nuit sous les étoiles.",
+    },
+  },
+  intro: {
+    overline: { es: "Erg Chebbi – Marrakech", en: "Erg Chebbi – Marrakech", fr: "Erg Chebbi – Marrakech" },
+    title: {
+      es: "Un viaje auténtico para conocer el sur.",
+      en: "An authentic journey through the south.",
+      fr: "Un voyage authentique pour découvrir le sud.",
+    },
+    body: {
+      es: [
+        "«Erg Chebbi – Marrakech» es un viaje de lo más auténtico para conocer el sur del país.",
+        "Esta ruta nos despierta en el Desierto del Erg Chebbi, un espectáculo para los sentidos, con interminables dunas y ese halo que desprenden los lugares mágicos. Nos permitirá pasar una noche inolvidable bajo las estrellas.",
+        "Seguiremos con nuestro vehículo 4x4 hacia el Alto Atlas, descubriendo los paisajes a nuestro paso, deteniéndonos a contemplar su belleza, a conversar con los aldeanos y a disfrutar sin prisas de sus pueblos perdidos y de sus gargantas inmensas.",
+        "La ruta finalizará en Marrakech, una ciudad llena de colores, salpicada de artesanos y artistas, de plazas maravillosas y de aromas que marcarán nuestro recuerdo.",
+      ],
+      en: [
+        "«Erg Chebbi – Marrakech» is one of the most authentic journeys to discover the south of the country.",
+        "The route wakes us up in the Erg Chebbi desert, a feast for the senses with endless dunes and the halo of magical places. It lets us spend an unforgettable night under the stars.",
+        "We then continue by 4x4 to the High Atlas, discovering the landscapes along the way, stopping to admire their beauty, to chat with villagers and to enjoy — without rush — its forgotten hamlets and immense gorges.",
+        "The route ends in Marrakech, a city full of colour, scattered with artisans and artists, with marvellous squares and aromas that will mark our memory.",
+      ],
+      fr: [
+        "« Erg Chebbi – Marrakech » est l'un des voyages les plus authentiques pour découvrir le sud du pays.",
+        "L'itinéraire nous réveille dans le désert de l'Erg Chebbi, un spectacle pour les sens, avec ses dunes infinies et ce halo magique propre aux lieux d'exception — pour une nuit inoubliable sous les étoiles.",
+        "Nous poursuivons en 4x4 vers le Haut Atlas, en découvrant les paysages, en discutant avec les villageois et en savourant sans hâte les villages perdus et les gorges immenses.",
+        "L'itinéraire s'achève à Marrakech, ville colorée parsemée d'artisans et d'artistes, aux places merveilleuses et aux parfums qui marqueront notre mémoire.",
+      ],
+    },
+  },
+  options: {
+    overline: { es: "Opciones de viaje Erg Chebbi – Marrakech", en: "Erg Chebbi – Marrakech options", fr: "Options Erg Chebbi – Marrakech" },
+    title: { es: "Elige tu travesía.", en: "Choose your route.", fr: "Choisissez votre itinéraire." },
+    body: {
+      es: "Elige entre las distintas opciones en función de los días disponibles que tengas para realizar este viaje.",
+      en: "Pick between the options depending on how many days you have for this journey.",
+      fr: "Choisissez parmi les options selon le nombre de jours disponibles pour ce voyage.",
+    },
+    // Single direction → we hide the direction groups
+    group_a: null,
+    group_b: null,
+  },
+  programs: [
+    { id: "em-4-5", nights: "4n5d", accent: "#5A6B4F",
+      image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 4 noches y 5 días desde Errachidia hasta Marrakech.",
+               en: "4-night/5-day journey from Errachidia to Marrakech.",
+               fr: "Voyage de 4 nuits et 5 jours d'Errachidia à Marrakech." } },
+    { id: "em-5-6", nights: "5n6d", accent: "#7C8B5C",
+      image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 5 noches y 6 días desde Errachidia hasta Marrakech.",
+               en: "5-night/6-day journey from Errachidia to Marrakech.",
+               fr: "Voyage de 5 nuits et 6 jours d'Errachidia à Marrakech." } },
+    { id: "em-6-7", nights: "6n7d", accent: "#A07042",
+      image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 6 noches y 7 días desde Errachidia hasta Marrakech.",
+               en: "6-night/7-day journey from Errachidia to Marrakech.",
+               fr: "Voyage de 6 nuits et 7 jours d'Errachidia à Marrakech." } },
+    { id: "em-7-8", nights: "7n8d", accent: "#3A4A5F",
+      image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
+      blurb: { es: "Viaje de 7 noches y 8 días desde Errachidia hasta Marrakech.",
+               en: "7-night/8-day journey from Errachidia to Marrakech.",
+               fr: "Voyage de 7 nuits et 8 jours d'Errachidia à Marrakech." } },
+  ],
+};
+
 export const HUB_MARRAKECH_LOOP = {
   id: "marrakech-loop",
   hero: {
