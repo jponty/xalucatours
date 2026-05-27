@@ -1,0 +1,182 @@
+// Fez → Marrakech · 7 nights / 8 days — the middle Gran Sur option.
+// Identical to the 6n/7d core route but splits the final Marrakech
+// day into two: a full medina day plus a return-flight day. Reuses
+// 6 shared days from `fezMarrakech910.js` and 2 condensed days from
+// `fezMarrakech67.js`.
+
+import {
+  DAY_01_ARRIVAL_FEZ,
+  DAY_03_ERFOUD_ERG_BIVOUAC,
+  DAY_06_TODRA_DADES,
+  DAY_08_AITBENHADDOU_MARRAKECH,
+  DAY_09_MARRAKECH_MEDINA,
+  DAY_10_MARRAKECH_RETURN,
+} from "./fezMarrakech910";
+import {
+  DAY_02_FEZ_IFRANE_ZIZ_ERFOUD,
+  DAY_04_AMANECER_KHAMLIA_RISSANI_RELAX,
+} from "./fezMarrakech67";
+
+const T = (es, en, fr) => ({ es, en, fr });
+
+export const PROGRAM_FRZ_78 = {
+  routeId: "tourFezRak78",
+  duration_key: "frz7n8d",
+  duration: T("7 noches / 8 días", "7 nights / 8 days", "7 nuits / 8 jours"),
+  prices: { low: 1890, mid: 2190, high: 2490, premium: 2890 },
+  route: [
+    { day: 1, lat: 34.0651, lng: -4.9760, type: "city",    name: T("Fez · Llegada", "Fez · Arrival", "Fès · Arrivée") },
+    { day: 2, lat: 31.4373, lng: -4.2330, type: "city",    name: T("Erfoud · Kasbah Xaluca", "Erfoud · Kasbah Xaluca", "Erfoud · Kasbah Xaluca") },
+    { day: 3, lat: 31.1257, lng: -3.9789, type: "desert",  name: T("Erg Chebbi · Bivouac", "Erg Chebbi · Bivouac", "Erg Chebbi · Bivouac") },
+    { day: 4, lat: 31.2828, lng: -4.2683, type: "market",  name: T("Rissani · Kasbah Xaluca", "Rissani · Kasbah Xaluca", "Rissani · Kasbah Xaluca") },
+    { day: 5, lat: 31.3582, lng: -5.9911, type: "gorge",   name: T("Boumalne Dadès · Todra", "Boumalne Dades · Todra", "Boumalne Dadès · Todra") },
+    { day: 6, lat: 31.0470, lng: -7.1294, type: "unesco",  name: T("Aït Ben Haddou · Marrakech", "Aït Ben Haddou · Marrakech", "Aït Ben Haddou · Marrakech") },
+    { day: 7, lat: 31.6295, lng: -7.9811, type: "city",    name: T("Marrakech · Medina", "Marrakech · Medina", "Marrakech · Médina") },
+    { day: 8, lat: 31.6069, lng: -8.0363, type: "airport", name: T("Marrakech · Aeropuerto", "Marrakech · Airport", "Marrakech · Aéroport") },
+  ],
+  days: [
+    DAY_01_ARRIVAL_FEZ,
+    DAY_02_FEZ_IFRANE_ZIZ_ERFOUD,
+    DAY_03_ERFOUD_ERG_BIVOUAC,
+    DAY_04_AMANECER_KHAMLIA_RISSANI_RELAX,
+    DAY_06_TODRA_DADES,
+    DAY_08_AITBENHADDOU_MARRAKECH,
+    DAY_09_MARRAKECH_MEDINA,
+    DAY_10_MARRAKECH_RETURN,
+  ],
+  details: {
+    includes: {
+      es: [
+        "Una noche en Fez en Riad en la Medina o Hotel 4★ en Media Pensión",
+        "Dos noches en Erfoud en Kasbah Hotel Xaluca en Media Pensión",
+        "Una noche en Erg Chebbi en Bivouac de Luxe en el desierto en Media Pensión",
+        "Una noche en Boumalne Dades en Hotel Xaluca Dadès en Media Pensión",
+        "Dos noches en Marrakech en Riad en la Medina o Hotel 5★ en Alojamiento y Desayuno",
+        "Comida tipo picnic en el desierto",
+        "Excursión en dromedario por el Erg Chebbi",
+        "Vehículo 4x4 con chófer desde el día 2 hasta el día 6 del itinerario, ambos incluidos",
+        "Visita con guía local en Fez · Visita con guía local en Marrakech",
+        "Visitas a Aït Ben Haddou y Palacio de la Bahía",
+        "Transfers desde y hacia aeropuertos · Combustible · Seguro de asistencia en viaje",
+      ],
+      en: [
+        "One night in Fez in a Medina riad or 4★ hotel · half board",
+        "Two nights in Erfoud at Kasbah Hotel Xaluca · half board",
+        "One night at the Bivouac de Luxe in the Erg Chebbi · half board",
+        "One night in Boumalne Dades at Hotel Xaluca Dades · half board",
+        "Two nights in Marrakech in a Medina riad or 5★ hotel · bed & breakfast",
+        "Picnic lunch in the desert",
+        "Camel ride in the Erg Chebbi",
+        "4x4 with driver from day 2 to day 6 inclusive",
+        "Local guided tour in Fez · Local guided tour in Marrakech",
+        "Visits to Aït Ben Haddou and the Bahia Palace",
+        "Airport transfers · Fuel · Travel assistance insurance",
+      ],
+      fr: [
+        "Une nuit à Fès en riad de la médina ou hôtel 4★ · demi-pension",
+        "Deux nuits à Erfoud à la Kasbah Hôtel Xaluca · demi-pension",
+        "Une nuit au Bivouac de Luxe dans l'Erg Chebbi · demi-pension",
+        "Une nuit à Boumalne Dadès à l'Hôtel Xaluca Dadès · demi-pension",
+        "Deux nuits à Marrakech en riad de la médina ou hôtel 5★ · petit-déjeuner",
+        "Pique-nique le midi au désert",
+        "Balade à dromadaire dans l'Erg Chebbi",
+        "4x4 avec chauffeur du jour 2 au jour 6 inclus",
+        "Guide local à Fès et à Marrakech",
+        "Visites d'Aït Ben Haddou et du Palais de la Bahia",
+        "Transferts aéroports · Carburant · Assistance voyage",
+      ],
+    },
+    excludes: {
+      es: [
+        "Las bebidas",
+        "Las comidas y cenas no detalladas en el programa",
+        "Otros extras personales (quads, masajes, tratamientos de spa…)",
+        "El vuelo (salvo que se indique lo contrario)",
+        "Suplemento para añadir seguro de cancelación · 30 € por persona para viajes de máximo 10 días",
+      ],
+      en: [
+        "Drinks",
+        "Lunches and dinners not listed in the programme",
+        "Personal extras (quads, massages, spa treatments…)",
+        "Flights (unless otherwise stated)",
+        "Optional cancellation insurance · €30 per person for trips of up to 10 days",
+      ],
+      fr: [
+        "Boissons",
+        "Déjeuners et dîners non détaillés dans le programme",
+        "Extras personnels (quads, massages, spa…)",
+        "Le vol (sauf mention contraire)",
+        "Assurance annulation en option · 30 € par personne pour les voyages jusqu'à 10 jours",
+      ],
+    },
+    notes: {
+      es: [
+        "Opciones de vuelos: Royal Air Maroc (vía Casablanca) o low-cost como Vueling, Air Arabia, Ryanair.",
+        "Las tarifas se calculan según la ocupación del 4x4. El coste se divide entre los ocupantes.",
+        "Tarifas basadas en habitaciones dobles/triples. Suplemento individual: 485 €.",
+        "Descuento niños (3-11 años) compartiendo con dos adultos: 305 € temporada baja · 325 € temporada alta.",
+        "En temporada alta, los guías de medina pueden compartirse con otros viajeros.",
+        "Chóferes hispanohablantes son limitados — reservar con antelación.",
+        "Los guías oficiales están reservados exclusivamente para las visitas a las medinas, no para las rutas.",
+        "Es obligatorio pasaporte vigente con un mínimo de 3 meses desde la fecha de regreso (puede enviarse posteriormente si está en renovación).",
+        "Quads opcionales: 70 € por vehículo (circuito de 1 hora). Spa y masajes en recepción de hotel.",
+        "El mercado de Rissani se celebra los martes, jueves y domingos.",
+      ],
+      en: [
+        "Flight options: Royal Air Maroc (via Casablanca) or low-cost (Vueling, Air Arabia, Ryanair).",
+        "Rates depend on 4x4 occupancy. Cost is split between passengers.",
+        "Rates based on double/triple rooms. Single room supplement: €485.",
+        "Children discount (3-11) sharing with two adults: €305 low season · €325 high season.",
+        "In high season medina guides may be shared with other travellers.",
+        "Spanish-speaking drivers are limited — book early.",
+        "Official guides are reserved exclusively for medina visits, not for the on-road portions.",
+        "Valid passport required with at least 3 months remaining from the return date (may be sent later if being renewed).",
+        "Optional quads: €70 per vehicle (1-hour circuit). Spa & massages at hotel reception.",
+        "Rissani market runs Tuesday, Thursday and Sunday.",
+      ],
+      fr: [
+        "Options de vol : Royal Air Maroc (via Casablanca) ou low-cost (Vueling, Air Arabia, Ryanair).",
+        "Tarifs selon l'occupation du 4x4. Le coût est partagé entre les occupants.",
+        "Tarifs base chambre double/triple. Supplément single : 485 €.",
+        "Réduction enfants (3-11 ans) partageant avec 2 adultes : 305 € basse · 325 € haute.",
+        "En haute saison, les guides de médina peuvent être partagés.",
+        "Chauffeurs hispanophones limités — réserver tôt.",
+        "Les guides officiels sont réservés aux visites des médinas, pas aux trajets.",
+        "Passeport valable au minimum 3 mois après le retour (peut être envoyé ultérieurement s'il est en renouvellement).",
+        "Quads en option : 70 € par véhicule (1 h). Spa et massages à la réception de l'hôtel.",
+        "Marché de Rissani les mardi, jeudi et dimanche.",
+      ],
+    },
+    terms: {
+      es: [
+        "Reserva: 30% del importe total en el momento de la confirmación.",
+        "Pago final: 70% restante hasta 30 días antes de la salida.",
+        "Si el vuelo elegido requiere emisión inmediata: 100% del billete + 30% de los servicios de tierra al reservar.",
+        "Cancelación 45 días antes de la salida: 30% del importe total.",
+        "Cancelación 21 días antes de la salida: 100% del importe total.",
+        "Penalización fija de 50 € por reserva en concepto de gastos de gestión.",
+        "Estas condiciones aplican sólo a los servicios de tierra. Los vuelos se rigen por las condiciones de cada compañía aérea. Los seguros no se reembolsan.",
+      ],
+      en: [
+        "Booking: 30% at confirmation.",
+        "Final payment: 70% balance up to 30 days before departure.",
+        "If the chosen flight requires immediate ticketing: 100% of the flight + 30% of land services at booking.",
+        "Cancellation 45 days before departure: 30% of the total.",
+        "Cancellation 21 days before departure: 100% of the total.",
+        "Fixed €50 per booking management fee.",
+        "Conditions apply to land services only. Flights follow each airline's rules. Insurances are non-refundable.",
+      ],
+      fr: [
+        "Réservation : 30 % à la confirmation.",
+        "Paiement final : solde de 70 % jusqu'à 30 jours avant le départ.",
+        "Si le vol exige une émission immédiate : 100 % du billet + 30 % des services terrestres à la réservation.",
+        "Annulation 45 jours avant : 30 % du total.",
+        "Annulation 21 jours avant : 100 % du total.",
+        "Pénalité fixe de 50 € par réservation pour frais de gestion.",
+        "Conditions applicables aux services terrestres uniquement. Les vols suivent les règles de chaque compagnie. Les assurances ne sont pas remboursables.",
+      ],
+    },
+  },
+};
+
+export default PROGRAM_FRZ_78;
