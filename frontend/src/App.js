@@ -190,6 +190,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourErgMarrakech45")   return <ErgMarrakech45Page />;
   if (routeId === "tourErgMarrakech56")   return <ErgMarrakech56Page />;
   if (routeId === "tourMarrakechLoop23")  return <MarrakechLoop23Page />;
+  if (routeId === "tourEscapadaRakErgRak23") return <MarrakechLoop23Page />;
   if (routeId === "tourMarrakechLoop34")  return <MarrakechLoop34Page />;
   if (routeId === "tourMarrakechLoop45")  return <MarrakechLoop45Page />;
   if (routeId === "tourMarrakechLoop56")  return <MarrakechLoop56Page />;

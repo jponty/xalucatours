@@ -1158,7 +1158,7 @@ export const HUB_ESCAPADA_RAK_ERG_RAK = {
   programs: [
     { id: "esc-mem-2-3", direction: "a", nights: "2n3d", accent: "#5A6B4F",
       image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
-      link: "tourMarrakechLoop23",
+      link: "tourEscapadaRakErgRak23",
       blurb: { es: "Viaje de 2 noches y 3 días descubriendo Marrakech y el desierto del Erg Chebbi.",
                en: "2-night/3-day trip discovering Marrakech and the Erg Chebbi desert.",
                fr: "Voyage de 2 nuits et 3 jours pour découvrir Marrakech et le désert de l'Erg Chebbi." } },
