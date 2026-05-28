@@ -1573,7 +1573,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
     <div data-testid={`program-page-${program.duration_key}`}>
       <ProgramHero vt={vt} t={t} program={program} lang={lang} />
       <StickyNav items={navItems} testid="program-nav" />
-      {program.route && <TripRouteMap route={program.route} />}
+      {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <Itinerary t={t} lang={lang} days={program.days} />

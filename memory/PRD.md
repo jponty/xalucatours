@@ -273,3 +273,22 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Navigation blocked while overlay open (footer shows "MODO IMÁGENES · NAVEGACIÓN BLOQUEADA").
 - **Developer guide** added at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with slot-naming conventions, parent positioning rules, carousel `pointer-events` trick, and a checklist for every new page.
 - Only remaining raw `<img>` tags (intentional): `DayGallery` Lightbox (zoom of already-editable tile), `ImageEditorPage`/`ImageLibraryPicker` (admin previewers).
+
+## Expandable stage dropdown · TripRouteMap (Feb 2026)
+- **User mandate**: in the "El recorrido completo · Tu travesía en un solo mapa" section, every stage (both the map marker and the right-rail button) must be clickable to open an expandable dropdown showing that day's title, parsed route, key stops, highlights and short description — without leaving the map section.
+- **`components/TripRouteMap.jsx` refactor**:
+  - Signature extended to `({ route, days })`. Caller `ProgramTemplate.jsx` now passes `days={program.days}`.
+  - Builds an `O(1)` `dayByNumber` index keyed by `day_number || (i+1)`.
+  - Removed the previous `onMouseEnter`/marker `mouseover` auto-activation so the dropdown is strictly click-driven (single source of truth via `activeDay` state — toggles closed when clicking the same stage twice).
+  - Added a hint above the rail: "Pulsa una etapa para ver el detalle" (trilingual).
+  - The chevron icon rotates 180° on expand; the open card shows `aria-expanded` and `aria-controls` for accessibility.
+- **New `DayDetail` sub-component** rendered inline below the active button:
+  - Day badge: "DÍA NN" tinted with the stop's type color.
+  - Day title (`day.title`) in serif.
+  - Parsed `Ruta del día` line derived from `day.route_id` via a small `prettifyRouteId()` helper (strips programme prefix and meta tokens like `return`, `discover`, `loop`).
+  - "Lo destacado" — first 3 entries of `day.culture[]` with title + body, numbered tabular-nums.
+  - "El día, en detalle" — full `day.body` description in the active language.
+  - Close pill (X) at top right with `data-testid="trip-route-detail-close-{n}"`.
+  - Smooth `.animate-slide-down` CSS animation (new keyframe in `index.css`) with `prefers-reduced-motion` already handled at the file scope.
+- **`data-testid` additions**: `trip-route-detail-{day}`, `trip-route-detail-close-{day}`, `trip-route-hint`.
+- Smoke test on `programa_8n_9d`: clicking the right-rail "02 Volubilis · Meknes · Fez" expands a fully populated dropdown (route `VOLUBILIS → MEKNES → FEZ`, 3 highlights with full body, full day description). Clicking "05 Erg Chebbi · Bivouac" closes day-2 and opens day-5 (only `trip-route-detail-5` remains in DOM). Marker click on the Leaflet map produces the same behaviour.

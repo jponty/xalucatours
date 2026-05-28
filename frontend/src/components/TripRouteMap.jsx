@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from "react-leaflet";
-import { Map as MapIcon, MapPin, ArrowRight } from "lucide-react";
+import { Map as MapIcon, MapPin, ArrowRight, ChevronDown, Sparkles, BookOpen, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 
 /* ============================================================
@@ -39,6 +39,12 @@ const LABELS = {
     day_short: "Día",
     stops: "etapas",
     total_kms: "km aproximados",
+    expand_hint: "Pulsa una etapa para ver el detalle",
+    main_route: "Ruta del día",
+    highlights: "Lo destacado",
+    description: "El día, en detalle",
+    close: "Cerrar",
+    day_label_long: "Día",
   },
   en: {
     overline: "The whole route",
@@ -47,6 +53,12 @@ const LABELS = {
     day_short: "Day",
     stops: "stops",
     total_kms: "approximate km",
+    expand_hint: "Tap a stage to read the details",
+    main_route: "Day route",
+    highlights: "Highlights",
+    description: "The day, in detail",
+    close: "Close",
+    day_label_long: "Day",
   },
   fr: {
     overline: "L'itinéraire complet",
@@ -55,6 +67,12 @@ const LABELS = {
     day_short: "Jour",
     stops: "étapes",
     total_kms: "km approximatifs",
+    expand_hint: "Cliquez sur une étape pour voir le détail",
+    main_route: "Itinéraire du jour",
+    highlights: "Points forts",
+    description: "La journée en détail",
+    close: "Fermer",
+    day_label_long: "Jour",
   },
 };
 
@@ -68,10 +86,138 @@ const haversine = (a, b) => {
   return 2 * R * Math.asin(Math.sqrt(h));
 };
 
-export const TripRouteMap = ({ route }) => {
+/* Parse `trk89-tanger-chefchaouen` style route_id into a clean
+   "Tánger → Chefchaouen" string for the route line. Removes the
+   programme prefix (everything before the first hyphen) and any
+   bare tokens shorter than 3 characters or known modifiers. */
+const SKIP = new Set(["return", "discover", "loop", "stay", "extension", "atlas", "rif"]);
+const prettifyRouteId = (routeId) => {
+  if (!routeId || typeof routeId !== "string") return "";
+  const parts = routeId.split("-").slice(1); // drop "trk89", "frz67", etc.
+  const cleaned = parts
+    .map((p) => p.replace(/[0-9]+/g, ""))
+    .filter((p) => p.length >= 3 && !SKIP.has(p));
+  if (!cleaned.length) return "";
+  return cleaned
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+    .join(" → ");
+};
+
+/* ------------------------------------------------------------
+   DayDetail — expandable dropdown panel rendered below the active
+   stage button. Shows day title, parsed route, key highlights from
+   the day's culture array, and the full day description.
+------------------------------------------------------------ */
+const DayDetail = ({ id, day, dayNumber, color, lang, t, onClose }) => {
+  const culture = Array.isArray(day.culture) ? day.culture : [];
+  const description = day.body ? pick(day.body, lang) : null;
+  const dayTitle = day.title ? pick(day.title, lang) : null;
+  const routeStr = prettifyRouteId(day.route_id);
+
+  return (
+    <div
+      id={id}
+      role="region"
+      data-testid={`trip-route-detail-${dayNumber}`}
+      className="relative animate-slide-down bg-[#FDFBF7] border border-t-0 border-[#2C2621] -mt-px px-5 py-5 md:py-6"
+      style={{ boxShadow: `inset 3px 0 0 ${color}` }}
+    >
+      {/* Close pill */}
+      <button
+        type="button"
+        onClick={onClose}
+        data-testid={`trip-route-detail-close-${dayNumber}`}
+        aria-label={t.close}
+        className="absolute top-3 right-3 inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#F2EBE1] hover:bg-[#2C2621] text-[#5C5248] hover:text-[#FDFBF7] transition-colors"
+      >
+        <X className="w-3.5 h-3.5" strokeWidth={1.8} />
+      </button>
+
+      {/* Day title block */}
+      <span
+        className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase"
+        style={{ color }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+        {t.day_label_long} {String(dayNumber).padStart(2, "0")}
+      </span>
+      {dayTitle && (
+        <h5 className="font-serif-x text-[18px] md:text-[20px] text-[#2C2621] leading-[1.2] mt-2 pr-7">
+          {dayTitle}
+        </h5>
+      )}
+
+      {/* Parsed day route */}
+      {routeStr && (
+        <p className="mt-4 inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase text-[#5C5248]">
+          <ArrowRight className="w-3 h-3" style={{ color }} strokeWidth={1.8} />
+          <span className="text-[#2C2621]">{t.main_route}:</span>
+          <span>{routeStr}</span>
+        </p>
+      )}
+
+      {/* Highlights from culture[] */}
+      {culture.length > 0 && (
+        <div className="mt-5">
+          <span className="block text-[10px] tracking-[0.3em] uppercase mb-3 inline-flex items-center gap-2" style={{ color }}>
+            <Sparkles className="w-3 h-3" strokeWidth={1.8} />
+            {t.highlights}
+          </span>
+          <ul className="space-y-3">
+            {culture.slice(0, 3).map((c, i) => (
+              <li key={`${id}-h-${i}`} className="flex items-start gap-3">
+                <span
+                  className="font-serif-x text-[12px] leading-[1] tabular-nums mt-1 shrink-0"
+                  style={{ color }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="block font-serif-x text-[14px] md:text-[15px] text-[#2C2621] leading-snug">
+                    {pick(c.title, lang)}
+                  </span>
+                  {c.body && (
+                    <span className="block text-[12px] md:text-[13px] text-[#5C5248] leading-[1.55] mt-1">
+                      {pick(c.body, lang)}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Full description */}
+      {description && (
+        <div className="mt-5 pt-5 border-t border-[#2C2621]/10">
+          <span className="block text-[10px] tracking-[0.3em] uppercase mb-3 inline-flex items-center gap-2" style={{ color }}>
+            <BookOpen className="w-3 h-3" strokeWidth={1.8} />
+            {t.description}
+          </span>
+          <p className="text-[13px] md:text-[14px] text-[#2C2621] leading-[1.65]">
+            {description}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const TripRouteMap = ({ route, days = [] }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
   const [activeDay, setActiveDay] = useState(null);
+
+  /* Index program days by day-number for O(1) lookup when expanding. */
+  const dayByNumber = useMemo(() => {
+    const map = {};
+    days.forEach((d, i) => {
+      const dayNum = d.day_number || i + 1;
+      map[dayNum] = d;
+    });
+    return map;
+  }, [days]);
 
   const positions = useMemo(() => route.map((r) => [r.lat, r.lng]), [route]);
   const bounds = useMemo(() => {
@@ -171,7 +317,6 @@ export const TripRouteMap = ({ route }) => {
                         }}
                         eventHandlers={{
                           click: () => setActiveDay((prev) => (prev === stop.day ? null : stop.day)),
-                          mouseover: () => setActiveDay(stop.day),
                         }}
                       >
                         <Tooltip direction="top" offset={[0, -10]} opacity={0.95} permanent={false}>
@@ -196,20 +341,27 @@ export const TripRouteMap = ({ route }) => {
             </ul>
           </div>
 
-          {/* Right rail · ordered list of days */}
+          {/* Right rail · ordered list of days with expandable details */}
           <div className="lg:col-span-4">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3 inline-flex items-center gap-2" data-testid="trip-route-hint">
+              <ChevronDown className="w-3 h-3" strokeWidth={1.8} />
+              {t.expand_hint}
+            </p>
             <ol className="space-y-2" data-testid="trip-route-rail">
               {route.map((stop, idx) => {
                 const color = TYPE_COLORS[stop.type] || "#C16542";
                 const isActive = activeDay === stop.day;
                 const kindLabel = TYPE_LABELS[stop.type];
+                const dayData = dayByNumber[stop.day] || days[idx];
+                const hasDetails = !!dayData;
                 return (
                   <li key={`${stop.day}-${idx}`}>
                     <button
                       type="button"
                       onClick={() => setActiveDay((prev) => (prev === stop.day ? null : stop.day))}
-                      onMouseEnter={() => setActiveDay(stop.day)}
                       data-testid={`trip-route-stop-${stop.day}`}
+                      aria-expanded={isActive}
+                      aria-controls={`trip-route-detail-${stop.day}`}
                       className={`group w-full text-left flex items-start gap-4 px-4 py-3 border transition-all duration-300 ${
                         isActive
                           ? "bg-[#FDFBF7] border-[#2C2621]"
@@ -234,10 +386,29 @@ export const TripRouteMap = ({ route }) => {
                           {pick(stop.name, lang)}
                         </span>
                       </span>
-                      {idx < route.length - 1 && (
+                      {hasDetails ? (
+                        <ChevronDown
+                          className={`w-4 h-4 mt-1 shrink-0 transition-transform duration-300 ${
+                            isActive ? "rotate-180 text-[#2C2621]" : "text-[#5C5248] group-hover:text-[#C16542]"
+                          }`}
+                          strokeWidth={1.6}
+                        />
+                      ) : idx < route.length - 1 ? (
                         <ArrowRight className="w-3.5 h-3.5 mt-1 text-[#5C5248] group-hover:text-[#C16542] shrink-0 transition-colors" strokeWidth={1.6} />
-                      )}
+                      ) : null}
                     </button>
+
+                    {isActive && dayData && (
+                      <DayDetail
+                        id={`trip-route-detail-${stop.day}`}
+                        day={dayData}
+                        dayNumber={stop.day}
+                        color={color}
+                        lang={lang}
+                        t={t}
+                        onClose={() => setActiveDay(null)}
+                      />
+                    )}
                   </li>
                 );
               })}

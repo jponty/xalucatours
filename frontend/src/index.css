@@ -204,6 +204,17 @@
     border-radius: 3px;
 }
 
+/* Trip route map · expandable day-detail dropdown ----------- */
+@keyframes trip-route-slide-down {
+    0%   { opacity: 0; transform: translateY(-6px); max-height: 0; }
+    100% { opacity: 1; transform: translateY(0);    max-height: 1200px; }
+}
+.animate-slide-down {
+    animation: trip-route-slide-down 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+
 @media (prefers-reduced-motion: reduce) {
     .landmark-carousel-enter, .landmark-story-card { animation: none; opacity: 1; transform: none; }
     .landmark-track { scroll-behavior: auto; }
