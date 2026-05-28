@@ -31,6 +31,14 @@ export const POSTS = [
     publishedAt: "2026-02-12",
     author: "Equipo Xaluca",
     keywords: ["erg chebbi", "dormir en el desierto marruecos", "bivouac merzouga", "noche dunas sahara"],
+    cta: {
+      route: "tourMarrakechErgHub",
+      eyebrow: { es: "¿Listo para vivirlo?", en: "Ready to live it?", fr: "Prêt à le vivre ?" },
+      title:   { es: "Marrakech → Erg Chebbi · 6 noches", en: "Marrakech → Erg Chebbi · 6 nights", fr: "Marrakech → Erg Chebbi · 6 nuits" },
+      body:    { es: "Bivouac premium incluido y conductor local. Diseñado por quienes escribieron este artículo.",
+                 en: "Premium bivouac and local driver included. Designed by the people who wrote this article.",
+                 fr: "Bivouac premium et chauffeur local inclus. Conçu par ceux qui ont écrit cet article." },
+    },
     title: {
       es: "Una noche en el Erg Chebbi: cómo se vive dormir entre las dunas más altas de Marruecos",
       en: "A night in Erg Chebbi: what it really feels like to sleep among Morocco's tallest dunes",
@@ -109,6 +117,14 @@ export const POSTS = [
     publishedAt: "2026-02-08",
     author: "Equipo Xaluca",
     keywords: ["ruta kasbahs marruecos", "valle del drâa", "ouarzazate ait ben haddou", "sur de marruecos"],
+    cta: {
+      route: "tourSouth",
+      eyebrow: { es: "Hazla con nosotros", en: "Do it with us", fr: "Faites-la avec nous" },
+      title:   { es: "Gran Sur de Marruecos · 8 noches", en: "Grand South of Morocco · 8 nights", fr: "Grand Sud du Maroc · 8 nuits" },
+      body:    { es: "El recorrido completo del Drâa con paradas en Aït Ben Haddou, Tamnougalt y M'hamid.",
+                 en: "The full Drâa journey with stops in Aït Ben Haddou, Tamnougalt and M'hamid.",
+                 fr: "Le parcours complet du Drâa avec arrêts à Aït Ben Haddou, Tamnougalt et M'hamid." },
+    },
     title: {
       es: "La Ruta de las Kasbahs: de Ouarzazate a Zagora por el Valle del Drâa",
       en: "The Kasbah Route: from Ouarzazate to Zagora through the Drâa Valley",
@@ -189,6 +205,14 @@ export const POSTS = [
     publishedAt: "2026-02-04",
     author: "Equipo Xaluca",
     keywords: ["titan desert marruecos", "ciclismo en el desierto", "marathon des sables", "eventos deportivos marruecos"],
+    cta: {
+      route: "events",
+      eyebrow: { es: "Soporte para tu próximo evento", en: "Logistics for your next race", fr: "Logistique pour votre prochaine course" },
+      title:   { es: "Incentivos y eventos deportivos", en: "Sporting events & incentives", fr: "Événements sportifs & incentives" },
+      body:    { es: "25 años dando logística a las grandes pruebas del sur. Hablamos de tu equipo, fechas y necesidades.",
+                 en: "25 years of logistics for the south's biggest races. Let's talk about your team, dates and needs.",
+                 fr: "25 ans de logistique pour les plus grandes courses du sud. Parlons de votre équipe, vos dates et vos besoins." },
+    },
     title: {
       es: "Titan Desert, Marathon des Sables y Rally Merzouga: por qué el sur de Marruecos es la capital del deporte extremo",
       en: "Titan Desert, Marathon des Sables and Merzouga Rally: why southern Morocco is the capital of extreme sport",
@@ -251,6 +275,14 @@ export const POSTS = [
     publishedAt: "2026-01-28",
     author: "Equipo Xaluca",
     keywords: ["música gnaoua", "festival essaouira", "cultura marruecos", "patrimonio unesco gnaoua"],
+    cta: {
+      route: "tourMarrakechEssHub",
+      eyebrow: { es: "Vívelo en directo", en: "Hear it live", fr: "Écoutez-le en direct" },
+      title:   { es: "Marrakech ⇄ Essaouira · 4 noches", en: "Marrakech ⇄ Essaouira · 4 nights", fr: "Marrakech ⇄ Essaouira · 4 nuits" },
+      body:    { es: "Incluye una sesión privada de gnaoua en Khamlia o en la medina de Essaouira, dependiendo de tu ruta.",
+                 en: "Includes a private gnawa session in Khamlia or the Essaouira medina, depending on your route.",
+                 fr: "Inclut une session privée de gnawa à Khamlia ou dans la médina d'Essaouira, selon votre itinéraire." },
+    },
     title: {
       es: "Gnaoua: la música del sur de Marruecos declarada Patrimonio de la Humanidad",
       en: "Gnawa: southern Morocco's music recognised by UNESCO",
@@ -303,6 +335,14 @@ export const POSTS = [
     publishedAt: "2026-01-20",
     author: "Equipo Xaluca",
     keywords: ["ruta 4x4 marruecos", "anti-atlas pistas", "off-road sur de marruecos", "drâa expedición"],
+    cta: {
+      route: "tourSouth",
+      eyebrow: { es: "Estas pistas, contigo al volante", en: "These tracks, with you on board", fr: "Ces pistes, avec vous à bord" },
+      title:   { es: "Gran Sur de Marruecos · 8 noches", en: "Grand South of Morocco · 8 nights", fr: "Grand Sud du Maroc · 8 nuits" },
+      body:    { es: "Flota 4x4 propia y conductores locales que llevan décadas rodando estas pistas.",
+                 en: "Our own 4x4 fleet and local drivers who've spent decades on these tracks.",
+                 fr: "Notre flotte 4x4 propre et chauffeurs locaux qui parcourent ces pistes depuis des décennies." },
+    },
     title: {
       es: "Cinco pistas de 4x4 del sur de Marruecos que sólo conocen los locales",
       en: "Five 4x4 tracks in southern Morocco that only locals know",
@@ -370,6 +410,14 @@ export const POSTS = [
     publishedAt: "2026-01-12",
     author: "Equipo Xaluca",
     keywords: ["gastronomía sur marruecos", "tagine cordero", "que comer marrakech", "comida bereber"],
+    cta: {
+      route: "tourEscapadaMarrakech",
+      eyebrow: { es: "Pruébalos todos", en: "Taste them all", fr: "Goûtez-les tous" },
+      title:   { es: "Escapada a Marrakech · 3 noches", en: "Marrakech short escape · 3 nights", fr: "Escapade à Marrakech · 3 nuits" },
+      body:    { es: "Incluye clase privada de cocina bereber con visita al zoco junto a la cocinera anfitriona.",
+                 en: "Includes a private Berber cooking class with a souk visit alongside our host cook.",
+                 fr: "Inclut un cours privé de cuisine berbère avec visite du souk aux côtés de la cuisinière hôte." },
+    },
     title: {
       es: "Más allá del tagine: 8 platos del sur de Marruecos que no encuentras en Marrakech",
       en: "Beyond tagine: 8 dishes from southern Morocco you won't find in Marrakech",

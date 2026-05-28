@@ -369,6 +369,50 @@ export function BlogPostPage() {
         </div>
       </article>
 
+      {/* Contextual CTA → real trip */}
+      {post.cta && (
+        <section
+          data-testid={`blog-cta-${post.slug}`}
+          className="relative bg-[#1A1513] py-20 md:py-24 overflow-hidden border-t border-[#FDFBF7]/10"
+        >
+          <EditableImage
+            slot={`blog.${post.slug}.cta-bg`}
+            fallback={post.cover}
+            alt=""
+            aspectRatio="auto"
+            imgProps={{ loading: "lazy" }}
+            className="absolute inset-0 w-full h-full object-cover opacity-25"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/85 to-[#1A1513]/60 pointer-events-none" />
+          <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
+
+          <div className="relative max-w-4xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-8">
+              <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+                <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
+                {pick(post.cta.eyebrow, lang)}
+              </span>
+              <h2 className="font-serif-x text-3xl md:text-4xl lg:text-[44px] leading-[1.08] tracking-tight mt-3 text-[#FDFBF7]">
+                {pick(post.cta.title, lang)}
+              </h2>
+              <p className="mt-4 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed">
+                {pick(post.cta.body, lang)}
+              </p>
+            </div>
+            <div className="md:col-span-4 md:text-right">
+              <Link
+                to={pathFor(lang, post.cta.route)}
+                data-testid={`blog-cta-link-${post.slug}`}
+                className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+              >
+                {({ es: "Ver este viaje", en: "View this trip", fr: "Voir ce voyage" })[lang]}
+                <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Related */}
       {related.length > 0 && (
         <section data-testid="blog-related" className="relative bg-[#F2EBE1] py-20 md:py-24 border-t border-[#2C2621]/10 overflow-hidden">
