@@ -737,7 +737,7 @@ export const DAY_ME_KHAMLIA_RISSANI = {
 export const DAY_ME_ZIZ_ERRACHIDIA = {
   route_id: "me-ziz-errachidia",
   id: "dia-5",
-  image: "https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85",
   accent: "#3A4A5F",
   title: { es: "Valle del Ziz · Errachidia · regreso", en: "Ziz Valley · Errachidia · return", fr: "Vallée du Ziz · Errachidia · retour" },
   body: {
@@ -1163,7 +1163,7 @@ export const DAY_EM_AITBEN_MARRAKECH = {
 export const DAY_EM_MARRAKECH_VISIT = {
   route_id: "em-marrakech-visit",
   id: "dia-7",
-  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
   body: {
@@ -1692,7 +1692,7 @@ export const DAY_EM78_AITBEN_MARRAKECH = {
 export const DAY_EM78_MEDINA = {
   route_id: "em78-medina",
   id: "dia-7",
-  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
   body: {
@@ -2734,7 +2734,7 @@ export const DAY_MEM56_ARRIVAL_MARRAKECH = {
 export const DAY_MEM56_MARRAKECH_VISIT = {
   route_id: "mem56-marrakech-visit",
   id: "dia-2",
-  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Marrakech · medina, Koutoubia y zocos", en: "Marrakech · medina, Koutoubia and souks", fr: "Marrakech · médina, Koutoubia et souks" },
   body: {
@@ -3667,7 +3667,7 @@ export const PROGRAM_MES_45 = {
 export const DAY_MES67_FREE_MARRAKECH = {
   route_id: "mes67-free-marrakech",
   id: "dia-3",
-  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Día libre en Marrakech", en: "Free day in Marrakech", fr: "Journée libre à Marrakech" },
   body: {
@@ -3968,7 +3968,7 @@ export const DAY_FAE_ARRIVAL_FEZ = {
 export const DAY_FAE_FEZ_SIDIALI = {
   route_id: "fae-fez-sidiali",
   id: "dia-2",
-  image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#7C8B5C",
   title: { es: "Fez · Medio Atlas · Aguelmame Sidi Ali", en: "Fez · Middle Atlas · Aguelmame Sidi Ali", fr: "Fès · Moyen Atlas · Aguelmame Sidi Ali" },
   body: {

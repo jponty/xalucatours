@@ -51,7 +51,7 @@ export const HOME_HERO_SLIDES = [
 
 export const HOME_INTRO_SLIDES = [
   {
-    fallback: "https://images.unsplash.com/photo-1597212720159-d4e91f47cbe2?auto=format&fit=crop&w=1400&q=85",
+    fallback: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1400&q=85",
     caption: T("Arfoud — la puerta del desierto.", "Arfoud — the gateway to the desert.", "Arfoud — la porte du désert."),
   },
   {

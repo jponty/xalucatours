@@ -146,7 +146,7 @@ export const ESCAPADA_FEZ = {
   },
   gallery: [
     {
-      image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
       kind: T("Curtiduría Chouara", "Chouara tannery", "Tannerie Chouara"),
       caption: T("Las tinas de cuero más antiguas del mundo, en uso desde el s.XI.", "The world's oldest leather vats, in use since the 11th century.", "Les plus anciennes cuves à cuir au monde, en usage depuis le XIe siècle."),
     },
@@ -194,7 +194,7 @@ export const ESCAPADA_FEZ = {
 export const ESCAPADA_MARRAKECH = {
   routeId: "tourEscapadaMarrakech",
   hero: {
-    image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
     eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
     title: T(
       "Escápate a la ciudad de Marrakech.",
@@ -212,7 +212,7 @@ export const ESCAPADA_MARRAKECH = {
       caption: T("Patrimonio oral UNESCO: encantadores de serpientes y cuentacuentos al caer la noche.", "UNESCO oral heritage: snake charmers and storytellers at nightfall.", "Patrimoine oral UNESCO : charmeurs de serpents et conteurs au crépuscule."),
     },
     {
-      image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
       kind: T("Zocos y artesanía", "Souks and crafts", "Souks et artisanat"),
       caption: T("Lana, latón, cuero y especias: 18 zocos especializados en la medina.", "Wool, brass, leather and spices: 18 specialised souks in the medina.", "Laine, laiton, cuir et épices : 18 souks spécialisés dans la médina."),
     },
@@ -280,7 +280,7 @@ export const ESCAPADA_TANGER = {
       caption: T("Medina UNESCO de influencia andalusí, junto al Mediterráneo.", "UNESCO Andalusian-influenced medina, by the Mediterranean.", "Médina UNESCO d'influence andalouse, au bord de la Méditerranée."),
     },
     {
-      image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1800&q=85",
+      image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
       kind: T("Café Hafa", "Café Hafa", "Café Hafa"),
       caption: T("Las terrazas de Tánger sobre el Estrecho — donde el Atlántico besa el Mediterráneo.", "Tangier terraces over the Strait — where the Atlantic kisses the Mediterranean.", "Les terrasses de Tanger sur le Détroit — là où l'Atlantique embrasse la Méditerranée."),
     },

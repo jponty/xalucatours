@@ -37,7 +37,7 @@ const TRIP_TYPES = [
     id: "pareja",
     icon: "Heart",
     accent: "#D4A373",
-    image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=85",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=85",
     title: { es: "Viaje en pareja", en: "Couples journey", fr: "Voyage en couple" },
     body: {
       es: "Una cena romántica bajo un cielo lleno de estrellas. Un hammam en pareja para relajarse, un té a la menta mientras contempláis la puesta de sol y cientos de momentos mágicos que convertirán vuestro viaje en una experiencia inolvidable.",
@@ -541,7 +541,7 @@ export default function ViajesAMedidaPage() {
   return (
     <div data-testid="bespoke-page">
       <JourneyHero
-        image="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=2400&q=85"
+        image="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
         eyebrow={t.hero.eyebrow}
         place={t.hero.place}
         title={t.hero.title}

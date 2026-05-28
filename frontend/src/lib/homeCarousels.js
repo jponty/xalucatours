@@ -159,7 +159,7 @@ export const FULL_TRIPS = [
   {
     id: "tanger-marrakech",
     routeId: "tourGransurTangerRak",
-    image: "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1600&q=85",
+    image: "https://images.unsplash.com/photo-1519594445471-0e5f86b3fb09?auto=format&fit=crop&w=1600&q=85",
     duration: T("Multiples duraciones", "Multiple durations", "Plusieurs durées"),
     title: T("Tánger · Chefchaouen · Fez · Sahara · Marrakech",
              "Tangier · Chefchaouen · Fez · Sahara · Marrakech",
@@ -243,7 +243,7 @@ export const SHORT_TRIPS = [
   {
     id: "escapada-tanger",
     routeId: "tourEscapadaTanger",
-    image: "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1600&q=85",
+    image: "https://images.unsplash.com/photo-1519594445471-0e5f86b3fb09?auto=format&fit=crop&w=1600&q=85",
     duration: T("3 noches · 4 días", "3 nights · 4 days", "3 nuits · 4 jours"),
     title: T("Escapada a Tánger",
              "Tangier escape",
@@ -295,7 +295,7 @@ export const NORTH_TRIPS = [
   {
     id: "tanger-fez-4n",
     routeId: "tourTangerFez45",
-    image: "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1600&q=85",
+    image: "https://images.unsplash.com/photo-1519594445471-0e5f86b3fb09?auto=format&fit=crop&w=1600&q=85",
     duration: T("4 noches · 5 días", "4 nights · 5 days", "4 nuits · 5 jours"),
     title: T("Tánger · Chefchaouen · Fez",
              "Tangier · Chefchaouen · Fez",
@@ -311,7 +311,7 @@ export const NORTH_TRIPS = [
   {
     id: "tanger-fez-5n",
     routeId: "tourTangerFez56",
-    image: "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1600&q=85",
+    image: "https://images.unsplash.com/photo-1519594445471-0e5f86b3fb09?auto=format&fit=crop&w=1600&q=85",
     duration: T("5 noches · 6 días", "5 nights · 6 days", "5 nuits · 6 jours"),
     title: T("Tánger · Chefchaouen · Fez extendido",
              "Tangier · Chefchaouen · Fez extended",

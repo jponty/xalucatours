@@ -477,7 +477,7 @@ const Asesoramiento = ({ t, lang }) => {
   return (
     <section id="asesoramiento" data-testid="viajes-asesoramiento"
              className="relative bg-[#1A1513] text-[#FDFBF7] py-24 md:py-32 overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85" alt=""
+      <img src="https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85" alt=""
            loading="lazy" className="absolute inset-0 w-full h-full object-cover opacity-25" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/90 via-[#1A1513]/75 to-[#1A1513]/95" />
       <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />

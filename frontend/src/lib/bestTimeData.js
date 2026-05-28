@@ -79,7 +79,7 @@ export const SEASONS = [
       en: "9 days — Marrakech, High Atlas, Drâa, Erg Chebbi, Fez.",
       fr: "9 jours — Marrakech, Haut Atlas, Drâa, Erg Chebbi, Fès.",
     },
-    image: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=2400&q=85",
+    image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2400&q=85",
   },
   {
     id: "summer",

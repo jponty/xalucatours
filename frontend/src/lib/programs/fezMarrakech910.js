@@ -296,7 +296,7 @@ export const DAY_08_AITBENHADDOU_MARRAKECH = {
 export const DAY_09_MARRAKECH_MEDINA = {
   route_id: "frz910-marrakech-medina",
   id: "frz910-d9",
-  image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T(
     "Marrakech · visita guiada por la Medina",

@@ -135,7 +135,7 @@ export const STUB_CONTENT = {
                 fr: "Conventions, voyages incentives, lancements et mariages dans des lieux uniques — du désert aux médinas anciennes, avec une logistique millimétrée." },
   },
   morocco: {
-    image: "https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85",
     overline: { es: "Marruecos", en: "Morocco", fr: "Maroc" },
     title:    { es: "Un país de contrastes infinitos.",
                 en: "A country of endless contrasts.",

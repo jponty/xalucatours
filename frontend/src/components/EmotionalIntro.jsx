@@ -10,7 +10,7 @@ import EditableText from "@/components/EditableText";
    trilingual caption to keep the editorial feel of the original. */
 const SLIDES = [
   {
-    src: "https://images.unsplash.com/photo-1597212720159-d4e91f47cbe2?auto=format&fit=crop&w=1400&q=85",
+    src: "https://images.unsplash.com/photo-1559586616-361e18714958?auto=format&fit=crop&w=1400&q=85",
     caption: {
       es: "Arfoud — la puerta del desierto.",
       en: "Arfoud — the gateway to the desert.",
@@ -18,7 +18,7 @@ const SLIDES = [
     },
   },
   {
-    src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=85",
+    src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1400&q=85",
     caption: {
       es: "Erg Chebbi — el mar de dunas.",
       en: "Erg Chebbi — the sea of dunes.",
@@ -26,7 +26,7 @@ const SLIDES = [
     },
   },
   {
-    src: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1400&q=85",
+    src: "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?auto=format&fit=crop&w=1400&q=85",
     caption: {
       es: "Fez — la medina más viva del país.",
       en: "Fez — the country's most alive medina.",
@@ -34,7 +34,7 @@ const SLIDES = [
     },
   },
   {
-    src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1400&q=85",
+    src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1400&q=85",
     caption: {
       es: "Alto Atlas — cumbres bereberes.",
       en: "High Atlas — Berber peaks.",
@@ -42,7 +42,7 @@ const SLIDES = [
     },
   },
   {
-    src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1400&q=85",
+    src: "https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=1400&q=85",
     caption: {
       es: "Ait Ben Haddou — kasbahs de adobe.",
       en: "Aït Ben Haddou — adobe kasbahs.",

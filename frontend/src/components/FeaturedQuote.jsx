@@ -14,7 +14,7 @@ export const FeaturedQuote = () => {
     >
       <EditableImage
         slot="home.quote.bg"
-        fallback="https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=2000&q=85"
+        fallback="https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85"
         alt=""
         imgProps={{ loading: "lazy" }}
         aspectRatio="16/9"

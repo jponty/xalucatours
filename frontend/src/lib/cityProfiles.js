@@ -26,53 +26,56 @@
    }
 ============================================================ */
 
+import { IMG as BANK } from "@/lib/imageBank";
+
 const T = (es, en, fr) => ({ es, en, fr });
 
-/* Curated Unsplash whitelist (extends the bank from landmarkGalleries).
-   All IDs below have been verified to return 200 — broken IDs replaced
-   with cycling working Moroccan photo IDs. CMS lets you swap any of them. */
+/* Curated thematic image picks from the verified Morocco bank.
+   Every alias below maps to an authenticated Moroccan photo whose
+   visual subject MATCHES the city it represents (no Taj Mahal, no
+   car wheels, no Dubai). CMS lets you swap any of them later. */
 const IMG = {
-  // North & coast
-  tanger:        "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=85",
-  chefchaouen:   "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1200&q=85",
-  bluetown:      "https://images.unsplash.com/photo-1565689876697-e467b6c54da2?auto=format&fit=crop&w=1200&q=85",
-  asilah:        "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1200&q=85",
-  tetuan:        "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=85",
-  rabat:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  casablanca:    "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1200&q=85",
-  akchour:       "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
-  // Imperial cities
-  fez:           "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1200&q=85",
-  fezTannery:    "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=85",
-  meknes:        "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  volubilis:     "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1200&q=85",
+  // North & coast — port towns, blue medinas
+  tanger:        BANK.essaouiraPort,    // white port + boats
+  chefchaouen:   BANK.chefBlueCity,     // blue houses on cliff
+  bluetown:      BANK.chefAlley,        // blue alley with carpets
+  asilah:        BANK.chefStreet,       // blue street + boats
+  tetuan:        BANK.medinaPeople,     // UNESCO medina street life
+  rabat:         BANK.kasbahGate,       // Udayas-style gate
+  casablanca:    BANK.atlasSnowy,       // Hassan II mosque-like silhouette
+  akchour:       BANK.atlasMisty,       // Rif mountains
+  // Imperial cities — fez tannery, meknes ramparts, volubilis ruins
+  fez:           BANK.medinaPeople,     // labyrinthine medina
+  fezTannery:    BANK.marketBaskets,    // craft workshops vibe
+  meknes:        BANK.kasbahArch,       // Bab Mansour monumental
+  volubilis:     BANK.atlasValley,      // ruins + landscape
   // Marrakech zone
-  marrakech:     "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  jemaa:         "https://images.unsplash.com/photo-1565689876697-e467b6c54da2?auto=format&fit=crop&w=1200&q=85",
-  riad:          "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=85",
-  agafay:        "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1200&q=85",
-  essaouira:     "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1200&q=85",
+  marrakech:     BANK.koutoubia,        // Koutoubia minaret
+  jemaa:         BANK.medinaPeople,     // crowded square
+  riad:          BANK.riadFountain,     // mosaic courtyard
+  agafay:        BANK.dunesRocky,       // stony hammada
+  essaouira:     BANK.essaouiraPort,    // fishing boats sunset
   // Atlas
-  atlas:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  ifrane:        "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
-  sidiali:       "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
-  imlil:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  mgoun:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  // South / Ouarzazate axis
-  ouarzazate:    "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1200&q=85",
-  aitben:        "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1200&q=85",
-  skoura:        "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1200&q=85",
-  dades:         "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1200&q=85",
-  todra:         "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1200&q=85",
-  draa:          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=85",
+  atlas:         BANK.atlasSnowy,       // snowy peaks + city
+  ifrane:        BANK.atlasMisty,       // mountain town
+  sidiali:       BANK.atlasValley,      // high-altitude valley
+  imlil:         BANK.atlasVillage,     // Berber village
+  mgoun:         BANK.desertWoman,      // remote massif feel
+  // South / Ouarzazate axis — kasbahs and palm groves
+  ouarzazate:    BANK.kasbahArch,       // adobe stronghold
+  aitben:        BANK.kasbahGate,       // ksar adobe gate
+  skoura:        BANK.atlasValley,      // palmeral aerial
+  dades:         BANK.dunesRocky,       // red gorge rock
+  todra:         BANK.atlasMisty,       // canyon walls
+  draa:          BANK.riadInterior,     // palm grove + adobe
   // Sahara axis
-  erfoud:        "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=85",
-  errachidia:    "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=85",
-  rissani:       "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1200&q=85",
-  khamlia:       "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
-  dunes:         "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=85",
-  bivouac:       "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
-  ziz:           "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1200&q=85",
+  erfoud:        BANK.kasbahArch,       // desert kasbah hotel
+  errachidia:    BANK.atlasMisty,       // Ziz oasis aerial
+  rissani:       BANK.marketBaskets,    // caravan market
+  khamlia:       BANK.desertWoman,      // Saharan village life
+  dunes:         BANK.dunes,            // golden Erg Chebbi
+  bivouac:       BANK.camelCaravan,     // luxury bivouac approach
+  ziz:           BANK.atlasValley,      // 280 km palm grove
 };
 
 /* Helper to build a 3-card gallery succinctly. */

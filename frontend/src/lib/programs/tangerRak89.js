@@ -66,7 +66,7 @@ export const DAY_TRK_TANGER_CHEFCHAOUEN = {
 export const DAY_TRK_VOLUBILIS_MEKNES_FEZ = {
   route_id: "trk89-volubilis-meknes-fez",
   id: "trk89-d2",
-  image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T(
     "Chefchaouen · Volubilis · Moulay Idriss · Meknes · Fez",

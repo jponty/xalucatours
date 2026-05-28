@@ -240,3 +240,15 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   1. Added explicit `CITY_TO_PROFILE` bridge: `{ rak: "marrakech", tan: "tanger", tet: "tetuan", fes: "fez", casa: "casablanca", ozz/ouarza: "ouarzazate", ait/ben/haddou/aitbenhaddou: "aitben", ergchebbi/dunes: "chebbi", zagora: "draa", fossils: "kemkem" }`.
   2. `tokenToProfileKey` now consults the bridge first, then direct, then alias, then loose-contains BOTH ways (`token.includes(key) || key.includes(token)`).
 - Verified: `viajes/escapadas/marrakech/programa_2n_3d` → all 3 stays expose `day-stay-btn-*`, drawer opens with 3 image cards (Jemaa el-Fna, Medersa Ben Youssef, Jardín Majorelle) — all `naturalWidth=1200, complete=true`.
+
+## Full Unsplash image audit (Feb 2026)
+- **User mandate**: all imagery must be authentically Moroccan and visually coherent with the section's text.
+- Pre-audit state: 39 unique Unsplash IDs across the codebase. Visual analysis revealed ~12 were off-topic (Taj Mahal, car wheels, Burj Al Arab, Italian coast, gym interior, hotel rooms, generic silhouettes) or HTTP-broken.
+- **New `lib/imageBank.js`**: centralised whitelist of 20 verified Morocco photo IDs grouped semantically (dunes, atlas, chefchaouen, kasbah, koutoubia, medina, riad, market, essaouira). Each entry annotated with subject. New `banner(key, w)` helper for variable widths and `COLLECTIONS` mapping for hub themes.
+- Sourced 13 new Morocco-specific photo IDs by scraping the official Unsplash search page for the query "morocco", visually confirming each via thumbnail + AI vision pass.
+- **Global replacement script** updated 29 files / 65 occurrences with the new bank, mapping each off-topic ID to a thematically equivalent verified one (Taj Mahal → riad fountain, car wheels → Chefchaouen alley, gym → Atlas misty, etc.). The 19 portrait IDs in `lib/testimonials.js` were intentionally preserved (correct usage for client testimonials).
+- **`lib/cityProfiles.js`**: replaced its inline 35-key IMG bank with imports from `imageBank.js`, diversified so each city's 3 gallery cards reference 3 *different* bank images (no more "all-3-identical" galleries). Each mapping commented with intent (e.g. `marrakech → koutoubia`, `fezTannery → marketBaskets`).
+- **`components/EmotionalIntro.jsx`**: re-aligned the 5 home-hero slide image↔caption pairs so the visible image matches the editorial caption (Arfoud → camel caravan, Erg Chebbi → dunes, Fez → crowded medina, Alto Atlas → snow peaks + Koutoubia, Aït Ben Haddou → kasbah arch).
+- **CMS slot cleanup**: deleted 5 stale `home.intro.*` + `home.trips.south` MongoDB overrides that were forcing the old Chefchaouen image into the "Erg Chebbi" slot. Code defaults now render.
+- **Final state**: 40 unique Unsplash IDs in the codebase = 21 verified Morocco bank + 19 testimonial portraits. Zero off-topic. Zero broken (verified HTTP 200 for all).
+- Verified end-to-end: home hero, Tier 2 drawer (Tánger waypoints), Tier 3 drawer (Marrakech stays) — all naturally Moroccan, visually distinct, coherent with text.

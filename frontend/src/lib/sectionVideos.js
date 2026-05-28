@@ -49,7 +49,7 @@ export const ESCAPADAS_VIDEOS = {
   },
   "alto-atlas": {
     src: `${G_CDN}/ForBiggerMeltdowns.mp4`,
-    poster: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=2400&q=85",
+    poster: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "Escapada al Alto Atlas", en: "High Atlas escape", fr: "Escapade au Haut Atlas" },
     title: {
       es: "El aire del Atlas, en unos pocos días.",

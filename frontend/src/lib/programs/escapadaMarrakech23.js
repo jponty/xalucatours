@@ -31,7 +31,7 @@ export const DAY_RAK_ARRIVAL = {
 export const DAY_RAK_MEDINA = {
   route_id: "escrak-medina",
   id: "escrak-d2",
-  image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?auto=format&fit=crop&w=2000&q=85",
+  image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#D4A373",
   title: T(
     "Visita guiada por la Medina de Marrakech",

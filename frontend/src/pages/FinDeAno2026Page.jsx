@@ -176,7 +176,7 @@ const ITINERARY = [
     id: "27-dic",
     dateLabel: { es: "Domingo · 27 de diciembre", en: "Sunday · 27 December", fr: "Dimanche 27 décembre" },
     title: { es: "Llegada a Marruecos · Aït Ben Haddou", en: "Arrival in Morocco · Aït Ben Haddou", fr: "Arrivée au Maroc · Aït Ben Haddou" },
-    image: "https://images.unsplash.com/photo-1569815032068-9b6dd76c46ba?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
     body: {
       es: "Salida a las 09:00h en vuelo directo desde Barcelona hacia Ouarzazate (llegada 11:20h). Trámites de entrada y recogida en vehículos 4x4 con chófer. Almuerzo en Ouarzazate. Por la tarde visitamos Aït Ben Haddou, ksar Patrimonio de la Humanidad UNESCO escenario de «Gladiator» o «Lawrence de Arabia». Continuamos hacia Boumalne Dades, en pleno Valle de los Pájaros a 1.612 m. Cena y alojamiento en Hotel Xaluca Dades 4*.",
       en: "Departure at 09:00 on a direct flight from Barcelona to Ouarzazate (arrival 11:20). Immigration and pickup in 4x4 vehicles with driver. Lunch in Ouarzazate. In the afternoon, visit to Aït Ben Haddou, UNESCO World Heritage ksar — location for «Gladiator» and «Lawrence of Arabia». We continue to Boumalne Dades, in the Valley of Birds at 1,612 m. Dinner and accommodation at Hotel Xaluca Dades 4*.",
@@ -192,7 +192,7 @@ const ITINERARY = [
     id: "28-dic",
     dateLabel: { es: "Lunes · 28 de diciembre", en: "Monday · 28 December", fr: "Lundi 28 décembre" },
     title: { es: "Alto Atlas Central · Boutaghrar y Amskar", en: "Central High Atlas · Boutaghrar and Amskar", fr: "Haut Atlas Central · Boutaghrar et Amskar" },
-    image: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=2000&q=85",
+    image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
     body: {
       es: "Nos adentramos por pistas en lo más profundo del Alto Atlas Central. Visitamos poblados bereberes como Boutaghrar y Amskar, donde se conserva intacta la vida tradicional de montaña. Contemplaremos montañas, cañones, valles y grutas donde aún viven familias nómadas. Recorreremos las impresionantes Gargantas del M'Goun. Comida picnic durante la excursión. Cena y alojamiento en Hotel Xaluca Dades 4*.",
       en: "We head deep into the Central High Atlas on mountain tracks. We visit Berber villages like Boutaghrar and Amskar, where traditional mountain life is preserved. Mountains, canyons, valleys and caves where nomadic families still live. The spectacular M'Goun gorges. Picnic lunch on the excursion. Dinner and accommodation at Hotel Xaluca Dades 4*.",
