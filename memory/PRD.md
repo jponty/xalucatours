@@ -310,3 +310,23 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - **Alto Atlas · Desierto · Fez**: main `→ /viajes/gransur/ouarzazate-sidiali-fez`, 6 programme variants (3 ozz→sidiali→fez + 3 reverse), 1 related hub `→ /viajes/atlas-desierto-fez`.
   - **Tánger – Marrakech**: main `→ /viajes/gransur/tanger-rak`, 2 programme variants (8n/9d, 9n/10d).
 - Total: 4 main hub links + 22 programme deep-links + 2 related-hub chips = 28 navigation paths wired, all returning HTTP 200.
+
+## SlotScope · auto-namespaced editable slots (Feb 2026)
+- **Pain point**: integrating `<EditableImage>` in a deeply-nested sub-component required prop-drilling parent ids manually (e.g. passing `hubId` from `ItineraryHubPage` → `OptionsGrid`). Easy to forget → produced the `hub is not defined` runtime error that the user spotted on `/viajes/gransur/fez-rak`.
+- **Fix**: extracted a tiny standalone module `components/slotScope.js` exposing:
+  - `SectionContext` — single source of truth for the scope path.
+  - `useSlotId(name)` — joins `pagePath + scope.path + name` into a final dotted slot id (`/en` and `/fr` URL prefixes stripped so the slot is shared across languages).
+  - `useSlotPath()` — read-only access to the scope (without name).
+  - `usePageNamespace()` — current page prefix.
+  - `<SlotScope id="...">` — pushes one extra segment onto the scope. Renders no DOM element by default (uses `React.Fragment`); pass `as="div"` if a wrapper is desired.
+- `EditableSection.jsx` now re-uses this module instead of duplicating the context. Its semantic `<E>` / `<EImg>` DSL is unchanged.
+- `EditableImage.jsx` now accepts EITHER:
+  - `slot="literal.id"` (absolute · back-compat) OR
+  - `name="local"` (relative · auto-resolved against the surrounding `<SlotScope>` / `<EditableSection>`).
+  Guards added so that when neither prop is provided the component still renders the fallback (no fetch, no overlay) — prevents crashes on legacy raw `<img>` patches.
+- **Proof of concept** in `components/ItineraryHubPage.jsx`:
+  - Removed the `hubId` prop and any reference to `hub.id` inside `OptionsGrid`.
+  - Wrapped the `<OptionsGrid>` in `<SlotScope id={`hub.${hub.id}`}>`.
+  - `EditableImage` inside cards now uses `name={`program.${p.id}`}`.
+  - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
+- Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.

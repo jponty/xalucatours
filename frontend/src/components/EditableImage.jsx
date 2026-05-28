@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useEditableGroup } from "@/contexts/EditableGroupContext";
+import { useSlotId } from "@/components/slotScope";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 
 const API = process.env.REACT_APP_BACKEND_URL;
@@ -85,8 +86,21 @@ const ImageOrPlaceholder = ({ url, alt, className, imgProps, aspectRatio }) => {
  *   aspectRatio   target ratio for the cropper (e.g. "16/9", "4/5", 1, 1.77)
  *   forceVisible  if true, keep edit overlay above stacked carousels' transitions
  */
+/**
+ * <EditableImage> — central, CMS-managed image surface.
+ *
+ * Two ways to identify the slot:
+ *   • Absolute: `slot="literal.id.path"` — overrides everything.
+ *   • Relative: `name="program.fr-6-7"` + a wrapping `<SlotScope id="...">`
+ *               (or `<EditableSection id="...">`) somewhere up the tree.
+ *               The page path is auto-prepended and scope segments joined
+ *               with dots. Eliminates the need to drill ids through props.
+ *
+ * Either prop must be supplied; if both are passed, `slot` wins.
+ */
 export const EditableImage = ({
-  slot,
+  slot: explicitSlot,
+  name,
   fallback,
   alt = "",
   className = "",
@@ -94,6 +108,8 @@ export const EditableImage = ({
   aspectRatio,
   forceVisible = false,
 }) => {
+  const scopedSlot = useSlotId(name);
+  const slot = explicitSlot || (name ? scopedSlot : null);
   const { editMode } = useEditMode();
   const group = useEditableGroup();
   const [url, setUrl] = useState(fallback || null);
@@ -107,6 +123,7 @@ export const EditableImage = ({
   urlRef.current = url;
 
   useEffect(() => {
+    if (!slot) return undefined;
     let cancelled = false;
     (async () => {
       try {
@@ -123,7 +140,7 @@ export const EditableImage = ({
 
   // Self-register with the surrounding gallery group, if any.
   useEffect(() => {
-    if (!group) return undefined;
+    if (!group || !slot) return undefined;
     return group.register({
       slot,
       fallback: fallback || null,
@@ -147,7 +164,7 @@ export const EditableImage = ({
         imgProps={imgProps}
         aspectRatio={aspectRatio}
       />
-      {editMode && (
+      {editMode && slot && (
         <div
           data-testid={`editable-overlay-${slot}`}
           className="absolute inset-0 z-[45]"

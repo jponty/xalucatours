@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeftRight, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
+import { SlotScope } from "@/components/slotScope";
 import {
   JourneyHero,
   StickyNav,
@@ -86,7 +87,7 @@ const Intro = ({ intro, lang }) => (
   </section>
 );
 
-const OptionsGrid = ({ options, programs, lang, ctaTarget, t, hubId }) => {
+const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
   const groupedKeys = Array.from(new Set(programs.map((p) => p.direction)));
   const getLabel = (k) => k === "a" ? pick(options.group_a, lang) : pick(options.group_b, lang);
   const singleDirection = groupedKeys.length === 1 && (groupedKeys[0] === undefined || !options.group_a);
@@ -126,7 +127,7 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t, hubId }) => {
                     className="group relative block overflow-hidden h-[440px]"
                   >
                     <EditableImage
-                      slot={`hub.${hubId}.program.${p.id}`}
+                      name={`program.${p.id}`}
                       fallback={p.image}
                       alt=""
                       aspectRatio="3/4"
@@ -222,14 +223,15 @@ export default function ItineraryHubPage({ hub }) {
 
       <Intro intro={hub.intro} lang={lang} />
 
-      <OptionsGrid
-        options={hub.options}
-        programs={hub.programs}
-        lang={lang}
-        ctaTarget={pathFor(lang, "contact")}
-        t={t}
-        hubId={hub.id}
-      />
+      <SlotScope id={`hub.${hub.id}`}>
+        <OptionsGrid
+          options={hub.options}
+          programs={hub.programs}
+          lang={lang}
+          ctaTarget={pathFor(lang, "contact")}
+          t={t}
+        />
+      </SlotScope>
 
       <CommunityCta
         t={t.community}

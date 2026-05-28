@@ -1,20 +1,17 @@
-import React, { createContext, useContext, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useMemo } from "react";
 import { EditableText } from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
+import {
+  SectionContext,
+  useSlotId,
+  SlotScope,
+} from "@/components/slotScope";
 
 /* ============================================================
    Global Inline-CMS Auto-Slot API
    ---------------------------------------------------------------
-   The original CMS exposes two primitives that persist content
-   per "slot" id in MongoDB:
-
-     <EditableText  slot="home.hero.title" defaults={...}/>
-     <EditableImage slot="home.hero.bg"    src=... />
-
-   This module wraps them in an ergonomic, auto-namespaced API so
-   ANY page or component can declare editable surfaces with one
-   line and ZERO manual slot bookkeeping:
+   This module is a thin, semantic façade on top of `slotScope.js`.
+   It pre-exists in the codebase and exposes a richer DSL:
 
      <EditableSection id="hero">
        <E name="eyebrow" defaults={{ es: "Especialistas…" }} />
@@ -22,41 +19,13 @@ import EditableImage from "@/components/EditableImage";
        <EImg name="bg" src="https://..." aspect="16/9" />
      </EditableSection>
 
-   How the slot id is built:
-     `${pagePath}.${section1}.${section2…}.${name}`
+   Slot ids are built as:
+       `${pagePath}.${section1}.${section2…}.${name}`
 
-     • pagePath comes from useLocation(). The language prefix is
-       stripped so the same slot reads the same record regardless
-       of language.
-     • Section ids stack through nesting (a section inside a
-       section concatenates with a dot).
-     • `name` is the only manual bit — semantic and stable across
-       refactors. We strongly recommend giving every <E> / <EImg>
-       a meaningful name (e.g. "title", "subtitle", "bg").
-
-   Coexistence with the legacy API:
-     Pages already wired with `<EditableText slot="literal.id" />`
-     keep working unchanged — they bypass the auto-slot context.
+   The same context is consumed by `<EditableImage name="x" />`
+   so any deeply-nested component can declare an editable image
+   without knowing the parent section ids.
 ============================================================ */
-
-const SectionContext = createContext({
-  path: [], // array of section ids, joined with dots
-});
-
-/** Strip /en/ or /fr/ prefix from the current location so the
- *  slot id is identical across the three language URLs. */
-const normalisePathname = (pathname) => {
-  const clean = (pathname || "/").replace(/^\/+|\/+$/g, "");
-  const parts = clean.split("/").filter(Boolean);
-  if (parts[0] === "en" || parts[0] === "fr") parts.shift();
-  return parts.join("/") || "home";
-};
-
-/** Top-level page namespace. Hooked once per render. */
-const usePageNamespace = () => {
-  const loc = useLocation();
-  return useMemo(() => normalisePathname(loc.pathname), [loc.pathname]);
-};
 
 /**
  * <EditableSection id="hero"> — declares a logical section in the
@@ -85,15 +54,9 @@ export const EditableSection = ({ id, as: Tag = "div", children, ...rest }) => {
   );
 };
 
-/** Compose the final slot id from current section path + a local name. */
-const useSlotId = (name) => {
-  const page = usePageNamespace();
-  const section = useContext(SectionContext);
-  return useMemo(() => {
-    const parts = [page, ...section.path, name].filter(Boolean);
-    return parts.join(".");
-  }, [page, section.path, name]);
-};
+/* Re-export the bare scope primitive for components that don't want
+   to render an extra wrapper element. */
+export { SlotScope, useSlotId };
 
 /**
  * <E name="title" defaults={{...}}> — short alias around

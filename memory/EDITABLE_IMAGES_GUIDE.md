@@ -99,10 +99,67 @@ Cuando `editMode === true`:
 
 ## Sin EditableSection: cuándo elegir cuál
 
-- `<EditableImage>` directo cuando quieres total control del `slot`.
-- `<EImg name="x">` (dentro de un `<EditableSection id="...">`) cuando
-  reproduces una página entera CMS-friendly y quieres slots auto-generados
-  a partir del árbol de secciones (`page.hero.bg`, `page.hero.cta.icon`...).
+- `<EditableImage slot="...">` (absoluto) cuando quieres total control del id.
+- `<EditableImage name="...">` (relativo) dentro de un `<SlotScope id="...">`
+  o `<EditableSection id="...">` cuando el id puede derivarse del contexto del padre.
+- `<EImg name="x">` (dentro de un `<EditableSection id="...">`) cuando reproduces
+  una página entera CMS-friendly y quieres slots auto-generados.
+
+## SlotScope · evita prop-drilling de ids
+
+Cuando un sub-componente necesita conocer el id de un ancestro (por ejemplo
+una `OptionsGrid` que renderiza tarjetas de un hub), **NO** propagues `hubId`
+como prop. Envuelve la rama en `<SlotScope id="...">` y deja que el hijo
+use `name=`:
+
+```jsx
+import { SlotScope } from "@/components/slotScope";
+import EditableImage from "@/components/EditableImage";
+
+// Padre — añade un segmento al namespace
+<SlotScope id={`hub.${hub.id}`}>
+  <OptionsGrid programs={hub.programs} />
+</SlotScope>
+
+// Hijo — usa `name` sin saber nada del padre
+const OptionsGrid = ({ programs }) => programs.map(p => (
+  <EditableImage name={`program.${p.id}`} fallback={p.image} />
+));
+```
+
+El slot final se calcula automáticamente como:
+`{pagePath}.hub.{hub.id}.program.{p.id}`  
+(p. ej. `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7`).
+
+Pueden anidarse varios `<SlotScope>` (cada uno añade un segmento) y
+mezclarse con `<EditableSection>` (que es funcionalmente equivalente
+pero renderiza un wrapper `<div data-edit-section="...">`).
+
+### Hooks expuestos (`@/components/slotScope`)
+
+- `useSlotId(name)` — devuelve el slot absoluto completo.
+- `useSlotPath()` — devuelve la ruta del scope sin el nombre (read-only).
+- `usePageNamespace()` — devuelve el prefijo del path actual (sin /en /fr).
+
+### Por qué importa
+
+Antes:
+```jsx
+// ❌ El hijo debe recibir hubId como prop. Fácil de olvidar → runtime error
+<OptionsGrid hubId={hub.id} ... />
+// dentro:
+<EditableImage slot={`hub.${hubId}.program.${p.id}`} ... />
+```
+
+Ahora:
+```jsx
+// ✅ El padre declara el scope una sola vez. El hijo no necesita props extra.
+<SlotScope id={`hub.${hub.id}`}>
+  <OptionsGrid ... />
+</SlotScope>
+// dentro:
+<EditableImage name={`program.${p.id}`} ... />
+```
 
 ## Para nuevas páginas
 
