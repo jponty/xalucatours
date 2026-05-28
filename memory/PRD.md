@@ -199,3 +199,22 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Sticky bottom CTAs: "Planificar mi viaje" (→ `planTrip`, primary orange) and "Ver guía completa" (→ `whenToTravel`, outline)
 - Trilingual via the existing `pick()` helper.
 - Tested on Sur (Sáhara), Norte (Rif y Tánger), Aventura (Alto Atlas), Marrakech-Essaouira (Costa atlántica), EN `/en/tours/adventure` (High Atlas). FAB correctly hidden on `/`, `/cuando-viajar`, `/contacto`.
+
+
+## Per-day "Mapa del día" — universal coverage (Feb 2026)
+- **Mandate**: every day inside `ProgramTemplate` itinerary must have its own independent "Mapa del día" section, in addition to the global "Resumen visual del viaje" (`TripRouteMap`).
+- New helper `lib/dayRouteResolver.js` with a `CITY_TABLE` of ~50 Moroccan place tokens (tanger, fez, marrakech, essaouira, ozz, sidiali, dades, todra, erfoud, khamlia, rissani, ergchebbi, volubilis, akchour, chefchaouen, etc.) and a `resolveDayRoute(routeId)` parser that:
+  1. First looks up `DAY_ROUTES[routeId]` (curated 14 routes)
+  2. Otherwise splits the `route_id` on `-`/`_` and matches each token against the dictionary (skipping program-prefix tokens like `tf45-`, `ci-`, `cirf-`, `enduro-d#-`, `return`, `arrival`, `medina`, etc.)
+  3. Returns waypoints tuples `[name, lat, lng, kind]`. Tags first as `start`, last as `overnight`.
+- `components/DayRouteMap.jsx` rewritten as a tier-aware section that always renders SOMETHING:
+  - **Tier 1 (landmarks)** — when `DAY_LANDMARKS[route_id]` exists. Rich Leaflet map + landmark carousel + selectable side list (unchanged).
+  - **Tier 2 (waypoints)** — when `resolveDayRoute` returns ≥ 2 points. Polyline + numbered `CircleMarker`s with start/stop/overnight colour coding (`#5A6B4F`, `#C16542`, `#A07042`, `#5A7F9C`), plus side panel with "01/02… stops", approximate km (Haversine sum) and progress bar.
+  - **Tier 3 (stay)** — single anchor or no data. Editorial centred card: overline "Mapa del día" · serif title "Día sin desplazamientos" / "Mapa del día" · home pin with location · trilingual editorial body · progress bar.
+- The `data-tier="landmarks|waypoints|stay"` attribute on every section enables QA/CMS to inspect coverage.
+- **Coverage gained** by the parser alone — verified live on three programs:
+  - `desierto_atlas/programa_4n_5d` → 5/5 days (3 curated + 2 parsed)
+  - `norte/tanger_fez/programa_4n_5d` → 5/5 (3 parsed waypoints + 2 stay)
+  - `norte/ciudades_imperiales/programa_4n_5d` → 5/5 (3 parsed + 2 stay)
+- Tokens like `casa-rabat`, `volubilis-meknes-fez`, `tanger-tetuan`, `akchour-chefchaouen`, `meknes-fez`, `da-return-ouarzazate` now auto-resolve into real polylines without any data backfill.
+- Trilingual labels (ES/EN/FR) cover all three tiers.

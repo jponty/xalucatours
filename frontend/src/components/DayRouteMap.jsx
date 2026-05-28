@@ -1,15 +1,82 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
-import { MapPin, Navigation, Sparkles } from "lucide-react";
+import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline, useMap } from "react-leaflet";
+import { MapPin, Navigation, Sparkles, ArrowRight, Home as HomeIcon } from "lucide-react";
 import { DAY_LANDMARKS, LANDMARK_KINDS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LandmarkCarousel, LandmarkCarouselHint } from "@/components/LandmarkCarousel";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
+import { resolveDayRoute } from "@/lib/dayRouteResolver";
+
+/* ============================================================
+   <DayRouteMap />
+   Renders ONE "Mapa del día" section per day, with three tiers:
+     1) Rich landmark experience  – when DAY_LANDMARKS[route_id]
+     2) Polyline waypoint map     – when resolveDayRoute returns ≥ 2 stops
+     3) Editorial "estancia" card – when only a single anchor or no data
+   Every day always shows a section (never returns null) so the
+   itinerary feels coherent regardless of underlying data depth.
+============================================================ */
 
 const LABEL_T = {
-  es: { route: "Mapa del día", landmarks_title: "Puntos de interés del día", progress: "Progreso del viaje", day_short: "Día", count_singular: "punto destacado", count_plural: "puntos destacados" },
-  en: { route: "Day map", landmarks_title: "Day's landmarks", progress: "Trip progress", day_short: "Day", count_singular: "landmark", count_plural: "landmarks" },
-  fr: { route: "Carte du jour", landmarks_title: "Points d'intérêt du jour", progress: "Progression du voyage", day_short: "Jour", count_singular: "point d'intérêt", count_plural: "points d'intérêt" },
+  es: {
+    route: "Mapa del día",
+    landmarks_title: "Puntos de interés del día",
+    progress: "Progreso del viaje",
+    day_short: "Día",
+    count_singular: "punto destacado",
+    count_plural: "puntos destacados",
+    stops_singular: "etapa",
+    stops_plural: "etapas",
+    approx_km: "km aprox.",
+    waypoints_title: "Etapas del trayecto",
+    stay_title: "Día sin desplazamientos",
+    stay_body: "Esta jornada se vive sin grandes traslados — un día para reposar el viaje, dejar que el lugar te penetre y vivir el ritmo lento de Marruecos.",
+    stay_in: "En",
+    no_data_title: "Mapa del día",
+    no_data_body: "Los detalles geográficos exactos de esta etapa se confirman al diseñar tu itinerario a medida.",
+  },
+  en: {
+    route: "Day map",
+    landmarks_title: "Day's landmarks",
+    progress: "Trip progress",
+    day_short: "Day",
+    count_singular: "landmark",
+    count_plural: "landmarks",
+    stops_singular: "stop",
+    stops_plural: "stops",
+    approx_km: "approx. km",
+    waypoints_title: "Today's stops",
+    stay_title: "A stationary day",
+    stay_body: "This day unfolds without long transfers — a day to let the destination sink in and live the slow rhythm of Morocco.",
+    stay_in: "At",
+    no_data_title: "Day map",
+    no_data_body: "Exact geographic details of this leg are confirmed when we design your bespoke itinerary.",
+  },
+  fr: {
+    route: "Carte du jour",
+    landmarks_title: "Points d'intérêt du jour",
+    progress: "Progression du voyage",
+    day_short: "Jour",
+    count_singular: "point d'intérêt",
+    count_plural: "points d'intérêt",
+    stops_singular: "étape",
+    stops_plural: "étapes",
+    approx_km: "km env.",
+    waypoints_title: "Étapes du jour",
+    stay_title: "Une journée sans déplacements",
+    stay_body: "Une journée sans grands transferts — pour reposer le voyage et vivre le rythme lent du Maroc.",
+    stay_in: "À",
+    no_data_title: "Carte du jour",
+    no_data_body: "Les détails géographiques exacts de cette étape sont confirmés lors de la conception de votre voyage sur mesure.",
+  },
+};
+
+/* Type colours for the polyline waypoint mode. */
+const TYPE_COLORS = {
+  start:     "#5A6B4F",
+  stop:      "#C16542",
+  overnight: "#A07042",
+  end:       "#5A7F9C",
 };
 
 /* MapController flies to the active landmark when selection changes */
@@ -42,26 +109,34 @@ const ProgressBar = ({ idx, total, accent, t }) => {
   );
 };
 
-export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
-  const { lang } = useLanguage();
-  const t = LABEL_T[lang] || LABEL_T.es;
-  const landmarks = DAY_LANDMARKS[day.route_id];
+/* ----- Haversine for polyline distance estimate ----- */
+const haversine = (a, b) => {
+  const R = 6371;
+  const dLat = ((b[1] - a[1]) * Math.PI) / 180;
+  const dLng = ((b[2] - a[2]) * Math.PI) / 180;
+  const lat1 = (a[1] * Math.PI) / 180;
+  const lat2 = (b[1] * Math.PI) / 180;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+};
 
+/* ============================================================
+   Tier 1 — Rich landmark experience
+============================================================ */
+const LandmarkMode = ({ day, idx, total, accent, t, lang, landmarks }) => {
   const bounds = useMemo(() => computeLandmarkBounds(landmarks), [landmarks]);
   const [activeId, setActiveId] = useState(null);
-
-  if (!landmarks || landmarks.length === 0) return null;
-
   const activeLandmark = landmarks.find((l) => l.id === activeId);
   const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
   const handleSelect = (id) => setActiveId((prev) => (prev === id ? null : id));
-
-  // Unique kinds used in this day, for the dynamic legend
   const usedKinds = Array.from(new Set(landmarks.map((l) => l.kind)));
 
   return (
-    <section data-testid={`day-route-map-${day.route_id}`}
-             className="relative bg-[#F2EBE1] mt-12 md:mt-16 pt-14 md:pt-20 pb-10 md:pb-14 border-t border-[#2C2621]/10">
+    <section
+      data-testid={`day-route-map-${day.route_id}`}
+      data-tier="landmarks"
+      className="relative bg-[#F2EBE1] mt-12 md:mt-16 pt-14 md:pt-20 pb-10 md:pb-14 border-t border-[#2C2621]/10"
+    >
       <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
@@ -87,7 +162,6 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
                   const isActive = activeId === l.id;
                   return (
                     <React.Fragment key={l.id}>
-                      {/* Soft halo on every landmark + strong halo when active */}
                       <CircleMarker
                         center={[l.lat, l.lng]}
                         radius={isActive ? 26 : 16}
@@ -114,7 +188,6 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
                 })}
               </MapContainer>
             </div>
-            {/* Dynamic legend with the kinds present in this day */}
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
               {usedKinds.map((k) => {
                 const cfg = LANDMARK_KINDS[k];
@@ -128,7 +201,6 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
             </ul>
           </div>
 
-          {/* Side: progress + landmark panel */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             <div>
               <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
@@ -195,8 +267,6 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
           </div>
         </div>
 
-        {/* Per-landmark image carousel — appears below the map when a
-            landmark is selected (synchronized with map + side list). */}
         {activeLandmark && LANDMARK_GALLERIES[activeLandmark.id] ? (
           <LandmarkCarousel
             landmark={activeLandmark}
@@ -209,6 +279,217 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
       </div>
     </section>
   );
+};
+
+/* ============================================================
+   Tier 2 — Polyline waypoint experience
+============================================================ */
+const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
+  const positions = useMemo(() => waypoints.map((w) => [w[1], w[2]]), [waypoints]);
+  const bounds = useMemo(() => {
+    const lats = waypoints.map((w) => w[1]);
+    const lngs = waypoints.map((w) => w[2]);
+    const pad = 0.15;
+    return [
+      [Math.min(...lats) - pad, Math.min(...lngs) - pad],
+      [Math.max(...lats) + pad, Math.max(...lngs) + pad],
+    ];
+  }, [waypoints]);
+  const totalKm = useMemo(() => {
+    let sum = 0;
+    for (let i = 1; i < waypoints.length; i++) sum += haversine(waypoints[i - 1], waypoints[i]);
+    return Math.round(sum);
+  }, [waypoints]);
+
+  return (
+    <section
+      data-testid={`day-route-map-${day.route_id}`}
+      data-tier="waypoints"
+      className="relative bg-[#F2EBE1] mt-12 md:mt-16 pt-14 md:pt-20 pb-10 md:pb-14 border-t border-[#2C2621]/10"
+    >
+      <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+          <div className="lg:col-span-7">
+            <div className="relative h-[420px] md:h-[480px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
+              <MapContainer
+                bounds={bounds}
+                boundsOptions={{ padding: [40, 40] }}
+                scrollWheelZoom={false}
+                zoomControl
+                attributionControl={false}
+                style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
+              >
+                <TileLayer
+                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                  subdomains={["a", "b", "c", "d"]}
+                />
+                {/* Soft shadow polyline */}
+                <Polyline
+                  positions={positions}
+                  pathOptions={{ color: "#1A1513", weight: 6, opacity: 0.18 }}
+                />
+                {/* Main accent polyline */}
+                <Polyline
+                  positions={positions}
+                  pathOptions={{ color: accent, weight: 2.5, opacity: 0.9, dashArray: "1 6" }}
+                />
+                {waypoints.map((w, i) => {
+                  const color = TYPE_COLORS[w[3]] || accent;
+                  return (
+                    <React.Fragment key={`${day.route_id}-wp-${i}`}>
+                      <CircleMarker
+                        center={[w[1], w[2]]}
+                        radius={18}
+                        pathOptions={{ color, weight: 0, fillColor: color, fillOpacity: 0.10 }}
+                        interactive={false}
+                      />
+                      <CircleMarker
+                        center={[w[1], w[2]]}
+                        radius={9}
+                        pathOptions={{
+                          color: "#FDFBF7",
+                          weight: 2,
+                          fillColor: color,
+                          fillOpacity: 1,
+                        }}
+                      >
+                        <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
+                          <span className="text-[11px] tracking-[0.05em]">{w[0]}</span>
+                        </Tooltip>
+                      </CircleMarker>
+                    </React.Fragment>
+                  );
+                })}
+              </MapContainer>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <div>
+              <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
+                <Navigation className="w-3 h-3" strokeWidth={1.8} />
+                {t.route}
+              </span>
+              <h4 className="font-serif-x text-2xl md:text-3xl text-[#2C2621] mt-3 leading-[1.15]">
+                {t.waypoints_title}
+              </h4>
+              <p className="mt-2 text-[12px] tracking-[0.18em] uppercase text-[#5C5248] inline-flex items-center gap-4">
+                <span className="inline-flex items-center gap-2">
+                  <Sparkles className="w-3 h-3" style={{ color: accent }} strokeWidth={1.6} />
+                  {waypoints.length} {waypoints.length === 1 ? t.stops_singular : t.stops_plural}
+                </span>
+                {totalKm > 0 && <span>· {totalKm.toLocaleString()} {t.approx_km}</span>}
+              </p>
+            </div>
+
+            <div>
+              <span className="overline">{t.progress}</span>
+              <div className="mt-3">
+                <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+              </div>
+            </div>
+
+            <ol className="space-y-2" data-testid={`day-waypoints-${day.route_id}`}>
+              {waypoints.map((w, i) => {
+                const color = TYPE_COLORS[w[3]] || accent;
+                const isLast = i === waypoints.length - 1;
+                return (
+                  <li key={`${day.route_id}-row-${i}`} className="flex items-start gap-4 px-4 py-3 border bg-[#FDFBF7]/70 border-[#2C2621]/15">
+                    <span
+                      className="font-serif-x text-xl leading-none mt-0.5 shrink-0 tabular-nums"
+                      style={{ color }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block font-serif-x text-[15px] md:text-[16px] text-[#2C2621] leading-snug inline-flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
+                        {w[0]}
+                      </span>
+                    </span>
+                    {!isLast && (
+                      <ArrowRight className="w-3.5 h-3.5 mt-1 text-[#5C5248] shrink-0" strokeWidth={1.6} />
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ============================================================
+   Tier 3 — Editorial "stationary day" / no-data card
+============================================================ */
+const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
+  // Use single anchor's name if available, otherwise the day's title head.
+  const title = anchor
+    ? anchor[0]
+    : (pick(day.title, lang) || "").split("·")[0]?.trim();
+
+  return (
+    <section
+      data-testid={`day-route-map-${day.route_id}`}
+      data-tier="stay"
+      className="relative bg-[#F2EBE1] mt-12 md:mt-16 pt-14 md:pt-20 pb-14 md:pb-20 border-t border-[#2C2621]/10 overflow-hidden"
+    >
+      <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
+      <div className="relative max-w-5xl mx-auto px-6 md:px-12 text-center">
+        <span
+          className="inline-flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase mb-5"
+          style={{ color: accent }}
+        >
+          <Navigation className="w-3 h-3" strokeWidth={1.8} />
+          {t.route}
+        </span>
+        <h4 className="font-serif-x text-2xl md:text-4xl text-[#2C2621] leading-[1.1] tracking-tight">
+          {anchor ? t.stay_title : t.no_data_title}
+        </h4>
+        {title && (
+          <p className="mt-5 inline-flex items-center gap-2 text-[12px] md:text-[13px] tracking-[0.25em] uppercase text-[#5C5248]">
+            <HomeIcon className="w-3.5 h-3.5" style={{ color: accent }} strokeWidth={1.7} />
+            {t.stay_in} {title}
+          </p>
+        )}
+        <p className="mt-6 max-w-2xl mx-auto text-[14px] md:text-[15px] text-[#5C5248] leading-relaxed italic">
+          {anchor ? t.stay_body : t.no_data_body}
+        </p>
+        <div className="mt-8 max-w-md mx-auto">
+          <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ============================================================
+   Public component — picks the right tier
+============================================================ */
+export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
+  const { lang } = useLanguage();
+  const t = LABEL_T[lang] || LABEL_T.es;
+
+  if (!day || !day.route_id) return null;
+
+  // Tier 1 — rich landmarks
+  const landmarks = DAY_LANDMARKS[day.route_id];
+  if (landmarks && landmarks.length > 0) {
+    return <LandmarkMode day={day} idx={idx} total={total} accent={accent} t={t} lang={lang} landmarks={landmarks} />;
+  }
+
+  // Tier 2 — polyline waypoints (curated or parsed)
+  const waypoints = resolveDayRoute(day.route_id);
+  if (waypoints.length >= 2) {
+    return <WaypointMode day={day} idx={idx} total={total} accent={accent} t={t} waypoints={waypoints} />;
+  }
+
+  // Tier 3 — stationary day / no-data card
+  const anchor = waypoints.length === 1 ? waypoints[0] : null;
+  return <StayCard day={day} idx={idx} total={total} accent={accent} t={t} lang={lang} anchor={anchor} />;
 };
 
 export default DayRouteMap;
