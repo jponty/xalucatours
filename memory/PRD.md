@@ -330,3 +330,21 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - `EditableImage` inside cards now uses `name={`program.${p.id}`}`.
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
+
+## Code review · critical & important fixes (Feb 2026)
+- **Backend (server.py)** — defensive initialisation for the 3 variables flagged as "possibly undefined on all code paths" (false positives from the linter caused by `try / except → raise HTTPException`, but worth silencing for clarity):
+  - `result: Dict = {}` at the top of `replace_library_image()`.
+  - `data: bytes = b""; content_type: str = "application/octet-stream"` at the top of `serve_uploaded_file()`.
+- **Backend `is` vs `==` comparisons** — intentionally **kept as-is**: all flagged lines (186, 187, 200, 378, 383, 605 in `server.py`, 132 in `test_contact_api.py`) are `is None` / `is not None` checks, which are the official PEP 8 idiom for None comparisons. Switching to `==` would *introduce* lint warnings from Python's own `pycodestyle`.
+- **Frontend hook dependency hygiene** — clarified intent with inline comments in `WhenToTravelPage.jsx` (the warnings were false positives caused by local variables / module-level constants the strict linter mis-classified as missing deps). Project's actual ESLint config (CRA default) reports `✅ No issues found` across all touched files.
+- **`HomePage.jsx` document.title i18n bug** (recurrence #6, finally **resolved**):
+  - Added `useLanguage()` import and trilingual `DOC_TITLES` map.
+  - `useEffect` now depends on `[lang]` so the tab title updates correctly when the user switches ES/EN/FR.
+- **Array-index-as-key** — fixed all 16 flagged instances across the 4 top-priority pages (`FinDeAno2026Page`, `ToursLandingPage`, `ProximasSalidasPage`, `AtlasDesiertoHubPage`). Each `key={i}` was replaced with a stable derivative (e.g. `key={value}`, `key={pick(item, 'es') + i}`, `key={o.k}`, `key={`upcoming-step-${i}`}`).
+- **All 6 affected page URLs** (`/`, `/viajes`, `/viajes/marruecos`, `/viajes/gransur/fez-rak`, `/cuando-viajar`, `/proximas_salidas`) verified HTTP 200 + no runtime errors in DOM.
+- **Deferred** for a dedicated refactoring iteration (high regression risk, requires testing-agent run):
+  - Backend complexity: `climate_current_month()` (CC 17), `upload_slot_image()`, `upload_library_images()` — touch core business logic.
+  - Frontend complexity: `App.js:117` routing (CC 101!) — should move to a separate routing-config file.
+  - `BestMonthFab.jsx` and `DayRouteMap.jsx` complex helpers (the latter just rewritten for the universal-gallery mandate).
+  - Oversized components: `EditableImage.jsx` (~1330 lines), `ImageEditorPage.jsx` (657), `WhenToTravelPage.jsx` (790), `ImageLibraryPicker.jsx` (424).
+  - Remaining ~95 hook-dep strict warnings (all false positives or stable-ref cases).

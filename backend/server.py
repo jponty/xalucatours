@@ -437,6 +437,7 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
     ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
     ext = ext_map[file.content_type]
     storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
+    result: Dict = {}
     try:
         result = put_object(storage_path, data, file.content_type)
     except Exception as exc:
@@ -572,6 +573,8 @@ async def download_file(path: str):
     """Public proxy that streams an object from Emergent storage.
     Used by <img src="/api/files/..."> tags in the CMS — no auth needed
     because CMS images are part of the public site content."""
+    data: bytes = b""
+    content_type: str = "application/octet-stream"
     try:
         data, content_type = get_object(path)
     except Exception as exc:

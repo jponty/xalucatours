@@ -443,7 +443,7 @@ const ProximasSalidas = ({ t, lang }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {DEPARTURES.map((d, i) => (
-            <article key={i} data-testid={`proxima-card-${i}`}
+            <article key={d.id || `proxima-${i}`} data-testid={`proxima-card-${i}`}
                      className="group relative bg-[#F2EBE1] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden">
               <div className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
                 <EditableImage
@@ -531,7 +531,7 @@ const Asesoramiento = ({ t, lang }) => {
             const Wrapper = isExternal ? "a" : Link;
             const props = isExternal ? { href: o.href } : { to: o.href };
             return (
-              <Wrapper key={i} {...props} data-testid={`asesoramiento-card-${i}`}
+              <Wrapper key={o.k} {...props} data-testid={`asesoramiento-card-${i}`}
                        className="group relative bg-[#FDFBF7]/[0.05] backdrop-blur-md border border-[#FDFBF7]/15 hover:border-[#D4A373]/50 transition-all duration-500 p-8 md:p-10 flex flex-col overflow-hidden">
                 <div className="absolute -top-3 -right-3 berber-bg-cross w-24 h-24 opacity-25" aria-hidden="true" />
                 <span className="inline-flex items-center justify-center w-12 h-12 rounded-full border"
@@ -587,7 +587,7 @@ const ContactIntro = ({ t }) => (
             { label: t.email_label, icon: Mail,  value: CONTACT.email, href: `mailto:${CONTACT.email}` },
             { label: t.hours_label, icon: Building2, value: t.hours_value },
           ].map((c, i) => (
-            <div key={i} className="bg-[#F2EBE1] border border-[#2C2621]/10 p-6 md:p-7">
+            <div key={c.label || `contact-${i}`} className="bg-[#F2EBE1] border border-[#2C2621]/10 p-6 md:p-7">
               <span className="overline">{c.label}</span>
               {c.href ? (
                 <a href={c.href} className="mt-3 flex items-center gap-3 font-serif-x text-xl text-[#2C2621] hover:text-[#C16542] transition-colors break-all">

@@ -106,7 +106,7 @@ export default function WhenToTravelPage() {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [activeStyle, setActiveStyle] = useState(TRAVEL_STYLES[0].id);
 
-  /* trilingual <title> */
+  /* trilingual <title> — `titles` is a local literal; deps only on inputs */
   useEffect(() => {
     const titles = {
       es: "Cuándo viajar a Marruecos · Guía editorial · Xaluca Tours",
@@ -119,6 +119,7 @@ export default function WhenToTravelPage() {
   /* scroll to top on mount */
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, []);
 
+  /* `MONTHS` is a module-level const, intentionally NOT a dependency */
   const monthFocus = useMemo(
     () => (selectedMonth ? MONTHS.find((m) => m.id === selectedMonth) : null),
     [selectedMonth]

@@ -375,7 +375,7 @@ const ProgramsGrid = ({ t, lang }) => {
                     <span className="overline" style={{ color: p.accent }}>{t.route_label}</span>
                     <ul className="mt-3 flex flex-wrap gap-1.5">
                       {p.stages.map((s, i) => (
-                        <li key={i} className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: `${p.accent}40`, color: "#2C2621" }}>
+                        <li key={pick(s, "es") + i} className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: `${p.accent}40`, color: "#2C2621" }}>
                           <MapPin className="w-2.5 h-2.5" style={{ color: p.accent }} strokeWidth={1.8} />
                           {s}
                         </li>
@@ -414,7 +414,7 @@ const CompareSection = ({ t }) => (
       </div>
       <ol className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
         {t.items.map((item, i) => (
-          <li key={i} className="bg-[#FDFBF7] p-7 md:p-8 flex flex-col gap-4">
+          <li key={item.title || `item-${i}`} className="bg-[#FDFBF7] p-7 md:p-8 flex flex-col gap-4">
             <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] font-semibold">0{i + 1}</span>
             <h3 className="font-serif-x text-[22px] md:text-2xl text-[#2C2621] leading-[1.2]">{item.q}</h3>
             <p className="text-[14px] md:text-[15px] text-[#5C5248] leading-[1.75]">{item.a}</p>
@@ -443,7 +443,7 @@ const SpiritSection = ({ t }) => (
       </p>
       <ul className="mt-12 flex flex-wrap justify-center gap-2">
         {t.tags.map((tag, i) => (
-          <li key={i} className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border border-[#D4A373]/50 text-[#D4A373]">
+          <li key={tag} className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border border-[#D4A373]/50 text-[#D4A373]">
             {tag}
           </li>
         ))}
@@ -502,7 +502,7 @@ export default function AtlasDesiertoHubPage() {
           </h2>
           <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
             {t.intro.body.map((p, i) => (
-              <p key={i} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
+              <p key={`intro-${i}`} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
             ))}
           </div>
         </div>

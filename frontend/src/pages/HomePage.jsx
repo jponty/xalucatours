@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSlider from "@/components/HeroSlider";
 import Marquee from "@/components/Marquee";
 import EmotionalIntro from "@/components/EmotionalIntro";
@@ -78,10 +79,17 @@ const COPY = {
   },
 };
 
+const DOC_TITLES = {
+  es: "Xaluca Tours · Viajes a medida por Marruecos",
+  en: "Xaluca Tours · Tailor-made journeys across Morocco",
+  fr: "Xaluca Tours · Voyages sur mesure au Maroc",
+};
+
 export default function HomePage() {
+  const { lang } = useLanguage();
   useEffect(() => {
-    document.title = "Xaluca Tours · Viajes a medida por Marruecos";
-  }, []);
+    document.title = DOC_TITLES[lang] || DOC_TITLES.es;
+  }, [lang]);
 
   return (
     <div data-testid="home-page">

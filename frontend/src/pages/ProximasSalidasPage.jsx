@@ -339,7 +339,7 @@ const DepartureCard = ({ dep, t, lang }) => {
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">{t.highlights}</p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-sm text-[#5C5248]">
             {highlights.map((h, i) => (
-              <li key={i} className="flex items-start gap-2">
+              <li key={pick(h, 'es') + i} className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 mt-1 shrink-0" strokeWidth={2} style={{ color: dep.badgeColor }} />
                 <span>{h}</span>
               </li>
@@ -398,7 +398,7 @@ const ProcessTimeline = ({ t }) => (
       <ol className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
         {t.steps.map((s, i) => (
           <li
-            key={i}
+            key={`upcoming-step-${i}`}
             data-testid={`upcoming-step-${i + 1}`}
             className="relative bg-[#FDFBF7] p-7 md:p-9 flex flex-col gap-5"
           >
@@ -435,7 +435,7 @@ const WhyPillars = ({ t }) => (
           const Icon = ICONS[p.icon] || ShieldCheck;
           return (
             <article
-              key={i}
+              key={`upcoming-pillar-${i}`}
               data-testid={`upcoming-pillar-${i}`}
               className="bg-[#1A1513] hover:bg-[#221A16] transition-colors duration-500 p-7 md:p-9 flex flex-col gap-4"
             >

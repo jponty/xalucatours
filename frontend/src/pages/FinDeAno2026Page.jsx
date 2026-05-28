@@ -375,7 +375,7 @@ function Overview({ lang }) {
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2C2621]/10">
           {cards.map(({ Icon, label, value, note }, i) => (
             <div
-              key={i}
+              key={value}
               data-testid={`findeano-overview-card-${i}`}
               className="bg-[#FDFBF7] p-7 md:p-8 flex flex-col gap-3 min-h-[180px]"
             >
@@ -531,7 +531,7 @@ function Inclusions({ lang }) {
           <ul className="space-y-3.5">
             {COPY.inclusions.items.map((item, i) => (
               <li
-                key={i}
+                key={pick(item, "es") + i}
                 data-testid={`findeano-include-${i}`}
                 className="flex items-start gap-3 text-[14px] md:text-[15px] text-[#FDFBF7]/90 leading-relaxed"
               >
@@ -549,7 +549,7 @@ function Inclusions({ lang }) {
           <ul className="space-y-3.5">
             {COPY.exclusions.items.map((item, i) => (
               <li
-                key={i}
+                key={pick(item, "es") + i}
                 data-testid={`findeano-exclude-${i}`}
                 className="flex items-start gap-3 text-[14px] md:text-[15px] text-[#FDFBF7]/75 leading-relaxed"
               >
@@ -575,7 +575,7 @@ function Notes({ lang }) {
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
           {COPY.notes.blocks.map((b, i) => (
             <div
-              key={i}
+              key={pick(b.title, "es") + i}
               data-testid={`findeano-note-${i}`}
               className="bg-[#FDFBF7] p-7 md:p-8 border border-[#2C2621]/10"
             >
@@ -626,7 +626,7 @@ function Contracting({ lang }) {
             </h4>
             <ul className="space-y-1.5 mb-5">
               {contracting.payment.items.map((it, i) => (
-                <li key={i} className="text-[14px] text-[#5C5248] flex items-center gap-2">
+                <li key={pick(it, "es") + i} className="text-[14px] text-[#5C5248] flex items-center gap-2">
                   <ChevronRight className="w-3 h-3 text-[#C16542]" strokeWidth={2} />
                   {pick(it, lang)}
                 </li>
@@ -657,7 +657,7 @@ function Contracting({ lang }) {
             <ul className="space-y-2.5">
               {contracting.cancel.items.map((it, i) => (
                 <li
-                  key={i}
+                  key={pick(it, "es") + i}
                   data-testid={`findeano-cancel-${i}`}
                   className="text-[13px] text-[#5C5248] leading-relaxed flex items-start gap-2"
                 >
