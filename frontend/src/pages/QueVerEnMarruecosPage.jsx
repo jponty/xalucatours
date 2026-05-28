@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
 import {
   Home, ChevronRight, Compass, MapPin, ArrowRight, ArrowUpRight,
-  Crown, Tent, Mountain, Waves, Building2, Sparkles, Star,
+  Crown, Tent, Mountain, Waves, Building2, Sparkles, Star, X,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -56,6 +57,26 @@ const COPY = {
   },
   tripsCta: { es: "Ver viajes", en: "View trips", fr: "Voir les voyages" },
   catLabel: { es: "Categoría", en: "Category", fr: "Catégorie" },
+  map: {
+    overline: { es: "Tráza tu próxima ruta", en: "Plot your next route", fr: "Tracez votre prochaine route" },
+    title: {
+      es: "Los 17 destinos, en un solo mapa",
+      en: "All 17 destinations, on a single map",
+      fr: "Les 17 destinations, sur une seule carte",
+    },
+    body: {
+      es: "Pulsa cualquier punto para descubrir el destino y los viajes que lo atraviesan. Cada color corresponde a una sección de la guía.",
+      en: "Click any point to discover the destination and the journeys that pass through it. Each colour matches a section of the guide.",
+      fr: "Cliquez sur n'importe quel point pour découvrir la destination et les voyages qui la traversent. Chaque couleur correspond à une section du guide.",
+    },
+    hint: {
+      es: "Pulsa un destino para ver el detalle",
+      en: "Click a destination to see details",
+      fr: "Cliquez sur une destination pour voir les détails",
+    },
+    legend: { es: "Leyenda", en: "Legend", fr: "Légende" },
+    reset: { es: "Limpiar selección", en: "Clear selection", fr: "Effacer la sélection" },
+  },
   finalCta: {
     eyebrow: { es: "¿Lo tienes claro?", en: "Made up your mind?", fr: "C'est décidé ?" },
     title: {
@@ -662,6 +683,220 @@ const Section = ({ section, lang }) => {
   );
 };
 
+/* ============================================================
+   Interactive mini-map · all 17 destinations
+============================================================ */
+const DESTINATION_COORDS = {
+  marrakech:    [31.6295, -7.9811],
+  fez:          [34.0331, -4.9998],
+  meknes:       [33.8932, -5.5547],
+  rabat:        [34.0209, -6.8416],
+  ergchebbi:    [31.1335, -3.9785],
+  ouarzazate:   [30.9189, -6.8939],
+  aitbenhaddou: [31.0470, -7.1294],
+  altoatlas:    [31.2117, -7.9233],
+  imlil:        [31.1366, -7.9192],
+  "dades-todra":[31.4900, -5.7300],
+  tanger:       [35.7595, -5.8330],
+  chefchaouen:  [35.1690, -5.2636],
+  asilah:       [35.4650, -6.0341],
+  essaouira:    [31.5085, -9.7595],
+  casablanca:   [33.5731, -7.5898],
+  volubilis:    [34.0727, -5.5556],
+  sidiali:      [33.0703, -5.0014],
+};
+
+const ALL_DESTINATIONS = SECTIONS.flatMap((s) =>
+  s.cards
+    .map((c) => {
+      const coords = DESTINATION_COORDS[c.id];
+      if (!coords) return null;
+      return { card: c, section: s, coords };
+    })
+    .filter(Boolean)
+);
+
+const DestinationsMap = ({ lang }) => {
+  const [activeId, setActiveId] = useState(null);
+  const active = useMemo(
+    () => ALL_DESTINATIONS.find((d) => d.card.id === activeId) || null,
+    [activeId]
+  );
+
+  return (
+    <section
+      data-testid="qvm-map-section"
+      className="relative bg-[#1A1513] py-20 md:py-28 overflow-hidden"
+    >
+      <div className="absolute inset-0 berber-bg-cross opacity-10 pointer-events-none" aria-hidden="true" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-10 md:mb-14">
+          <div className="md:col-span-7">
+            <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+              <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+              {pick(COPY.map.overline, lang)}
+            </span>
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#FDFBF7]">
+              {pick(COPY.map.title, lang)}
+            </h2>
+          </div>
+          <div className="md:col-span-5">
+            <p className="text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed">{pick(COPY.map.body, lang)}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          {/* Map */}
+          <div className="lg:col-span-7 relative">
+            <div
+              data-testid="qvm-leaflet-wrapper"
+              className="relative h-[460px] md:h-[560px] w-full overflow-hidden border border-[#FDFBF7]/15 bg-[#221A16]"
+            >
+              <MapContainer
+                center={[31.7917, -7.0926]}
+                zoom={6}
+                scrollWheelZoom={false}
+                style={{ height: "100%", width: "100%", background: "#1A1513" }}
+                attributionControl={false}
+              >
+                <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+                {ALL_DESTINATIONS.map(({ card, section, coords }) => {
+                  const isActive = activeId === card.id;
+                  return (
+                    <CircleMarker
+                      key={card.id}
+                      center={coords}
+                      radius={isActive ? 11 : 7}
+                      pathOptions={{
+                        color: section.accent,
+                        fillColor: section.accent,
+                        fillOpacity: isActive ? 0.95 : 0.7,
+                        weight: isActive ? 3 : 2,
+                      }}
+                      eventHandlers={{
+                        click: () => setActiveId(card.id),
+                        mouseover: (e) => e.target.openTooltip(),
+                      }}
+                    >
+                      <Tooltip direction="top" offset={[0, -6]} opacity={1} className="qvm-tooltip">
+                        <span className="font-serif-x text-sm text-[#2C2621]">
+                          {pick(card.name, lang)}
+                        </span>
+                      </Tooltip>
+                    </CircleMarker>
+                  );
+                })}
+              </MapContainer>
+            </div>
+
+            {/* Legend */}
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">
+                {pick(COPY.map.legend, lang)}
+              </span>
+              {SECTIONS.map((s) => (
+                <span
+                  key={s.id}
+                  data-testid={`qvm-map-legend-${s.id}`}
+                  className="inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase text-[#FDFBF7]/80"
+                >
+                  <span
+                    className="inline-block w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: s.accent }}
+                  />
+                  {pick(s.title, lang)}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Side panel */}
+          <div className="lg:col-span-5">
+            {active ? (
+              <article
+                data-testid={`qvm-map-detail-${active.card.id}`}
+                className="bg-[#FDFBF7] text-[#2C2621] h-full flex flex-col animate-slide-down"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
+                  <img
+                    src={active.card.image}
+                    alt={pick(active.card.name, lang)}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 to-transparent pointer-events-none" />
+                  <span
+                    className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
+                    style={{ color: active.section.accent }}
+                  >
+                    <MapPin className="w-3 h-3" strokeWidth={1.6} />
+                    {pick(active.card.cat, lang)}
+                  </span>
+                  <button
+                    type="button"
+                    data-testid="qvm-map-detail-close"
+                    onClick={() => setActiveId(null)}
+                    aria-label={pick(COPY.map.reset, lang)}
+                    className="absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#1A1513]/70 hover:bg-[#1A1513] text-[#FDFBF7] backdrop-blur-sm transition-colors"
+                  >
+                    <X className="w-4 h-4" strokeWidth={1.8} />
+                  </button>
+                </div>
+                <div className="p-6 md:p-7 flex flex-col flex-1">
+                  <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.12]">
+                    {pick(active.card.name, lang)}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
+                    {pick(active.card.blurb, lang)}
+                  </p>
+                  <div className="mt-5 pt-5 border-t border-[#2C2621]/10">
+                    <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
+                      {pick(COPY.tripsCta, lang)}
+                    </p>
+                    <ul className="flex flex-col gap-1.5">
+                      {active.card.trips.map((trip, i) => (
+                        <li key={trip.routeId}>
+                          <Link
+                            to={pathFor(lang, trip.routeId)}
+                            data-testid={`qvm-map-trip-${active.card.id}-${i}`}
+                            className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
+                            style={{ borderLeft: `2px solid ${active.section.accent}55` }}
+                          >
+                            <span className="text-sm group-hover/link:text-[#C16542] transition-colors">
+                              {pick(trip.label, lang)}
+                            </span>
+                            <ArrowUpRight
+                              className="w-3.5 h-3.5 text-[#5C5248] group-hover/link:text-[#C16542] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all flex-shrink-0"
+                              strokeWidth={1.8}
+                            />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            ) : (
+              <div
+                data-testid="qvm-map-hint"
+                className="h-full min-h-[300px] flex flex-col items-center justify-center text-center px-8 py-10 border border-dashed border-[#FDFBF7]/20 text-[#FDFBF7]/75"
+              >
+                <Compass className="w-8 h-8 text-[#D4A373] mb-4" strokeWidth={1.4} />
+                <p className="font-serif-x text-2xl text-[#FDFBF7] leading-tight">
+                  {pick(COPY.map.hint, lang)}
+                </p>
+                <p className="mt-3 text-xs tracking-[0.2em] uppercase text-[#FDFBF7]/50">
+                  17 · {pick(COPY.current, lang)}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const FinalCta = ({ lang }) => (
   <section
     data-testid="qvm-final-cta"
@@ -725,6 +960,7 @@ export default function QueVerEnMarruecosPage() {
       {SECTIONS.map((section) => (
         <Section key={section.id} section={section} lang={lang} />
       ))}
+      <DestinationsMap lang={lang} />
       <FinalCta lang={lang} />
     </div>
   );

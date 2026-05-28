@@ -331,6 +331,15 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## Destination guide · interactive mini-map (Feb 2026)
+- Added a 12-col Leaflet map section just before the final CTA on `/que-ver-en-Marruecos`.
+- Module-level `DESTINATION_COORDS` lookup (17 entries, lat/lng) keeps the SECTIONS data untouched and is consumed via `ALL_DESTINATIONS = SECTIONS.flatMap(...)`.
+- `MapContainer` renders the CartoDB `dark_all` basemap (matches the page's `#1A1513` palette) with one `CircleMarker` per destination, coloured with its section accent. Active marker grows (radius 7→11) and opacity bumps to 95 %.
+- Side panel (5/12) shows either a compass hint card (default) or the selected destination's detail (image · category badge · serif name · blurb · trip chips), each chip a real `<Link to={pathFor(lang, routeId)}>` so SPA navigation is preserved.
+- Legend chips below the map list the 6 sections with their accent dots, fully trilingual via the existing `pick()` helper.
+- New `data-testid`s: `qvm-map-section`, `qvm-leaflet-wrapper`, `qvm-map-legend-{sid}`, `qvm-map-hint`, `qvm-map-detail-{cid}`, `qvm-map-detail-close`, `qvm-map-trip-{cid}-{i}`.
+- Smoke-verified: 17 markers rendered, hint visible by default, click on a marker opens the detail panel with the correct slug (`/viajes/escapadas/marrakech` for Marrakech's first chip), close button resets to hint.
+
 ## Destination guide · /que-ver-en-Marruecos (Feb 2026)
 - **User mandate**: build an inspirational visual guide for Morocco's must-see destinations, with clickable cards that route via SPA to the existing trips passing through each destination. Editable images/text, responsive, trilingual.
 - **New page** `pages/QueVerEnMarruecosPage.jsx` wired to the existing `whatToSee` route (`/que-ver-en-Marruecos` · `/en/what-to-see-in-morocco` · `/fr/que-voir-au-maroc`). Registered in `App.js` (`if (routeId === "whatToSee") return <QueVerEnMarruecosPage />`).
