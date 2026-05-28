@@ -113,6 +113,7 @@ import QueHacemosPage from "@/pages/QueHacemosPage";
 import IncentivosPage from "@/pages/IncentivosPage";
 import MoroccoLandingPage from "@/pages/MoroccoLandingPage";
 import EquipoPage from "@/pages/EquipoPage";
+import BlogPage, { BlogPostPage } from "@/pages/BlogPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
 /**
@@ -122,6 +123,11 @@ import { resolvePath, pathFor } from "@/lib/routes";
 const LocalizedRouter = () => {
   const location = useLocation();
   const { lang, routeId } = resolvePath(location.pathname);
+
+  // Blog post: dynamic slug under /blog/:slug · /en/blog/:slug · /fr/blog/:slug
+  // (resolvePath only matches exact slugs; we handle the post route manually.)
+  const blogMatch = location.pathname.match(/^\/(?:(en|fr)\/)?blog\/([^/?#]+)\/?$/);
+  if (blogMatch) return <BlogPostPage />;
 
   if (routeId === "home")          return <HomePage />;
   if (routeId === "toursLanding")  return <ToursLandingPage />;
@@ -227,6 +233,7 @@ const LocalizedRouter = () => {
   if (routeId === "events")        return <IncentivosPage />;
   if (routeId === "morocco")       return <MoroccoLandingPage />;
   if (routeId === "about")         return <EquipoPage />;
+  if (routeId === "blog")          return <BlogPage />;
   if (routeId)                     return <StubPage routeId={routeId} />;
 
   // Unknown URL within a known lang → redirect to home of that lang

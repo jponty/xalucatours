@@ -122,6 +122,7 @@ export const ROUTES = {
 
   // Editorial guides
   whenToTravel:       { es: "cuando-viajar",             en: "when-to-travel",           fr: "quand-partir" },
+  blog:               { es: "blog",                      en: "blog",                     fr: "blog" },
 };
 
 /* Build a URL for a given language + routeId.
