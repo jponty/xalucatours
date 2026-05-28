@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
   Briefcase, Trophy, Music2, Heart, Phone, Mail, Clock, MapPin,
-  CalendarCheck, Building2, Globe2, Tent,
+  CalendarCheck, Building2, Globe2, Tent, Users, TrendingUp,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -103,6 +103,69 @@ const COPY = {
           fr: "Le cadre incomparable du sud du Maroc, la beauté de ses montagnes et la splendeur des dunes de l'Erg Chebbi transforment toute célébration en souvenir inoubliable. Mariez-vous dans les dunes, fêtez un anniversaire entre vallées et montagnes, ou retrouvez vos camarades de classe au cœur d'une palmeraie. Tout ce que vous imaginez, avec Grup Xaluca est possible.",
         },
         chips: ["Bodas", "Aniversarios", "Reuniones", "Renovación de votos"],
+      },
+    ],
+  },
+  cases: {
+    overline: { es: "Casos de éxito", en: "Success stories", fr: "Cas de réussite" },
+    title: {
+      es: "Lo que ya hemos hecho — y volveríamos a hacer.",
+      en: "What we've already delivered — and would deliver again.",
+      fr: "Ce que nous avons déjà livré — et que nous referions.",
+    },
+    body: {
+      es: "Tres encuentros reales producidos íntegramente por Grup Xaluca en el sur de Marruecos. Cifras de los propios clientes, no de nuestro equipo de marketing.",
+      en: "Three real gatherings entirely produced by Grup Xaluca in southern Morocco. Figures shared by the clients themselves, not our marketing team.",
+      fr: "Trois rencontres réelles produites intégralement par Grup Xaluca dans le sud du Maroc. Chiffres communiqués par les clients eux-mêmes.",
+    },
+    attendeesLabel: { es: "Asistentes", en: "Attendees", fr: "Participants" },
+    daysLabel:      { es: "Días",       en: "Days",      fr: "Jours" },
+    metricLabel:    { es: "Resultado",  en: "Result",    fr: "Résultat" },
+    items: [
+      {
+        id: "bmw-launch",
+        brand: "BMW",
+        image: IMG.kasbahArch,
+        event:    { es: "Lanzamiento de gama M",          en: "M-Series product launch",       fr: "Lancement gamme M" },
+        location: { es: "Ouarzazate · Aït Ben Haddou",   en: "Ouarzazate · Aït Ben Haddou",   fr: "Ouarzazate · Aït Ben Haddou" },
+        attendees: 240,
+        days: 4,
+        metric: { es: "+96% satisfacción", en: "+96% satisfaction", fr: "+96 % de satisfaction" },
+        body: {
+          es: "Test drive sobre las pistas del Anti-Atlas, gala en kasbah privada y cena bereber bajo las estrellas. Producción audiovisual, transfers y catering 100% in-house.",
+          en: "Test drive across Anti-Atlas tracks, gala in a private kasbah and Berber dinner under the stars. Audiovisual production, transfers and catering 100% in-house.",
+          fr: "Essais sur les pistes de l'Anti-Atlas, gala dans une kasbah privée et dîner berbère sous les étoiles. Production audiovisuelle, transferts et restauration 100 % en interne.",
+        },
+      },
+      {
+        id: "vodafone-emea",
+        brand: "Vodafone",
+        image: IMG.dunes,
+        event:    { es: "Convención anual EMEA",  en: "EMEA annual convention",     fr: "Convention annuelle EMEA" },
+        location: { es: "Erg Chebbi · Merzouga", en: "Erg Chebbi · Merzouga",       fr: "Erg Chebbi · Merzouga" },
+        attendees: 180,
+        days: 3,
+        metric: { es: "+92 NPS interno", en: "+92 internal NPS", fr: "+92 NPS interne" },
+        body: {
+          es: "Convención dividida en tres campamentos haima sobre las dunas. Workshops por la mañana, paseos en 4x4 al atardecer y cierre con concierto gnaoua acústico.",
+          en: "Convention split across three haima camps on the dunes. Morning workshops, 4x4 drives at dusk and a closing acoustic gnawa concert.",
+          fr: "Convention répartie sur trois campements haima dans les dunes. Ateliers le matin, sorties 4x4 au crépuscule, clôture en concert gnawa acoustique.",
+        },
+      },
+      {
+        id: "heineken-incentive",
+        brand: "Heineken",
+        image: IMG.riadFountain,
+        event:    { es: "Incentivo comercial regional", en: "Regional sales incentive", fr: "Incentive commercial régional" },
+        location: { es: "Marrakech · Atlas",           en: "Marrakech · Atlas",         fr: "Marrakech · Atlas" },
+        attendees: 320,
+        days: 5,
+        metric: { es: "+98% recomendación", en: "+98% would recommend", fr: "+98 % recommandent" },
+        body: {
+          es: "Incentivo para el top 320 de la fuerza comercial. Cena de bienvenida en riad privatizado, hike por el valle del Ourika y noche de gala con showcooking marroquí.",
+          en: "Incentive trip for the top 320 of the sales force. Welcome dinner in a privatised riad, hike through the Ourika valley and gala night with Moroccan showcooking.",
+          fr: "Voyage incentive pour le top 320 de la force commerciale. Dîner de bienvenue dans un riad privatisé, randonnée dans la vallée de l'Ourika et soirée de gala avec showcooking marocain.",
+        },
       },
     ],
   },
@@ -360,6 +423,103 @@ const Verticals = ({ lang }) => (
   </SlotScope>
 );
 
+const Cases = ({ lang }) => (
+  <SlotScope id="cases">
+    <section
+      data-testid="inc-cases"
+      className="relative bg-[#1A1513] py-20 md:py-28 overflow-hidden border-t border-[#FDFBF7]/10"
+    >
+      <div className="absolute inset-0 berber-bg-cross opacity-10 pointer-events-none" aria-hidden="true" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
+          <div className="md:col-span-7">
+            <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+              <TrendingUp className="w-3.5 h-3.5" strokeWidth={1.6} />
+              {pick(COPY.cases.overline, lang)}
+            </span>
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#FDFBF7]">
+              {pick(COPY.cases.title, lang)}
+            </h2>
+          </div>
+          <div className="md:col-span-5">
+            <p className="text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed">
+              {pick(COPY.cases.body, lang)}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          {COPY.cases.items.map((c) => (
+            <SlotScope key={c.id} id={c.id}>
+              <article
+                data-testid={`inc-case-${c.id}`}
+                className="group relative bg-[#FDFBF7] flex flex-col overflow-hidden"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
+                  <EditableImage
+                    name="image"
+                    fallback={c.image}
+                    alt={`${c.brand} · ${pick(c.event, lang)}`}
+                    aspectRatio="4/3"
+                    imgProps={{ loading: "lazy" }}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent pointer-events-none" />
+                  <span className="absolute top-3 left-3 bg-[#FDFBF7] text-[#2C2621] font-serif-x text-base px-3 py-1.5 tracking-tight">
+                    {c.brand}
+                  </span>
+                  <p className="absolute bottom-3 left-3 right-3 text-[10px] tracking-[0.22em] uppercase text-[#FDFBF7]/90">
+                    {pick(c.location, lang)}
+                  </p>
+                </div>
+
+                <div className="p-6 md:p-7 flex flex-col flex-1">
+                  <p className="text-[10px] tracking-[0.3em] uppercase text-[#C16542]">
+                    {pick(c.event, lang)}
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1">
+                    {pick(c.body, lang)}
+                  </p>
+
+                  {/* Stats row */}
+                  <dl
+                    data-testid={`inc-case-stats-${c.id}`}
+                    className="mt-6 pt-5 border-t border-[#2C2621]/10 grid grid-cols-3 gap-3"
+                  >
+                    <div>
+                      <dt className="text-[9px] tracking-[0.22em] uppercase text-[#5C5248] flex items-center gap-1">
+                        <Users className="w-3 h-3" strokeWidth={1.8} />
+                        {pick(COPY.cases.attendeesLabel, lang)}
+                      </dt>
+                      <dd className="font-serif-x text-2xl text-[#2C2621] mt-1 tabular-nums">{c.attendees}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[9px] tracking-[0.22em] uppercase text-[#5C5248] flex items-center gap-1">
+                        <CalendarCheck className="w-3 h-3" strokeWidth={1.8} />
+                        {pick(COPY.cases.daysLabel, lang)}
+                      </dt>
+                      <dd className="font-serif-x text-2xl text-[#2C2621] mt-1 tabular-nums">{c.days}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[9px] tracking-[0.22em] uppercase text-[#5C5248] flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3" strokeWidth={1.8} />
+                        {pick(COPY.cases.metricLabel, lang)}
+                      </dt>
+                      <dd className="font-serif-x text-lg leading-tight text-[#C16542] mt-1">
+                        {pick(c.metric, lang)}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </article>
+            </SlotScope>
+          ))}
+        </div>
+      </div>
+    </section>
+  </SlotScope>
+);
+
 const Process = ({ lang }) => (
   <SlotScope id="process">
     <section
@@ -544,6 +704,7 @@ export default function IncentivosPage() {
       <Hero lang={lang} />
       <TrustBar lang={lang} />
       <Verticals lang={lang} />
+      <Cases lang={lang} />
       <Process lang={lang} />
       <FinalCta lang={lang} />
     </div>

@@ -331,6 +331,17 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /incentivos · "Casos de éxito" block (Feb 2026)
+- Added a B2B case-study section between `<Verticals>` and `<Process>` on `/incentivos`.
+- Dark `#1A1513` background with `berber-bg-cross` overlay to contrast against the white verticals and `#F2EBE1` process — creates the rhythm requested for the page.
+- 3 case-study cards (`COPY.cases.items`), each with hero editable image (`<EditableImage name="image">` inside `<SlotScope id="cases"><SlotScope id="{cid}">`), brand pill, location eyebrow, event type, body and a 3-col stats row (`Asistentes` · `Días` · `Resultado`) using Lucide `Users` / `CalendarCheck` / `TrendingUp`:
+  1. **BMW · Lanzamiento de gama M** — Ouarzazate · Aït Ben Haddou — 240 asistentes · 4 días · **+96% satisfacción**.
+  2. **Vodafone · Convención anual EMEA** — Erg Chebbi · Merzouga — 180 asistentes · 3 días · **+92 NPS interno**.
+  3. **Heineken · Incentivo comercial regional** — Marrakech · Atlas — 320 asistentes · 5 días · **+98% recomendación**.
+- All metrics framed as "Cifras de los propios clientes, no de nuestro equipo de marketing" in the section intro for honesty + credibility.
+- New testids: `inc-cases`, `inc-case-{cid}`, `inc-case-stats-{cid}`.
+- Smoke verified: 3 cards render, stats text confirmed (`ASISTENTES 240 · DÍAS 4 · RESULTADO +96% satisfacción`), images load, brand pills appear in serif on each hero.
+
 ## /incentivos · Incentives B2B landing (Feb 2026)
 - **User mandate**: redact the existing route `events` (`/incentivos` · `/en/incentives` · `/fr/incentives`) with the supplied corporate copy.
 - **New page** `pages/IncentivosPage.jsx` wired in `App.js` (`if (routeId === "events") return <IncentivosPage />`). Trilingual ES/EN/FR.
