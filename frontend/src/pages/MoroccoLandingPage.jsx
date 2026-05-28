@@ -4,8 +4,8 @@ import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
 import {
   Home, ChevronRight, Compass, ArrowRight, ArrowUpRight, MapPin,
   Heart, Users, Users2, User, Briefcase, Sparkles, Star,
-  Tent, Mountain, Crown, Utensils, Waves, Sun, Snowflake, Leaf, CloudSun,
-  Car, Bath, Moon, Building2, Shield, Hotel, Phone, Compass as CompassIcon,
+  Tent, Mountain, Crown, Utensils, Sun, Snowflake, Leaf, CloudSun,
+  Car, Shield, Hotel, Phone, Compass as CompassIcon,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -16,32 +16,23 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 
-/* ============================================================
-   Premium dark palette · /marruecos
-============================================================ */
-const PALETTE = {
-  bg:        "#0D0A09",
-  bgSoft:    "#14100E",
-  bgLifted:  "#1A1411",
-  text:      "#FDFBF7",
-  terra:     "#C16542",
-  terraSoft: "#A8533A",
-  majorelle: "#3B5BA9",
-  sand:      "#D4A373",
-};
-
 const DOC_TITLES = {
   es: "Marruecos · Tu próxima aventura · Xaluca Tours",
   en: "Morocco · Your next adventure · Xaluca Tours",
   fr: "Maroc · Votre prochaine aventure · Xaluca Tours",
 };
 
+/* ============================================================
+   Copy (identical content — only visual layer is being aligned
+   to the site's design system)
+============================================================ */
 const COPY = {
   breadcrumb: { es: "Inicio", en: "Home", fr: "Accueil" },
   current:    { es: "Marruecos", en: "Morocco", fr: "Maroc" },
   hero: {
     eyebrow: { es: "Tu próxima aventura empieza aquí", en: "Your next adventure starts here", fr: "Votre prochaine aventure commence ici" },
-    title: { es: "Marruecos.", en: "Morocco.", fr: "Maroc." },
+    place:   { es: "Marruecos · Norte a Sur", en: "Morocco · North to South", fr: "Maroc · Du Nord au Sud" },
+    title:   { es: "Marruecos.", en: "Morocco.", fr: "Maroc." },
     subtitle: {
       es: "Un país, mil viajes. Desierto, ciudades imperiales, montañas, costa y una cultura que se vive más que se visita.",
       en: "One country, a thousand journeys. Desert, imperial cities, mountains, coast and a culture you live rather than visit.",
@@ -256,8 +247,7 @@ const COPY = {
 
 const ICON_MAP = {
   Tent, Mountain, Crown, Utensils, Sparkles, Heart, Users, Users2, User, Briefcase,
-  Sun, Snowflake, Leaf, CloudSun, Car, Bath, Moon, Building2, Shield, Hotel, Phone,
-  Compass: CompassIcon, Star, Waves,
+  Sun, Snowflake, Leaf, CloudSun, Car, Shield, Hotel, Phone, Compass: CompassIcon, Star,
 };
 
 const MAP_POINTS = [
@@ -275,25 +265,28 @@ const MAP_POINTS = [
 ];
 
 /* ============================================================
-   Sub-components
+   Sub-components — aligned with the rest of the site (cuadrado,
+   #FDFBF7/#F2EBE1/#1A1513 alterno, berber overlays, botones
+   rectangulares con tracking)
 ============================================================ */
 const InlineBreadcrumb = ({ lang }) => (
   <nav
     aria-label="Breadcrumb"
     data-testid="mar-breadcrumbs"
-    className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/10 px-3.5 py-1.5 text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-white/90 rounded-full"
+    className="inline-flex items-center gap-2 bg-[#1A1513]/55 backdrop-blur-md border border-white/10 px-3.5 py-1.5 text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-[#FDFBF7]/90"
   >
     <Link to={pathFor(lang, "home")} data-testid="mar-bc-home" className="flex items-center gap-1.5 hover:text-[#D4A373] transition-colors">
       <Home className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
       <span>{pick(COPY.breadcrumb, lang)}</span>
     </Link>
-    <ChevronRight className="w-3 h-3 text-white/40" strokeWidth={1.6} />
+    <ChevronRight className="w-3 h-3 text-[#FDFBF7]/40" strokeWidth={1.6} />
     <span className="text-[#D4A373]">{pick(COPY.current, lang)}</span>
   </nav>
 );
 
 const Hero = ({ lang }) => (
-  <section data-testid="mar-hero" className="relative h-[100svh] min-h-[680px] w-full overflow-hidden" style={{ background: PALETTE.bg }}>
+  <section data-testid="mar-hero" className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-[#1A1513]">
+    {/* Aurorism layers — mantienen el carácter premium pedido */}
     <span className="aurora-blob a1" aria-hidden="true" />
     <span className="aurora-blob a2" aria-hidden="true" />
     <span className="aurora-blob a3" aria-hidden="true" />
@@ -303,47 +296,50 @@ const Hero = ({ lang }) => (
       alt=""
       aspectRatio="auto"
       imgProps={{ loading: "eager" }}
-      className="ken-burns absolute inset-0 w-full h-full object-cover opacity-30"
+      className="ken-burns absolute inset-0 w-full h-full object-cover opacity-35"
     />
-    <div className="absolute inset-0 bg-gradient-to-t from-[#0D0A09] via-[#0D0A09]/85 to-[#0D0A09]/55 pointer-events-none" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/30 pointer-events-none" />
+    <div className="absolute inset-0 berber-bg-cross opacity-30 pointer-events-none" aria-hidden="true" />
     <span className="film-grain pointer-events-none" />
 
     <div className="relative z-10 h-full flex flex-col">
       <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
         <InlineBreadcrumb lang={lang} />
       </div>
-      <div className="flex-1 flex items-end pb-20 md:pb-28">
+      <div className="flex-1 flex items-end pb-24 md:pb-32">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-4xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
               <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">{pick(COPY.hero.eyebrow, lang)}</span>
+              <span className="w-8 h-px bg-[#D4A373]/50" />
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">{pick(COPY.hero.place, lang)}</span>
             </div>
             <h1
-              className="fade-up fade-up-delay-1 font-serif-x text-white text-[20vw] md:text-[14vw] lg:text-[11vw] leading-[0.92] tracking-[-0.04em] mt-6"
+              className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-[18vw] md:text-[14vw] lg:text-[12vw] leading-[0.94] tracking-[-0.03em] mt-6"
               style={{ fontFeatureSettings: '"liga"' }}
             >
               {pick(COPY.hero.title, lang)}
             </h1>
-            <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-white/80 leading-relaxed">
+            <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
               {pick(COPY.hero.subtitle, lang)}
             </p>
             <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap gap-3">
               <Link
                 to={pathFor(lang, "planTrip")}
                 data-testid="mar-hero-plan"
-                className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-white px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors rounded-full"
+                className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
               >
                 {pick(COPY.hero.cta1, lang)}
-                <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+                <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
               </Link>
               <Link
                 to={pathFor(lang, "toursLanding")}
                 data-testid="mar-hero-tours"
-                className="inline-flex items-center gap-2 border border-white/30 hover:border-[#D4A373] hover:text-[#D4A373] text-white/85 px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors rounded-full backdrop-blur-sm"
+                className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors backdrop-blur-sm"
               >
                 {pick(COPY.hero.cta2, lang)}
-                <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+                <ArrowUpRight className="w-4 h-4" strokeWidth={1.6} />
               </Link>
             </div>
           </div>
@@ -354,38 +350,38 @@ const Hero = ({ lang }) => (
 );
 
 const Why = ({ lang }) => (
-  <section data-testid="mar-why" className="relative py-24 md:py-32" style={{ background: PALETTE.bg }}>
+  <section data-testid="mar-why" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-14">
         <div className="md:col-span-7">
-          <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+          <span className="overline inline-flex items-center gap-2 text-[#C16542]">
             <Star className="w-3.5 h-3.5" strokeWidth={1.6} />
             {pick(COPY.why.overline, lang)}
           </span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[64px] leading-[1.02] tracking-tight mt-4 text-white">
+          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
             {pick(COPY.why.title, lang)}
           </h2>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
         {COPY.why.pillars.map((p) => {
           const Icon = ICON_MAP[p.icon] || Star;
           return (
             <article
               key={p.id}
               data-testid={`mar-why-${p.id}`}
-              className="group relative rounded-2xl bg-white/5 hover:bg-white/[0.08] backdrop-blur-xl border border-white/10 p-7 md:p-8 transition-colors"
+              className="bg-[#FDFBF7] p-7 md:p-8 hover:bg-[#F2EBE1] transition-colors"
             >
               <span
-                className="inline-flex items-center justify-center w-11 h-11 rounded-full"
+                className="inline-flex items-center justify-center w-11 h-11"
                 style={{ backgroundColor: `${p.accent}22`, color: p.accent }}
               >
                 <Icon className="w-5 h-5" strokeWidth={1.6} />
               </span>
-              <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.15] text-white mt-6">
+              <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.15] text-[#2C2621] mt-6">
                 {pick(p.title, lang)}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/65">
+              <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">
                 {pick(p.body, lang)}
               </p>
             </article>
@@ -406,7 +402,7 @@ const ExperienceCard = ({ item, lang }) => {
       <article
         data-testid={`mar-exp-${item.id}`}
         data-profiles={item.profiles.join(",")}
-        className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-white/25 transition-all duration-500 ${spanClass}`}
+        className={`group relative overflow-hidden border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-all duration-500 ${spanClass}`}
       >
         <EditableImage
           name="image"
@@ -414,14 +410,14 @@ const ExperienceCard = ({ item, lang }) => {
           alt={pick(item.title, lang)}
           aspectRatio="auto"
           imgProps={{ loading: "lazy" }}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/25 to-transparent pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-          <h3 className={`font-serif-x text-white ${item.size === "feature" ? "text-3xl md:text-[40px]" : "text-xl md:text-2xl"} leading-[1.1]`}>
+          <h3 className={`font-serif-x text-[#FDFBF7] ${item.size === "feature" ? "text-3xl md:text-[40px]" : "text-xl md:text-2xl"} leading-[1.1]`}>
             {pick(item.title, lang)}
           </h3>
-          <p className="mt-2 text-sm text-white/70 leading-relaxed max-w-prose opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-40 transition-all duration-500 overflow-hidden">
+          <p className="mt-2 text-sm text-[#FDFBF7]/75 leading-relaxed max-w-prose opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-40 transition-all duration-500 overflow-hidden">
             {pick(item.body, lang)}
           </p>
         </div>
@@ -429,7 +425,7 @@ const ExperienceCard = ({ item, lang }) => {
           {item.profiles.slice(0, 3).map((p) => (
             <span
               key={p}
-              className="text-[9px] tracking-[0.2em] uppercase px-2 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/15 text-white/85"
+              className="text-[9px] tracking-[0.22em] uppercase px-2 py-1 bg-[#FDFBF7]/95 text-[#C16542]"
             >
               {p}
             </span>
@@ -448,15 +444,16 @@ const Experiences = ({ lang }) => {
   );
   return (
     <SlotScope id="experiences">
-      <section data-testid="mar-experiences" className="relative py-24 md:py-32 overflow-hidden" style={{ background: PALETTE.bgSoft }}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <section data-testid="mar-experiences" className="relative bg-[#F2EBE1] py-24 md:py-32 border-t border-[#2C2621]/10 overflow-hidden">
+        <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
+        <div className="relative max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-10 md:mb-14">
             <div className="md:col-span-7">
-              <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+              <span className="overline inline-flex items-center gap-2 text-[#C16542]">
                 <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
                 {pick(COPY.experiences.overline, lang)}
               </span>
-              <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+              <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
                 {pick(COPY.experiences.title, lang)}
               </h2>
             </div>
@@ -473,10 +470,10 @@ const Experiences = ({ lang }) => {
                   data-testid={`mar-chip-${p.id}`}
                   onClick={() => setActive(p.id)}
                   aria-pressed={isActive}
-                  className={`inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.2em] uppercase rounded-full border transition-all duration-200 ${
+                  className={`inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.2em] uppercase border transition-all duration-200 ${
                     isActive
-                      ? "bg-[#C16542] border-transparent text-white"
-                      : "bg-white/5 border-white/15 text-white/75 hover:bg-white/10 hover:text-white"
+                      ? "bg-[#C16542] border-transparent text-[#FDFBF7]"
+                      : "bg-[#FDFBF7] border-[#2C2621]/20 text-[#2C2621] hover:border-[#C16542] hover:text-[#C16542]"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -498,28 +495,29 @@ const Experiences = ({ lang }) => {
 };
 
 const InteractiveMap = ({ lang }) => (
-  <section data-testid="mar-map" className="relative py-24 md:py-28" style={{ background: PALETTE.bg }}>
-    <div className="max-w-7xl mx-auto px-6 md:px-12">
+  <section data-testid="mar-map" className="relative bg-[#1A1513] py-24 md:py-28 overflow-hidden">
+    <div className="absolute inset-0 berber-bg-cross opacity-10 pointer-events-none" aria-hidden="true" />
+    <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-10">
         <div className="md:col-span-7">
           <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
             <MapPin className="w-3.5 h-3.5" strokeWidth={1.6} />
             {pick(COPY.map.overline, lang)}
           </span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#FDFBF7]">
             {pick(COPY.map.title, lang)}
           </h2>
         </div>
         <div className="md:col-span-5">
-          <p className="text-base text-white/70 leading-relaxed">{pick(COPY.map.body, lang)}</p>
+          <p className="text-base text-[#FDFBF7]/75 leading-relaxed">{pick(COPY.map.body, lang)}</p>
         </div>
       </div>
-      <div className="rounded-2xl overflow-hidden border border-white/10 h-[420px] md:h-[520px]">
+      <div className="overflow-hidden border border-[#FDFBF7]/15 h-[420px] md:h-[520px]">
         <MapContainer
           center={[31.0, -7.5]}
           zoom={5}
           scrollWheelZoom={false}
-          style={{ height: "100%", width: "100%", background: PALETTE.bg }}
+          style={{ height: "100%", width: "100%", background: "#1A1513" }}
           attributionControl={false}
         >
           <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
@@ -528,7 +526,7 @@ const InteractiveMap = ({ lang }) => (
               key={m.id}
               center={m.coords}
               radius={7}
-              pathOptions={{ color: PALETTE.sand, fillColor: PALETTE.sand, fillOpacity: 0.75, weight: 2 }}
+              pathOptions={{ color: "#D4A373", fillColor: "#D4A373", fillOpacity: 0.75, weight: 2 }}
             >
               <Tooltip direction="top" offset={[0, -6]} opacity={1} className="qvm-tooltip">
                 <span className="font-serif-x text-sm text-[#2C2621]">{m.name}</span>
@@ -543,20 +541,20 @@ const InteractiveMap = ({ lang }) => (
 
 const Profiles = ({ lang }) => (
   <SlotScope id="profiles">
-    <section data-testid="mar-profiles" className="relative py-24 md:py-32" style={{ background: PALETTE.bgSoft }}>
+    <section data-testid="mar-profiles" className="relative bg-[#FDFBF7] py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
           <div className="md:col-span-7">
-            <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+            <span className="overline inline-flex items-center gap-2 text-[#C16542]">
               <Users className="w-3.5 h-3.5" strokeWidth={1.6} />
               {pick(COPY.profiles.overline, lang)}
             </span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
               {pick(COPY.profiles.title, lang)}
             </h2>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
           {COPY.profiles.items.map((p) => {
             const Icon = ICON_MAP[p.icon] || Users;
             return (
@@ -564,18 +562,18 @@ const Profiles = ({ lang }) => (
                 key={p.id}
                 to={pathFor(lang, p.route)}
                 data-testid={`mar-profile-${p.id}`}
-                className="group relative rounded-2xl bg-white/5 hover:bg-white/[0.08] backdrop-blur-xl border border-white/10 hover:border-[#D4A373]/40 p-6 md:p-7 transition-all duration-300"
+                className="group relative bg-[#FDFBF7] hover:bg-[#F2EBE1] p-6 md:p-7 transition-colors duration-300 flex flex-col"
               >
-                <span className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#C16542]/15 text-[#D4A373]">
+                <span className="inline-flex items-center justify-center w-11 h-11 bg-[#F2EBE1] text-[#C16542]">
                   <Icon className="w-5 h-5" strokeWidth={1.6} />
                 </span>
-                <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-white mt-5">
+                <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621] mt-5">
                   {pick(p.label, lang)}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/65 min-h-[3em]">
+                <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
                   {pick(p.body, lang)}
                 </p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#D4A373] group-hover:gap-2.5 transition-all">
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#C16542] group-hover:gap-2.5 transition-all">
                   {pick(COPY.profiles.cta, lang)}
                   <ArrowUpRight className="w-3 h-3" strokeWidth={1.8} />
                 </span>
@@ -589,51 +587,52 @@ const Profiles = ({ lang }) => (
 );
 
 const Seasons = ({ lang }) => (
-  <section data-testid="mar-seasons" className="relative py-24 md:py-32" style={{ background: PALETTE.bg }}>
-    <div className="max-w-7xl mx-auto px-6 md:px-12">
+  <section data-testid="mar-seasons" className="relative bg-[#F2EBE1] py-24 md:py-32 border-t border-[#2C2621]/10 overflow-hidden">
+    <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
+    <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
         <div className="md:col-span-7">
-          <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+          <span className="overline inline-flex items-center gap-2 text-[#C16542]">
             <CloudSun className="w-3.5 h-3.5" strokeWidth={1.6} />
             {pick(COPY.seasons.overline, lang)}
           </span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
             {pick(COPY.seasons.title, lang)}
           </h2>
         </div>
         <div className="md:col-span-5">
-          <p className="text-base text-white/70 leading-relaxed">{pick(COPY.seasons.body, lang)}</p>
+          <p className="text-base text-[#5C5248] leading-relaxed">{pick(COPY.seasons.body, lang)}</p>
           <Link
             to={pathFor(lang, "whenToTravel")}
             data-testid="mar-seasons-cta"
-            className="mt-4 inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#D4A373] hover:text-white border-b border-[#D4A373]/40 hover:border-white pb-0.5 transition-all"
+            className="mt-4 inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5 transition-colors"
           >
             {pick(COPY.seasons.seeFull, lang)}
             <ArrowUpRight className="w-3 h-3" strokeWidth={1.8} />
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
         {COPY.seasons.items.map((s) => {
           const Icon = ICON_MAP[s.icon] || Sun;
           return (
             <article
               key={s.id}
               data-testid={`mar-season-${s.id}`}
-              className="group relative rounded-2xl bg-white/5 hover:bg-white/[0.08] backdrop-blur-xl border border-white/10 p-6 md:p-7 overflow-hidden transition-colors"
+              className="bg-[#FDFBF7] p-6 md:p-7 transition-colors hover:bg-[#F2EBE1]"
               style={{ borderTop: `3px solid ${s.accent}` }}
             >
               <span
-                className="inline-flex items-center justify-center w-11 h-11 rounded-full"
+                className="inline-flex items-center justify-center w-11 h-11"
                 style={{ backgroundColor: `${s.accent}22`, color: s.accent }}
               >
                 <Icon className="w-5 h-5" strokeWidth={1.6} />
               </span>
-              <p className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55">
+              <p className="mt-5 text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
                 {pick(s.months, lang)}
               </p>
-              <h3 className="font-serif-x text-2xl text-white mt-1">{pick(s.title, lang)}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/65">{pick(s.body, lang)}</p>
+              <h3 className="font-serif-x text-2xl text-[#2C2621] mt-1">{pick(s.title, lang)}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">{pick(s.body, lang)}</p>
             </article>
           );
         })}
@@ -644,15 +643,15 @@ const Seasons = ({ lang }) => (
 
 const PopularRoutes = ({ lang }) => (
   <SlotScope id="routes">
-    <section data-testid="mar-routes" className="relative py-24 md:py-32" style={{ background: PALETTE.bgSoft }}>
+    <section data-testid="mar-routes" className="relative bg-[#FDFBF7] py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
           <div className="md:col-span-7">
-            <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+            <span className="overline inline-flex items-center gap-2 text-[#C16542]">
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
               {pick(COPY.routes.overline, lang)}
             </span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
               {pick(COPY.routes.title, lang)}
             </h2>
           </div>
@@ -663,7 +662,7 @@ const PopularRoutes = ({ lang }) => (
               <Link
                 to={pathFor(lang, r.route)}
                 data-testid={`mar-route-${r.id}`}
-                className="group relative rounded-2xl overflow-hidden border border-white/10 hover:border-white/25 aspect-[4/3] transition-colors"
+                className="group relative overflow-hidden border border-[#2C2621]/10 hover:border-[#2C2621]/30 aspect-[4/3] transition-colors"
               >
                 <EditableImage
                   name="image"
@@ -671,14 +670,14 @@ const PopularRoutes = ({ lang }) => (
                   alt={pick(r.title, lang)}
                   aspectRatio="auto"
                   imgProps={{ loading: "lazy" }}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/25 to-transparent pointer-events-none" />
                 <div className="absolute inset-x-0 bottom-0 p-6 flex items-end justify-between gap-3">
-                  <h3 className="font-serif-x text-2xl md:text-[28px] leading-[1.1] text-white max-w-[80%]">
+                  <h3 className="font-serif-x text-2xl md:text-[28px] leading-[1.1] text-[#FDFBF7] max-w-[80%]">
                     {pick(r.title, lang)}
                   </h3>
-                  <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white group-hover:bg-[#C16542] group-hover:border-transparent transition-all">
+                  <span className="inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/95 text-[#C16542] group-hover:bg-[#C16542] group-hover:text-[#FDFBF7] transition-all">
                     <ArrowUpRight className="w-4 h-4" strokeWidth={1.8} />
                   </span>
                 </div>
@@ -692,32 +691,33 @@ const PopularRoutes = ({ lang }) => (
 );
 
 const Trust = ({ lang }) => (
-  <section data-testid="mar-trust" className="relative py-24 md:py-28" style={{ background: PALETTE.bg }}>
-    <div className="max-w-7xl mx-auto px-6 md:px-12">
+  <section data-testid="mar-trust" className="relative bg-[#F2EBE1] py-24 md:py-28 border-t border-[#2C2621]/10 overflow-hidden">
+    <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
+    <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
         <div className="md:col-span-7">
-          <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+          <span className="overline inline-flex items-center gap-2 text-[#C16542]">
             <Shield className="w-3.5 h-3.5" strokeWidth={1.6} />
             {pick(COPY.trust.overline, lang)}
           </span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
             {pick(COPY.trust.title, lang)}
           </h2>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
         {COPY.trust.items.map((t) => {
           const Icon = ICON_MAP[t.icon] || Shield;
           return (
             <article
               key={t.id}
               data-testid={`mar-trust-${t.id}`}
-              className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 flex flex-col items-start"
+              className="bg-[#FDFBF7] p-6 md:p-7 flex flex-col items-start hover:bg-[#F2EBE1] transition-colors"
             >
-              <span className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#3B5BA9]/25 text-[#7B97D6]">
+              <span className="inline-flex items-center justify-center w-11 h-11 bg-[#3B5BA9]/15 text-[#3B5BA9]">
                 <Icon className="w-5 h-5" strokeWidth={1.6} />
               </span>
-              <h3 className="font-serif-x text-lg md:text-xl leading-[1.2] text-white mt-5">
+              <h3 className="font-serif-x text-lg md:text-xl leading-[1.2] text-[#2C2621] mt-5">
                 {pick(t.title, lang)}
               </h3>
             </article>
@@ -729,44 +729,53 @@ const Trust = ({ lang }) => (
 );
 
 const FinalCta = ({ lang }) => (
-  <section data-testid="mar-final-cta" className="relative py-28 md:py-36 overflow-hidden" style={{ background: PALETTE.bg }}>
-    <span className="aurora-blob a1 opacity-30" aria-hidden="true" />
-    <span className="aurora-blob a3 opacity-30" aria-hidden="true" />
+  <section data-testid="mar-final-cta" className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden">
+    <EditableImage
+      slot="marruecos-landing.final.bg"
+      fallback={banner("dunes", 2400)}
+      alt=""
+      aspectRatio="auto"
+      imgProps={{ loading: "lazy" }}
+      className="absolute inset-0 w-full h-full object-cover opacity-25"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/85 to-[#1A1513]/65 pointer-events-none" />
+    <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
+
     <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
       <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
         <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
         {pick(COPY.cta.eyebrow, lang)}
       </span>
-      <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[64px] leading-[1.05] tracking-tight mt-5 text-white">
+      <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#FDFBF7]">
         {pick(COPY.cta.title, lang)}
       </h2>
-      <p className="mt-6 text-base md:text-lg text-white/75 leading-relaxed max-w-2xl mx-auto">
+      <p className="mt-6 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed max-w-2xl mx-auto">
         {pick(COPY.cta.body, lang)}
       </p>
-      <div className="mt-12 flex flex-wrap gap-3 justify-center">
+      <div className="mt-10 flex flex-wrap gap-4 justify-center">
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid="mar-cta-primary"
-          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-white px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors rounded-full"
+          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.primary, lang)}
-          <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+          <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
         </Link>
         <Link
           to={pathFor(lang, "toursLanding")}
           data-testid="mar-cta-secondary"
-          className="inline-flex items-center gap-2 border border-white/30 hover:border-[#D4A373] hover:text-[#D4A373] text-white px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors rounded-full backdrop-blur-sm"
+          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.secondary, lang)}
-          <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+          <ArrowUpRight className="w-4 h-4" strokeWidth={1.6} />
         </Link>
         <Link
           to={pathFor(lang, "contact")}
           data-testid="mar-cta-tertiary"
-          className="inline-flex items-center gap-2 text-white/80 hover:text-white px-5 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
+          className="inline-flex items-center gap-2 text-[#FDFBF7]/80 hover:text-[#FDFBF7] px-5 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.tertiary, lang)}
-          <Phone className="w-3.5 h-3.5" strokeWidth={1.8} />
+          <Phone className="w-4 h-4" strokeWidth={1.6} />
         </Link>
       </div>
     </div>
@@ -774,14 +783,14 @@ const FinalCta = ({ lang }) => (
 );
 
 const FaqSection = ({ lang }) => (
-  <section data-testid="mar-faq" className="relative py-24 md:py-32 border-t border-white/10" style={{ background: PALETTE.bgSoft }}>
+  <section data-testid="mar-faq" className="relative bg-[#FDFBF7] py-24 md:py-32 border-t border-[#2C2621]/10">
     <div className="max-w-4xl mx-auto px-6 md:px-12">
       <div className="mb-12 md:mb-14">
-        <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+        <span className="overline inline-flex items-center gap-2 text-[#C16542]">
           <Star className="w-3.5 h-3.5" strokeWidth={1.6} />
           {pick(COPY.faq.overline, lang)}
         </span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-white">
+        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
           {pick(COPY.faq.title, lang)}
         </h2>
       </div>
@@ -791,12 +800,12 @@ const FaqSection = ({ lang }) => (
             key={item.id}
             value={item.id}
             data-testid={`mar-faq-${item.id}`}
-            className="border-white/10"
+            className="border-[#2C2621]/10"
           >
-            <AccordionTrigger className="text-left py-5 font-serif-x text-lg md:text-xl text-white hover:no-underline">
+            <AccordionTrigger className="text-left py-5 font-serif-x text-lg md:text-xl text-[#2C2621] hover:no-underline">
               {pick(item.q, lang)}
             </AccordionTrigger>
-            <AccordionContent className="text-sm md:text-base text-white/70 leading-relaxed pb-5">
+            <AccordionContent className="text-sm md:text-base text-[#5C5248] leading-relaxed pb-5">
               {pick(item.a, lang)}
             </AccordionContent>
           </AccordionItem>
@@ -817,7 +826,7 @@ export default function MoroccoLandingPage() {
   }, [lang]);
 
   return (
-    <div data-testid="mar-page" className="text-white" style={{ background: PALETTE.bg }}>
+    <div data-testid="mar-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
       <Why lang={lang} />
       <Experiences lang={lang} />

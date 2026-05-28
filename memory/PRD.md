@@ -331,6 +331,21 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /marruecos · Design-system realignment (Feb 2026)
+- Refactored `pages/MoroccoLandingPage.jsx` to follow the rest of the site's design language exactly while preserving the requested cinematic premium hero with Aurorism.
+- **Hero (dark `#1A1513`)**: keeps the 3 animated aurora blobs + ken-burns + berber-bg-cross + film-grain, but breadcrumb chip is now **square** (`bg-[#1A1513]/55` border `border-white/10`, no `rounded-full`), eyebrow uses the standard `Compass · TEXT — w-8 h-px — PLACE` pattern, and CTAs are **rectangular pills** (`px-7 py-3.5 text-sm tracking-[0.18em] uppercase`) identical to QueHacemos / Incentivos.
+- **All other sections rewired to the standard light/soft/dark cadence**:
+  - `mar-why`, `mar-profiles`, `mar-routes`, `mar-faq` → `#FDFBF7`.
+  - `mar-experiences`, `mar-seasons`, `mar-trust` → `#F2EBE1` + `berber-bg-diamond` overlay.
+  - `mar-map`, `mar-final-cta` → `#1A1513` (the only legitimately dark sections matching the rest of the codebase: dark Leaflet basemap & final CTA pattern).
+- **Cards**: removed `rounded-2xl backdrop-blur-xl bg-white/5` glass styling on the light/soft sections. Replaced with the standard `grid gap-px bg-[#2C2621]/10 border border-[#2C2621]/10` divider system (Why · Profiles · Seasons · Trust) and square image cards with `border border-[#2C2621]/10 hover:border-[#2C2621]/30` (Experiences · Popular routes).
+- **Buttons**: every CTA is rectangular with `tracking-[0.18em] uppercase`. No more `rounded-full`.
+- **Chips (Experience filter)**: square with borders, active state `bg-[#C16542] text-[#FDFBF7]`, inactive state `bg-[#FDFBF7] border-[#2C2621]/20` — matches the route-toggle chips on `/que-ver-en-Marruecos`.
+- **Profile badges on Experience cards**: square `bg-[#FDFBF7]/95 text-[#C16542]` (was glass white/15).
+- **Map markers** kept in `#D4A373` sand color but tile basemap stays CartoDB dark (necessary for visual reading of the country shape).
+- **Final CTA**: now identical to the standard pattern (camel-caravan editable bg image at 25 % + `berber-bg-diamond` overlay + 3 rectangular CTAs), no more aurora blobs which were breaking the consistency.
+- **Smoke verified**: 4 pillars, 8 experiences (6 after `pareja` filter), 5 profiles, 4 seasons, 6 routes, 5 trust pillars, 6 FAQ items. ES/EN/FR working. Aurora hero kept intact, the rest now indistinguishable visually from QueHacemos / Incentivos / QueVerEnMarruecos in its rhythm.
+
 ## /marruecos · Premium Aurorism landing (Feb 2026)
 - **User mandate**: build a premium dark Aurorism + Cinematographic Minimalism landing at the `morocco` route (`/marruecos` · `/en/morocco` · `/fr/maroc`). Previously routed to `<StubPage />`. The existing `MarruecosPage.jsx` at `/viajes/marruecos` (route `tourFull`) is left untouched — this is a separate new file.
 - **New page** `pages/MoroccoLandingPage.jsx` wired in `App.js` (`if (routeId === "morocco") return <MoroccoLandingPage />`). Trilingual ES/EN/FR.
