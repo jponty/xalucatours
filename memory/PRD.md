@@ -331,6 +331,18 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /quehacemos · testimonials block (Feb 2026)
+- Inserted a 3-card testimonials section between `<Reasons />` and `<FinalCta />` on the `/quehacemos` page, reusing `lib/testimonials.js` (no new data file).
+- Curated `FEATURED_TESTIMONIAL_IDS = ["amelie-family", "david-4x4", "carlos-bespoke"]` — one per traveller archetype the copy emphasises:
+  - **amelie-family** → `VIAJE EN FAMILIA` (Heart icon).
+  - **david-4x4**     → `GRUPO DE AMIGOS` (Users icon).
+  - **carlos-bespoke**→ `VIAJE A MEDIDA & EMPRESAS` (Briefcase icon).
+- Card design: glassy watermark `Quote` icon top-right, profile badge in `#F2EBE1`, serif italic quote ~xl, separator + avatar (editable via `<EditableImage name="avatar">` inside `<SlotScope id="testimonials"><SlotScope id="{tid}">`), name + location + trip eyebrow in accent.
+- New COPY.testimonials block (overline · title · body · profile labels) trilingual; quote/trip/name inherited from `TESTIMONIALS` entries (already i18n).
+- Section sits on `#F2EBE1` with `berber-bg-diamond` overlay, mirroring the existing `<TripPillars>` visual rhythm.
+- New testids: `qh-testimonials`, `qh-testimonial-{tid}`, `qh-testimonial-profile-{tid}`.
+- Smoke verified: 3 cards render, profile labels correct (`VIAJE EN FAMILIA`, `GRUPO DE AMIGOS`, `VIAJE A MEDIDA & EMPRESAS`), avatars + serif quotes load.
+
 ## /quehacemos · "Qué hacemos" page (Feb 2026)
 - **User mandate**: redact the existing route `whatWeDo` (`/quehacemos` · `/en/what-we-do` · `/fr/ce-que-nous-faisons`) using the provided copy. Previously routed to `<StubPage />`.
 - **New page** `pages/QueHacemosPage.jsx` wired in `App.js` (`if (routeId === "whatWeDo") return <QueHacemosPage />`). Trilingual ES/EN/FR.

@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
   BedDouble, Users, Clock, Wand2, ShieldCheck, BadgeCheck,
-  Phone, Mail, MapPin,
+  Phone, Mail, MapPin, Quote, Heart, Briefcase,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { IMG, banner } from "@/lib/imageBank";
+import { TESTIMONIALS } from "@/lib/testimonials";
 import EditableImage from "@/components/EditableImage";
 import { SlotScope } from "@/components/slotScope";
 
@@ -149,6 +150,33 @@ const COPY = {
       },
     ],
   },
+  testimonials: {
+    overline: { es: "Lo que dicen nuestros viajeros", en: "What our travellers say", fr: "Ce que disent nos voyageurs" },
+    title: {
+      es: "Tres historias, tres formas de descubrir Marruecos.",
+      en: "Three stories, three ways to discover Morocco.",
+      fr: "Trois histoires, trois façons de découvrir le Maroc.",
+    },
+    body: {
+      es: "Cada viajero llega a Xaluca con un proyecto distinto. Familias, grupos de amigos y empresas confían en nosotros para que cada viaje resulte como lo imaginaron — o todavía mejor.",
+      en: "Every traveller comes to Xaluca with a different project. Families, friend groups and companies trust us to make each trip exactly as they pictured — or even better.",
+      fr: "Chaque voyageur arrive chez Xaluca avec un projet différent. Familles, groupes d'amis et entreprises nous font confiance pour que chaque voyage corresponde à leur vision — ou la dépasse.",
+    },
+    profiles: {
+      "amelie-family": {
+        icon: "Heart",
+        label: { es: "Viaje en familia", en: "Family trip",  fr: "Voyage en famille" },
+      },
+      "david-4x4": {
+        icon: "Users",
+        label: { es: "Grupo de amigos", en: "Group of friends", fr: "Groupe d'amis" },
+      },
+      "carlos-bespoke": {
+        icon: "Briefcase",
+        label: { es: "Viaje a medida & empresas", en: "Bespoke & business", fr: "Sur mesure & entreprises" },
+      },
+    },
+  },
   cta: {
     eyebrow: { es: "Únete a nuestra comunidad", en: "Join our community", fr: "Rejoignez notre communauté" },
     title: {
@@ -176,7 +204,10 @@ const COPY = {
 
 const ICON_MAP = {
   Sparkles, BedDouble, Users, Clock, Wand2, ShieldCheck, BadgeCheck,
+  Heart, Briefcase,
 };
+
+const FEATURED_TESTIMONIAL_IDS = ["amelie-family", "david-4x4", "carlos-bespoke"];
 
 /* ============================================================
    Sub-components
@@ -382,6 +413,99 @@ const Reasons = ({ lang }) => (
   </section>
 );
 
+const Testimonials = ({ lang }) => {
+  const cards = FEATURED_TESTIMONIAL_IDS
+    .map((id) => {
+      const t = TESTIMONIALS.find((x) => x.id === id);
+      if (!t) return null;
+      const profile = COPY.testimonials.profiles[id];
+      return { ...t, profile };
+    })
+    .filter(Boolean);
+
+  if (cards.length === 0) return null;
+
+  return (
+    <SlotScope id="testimonials">
+      <section
+        data-testid="qh-testimonials"
+        className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10 overflow-hidden"
+      >
+        <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
+        <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
+            <div className="md:col-span-7">
+              <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+                <Quote className="w-3.5 h-3.5" strokeWidth={1.8} />
+                {pick(COPY.testimonials.overline, lang)}
+              </span>
+              <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
+                {pick(COPY.testimonials.title, lang)}
+              </h2>
+            </div>
+            <div className="md:col-span-5">
+              <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">
+                {pick(COPY.testimonials.body, lang)}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {cards.map((t) => {
+              const Icon = ICON_MAP[t.profile?.icon] || Quote;
+              return (
+                <SlotScope key={t.id} id={t.id}>
+                  <article
+                    data-testid={`qh-testimonial-${t.id}`}
+                    className="relative bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#C16542]/40 transition-colors p-7 md:p-9 flex flex-col"
+                  >
+                    <Quote
+                      className="absolute top-5 right-5 w-10 h-10 text-[#C16542]/15"
+                      strokeWidth={1.4}
+                      aria-hidden="true"
+                    />
+                    <span
+                      data-testid={`qh-testimonial-profile-${t.id}`}
+                      className="inline-flex items-center gap-2 self-start px-3 py-1.5 bg-[#F2EBE1] text-[#C16542] text-[10px] tracking-[0.25em] uppercase"
+                    >
+                      <Icon className="w-3.5 h-3.5" strokeWidth={1.8} />
+                      {pick(t.profile.label, lang)}
+                    </span>
+
+                    <p className="mt-6 font-serif-x text-lg md:text-xl text-[#2C2621] leading-[1.4] italic flex-1">
+                      “{pick(t.quote, lang)}”
+                    </p>
+
+                    <div className="mt-7 pt-5 border-t border-[#2C2621]/10 flex items-center gap-4">
+                      <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#1A1513]">
+                        <EditableImage
+                          name="avatar"
+                          fallback={t.avatar}
+                          alt={t.name}
+                          aspectRatio="1/1"
+                          imgProps={{ loading: "lazy" }}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-serif-x text-base text-[#2C2621] leading-tight">{t.name}</p>
+                        <p className="text-xs text-[#5C5248] mt-1">{t.location}</p>
+                        <p className="text-[10px] tracking-[0.22em] uppercase text-[#C16542]/85 mt-1.5 truncate">
+                          {pick(t.trip, lang)}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                </SlotScope>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </SlotScope>
+  );
+};
+
 const FinalCta = ({ lang }) => (
   <section
     data-testid="qh-final-cta"
@@ -492,6 +616,7 @@ export default function QueHacemosPage() {
       <Intro lang={lang} />
       <TripPillars lang={lang} />
       <Reasons lang={lang} />
+      <Testimonials lang={lang} />
       <FinalCta lang={lang} />
     </div>
   );
