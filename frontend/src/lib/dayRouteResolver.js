@@ -15,10 +15,11 @@
 ============================================================ */
 
 import { DAY_ROUTES } from "@/lib/dayRoutes";
+import { CITY_PROFILES } from "@/lib/cityProfiles";
 
 /* ---- Token → coordinates dictionary -----------------------
    Keys are the lower-case substrings expected inside a route_id.
-   Tuple format: [displayName, lat, lng, defaultKind].
+   Tuple format: [displayName, lat, lng, defaultKind, profileKey?].
    Order of fallbacks: longer keys first (we sort by length when
    matching to avoid e.g. "rak" colliding with "marrakech"). */
 const CITY_TABLE = {
@@ -109,16 +110,54 @@ const ALIASES = {
 /* Sort city keys longest-first so we match "marrakech" before "rak". */
 const CITY_KEYS = Object.keys(CITY_TABLE).sort((a, b) => b.length - a.length);
 
-/** Try to resolve a single token to a city tuple. */
+/* ---- Token → CITY_PROFILES key resolver ---------------------
+   Builds the profile key for a CITY_TABLE token so the day map can
+   render a clickable gallery drawer even on parsed (Tier 2) days. */
+const tokenToProfileKey = (token) => {
+  if (!token) return null;
+  if (CITY_PROFILES[token]) return token;
+  const alias = ALIASES[token];
+  if (alias && CITY_PROFILES[alias]) return alias;
+  // Loose contains: pick the longest profile key contained in the token.
+  const profileKeys = Object.keys(CITY_PROFILES).sort((a, b) => b.length - a.length);
+  for (const key of profileKeys) {
+    if (token.includes(key)) return key;
+  }
+  return null;
+};
+
+/* Reverse coord-string → profile key index. Lets curated DAY_ROUTES
+   tuples (which don't carry their original token) still find their
+   gallery profile by matching coordinates. */
+const COORD_TO_PROFILE = (() => {
+  const idx = {};
+  for (const [token, tuple] of Object.entries(CITY_TABLE)) {
+    const profileKey = tokenToProfileKey(token);
+    if (!profileKey) continue;
+    const k = `${tuple[1].toFixed(3)}|${tuple[2].toFixed(3)}`;
+    // First match wins (longest token order doesn't matter here, same coord).
+    if (!idx[k]) idx[k] = profileKey;
+  }
+  return idx;
+})();
+
+/** Look up the CITY_PROFILES key for a given (lat, lng) waypoint. */
+export const getProfileKeyForCoord = (lat, lng) => {
+  if (lat == null || lng == null) return null;
+  return COORD_TO_PROFILE[`${lat.toFixed(3)}|${lng.toFixed(3)}`] || null;
+};
+
+/** Try to resolve a single token to a [name, lat, lng, kind, profileKey?] tuple. */
 const tokenToCity = (raw) => {
   const t = (raw || "").toLowerCase().trim();
   if (!t || SKIP_TOKENS.has(t)) return null;
-  if (CITY_TABLE[t]) return CITY_TABLE[t];
+  const direct = CITY_TABLE[t];
+  if (direct) return [...direct, tokenToProfileKey(t)];
   const alias = ALIASES[t];
-  if (alias && CITY_TABLE[alias]) return CITY_TABLE[alias];
+  if (alias && CITY_TABLE[alias]) return [...CITY_TABLE[alias], tokenToProfileKey(alias)];
   // Loose contains check — for tokens like "ergchebbi" inside a compound segment.
   for (const key of CITY_KEYS) {
-    if (t.includes(key)) return CITY_TABLE[key];
+    if (t.includes(key)) return [...CITY_TABLE[key], tokenToProfileKey(key)];
   }
   return null;
 };
@@ -146,7 +185,7 @@ const parseRouteIdToWaypoints = (routeId) => {
     let kind = "stop";
     if (i === 0) kind = "start";
     else if (i === resolved.length - 1) kind = "overnight";
-    return [c[0], c[1], c[2], kind];
+    return [c[0], c[1], c[2], kind, c[4] || null];
   });
 
   return out;
@@ -162,7 +201,14 @@ const parseRouteIdToWaypoints = (routeId) => {
 export const resolveDayRoute = (routeId) => {
   // Tier 1 — explicit curated data
   const curated = DAY_ROUTES?.[routeId];
-  if (curated && curated.length > 0) return curated;
+  if (curated && curated.length > 0) {
+    // Normalize curated 4-tuples into 5-tuples by attaching profile keys
+    // via coordinate match, so Tier 2 galleries also light up on curated days.
+    return curated.map((c) => {
+      if (c.length >= 5 && c[4] != null) return c;
+      return [c[0], c[1], c[2], c[3], getProfileKeyForCoord(c[1], c[2])];
+    });
+  }
 
   // Tier 2 — parsed from route_id token stream
   return parseRouteIdToWaypoints(routeId);

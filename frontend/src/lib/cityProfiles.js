@@ -28,31 +28,33 @@
 
 const T = (es, en, fr) => ({ es, en, fr });
 
-/* Curated Unsplash whitelist (extends the bank from landmarkGalleries). */
+/* Curated Unsplash whitelist (extends the bank from landmarkGalleries).
+   All IDs below have been verified to return 200 — broken IDs replaced
+   with cycling working Moroccan photo IDs. CMS lets you swap any of them. */
 const IMG = {
   // North & coast
-  tanger:        "https://images.unsplash.com/photo-1538485399081-7c8970e54765?auto=format&fit=crop&w=1200&q=85",
-  chefchaouen:   "https://images.unsplash.com/photo-1548019979-39580ce8059b?auto=format&fit=crop&w=1200&q=85",
-  bluetown:      "https://images.unsplash.com/photo-1553244329-d147f50b0e35?auto=format&fit=crop&w=1200&q=85",
-  asilah:        "https://images.unsplash.com/photo-1565689876697-e467b6c54da2?auto=format&fit=crop&w=1200&q=85",
+  tanger:        "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=85",
+  chefchaouen:   "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1200&q=85",
+  bluetown:      "https://images.unsplash.com/photo-1565689876697-e467b6c54da2?auto=format&fit=crop&w=1200&q=85",
+  asilah:        "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1200&q=85",
   tetuan:        "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=85",
-  rabat:         "https://images.unsplash.com/photo-1531219432768-9f540ce91d6c?auto=format&fit=crop&w=1200&q=85",
-  casablanca:    "https://images.unsplash.com/photo-1577644923446-c2c5a4e9be7d?auto=format&fit=crop&w=1200&q=85",
-  akchour:       "https://images.unsplash.com/photo-1502780402662-acc01917b1f4?auto=format&fit=crop&w=1200&q=85",
+  rabat:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
+  casablanca:    "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1200&q=85",
+  akchour:       "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
   // Imperial cities
   fez:           "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1200&q=85",
-  fezTannery:    "https://images.unsplash.com/photo-1559890585-93b59f3a9aab?auto=format&fit=crop&w=1200&q=85",
+  fezTannery:    "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=85",
   meknes:        "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  volubilis:     "https://images.unsplash.com/photo-1606823616397-3a73f6e6a716?auto=format&fit=crop&w=1200&q=85",
+  volubilis:     "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1200&q=85",
   // Marrakech zone
   marrakech:     "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
   jemaa:         "https://images.unsplash.com/photo-1565689876697-e467b6c54da2?auto=format&fit=crop&w=1200&q=85",
   riad:          "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=85",
   agafay:        "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1200&q=85",
-  essaouira:     "https://images.unsplash.com/photo-1502780402662-acc01917b1f4?auto=format&fit=crop&w=1200&q=85",
+  essaouira:     "https://images.unsplash.com/photo-1554366347-897a5113f6ab?auto=format&fit=crop&w=1200&q=85",
   // Atlas
   atlas:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
-  ifrane:        "https://images.unsplash.com/photo-1531219432768-9f540ce91d6c?auto=format&fit=crop&w=1200&q=85",
+  ifrane:        "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
   sidiali:       "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1200&q=85",
   imlil:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",
   mgoun:         "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1200&q=85",

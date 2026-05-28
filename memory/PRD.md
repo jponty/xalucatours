@@ -218,3 +218,17 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - `norte/ciudades_imperiales/programa_4n_5d` → 5/5 (3 parsed + 2 stay)
 - Tokens like `casa-rabat`, `volubilis-meknes-fez`, `tanger-tetuan`, `akchour-chefchaouen`, `meknes-fez`, `da-return-ouarzazate` now auto-resolve into real polylines without any data backfill.
 - Trilingual labels (ES/EN/FR) cover all three tiers.
+
+
+## Universal clickable galleries on every Tier (Feb 2026)
+- **Mandate (user re-emphasis)**: every map point on every day — including the parsed-token Tier 2 polylines and the Tier 3 stationary days — must be clickable and open the same `<LandmarkCarousel>` drawer used on the curated `atlas_desierto` reference page (title · kind eyebrow · blurb · 3-card image carousel).
+- New data file `lib/cityProfiles.js` exports `CITY_PROFILES`, a token-keyed dictionary covering ~32 Moroccan places (Tánger, Chefchaouen, Tetuán, Asilah, Akchour, Rabat, Casablanca, Fez, Meknès, Volubilis, Marrakech, Agafay, Essaouira, Ifrane, Sidi Ali, Imlil, Toubkal, Atlas, M'Goun, Anti-Atlas, Ouarzazate, Aït Ben Haddou, Skoura, Dadès, Todra, Tinerhir, Drâa, Erfoud, Errachidia, Rissani, Khamlia, Merdani, Erg Chebbi, Merzouga, Kem Kem, Ziz). Each entry exposes `{ kind, name (ES/EN/FR), blurb (ES/EN/FR), gallery: [{src, title, description} × 3] }`. All Unsplash IDs verified to return HTTP 200.
+- `lib/dayRouteResolver.js` extended: each `CITY_TABLE` token now carries a resolved `profileKey` (5th tuple element), and a coord-based reverse index `COORD_TO_PROFILE` lets curated `DAY_ROUTES` waypoints find their profile too via `getProfileKeyForCoord(lat, lng)`. The public `resolveDayRoute` returns 5-tuples `[name, lat, lng, kind, profileKey?]`.
+- `components/LandmarkCarousel.jsx` now reads images from either the legacy `LANDMARK_GALLERIES[landmark.id]` table or an inline `landmark.gallery` prop, enabling synthetic city-profile landmarks to render with zero duplication.
+- `components/DayRouteMap.jsx` refactor:
+  - **Tier 2 (WaypointMode)** is now interactive: pre-computes synthetic landmarks via `waypointToLandmark`, holds `activeIdx` state with click handlers on both the `CircleMarker` and the side-list rows (only when the waypoint has a profile), pulses + ring-highlights the selected marker, flies the map to it via `MapController`, and renders `<LandmarkCarousel>` (or the hint card) below the grid.
+  - **Tier 3 (StayCard)** auto-upgrades into `<StayInteractive>` whenever the anchor has a `CITY_PROFILES` entry: full Leaflet mini-map + side panel mirroring the Tier 1 visual hierarchy with a single clickable POI button and the carousel drawer. Falls back to the original editorial card only when no profile is available.
+- Smoke test verified on `viajes/gransur/tanger-rak/programa_8n_9d`:
+  - Tier 2 day `trk89-tanger-chefchaouen` → click on "Tánger" waypoint highlights marker, opens drawer with 3 trilingual cards (Medina sobre el Estrecho, Café Hafa, Kasbah y Petit Socco), all images naturalWidth=1200 and complete.
+  - Tier 3 day `trk89-fez-discover` → "Día sin desplazamientos" with mini-map on Fez; click on the side button opens the same drawer with 3 cards (Curtidurías Chouara, al-Qarawiyyin, Bab Boujloud).
+- `data-testid` additions: `day-waypoint-btn-{routeId}-{idx}`, `day-stay-btn-{routeId}` and existing `landmark-carousel-{landmarkId}` / `landmark-card-{idx}` selectors stay consistent across tiers.

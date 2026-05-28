@@ -74,7 +74,13 @@ const Card = ({ image, accent, kindLabel, lang, index, total }) => (
 export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
-  const images = (landmark && LANDMARK_GALLERIES[landmark.id]) || [];
+  // Galleries can come either from the inline `landmark.gallery` (used by
+  // synthetic city-profile waypoints) or the static LANDMARK_GALLERIES dict
+  // keyed by landmark.id (the original curated landmark days).
+  const images =
+    (landmark && Array.isArray(landmark.gallery) && landmark.gallery.length > 0
+      ? landmark.gallery
+      : (landmark && LANDMARK_GALLERIES[landmark.id]) || []);
   const containerRef = useRef(null);
   const trackRef = useRef(null);
 

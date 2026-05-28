@@ -6,6 +6,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LandmarkCarousel, LandmarkCarouselHint } from "@/components/LandmarkCarousel";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { resolveDayRoute } from "@/lib/dayRouteResolver";
+import { CITY_PROFILES } from "@/lib/cityProfiles";
 
 /* ============================================================
    <DayRouteMap />
@@ -284,7 +285,25 @@ const LandmarkMode = ({ day, idx, total, accent, t, lang, landmarks }) => {
 /* ============================================================
    Tier 2 — Polyline waypoint experience
 ============================================================ */
-const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
+/* Convert a waypoint tuple [name, lat, lng, kind, profileKey] into
+   a synthetic landmark when a CITY_PROFILES entry exists, so we can
+   feed it to LandmarkCarousel just like a hand-curated landmark. */
+const waypointToLandmark = (w, idx, routeId) => {
+  const profileKey = w[4];
+  const profile = profileKey ? CITY_PROFILES[profileKey] : null;
+  if (!profile) return null;
+  return {
+    id: `${routeId}-${profileKey}-${idx}`,
+    kind: profile.kind,
+    name: profile.name,
+    blurb: profile.blurb,
+    lat: w[1],
+    lng: w[2],
+    gallery: profile.gallery,
+  };
+};
+
+const WaypointMode = ({ day, idx, total, accent, t, lang, waypoints }) => {
   const positions = useMemo(() => waypoints.map((w) => [w[1], w[2]]), [waypoints]);
   const bounds = useMemo(() => {
     const lats = waypoints.map((w) => w[1]);
@@ -300,6 +319,19 @@ const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
     for (let i = 1; i < waypoints.length; i++) sum += haversine(waypoints[i - 1], waypoints[i]);
     return Math.round(sum);
   }, [waypoints]);
+
+  /* Pre-compute synthetic landmarks for each waypoint that has a profile. */
+  const wpLandmarks = useMemo(
+    () => waypoints.map((w, i) => waypointToLandmark(w, i, day.route_id)),
+    [waypoints, day.route_id]
+  );
+  const [activeIdx, setActiveIdx] = useState(null);
+  const activeLandmark = activeIdx != null ? wpLandmarks[activeIdx] : null;
+  const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
+  const handleSelect = (i) => {
+    if (!wpLandmarks[i]) return;
+    setActiveIdx((prev) => (prev === i ? null : i));
+  };
 
   return (
     <section
@@ -324,6 +356,7 @@ const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
                   url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                   subdomains={["a", "b", "c", "d"]}
                 />
+                <MapController position={activePos} bounds={bounds} />
                 {/* Soft shadow polyline */}
                 <Polyline
                   positions={positions}
@@ -336,23 +369,31 @@ const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
                 />
                 {waypoints.map((w, i) => {
                   const color = TYPE_COLORS[w[3]] || accent;
+                  const hasProfile = !!wpLandmarks[i];
+                  const isActive = activeIdx === i;
                   return (
                     <React.Fragment key={`${day.route_id}-wp-${i}`}>
                       <CircleMarker
                         center={[w[1], w[2]]}
-                        radius={18}
-                        pathOptions={{ color, weight: 0, fillColor: color, fillOpacity: 0.10 }}
+                        radius={isActive ? 24 : 18}
+                        pathOptions={{
+                          color,
+                          weight: 0,
+                          fillColor: color,
+                          fillOpacity: isActive ? 0.22 : 0.10,
+                        }}
                         interactive={false}
                       />
                       <CircleMarker
                         center={[w[1], w[2]]}
-                        radius={9}
+                        radius={isActive ? 12 : 9}
                         pathOptions={{
-                          color: "#FDFBF7",
-                          weight: 2,
+                          color: isActive ? "#1A1513" : "#FDFBF7",
+                          weight: isActive ? 3 : 2,
                           fillColor: color,
                           fillOpacity: 1,
                         }}
+                        eventHandlers={hasProfile ? { click: () => handleSelect(i) } : undefined}
                       >
                         <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
                           <span className="text-[11px] tracking-[0.05em]">{w[0]}</span>
@@ -394,29 +435,67 @@ const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
               {waypoints.map((w, i) => {
                 const color = TYPE_COLORS[w[3]] || accent;
                 const isLast = i === waypoints.length - 1;
+                const lm = wpLandmarks[i];
+                const isActive = activeIdx === i;
+                const Row = lm ? "button" : "div";
+                const rowProps = lm
+                  ? {
+                      type: "button",
+                      onClick: () => handleSelect(i),
+                      "aria-pressed": isActive,
+                      "data-testid": `day-waypoint-btn-${day.route_id}-${i}`,
+                    }
+                  : {};
                 return (
-                  <li key={`${day.route_id}-row-${i}`} className="flex items-start gap-4 px-4 py-3 border bg-[#FDFBF7]/70 border-[#2C2621]/15">
-                    <span
-                      className="font-serif-x text-xl leading-none mt-0.5 shrink-0 tabular-nums"
-                      style={{ color }}
+                  <li key={`${day.route_id}-row-${i}`}>
+                    <Row
+                      {...rowProps}
+                      className={`group w-full text-left flex items-start gap-4 px-4 py-3 border transition-all duration-300 ${
+                        isActive
+                          ? "bg-[#FDFBF7] border-[#2C2621]"
+                          : lm
+                          ? "bg-[#FDFBF7]/70 hover:bg-[#FDFBF7] border-[#2C2621]/15 hover:border-[#2C2621]/45"
+                          : "bg-[#FDFBF7]/70 border-[#2C2621]/15"
+                      }`}
+                      style={isActive ? { boxShadow: `inset 3px 0 0 ${color}` } : undefined}
                     >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="flex-1 min-w-0">
-                      <span className="block font-serif-x text-[15px] md:text-[16px] text-[#2C2621] leading-snug inline-flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
-                        {w[0]}
+                      <span
+                        className="font-serif-x text-xl leading-none mt-0.5 shrink-0 tabular-nums"
+                        style={{ color }}
+                      >
+                        {String(i + 1).padStart(2, "0")}
                       </span>
-                    </span>
-                    {!isLast && (
-                      <ArrowRight className="w-3.5 h-3.5 mt-1 text-[#5C5248] shrink-0" strokeWidth={1.6} />
-                    )}
+                      <span className="flex-1 min-w-0">
+                        <span className="block font-serif-x text-[15px] md:text-[16px] text-[#2C2621] leading-snug inline-flex items-center gap-2">
+                          <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
+                          {w[0]}
+                        </span>
+                        {isActive && lm && (
+                          <span className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]">
+                            {pick(lm.blurb, lang)}
+                          </span>
+                        )}
+                      </span>
+                      {!isLast && (
+                        <ArrowRight className="w-3.5 h-3.5 mt-1 text-[#5C5248] shrink-0" strokeWidth={1.6} />
+                      )}
+                    </Row>
                   </li>
                 );
               })}
             </ol>
           </div>
         </div>
+
+        {activeLandmark ? (
+          <LandmarkCarousel
+            landmark={activeLandmark}
+            accent={accent}
+            onClose={() => setActiveIdx(null)}
+          />
+        ) : wpLandmarks.some(Boolean) ? (
+          <LandmarkCarouselHint accent={accent} />
+        ) : null}
       </div>
     </section>
   );
@@ -426,7 +505,35 @@ const WaypointMode = ({ day, idx, total, accent, t, waypoints }) => {
    Tier 3 — Editorial "stationary day" / no-data card
 ============================================================ */
 const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
-  // Use single anchor's name if available, otherwise the day's title head.
+  // Try to upgrade the static card into an interactive single-point map
+  // when the anchor has a CITY_PROFILES entry — every day must yield a
+  // clickable map experience with a gallery drawer.
+  const profileKey = anchor ? anchor[4] : null;
+  const profile = profileKey ? CITY_PROFILES[profileKey] : null;
+
+  if (profile && anchor) {
+    const landmark = {
+      id: `${day.route_id}-${profileKey}-stay`,
+      kind: profile.kind,
+      name: profile.name,
+      blurb: profile.blurb,
+      lat: anchor[1],
+      lng: anchor[2],
+      gallery: profile.gallery,
+    };
+    return (
+      <StayInteractive
+        day={day}
+        idx={idx}
+        total={total}
+        accent={accent}
+        t={t}
+        lang={lang}
+        landmark={landmark}
+      />
+    );
+  }
+
   const title = anchor
     ? anchor[0]
     : (pick(day.title, lang) || "").split("·")[0]?.trim();
@@ -466,6 +573,136 @@ const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
   );
 };
 
+/* Interactive variant of StayCard — used when the anchor city has a profile.
+   Mini-map + single side card + gallery drawer (mirrors the Tier 1 layout). */
+const StayInteractive = ({ day, idx, total, accent, t, lang, landmark }) => {
+  const [open, setOpen] = useState(false);
+  const center = [landmark.lat, landmark.lng];
+  const bounds = useMemo(() => {
+    const pad = 0.45;
+    return [
+      [landmark.lat - pad, landmark.lng - pad],
+      [landmark.lat + pad, landmark.lng + pad],
+    ];
+  }, [landmark.lat, landmark.lng]);
+  const kindCfg = LANDMARK_KINDS[landmark.kind] || { color: accent, label: { es: "", en: "", fr: "" } };
+  const color = kindCfg.color;
+
+  return (
+    <section
+      data-testid={`day-route-map-${day.route_id}`}
+      data-tier="stay"
+      className="relative bg-[#F2EBE1] mt-12 md:mt-16 pt-14 md:pt-20 pb-10 md:pb-14 border-t border-[#2C2621]/10"
+    >
+      <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+          <div className="lg:col-span-7">
+            <div className="relative h-[420px] md:h-[480px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
+              <MapContainer
+                bounds={bounds}
+                boundsOptions={{ padding: [40, 40] }}
+                scrollWheelZoom={false}
+                zoomControl
+                attributionControl={false}
+                style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
+              >
+                <TileLayer
+                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                  subdomains={["a", "b", "c", "d"]}
+                />
+                <CircleMarker
+                  center={center}
+                  radius={open ? 28 : 22}
+                  pathOptions={{ color, weight: 0, fillColor: color, fillOpacity: open ? 0.25 : 0.14 }}
+                  interactive={false}
+                />
+                <CircleMarker
+                  center={center}
+                  radius={open ? 14 : 11}
+                  pathOptions={{
+                    color: open ? "#1A1513" : "#FDFBF7",
+                    weight: open ? 3 : 2,
+                    fillColor: color,
+                    fillOpacity: 1,
+                  }}
+                  eventHandlers={{ click: () => setOpen((v) => !v) }}
+                >
+                  <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
+                    <span className="text-[11px] tracking-[0.05em]">{pick(landmark.name, lang)}</span>
+                  </Tooltip>
+                </CircleMarker>
+              </MapContainer>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <div>
+              <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
+                <Navigation className="w-3 h-3" strokeWidth={1.8} />
+                {t.route}
+              </span>
+              <h4 className="font-serif-x text-2xl md:text-3xl text-[#2C2621] mt-3 leading-[1.15]">
+                {t.stay_title}
+              </h4>
+              <p className="mt-2 text-[12px] tracking-[0.18em] uppercase text-[#5C5248] inline-flex items-center gap-2">
+                <HomeIcon className="w-3.5 h-3.5" style={{ color: accent }} strokeWidth={1.7} />
+                {t.stay_in} {pick(landmark.name, lang)}
+              </p>
+            </div>
+
+            <div>
+              <span className="overline">{t.progress}</span>
+              <div className="mt-3">
+                <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              data-testid={`day-stay-btn-${day.route_id}`}
+              aria-pressed={open}
+              className={`group w-full text-left flex items-start gap-4 px-4 py-3.5 border transition-all duration-300 ${
+                open
+                  ? "bg-[#FDFBF7] border-[#2C2621]"
+                  : "bg-[#FDFBF7]/70 hover:bg-[#FDFBF7] border-[#2C2621]/15 hover:border-[#2C2621]/45"
+              }`}
+              style={open ? { boxShadow: `inset 3px 0 0 ${color}` } : undefined}
+            >
+              <span className={`mt-1 w-3.5 h-3.5 rounded-full shrink-0 ring-2 transition-all ${
+                open ? "ring-[#FDFBF7] scale-125" : "ring-[#F2EBE1]"
+              }`} style={{ background: color }} />
+              <span className="flex-1 min-w-0">
+                <span className="block text-[10px] tracking-[0.25em] uppercase" style={{ color }}>
+                  {pick(kindCfg.label, lang)}
+                </span>
+                <span className="block font-serif-x text-[16px] md:text-[17px] text-[#2C2621] leading-snug mt-1 inline-flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
+                  {pick(landmark.name, lang)}
+                </span>
+                <span className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]">
+                  {pick(landmark.blurb, lang)}
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {open ? (
+          <LandmarkCarousel
+            landmark={landmark}
+            accent={accent}
+            onClose={() => setOpen(false)}
+          />
+        ) : (
+          <LandmarkCarouselHint accent={accent} />
+        )}
+      </div>
+    </section>
+  );
+};
+
 /* ============================================================
    Public component — picks the right tier
 ============================================================ */
@@ -484,7 +721,7 @@ export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
   // Tier 2 — polyline waypoints (curated or parsed)
   const waypoints = resolveDayRoute(day.route_id);
   if (waypoints.length >= 2) {
-    return <WaypointMode day={day} idx={idx} total={total} accent={accent} t={t} waypoints={waypoints} />;
+    return <WaypointMode day={day} idx={idx} total={total} accent={accent} t={t} lang={lang} waypoints={waypoints} />;
   }
 
   // Tier 3 — stationary day / no-data card
