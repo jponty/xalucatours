@@ -86,7 +86,7 @@ const Intro = ({ intro, lang }) => (
   </section>
 );
 
-const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
+const OptionsGrid = ({ options, programs, lang, ctaTarget, t, hubId }) => {
   const groupedKeys = Array.from(new Set(programs.map((p) => p.direction)));
   const getLabel = (k) => k === "a" ? pick(options.group_a, lang) : pick(options.group_b, lang);
   const singleDirection = groupedKeys.length === 1 && (groupedKeys[0] === undefined || !options.group_a);
@@ -126,7 +126,7 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                     className="group relative block overflow-hidden h-[440px]"
                   >
                     <EditableImage
-                      slot={`hub.${hub.id}.program.${p.id}`}
+                      slot={`hub.${hubId}.program.${p.id}`}
                       fallback={p.image}
                       alt=""
                       aspectRatio="3/4"
@@ -228,6 +228,7 @@ export default function ItineraryHubPage({ hub }) {
         lang={lang}
         ctaTarget={pathFor(lang, "contact")}
         t={t}
+        hubId={hub.id}
       />
 
       <CommunityCta
