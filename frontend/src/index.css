@@ -214,6 +214,41 @@
     overflow: hidden;
 }
 
+/* Aurorism · slow drifting radial gradients for /marruecos hero --- */
+.aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    will-change: transform;
+}
+.aurora-blob.a1 { width: 60vw; height: 60vw; left: -10vw; top: -15vw;
+    background: radial-gradient(closest-side, #C16542 0%, rgba(193,101,66,0) 70%);
+    animation: aurora-drift-1 24s ease-in-out infinite alternate; }
+.aurora-blob.a2 { width: 55vw; height: 55vw; right: -12vw; top: 5vw;
+    background: radial-gradient(closest-side, #3B5BA9 0%, rgba(59,91,169,0) 70%);
+    animation: aurora-drift-2 30s ease-in-out infinite alternate; }
+.aurora-blob.a3 { width: 50vw; height: 50vw; left: 18vw; bottom: -18vw;
+    background: radial-gradient(closest-side, #D4A373 0%, rgba(212,163,115,0) 70%);
+    animation: aurora-drift-3 28s ease-in-out infinite alternate; }
+@keyframes aurora-drift-1 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(8vw, 6vh) scale(1.12); }
+}
+@keyframes aurora-drift-2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-6vw, 8vh) scale(1.08); }
+}
+@keyframes aurora-drift-3 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-10vw, -8vh) scale(1.18); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .aurora-blob { animation: none; }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
     .landmark-carousel-enter, .landmark-story-card { animation: none; opacity: 1; transform: none; }

@@ -331,6 +331,29 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /marruecos · Premium Aurorism landing (Feb 2026)
+- **User mandate**: build a premium dark Aurorism + Cinematographic Minimalism landing at the `morocco` route (`/marruecos` · `/en/morocco` · `/fr/maroc`). Previously routed to `<StubPage />`. The existing `MarruecosPage.jsx` at `/viajes/marruecos` (route `tourFull`) is left untouched — this is a separate new file.
+- **New page** `pages/MoroccoLandingPage.jsx` wired in `App.js` (`if (routeId === "morocco") return <MoroccoLandingPage />`). Trilingual ES/EN/FR.
+- **Aurorism effect**: added new CSS keyframes/classes in `index.css` (`aurora-blob.a1/.a2/.a3` + `aurora-drift-1/2/3`). Three slow-drifting blurred radial gradients in **Terracota Profundo (#C16542)**, **Azul Majorelle (#3B5BA9)** and **Arena Dorada (#D4A373)** over a near-black warm bg `#0D0A09`. Respects `prefers-reduced-motion`.
+- **Framer Motion intentionally NOT installed** — the codebase already standardises on CSS animations (`ken-burns`, `fade-up`, `film-grain`, `animate-slide-down`). Stayed consistent rather than adding ~80kb to the bundle.
+- **Sections** (10):
+  1. **Hero Aurorism**: oversized serif `Marruecos.` (12vw), eyebrow + Compass icon + ken-burns image at 30% opacity behind aurora blobs, two pill CTAs.
+  2. **Por qué Marruecos** — 4 editorial pillars in glass cards (Tent/Desierto · Crown/Ciudades imperiales · Mountain/Atlas · Utensils/Cultura).
+  3. **Bento Grid · Experiencias** with profile filter — chips (Todas · Pareja · Amigos · Familia · Solo · Empresa) state-filter 8 experiences (Dormir en el desierto [feature 2×2] · 4×4 · Hammam · Cena estrellas · Medinas · Kasbahs · Trekking Atlas · Surf costa). Hover reveals body copy.
+  4. **Mapa interactivo Leaflet** (dark basemap) with 11 puntos: Marrakech, Fez, Rabat, Tánger, Chefchaouen, Erg Chebbi, Dadès, Todra, Ouarzazate, Essaouira, Dakhla.
+  5. **Elige tu forma de viajar** — 5 profile cards (Pareja → `tourEscapadaMarrakech`, Amigos → `tourSouth`, Familia → `tourFull`, Solo → `tourNorth`, Empresa → `events`).
+  6. **Cuándo viajar** — 4 season cards (Primavera/Leaf, Verano/Sun, Otoño/CloudSun, Invierno/Snowflake) + link a `whenToTravel`.
+  7. **Rutas populares** — 6 image cards (Gran Sur → `tourSouth`, Marrakech & desierto → `tourMarrakechErgHub`, Imperiales → `tourNorteCiudadesImperiales`, Norte → `tourNorth`, Escapadas → `tourShort`, Empresa → `events`).
+  8. **Bloque de confianza** — 5 trust pillars (Organización local · Logística propia · Hoteles seleccionados · Grupos/familias/empresas · Atención personalizada).
+  9. **CTA final premium** with aurora glow + 3 CTAs (Pedir propuesta · Ver circuitos · Hablar con un experto).
+  10. **FAQ acordeón** using shadcn `Accordion` — 6 preguntas (seguridad, mejor época, días, niños, primera vez, personalización).
+- **Glassmorphism**: `bg-white/5 backdrop-blur-xl border-white/10 rounded-2xl` system across all premium cards.
+- **Palette**: warm near-black `#0D0A09` / `#14100E` alternating sections + Terracota `#C16542` (primary CTAs) + Majorelle `#3B5BA9` (trust accents) + Sand `#D4A373` (eyebrows, accents).
+- **Editable images mandate respected**: hero, every experience card image, every popular-route image are `<EditableImage>` inside `<SlotScope>` containers.
+- **Doc title i18n** via `useEffect([lang])`.
+- **`data-testid`s**: `mar-page`, `mar-hero`, `mar-breadcrumbs`, `mar-why`, `mar-why-{id}`, `mar-experiences`, `mar-profile-chips`, `mar-chip-{id}`, `mar-bento`, `mar-exp-{id}`, `mar-map`, `mar-profiles`, `mar-profile-{id}`, `mar-seasons`, `mar-season-{id}`, `mar-routes`, `mar-route-{id}`, `mar-trust`, `mar-trust-{id}`, `mar-final-cta`, `mar-cta-primary/secondary/tertiary`, `mar-faq`, `mar-faq-{id}`.
+- **Smoke verified** in 9 screenshots: 10 sections render, profile chips correctly filter 8 → 6 experiences when `pareja` is selected, mapa con 11 markers, FAQ accordion opens/closes.
+
 ## /incentivos · "Casos de éxito" block (Feb 2026)
 - Added a B2B case-study section between `<Verticals>` and `<Process>` on `/incentivos`.
 - Dark `#1A1513` background with `berber-bg-cross` overlay to contrast against the white verticals and `#F2EBE1` process — creates the rhythm requested for the page.
