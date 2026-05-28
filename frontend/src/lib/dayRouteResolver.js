@@ -110,18 +110,45 @@ const ALIASES = {
 /* Sort city keys longest-first so we match "marrakech" before "rak". */
 const CITY_KEYS = Object.keys(CITY_TABLE).sort((a, b) => b.length - a.length);
 
+/* Explicit CITY_TABLE-key → CITY_PROFILES-key bridge. Needed when a city
+   has multiple aliases (e.g. "rak", "casa", "tet", "ozz") that point to the
+   same coordinates but where the profile lives under a different key.   */
+const CITY_TO_PROFILE = {
+  "rak":          "marrakech",
+  "tan":          "tanger",
+  "tet":          "tetuan",
+  "tetouan":      "tetuan",
+  "fes":          "fez",
+  "casa":         "casablanca",
+  "ozz":          "ouarzazate",
+  "ouarza":       "ouarzazate",
+  "ait":          "aitben",
+  "ben":          "aitben",
+  "haddou":       "aitben",
+  "aitbenhaddou": "aitben",
+  "ergchebbi":    "chebbi",
+  "zagora":       "draa",
+  "dunes":        "chebbi",
+  "fossils":      "kemkem",
+};
+
 /* ---- Token → CITY_PROFILES key resolver ---------------------
    Builds the profile key for a CITY_TABLE token so the day map can
    render a clickable gallery drawer even on parsed (Tier 2) days. */
 const tokenToProfileKey = (token) => {
   if (!token) return null;
+  if (CITY_TO_PROFILE[token]) return CITY_TO_PROFILE[token];
   if (CITY_PROFILES[token]) return token;
   const alias = ALIASES[token];
-  if (alias && CITY_PROFILES[alias]) return alias;
-  // Loose contains: pick the longest profile key contained in the token.
+  if (alias) {
+    if (CITY_TO_PROFILE[alias]) return CITY_TO_PROFILE[alias];
+    if (CITY_PROFILES[alias]) return alias;
+  }
+  // Loose contains both ways: token is inside a profile key (e.g. "rak"
+  // inside "marrakech") OR a profile key is inside the token.
   const profileKeys = Object.keys(CITY_PROFILES).sort((a, b) => b.length - a.length);
   for (const key of profileKeys) {
-    if (token.includes(key)) return key;
+    if (token.includes(key) || key.includes(token)) return key;
   }
   return null;
 };

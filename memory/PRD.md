@@ -232,3 +232,11 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Tier 2 day `trk89-tanger-chefchaouen` → click on "Tánger" waypoint highlights marker, opens drawer with 3 trilingual cards (Medina sobre el Estrecho, Café Hafa, Kasbah y Petit Socco), all images naturalWidth=1200 and complete.
   - Tier 3 day `trk89-fez-discover` → "Día sin desplazamientos" with mini-map on Fez; click on the side button opens the same drawer with 3 cards (Curtidurías Chouara, al-Qarawiyyin, Bab Boujloud).
 - `data-testid` additions: `day-waypoint-btn-{routeId}-{idx}`, `day-stay-btn-{routeId}` and existing `landmark-carousel-{landmarkId}` / `landmark-card-{idx}` selectors stay consistent across tiers.
+
+## Universal galleries — testing-agent regression fix (Feb 2026)
+- Iteration 12 testing agent flagged that `escapadas/marrakech/programa_2n_3d` Tier 3 stays (`escrak-arrival`, `escrak-medina`, `escrak23-return`) did NOT upgrade to clickable `StayInteractive` even though Marrakech is canonical.
+- Root cause: `tokenToProfileKey("rak")` returned `null`. The token "rak" matched `CITY_TABLE["rak"]` for coordinates, but the loose-contains profile lookup only checked `profileKey ⊂ token`, never `token ⊂ profileKey`. "rak" is too short to contain "marrakech".
+- Fix in `lib/dayRouteResolver.js`:
+  1. Added explicit `CITY_TO_PROFILE` bridge: `{ rak: "marrakech", tan: "tanger", tet: "tetuan", fes: "fez", casa: "casablanca", ozz/ouarza: "ouarzazate", ait/ben/haddou/aitbenhaddou: "aitben", ergchebbi/dunes: "chebbi", zagora: "draa", fossils: "kemkem" }`.
+  2. `tokenToProfileKey` now consults the bridge first, then direct, then alias, then loose-contains BOTH ways (`token.includes(key) || key.includes(token)`).
+- Verified: `viajes/escapadas/marrakech/programa_2n_3d` → all 3 stays expose `day-stay-btn-*`, drawer opens with 3 image cards (Jemaa el-Fna, Medersa Ben Youssef, Jardín Majorelle) — all `naturalWidth=1200, complete=true`.
