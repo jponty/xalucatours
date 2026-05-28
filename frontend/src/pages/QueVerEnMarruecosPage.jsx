@@ -1,0 +1,731 @@
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  Home, ChevronRight, Compass, MapPin, ArrowRight, ArrowUpRight,
+  Crown, Tent, Mountain, Waves, Building2, Sparkles, Star,
+} from "lucide-react";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
+import { IMG, banner } from "@/lib/imageBank";
+import EditableImage from "@/components/EditableImage";
+import { SlotScope } from "@/components/slotScope";
+
+/* ============================================================
+   Doc title per language — same pattern as HomePage to avoid
+   the i18n title bug recurrence.
+============================================================ */
+const DOC_TITLES = {
+  es: "Qué ver en Marruecos · Guía visual de destinos · Xaluca",
+  en: "What to see in Morocco · Visual destination guide · Xaluca",
+  fr: "Que voir au Maroc · Guide visuel des destinations · Xaluca",
+};
+
+/* ============================================================
+   Static copy
+============================================================ */
+const COPY = {
+  breadcrumb: { es: "Inicio", en: "Home", fr: "Accueil" },
+  guides:     { es: "Guías",  en: "Guides", fr: "Guides" },
+  current:    { es: "Qué ver en Marruecos", en: "What to see in Morocco", fr: "Que voir au Maroc" },
+  hero: {
+    eyebrow: { es: "Inspiración para tu viaje", en: "Trip inspiration", fr: "Inspiration de voyage" },
+    place:   { es: "Marruecos · Norte a Sur",   en: "Morocco · North to South", fr: "Maroc · Du Nord au Sud" },
+    title: {
+      es: "Cada ciudad, cada duna, cada montaña — un viaje distinto.",
+      en: "Each city, each dune, each mountain — a different journey.",
+      fr: "Chaque ville, chaque dune, chaque montagne — un voyage différent.",
+    },
+    subtitle: {
+      es: "Esta guía visual reúne los destinos imprescindibles de Marruecos. Pulsa cualquier tarjeta para descubrir los viajes que los atraviesan.",
+      en: "This visual guide gathers Morocco's must-see destinations. Click any card to discover the journeys that travel through them.",
+      fr: "Ce guide visuel rassemble les incontournables du Maroc. Cliquez sur n'importe quelle carte pour découvrir les voyages qui les traversent.",
+    },
+  },
+  intro: {
+    overline: { es: "El país que cabe en un viaje", en: "A country that fits in one journey", fr: "Un pays qui tient dans un voyage" },
+    title: {
+      es: "Cuatro cordilleras, tres mares, un desierto inmenso y cuatro ciudades imperiales.",
+      en: "Four mountain ranges, three seas, a vast desert and four imperial cities.",
+      fr: "Quatre chaînes de montagnes, trois mers, un désert immense et quatre cités impériales.",
+    },
+    body: {
+      es: "Marruecos no se recorre en línea recta. Lo construyes a partir de los lugares que te llaman: las medinas medievales de Fez, las playas atlánticas de Essaouira, las dunas naranjas del Erg Chebbi, las kasbahs de tierra del valle del Drâa. Aquí los reunimos todos para que elijas tu próxima parada — y a partir de ahí, te mostramos los viajes que la atraviesan.",
+      en: "Morocco is never travelled in a straight line. You build it from the places that call to you: Fez's medieval medinas, Essaouira's Atlantic beaches, the orange dunes of Erg Chebbi, the earthen kasbahs of the Drâa valley. We gather them all here so you can pick your next stop — and from there, we show you the journeys that pass through it.",
+      fr: "Le Maroc ne se parcourt jamais en ligne droite. Vous le construisez à partir des lieux qui vous appellent : les médinas médiévales de Fès, les plages atlantiques d'Essaouira, les dunes orangées de l'Erg Chebbi, les kasbahs de terre de la vallée du Drâa. Nous les rassemblons ici pour que vous choisissiez votre prochaine étape — et de là, nous vous montrons les voyages qui la traversent.",
+    },
+  },
+  tripsCta: { es: "Ver viajes", en: "View trips", fr: "Voir les voyages" },
+  catLabel: { es: "Categoría", en: "Category", fr: "Catégorie" },
+  finalCta: {
+    eyebrow: { es: "¿Lo tienes claro?", en: "Made up your mind?", fr: "C'est décidé ?" },
+    title: {
+      es: "Combina los destinos que más te llaman — diseñamos tu itinerario a medida.",
+      en: "Mix the destinations that call to you most — we'll design your itinerary.",
+      fr: "Combinez les destinations qui vous appellent — nous concevons votre itinéraire.",
+    },
+    primary: { es: "Planifica tu viaje", en: "Plan my journey", fr: "Planifier mon voyage" },
+    secondary: { es: "Ver todos los viajes", en: "Browse all journeys", fr: "Voir tous les voyages" },
+  },
+};
+
+/* ============================================================
+   Section + Destination data
+   - id: stable slug used for testids + SlotScope auto-ids
+   - cat: category badge (i18n)
+   - image: fallback IMG bank key
+   - name / blurb: i18n strings
+   - trips: ordered list of { routeId, label } → SPA <Link>
+============================================================ */
+const SECTIONS = [
+  {
+    id: "imperiales",
+    icon: Crown,
+    accent: "#C16542",
+    overline: { es: "Las cuatro coronas", en: "The four crowns", fr: "Les quatre couronnes" },
+    title: {
+      es: "Ciudades imperiales",
+      en: "Imperial cities",
+      fr: "Cités impériales",
+    },
+    body: {
+      es: "Marrakech, Fez, Meknès y Rabat fueron capitales de Marruecos en distintos momentos de la historia. Hoy son los grandes centros culturales del país: medinas Patrimonio de la Humanidad, riads escondidos tras puertas tachonadas, mezquitas y palacios en piedra rosada.",
+      en: "Marrakech, Fez, Meknès and Rabat each served as Morocco's capital at different points in history. Today they are the country's great cultural centres: UNESCO medinas, riads hidden behind studded doors, mosques and palaces in rose stone.",
+      fr: "Marrakech, Fès, Meknès et Rabat ont tour à tour été capitales du Maroc. Elles sont aujourd'hui les grands centres culturels du pays : médinas classées UNESCO, riads cachés derrière des portes cloutées, mosquées et palais en pierre rose.",
+    },
+    cards: [
+      {
+        id: "marrakech",
+        cat: { es: "Ciudad imperial", en: "Imperial city", fr: "Cité impériale" },
+        image: IMG.koutoubia,
+        name: { es: "Marrakech", en: "Marrakech", fr: "Marrakech" },
+        blurb: {
+          es: "La capital del sur. Jemaa el-Fna al atardecer, jardines Majorelle, la silueta de la Koutoubia y los zocos teñidos de cobre.",
+          en: "The southern capital. Jemaa el-Fna at sunset, Majorelle Gardens, the Koutoubia silhouette and copper-stained souks.",
+          fr: "La capitale du sud. Jemaa el-Fna au coucher du soleil, jardins Majorelle, la silhouette de la Koutoubia et des souks teintés de cuivre.",
+        },
+        trips: [
+          { routeId: "tourEscapadaMarrakech",   label: { es: "Escapada a Marrakech", en: "Marrakech short escape", fr: "Escapade à Marrakech" } },
+          { routeId: "tourMarrakechLoopHub",    label: { es: "Marrakech · Erg Chebbi · Marrakech", en: "Marrakech · Erg Chebbi · Marrakech", fr: "Marrakech · Erg Chebbi · Marrakech" } },
+          { routeId: "tourMarrakechEssHub",     label: { es: "Marrakech ⇄ Essaouira", en: "Marrakech ⇄ Essaouira", fr: "Marrakech ⇄ Essaouira" } },
+          { routeId: "tourMarrakechErgHub",     label: { es: "Marrakech → Erg Chebbi", en: "Marrakech → Erg Chebbi", fr: "Marrakech → Erg Chebbi" } },
+          { routeId: "tourGransurFezRak",       label: { es: "Fez ⇄ Marrakech (Gran Sur)", en: "Fez ⇄ Marrakech (Grand South)", fr: "Fès ⇄ Marrakech (Grand Sud)" } },
+        ],
+      },
+      {
+        id: "fez",
+        cat: { es: "Ciudad imperial", en: "Imperial city", fr: "Cité impériale" },
+        image: IMG.medinaPeople,
+        name: { es: "Fez", en: "Fez", fr: "Fès" },
+        blurb: {
+          es: "La medina viva más grande del mundo. Curtidurías Chouara, al-Qarawiyyin (universidad más antigua del planeta), callejuelas que no caben en un GPS.",
+          en: "The world's largest living medina. Chouara tanneries, al-Qarawiyyin (the planet's oldest university), alleys that no GPS can map.",
+          fr: "La plus grande médina vivante du monde. Tanneries Chouara, al-Qarawiyyin (la plus ancienne université du monde), ruelles qu'aucun GPS ne peut cartographier.",
+        },
+        trips: [
+          { routeId: "tourEscapadaFez",             label: { es: "Escapada a Fez", en: "Fez short escape", fr: "Escapade à Fès" } },
+          { routeId: "tourNorteCiudadesImperiales", label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" } },
+          { routeId: "tourNorteTangerFez",          label: { es: "Tánger ⇄ Fez", en: "Tangier ⇄ Fez", fr: "Tanger ⇄ Fès" } },
+          { routeId: "tourGransurFezRak",           label: { es: "Fez → Marrakech (Gran Sur)", en: "Fez → Marrakech (Grand South)", fr: "Fès → Marrakech (Grand Sud)" } },
+          { routeId: "tourFezAtlasErr56",           label: { es: "Fez · Atlas · Errachidia", en: "Fez · Atlas · Errachidia", fr: "Fès · Atlas · Errachidia" } },
+        ],
+      },
+      {
+        id: "meknes",
+        cat: { es: "Ciudad imperial", en: "Imperial city", fr: "Cité impériale" },
+        image: IMG.riadInterior,
+        name: { es: "Meknès", en: "Meknès", fr: "Meknès" },
+        blurb: {
+          es: "La pequeña Versalles marroquí. Bab Mansour, las cuadras reales y los graneros de Moulay Ismail al borde de los olivares.",
+          en: "Morocco's miniature Versailles. Bab Mansour, the royal stables and Moulay Ismail's granaries bordering vast olive groves.",
+          fr: "La petite Versailles marocaine. Bab Mansour, les écuries royales et les greniers de Moulay Ismaïl bordés d'oliveraies.",
+        },
+        trips: [
+          { routeId: "tourNorteCiudadesImperiales", label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" } },
+          { routeId: "tourCiudadesImperialesRif67", label: { es: "Imperiales + Rif (6n/7d)", en: "Imperial + Rif (6n/7d)", fr: "Impériales + Rif (6n/7j)" } },
+          { routeId: "tourTangerFez56",             label: { es: "Tánger → Fez (5n/6d)", en: "Tangier → Fez (5n/6d)", fr: "Tanger → Fès (5n/6j)" } },
+        ],
+      },
+      {
+        id: "rabat",
+        cat: { es: "Ciudad imperial", en: "Imperial city", fr: "Cité impériale" },
+        image: IMG.riadFountain,
+        name: { es: "Rabat", en: "Rabat", fr: "Rabat" },
+        blurb: {
+          es: "La capital política. Kasbah de los Udayas sobre el Atlántico, el mausoleo Mohammed V y la torre Hassan inacabada.",
+          en: "Morocco's political capital. The Udayas Kasbah over the Atlantic, the Mohammed V mausoleum and the unfinished Hassan Tower.",
+          fr: "La capitale politique. Kasbah des Oudayas surplombant l'Atlantique, mausolée Mohammed V et tour Hassan inachevée.",
+        },
+        trips: [
+          { routeId: "tourNorteCiudadesImperiales", label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" } },
+          { routeId: "tourCiudadesImperialesRif67", label: { es: "Imperiales + Rif (6n/7d)", en: "Imperial + Rif (6n/7d)", fr: "Impériales + Rif (6n/7j)" } },
+          { routeId: "tourCiudadesImperialesRif78", label: { es: "Imperiales + Rif (7n/8d)", en: "Imperial + Rif (7n/8d)", fr: "Impériales + Rif (7n/8j)" } },
+        ],
+      },
+    ],
+  },
+  {
+    id: "sahara",
+    icon: Tent,
+    accent: "#D4A373",
+    overline: { es: "El sur infinito", en: "The infinite south", fr: "Le sud infini" },
+    title: {
+      es: "Desierto del Sáhara",
+      en: "Sahara Desert",
+      fr: "Désert du Sahara",
+    },
+    body: {
+      es: "Las dunas naranjas del Erg Chebbi son el destino más fotografiado del país, pero el sur es mucho más: kasbahs de barro en Ouarzazate, la fortaleza UNESCO de Aït Ben Haddou y los oasis del valle del Drâa.",
+      en: "The orange dunes of Erg Chebbi are Morocco's most photographed destination, yet the south is far more: earthen kasbahs in Ouarzazate, the UNESCO fortress of Aït Ben Haddou and the oases of the Drâa valley.",
+      fr: "Les dunes orangées de l'Erg Chebbi sont la destination la plus photographiée du pays, mais le sud va bien au-delà : kasbahs de terre à Ouarzazate, forteresse UNESCO d'Aït Ben Haddou et oasis de la vallée du Drâa.",
+    },
+    cards: [
+      {
+        id: "ergchebbi",
+        cat: { es: "Desierto · dunas", en: "Desert · dunes", fr: "Désert · dunes" },
+        image: IMG.dunes,
+        name: { es: "Erg Chebbi · Merzouga", en: "Erg Chebbi · Merzouga", fr: "Erg Chebbi · Merzouga" },
+        blurb: {
+          es: "Las dunas más altas de Marruecos, hasta 150 m. Bivouac bajo las estrellas, paseo en dromedario y amanecer en Tombouctou.",
+          en: "Morocco's highest dunes, up to 150 m. Bivouac under the stars, camel ride and sunrise over Tombouctou.",
+          fr: "Les plus hautes dunes du Maroc, jusqu'à 150 m. Bivouac sous les étoiles, balade à dromadaire et lever de soleil sur Tombouctou.",
+        },
+        trips: [
+          { routeId: "tourEscapadaDesierto34",    label: { es: "Escapada al desierto (3n/4d)", en: "Desert escape (3n/4d)", fr: "Escapade au désert (3n/4j)" } },
+          { routeId: "tourEscapadaRakErgRakHub",  label: { es: "Marrakech ⇄ Erg ⇄ Marrakech", en: "Marrakech ⇄ Erg ⇄ Marrakech", fr: "Marrakech ⇄ Erg ⇄ Marrakech" } },
+          { routeId: "tourMarrakechErgHub",       label: { es: "Marrakech → Erg Chebbi", en: "Marrakech → Erg Chebbi", fr: "Marrakech → Erg Chebbi" } },
+          { routeId: "tourErgChebbiMarrakechHub", label: { es: "Erg Chebbi → Marrakech", en: "Erg Chebbi → Marrakech", fr: "Erg Chebbi → Marrakech" } },
+          { routeId: "tourMarrakechLoopHub",      label: { es: "Marrakech circular (loop)", en: "Marrakech loop", fr: "Marrakech en boucle" } },
+          { routeId: "tourFezAtlasErr56",         label: { es: "Fez · Atlas · Errachidia", en: "Fez · Atlas · Errachidia", fr: "Fès · Atlas · Errachidia" } },
+        ],
+      },
+      {
+        id: "ouarzazate",
+        cat: { es: "Puerta del desierto", en: "Desert gateway", fr: "Porte du désert" },
+        image: IMG.kasbahArch,
+        name: { es: "Ouarzazate · Skoura", en: "Ouarzazate · Skoura", fr: "Ouarzazate · Skoura" },
+        blurb: {
+          es: "La puerta del desierto y capital del cine marroquí. Kasbah de Taourirt, estudios de Atlas y el palmeral milenario de Skoura.",
+          en: "The desert gateway and capital of Moroccan cinema. Taourirt Kasbah, Atlas studios and Skoura's thousand-year-old palm grove.",
+          fr: "La porte du désert et capitale du cinéma marocain. Kasbah de Taourirt, studios d'Atlas et la palmeraie millénaire de Skoura.",
+        },
+        trips: [
+          { routeId: "tourAtlasDesiertoHub",     label: { es: "Atlas · Desierto", en: "Atlas · Desert", fr: "Atlas · Désert" } },
+          { routeId: "tourGransurOuarzaFez",     label: { es: "Ouarzazate · Sidi Ali · Fez", en: "Ouarzazate · Sidi Ali · Fez", fr: "Ouarzazate · Sidi Ali · Fès" } },
+          { routeId: "tourAtlasDesiertoFezHub",  label: { es: "Atlas · Desierto · Fez", en: "Atlas · Desert · Fez", fr: "Atlas · Désert · Fès" } },
+        ],
+      },
+      {
+        id: "aitbenhaddou",
+        cat: { es: "Patrimonio UNESCO", en: "UNESCO heritage", fr: "Patrimoine UNESCO" },
+        image: IMG.kasbahGate,
+        name: { es: "Aït Ben Haddou", en: "Aït Ben Haddou", fr: "Aït Ben Haddou" },
+        blurb: {
+          es: "La ksar de tierra más célebre del Atlas, Patrimonio de la Humanidad. Gladiator, Juego de Tronos y Lawrence de Arabia se rodaron entre sus murallas.",
+          en: "The most famous earthen ksar of the Atlas, a UNESCO World Heritage site. Gladiator, Game of Thrones and Lawrence of Arabia were all filmed within its walls.",
+          fr: "Le ksar de terre le plus célèbre de l'Atlas, classé Patrimoine Mondial. Gladiator, Game of Thrones et Lawrence d'Arabie y ont été tournés.",
+        },
+        trips: [
+          { routeId: "tourAtlasDesiertoHub", label: { es: "Atlas · Desierto", en: "Atlas · Desert", fr: "Atlas · Désert" } },
+          { routeId: "tourGransurFezRak",    label: { es: "Fez ⇄ Marrakech (Gran Sur)", en: "Fez ⇄ Marrakech (Grand South)", fr: "Fès ⇄ Marrakech (Grand Sud)" } },
+          { routeId: "tourMarrakechErgHub",  label: { es: "Marrakech → Erg Chebbi", en: "Marrakech → Erg Chebbi", fr: "Marrakech → Erg Chebbi" } },
+        ],
+      },
+    ],
+  },
+  {
+    id: "atlas",
+    icon: Mountain,
+    accent: "#5A6B4F",
+    overline: { es: "La cordillera mítica", en: "The mythical range", fr: "La chaîne mythique" },
+    title: {
+      es: "Atlas y montañas",
+      en: "Atlas & mountains",
+      fr: "Atlas & montagnes",
+    },
+    body: {
+      es: "Tres cordilleras paralelas atraviesan Marruecos. El Alto Atlas culmina en el Toubkal (4 167 m). Las gargantas del Dadès y el Todra esculpen el desierto en piedra. Pueblos bereberes adobe, valles nogales, picos nevados en marzo.",
+      en: "Three parallel ranges cross Morocco. The High Atlas peaks at Toubkal (4,167 m). The Dadès and Todra gorges carve the desert into stone. Berber adobe villages, walnut valleys, snow-capped peaks until March.",
+      fr: "Trois chaînes parallèles traversent le Maroc. Le Haut Atlas culmine au Toubkal (4 167 m). Les gorges du Dadès et du Todra sculptent le désert dans la pierre. Villages berbères en pisé, vallées noyer, sommets enneigés jusqu'en mars.",
+    },
+    cards: [
+      {
+        id: "altoatlas",
+        cat: { es: "Cordillera", en: "Mountain range", fr: "Chaîne de montagnes" },
+        image: IMG.atlasSnowy,
+        name: { es: "Alto Atlas", en: "High Atlas", fr: "Haut Atlas" },
+        blurb: {
+          es: "Cumbres nevadas, valles de almendros en flor, puertos a 2 260 m. La columna vertebral del país, visible incluso desde Marrakech.",
+          en: "Snow-capped summits, almond-blossom valleys, mountain passes at 2,260 m. Morocco's spine, visible even from Marrakech.",
+          fr: "Sommets enneigés, vallées d'amandiers en fleurs, cols à 2 260 m. La colonne vertébrale du Maroc, visible jusqu'à Marrakech.",
+        },
+        trips: [
+          { routeId: "tourAtlasDesiertoHub", label: { es: "Atlas · Desierto", en: "Atlas · Desert", fr: "Atlas · Désert" } },
+          { routeId: "tourEscapadaAtlas34",  label: { es: "Escapada al Atlas (3n/4d)", en: "Atlas escape (3n/4d)", fr: "Escapade en Atlas (3n/4j)" } },
+          { routeId: "tourFezAtlasErr56",    label: { es: "Fez · Atlas · Errachidia", en: "Fez · Atlas · Errachidia", fr: "Fès · Atlas · Errachidia" } },
+        ],
+      },
+      {
+        id: "imlil",
+        cat: { es: "Senderismo · Toubkal", en: "Trekking · Toubkal", fr: "Randonnée · Toubkal" },
+        image: IMG.atlasValley,
+        name: { es: "Imlil · Toubkal", en: "Imlil · Toubkal", fr: "Imlil · Toubkal" },
+        blurb: {
+          es: "Base de los trekkings al Toubkal (4 167 m). Pueblos de piedra, mulas en los senderos, refugios bereberes a 3 200 m.",
+          en: "Base camp for Toubkal treks (4,167 m). Stone villages, mules on the trails, Berber refuges at 3,200 m.",
+          fr: "Camp de base des treks du Toubkal (4 167 m). Villages en pierre, mules sur les sentiers, refuges berbères à 3 200 m.",
+        },
+        trips: [
+          { routeId: "tourEscapadaAtlas34", label: { es: "Escapada al Atlas (3n/4d)", en: "Atlas escape (3n/4d)", fr: "Escapade en Atlas (3n/4j)" } },
+          { routeId: "tourAdventure",       label: { es: "Viajes de aventura", en: "Adventure tours", fr: "Voyages aventure" } },
+        ],
+      },
+      {
+        id: "dades-todra",
+        cat: { es: "Gargantas · ríos", en: "Gorges · rivers", fr: "Gorges · rivières" },
+        image: IMG.atlasMisty,
+        name: { es: "Dadès y Todra", en: "Dadès & Todra", fr: "Dadès & Todra" },
+        blurb: {
+          es: "Las dos gargantas más espectaculares del Atlas: paredes verticales de 300 m, palmerales escondidos y la curva infinita de la 'cola de mono' del Dadès.",
+          en: "The Atlas's two most spectacular gorges: 300 m vertical walls, hidden palm groves and the endless curve of Dadès' 'monkey-tail'.",
+          fr: "Les deux gorges les plus spectaculaires de l'Atlas : parois verticales de 300 m, palmeraies cachées et la courbe infinie de la « queue de singe » du Dadès.",
+        },
+        trips: [
+          { routeId: "tourMarrakechErgHub", label: { es: "Marrakech → Erg Chebbi", en: "Marrakech → Erg Chebbi", fr: "Marrakech → Erg Chebbi" } },
+          { routeId: "tourGransurFezRak",   label: { es: "Fez ⇄ Marrakech (Gran Sur)", en: "Fez ⇄ Marrakech (Grand South)", fr: "Fès ⇄ Marrakech (Grand Sud)" } },
+          { routeId: "tourFezAtlasErr56",   label: { es: "Fez · Atlas · Errachidia", en: "Fez · Atlas · Errachidia", fr: "Fès · Atlas · Errachidia" } },
+        ],
+      },
+    ],
+  },
+  {
+    id: "norte",
+    icon: Sparkles,
+    accent: "#5A7F9C",
+    overline: { es: "El norte azul", en: "The blue north", fr: "Le nord bleu" },
+    title: {
+      es: "Norte mediterráneo y Rif",
+      en: "Mediterranean north & Rif",
+      fr: "Nord méditerranéen & Rif",
+    },
+    body: {
+      es: "El norte de Marruecos es otro país: Tánger mira a Tarifa, Chefchaouen está pintado de azul indigo, Asilah es la respuesta marroquí a Cádiz. Influencia andalusí, fortalezas portuguesas, montañas del Rif.",
+      en: "Morocco's north is another country: Tangier looks across at Tarifa, Chefchaouen is painted indigo blue, Asilah is the Moroccan answer to Cádiz. Andalusi heritage, Portuguese fortresses, Rif mountains.",
+      fr: "Le nord du Maroc est un autre pays : Tanger regarde Tarifa, Chefchaouen est peinte en bleu indigo, Asilah est la réponse marocaine à Cadix. Patrimoine andalou, forteresses portugaises, monts du Rif.",
+    },
+    cards: [
+      {
+        id: "tanger",
+        cat: { es: "Estrecho · puerto", en: "Strait · port", fr: "Détroit · port" },
+        image: IMG.essaouiraPort,
+        name: { es: "Tánger", en: "Tangier", fr: "Tanger" },
+        blurb: {
+          es: "La puerta entre dos continentes. Café Hafa, kasbah sobre el Estrecho, la medina escrita por Bowles y Burroughs.",
+          en: "The gateway between two continents. Café Hafa, kasbah over the Strait, the medina written about by Bowles and Burroughs.",
+          fr: "La porte entre deux continents. Café Hafa, kasbah sur le Détroit, la médina chantée par Bowles et Burroughs.",
+        },
+        trips: [
+          { routeId: "tourEscapadaTanger",      label: { es: "Escapada a Tánger", en: "Tangier short escape", fr: "Escapade à Tanger" } },
+          { routeId: "tourNorteTangerFez",      label: { es: "Tánger ⇄ Fez", en: "Tangier ⇄ Fez", fr: "Tanger ⇄ Fès" } },
+          { routeId: "tourGransurTangerRak",    label: { es: "Tánger → Marrakech (Gran Sur)", en: "Tangier → Marrakech (Grand South)", fr: "Tanger → Marrakech (Grand Sud)" } },
+        ],
+      },
+      {
+        id: "chefchaouen",
+        cat: { es: "Pueblo azul · Rif", en: "Blue town · Rif", fr: "Village bleu · Rif" },
+        image: IMG.chefBlueCity,
+        name: { es: "Chefchaouen", en: "Chefchaouen", fr: "Chefchaouen" },
+        blurb: {
+          es: "La medina pintada de azul indigo entre las montañas del Rif. Mezquita roja, plaza Uta el-Hammam, cascadas de Akchour a 30 minutos.",
+          en: "The medina painted indigo blue between the Rif mountains. Red mosque, Uta el-Hammam square, Akchour waterfalls just 30 min away.",
+          fr: "La médina peinte en bleu indigo entre les monts du Rif. Mosquée rouge, place Uta el-Hammam, cascades d'Akchour à 30 minutes.",
+        },
+        trips: [
+          { routeId: "tourCiudadesImperialesRif67", label: { es: "Imperiales + Rif (6n/7d)", en: "Imperial + Rif (6n/7d)", fr: "Impériales + Rif (6n/7j)" } },
+          { routeId: "tourCiudadesImperialesRif78", label: { es: "Imperiales + Rif (7n/8d)", en: "Imperial + Rif (7n/8d)", fr: "Impériales + Rif (7n/8j)" } },
+          { routeId: "tourNorteTangerFez",          label: { es: "Tánger ⇄ Fez", en: "Tangier ⇄ Fez", fr: "Tanger ⇄ Fès" } },
+        ],
+      },
+      {
+        id: "asilah",
+        cat: { es: "Pueblo blanco · costa", en: "White town · coast", fr: "Village blanc · côte" },
+        image: IMG.chefStreet,
+        name: { es: "Asilah", en: "Asilah", fr: "Asilah" },
+        blurb: {
+          es: "La medina blanca con murales pintados cada verano. Murallas portuguesas del XV, playas atlánticas vacías y festival internacional de arte.",
+          en: "The white medina with murals painted each summer. 15th-century Portuguese walls, empty Atlantic beaches and an international art festival.",
+          fr: "La médina blanche aux fresques repeintes chaque été. Remparts portugais du XVe, plages atlantiques désertes et festival d'art international.",
+        },
+        trips: [
+          { routeId: "tourCiudadesImperialesRif67", label: { es: "Imperiales + Rif (6n/7d)", en: "Imperial + Rif (6n/7d)", fr: "Impériales + Rif (6n/7j)" } },
+          { routeId: "tourCiudadesImperialesRif78", label: { es: "Imperiales + Rif (7n/8d)", en: "Imperial + Rif (7n/8d)", fr: "Impériales + Rif (7n/8j)" } },
+        ],
+      },
+    ],
+  },
+  {
+    id: "costa",
+    icon: Waves,
+    accent: "#3F6B7A",
+    overline: { es: "Atlántico marroquí", en: "Moroccan Atlantic", fr: "Atlantique marocain" },
+    title: {
+      es: "Costa atlántica",
+      en: "Atlantic coast",
+      fr: "Côte atlantique",
+    },
+    body: {
+      es: "1 800 km de costa atlántica desde Tánger hasta el Sáhara. Vientos de alisios, surf, gaviotas, sardinas frescas en el puerto y dos joyas patrimoniales: Essaouira y Casablanca.",
+      en: "1,800 km of Atlantic coast from Tangier to the Sahara. Trade winds, surf, gulls, fresh sardines at the port and two heritage jewels: Essaouira and Casablanca.",
+      fr: "1 800 km de côte atlantique de Tanger au Sahara. Alizés, surf, mouettes, sardines fraîches au port et deux joyaux : Essaouira et Casablanca.",
+    },
+    cards: [
+      {
+        id: "essaouira",
+        cat: { es: "Patrimonio UNESCO · costa", en: "UNESCO · coast", fr: "UNESCO · côte" },
+        image: IMG.essaouiraPort,
+        name: { es: "Essaouira · Mogador", en: "Essaouira · Mogador", fr: "Essaouira · Mogador" },
+        blurb: {
+          es: "Murallas portuguesas, gaviotas, vientos de alisios y una de las medinas más fotogénicas del país. Capital del gnaoua y del kitesurf.",
+          en: "Portuguese walls, gulls, trade winds and one of Morocco's most photogenic medinas. Capital of gnawa music and kitesurfing.",
+          fr: "Remparts portugais, mouettes, alizés et l'une des médinas les plus photogéniques du Maroc. Capitale du gnawa et du kitesurf.",
+        },
+        trips: [
+          { routeId: "tourMarrakechEssHub",   label: { es: "Marrakech ⇄ Essaouira", en: "Marrakech ⇄ Essaouira", fr: "Marrakech ⇄ Essaouira" } },
+          { routeId: "tourMarrakechEss45",    label: { es: "Marrakech · Essaouira (4n/5d)", en: "Marrakech · Essaouira (4n/5d)", fr: "Marrakech · Essaouira (4n/5j)" } },
+          { routeId: "tourMarrakechEss67",    label: { es: "Marrakech · Essaouira (6n/7d)", en: "Marrakech · Essaouira (6n/7d)", fr: "Marrakech · Essaouira (6n/7j)" } },
+        ],
+      },
+      {
+        id: "casablanca",
+        cat: { es: "Metrópolis · Art Déco", en: "Metropolis · Art Deco", fr: "Métropole · Art Déco" },
+        image: IMG.marketBaskets,
+        name: { es: "Casablanca", en: "Casablanca", fr: "Casablanca" },
+        blurb: {
+          es: "La capital económica. Mezquita Hassan II sobre el Atlántico (uno de los minaretes más altos del mundo) y el mejor Art Déco del Magreb.",
+          en: "Morocco's economic capital. The Hassan II Mosque over the Atlantic (one of the tallest minarets on earth) and the Maghreb's best Art Deco.",
+          fr: "La capitale économique. Mosquée Hassan II au-dessus de l'Atlantique (l'un des plus hauts minarets du monde) et le meilleur Art Déco du Maghreb.",
+        },
+        trips: [
+          { routeId: "tourNorteCiudadesImperiales", label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" } },
+          { routeId: "tourCiudadesImperialesRif67", label: { es: "Imperiales + Rif (6n/7d)", en: "Imperial + Rif (6n/7d)", fr: "Impériales + Rif (6n/7j)" } },
+        ],
+      },
+    ],
+  },
+  {
+    id: "joyas",
+    icon: Star,
+    accent: "#8C6A3D",
+    overline: { es: "Lo que pocos conocen", en: "What few know", fr: "Ce que peu connaissent" },
+    title: {
+      es: "Joyas escondidas",
+      en: "Hidden gems",
+      fr: "Joyaux cachés",
+    },
+    body: {
+      es: "Lugares que casi nadie cita pero que cambian un viaje. Las ruinas romanas de Volubilis, el lago Aguelmane Sidi Ali a 2 100 m, los pueblos de tierra de Boumalne. Detalles que solo descubres con guía local.",
+      en: "Places almost nobody mentions yet they change a journey. The Roman ruins of Volubilis, Aguelmane Sidi Ali lake at 2,100 m, the earthen villages of Boumalne. Details you only discover with a local guide.",
+      fr: "Des lieux que presque personne ne mentionne mais qui changent un voyage. Les ruines romaines de Volubilis, le lac Aguelmane Sidi Ali à 2 100 m, les villages en pisé de Boumalne. Des détails qu'on ne découvre qu'avec un guide local.",
+    },
+    cards: [
+      {
+        id: "volubilis",
+        cat: { es: "Patrimonio UNESCO · romano", en: "UNESCO · Roman", fr: "UNESCO · Romain" },
+        image: IMG.atlasVillage,
+        name: { es: "Volubilis", en: "Volubilis", fr: "Volubilis" },
+        blurb: {
+          es: "La ciudad romana mejor conservada del norte de África. Mosaicos in situ, basílica, Arco de Caracalla y vistas sobre los campos de Mulay Idris.",
+          en: "North Africa's best-preserved Roman city. In-situ mosaics, basilica, Arch of Caracalla and views over Moulay Idris fields.",
+          fr: "La cité romaine la mieux conservée d'Afrique du Nord. Mosaïques in situ, basilique, Arc de Caracalla et vues sur les champs de Moulay Idriss.",
+        },
+        trips: [
+          { routeId: "tourNorteCiudadesImperiales", label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" } },
+          { routeId: "tourNorteTangerFez",          label: { es: "Tánger ⇄ Fez", en: "Tangier ⇄ Fez", fr: "Tanger ⇄ Fès" } },
+          { routeId: "tourTangerFez56",             label: { es: "Tánger → Fez (5n/6d)", en: "Tangier → Fez (5n/6d)", fr: "Tanger → Fès (5n/6j)" } },
+        ],
+      },
+      {
+        id: "sidiali",
+        cat: { es: "Medio Atlas · lago", en: "Middle Atlas · lake", fr: "Moyen Atlas · lac" },
+        image: IMG.atlasMisty,
+        name: { es: "Aguelmane Sidi Ali", en: "Aguelmane Sidi Ali", fr: "Aguelmane Sidi Ali" },
+        blurb: {
+          es: "Lago volcánico del Medio Atlas a 2 100 m. Macacos berberiscos en el cedral, nieblas matinales sobre el agua negra, pastores transhumantes.",
+          en: "Volcanic lake of the Middle Atlas at 2,100 m. Barbary macaques in the cedar forest, morning mist over the dark water, transhumant shepherds.",
+          fr: "Lac volcanique du Moyen Atlas à 2 100 m. Macaques de Barbarie dans la cédraie, brouillards matinaux sur l'eau noire, bergers transhumants.",
+        },
+        trips: [
+          { routeId: "tourGransurFezSidiali",         label: { es: "Fez · Sidi Ali · Marrakech", en: "Fez · Sidi Ali · Marrakech", fr: "Fès · Sidi Ali · Marrakech" } },
+          { routeId: "tourGransurOuarzaFez",          label: { es: "Ouarzazate · Sidi Ali · Fez", en: "Ouarzazate · Sidi Ali · Fez", fr: "Ouarzazate · Sidi Ali · Fès" } },
+          { routeId: "tourMarrakechSidialiFez78",     label: { es: "Marrakech · Sidi Ali · Fez (7n/8d)", en: "Marrakech · Sidi Ali · Fez (7n/8d)", fr: "Marrakech · Sidi Ali · Fès (7n/8j)" } },
+        ],
+      },
+    ],
+  },
+];
+
+/* ============================================================
+   Sub-components
+============================================================ */
+const InlineBreadcrumb = ({ lang }) => (
+  <nav
+    aria-label="Breadcrumb"
+    data-testid="qvm-breadcrumbs"
+    className="inline-flex items-center gap-2 bg-[#1A1513]/55 backdrop-blur-md border border-white/10 px-3.5 py-1.5 text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-[#FDFBF7]/90"
+  >
+    <Link to={pathFor(lang, "home")} data-testid="qvm-bc-home" className="flex items-center gap-1.5 hover:text-[#D4A373] transition-colors">
+      <Home className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
+      <span>{pick(COPY.breadcrumb, lang)}</span>
+    </Link>
+    <ChevronRight className="w-3 h-3 text-[#FDFBF7]/40" strokeWidth={1.6} />
+    <span>{pick(COPY.guides, lang)}</span>
+    <ChevronRight className="w-3 h-3 text-[#FDFBF7]/40" strokeWidth={1.6} />
+    <span className="text-[#D4A373]">{pick(COPY.current, lang)}</span>
+  </nav>
+);
+
+const Hero = ({ lang }) => (
+  <section
+    data-testid="qvm-hero"
+    className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#1A1513]"
+  >
+    <EditableImage
+      slot="que-ver-en-marruecos.hero"
+      fallback={banner("atlasSnowy", 2400)}
+      alt=""
+      aspectRatio="auto"
+      imgProps={{ loading: "eager" }}
+      className="ken-burns absolute inset-0 w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
+    <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
+    <span className="film-grain pointer-events-none" />
+
+    <div className="relative z-10 h-full flex flex-col">
+      <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
+        <InlineBreadcrumb lang={lang} />
+      </div>
+      <div className="flex-1 flex items-end pb-24 md:pb-32">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
+          <div className="max-w-3xl">
+            <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
+              <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+              <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">{pick(COPY.hero.eyebrow, lang)}</span>
+              <span className="w-8 h-px bg-[#D4A373]/50" />
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">{pick(COPY.hero.place, lang)}</span>
+            </div>
+            <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
+              {pick(COPY.hero.title, lang)}
+            </h1>
+            <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
+              {pick(COPY.hero.subtitle, lang)}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const Intro = ({ lang }) => (
+  <section data-testid="qvm-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
+    <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
+      <div className="md:col-span-5">
+        <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+          <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
+          {pick(COPY.intro.overline, lang)}
+        </span>
+        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.06] tracking-tight mt-5 text-[#2C2621]">
+          {pick(COPY.intro.title, lang)}
+        </h2>
+      </div>
+      <div className="md:col-span-7 md:pt-2">
+        <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{pick(COPY.intro.body, lang)}</p>
+      </div>
+    </div>
+  </section>
+);
+
+const DestinationCard = ({ card, sectionAccent, lang }) => (
+  <SlotScope id={card.id}>
+    <article
+      data-testid={`qvm-card-${card.id}`}
+      className="group relative bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
+        <EditableImage
+          name="image"
+          fallback={card.image}
+          alt={pick(card.name, lang)}
+          aspectRatio="4/3"
+          imgProps={{ loading: "lazy" }}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/65 via-[#1A1513]/10 to-transparent pointer-events-none" />
+        <span
+          data-testid={`qvm-card-cat-${card.id}`}
+          className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
+          style={{ color: sectionAccent }}
+        >
+          <MapPin className="w-3 h-3" strokeWidth={1.6} />
+          {pick(card.cat, lang)}
+        </span>
+      </div>
+
+      <div className="p-6 md:p-7 flex flex-col flex-1">
+        <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.12] text-[#2C2621]">
+          {pick(card.name, lang)}
+        </h3>
+        <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
+          {pick(card.blurb, lang)}
+        </p>
+
+        <div className="mt-6 pt-5 border-t border-[#2C2621]/10">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
+            {pick(COPY.tripsCta, lang)}
+          </p>
+          <ul className="flex flex-col gap-1.5">
+            {card.trips.map((trip, i) => (
+              <li key={trip.routeId}>
+                <Link
+                  to={pathFor(lang, trip.routeId)}
+                  data-testid={`qvm-trip-${card.id}-${i}`}
+                  className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
+                  style={{ borderLeft: `2px solid ${sectionAccent}55` }}
+                >
+                  <span className="text-sm text-[#2C2621] group-hover/link:text-[#C16542] transition-colors">
+                    {pick(trip.label, lang)}
+                  </span>
+                  <ArrowUpRight
+                    className="w-3.5 h-3.5 text-[#5C5248] group-hover/link:text-[#C16542] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all flex-shrink-0"
+                    strokeWidth={1.8}
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </article>
+  </SlotScope>
+);
+
+const Section = ({ section, lang }) => {
+  const Icon = section.icon || Sparkles;
+  return (
+    <SlotScope id={`destinations.${section.id}`}>
+      <section
+        data-testid={`qvm-section-${section.id}`}
+        className="relative bg-[#FDFBF7] py-20 md:py-28 border-t border-[#2C2621]/10"
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
+            <div className="md:col-span-7">
+              <span
+                className="overline inline-flex items-center gap-2"
+                style={{ color: section.accent }}
+              >
+                <Icon className="w-3.5 h-3.5" strokeWidth={1.6} />
+                {pick(section.overline, lang)}
+              </span>
+              <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
+                {pick(section.title, lang)}
+              </h2>
+            </div>
+            <div className="md:col-span-5">
+              <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">
+                {pick(section.body, lang)}
+              </p>
+            </div>
+          </div>
+
+          <div
+            className={`grid gap-6 md:gap-8 ${
+              section.cards.length <= 2
+                ? "grid-cols-1 sm:grid-cols-2"
+                : section.cards.length === 3
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+            }`}
+          >
+            {section.cards.map((card) => (
+              <DestinationCard
+                key={card.id}
+                card={card}
+                sectionAccent={section.accent}
+                lang={lang}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </SlotScope>
+  );
+};
+
+const FinalCta = ({ lang }) => (
+  <section
+    data-testid="qvm-final-cta"
+    className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden"
+  >
+    <EditableImage
+      slot="que-ver-en-marruecos.final.bg"
+      fallback={banner("dunes", 2400)}
+      alt=""
+      aspectRatio="auto"
+      imgProps={{ loading: "lazy" }}
+      className="absolute inset-0 w-full h-full object-cover opacity-25"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/85 to-[#1A1513]/65 pointer-events-none" />
+    <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
+
+    <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
+      <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+        <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
+        {pick(COPY.finalCta.eyebrow, lang)}
+      </span>
+      <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#FDFBF7]">
+        {pick(COPY.finalCta.title, lang)}
+      </h2>
+      <div className="mt-10 flex flex-wrap gap-4 justify-center">
+        <Link
+          to={pathFor(lang, "planTrip")}
+          data-testid="qvm-final-cta-plan"
+          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+        >
+          {pick(COPY.finalCta.primary, lang)}
+          <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
+        </Link>
+        <Link
+          to={pathFor(lang, "toursLanding")}
+          data-testid="qvm-final-cta-tours"
+          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+        >
+          {pick(COPY.finalCta.secondary, lang)}
+          <Building2 className="w-4 h-4" strokeWidth={1.6} />
+        </Link>
+      </div>
+    </div>
+  </section>
+);
+
+/* ============================================================
+   Page
+============================================================ */
+export default function QueVerEnMarruecosPage() {
+  const { lang } = useLanguage();
+
+  useEffect(() => {
+    document.title = DOC_TITLES[lang] || DOC_TITLES.es;
+  }, [lang]);
+
+  return (
+    <div data-testid="qvm-page" className="bg-[#FDFBF7]">
+      <Hero lang={lang} />
+      <Intro lang={lang} />
+      {SECTIONS.map((section) => (
+        <Section key={section.id} section={section} lang={lang} />
+      ))}
+      <FinalCta lang={lang} />
+    </div>
+  );
+}

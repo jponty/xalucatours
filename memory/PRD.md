@@ -331,6 +331,26 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## Destination guide · /que-ver-en-Marruecos (Feb 2026)
+- **User mandate**: build an inspirational visual guide for Morocco's must-see destinations, with clickable cards that route via SPA to the existing trips passing through each destination. Editable images/text, responsive, trilingual.
+- **New page** `pages/QueVerEnMarruecosPage.jsx` wired to the existing `whatToSee` route (`/que-ver-en-Marruecos` · `/en/what-to-see-in-morocco` · `/fr/que-voir-au-maroc`). Registered in `App.js` (`if (routeId === "whatToSee") return <QueVerEnMarruecosPage />`).
+- **Structure**:
+  - Cinematic hero with Koutoubia + Atlas, ken-burns + film-grain + berber pattern, inline breadcrumb chip `Inicio › Guías › Qué ver en Marruecos` (i18n).
+  - Asymmetric editorial intro (5/7 grid).
+  - **6 thematic sections** with 17 destination cards total:
+    1. **Ciudades imperiales** (4): Marrakech, Fez, Meknès, Rabat.
+    2. **Desierto del Sáhara** (3): Erg Chebbi · Merzouga, Ouarzazate · Skoura, Aït Ben Haddou.
+    3. **Atlas y montañas** (3): Alto Atlas, Imlil · Toubkal, Dadès y Todra.
+    4. **Norte mediterráneo y Rif** (3): Tánger, Chefchaouen, Asilah.
+    5. **Costa atlántica** (2): Essaouira, Casablanca.
+    6. **Joyas escondidas** (2): Volubilis, Aguelmane Sidi Ali.
+  - Final cinematic CTA band with `Planifica tu viaje` (primary) + `Ver todos los viajes`.
+- **Each card** includes: category badge (i18n, accent-coloured), serif name, blurb (full trilingual), and a **vertical list of all relevant trip links** (3–6 chips per destination, total **55 SPA links**). Every chip is a React Router `<Link to={pathFor(lang, routeId)}>` so navigation stays single-page.
+- **Editable images mandate respected**: every image uses `<EditableImage>` — the hero (`que-ver-en-marruecos.hero`), final-CTA background (`que-ver-en-marruecos.final.bg`), and each card image auto-resolves via `<SlotScope id="destinations.{section}"><SlotScope id="{card.id}"><EditableImage name="image" />` to `que-ver-en-marruecos.destinations.{section}.{card}.image`.
+- **Doc title i18n** handled with `useEffect([lang])` to avoid the recurring `HomePage` bug pattern.
+- **`data-testid`s**: `qvm-page`, `qvm-hero`, `qvm-breadcrumbs`, `qvm-intro`, `qvm-section-{sid}`, `qvm-card-{cid}`, `qvm-card-cat-{cid}`, `qvm-trip-{cid}-{i}`, `qvm-final-cta`, `qvm-final-cta-plan`, `qvm-final-cta-tours`.
+- **Smoke verified** in browser: ES/EN/FR all render with proper titles, hero, breadcrumb, 6 sections, 17 cards (34 testids: card + category), 55 SPA trip links. SPA navigation confirmed: click `Escapada a Marrakech` from `/en/what-to-see-in-morocco` lands on `/en/tours/short-escapes/marrakech` without page reload.
+
 ## Code review · critical & important fixes (Feb 2026)
 - **Backend (server.py)** — defensive initialisation for the 3 variables flagged as "possibly undefined on all code paths" (false positives from the linter caused by `try / except → raise HTTPException`, but worth silencing for clarity):
   - `result: Dict = {}` at the top of `replace_library_image()`.

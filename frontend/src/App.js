@@ -108,6 +108,7 @@ import FezTanger67Page from "@/pages/FezTanger67Page";
 import PlanificaTuViajePage from "@/pages/PlanificaTuViajePage";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import WhenToTravelPage from "@/pages/WhenToTravelPage";
+import QueVerEnMarruecosPage from "@/pages/QueVerEnMarruecosPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
 /**
@@ -217,6 +218,7 @@ const LocalizedRouter = () => {
   if (routeId === "tourMarrakechLoop78")  return <MarrakechLoop78Page />;
   if (routeId === "tourUpcoming")  return <ProximasSalidasPage />;
   if (routeId === "whenToTravel")  return <WhenToTravelPage />;
+  if (routeId === "whatToSee")     return <QueVerEnMarruecosPage />;
   if (routeId)                     return <StubPage routeId={routeId} />;
 
   // Unknown URL within a known lang → redirect to home of that lang
