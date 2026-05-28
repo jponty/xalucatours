@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline } from "react-leaflet";
 import {
   Home, ChevronRight, Compass, MapPin, ArrowRight, ArrowUpRight,
   Crown, Tent, Mountain, Waves, Building2, Sparkles, Star, X,
@@ -76,6 +76,11 @@ const COPY = {
     },
     legend: { es: "Leyenda", en: "Legend", fr: "Légende" },
     reset: { es: "Limpiar selección", en: "Clear selection", fr: "Effacer la sélection" },
+    routesLabel: { es: "Rutas destacadas", en: "Featured routes", fr: "Itinéraires phares" },
+    routesHint:  { es: "Selecciona una ruta para dibujarla en el mapa", en: "Pick a route to draw it on the map", fr: "Choisissez un itinéraire pour le tracer" },
+    routeStops:  { es: "Etapas del viaje", en: "Trip stops", fr: "Étapes du voyage" },
+    routeCta:    { es: "Ver este viaje", en: "View this trip", fr: "Voir ce voyage" },
+    routeBadge:  { es: "Ruta destacada", en: "Featured route", fr: "Itinéraire phare" },
   },
   finalCta: {
     eyebrow: { es: "¿Lo tienes claro?", en: "Made up your mind?", fr: "C'est décidé ?" },
@@ -716,11 +721,126 @@ const ALL_DESTINATIONS = SECTIONS.flatMap((s) =>
     .filter(Boolean)
 );
 
+/* Featured "best-selling" routes — each connects existing destination ids
+   and resolves to a real itinerary hub/program in the catalogue. */
+const FEATURED_ROUTES = [
+  {
+    id: "gran-sur-fez-rak",
+    color: "#C16542",
+    routeId: "tourGransurFezRak",
+    waypoints: ["fez", "sidiali", "ergchebbi", "dades-todra", "aitbenhaddou", "marrakech"],
+    label: {
+      es: "Gran Sur · Fez → Marrakech",
+      en: "Grand South · Fez → Marrakech",
+      fr: "Grand Sud · Fès → Marrakech",
+    },
+    body: {
+      es: "El recorrido emblemático que atraviesa el Medio Atlas, las dunas del Erg Chebbi y las gargantas hasta Marrakech.",
+      en: "The signature route across the Middle Atlas, the dunes of Erg Chebbi and the gorges down to Marrakech.",
+      fr: "L'itinéraire emblématique à travers le Moyen Atlas, les dunes de l'Erg Chebbi et les gorges jusqu'à Marrakech.",
+    },
+  },
+  {
+    id: "tanger-rak-norte-sur",
+    color: "#8C6A3D",
+    routeId: "tourGransurTangerRak",
+    waypoints: ["tanger", "chefchaouen", "fez", "ergchebbi", "dades-todra", "aitbenhaddou", "marrakech"],
+    label: {
+      es: "Tánger → Marrakech · Norte a Sur",
+      en: "Tangier → Marrakech · North to South",
+      fr: "Tanger → Marrakech · Du Nord au Sud",
+    },
+    body: {
+      es: "El gran viaje épico, del Mediterráneo a las puertas del Sáhara cruzando todo el país.",
+      en: "The epic journey from the Mediterranean to the gates of the Sahara, end to end.",
+      fr: "Le grand voyage épique, de la Méditerranée aux portes du Sahara.",
+    },
+  },
+  {
+    id: "imperial-cities",
+    color: "#5A7F9C",
+    routeId: "tourNorteCiudadesImperiales",
+    waypoints: ["casablanca", "rabat", "meknes", "volubilis", "fez", "marrakech"],
+    label: {
+      es: "Ciudades imperiales",
+      en: "Imperial cities",
+      fr: "Cités impériales",
+    },
+    body: {
+      es: "Las cuatro capitales históricas conectadas en un solo circuito cultural: Rabat, Meknès, Fez y Marrakech.",
+      en: "The four historic capitals connected in a single cultural circuit: Rabat, Meknès, Fez and Marrakech.",
+      fr: "Les quatre capitales historiques réunies en un seul circuit : Rabat, Meknès, Fès et Marrakech.",
+    },
+  },
+  {
+    id: "marrakech-loop",
+    color: "#D4A373",
+    routeId: "tourMarrakechLoopHub",
+    waypoints: ["marrakech", "aitbenhaddou", "dades-todra", "ergchebbi", "dades-todra", "marrakech"],
+    label: {
+      es: "Marrakech ↻ Erg Chebbi ↻ Marrakech",
+      en: "Marrakech ↻ Erg Chebbi ↻ Marrakech",
+      fr: "Marrakech ↻ Erg Chebbi ↻ Marrakech",
+    },
+    body: {
+      es: "El clásico circular: Atlas, valles de kasbahs, dunas naranjas y vuelta al punto de partida.",
+      en: "The classic loop: Atlas, kasbah valleys, orange dunes and back to where you started.",
+      fr: "La boucle classique : Atlas, vallées des kasbahs, dunes orangées et retour au point de départ.",
+    },
+  },
+  {
+    id: "tanger-fez-rif",
+    color: "#5A6B4F",
+    routeId: "tourNorteTangerFez",
+    waypoints: ["tanger", "asilah", "chefchaouen", "volubilis", "meknes", "fez"],
+    label: {
+      es: "Tánger · Rif · Fez",
+      en: "Tangier · Rif · Fez",
+      fr: "Tanger · Rif · Fès",
+    },
+    body: {
+      es: "El norte mediterráneo: kasbah de Tánger, murallas de Asilah, Chefchaouen azul y Volubilis romano hasta Fez.",
+      en: "The Mediterranean north: Tangier's kasbah, Asilah's walls, blue Chefchaouen and Roman Volubilis through to Fez.",
+      fr: "Le nord méditerranéen : kasbah de Tanger, remparts d'Asilah, Chefchaouen bleue et Volubilis romain jusqu'à Fès.",
+    },
+  },
+];
+
+/* Resolve waypoints (by id) into coord tuples, ignoring missing ids. */
+const resolveRouteCoords = (route) =>
+  route.waypoints
+    .map((id) => DESTINATION_COORDS[id])
+    .filter(Boolean);
+
+/* Resolve waypoints into rich {id, name, coords} for the side panel. */
+const resolveRouteStops = (route) =>
+  route.waypoints
+    .map((id) => {
+      const found = ALL_DESTINATIONS.find((d) => d.card.id === id);
+      if (!found) return null;
+      return { id, card: found.card, coords: found.coords };
+    })
+    .filter(Boolean);
+
 const DestinationsMap = ({ lang }) => {
   const [activeId, setActiveId] = useState(null);
+  const [activeRouteId, setActiveRouteId] = useState(null);
+
   const active = useMemo(
     () => ALL_DESTINATIONS.find((d) => d.card.id === activeId) || null,
     [activeId]
+  );
+  const activeRoute = useMemo(
+    () => FEATURED_ROUTES.find((r) => r.id === activeRouteId) || null,
+    [activeRouteId]
+  );
+  const activeRouteCoords = useMemo(
+    () => (activeRoute ? resolveRouteCoords(activeRoute) : []),
+    [activeRoute]
+  );
+  const activeRouteStops = useMemo(
+    () => (activeRoute ? resolveRouteStops(activeRoute) : []),
+    [activeRoute]
   );
 
   return (
@@ -745,6 +865,44 @@ const DestinationsMap = ({ lang }) => {
           </div>
         </div>
 
+        {/* Route toggle row */}
+        <div data-testid="qvm-routes-toolbar" className="mb-6 md:mb-8">
+          <div className="flex items-baseline gap-4 mb-3 flex-wrap">
+            <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
+              {pick(COPY.map.routesLabel, lang)}
+            </span>
+            <span className="text-[11px] text-[#FDFBF7]/55">
+              {pick(COPY.map.routesHint, lang)}
+            </span>
+          </div>
+          <div role="tablist" aria-label="Featured routes" className="flex flex-wrap gap-2">
+            {FEATURED_ROUTES.map((r) => {
+              const isActive = activeRouteId === r.id;
+              return (
+                <button
+                  key={r.id}
+                  type="button"
+                  data-testid={`qvm-route-chip-${r.id}`}
+                  onClick={() => setActiveRouteId(isActive ? null : r.id)}
+                  className={`group inline-flex items-center gap-2 px-3.5 py-2 text-[11px] tracking-[0.18em] uppercase border transition-all duration-200 ${
+                    isActive
+                      ? "text-[#1A1513] border-transparent"
+                      : "text-[#FDFBF7]/80 border-[#FDFBF7]/20 hover:text-[#FDFBF7] hover:border-[#FDFBF7]/40"
+                  }`}
+                  style={isActive ? { backgroundColor: r.color } : { backgroundColor: "transparent" }}
+                  aria-pressed={isActive}
+                >
+                  <span
+                    className="inline-block w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: isActive ? "#1A1513" : r.color }}
+                  />
+                  {pick(r.label, lang)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           {/* Map */}
           <div className="lg:col-span-7 relative">
@@ -760,18 +918,35 @@ const DestinationsMap = ({ lang }) => {
                 attributionControl={false}
               >
                 <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+
+                {/* Optional polyline for the selected route */}
+                {activeRoute && activeRouteCoords.length >= 2 && (
+                  <Polyline
+                    positions={activeRouteCoords}
+                    pathOptions={{
+                      color: activeRoute.color,
+                      weight: 4,
+                      opacity: 0.85,
+                      dashArray: "1 8",
+                      lineCap: "round",
+                    }}
+                  />
+                )}
+
                 {ALL_DESTINATIONS.map(({ card, section, coords }) => {
                   const isActive = activeId === card.id;
+                  const onRoute = activeRoute?.waypoints.includes(card.id);
+                  const radius = isActive ? 11 : onRoute ? 9 : 7;
                   return (
                     <CircleMarker
                       key={card.id}
                       center={coords}
-                      radius={isActive ? 11 : 7}
+                      radius={radius}
                       pathOptions={{
-                        color: section.accent,
-                        fillColor: section.accent,
-                        fillOpacity: isActive ? 0.95 : 0.7,
-                        weight: isActive ? 3 : 2,
+                        color: onRoute ? activeRoute.color : section.accent,
+                        fillColor: onRoute ? activeRoute.color : section.accent,
+                        fillOpacity: isActive ? 0.95 : onRoute ? 0.9 : 0.7,
+                        weight: isActive ? 3 : onRoute ? 2.5 : 2,
                       }}
                       eventHandlers={{
                         click: () => setActiveId(card.id),
@@ -810,7 +985,7 @@ const DestinationsMap = ({ lang }) => {
             </div>
           </div>
 
-          {/* Side panel */}
+          {/* Side panel — destination detail > route detail > hint */}
           <div className="lg:col-span-5">
             {active ? (
               <article
@@ -873,6 +1048,76 @@ const DestinationsMap = ({ lang }) => {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                </div>
+              </article>
+            ) : activeRoute ? (
+              <article
+                data-testid={`qvm-route-detail-${activeRoute.id}`}
+                className="bg-[#FDFBF7] text-[#2C2621] h-full flex flex-col animate-slide-down"
+                style={{ borderTop: `4px solid ${activeRoute.color}` }}
+              >
+                <div className="p-6 md:p-7 flex flex-col flex-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <span
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
+                      style={{ backgroundColor: `${activeRoute.color}1A`, color: activeRoute.color }}
+                    >
+                      <Compass className="w-3 h-3" strokeWidth={1.6} />
+                      {pick(COPY.map.routeBadge, lang)}
+                    </span>
+                    <button
+                      type="button"
+                      data-testid="qvm-route-detail-close"
+                      onClick={() => setActiveRouteId(null)}
+                      aria-label={pick(COPY.map.reset, lang)}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#1A1513]/85 hover:bg-[#1A1513] text-[#FDFBF7] transition-colors"
+                    >
+                      <X className="w-4 h-4" strokeWidth={1.8} />
+                    </button>
+                  </div>
+                  <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.12] mt-4">
+                    {pick(activeRoute.label, lang)}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">
+                    {pick(activeRoute.body, lang)}
+                  </p>
+
+                  {/* Numbered stop rail */}
+                  <div className="mt-6">
+                    <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
+                      {pick(COPY.map.routeStops, lang)} · {activeRouteStops.length}
+                    </p>
+                    <ol className="flex flex-col gap-1.5">
+                      {activeRouteStops.map((stop, i) => (
+                        <li
+                          key={`${activeRoute.id}-stop-${i}`}
+                          data-testid={`qvm-route-stop-${activeRoute.id}-${i}`}
+                          className="flex items-center gap-3 px-3 py-1.5 -mx-3 hover:bg-[#F2EBE1] cursor-pointer transition-colors"
+                          onClick={() => setActiveId(stop.card.id)}
+                        >
+                          <span
+                            className="inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-medium tabular-nums"
+                            style={{ backgroundColor: activeRoute.color, color: "#FDFBF7" }}
+                          >
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="text-sm text-[#2C2621]">{pick(stop.card.name, lang)}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+
+                  <div className="mt-6 pt-5 border-t border-[#2C2621]/10">
+                    <Link
+                      to={pathFor(lang, activeRoute.routeId)}
+                      data-testid={`qvm-route-cta-${activeRoute.id}`}
+                      className="inline-flex items-center gap-2 px-5 py-3 text-[11px] tracking-[0.22em] uppercase text-[#FDFBF7] transition-colors"
+                      style={{ backgroundColor: activeRoute.color }}
+                    >
+                      {pick(COPY.map.routeCta, lang)}
+                      <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+                    </Link>
                   </div>
                 </div>
               </article>

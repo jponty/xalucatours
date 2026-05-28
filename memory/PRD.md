@@ -331,6 +331,20 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## Destination guide · featured-route polylines (Feb 2026)
+- Layered an opt-in route visualiser on top of the destination map (`pages/QueVerEnMarruecosPage.jsx`).
+- New `FEATURED_ROUTES` list with **5 best-selling itineraries**, each referencing existing destination ids:
+  1. **Gran Sur · Fez → Marrakech** (`tourGransurFezRak`) — Fez · Sidi Ali · Erg Chebbi · Dadès · Aït Ben Haddou · Marrakech.
+  2. **Tánger → Marrakech · Norte a Sur** (`tourGransurTangerRak`) — full N-S transect (7 stops).
+  3. **Ciudades imperiales** (`tourNorteCiudadesImperiales`) — Casablanca · Rabat · Meknès · Volubilis · Fez · Marrakech.
+  4. **Marrakech ↻ Erg Chebbi ↻ Marrakech** (`tourMarrakechLoopHub`) — classic loop via Aït Ben Haddou + Dadès.
+  5. **Tánger · Rif · Fez** (`tourNorteTangerFez`) — Tangier · Asilah · Chefchaouen · Volubilis · Meknès · Fez.
+- Toggle row above the map: pill-style chips with route accent dot, fill when active. `aria-pressed` set for accessibility; clicking again deselects.
+- Active route renders a **dashed `Polyline`** with the route's accent colour and bumps the affected markers (radius 7→9, opacity 0.7→0.9, weight 2→2.5) so the chosen path stands out without hiding the rest.
+- Side panel state machine: destination detail > route detail > hint. Route detail shows accent-bordered card with `RUTA DESTACADA` badge, label, body, numbered stop rail (clickable → swaps to that destination's detail, polyline stays), and a `Ver este viaje` CTA wired to `pathFor(lang, route.routeId)`.
+- New testids: `qvm-routes-toolbar`, `qvm-route-chip-{rid}`, `qvm-route-detail-{rid}`, `qvm-route-detail-close`, `qvm-route-stop-{rid}-{i}`, `qvm-route-cta-{rid}`.
+- Smoke-verified: 5 chips render, selecting Gran Sur draws polyline + opens the route panel with 6 numbered stops, CTA href correct (`/viajes/gransur/fez-rak`), clicking stop 03 swaps to the Erg Chebbi destination detail with polyline still drawn.
+
 ## Destination guide · interactive mini-map (Feb 2026)
 - Added a 12-col Leaflet map section just before the final CTA on `/que-ver-en-Marruecos`.
 - Module-level `DESTINATION_COORDS` lookup (17 entries, lat/lng) keeps the SECTIONS data untouched and is consumed via `ALL_DESTINATIONS = SECTIONS.flatMap(...)`.
