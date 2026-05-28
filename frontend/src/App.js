@@ -112,6 +112,7 @@ import QueVerEnMarruecosPage from "@/pages/QueVerEnMarruecosPage";
 import QueHacemosPage from "@/pages/QueHacemosPage";
 import IncentivosPage from "@/pages/IncentivosPage";
 import MoroccoLandingPage from "@/pages/MoroccoLandingPage";
+import EquipoPage from "@/pages/EquipoPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 
 /**
@@ -225,6 +226,7 @@ const LocalizedRouter = () => {
   if (routeId === "whatWeDo")      return <QueHacemosPage />;
   if (routeId === "events")        return <IncentivosPage />;
   if (routeId === "morocco")       return <MoroccoLandingPage />;
+  if (routeId === "about")         return <EquipoPage />;
   if (routeId)                     return <StubPage routeId={routeId} />;
 
   // Unknown URL within a known lang → redirect to home of that lang

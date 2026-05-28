@@ -331,6 +331,22 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /equipo · Team & Group page (Feb 2026)
+- **User mandate**: redact the existing `about` route (`/equipo` · `/en/team` · `/fr/equipe`) with the supplied corporate copy about Xaluca Tours and Grup Xaluca. Previously routed to `<StubPage />`.
+- **New page** `pages/EquipoPage.jsx` wired in `App.js` (`if (routeId === "about") return <EquipoPage />`). The side menu already pointed to this route — no menu changes needed. Trilingual ES/EN/FR.
+- **Sections** (7), following the established alternation pattern:
+  - **Hero** (`#1A1513`): camel-caravan banner, breadcrumb `Inicio › Sobre nosotros › Equipo`, serif headline "Más que organizar viajes — diseñamos formas distintas de descubrir Marruecos.", eyebrow `Conoce Xaluca Tours — España · Marruecos`.
+  - **Intro** (`#FDFBF7`, 5/7 grid): 2 paragraphs covering the agency's purpose and the bicultural operation.
+  - **Stats bar** (`#FDFBF7`, divider grid): 4 stat tiles in serif terra (25+ años, 10+ hoteles, 120+ eventos/año, 180+ profesionales).
+  - **Grup Xaluca pillars** (`#F2EBE1` + `berber-bg-diamond`): 4 cards with editable image + floating icon badge (Hoteles propios · Campamentos en el desierto · Transporte y logística · División de eventos). Each wrapped in `<SlotScope id="group"><SlotScope id="{id}">` → `equipo.group.{id}.image`.
+  - **Bridge España·Marruecos** (`#FDFBF7`, 2-col divider): flag emoji + icon + bicultural columns (Sabadell sales office vs Erfoud/Merzouga/Marrakech operations).
+  - **Values 01-04** (`#F2EBE1` + diamond): numbered cards mirroring the QueHacemos pattern — Conocimiento local · Experiencias auténticas · Control 360º · Mirada humana.
+  - **Final CTA** (`#1A1513`): standard band identical to QueHacemos/Incentivos with editable `equipo.final.bg`, 3-col contact card (`tel:+34937268366`, `mailto:xalucatours@xaluca.com`, hours), `Planifica tu viaje` + `Escríbenos` CTAs.
+- **Doc title i18n** via `useEffect([lang])`.
+- **All images editable** via `<SlotScope>` + `<EditableImage>` (hero, final-bg, 4 group pillars).
+- **`data-testid`s**: `eq-page`, `eq-hero`, `eq-breadcrumbs`, `eq-intro`, `eq-stats`, `eq-stat-{id}`, `eq-group`, `eq-group-{id}`, `eq-bridge`, `eq-bridge-{id}`, `eq-values`, `eq-value-{id}`, `eq-final-cta`, `eq-contact-phone/email/hours`, `eq-cta-plan/contact`.
+- **Smoke verified**: ES H1 correct, 4 group pillars, 4 stats, 2 bridge columns, 4 values rendered. `tel:`/`mailto:`/rutas correctas. Menu link to `/equipo` already present and active.
+
 ## /marruecos · Design-system realignment (Feb 2026)
 - Refactored `pages/MoroccoLandingPage.jsx` to follow the rest of the site's design language exactly while preserving the requested cinematic premium hero with Aurorism.
 - **Hero (dark `#1A1513`)**: keeps the 3 animated aurora blobs + ken-burns + berber-bg-cross + film-grain, but breadcrumb chip is now **square** (`bg-[#1A1513]/55` border `border-white/10`, no `rounded-full`), eyebrow uses the standard `Compass · TEXT — w-8 h-px — PLACE` pattern, and CTAs are **rectangular pills** (`px-7 py-3.5 text-sm tracking-[0.18em] uppercase`) identical to QueHacemos / Incentivos.
