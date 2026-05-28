@@ -10,6 +10,7 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { REGIONS, EXPERIENCES, TRIPS } from "@/lib/tripsData";
 import ContactForm from "@/components/ContactForm";
+import EditableImage from "@/components/EditableImage";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users };
 
@@ -119,9 +120,15 @@ const RegionsSection = ({ t, lang }) => (
         {REGIONS.map((r) => (
           <Link key={r.id} to={pathFor(lang, r.routeId)} data-testid={`region-card-${r.id}`}
                 className="group relative block overflow-hidden h-[60vh] min-h-[420px] max-h-[560px]">
-            <img src={r.image} alt={pick(r.label, lang)} loading="lazy"
-                 className="ken-burns absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/45 to-[#1A1513]/15" />
+            <EditableImage
+              slot={`viajes.region.${r.id}`}
+              fallback={r.image}
+              alt={pick(r.label, lang)}
+              aspectRatio="3/4"
+              imgProps={{ loading: "lazy" }}
+              className="ken-burns absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/45 to-[#1A1513]/15 pointer-events-none" />
             <span className="film-grain" />
 
             <div className="absolute inset-0 p-7 md:p-9 flex flex-col justify-end text-[#FDFBF7]">
@@ -180,9 +187,15 @@ const ExperiencesSection = ({ t, lang }) => (
             <article key={e.id} data-testid={`experience-card-${e.id}`}
                      className="group relative overflow-hidden bg-[#1A1513] hover:bg-[#221A16] transition-colors duration-500 flex flex-col">
               <div className="relative aspect-[5/3] overflow-hidden">
-                <img src={e.image} alt={pick(e.label, lang)} loading="lazy"
-                     className="absolute inset-0 w-full h-full object-cover opacity-70 transition-all duration-[1200ms] ease-out group-hover:opacity-100 group-hover:scale-[1.05]" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/40 to-transparent" />
+                <EditableImage
+                  slot={`viajes.experience.${e.id}`}
+                  fallback={e.image}
+                  alt={pick(e.label, lang)}
+                  aspectRatio="5/3"
+                  imgProps={{ loading: "lazy" }}
+                  className="absolute inset-0 w-full h-full object-cover opacity-70 transition-all duration-[1200ms] ease-out group-hover:opacity-100 group-hover:scale-[1.05]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/40 to-transparent pointer-events-none" />
                 <span className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/70 backdrop-blur-sm"
                       style={{ borderColor: `${e.accent}99`, color: e.accent }}>
                   <Icon className="w-5 h-5" strokeWidth={1.5} />
@@ -318,8 +331,14 @@ const TripExplorer = ({ t, lang }) => {
               <article key={trip.id} data-testid={`trip-card-${trip.id}`}
                        className="group relative bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden">
                 <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
-                  <img src={trip.image} alt={pick(trip.title, lang)} loading="lazy"
-                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
+                  <EditableImage
+                    slot={`viajes.trip.${trip.id}`}
+                    fallback={trip.image}
+                    alt={pick(trip.title, lang)}
+                    aspectRatio="4/3"
+                    imgProps={{ loading: "lazy" }}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                  />
                   <span className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
                         style={{ color: reg?.accent || "#5C5248" }}>
                     <MapPin className="w-3 h-3" strokeWidth={1.6} />
@@ -427,8 +446,14 @@ const ProximasSalidas = ({ t, lang }) => {
             <article key={i} data-testid={`proxima-card-${i}`}
                      className="group relative bg-[#F2EBE1] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden">
               <div className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
-                <img src={d.image} alt={pick(d.title, lang)} loading="lazy"
-                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
+                <EditableImage
+                  slot={`viajes.proxima.${d.id || i}`}
+                  fallback={d.image}
+                  alt={pick(d.title, lang)}
+                  aspectRatio="5/4"
+                  imgProps={{ loading: "lazy" }}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                />
                 <span className="absolute top-4 left-4 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
                       style={{ color: d.accent }}>
                   <Calendar className="w-3 h-3" strokeWidth={1.6} />
@@ -477,9 +502,15 @@ const Asesoramiento = ({ t, lang }) => {
   return (
     <section id="asesoramiento" data-testid="viajes-asesoramiento"
              className="relative bg-[#1A1513] text-[#FDFBF7] py-24 md:py-32 overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85" alt=""
-           loading="lazy" className="absolute inset-0 w-full h-full object-cover opacity-25" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/90 via-[#1A1513]/75 to-[#1A1513]/95" />
+      <EditableImage
+        slot="viajes.asesoramiento.bg"
+        fallback="https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85"
+        alt=""
+        aspectRatio="21/9"
+        imgProps={{ loading: "lazy" }}
+        className="absolute inset-0 w-full h-full object-cover opacity-25"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/90 via-[#1A1513]/75 to-[#1A1513]/95 pointer-events-none" />
       <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
       <span className="film-grain" />
 

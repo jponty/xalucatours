@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ArrowLeftRight, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import EditableImage from "@/components/EditableImage";
 import {
   JourneyHero,
   StickyNav,
@@ -124,9 +125,15 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                     data-testid={`hub-program-${p.id}`}
                     className="group relative block overflow-hidden h-[440px]"
                   >
-                    <img src={p.image} alt="" loading="lazy"
-                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/10" />
+                    <EditableImage
+                      slot={`hub.${hub.id}.program.${p.id}`}
+                      fallback={p.image}
+                      alt=""
+                      aspectRatio="3/4"
+                      imgProps={{ loading: "lazy" }}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/10 pointer-events-none" />
                     <span className="film-grain" />
                     <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
                       <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>

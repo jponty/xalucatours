@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Camera, X, MapPin } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
+import EditableImage from "@/components/EditableImage";
 
 const LABELS = {
   es: {
@@ -34,28 +35,30 @@ const LABELS = {
   },
 };
 
-const Card = ({ image, accent, kindLabel, lang, index, total }) => (
+const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => (
   <article
     data-testid={`landmark-card-${index}`}
     className="landmark-story-card snap-start shrink-0 w-[78vw] sm:w-[320px] md:w-[300px] lg:w-[320px] bg-[#FDFBF7] border border-[#2C2621]/12 overflow-hidden flex flex-col group transition-shadow duration-500 hover:shadow-[0_30px_60px_-30px_rgba(26,21,19,0.45)]"
   >
     <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
-      <img
-        src={image.src}
+      <EditableImage
+        slot={slot}
+        fallback={image.src}
         alt={pick(image.title, lang)}
-        loading="lazy"
+        aspectRatio="4/5"
+        imgProps={{ loading: "lazy" }}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent opacity-90" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent opacity-90 pointer-events-none" />
       <span className="film-grain pointer-events-none" />
       <span
-        className="absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase"
+        className="absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase pointer-events-none z-[1]"
         style={{ color: accent }}
       >
         <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
         {kindLabel || ""}
       </span>
-      <span className="absolute top-3.5 right-3.5 inline-flex items-center justify-center bg-[#1A1513]/85 text-[#FDFBF7] font-serif-x text-[12px] tracking-[0.18em] px-2.5 py-1">
+      <span className="absolute top-3.5 right-3.5 inline-flex items-center justify-center bg-[#1A1513]/85 text-[#FDFBF7] font-serif-x text-[12px] tracking-[0.18em] px-2.5 py-1 pointer-events-none z-[1]">
         {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </span>
     </div>
@@ -191,6 +194,7 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
               lang={lang}
               index={i}
               total={images.length}
+              slot={`landmark.${landmark.id}.gallery.${i}`}
             />
           ))}
         </div>

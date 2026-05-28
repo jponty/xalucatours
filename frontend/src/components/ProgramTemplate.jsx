@@ -16,6 +16,7 @@ import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
 import { EditableSection, E, EImg } from "@/components/EditableSection";
+import EditableImage from "@/components/EditableImage";
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
@@ -1174,9 +1175,15 @@ const LABELS = {
 ============================================================ */
 const ProgramHero = ({ vt, t, program, lang }) => (
   <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
-    <img src={vt.hero_image} alt="" loading="eager"
-         className="ken-burns absolute inset-0 w-full h-full object-cover" />
-    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35" />
+    <EditableImage
+      slot={`program.${vt.id || program.id || "default"}.hero`}
+      fallback={vt.hero_image}
+      alt=""
+      aspectRatio="21/9"
+      imgProps={{ loading: "eager" }}
+      className="ken-burns absolute inset-0 w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
     <span className="film-grain" />
     <div className="relative z-10 h-full flex flex-col">
@@ -1293,9 +1300,15 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
         <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start ${reverse ? "lg:[direction:rtl]" : ""}`}>
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <div className="relative aspect-[4/5] md:aspect-[5/6] overflow-hidden bg-[#1A1513] sticky lg:top-24">
-              <img src={day.image} alt={pick(day.title, lang)} loading="lazy"
-                   className="ken-burns absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent" />
+              <EditableImage
+                slot={`day.${day.id}.image`}
+                fallback={day.image}
+                alt={pick(day.title, lang)}
+                aspectRatio="5/6"
+                imgProps={{ loading: "lazy" }}
+                className="ken-burns absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent pointer-events-none" />
               <span className="film-grain" />
               <div className="absolute top-5 left-5 inline-flex items-center gap-3 bg-[#FDFBF7]/95 backdrop-blur-sm px-4 py-2">
                 <span className="font-serif-x text-xl leading-none" style={{ color: day.accent }}>

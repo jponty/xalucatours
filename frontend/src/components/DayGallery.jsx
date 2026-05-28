@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X, Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { DAY_GALLERIES, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
+import EditableImage from "@/components/EditableImage";
 
 const SECTION_LABELS = {
   es: { eyebrow: "Galería del día", title: "El recorrido en imágenes.", count_singular: "imagen", count_plural: "imágenes", close: "Cerrar", prev: "Anterior", next: "Siguiente" },
@@ -135,9 +136,15 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
                 data-testid={`day-gallery-tile-${day.route_id}-${i}`}
                 className={`group relative overflow-hidden bg-[#1A1513] cursor-zoom-in h-[200px] md:h-auto ${layout[i] || "md:col-span-2 md:row-span-1"}`}
               >
-                <img src={img.src} alt={pick(img.caption, lang)} loading="lazy"
-                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                <EditableImage
+                  slot={`day.${day.route_id}.gallery.${i}`}
+                  fallback={img.src}
+                  alt={pick(img.caption, lang)}
+                  aspectRatio="3/2"
+                  imgProps={{ loading: "lazy" }}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <span className="film-grain pointer-events-none" />
                 <div className="absolute inset-x-0 bottom-0 p-4 md:p-5 text-left text-[#FDFBF7]">
                   {kindLabel && (

@@ -2,6 +2,7 @@ import React from "react";
 import { Quote, Star, MapPin } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getTestimonialsForThemes } from "@/lib/testimonials";
+import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    Testimonials — minimalist editorial section
@@ -38,7 +39,7 @@ const SECTION_LABELS = {
 
 const INTER_FAMILY = "Inter, -apple-system, BlinkMacSystemFont, sans-serif";
 
-const Avatar = ({ src, name, tone }) => {
+const Avatar = ({ src, name, tone, slot }) => {
   const initials = name
     .split(/\s+/)
     .slice(0, 2)
@@ -47,11 +48,18 @@ const Avatar = ({ src, name, tone }) => {
     .toUpperCase();
   return (
     <span
-      className="inline-flex items-center justify-center w-12 h-12 rounded-full overflow-hidden shrink-0"
+      className="relative inline-flex items-center justify-center w-12 h-12 rounded-full overflow-hidden shrink-0"
       style={{ background: tone.bg, color: tone.quote, boxShadow: `inset 0 0 0 1px ${tone.border}22` }}
     >
       {src ? (
-        <img src={src} alt={name} loading="lazy" className="w-full h-full object-cover" />
+        <EditableImage
+          slot={slot}
+          fallback={src}
+          alt={name}
+          aspectRatio={1}
+          className="w-full h-full object-cover"
+          imgProps={{ loading: "lazy" }}
+        />
       ) : (
         <span className="text-[12px] tracking-[0.06em]" style={{ fontFamily: INTER_FAMILY, fontWeight: 600 }}>
           {initials}
@@ -91,7 +99,7 @@ const TestimonialCard = ({ t, tone, lang, idx }) => (
     </p>
 
     <div className="mt-auto pt-5 flex items-center gap-4 border-t" style={{ borderColor: `${tone.border}14` }}>
-      <Avatar src={t.avatar} name={t.name} tone={tone} />
+      <Avatar src={t.avatar} name={t.name} tone={tone} slot={`testimonial.${t.id}.avatar`} />
       <div className="min-w-0">
         <p className="text-[14.5px] text-[#2C2621] truncate" style={{ fontFamily: INTER_FAMILY, fontWeight: 600 }}>
           {t.name}

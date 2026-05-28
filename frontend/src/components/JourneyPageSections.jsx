@@ -8,6 +8,7 @@ import { pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
+import EditableImage from "@/components/EditableImage";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
 
@@ -520,9 +521,15 @@ export const CommunityCta = ({ t, lang, testid = "community-cta", image }) => (
   >
     {image && (
       <>
-        <img src={image} alt="" loading="lazy"
-             className="absolute inset-0 w-full h-full object-cover opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/75 to-[#1A1513]/95" />
+        <EditableImage
+          slot={`section.${testid}.bg`}
+          fallback={image}
+          alt=""
+          aspectRatio="16/9"
+          imgProps={{ loading: "lazy" }}
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/75 to-[#1A1513]/95 pointer-events-none" />
       </>
     )}
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
@@ -622,9 +629,15 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                 {items.map((p) => {
                   const inner = (
                     <>
-                      <img src={p.image} alt="" loading="lazy"
-                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10" />
+                      <EditableImage
+                        slot={`hub.${hub.id}.preview.${p.id}`}
+                        fallback={p.image}
+                        alt=""
+                        aspectRatio="3/4"
+                        imgProps={{ loading: "lazy" }}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                       <span className="film-grain" />
                       <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
                         <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
@@ -681,9 +694,15 @@ export const CatalogTeaser = ({ t, lang, testid = "catalog-teaser", image }) => 
     data-testid={testid}
     className="relative overflow-hidden h-[60svh] min-h-[420px] bg-[#1A1513]"
   >
-    <img src={image} alt="" loading="lazy"
-         className="ken-burns absolute inset-0 w-full h-full object-cover opacity-60" />
-    <div className="absolute inset-0 bg-gradient-to-r from-[#1A1513]/95 via-[#1A1513]/60 to-[#1A1513]/30" />
+    <EditableImage
+      slot={`section.${testid}.bg`}
+      fallback={image}
+      alt=""
+      aspectRatio="16/9"
+      imgProps={{ loading: "lazy" }}
+      className="ken-burns absolute inset-0 w-full h-full object-cover opacity-60"
+    />
+    <div className="absolute inset-0 bg-gradient-to-r from-[#1A1513]/95 via-[#1A1513]/60 to-[#1A1513]/30 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-30" aria-hidden="true" />
     <span className="film-grain" />
 

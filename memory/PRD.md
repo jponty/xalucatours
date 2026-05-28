@@ -252,3 +252,24 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - **CMS slot cleanup**: deleted 5 stale `home.intro.*` + `home.trips.south` MongoDB overrides that were forcing the old Chefchaouen image into the "Erg Chebbi" slot. Code defaults now render.
 - **Final state**: 40 unique Unsplash IDs in the codebase = 21 verified Morocco bank + 19 testimonial portraits. Zero off-topic. Zero broken (verified HTTP 200 for all).
 - Verified end-to-end: home hero, Tier 2 drawer (Tánger waypoints), Tier 3 drawer (Marrakech stays) — all naturally Moroccan, visually distinct, coherent with text.
+
+## Global editable images mandate (Feb 2026)
+- **User mandate**: every image placeholder across the site (heroes, sections, cards, galleries, carousels, backgrounds, testimonials, trip images) must be editable in Edit Mode, without triggering navigation. Pattern must be reusable for future pages.
+- **Audit baseline**: 16 raw `<img>` tags remained outside the `<EditableImage>` wrapper in 8 files (mostly hub cards, tour landing cards, day-image, gallery drawer, testimonials, program hero).
+- **Conversions performed** in this iteration (all swapped from `<img>` → `<EditableImage slot fallback alt aspectRatio className imgProps>`):
+  - `components/Testimonials.jsx` — testimonial avatar (`testimonial.${t.id}.avatar`).
+  - `components/LandmarkCarousel.jsx` — day-map drawer gallery cards (`landmark.${landmark.id}.gallery.${i}`).
+  - `components/DayGallery.jsx` — collage tiles (`day.${day.route_id}.gallery.${i}`). Lightbox kept as plain `<img>` (it's a fullscreen zoom of an already-editable tile).
+  - `components/ItineraryHubPage.jsx` — hub program cards (`hub.${hub.id}.program.${p.id}`).
+  - `pages/AtlasDesiertoHubPage.jsx` — special hub cards (`hub.atlasdesierto.program.${p.id}`).
+  - `components/JourneyPageSections.jsx` — `CommunityCta` bg, hub preview cards, `CatalogTeaser` bg (all derive slot from `testid`/`hub.id`).
+  - `components/ProgramTemplate.jsx` — program hero (`program.${vt.id}.hero`) and per-day image (`day.${day.id}.image`).
+  - `pages/ToursLandingPage.jsx` — region cards, experience cards, trip cards, próxima salida cards, and the Asesoramiento section background (5 slots: `viajes.region.${id}`, `viajes.experience.${id}`, `viajes.trip.${id}`, `viajes.proxima.${i}`, `viajes.asesoramiento.bg`).
+- **Decorative overlays** (gradients, film-grain) added `pointer-events-none` so the `<EditableImage>` overlay receives the edit clicks instead of the underlying `<Link>`.
+- **Smoke test** at `/viajes` and `/viajes/gransur/tanger-rak/programa_8n_9d` with edit-mode toggled ON:
+  - All region, experience, trip cards expose `[data-testid^=editable-overlay-]` with dashed border + "EDITAR" button + slot label visible.
+  - Drawer gallery (Tier 2): 3 landmark cards editable independently (`landmark.trk89-tanger-chefchaouen-tanger-0.gallery.0/1/2`).
+  - Day blocks: each day image editable (`day.trk89-d2.image` etc.).
+  - Navigation blocked while overlay open (footer shows "MODO IMÁGENES · NAVEGACIÓN BLOQUEADA").
+- **Developer guide** added at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with slot-naming conventions, parent positioning rules, carousel `pointer-events` trick, and a checklist for every new page.
+- Only remaining raw `<img>` tags (intentional): `DayGallery` Lightbox (zoom of already-editable tile), `ImageEditorPage`/`ImageLibraryPicker` (admin previewers).

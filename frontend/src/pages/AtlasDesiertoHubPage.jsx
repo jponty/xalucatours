@@ -10,6 +10,7 @@ import {
   CommunityCta,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    Six combined Atlas + Desert programmes — with route stages
@@ -346,9 +347,15 @@ const ProgramsGrid = ({ t, lang }) => {
                   className="group relative flex flex-col bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#2C2621]/25 overflow-hidden transition-all duration-500"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img src={p.image} alt="" loading="lazy"
-                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/20 to-transparent" />
+                    <EditableImage
+                      slot={`hub.atlasdesierto.program.${p.id}`}
+                      fallback={p.image}
+                      alt=""
+                      aspectRatio="4/3"
+                      imgProps={{ loading: "lazy" }}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/20 to-transparent pointer-events-none" />
                     <span className="film-grain" />
                     <div className="absolute top-4 left-4 inline-flex items-center gap-2 bg-[#FDFBF7]/95 px-3 py-1.5">
                       <Clock className="w-3.5 h-3.5" style={{ color: p.accent }} strokeWidth={1.6} />
