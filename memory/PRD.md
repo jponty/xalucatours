@@ -331,6 +331,24 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /incentivos · Incentives B2B landing (Feb 2026)
+- **User mandate**: redact the existing route `events` (`/incentivos` · `/en/incentives` · `/fr/incentives`) with the supplied corporate copy.
+- **New page** `pages/IncentivosPage.jsx` wired in `App.js` (`if (routeId === "events") return <IncentivosPage />`). Trilingual ES/EN/FR.
+- **Sections**:
+  - Cinematic hero (dunes banner) with breadcrumb `Inicio › Servicios › Incentivos`, eyebrow `Organizadores de eventos · 360°`.
+  - **Trust bar** with 13 brand cards (Coca-Cola, Jeep, MINI, Mitsubishi, IBM, BMW, Vodafone, Volkswagen, Tag Heuer, Nissan, Carglass, Seat, Heineken) — typographic treatment (no logo assets needed) in a 7-col grid with kebab-cased testids `inc-brand-{slug}`.
+  - **Verticals** `<Verticals>`: 4 alternating rows (img/copy → copy/img). Each card has a numbered+iconed badge, editable image, body copy and category chips:
+    1. **Eventos de negocios** (Briefcase, kasbah arch) — chips: Convenciones · Lanzamientos · Team building · Incentivos.
+    2. **Eventos deportivos** (Trophy, rocky dunes) — chips: Titan Desert · Marathon des Sables · Rally Merzouga · Desert Run.
+    3. **Festivales** (Music2, medina) — chips: Música · Cine · Arte · Gastronomía.
+    4. **Celebraciones** (Heart, dunes) — chips: Bodas · Aniversarios · Reuniones · Renovación de votos.
+  - **Process** `<Process>` band on `#F2EBE1` with berber-diamond overlay: 3 numbered steps (Crea tu viaje de empresa a medida · Planifica tu aventura por Marruecos · Reserva día y hora) with icons (Building2 · Globe2 · CalendarCheck) + two CTAs (`Planifica tu viaje` → `/planifica-tu-viaje`, `Pedir cita previa` → `/contacto`).
+  - **Final CTA band** with camel-caravan editable bg + 3-col contact card pulled from `lib/data.js · CONTACT` (phone, email, hours) + two CTAs.
+- **Editable images mandate respected**: hero, final-bg and each vertical image via `<EditableImage>`. Each vertical wrapped in `<SlotScope id="verticals"><SlotScope id="{id}">` → ids resolve to `incentivos.verticals.{id}.image`. Process steps + content blocks ready for granular CMS overrides via `<SlotScope id="process">`.
+- **Doc title i18n** handled with `useEffect([lang])`.
+- **`data-testid`s**: `inc-page`, `inc-hero`, `inc-breadcrumbs`, `inc-trust`, `inc-brands`, `inc-brand-{slug}`, `inc-verticals`, `inc-vertical-{id}`, `inc-process`, `inc-step-{id}`, `inc-process-plan`, `inc-process-contact`, `inc-final-cta`, `inc-contact-phone/email/hours`, `inc-cta-plan/contact`.
+- **Smoke verified**: H1 correct in ES, all 13 brands render, 4 verticals render with alternating layout + chips, 3 process steps render with numbered badges, contact hrefs correct (`tel:+34937268366`, `mailto:xalucatours@xaluca.com`, `/planifica-tu-viaje`).
+
 ## /quehacemos · testimonials block (Feb 2026)
 - Inserted a 3-card testimonials section between `<Reasons />` and `<FinalCta />` on the `/quehacemos` page, reusing `lib/testimonials.js` (no new data file).
 - Curated `FEATURED_TESTIMONIAL_IDS = ["amelie-family", "david-4x4", "carlos-bespoke"]` — one per traveller archetype the copy emphasises:
