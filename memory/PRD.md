@@ -331,6 +331,24 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## /quehacemos · "Qué hacemos" page (Feb 2026)
+- **User mandate**: redact the existing route `whatWeDo` (`/quehacemos` · `/en/what-we-do` · `/fr/ce-que-nous-faisons`) using the provided copy. Previously routed to `<StubPage />`.
+- **New page** `pages/QueHacemosPage.jsx` wired in `App.js` (`if (routeId === "whatWeDo") return <QueHacemosPage />`). Trilingual ES/EN/FR.
+- **Sections**:
+  - Cinematic hero (Atlas misty banner) with inline breadcrumb `Inicio › Sobre nosotros › Qué hacemos`, eyebrow + title + subtitle.
+  - **Intro** (5/7 asymmetric grid): two paragraphs covering the wide range of traveller profiles (solo, family, groups, companies, incentives, themed, motoring, wellness) + clarification on "Propuestas de Circuitos" and "Próximas Salidas". Two CTAs: `Ver propuestas` → `/viajes`, `Ver próximas salidas` → `/proximas_salidas`.
+  - **3 pillars · "Cómo son nuestros viajes"** (`F2EBE1` background + berber-bg-diamond): Experiencias únicas (Sparkles + dunas), Alojamientos singulares (BedDouble + riad fountain), Equipo humano local (Users + camel caravan). Each pillar wrapped in `<SlotScope id="pillars"><SlotScope id="{pid}">` so card images auto-resolve to `quehacemos.pillars.{pid}.image`.
+  - **4 reasons · "Razones para viajar con Xaluca Tours"**: numbered 01–04 with circular Lucide icons in `#F2EBE1` — Disponibilidad 24/7 (Clock), Viajes 100% personalizados (Wand2), Máxima calidad asegurada (ShieldCheck), Garantía Grup Xaluca (BadgeCheck).
+  - **Final CTA band** with camel-caravan editable background + 3-column contact card pulled from `lib/data.js · CONTACT`:
+    - Phone: `tel:+34937268366` (`+34 937 268 366`)
+    - Email: `mailto:xalucatours@xaluca.com`
+    - Office hours: `Lunes a viernes · 10 h – 20 h` (trilingual)
+  - Two final CTAs: `Planifica tu viaje` → `/planifica-tu-viaje`, `Escríbenos` → `/contacto`.
+- **Editable images mandate respected**: hero, final-CTA background, and each pillar image are `<EditableImage>` with auto-resolved slot ids via `<SlotScope>`.
+- **Doc title i18n** handled with `useEffect([lang])` (HomePage regression pattern preserved).
+- **`data-testid`s**: `qh-page`, `qh-hero`, `qh-breadcrumbs`, `qh-intro`, `qh-intro-proposals`, `qh-intro-upcoming`, `qh-pillars`, `qh-pillar-{pid}`, `qh-reasons`, `qh-reason-{rid}`, `qh-final-cta`, `qh-contact-phone`, `qh-contact-email`, `qh-contact-hours`, `qh-cta-plan`, `qh-cta-contact`.
+- **Smoke verified**: ES H1 correct, FR H1 correct (`Le Maroc a beaucoup à découvrir — et nous, beaucoup à organiser pour vous.`), 3 pillars + 4 reasons render, `tel:` / `mailto:` / `/planifica-tu-viaje` hrefs correct.
+
 ## Destination guide · climate window on featured routes (Feb 2026)
 - Anchored each `FEATURED_ROUTES` entry to a climate region from `lib/bestTimeData.js` via a new `bestRegionId` field:
   - `gran-sur-fez-rak`, `tanger-rak-norte-sur`, `marrakech-loop` → **sahara** (Oct–Abr / evita Jun–Ago).
