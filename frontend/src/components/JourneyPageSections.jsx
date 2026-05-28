@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  ArrowRight, Compass, ChevronDown, MapPin, Clock,
+  ArrowRight, ArrowLeftRight, Compass, ChevronDown, MapPin, Clock,
   Headphones, Pencil, Award, ShieldCheck, Phone, Mail, Calendar, MessageCircle,
 } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
@@ -267,6 +267,60 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                 {t.cta_info}
               </a>
             </div>
+
+            {/* Related hub chips (alternative directions / general hubs) */}
+            {Array.isArray(itinerary.relatedHubs) && itinerary.relatedHubs.length > 0 && (
+              <ul
+                className="mt-6 flex flex-wrap gap-2"
+                data-testid={`itinerary-related-${itinerary.id}`}
+              >
+                {itinerary.relatedHubs.map((rh, i) => (
+                  <li key={i}>
+                    <Link
+                      to={pathFor(lang, rh.link)}
+                      data-testid={`itinerary-related-link-${itinerary.id}-${i}`}
+                      className="inline-flex items-center gap-2 px-3.5 py-2 text-[10px] tracking-[0.22em] uppercase border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] transition-all duration-300"
+                    >
+                      <ArrowLeftRight className="w-3 h-3" strokeWidth={1.7} />
+                      {pick(rh.label, lang)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Programme variants list (specific deep-linked itineraries) */}
+            {Array.isArray(itinerary.variants) && itinerary.variants.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-[#2C2621]/10" data-testid={`itinerary-variants-${itinerary.id}`}>
+                <span
+                  className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase"
+                  style={{ color: itinerary.accent }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: itinerary.accent }} />
+                  {t.variants_overline || "Opciones de viaje"}
+                </span>
+                <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {itinerary.variants.map((v, i) => (
+                    <li key={i}>
+                      <Link
+                        to={pathFor(lang, v.link)}
+                        data-testid={`itinerary-variant-link-${itinerary.id}-${i}`}
+                        className="group flex items-center justify-between gap-3 px-4 py-3 border bg-[#FDFBF7]/70 border-[#2C2621]/15 hover:bg-[#2C2621] hover:border-[#2C2621] transition-all duration-300"
+                        style={{ boxShadow: `inset 3px 0 0 ${itinerary.accent}` }}
+                      >
+                        <span className="text-[13px] md:text-[14px] text-[#2C2621] group-hover:text-[#FDFBF7] leading-snug transition-colors">
+                          {pick(v.label, lang)}
+                        </span>
+                        <ArrowRight
+                          className="w-3.5 h-3.5 shrink-0 text-[#5C5248] group-hover:text-[#FDFBF7] transition-all duration-300 group-hover:translate-x-0.5"
+                          strokeWidth={1.6}
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>

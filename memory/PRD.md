@@ -292,3 +292,21 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Smooth `.animate-slide-down` CSS animation (new keyframe in `index.css`) with `prefers-reduced-motion` already handled at the file scope.
 - **`data-testid` additions**: `trip-route-detail-{day}`, `trip-route-detail-close-{day}`, `trip-route-hint`.
 - Smoke test on `programa_8n_9d`: clicking the right-rail "02 Volubilis · Meknes · Fez" expands a fully populated dropdown (route `VOLUBILIS → MEKNES → FEZ`, 3 highlights with full body, full day description). Clicking "05 Erg Chebbi · Bivouac" closes day-2 and opens day-5 (only `trip-route-detail-5` remains in DOM). Marker click on the Leaflet map produces the same behaviour.
+
+## Marruecos itineraries · full nav wiring (Feb 2026)
+- **User mandate**: every main block and every option ("4 nights / 5 days", etc.) on the `/viajes/marruecos` page must be clickable and route to the correct hub/programme URL — no orphan CTAs.
+- **`lib/marruecosItineraries.js`** extended schema:
+  - `hubLink` — primary hub route key (replaces the old `ROUTE_BY_ID` mapping in the page).
+  - `relatedHubs[]` — optional list `{ label, link }` rendered as chips below the main CTA (e.g. reverse-direction hubs, general aggregator hubs).
+  - `variants[]` — list `{ label, link }` of concrete programmes with duration. Rendered as a 2-column responsive button grid below the main CTA.
+- **`components/JourneyPageSections.jsx · ItineraryBlock`**:
+  - Adds related-hub chips with `ArrowLeftRight` icon, `data-testid="itinerary-related-link-{id}-{i}"`.
+  - Adds the variants grid with `data-testid="itinerary-variant-link-{id}-{i}"`, accent-colour left bar, hover state that inverts to dark.
+  - Reads localised `t.variants_overline` from `MarruecosPage.jsx` (es: "Opciones de viaje", en: "Trip options", fr: "Options de voyage").
+- **`pages/MarruecosPage.jsx`** removed the inline `ROUTE_BY_ID` dict; now uses `it.hubLink` directly so itinerary data owns its routing.
+- **Coverage** (verified 200 OK on preview URL):
+  - **Gran Sur · Fez – Marrakech**: main `→ /viajes/gransur/fez-rak`, 8 programme variants (4 fez→marrakech + 4 marrakech→fez), 1 related hub `→ /viajes/gransur/rak-fez`.
+  - **Gran Sur + Medio Atlas**: main `→ /viajes/gransur/fez-sidiali-rak`, 6 programme variants (3 fez→sidiali→marrakech + 3 reverse).
+  - **Alto Atlas · Desierto · Fez**: main `→ /viajes/gransur/ouarzazate-sidiali-fez`, 6 programme variants (3 ozz→sidiali→fez + 3 reverse), 1 related hub `→ /viajes/atlas-desierto-fez`.
+  - **Tánger – Marrakech**: main `→ /viajes/gransur/tanger-rak`, 2 programme variants (8n/9d, 9n/10d).
+- Total: 4 main hub links + 22 programme deep-links + 2 related-hub chips = 28 navigation paths wired, all returning HTTP 200.

@@ -1,24 +1,45 @@
 // Itineraries for the /viajes/marruecos gateway page.
 // Each itinerary is a self-contained editorial block with a hero image,
-// route stages (chips), a narrative body and a future-detail slug.
+// route stages (chips), a narrative body, a primary hub link, optional
+// related-hub links and a list of program variants (different durations
+// or directions) each pointing to its own programme URL.
+
+const T = (es, en, fr) => ({ es, en, fr });
 
 export const MARRUECOS_ITINERARIES = [
   {
     id: "gran-sur-fez-marrakech",
     slug: "gran-sur-fez-marrakech",
-    eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
-    title:   { es: "Gran Sur · Fez – Marrakech",  en: "Grand South · Fez – Marrakech",  fr: "Grand Sud · Fès – Marrakech" },
-    duration:{ es: "8 días / 7 noches", en: "8 days / 7 nights", fr: "8 jours / 7 nuits" },
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    title:   T("Gran Sur · Fez – Marrakech", "Grand South · Fez – Marrakech", "Grand Sud · Fès – Marrakech"),
+    duration: T("8 días / 7 noches", "8 days / 7 nights", "8 jours / 7 nuits"),
     image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2200&q=85",
     accent: "#C16542",
+    /* Primary hub for the main CTA */
+    hubLink: "tourGransurFezRak",
+    /* Extra hubs surfaced as small chips below the main CTA */
+    relatedHubs: [
+      { label: T("Dirección inversa · Marrakech → Fez", "Reverse direction · Marrakech → Fez", "Sens inverse · Marrakech → Fès"), link: "tourGransurRakFezHub" },
+    ],
+    /* All concrete programmes (a button list — direct deep links) */
+    variants: [
+      { label: T("Fez – Marrakech · 6 noches / 7 días",  "Fez – Marrakech · 6 nights / 7 days",  "Fès – Marrakech · 6 nuits / 7 jours"),  link: "tourFezRak67" },
+      { label: T("Fez – Marrakech · 7 noches / 8 días",  "Fez – Marrakech · 7 nights / 8 days",  "Fès – Marrakech · 7 nuits / 8 jours"),  link: "tourFezRak78" },
+      { label: T("Fez – Marrakech · 8 noches / 9 días",  "Fez – Marrakech · 8 nights / 9 days",  "Fès – Marrakech · 8 nuits / 9 jours"),  link: "tourFezRak89" },
+      { label: T("Fez – Marrakech · 9 noches / 10 días", "Fez – Marrakech · 9 nights / 10 days", "Fès – Marrakech · 9 nuits / 10 jours"), link: "tourFezRak910" },
+      { label: T("Marrakech – Fez · 6 noches / 7 días",  "Marrakech – Fez · 6 nights / 7 days",  "Marrakech – Fès · 6 nuits / 7 jours"),  link: "tourMarrakechFez67" },
+      { label: T("Marrakech – Fez · 7 noches / 8 días",  "Marrakech – Fez · 7 nights / 8 days",  "Marrakech – Fès · 7 nuits / 8 jours"),  link: "tourMarrakechFez78" },
+      { label: T("Marrakech – Fez · 8 noches / 9 días",  "Marrakech – Fez · 8 nights / 9 days",  "Marrakech – Fès · 8 nuits / 9 jours"),  link: "tourMarrakechFez89" },
+      { label: T("Marrakech – Fez · 9 noches / 10 días", "Marrakech – Fez · 9 nights / 10 days", "Marrakech – Fès · 9 nuits / 10 jours"), link: "tourMarrakechFez910" },
+    ],
     stages: [
-      { es: "Fez",            en: "Fez",            fr: "Fès" },
-      { es: "Ifrane",         en: "Ifrane",         fr: "Ifrane" },
-      { es: "Cedros gigantes",en: "Giant cedars",   fr: "Cèdres géants" },
-      { es: "Erfoud",         en: "Erfoud",         fr: "Erfoud" },
-      { es: "Erg Chebbi",     en: "Erg Chebbi",     fr: "Erg Chebbi" },
-      { es: "Alto Atlas",     en: "High Atlas",     fr: "Haut Atlas" },
-      { es: "Marrakech",      en: "Marrakech",      fr: "Marrakech" },
+      T("Fez", "Fez", "Fès"),
+      T("Ifrane", "Ifrane", "Ifrane"),
+      T("Cedros gigantes", "Giant cedars", "Cèdres géants"),
+      T("Erfoud", "Erfoud", "Erfoud"),
+      T("Erg Chebbi", "Erg Chebbi", "Erg Chebbi"),
+      T("Alto Atlas", "High Atlas", "Haut Atlas"),
+      T("Marrakech", "Marrakech", "Marrakech"),
     ],
     body: {
       es: [
@@ -44,18 +65,28 @@ export const MARRUECOS_ITINERARIES = [
   {
     id: "gran-sur-medio-atlas",
     slug: "gran-sur-medio-atlas",
-    eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
-    title:   { es: "Gran Sur + Medio Atlas", en: "Grand South + Middle Atlas", fr: "Grand Sud + Moyen Atlas" },
-    duration:{ es: "9 días / 8 noches", en: "9 days / 8 nights", fr: "9 jours / 8 nuits" },
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    title:   T("Gran Sur + Medio Atlas", "Grand South + Middle Atlas", "Grand Sud + Moyen Atlas"),
+    duration: T("9 días / 8 noches", "9 days / 8 nights", "9 jours / 8 nuits"),
     image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2200&q=85",
     accent: "#5A6B4F",
+    hubLink: "tourGransurFezSidiali",
+    relatedHubs: [],
+    variants: [
+      { label: T("Fez – Sidi Ali – Marrakech · 7 noches / 8 días",  "Fez – Sidi Ali – Marrakech · 7 nights / 8 days",  "Fès – Sidi Ali – Marrakech · 7 nuits / 8 jours"),  link: "tourFezSidialiRak78" },
+      { label: T("Fez – Sidi Ali – Marrakech · 8 noches / 9 días",  "Fez – Sidi Ali – Marrakech · 8 nights / 9 days",  "Fès – Sidi Ali – Marrakech · 8 nuits / 9 jours"),  link: "tourFezSidialiRak89" },
+      { label: T("Fez – Sidi Ali – Marrakech · 9 noches / 10 días", "Fez – Sidi Ali – Marrakech · 9 nights / 10 days", "Fès – Sidi Ali – Marrakech · 9 nuits / 10 jours"), link: "tourFezSidialiRak910" },
+      { label: T("Marrakech – Sidi Ali – Fez · 7 noches / 8 días",  "Marrakech – Sidi Ali – Fez · 7 nights / 8 days",  "Marrakech – Sidi Ali – Fès · 7 nuits / 8 jours"),  link: "tourMarrakechSidialiFez78" },
+      { label: T("Marrakech – Sidi Ali – Fez · 8 noches / 9 días",  "Marrakech – Sidi Ali – Fez · 8 nights / 9 days",  "Marrakech – Sidi Ali – Fès · 8 nuits / 9 jours"),  link: "tourMarrakechSidialiFez89" },
+      { label: T("Marrakech – Sidi Ali – Fez · 9 noches / 10 días", "Marrakech – Sidi Ali – Fez · 9 nights / 10 days", "Marrakech – Sidi Ali – Fès · 9 nuits / 10 jours"), link: "tourMarrakechSidialiFez910" },
+    ],
     stages: [
-      { es: "Ifrane",                en: "Ifrane",                fr: "Ifrane" },
-      { es: "Cedros gigantes",       en: "Giant cedars",          fr: "Cèdres géants" },
-      { es: "Erfoud",                en: "Erfoud",                fr: "Erfoud" },
-      { es: "Erg Chebbi",            en: "Erg Chebbi",            fr: "Erg Chebbi" },
-      { es: "Medio Atlas",           en: "Middle Atlas",          fr: "Moyen Atlas" },
-      { es: "Lago Aguelmame Sidi Ali", en: "Aguelmame Sidi Ali lake", fr: "Lac Aguelmame Sidi Ali" },
+      T("Ifrane", "Ifrane", "Ifrane"),
+      T("Cedros gigantes", "Giant cedars", "Cèdres géants"),
+      T("Erfoud", "Erfoud", "Erfoud"),
+      T("Erg Chebbi", "Erg Chebbi", "Erg Chebbi"),
+      T("Medio Atlas", "Middle Atlas", "Moyen Atlas"),
+      T("Lago Aguelmame Sidi Ali", "Aguelmame Sidi Ali lake", "Lac Aguelmame Sidi Ali"),
     ],
     body: {
       es: [
@@ -81,17 +112,29 @@ export const MARRUECOS_ITINERARIES = [
   {
     id: "alto-atlas-desierto-fez",
     slug: "alto-atlas-desierto-fez",
-    eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
-    title:   { es: "Alto Atlas · Desierto · Fez", en: "High Atlas · Desert · Fez", fr: "Haut Atlas · Désert · Fès" },
-    duration:{ es: "9 días / 8 noches", en: "9 days / 8 nights", fr: "9 jours / 8 nuits" },
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    title:   T("Alto Atlas · Desierto · Fez", "High Atlas · Desert · Fez", "Haut Atlas · Désert · Fès"),
+    duration: T("9 días / 8 noches", "9 days / 8 nights", "9 jours / 8 nuits"),
     image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=85",
     accent: "#A07042",
+    hubLink: "tourGransurOuarzaFez",
+    relatedHubs: [
+      { label: T("Hub general · Atlas · Desierto · Fez", "General hub · Atlas · Desert · Fez", "Hub général · Atlas · Désert · Fès"), link: "tourAtlasDesiertoFezHub" },
+    ],
+    variants: [
+      { label: T("Ouarzazate – Sidi Ali – Fez · 5 noches / 6 días", "Ouarzazate – Sidi Ali – Fez · 5 nights / 6 days", "Ouarzazate – Sidi Ali – Fès · 5 nuits / 6 jours"), link: "tourOzzSidialiFez56" },
+      { label: T("Ouarzazate – Sidi Ali – Fez · 6 noches / 7 días", "Ouarzazate – Sidi Ali – Fez · 6 nights / 7 days", "Ouarzazate – Sidi Ali – Fès · 6 nuits / 7 jours"), link: "tourOzzSidialiFez67" },
+      { label: T("Ouarzazate – Sidi Ali – Fez · 7 noches / 8 días", "Ouarzazate – Sidi Ali – Fez · 7 nights / 8 days", "Ouarzazate – Sidi Ali – Fès · 7 nuits / 8 jours"), link: "tourOzzSidialiFez78" },
+      { label: T("Fez – Sidi Ali – Ouarzazate · 5 noches / 6 días", "Fez – Sidi Ali – Ouarzazate · 5 nights / 6 days", "Fès – Sidi Ali – Ouarzazate · 5 nuits / 6 jours"), link: "tourFezSidialiOzz56" },
+      { label: T("Fez – Sidi Ali – Ouarzazate · 6 noches / 7 días", "Fez – Sidi Ali – Ouarzazate · 6 nights / 7 days", "Fès – Sidi Ali – Ouarzazate · 6 nuits / 7 jours"), link: "tourFezSidialiOzz67" },
+      { label: T("Fez – Sidi Ali – Ouarzazate · 7 noches / 8 días", "Fez – Sidi Ali – Ouarzazate · 7 nights / 8 days", "Fès – Sidi Ali – Ouarzazate · 7 nuits / 8 jours"), link: "tourFezSidialiOzz78" },
+    ],
     stages: [
-      { es: "Alto Atlas",         en: "High Atlas",         fr: "Haut Atlas" },
-      { es: "Pueblos bereberes",  en: "Berber villages",    fr: "Villages berbères" },
-      { es: "Sahara",             en: "Sahara",             fr: "Sahara" },
-      { es: "Bivouac nómada",     en: "Nomadic bivouac",    fr: "Bivouac nomade" },
-      { es: "Fez · ciudad imperial", en: "Fez · imperial city", fr: "Fès · cité impériale" },
+      T("Alto Atlas", "High Atlas", "Haut Atlas"),
+      T("Pueblos bereberes", "Berber villages", "Villages berbères"),
+      T("Sahara", "Sahara", "Sahara"),
+      T("Bivouac nómada", "Nomadic bivouac", "Bivouac nomade"),
+      T("Fez · ciudad imperial", "Fez · imperial city", "Fès · cité impériale"),
     ],
     body: {
       es: [
@@ -117,20 +160,26 @@ export const MARRUECOS_ITINERARIES = [
   {
     id: "tanger-marrakech",
     slug: "tanger-marrakech",
-    eyebrow: { es: "Viajes por todo Marruecos", en: "Journeys across Morocco", fr: "Voyages à travers le Maroc" },
-    title:   { es: "Tánger – Marrakech", en: "Tangier – Marrakech", fr: "Tanger – Marrakech" },
-    duration:{ es: "11 días / 10 noches", en: "11 days / 10 nights", fr: "11 jours / 10 nuits" },
+    eyebrow: T("Viajes por todo Marruecos", "Journeys across Morocco", "Voyages à travers le Maroc"),
+    title:   T("Tánger – Marrakech", "Tangier – Marrakech", "Tanger – Marrakech"),
+    duration: T("11 días / 10 noches", "11 days / 10 nights", "11 jours / 10 nuits"),
     image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2200&q=85",
     accent: "#3A4A5F",
+    hubLink: "tourGransurTangerRak",
+    relatedHubs: [],
+    variants: [
+      { label: T("Tánger – Marrakech · 8 noches / 9 días",  "Tangier – Marrakech · 8 nights / 9 days",  "Tanger – Marrakech · 8 nuits / 9 jours"),  link: "tourTangerRak89" },
+      { label: T("Tánger – Marrakech · 9 noches / 10 días", "Tangier – Marrakech · 9 nights / 10 days", "Tanger – Marrakech · 9 nuits / 10 jours"), link: "tourTangerRak910" },
+    ],
     stages: [
-      { es: "Tánger",       en: "Tangier",      fr: "Tanger" },
-      { es: "Chefchaouen",  en: "Chefchaouen",  fr: "Chefchaouen" },
-      { es: "Fez",          en: "Fez",          fr: "Fès" },
-      { es: "Ifrane",       en: "Ifrane",       fr: "Ifrane" },
-      { es: "Erfoud",       en: "Erfoud",       fr: "Erfoud" },
-      { es: "Erg Chebbi",   en: "Erg Chebbi",   fr: "Erg Chebbi" },
-      { es: "Alto Atlas",   en: "High Atlas",   fr: "Haut Atlas" },
-      { es: "Marrakech",    en: "Marrakech",    fr: "Marrakech" },
+      T("Tánger", "Tangier", "Tanger"),
+      T("Chefchaouen", "Chefchaouen", "Chefchaouen"),
+      T("Fez", "Fez", "Fès"),
+      T("Ifrane", "Ifrane", "Ifrane"),
+      T("Erfoud", "Erfoud", "Erfoud"),
+      T("Erg Chebbi", "Erg Chebbi", "Erg Chebbi"),
+      T("Alto Atlas", "High Atlas", "Haut Atlas"),
+      T("Marrakech", "Marrakech", "Marrakech"),
     ],
     body: {
       es: [

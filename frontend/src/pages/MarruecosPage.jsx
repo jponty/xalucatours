@@ -41,7 +41,7 @@ const COPY = {
       body: "Cada ruta es una manera diferente de cruzar el país. Misma exigencia, mismos detalles cuidados — itinerarios distintos.",
       cta: "Ver itinerario",
     },
-    block: { cta_request: "Ver opciones", cta_info: "Más información" },
+    block: { cta_request: "Ver opciones", cta_info: "Más información", variants_overline: "Opciones de viaje" },
     intro: {
       id: "intro-marruecos",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
@@ -109,7 +109,7 @@ const COPY = {
       body: "Each route is a different way of crossing the country. Same care, same attention to detail — different itineraries.",
       cta: "See itinerary",
     },
-    block: { cta_request: "View options", cta_info: "More info" },
+    block: { cta_request: "View options", cta_info: "More info", variants_overline: "Trip options" },
     intro: {
       id: "intro-marruecos",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
@@ -177,7 +177,7 @@ const COPY = {
       body: "Chaque itinéraire est une façon différente de traverser le pays. Même soin, même attention aux détails — itinéraires distincts.",
       cta: "Voir l'itinéraire",
     },
-    block: { cta_request: "Voir les options", cta_info: "Plus d'infos" },
+    block: { cta_request: "Voir les options", cta_info: "Plus d'infos", variants_overline: "Options de voyage" },
     intro: {
       id: "intro-marruecos",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
@@ -251,13 +251,8 @@ export default function MarruecosPage() {
     { id: "community", label: t.nav.contact },
   ];
 
-  // Map itinerary id -> hub routeId
-  const ROUTE_BY_ID = {
-    "gran-sur-fez-marrakech":  "tourGransurFezRak",
-    "gran-sur-medio-atlas":    "tourGransurFezSidiali",
-    "alto-atlas-desierto-fez": "tourGransurOuarzaFez",
-    "tanger-marrakech":        "tourGransurTangerRak",
-  };
+  // Each itinerary now exposes its own primary `hubLink` and a list of `variants`.
+  // The ItineraryBlock will render variants and related hubs as clickable cards.
 
   return (
     <div data-testid="marruecos-page">
@@ -291,7 +286,7 @@ export default function MarruecosPage() {
             index={i}
             lang={lang}
             t={t.block}
-            ctaTarget={pathFor(lang, ROUTE_BY_ID[it.id] || "contact")}
+            ctaTarget={pathFor(lang, it.hubLink || "contact")}
           />
           {/* Per-itinerary themed testimonials */}
           {it.id === "gran-sur-fez-marrakech" && (
