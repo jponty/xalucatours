@@ -331,6 +331,18 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - Resolved slot id verified at runtime: `viajes/gransur/fez-rak.hub.gransur-fez-rak.program.fr-6-7` for the first card.
 - Guide updated at `/app/memory/EDITABLE_IMAGES_GUIDE.md` with the before/after diff and 3 new hooks.
 
+## Destination guide · climate window on featured routes (Feb 2026)
+- Anchored each `FEATURED_ROUTES` entry to a climate region from `lib/bestTimeData.js` via a new `bestRegionId` field:
+  - `gran-sur-fez-rak`, `tanger-rak-norte-sur`, `marrakech-loop` → **sahara** (Oct–Abr / evita Jun–Ago).
+  - `imperial-cities` → **marrakech** (Mar–Mayo · Oct–Nov / evita Jul–Ago).
+  - `tanger-fez-rif` → **north** (Abr–Jun · Sep–Oct / evita Nov–Feb lluvias).
+- Route detail panel now renders a climate block under the body description, before the numbered stop rail. Block contents:
+  - Calendar eyebrow with the climate region's localised name (`SÁHARA`, `NORTE (RIF Y TÁNGER)`, etc.).
+  - Two-column grid: `Mejor época` (ThermometerSun icon in the region's accent) + `Evita` (ThermometerSnowflake).
+  - Link `Ver guía climática completa ↗` → `pathFor(lang, "whenToTravel")` for the full month-by-month guide.
+- New testids: `qvm-route-climate-{rid}`, `qvm-route-climate-link-{rid}`. Trilingual via the existing `pick()` helper and reuses the climate accent palette already present elsewhere on the site.
+- Verified live: clicking "Gran Sur" shows `MEJOR ÉPOCA Oct – Abr · EVITA Jun – Ago` with the Sáhara accent; switching to "Tánger · Rif · Fez" updates to `Abr – Jun · Sep – Oct · EVITA Nov – Feb (lluvias)`; `Ver guía climática completa` correctly resolves to `/cuando-viajar`.
+
 ## Destination guide · featured-route polylines (Feb 2026)
 - Layered an opt-in route visualiser on top of the destination map (`pages/QueVerEnMarruecosPage.jsx`).
 - New `FEATURED_ROUTES` list with **5 best-selling itineraries**, each referencing existing destination ids:

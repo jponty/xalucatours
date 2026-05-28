@@ -4,10 +4,12 @@ import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline } from "react-
 import {
   Home, ChevronRight, Compass, MapPin, ArrowRight, ArrowUpRight,
   Crown, Tent, Mountain, Waves, Building2, Sparkles, Star, X,
+  Calendar, ThermometerSun, ThermometerSnowflake,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { IMG, banner } from "@/lib/imageBank";
+import { REGIONS as CLIMATE_REGIONS } from "@/lib/bestTimeData";
 import EditableImage from "@/components/EditableImage";
 import { SlotScope } from "@/components/slotScope";
 
@@ -81,6 +83,9 @@ const COPY = {
     routeStops:  { es: "Etapas del viaje", en: "Trip stops", fr: "Étapes du voyage" },
     routeCta:    { es: "Ver este viaje", en: "View this trip", fr: "Voir ce voyage" },
     routeBadge:  { es: "Ruta destacada", en: "Featured route", fr: "Itinéraire phare" },
+    bestWindow:  { es: "Mejor época", en: "Best window", fr: "Meilleure période" },
+    avoidWindow: { es: "Evita",        en: "Avoid",       fr: "À éviter" },
+    seeGuide:    { es: "Ver guía climática completa", en: "See full climate guide", fr: "Voir le guide climatique complet" },
   },
   finalCta: {
     eyebrow: { es: "¿Lo tienes claro?", en: "Made up your mind?", fr: "C'est décidé ?" },
@@ -728,6 +733,7 @@ const FEATURED_ROUTES = [
     id: "gran-sur-fez-rak",
     color: "#C16542",
     routeId: "tourGransurFezRak",
+    bestRegionId: "sahara",
     waypoints: ["fez", "sidiali", "ergchebbi", "dades-todra", "aitbenhaddou", "marrakech"],
     label: {
       es: "Gran Sur · Fez → Marrakech",
@@ -744,6 +750,7 @@ const FEATURED_ROUTES = [
     id: "tanger-rak-norte-sur",
     color: "#8C6A3D",
     routeId: "tourGransurTangerRak",
+    bestRegionId: "sahara",
     waypoints: ["tanger", "chefchaouen", "fez", "ergchebbi", "dades-todra", "aitbenhaddou", "marrakech"],
     label: {
       es: "Tánger → Marrakech · Norte a Sur",
@@ -760,6 +767,7 @@ const FEATURED_ROUTES = [
     id: "imperial-cities",
     color: "#5A7F9C",
     routeId: "tourNorteCiudadesImperiales",
+    bestRegionId: "marrakech",
     waypoints: ["casablanca", "rabat", "meknes", "volubilis", "fez", "marrakech"],
     label: {
       es: "Ciudades imperiales",
@@ -776,6 +784,7 @@ const FEATURED_ROUTES = [
     id: "marrakech-loop",
     color: "#D4A373",
     routeId: "tourMarrakechLoopHub",
+    bestRegionId: "sahara",
     waypoints: ["marrakech", "aitbenhaddou", "dades-todra", "ergchebbi", "dades-todra", "marrakech"],
     label: {
       es: "Marrakech ↻ Erg Chebbi ↻ Marrakech",
@@ -792,6 +801,7 @@ const FEATURED_ROUTES = [
     id: "tanger-fez-rif",
     color: "#5A6B4F",
     routeId: "tourNorteTangerFez",
+    bestRegionId: "north",
     waypoints: ["tanger", "asilah", "chefchaouen", "volubilis", "meknes", "fez"],
     label: {
       es: "Tánger · Rif · Fez",
@@ -1082,6 +1092,52 @@ const DestinationsMap = ({ lang }) => {
                   <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">
                     {pick(activeRoute.body, lang)}
                   </p>
+
+                  {/* Climate window — pulled from bestTimeData REGIONS */}
+                  {(() => {
+                    const climate = CLIMATE_REGIONS.find((r) => r.id === activeRoute.bestRegionId);
+                    if (!climate) return null;
+                    return (
+                      <div
+                        data-testid={`qvm-route-climate-${activeRoute.id}`}
+                        className="mt-5 bg-[#F2EBE1] border-l-2 px-4 py-3.5"
+                        style={{ borderLeftColor: climate.accent }}
+                      >
+                        <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2 inline-flex items-center gap-1.5">
+                          <Calendar className="w-3 h-3" strokeWidth={1.8} />
+                          {pick(climate.name, lang)}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                          <div className="flex items-start gap-2">
+                            <ThermometerSun className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: climate.accent }} strokeWidth={1.6} />
+                            <div>
+                              <p className="text-[10px] tracking-[0.22em] uppercase text-[#5C5248]">
+                                {pick(COPY.map.bestWindow, lang)}
+                              </p>
+                              <p className="text-[#2C2621] font-medium">{pick(climate.best, lang)}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <ThermometerSnowflake className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#5C5248]" strokeWidth={1.6} />
+                            <div>
+                              <p className="text-[10px] tracking-[0.22em] uppercase text-[#5C5248]">
+                                {pick(COPY.map.avoidWindow, lang)}
+                              </p>
+                              <p className="text-[#5C5248]">{pick(climate.avoid, lang)}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <Link
+                          to={pathFor(lang, "whenToTravel")}
+                          data-testid={`qvm-route-climate-link-${activeRoute.id}`}
+                          className="mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5"
+                        >
+                          {pick(COPY.map.seeGuide, lang)}
+                          <ArrowUpRight className="w-3 h-3" strokeWidth={1.8} />
+                        </Link>
+                      </div>
+                    );
+                  })()}
 
                   {/* Numbered stop rail */}
                   <div className="mt-6">
