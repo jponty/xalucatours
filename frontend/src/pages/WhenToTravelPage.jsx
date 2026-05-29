@@ -40,6 +40,20 @@ const COPY = {
     faq:       { es: "Preguntas frecuentes", en: "Frequently asked", fr: "Questions fréquentes" },
     links:     { es: "Sigue explorando",  en: "Keep exploring", fr: "Continuer l'exploration" },
   },
+  yearRound: {
+    eyebrow: { es: "Todo el año", en: "Year-round", fr: "Toute l'année" },
+    title: {
+      es: "No hay mala época: cada temporada tiene su Marruecos.",
+      en: "There's no bad time: every season has its own Morocco.",
+      fr: "Aucune mauvaise période : chaque saison a son Maroc.",
+    },
+    intro: {
+      es: "Marruecos se disfruta los doce meses del año. Solo cambia el tipo de viaje que te espera.",
+      en: "Morocco can be enjoyed twelve months a year. Only the kind of journey awaiting you changes.",
+      fr: "Le Maroc se savoure douze mois sur douze. Seul change le type de voyage qui vous attend.",
+    },
+    idealFor: { es: "Ideal para", en: "Ideal for", fr: "Idéal pour" },
+  },
   labels: {
     weather:   { es: "Clima",      en: "Weather",      fr: "Climat" },
     regions:   { es: "Regiones",   en: "Regions",      fr: "Régions" },
@@ -66,6 +80,12 @@ const COPY = {
 };
 
 const SEASON_ICONS = { spring: Flower, summer: Sun, autumn: Leaf, winter: Snowflake };
+const SEASON_NAMES = {
+  spring: { es: "Primavera", en: "Spring", fr: "Printemps" },
+  summer: { es: "Verano", en: "Summer", fr: "Été" },
+  autumn: { es: "Otoño", en: "Autumn", fr: "Automne" },
+  winter: { es: "Invierno", en: "Winter", fr: "Hiver" },
+};
 const STYLE_ICONS  = {
   desert: Tent, hiking: Mountain, cities: Building2,
   beach: Waves, luxury: Star, photography: Camera,
@@ -210,6 +230,60 @@ export default function WhenToTravelPage() {
             {(INTRO.body[lang] || INTRO.body.es).map((p, i) => (
               <p key={i}>{p}</p>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= YEAR-ROUND · IDEAL PARA ================= */}
+      <section
+        className="py-20 md:py-28 bg-[#F2EBE1]/55 border-b border-[#2C2621]/10"
+        data-testid="when-year-round"
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="max-w-3xl mb-12 md:mb-14">
+            <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase text-[#C16542] mb-4">
+              <Calendar className="w-3.5 h-3.5" strokeWidth={1.8} />
+              {pick(COPY.yearRound.eyebrow, lang)}
+            </span>
+            <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.06] tracking-tight">
+              {pick(COPY.yearRound.title, lang)}
+            </h2>
+            <p className="mt-5 text-base md:text-lg text-[#5C5248] leading-relaxed">
+              {pick(COPY.yearRound.intro, lang)}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {SEASONS.map((season) => {
+              const SeasonIcon = SEASON_ICONS[season.id] || Sun;
+              return (
+                <div
+                  key={season.id}
+                  data-testid={`year-round-${season.id}`}
+                  className="bg-[#FDFBF7] border border-[#2C2621]/12 rounded-2xl p-6 flex flex-col"
+                  style={{ borderTop: `3px solid ${season.accent}` }}
+                >
+                  <span
+                    className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-5"
+                    style={{ background: `${season.accent}1A`, color: season.accent }}
+                  >
+                    <SeasonIcon className="w-6 h-6" strokeWidth={1.6} />
+                  </span>
+                  <h3 className="font-serif-x text-xl text-[#2C2621] leading-tight">
+                    {pick(SEASON_NAMES[season.id], lang)}
+                  </h3>
+                  <span className="text-[11px] tracking-[0.15em] uppercase text-[#5C5248] mt-1">
+                    {pick(season.months, lang)}
+                  </span>
+                  <p className="mt-4 text-sm text-[#5C5248] leading-relaxed">
+                    <span className="font-semibold" style={{ color: season.accent }}>
+                      {pick(COPY.yearRound.idealFor, lang)}:
+                    </span>{" "}
+                    {pick(season.idealFor, lang)}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
