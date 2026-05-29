@@ -15,6 +15,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
+import ContactForm from "@/components/ContactForm";
 import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
@@ -260,6 +261,11 @@ const CitaPreviaPage = () => {
             </div>
           </div>
         </section>
+
+        {/* ============== FORM — same ContactForm used on /contacto ============== */}
+        <div id="contact-form" data-testid="citaprevia-form-section">
+          <ContactForm />
+        </div>
 
       </main>
     </SlotScope>
