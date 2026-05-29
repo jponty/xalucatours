@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 
 /* ============================================================
    Hero (formerly HeroSlider)
@@ -86,6 +87,14 @@ export const HeroSlider = () => {
         <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-3xl">
+              <img
+                src={grupXalucaLogo}
+                alt="Grup Xaluca · Morocco"
+                data-testid="hero-logo"
+                className="fade-up h-20 md:h-24 w-auto mb-7 drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)] select-none"
+                loading="eager"
+                decoding="async"
+              />
               <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
                 <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
                 <EditableText
