@@ -119,11 +119,11 @@ export default function PexelsTab({ onSelect, onClose }) {
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.detail || `HTTP ${r.status}`);
-      // Build absolute URL — same shape as the local library picker uses.
+      // Build absolute URL so the parent can treat this item identically to
+      // a local LibraryThumb pick (its onSelect expects an item with .url).
       const absUrl = j.url.startsWith("http") ? j.url : `${API}${j.url}`;
       setImpOk(photo.id);
-      // Hand off to the picker parent — it will pipe this URL into the slot.
-      onSelect?.(absUrl, { source: "pexels", pexels: j.pexels, file_id: j.id });
+      onSelect?.({ ...j, url: absUrl });
     } catch (e) {
       setError(e.message || COPY.importErr);
     } finally {
