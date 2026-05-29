@@ -1,0 +1,30 @@
+{
+  "summary": "Phase 2 ItineraryHubPage inline CMS verified end-to-end on /viajes/marrakech_ergchebbi_marrakech (and spot-checked on /viajes/gransur/fez-rak). NORMAL mode renders hero/intro/options/community without crashes; H1 = 'Marrakech – Erg Chebbi – Marrakech.', 6 hub-program cards, intro overline, options overline and community band all show real localized text. Toggling header-text-edit-toggle exposes 63 inline-editable surfaces on the Marrakech hub (and 70 on the gransur hub) — well above the 'dozens' bar — split as 20 per-page content slots + 24 global hub-ui labels + duplicates (cta_card per card, nights per card). Per-page CONTENT save (viajes.marrakech_ergchebbi_marrakech.hero.title) and GLOBAL label save (hub-ui.cta_primary) both PUT /api/text_slots/<slot> => 200 and survive a hard reload (verified visually after reload — hero showed ' [E2E-P2]' appended and CTA showed 'VER OPCIONES *'). Direct API GET /api/text_slots also confirmed persisted values. Regression with text edit OFF: hub-program cards navigate correctly (e.g. /viajes/marrakech_ergchebbi_marrakech/programa_2n_3d), opposite-hub toggle data-testid is rendered only when hub.oppositeHub is configured (null on these two hubs — not a regression, just data). Edits were CLEANED UP after testing (both touched slots reset to {} via PUT).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_17.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ItineraryHubPage.jsx (300 LOC) is clean and well-factored; the <L>/<C>/<G> helpers mirror ProgramTemplate's pattern, which keeps mental load low.",
+    "Slot naming is correct and predictable: per-page = '<dotted-path>.<name>' with an extra SlotScope for the OptionsGrid (e.g. viajes.marrakech_ergchebbi_marrakech.hub.marrakech-loop.options.overline). This is fine but worth documenting in a /lib/slots.md if not already.",
+    "hub-ui.cta_card is rendered once per program card, so the data-testid repeats (we found it 6 times on the Marrakech hub). React works because it's not a key, but if a future Playwright selector does query_selector_all on '[data-testid=editable-text-hub-ui.cta_card]', it returns duplicates. Consider uniqueifying via the SlotScope (hub-ui.cta_card.<program_id>) OR keep current shared behaviour intentionally (label is the same for all).",
+    "Same observation for hub-ui.nights.<n>: shared global label intentionally repeats per card — currently fine.",
+    "EditableImage and EditableText share the same fetch-once-then-subscribe pattern (cache module-singleton). PUT updates the local cache and notifies subscribers — good, no stale UI on the same tab.",
+    "No oppositeHub on the two hubs I tested. The toggle JSX is correctly conditional on hub.oppositeHub, so it does NOT render an empty button. Verified no broken anchors in NORMAL mode."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — text edit toggle is public via header data-testid='header-text-edit-toggle'.",
+  "seed_data_creation": "During the run two slots were written and then RESET back to empty values to honour the 'keep edits minimal' note. Slots touched (now empty): viajes.marrakech_ergchebbi_marrakech.hero.title, hub-ui.cta_primary.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Phase 2 (ItineraryHubPage) confirmed working. Marrakech hub exposes 63 editable surfaces in text-edit mode (20 page + 24 global + dupes); gransur fez-rak hub exposes 70 (23 page + 28 global + dupes incl. group_a/group_b). PUT /api/text_slots/<slot> -> 200 and bulk GET /api/text_slots returns persisted values after reload. External preview URL (https://xaluca-trips.preview.emergentagent.com/...) was behind the Emergent 'Preview Unavailable / Agent resting' wall during this run — local http://localhost:3000 served the app fine and was used for testing (REACT_APP_BACKEND_URL relative /api routes work because the dev server proxies to backend on :8001). Slot naming under OptionsGrid is namespaced by SlotScope id 'hub.<hub.id>' so program/options slots look like 'viajes.<route>.hub.<hub.id>.options.<key>' or '...program.<programId>.blurb'. No blocking issues found.",
+  "rca of the issue": "N/A — all in-scope assertions passed."
+}

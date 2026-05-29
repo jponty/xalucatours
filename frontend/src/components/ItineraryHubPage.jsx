@@ -4,7 +4,8 @@ import { ArrowRight, ArrowLeftRight, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
-import { SlotScope } from "@/components/slotScope";
+import EditableText from "@/components/EditableText";
+import { SlotScope, useSlotId } from "@/components/slotScope";
 import {
   JourneyHero,
   StickyNav,
@@ -70,22 +71,58 @@ const LABELS = {
   },
 };
 
-const Intro = ({ intro, lang }) => (
-  <section id="intro" data-testid="hub-intro"
-           className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
-    <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
-      <span className="overline">{pick(intro.overline, lang)}</span>
-      <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-        {pick(intro.title, lang)}
-      </h2>
-      <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
-        {pick(intro.body, lang).map((p, i) => (
-          <p key={i} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
-        ))}
-      </div>
-    </div>
-  </section>
+/* ============================================================
+   Inline-CMS text helpers (mirror of ProgramTemplate)
+   <L> — global UI label shared across all hub pages. Supports
+         dotted keys into LABELS (e.g. "community.title").
+         Slot: `hub-ui.<k>`.
+   <C> — per-page content, auto-namespaced by page path.
+   <G> — global content keyed explicitly (shared data like nights).
+============================================================ */
+const labelDefaults = (k) => {
+  const get = (obj) => k.split(".").reduce((o, part) => (o ? o[part] : undefined), obj);
+  return { es: get(LABELS.es), en: get(LABELS.en), fr: get(LABELS.fr) };
+};
+const L = ({ k, as = "span", className, multiline = false, ...rest }) => (
+  <EditableText slot={`hub-ui.${k}`} defaults={labelDefaults(k)} as={as} multiline={multiline} className={className} {...rest} />
 );
+const C = ({ name, defaults, as = "span", className, multiline = true, ...rest }) => {
+  const slot = useSlotId(name);
+  return <EditableText slot={slot} defaults={defaults || {}} as={as} multiline={multiline} className={className} {...rest} />;
+};
+const G = ({ k, defaults, as = "span", className, multiline = false, ...rest }) => (
+  <EditableText slot={`hub-ui.${k}`} defaults={defaults || {}} as={as} multiline={multiline} className={className} {...rest} />
+);
+
+const Intro = ({ intro, lang }) => {
+  const bodyAll = {
+    es: pick(intro.body, "es") || [],
+    en: pick(intro.body, "en") || [],
+    fr: pick(intro.body, "fr") || [],
+  };
+  const bodyLen = (pick(intro.body, lang) || []).length;
+  return (
+    <section id="intro" data-testid="hub-intro"
+             className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
+      <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
+        <C name="intro.overline" defaults={intro.overline} multiline={false} className="overline" />
+        <C name="intro.title" as="h2" multiline={false} defaults={intro.title}
+           className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
+        <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
+          {Array.from({ length: bodyLen }).map((_, i) => (
+            <C
+              key={i}
+              name={`intro.p${i}`}
+              as="p"
+              defaults={{ es: bodyAll.es[i] || "", en: bodyAll.en[i] || "", fr: bodyAll.fr[i] || "" }}
+              className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
   const groupedKeys = Array.from(new Set(programs.map((p) => p.direction)));
@@ -98,13 +135,12 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-14">
           <div className="md:col-span-7">
-            <span className="overline">{pick(options.overline, lang)}</span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-              {pick(options.title, lang)}
-            </h2>
+            <C name="options.overline" defaults={options.overline} multiline={false} className="overline" />
+            <C name="options.title" as="h2" multiline={false} defaults={options.title}
+               className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
           </div>
           <div className="md:col-span-5">
-            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{pick(options.body, lang)}</p>
+            <C name="options.body" as="p" defaults={options.body} className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
           </div>
         </div>
 
@@ -114,7 +150,12 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
             <div key={k ?? "single"} className="mb-14 last:mb-0">
               {!singleDirection && (
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="font-serif-x text-2xl md:text-3xl text-[#2C2621]">{getLabel(k)}</span>
+                  <C
+                    name={`options.group_${k}`}
+                    multiline={false}
+                    defaults={k === "a" ? options.group_a : options.group_b}
+                    className="font-serif-x text-2xl md:text-3xl text-[#2C2621]"
+                  />
                   <span className="flex-1 h-px bg-[#2C2621]/15" />
                 </div>
               )}
@@ -142,13 +183,16 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                       </span>
                       <h3 className="font-serif-x text-2xl md:text-[28px] leading-[1.05] mt-3 inline-flex items-center gap-3">
                         <Clock className="w-5 h-5 text-[#D4A373]" strokeWidth={1.4} />
-                        {pick(COMMON_NIGHTS[p.nights], lang)}
+                        <G k={`nights.${p.nights}`} defaults={COMMON_NIGHTS[p.nights]} multiline={false} />
                       </h3>
-                      <p className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3">
-                        {pick(p.blurb, lang)}
-                      </p>
+                      <C
+                        name={`program.${p.id}.blurb`}
+                        as="p"
+                        defaults={p.blurb}
+                        className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3"
+                      />
                       <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
-                        {t.cta_card}<ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                        <L k="cta_card" /><ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                       </span>
                     </div>
                   </Link>
@@ -183,15 +227,15 @@ export default function ItineraryHubPage({ hub }) {
       <div className="relative">
         <JourneyHero
           image={hub.hero.image}
-          eyebrow={pick(hub.hero.eyebrow, lang)}
-          place={pick(hub.hero.place, lang)}
-          title={heroTitle}
-          subtitle={pick(hub.hero.subtitle, lang)}
-          primaryCta={t.cta_primary}
+          eyebrow={<C name="hero.eyebrow" defaults={hub.hero.eyebrow} multiline={false} />}
+          place={hub.hero.place ? <C name="hero.place" defaults={hub.hero.place} multiline={false} /> : undefined}
+          title={<C name="hero.title" defaults={hub.hero.title} multiline={false} />}
+          subtitle={<C name="hero.subtitle" defaults={hub.hero.subtitle} />}
+          primaryCta={<L k="cta_primary" />}
           primaryHref="#options"
-          secondaryCta={t.cta_secondary}
+          secondaryCta={<L k="cta_secondary" />}
           secondaryHref="#community"
-          scroll={t.scroll}
+          scroll={<L k="scroll" />}
           testid={`hub-hero-${hub.id}`}
         />
         {hub.oppositeHub && (
@@ -201,7 +245,7 @@ export default function ItineraryHubPage({ hub }) {
             className="hidden md:inline-flex absolute right-6 lg:right-10 top-28 lg:top-32 z-20 items-center gap-3 px-4 py-2.5 bg-[#FDFBF7]/12 hover:bg-[#FDFBF7] hover:text-[#1A1513] backdrop-blur-md border border-[#FDFBF7]/35 text-[#FDFBF7] text-[10.5px] tracking-[0.28em] uppercase transition-colors duration-300"
           >
             <ArrowLeftRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-            <span>{pick(hub.oppositeHub.label, lang)}</span>
+            <C name="opposite.label" defaults={hub.oppositeHub.label} multiline={false} />
           </Link>
         )}
       </div>
@@ -214,7 +258,7 @@ export default function ItineraryHubPage({ hub }) {
             className="flex items-center justify-center gap-3 px-5 py-3.5 text-[10px] tracking-[0.28em] uppercase hover:bg-[#3A2E25] transition-colors"
           >
             <ArrowLeftRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-            <span>{pick(hub.oppositeHub.label, lang)}</span>
+            <C name="opposite.label" defaults={hub.oppositeHub.label} multiline={false} />
           </Link>
         </div>
       )}
@@ -234,7 +278,17 @@ export default function ItineraryHubPage({ hub }) {
       </SlotScope>
 
       <CommunityCta
-        t={t.community}
+        t={{
+          overline: <L k="community.overline" />,
+          title: <L k="community.title" />,
+          subtitle: <L k="community.subtitle" multiline />,
+          body: <L k="community.body" multiline />,
+          phone_label: <L k="community.phone_label" />,
+          email_label: <L k="community.email_label" />,
+          hours_label: <L k="community.hours_label" />,
+          hours_value: <L k="community.hours_value" />,
+          cta_primary: <L k="community.cta_primary" />,
+        }}
         lang={lang}
         image="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
         testid={`hub-community-${hub.id}`}
