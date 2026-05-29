@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only verification of the SmartImage / no-flicker refactor of EditableImage across /, /viajes, /viajes/surdemarruecos, /viajes/marruecos, /viajes/desierto_atlas/programa_4n_5d. All success criteria met: 0 broken images, 0 black image-slot placeholders, 0 fade-in images stuck at opacity 0 in viewport after load+scroll, warm shimmer skeletons (.cms-skeleton) reserved space for below-the-fold images and resolved on scroll, hero on the program page rendered sharply at the top. Image Edit Mode still works (134 overlays, EDITAR badges shown, edit modal opens). Admin Pexels fill still detects image slots via data-cms-image-slot (36 slots found in the tourSouth iframe preview, 34 dispatched for Pexels fill with the live progress message displayed in admin-fill-msg).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "EditableImage.jsx is 1553 lines — exceeds the 700-line guideline. Consider splitting SmartImage, EditModal, LivePreview, helpers and imgCache into separate modules for maintainability.",
+    "imgCache bulk fetch (GET /api/slots) has no retry/refresh strategy — after a save the cache is updated locally but a hard reload always re-fetches the full list. Acceptable for current scale but document the cache invalidation behaviour.",
+    "SmartImage assumes `ready` is propagated by the parent EditableImage; if someone reuses SmartImage standalone they must remember to set ready=true. Consider defaulting ready=true when no slot prop is given."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "100%"},
+  "test_credentials": "Admin /admin password: xaluca (from /app/memory/test_credentials.md, used as-is)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Per-page measurements after 2.5s wait + 6 scroll steps + scroll-to-top: home (168 imgs, 132 cms-img-fade, 72 skeletons, 0 broken, 0 stuck, 0 black slots), viajes (27/26/0/0/0/0), surdemarruecos (75/36/12/0/0/0), marruecos (29/14/4/0/0/0), program 4n_5d (90/19/1/0/0/0). Edit mode toggle in header is the lucide ImagePlus icon button (no dedicated data-testid); after toggling, 134 [data-testid^='editable-overlay-'] elements appear. Admin Pexels fill: data-testid admin-fill-images works, message appears in data-testid admin-fill-msg (initial 'Rellenando N imágenes desde Pexels…'). The Pexels HTTP fan-out is slow (per-slot Pexels API call) so the final ✓ summary may take 30–90s — not a regression.",
+  "rca of the issue": "No bugs found. The SmartImage refactor cleanly addresses the three stated goals: shimmer-on-warm-beige skeleton (#EDE5D5) reserves exact aspect-ratio box (no CLS), definitive URL hydrates synchronously from the global imgCache on subsequent mounts (no fallback flash), fade-in via `cms-img-fade.is-loaded` with a cached-image race-condition guard via the useEffect re-checking img.complete && naturalWidth > 0. data-cms-image-slot + data-cms-alt attributes are preserved on every render path (img, skeleton div, EmptyState), so the admin Pexels fill flow (which reads them from the preview iframe) continues to work."
+}

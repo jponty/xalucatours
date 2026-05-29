@@ -1222,7 +1222,7 @@ const ProgramHero = ({ vt, t, program, lang, variant }) => (
       fallback={vt.hero_image}
       alt=""
       aspectRatio="21/9"
-      imgProps={{ loading: "eager" }}
+      priority
       className="ken-burns absolute inset-0 w-full h-full object-cover"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />

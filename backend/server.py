@@ -318,10 +318,12 @@ async def list_image_slots():
     items = []
     async for d in cursor:
         items.append({
-            "slot_id": d.pop("_id"),
-            "url":     d.get("url"),
-            "alt":     d.get("alt"),
-            "source":  d.get("source", "external"),
+            "slot_id":  d.pop("_id"),
+            "url":      d.get("url"),
+            "alt":      d.get("alt"),
+            "alt_i18n": d.get("alt_i18n"),
+            "cleared":  bool(d.get("cleared")),
+            "source":   d.get("source", "external"),
         })
     return {"slots": items}
 

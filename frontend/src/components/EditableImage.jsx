@@ -22,6 +22,73 @@ const resolveUrl = (url) => {
   return url;
 };
 
+/* ============================================================
+   Global image-slot cache — bulk-load /api/slots ONCE so every
+   <EditableImage> knows its definitive URL synchronously and we
+   never flash the code fallback before the saved/Pexels image.
+   Mirrors the coordinator pattern used by <EditableText>.
+============================================================ */
+const imgCache = {
+  ready: false,
+  loading: null,
+  values: new Map(),        // slot_id → { url, cleared, alt_i18n }
+  subscribers: new Map(),   // slot_id → Set<cb>
+};
+
+const notifyImg = (slot) => {
+  const subs = imgCache.subscribers.get(slot);
+  if (subs) subs.forEach((cb) => cb(imgCache.values.get(slot)));
+};
+
+const ensureImgLoaded = () => {
+  if (imgCache.ready) return Promise.resolve();
+  if (imgCache.loading) return imgCache.loading;
+  imgCache.loading = (async () => {
+    try {
+      const res = await fetch(`${API}/api/slots`);
+      const data = await res.json();
+      const slots = (data && data.slots) || [];
+      for (const s of slots) {
+        if (!s || !s.slot_id) continue;
+        imgCache.values.set(s.slot_id, {
+          url: s.url ?? null,
+          cleared: !!s.cleared,
+          alt_i18n: s.alt_i18n || null,
+        });
+      }
+    } catch (err) {
+      // Network/parse failure — keep cache empty so code fallbacks render.
+      console.debug("[image_slots] bulk fetch failed:", err);
+    }
+    imgCache.ready = true;
+    imgCache.loading = null;
+    // Notify every mounted instance so it re-renders with hydrated data.
+    for (const slot of imgCache.subscribers.keys()) notifyImg(slot);
+  })();
+  return imgCache.loading;
+};
+
+const subscribeImg = (slot, cb) => {
+  if (!imgCache.subscribers.has(slot)) imgCache.subscribers.set(slot, new Set());
+  imgCache.subscribers.get(slot).add(cb);
+  return () => {
+    const subs = imgCache.subscribers.get(slot);
+    if (subs) { subs.delete(cb); if (!subs.size) imgCache.subscribers.delete(slot); }
+  };
+};
+
+const imgCacheSet = (slot, val) => {
+  if (!slot) return;
+  const prev = imgCache.values.get(slot) || {};
+  imgCache.values.set(slot, { ...prev, ...val });
+  notifyImg(slot);
+};
+
+/* URLs already loaded+decoded this session → render instantly (no shimmer,
+   no fade) on subsequent mounts/navigations, on top of the browser HTTP
+   cache. Gives the "immediate on repeat visits" behaviour. */
+const loadedUrls = new Set();
+
 /* Parse "16/9" → 1.7777…  ·  "4/5" → 0.8 · 1 → 1 */
 const parseRatio = (ratio) => {
   if (!ratio) return 16 / 9;
@@ -54,24 +121,114 @@ const ratioLabel = (ratio) => {
   return { label: best.label, code: best.code };
 };
 
-/* Render the saved/cropped image. Empty-state placeholder when no source. */
-const ImageOrPlaceholder = ({ url, alt, className, imgProps, aspectRatio, slot }) => {
-  if (url) {
-    return <img src={resolveUrl(url)} alt={alt} className={className} data-cms-image-slot={slot || undefined} data-cms-alt={alt || undefined} {...imgProps} />;
+/* Empty / failed state — warm neutral box, never black. */
+const EmptyState = ({ className, aspectRatio, alt, slot }) => (
+  <div
+    className={`${className} flex items-center justify-center bg-[#EDE5D5]`}
+    style={aspectRatio ? { aspectRatio: parseRatio(aspectRatio) } : undefined}
+    aria-label={alt || "Imagen sin definir"}
+    data-cms-image-slot={slot || undefined}
+    data-cms-alt={alt || undefined}
+  >
+    <span className="inline-flex items-center gap-2 text-[#9C8E78] text-[10px] tracking-[0.32em] uppercase">
+      <ImageOff className="w-3.5 h-3.5" strokeWidth={1.5} />
+      Sin imagen
+    </span>
+  </div>
+);
+
+/* ------------------------------------------------------------
+   <SmartImage> — flicker-free image surface.
+   • While the slot cache is loading → neutral shimmer skeleton
+     in the exact box (no CLS, never the fallback, never black).
+   • The definitive image preloads in the background (opacity 0,
+     blurred) and only fades/sharpens in once fully loaded.
+   • Falls back to the code default ONLY if the real image errors,
+     never as a temporary initial state.
+   • Lazy by default; `priority` images load eagerly (hero/banner).
+------------------------------------------------------------ */
+const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot, priority, ready }) => {
+  const resolved = resolveUrl(url);
+  const resolvedFallback = resolveUrl(fallback);
+
+  const [src, setSrc] = useState(resolved || null);
+  const [loaded, setLoaded] = useState(() => (resolved ? loadedUrls.has(resolved) : false));
+  const [failed, setFailed] = useState(false);
+  const triedFallback = useRef(false);
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    const r = resolveUrl(url);
+    triedFallback.current = false;
+    setFailed(false);
+    setSrc(r || null);
+    setLoaded(r ? loadedUrls.has(r) : false);
+  }, [url]);
+
+  const ratioStyle = aspectRatio ? { aspectRatio: parseRatio(aspectRatio) } : undefined;
+
+  // Guard against React's cached-image race: if the browser already had the
+  // image in cache, `onLoad` may never fire, leaving it stuck at opacity 0.
+  // Re-check `.complete` after each src settles (and once `ready` mounts it).
+  useEffect(() => {
+    const node = imgRef.current;
+    if (node && node.complete && node.naturalWidth > 0) {
+      if (node.currentSrc) loadedUrls.add(node.currentSrc);
+      setLoaded(true);
+    }
+  }, [src, ready]);
+
+  // 1) Slot cache still resolving → reserve the box with a shimmer skeleton.
+  if (!ready) {
+    return (
+      <div
+        className={`${className} cms-skeleton`}
+        style={ratioStyle}
+        aria-busy="true"
+        aria-label={alt || "Cargando imagen"}
+        data-cms-image-slot={slot || undefined}
+        data-cms-alt={alt || undefined}
+      />
+    );
   }
+
+  const currentSrc = src || resolvedFallback;
+
+  // 2) Ready but no image to show (cleared / no fallback) or every src failed.
+  if (!currentSrc || failed) {
+    return <EmptyState className={className} aspectRatio={aspectRatio} alt={alt} slot={slot} />;
+  }
+
+  const handleLoad = () => {
+    if (currentSrc) loadedUrls.add(currentSrc);
+    setLoaded(true);
+  };
+  const handleError = () => {
+    if (!triedFallback.current && resolvedFallback && currentSrc !== resolvedFallback) {
+      triedFallback.current = true;
+      setSrc(resolvedFallback);
+      setLoaded(loadedUrls.has(resolvedFallback));
+    } else {
+      setFailed(true);
+    }
+  };
+
   return (
-    <div
-      className={`${className} flex items-center justify-center bg-[#EDE5D5]`}
-      style={{ aspectRatio: parseRatio(aspectRatio) || undefined }}
-      aria-label={alt || "Imagen sin definir"}
+    <img
+      ref={imgRef}
+      src={currentSrc}
+      alt={alt}
+      className={`${className} cms-img-fade${loaded ? " is-loaded" : " cms-skeleton"}`}
+      style={ratioStyle}
+      onLoad={handleLoad}
+      onError={handleError}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={priority ? "high" : undefined}
       data-cms-image-slot={slot || undefined}
       data-cms-alt={alt || undefined}
-    >
-      <span className="inline-flex items-center gap-2 text-[#9C8E78] text-[10px] tracking-[0.32em] uppercase">
-        <ImageOff className="w-3.5 h-3.5" strokeWidth={1.5} />
-        Sin imagen
-      </span>
-    </div>
+      {...imgProps}
+    />
   );
 };
 
@@ -110,6 +267,7 @@ export const EditableImage = ({
   className = "",
   imgProps = {},
   aspectRatio,
+  priority = false,
   forceVisible = false,
 }) => {
   const scopedSlot = useSlotId(name);
@@ -117,43 +275,49 @@ export const EditableImage = ({
   const { editMode } = useEditMode();
   const { lang } = useLanguage();
   const group = useEditableGroup();
-  const [url, setUrl] = useState(fallback || null);
-  const [cleared, setCleared] = useState(false);
-  const [altI18n, setAltI18n] = useState(null);
+
+  // Hydrate synchronously from the global slot cache when it is already
+  // warm — so a definitive (saved/Pexels) URL renders on the very first
+  // paint and we never flash the code fallback.
+  const initial = slot ? imgCache.values.get(slot) : undefined;
+  const [url, setUrl] = useState(initial ? initial.url : (fallback || null));
+  const [cleared, setCleared] = useState(initial ? !!initial.cleared : false);
+  const [altI18n, setAltI18n] = useState(initial ? (initial.alt_i18n || null) : null);
+  const [ready, setReady] = useState(slot ? imgCache.ready : true);
   const [open, setOpen] = useState(false);
 
   // Effective alt: persisted localized alt wins, falls back to the prop.
   const effectiveAlt = (altI18n && altI18n[lang]) || alt;
   // When the user explicitly cleared the image, override fallback with null
   // so the empty-state placeholder renders instead of the original asset.
-  const effectiveUrl = cleared ? null : url;
+  const effectiveUrl = cleared ? null : (url ?? fallback ?? null);
 
-  // Always-fresh refs so a stale registration entry can still update
-  // this child's image after a save.
-  const setUrlRef = useRef(setUrl);
-  setUrlRef.current = setUrl;
-  const urlRef = useRef(url);
-  urlRef.current = url;
+  // Always-fresh ref so a stale registration entry can still read this
+  // child's current url after a save.
+  const urlRef = useRef(effectiveUrl);
+  urlRef.current = effectiveUrl;
 
+  // Hydrate from the global slot cache (single bulk fetch) + live updates.
   useEffect(() => {
-    if (!slot) return undefined;
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`);
-        const data = await res.json();
-        if (cancelled || !data) return;
-        if (data.url)            setUrl(data.url);
-        if (data.cleared)        setCleared(true);
-        else if (data.exists)    setCleared(false);
-        if (data.alt_i18n)       setAltI18n(data.alt_i18n);
-      } catch (err) {
-        // Slot not yet persisted or upstream offline — keep fallback.
-        console.debug(`[image_slots] fetch failed for ${slot}:`, err);
+    if (!slot) { setReady(true); return undefined; }
+    let active = true;
+    const apply = (val) => {
+      if (!active) return;
+      if (val) {
+        setUrl(val.url ?? null);
+        setCleared(!!val.cleared);
+        if (val.alt_i18n) setAltI18n(val.alt_i18n);
+      } else {
+        // No stored override → render the code default.
+        setUrl(fallback || null);
+        setCleared(false);
       }
-    })();
-    return () => { cancelled = true; };
-  }, [slot]);
+    };
+    apply(imgCache.values.get(slot));
+    const unsub = subscribeImg(slot, apply);
+    ensureImgLoaded().then(() => { if (active) setReady(true); });
+    return () => { active = false; unsub(); };
+  }, [slot, fallback]);
 
   // Self-register with the surrounding gallery group, if any.
   useEffect(() => {
@@ -164,33 +328,41 @@ export const EditableImage = ({
       aspectRatio,
       alt,
       getUrl: () => urlRef.current,
-      setUrl: (u) => setUrlRef.current(u),
+      setUrl: (u) => imgCacheSet(slot, { url: u, cleared: !u }),
     });
   }, [group, slot, fallback, aspectRatio, alt]);
 
   const onSavedOne = (newUrl) => {
     setUrl(newUrl);
     setCleared(false);   // a fresh upload always re-activates the slot
+    imgCacheSet(slot, { url: newUrl, cleared: false });
   };
 
   const onClearedFromMeta = () => {
     setCleared(true);
     setUrl(null);
+    imgCacheSet(slot, { url: null, cleared: true });
   };
 
   const onMetaSaved = (meta) => {
-    if (meta?.alt_i18n) setAltI18n(meta.alt_i18n);
+    if (meta?.alt_i18n) {
+      setAltI18n(meta.alt_i18n);
+      imgCacheSet(slot, { alt_i18n: meta.alt_i18n });
+    }
   };
 
   return (
     <>
-      <ImageOrPlaceholder
+      <SmartImage
         url={effectiveUrl}
+        fallback={cleared ? null : fallback}
         alt={effectiveAlt}
         className={className}
         imgProps={imgProps}
         aspectRatio={aspectRatio}
         slot={slot}
+        priority={priority}
+        ready={ready}
       />
       {editMode && slot && (
         <div
