@@ -534,3 +534,20 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - **P2** — Deduplicate the routeId alias `tourUpcoming` vs `upcomingDepartures` in `routes.js`.
 - **P3** — Stripe Checkout on `/proximas_salidas`.
 - **Tech debt** — `EditableImage.jsx` (~1330 lines) and `WhenToTravelPage.jsx` (790 lines) still oversized — defer to a dedicated refactor pass.
+
+
+## SEO upgrade · Open Graph + JSON-LD on blog (Feb 2026)
+- **New component** `/app/frontend/src/components/SeoHead.jsx` — zero-dependency `<head>` manager. Tags injected at runtime are flagged with `data-seo="dynamic"` and swept on each render so we never pollute the static `index.html` markup. Pre-existing duplicates (e.g. the boilerplate `<meta name="description">`) are removed before our value is appended so search engines pick up our copy.
+- **Exposes per page**:
+  - `<title>` + `<html lang>` override
+  - `meta description`
+  - OpenGraph: `og:title`, `og:description`, `og:type`, `og:url`, `og:image`, `og:image:alt`, `og:locale` (es_ES / en_GB / fr_FR), `og:site_name`
+  - Twitter card: `summary_large_image` + title/description/image
+  - `link rel=canonical` + `link rel=alternate hreflang × {es, en, fr, x-default}`
+  - One or more `<script type="application/ld+json">` blocks
+- **Wired into BlogPage**:
+  - `/blog` index → `Blog` schema graph including the first 10 posts as `BlogPosting` entries.
+  - `/blog/:slug` post → `Article` (headline, description, image, inLanguage, datePublished, dateModified, author, publisher, mainEntityOfPage, articleSection, keywords, `timeRequired` as ISO 8601 `PT{minutes}M`) **+ `BreadcrumbList`** (Inicio › Blog › Article).
+- **Verified live** via Playwright on the preview env:
+  - `/blog/noche-en-erg-chebbi` → 1 canonical, 4 hreflangs, 2 JSON-LD scripts (`Article` + `BreadcrumbList`), description = post excerpt.
+  - `/en/blog` → `<html lang="en">`, `og:locale=en_GB`, JSON-LD `@type=Blog`.

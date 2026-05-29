@@ -10,6 +10,7 @@ import { POSTS, CATEGORIES, getPostBySlug, getPostsByCategory } from "@/lib/blog
 import { banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
 import { SlotScope } from "@/components/slotScope";
+import SeoHead from "@/components/SeoHead";
 
 const COPY = {
   breadcrumb: { es: "Inicio",  en: "Home",  fr: "Accueil" },
@@ -210,8 +211,52 @@ export default function BlogPage() {
     })[lang] || "Blog · Xaluca Tours";
   }, [lang]);
 
+  const seoTitle = ({
+    es: "Blog · Viajes y aventuras por el sur de Marruecos · Xaluca",
+    en: "Blog · Travel and adventures in southern Morocco · Xaluca",
+    fr: "Blog · Voyages et aventures dans le sud du Maroc · Xaluca",
+  })[lang];
+  const seoDesc = pick(COPY.hero.subtitle, lang);
+  const seoImage = banner("camelCaravan", 2400);
+  const seoHreflang = {
+    es: pathFor("es", "blog"),
+    en: pathFor("en", "blog"),
+    fr: pathFor("fr", "blog"),
+  };
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: seoTitle,
+    description: seoDesc,
+    inLanguage: lang,
+    url: origin + pathFor(lang, "blog"),
+    publisher: {
+      "@type": "Organization",
+      name: "Xaluca Tours",
+      url: origin || undefined,
+    },
+    blogPost: POSTS.slice(0, 10).map((p) => ({
+      "@type": "BlogPosting",
+      headline: pick(p.title, lang),
+      url: origin + pathFor(lang, "blog") + "/" + p.slug,
+      datePublished: p.publishedAt,
+      image: p.cover,
+      author: { "@type": "Organization", name: p.author },
+    })),
+  };
+
   return (
     <div data-testid="blog-page" className="bg-[#FDFBF7]">
+      <SeoHead
+        title={seoTitle}
+        description={seoDesc}
+        image={seoImage}
+        type="website"
+        lang={lang}
+        hreflang={seoHreflang}
+        jsonLd={blogJsonLd}
+      />
       <Hero lang={lang} />
       <BlogIndexBody lang={lang} />
     </div>
@@ -313,8 +358,58 @@ export function BlogPostPage() {
   const cat = CATEGORIES.find((c) => c.id === post.category);
   const related = POSTS.filter((p) => p.id !== post.id && p.category === post.category).slice(0, 2);
 
+  // ---------- SEO ----------
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const seoTitle    = `${pick(post.title, lang)} · Blog · Xaluca`;
+  const seoDesc     = pick(post.excerpt, lang);
+  const postPath    = pathFor(lang, "blog") + "/" + post.slug;
+  const articleUrl  = origin + postPath;
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: pick(post.title, lang),
+    description: seoDesc,
+    image: [post.cover],
+    inLanguage: lang,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    author: { "@type": "Organization", name: post.author },
+    publisher: {
+      "@type": "Organization",
+      name: "Xaluca Tours",
+      url: origin || undefined,
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    articleSection: cat ? pick(cat.label, lang) : undefined,
+    keywords: Array.isArray(post.keywords) ? post.keywords.join(", ") : undefined,
+    timeRequired: post.readingTime ? `PT${post.readingTime}M` : undefined,
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: pick(COPY.breadcrumb, lang), item: origin + pathFor(lang, "home") },
+      { "@type": "ListItem", position: 2, name: pick(COPY.blogLabel, lang),  item: origin + pathFor(lang, "blog") },
+      { "@type": "ListItem", position: 3, name: pick(post.title, lang),      item: articleUrl },
+    ],
+  };
+  const seoHreflang = {
+    es: pathFor("es", "blog") + "/" + post.slug,
+    en: pathFor("en", "blog") + "/" + post.slug,
+    fr: pathFor("fr", "blog") + "/" + post.slug,
+  };
+
   return (
     <div data-testid={`blog-post-${post.slug}`} className="bg-[#FDFBF7]">
+      <SeoHead
+        title={seoTitle}
+        description={seoDesc}
+        image={post.cover}
+        type="article"
+        lang={lang}
+        hreflang={seoHreflang}
+        jsonLd={[articleJsonLd, breadcrumbJsonLd]}
+      />
       {/* Hero */}
       <section className="relative w-full bg-[#1A1513] overflow-hidden pt-[88px] md:pt-[96px]">
         {/* Page namespace already resolves to `blog.<slug>`, so no SlotScope
