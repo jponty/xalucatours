@@ -4,9 +4,11 @@ import {
   Calendar, CalendarRange, CalendarClock,
   Users, BedDouble, Sparkles, Send, Check,
   Sun, Bike, Camera, Flower, Music, Waves,
-  Mountain, MountainSnow,
+  Mountain, MountainSnow, MapPin, ArrowRight, Compass,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
+import { pathFor } from "@/lib/routes";
 
 /* ============================================================
    PlanificaTuViajePage · /planifica-tu-viaje
@@ -48,7 +50,17 @@ const COPY = {
   // Section 3
   s3_title:    T("Alojamiento", "Accommodation", "Hébergement"),
   s3_help:     T("Tres categorías curadas. Siempre con encanto local.", "Three curated categories — always with local charm.", "Trois catégories sélectionnées — toujours avec du charme local."),
-  // Section 4
+  // Section 4 — Regions (geographic preferences)
+  s4r_title:   T("Regiones que quieres visitar", "Regions you want to visit", "Régions que vous souhaitez visiter"),
+  s4r_help:    T("Marca una o varias zonas. Usamos tu selección para sugerirte los itinerarios que mejor encajan.",
+                 "Pick one or several zones. We use your choice to recommend itineraries that match.",
+                 "Choisissez une ou plusieurs zones. Nous l'utilisons pour vous recommander les itinéraires adaptés."),
+  s4r_recos:   T("Itinerarios sugeridos para ti", "Suggested itineraries for you", "Itinéraires suggérés pour vous"),
+  s4r_match:   T("coinciden con tu selección", "match your selection", "correspondent à votre sélection"),
+  s4r_see:     T("Ver itinerario", "View itinerary", "Voir l'itinéraire"),
+  s4r_seeall:  T("Ver todos los viajes", "See all trips", "Voir tous les voyages"),
+  s4r_nights:  T("noches", "nights", "nuits"),
+  // Section 5 (was 4 — Activities)
   s4_title:    T("Actividades", "Activities", "Activités"),
   s4_help:     T("Marca todo lo que te apetezca; nada es obligatorio.", "Tick anything that calls you; nothing is mandatory.", "Cochez ce qui vous attire ; rien n'est obligatoire."),
   // Section 5
@@ -142,6 +154,7 @@ export default function PlanificaTuViajePage() {
     startDate: "", endDate: "", exactDate: "", flexMonth: "",
     adults: 2, children: 0,
     accommodation: "superior",
+    regions: [],
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
   });
@@ -150,13 +163,13 @@ export default function PlanificaTuViajePage() {
   const [errMsg, setErrMsg] = useState("");
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-  const toggleActivity = (id) =>
+  const toggleArrayItem = (key) => (id) =>
     setForm((f) => ({
       ...f,
-      activities: f.activities.includes(id)
-        ? f.activities.filter((x) => x !== id)
-        : [...f.activities, id],
+      [key]: f[key].includes(id) ? f[key].filter((x) => x !== id) : [...f[key], id],
     }));
+  const toggleRegion   = toggleArrayItem("regions");
+  const toggleActivity = toggleArrayItem("activities");
 
   const validate = () => {
     const e = {};
