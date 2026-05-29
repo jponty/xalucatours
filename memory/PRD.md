@@ -565,3 +565,27 @@ The reinforced guardrail surfaced **26 raw `<img>` tags** across pages and compo
 - Pages: PlanificaTuViajePage, StubPage, ProximasSalidasPage, WhenToTravelPage (2), ViajesAMedidaPage, QueVerEnMarruecosPage, SurPage, ToursLandingPage, AventuraPage, FinDeAno2026Page (3)
 Replace each with `<EditableImage slot="..." fallback={...} alt="..." aspectRatio="...">`. After migration, run `bash /app/scripts/lint-no-native-img.sh --strict` and it should exit 0.
 
+
+
+## Hero video background + Pexels backend (Feb 2026)
+
+### Hero is now a video-background section (replaces the image slider)
+- `HeroSlider.jsx` rewritten: dropped the 4-image cross-fade carousel and embedded the Marruecos YouTube film (`yo38KP4ikfg`) as a full-bleed background iframe.
+- iframe parameters meet every requested constraint: `autoplay=1`, `mute=1`, `loop=1` + `playlist={VIDEO_ID}` (loop only works on YT embeds when the playlist param is set to the same id), `controls=0`, `showinfo=0`, `rel=0`, `modestbranding=1`, `iv_load_policy=3`, `disablekb=1`, `playsinline=1` (iOS). `pointer-events-none` + `tabindex=-1` keep the YouTube surface non-interactive.
+- Aspect-cover trick: iframe sized via `max(100vw, calc(100vh * 16/9))` × `max(100vh, calc(100vw * 9/16))` and centred with `translate(-50%,-50%)`. Always covers the section regardless of viewport orientation, no letterboxing.
+- Legibility stack (bottom→top): brand-tinted dark gradient + radial vignette + berber pattern + film-grain. Headline, CTAs and quick-contact pill remain perfectly readable.
+- `MoroccoIntroVideo` standalone section removed from `HomePage` (the file remains in the tree for now in case it gets repurposed; safe to delete in a future cleanup).
+- Live check: iframe loads `.html5-video-player` (2 nodes) with no error overlays. Playwright's headless Chromium does not decode H.264/VP9 so the screenshot is blank, but the embed responds correctly so real browsers will play the film.
+
+### Pexels API backend shipped (frontend tab pending)
+- Key lives in `backend/.env` as `PEXELS_API_KEY=…` — never sent to the browser.
+- Three new endpoints (prefix `/api/pexels`):
+  - `GET /search?query=...&page=1&per_page=24[&locale=es]` — proxies `v1/search`, returns a CMS-shaped payload.
+  - `GET /curated?page=1&per_page=24` — default state of the Pexels tab.
+  - `POST /import {"pexels_id": int}` — fetches the photo via `/v1/photos/{id}`, downloads `src.original`, stores it under `xaluca/library/pexels_{id}_{hex}.jpg` via the existing `put_object` storage helper, and writes a `db.files` record tagged `["library","pexels"]` with a nested `pexels` attribution object (`pexels_id`, `photographer`, `photographer_url`, `pexels_url`, `alt`). Response shape matches `/api/library/upload` so the frontend can treat it like any other library asset.
+- Verified end-to-end with curl: search returns 8000 results for "morocco desert", import of photo 10790260 successfully downloaded 642 KB and stored attribution `"Concrete structure standing amidst the vast Merzouga sand dunes…"`.
+- `PexelsTab.jsx` component created (search input with 350 ms debounce, curated fallback, paginated grid, "Load more", per-thumbnail attribution + Pexels link, click → import → onSelect callback). **Not yet wired into `ImageLibraryPicker.jsx`** — next session.
+
+## Outstanding next steps
+- **P0** — Wire `PexelsTab` into `ImageLibraryPicker` as a 2-tab toggle ("Biblioteca" · "Pexels"). Component + backend are ready; just needs the parent modal to render `<PexelsTab onSelect={...}>` when the tab is active and pipe the returned URL into the existing `onSelect` flow.
+- **P0** — Migrate the 26 legacy raw `<img>` tags (list in the section above) so Edit Mode covers them.

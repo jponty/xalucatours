@@ -1,97 +1,88 @@
-import React, { useEffect, useState } from "react";
-import { ArrowRight, Compass, Phone, Mail, ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react";
+import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useEditMode } from "@/contexts/EditModeContext";
 import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
-import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 
-const SLIDES = [
-  { image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
-    place: { en: "Erg Chebbi · Sahara",     fr: "Erg Chebbi · Sahara",       es: "Erg Chebbi · Sáhara" } },
-  { image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
-    place: { en: "Aït Benhaddou · Atlas",   fr: "Aït Benhaddou · Atlas",     es: "Aït Benhaddou · Atlas" } },
-  { image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
-    place: { en: "Fez · Imperial Cities",   fr: "Fès · Cités impériales",    es: "Fez · Ciudades imperiales" } },
-  { image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
-    place: { en: "Marrakech · Palm groves", fr: "Marrakech · Palmeraies",    es: "Marrakech · Palmerales" } },
-];
+/* ============================================================
+   Hero (formerly HeroSlider)
+   ----
+   The hero now uses a YouTube video as a full-bleed background
+   instead of a cross-fading image carousel. The video is muted,
+   loops automatically, hides its native controls, and is layered
+   under a brand-coloured gradient + berber pattern so the title,
+   CTAs and quick-contact pill stay perfectly legible.
+
+   • Source: https://www.youtube.com/watch?v=yo38KP4ikfg
+   • Aspect-cover trick: the iframe is sized with `vh/vw` so it
+     always covers the 16:9-shaped section regardless of viewport
+     orientation. `pointer-events-none` prevents accidental clicks
+     on the YouTube surface and `tabindex=-1` keeps it out of the
+     keyboard flow.
+   • Component kept named `HeroSlider` to avoid touching imports
+     elsewhere; default export is the same.
+============================================================ */
+const VIDEO_ID = "yo38KP4ikfg";
+const VIDEO_SRC =
+  `https://www.youtube-nocookie.com/embed/${VIDEO_ID}` +
+  `?autoplay=1&mute=1&loop=1&playlist=${VIDEO_ID}` +
+  `&controls=0&showinfo=0&rel=0&modestbranding=1` +
+  `&iv_load_policy=3&disablekb=1&playsinline=1`;
+
+const HERO_PLACE = {
+  en: "Morocco · From north to south",
+  fr: "Maroc · Du nord au sud",
+  es: "Marruecos · De norte a sur",
+};
 
 export const HeroSlider = () => {
-  const { t, lang } = useLanguage();
-  const { imageEditMode, textEditMode } = useEditMode();
-  const editMode = imageEditMode || textEditMode;
-  const [idx, setIdx] = useState(0);
-
-  useEffect(() => {
-    if (editMode) return undefined; // pause autoplay while editing
-    const id = setInterval(() => setIdx((p) => (p + 1) % SLIDES.length), 7000);
-    return () => clearInterval(id);
-  }, [editMode]);
+  const { lang } = useLanguage();
 
   return (
     <section
       data-testid="hero-section"
       className="relative h-[100svh] min-h-[820px] w-full overflow-hidden bg-[#1A1513]"
     >
-      {SLIDES.map((s, i) => (
+      {/* ---------- Background video ---------- */}
+      <div
+        data-testid="hero-bg-video"
+        className="absolute inset-0 pointer-events-none overflow-hidden"
+        aria-hidden="true"
+      >
+        {/* Aspect-cover wrapper: forces the iframe to always cover the section
+            (16:9 ratio, scaled to whichever axis is larger). */}
         <div
-          key={i}
-          aria-hidden={i !== idx}
-          className={`absolute inset-0 transition-opacity duration-[1600ms] ease-out ${
-            i === idx ? "opacity-100" : "opacity-0"
-          } ${
-            /* Only the visible slide receives pointer events. Without this,
-               every stacked <EditableImage> overlay would catch clicks based
-               on DOM order, so the user would end up editing a hidden slide
-               instead of the one they actually see. */
-            i === idx ? "pointer-events-auto" : "pointer-events-none"
-          } ${editMode && i === idx ? "z-[3]" : ""}`}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            // 100vh × (16/9) / 100vw × (9/16) — picks the bigger side.
+            width:  "max(100vw, calc(100vh * 16 / 9))",
+            height: "max(100vh, calc(100vw * 9 / 16))",
+          }}
         >
-          <EditableImage
-            slot={`home.hero.${i}`}
-            fallback={s.image}
-            alt=""
-            className="ken-burns absolute inset-0 w-full h-full object-cover"
-            imgProps={{ loading: i === 0 ? "eager" : "lazy" }}
-            aspectRatio="16/9"
+          <iframe
+            title="Marruecos · vídeo de fondo"
+            src={VIDEO_SRC}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen={false}
+            frameBorder="0"
+            tabIndex={-1}
+            className="w-full h-full pointer-events-none select-none"
           />
         </div>
-      ))}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/30" />
-      <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
+      </div>
+
+      {/* ---------- Legibility overlays (in order, bottom → top) ---------- */}
+      {/* 1. Brand-tinted dark gradient — readability for the headline */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/65 to-[#1A1513]/45 pointer-events-none" />
+      {/* 2. Vignette + side fade for any letterbox slivers on ultrawide screens */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_45%,_rgba(26,21,19,0.6)_100%)] pointer-events-none" />
+      {/* 3. Berber pattern + film-grain (consistent with the rest of the site) */}
+      <div className="absolute inset-0 berber-bg-cross opacity-30 pointer-events-none" aria-hidden="true" />
       <span className="film-grain" />
 
-      {/* In edit mode, expose prev/next so each hero slide can be edited
-          independently (slides 2-4 are otherwise hidden behind opacity-0).
-          Z-[60] keeps them above the per-slide edit overlay (z-45). */}
-      {editMode && (
-        <div className="absolute top-1/2 inset-x-0 z-[60] flex items-center justify-between px-4 md:px-8 pointer-events-none -translate-y-1/2">
-          <button
-            type="button"
-            data-testid="hero-edit-prev"
-            data-edit-allow="true"
-            onClick={() => setIdx((p) => (p - 1 + SLIDES.length) % SLIDES.length)}
-            aria-label="Slide anterior"
-            className="pointer-events-auto inline-flex items-center justify-center w-12 h-12 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7] shadow-lg"
-          >
-            <ChevronLeft className="w-5 h-5" strokeWidth={1.6} />
-          </button>
-          <button
-            type="button"
-            data-testid="hero-edit-next"
-            data-edit-allow="true"
-            onClick={() => setIdx((p) => (p + 1) % SLIDES.length)}
-            aria-label="Slide siguiente"
-            className="pointer-events-auto inline-flex items-center justify-center w-12 h-12 bg-[#FDFBF7]/95 text-[#2C2621] hover:bg-[#FDFBF7] shadow-lg"
-          >
-            <ChevronRight className="w-5 h-5" strokeWidth={1.6} />
-          </button>
-        </div>
-      )}
-
-      <div className={`relative z-10 h-full flex flex-col ${editMode ? "pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto" : ""}`}>
+      {/* ---------- Foreground content ---------- */}
+      <div className="relative z-10 h-full flex flex-col">
         <div className="flex-1 flex items-end pt-32 md:pt-40 pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-3xl">
@@ -104,13 +95,15 @@ export const HeroSlider = () => {
                   className="text-[11px] tracking-[0.35em] uppercase font-semibold"
                 />
                 <span className="w-8 h-px bg-[#D4A373]/50" />
-                <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">
-                  {SLIDES[idx].place[lang] || SLIDES[idx].place.es}
+                <span
+                  data-testid="hero-place"
+                  className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80"
+                >
+                  {HERO_PLACE[lang] || HERO_PLACE.es}
                 </span>
               </div>
 
               <EditableText
-                key={`title-${idx}`}
                 as="h1"
                 slot="home.hero.title"
                 defaults={translations.hero_title}
@@ -188,27 +181,6 @@ export const HeroSlider = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Slide indicators */}
-        <div className="pb-8 md:pb-12 max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIdx(i)}
-                data-testid={`hero-slide-indicator-${i}`}
-                data-edit-allow="true"
-                className={`h-px transition-all duration-500 ${
-                  i === idx ? "w-12 bg-[#D4A373]" : "w-6 bg-[#FDFBF7]/35"
-                }`}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
-          <span className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 hidden md:block">
-            {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
-          </span>
         </div>
       </div>
     </section>

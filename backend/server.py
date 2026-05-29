@@ -525,6 +525,173 @@ async def list_library_tags():
     return {"tags": [{"name": r["_id"], "count": r["count"]} for r in rows if r.get("_id")]}
 
 
+# ----------------------------------------------------------
+#  Pexels integration
+#  ----
+#  Search + import stock photography from Pexels into the local
+#  library. The API key lives ONLY here (read from .env via
+#  os.environ) — the browser never sees it. Three endpoints:
+#    GET  /api/pexels/search?query=...&page=1&per_page=24
+#    GET  /api/pexels/curated?page=1&per_page=24
+#    POST /api/pexels/import {"pexels_id": 123}
+#  The import endpoint downloads the original, stores it in the
+#  same object storage as user uploads, and writes a `db.files`
+#  record tagged ["library","pexels"] with a nested `pexels`
+#  attribution object (photographer name + urls + pexels id).
+# ----------------------------------------------------------
+PEXELS_API_KEY = os.environ.get("PEXELS_API_KEY", "").strip()
+PEXELS_BASE = "https://api.pexels.com/v1"
+
+
+async def _pexels_get(path: str, params: Dict | None = None) -> Dict:
+    if not PEXELS_API_KEY:
+        raise HTTPException(status_code=503, detail="Pexels API key not configured.")
+    headers = {"Authorization": PEXELS_API_KEY}
+    async with httpx.AsyncClient(timeout=httpx.Timeout(15.0, connect=5.0)) as cx:
+        try:
+            r = await cx.get(f"{PEXELS_BASE}{path}", headers=headers, params=params)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Pexels request failed: {exc}")
+    if r.status_code == 429:
+        raise HTTPException(status_code=429, detail="Pexels rate limit exceeded — try again later.")
+    if r.status_code >= 400:
+        raise HTTPException(status_code=502, detail=f"Pexels error {r.status_code}: {r.text[:200]}")
+    return r.json()
+
+
+def _photo_summary(p: Dict) -> Dict:
+    src = p.get("src") or {}
+    return {
+        "id": p.get("id"),
+        "width": p.get("width", 0),
+        "height": p.get("height", 0),
+        "thumb_url":  src.get("medium") or src.get("small") or src.get("tiny"),
+        "preview_url": src.get("large") or src.get("medium"),
+        "photographer": p.get("photographer", ""),
+        "photographer_url": p.get("photographer_url", ""),
+        "pexels_url": p.get("url", ""),
+        "avg_color": p.get("avg_color"),
+        "alt": p.get("alt", ""),
+    }
+
+
+@api_router.get("/pexels/search")
+async def pexels_search(query: str, page: int = 1, per_page: int = 24, locale: Optional[str] = None):
+    """Proxy search → Pexels v1/search. Returns a CMS-shaped response."""
+    if not query.strip():
+        raise HTTPException(status_code=400, detail="Empty query.")
+    per_page = max(1, min(per_page, 80))   # Pexels max is 80
+    page = max(1, page)
+    params: Dict = {"query": query.strip(), "page": page, "per_page": per_page}
+    if locale:
+        params["locale"] = locale
+    raw = await _pexels_get("/search", params)
+    photos = [_photo_summary(p) for p in raw.get("photos") or []]
+    return {
+        "page": raw.get("page", page),
+        "per_page": raw.get("per_page", per_page),
+        "total_results": raw.get("total_results", len(photos)),
+        "next_page": bool(raw.get("next_page")),
+        "photos": photos,
+    }
+
+
+@api_router.get("/pexels/curated")
+async def pexels_curated(page: int = 1, per_page: int = 24):
+    """Curated feed — used as the default state of the Pexels tab
+    before the editor types a query."""
+    per_page = max(1, min(per_page, 80))
+    page = max(1, page)
+    raw = await _pexels_get("/curated", {"page": page, "per_page": per_page})
+    photos = [_photo_summary(p) for p in raw.get("photos") or []]
+    return {
+        "page": raw.get("page", page),
+        "per_page": raw.get("per_page", per_page),
+        "total_results": len(photos),
+        "next_page": bool(raw.get("next_page")),
+        "photos": photos,
+    }
+
+
+class PexelsImportRequest(BaseModel):
+    pexels_id: int = Field(..., gt=0)
+
+
+@api_router.post("/pexels/import")
+async def pexels_import(payload: PexelsImportRequest):
+    """Download the Pexels original, store it in our object storage,
+    insert a `db.files` library record with full attribution, and
+    return the same shape the bulk-upload endpoint returns so the
+    frontend can treat it like any other library asset."""
+    # 1. Get authoritative photo metadata
+    photo = await _pexels_get(f"/photos/{payload.pexels_id}")
+    src = photo.get("src") or {}
+    original_url = src.get("original")
+    if not original_url:
+        raise HTTPException(status_code=502, detail="Pexels photo has no `original` URL.")
+
+    # 2. Download the original file
+    async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0), follow_redirects=True) as cx:
+        try:
+            dl = await cx.get(original_url)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Image download failed: {exc}")
+    if dl.status_code != 200:
+        raise HTTPException(status_code=502, detail=f"Image download status {dl.status_code}")
+    data = dl.content
+    if len(data) > MAX_UPLOAD_BYTES * 3:   # Pexels originals can be big — be lenient
+        raise HTTPException(status_code=413, detail="Original image exceeds size cap.")
+
+    # Pexels originals are JPEGs. We still sniff the content-type header.
+    content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
+    ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
+    ext = ext_map.get(content_type, "jpg")
+
+    # 3. Upload to object storage (same path convention as bulk-upload)
+    storage_path = f"xaluca/library/pexels_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
+    try:
+        result = put_object(storage_path, data, content_type)
+    except Exception as exc:
+        logger.exception("Pexels import — storage put failed")
+        raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
+    canonical_path = result.get("path", storage_path)
+
+    # 4. Persist file record with Pexels attribution
+    now_iso = datetime.now(timezone.utc).isoformat()
+    attribution = {
+        "pexels_id": photo.get("id"),
+        "photographer": photo.get("photographer", ""),
+        "photographer_url": photo.get("photographer_url", ""),
+        "pexels_url": photo.get("url", ""),
+        "alt": photo.get("alt", ""),
+    }
+    record = {
+        "id": str(uuid.uuid4()),
+        "slot_id": None,
+        "storage_path": canonical_path,
+        "original_filename": f"Pexels · {attribution['photographer'] or photo.get('id')}.{ext}",
+        "content_type": content_type,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "tags": ["library", "pexels"],
+        "source": "pexels",
+        "pexels": attribution,
+        "created_at": now_iso,
+    }
+    await db.files.insert_one(record)
+
+    return {
+        "id": record["id"],
+        "url": f"/api/files/{canonical_path}",
+        "storage_path": canonical_path,
+        "original_filename": record["original_filename"],
+        "content_type": content_type,
+        "size": record["size"],
+        "source": "pexels",
+        "pexels": attribution,
+    }
+
+
 @api_router.get("/files/{file_id}/usage")
 async def file_usage(file_id: str):
     """Returns every slot whose stored image URL points at this file.
