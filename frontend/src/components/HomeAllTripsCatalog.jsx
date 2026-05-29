@@ -128,8 +128,10 @@ const TripCard = ({ trip, lang }) => {
           <p className="text-[13px] text-[#5C5248] leading-relaxed flex-1">
             {pick(trip.summary, lang)}
           </p>
-          <div className="mt-4 flex items-center justify-between gap-3 pt-3 border-t border-[#2C2621]/10">
-            <FromPrice tone="dark" size="sm" testid={`home-all-trips-from-${trip.routeId}`} />
+          <div className="mt-5">
+            <FromPrice tone="dark" size="md" testid={`home-all-trips-from-${trip.routeId}`} />
+          </div>
+          <div className="mt-5 pt-4 border-t border-[#2C2621]/10">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
               {pick(COPY.details, lang)}
               <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
