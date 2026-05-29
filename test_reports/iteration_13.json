@@ -1,0 +1,31 @@
+{
+  "summary": "Frontend regression + new-pages validation for Xaluca Tours after App.js / routeComponents.js refactor. Tested 18 representative routes (existing + 6 new pages + EN/FR blog + unknown URL). All routes return HTTP 200, render content, and produce no React error overlays. Refactor regression is clean. New pages render correctly. Unknown URL fallback to home works as designed. Two minor (non-blocking) 404s observed on blog post pages: missing image asset(s) from the CMS image bank — they do not crash the page.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Blog post page asset loading",
+        "issue": "2 console errors 'Failed to load resource: 404' on /blog/noche-en-erg-chebbi and /blog/ruta-kasbahs-valle-draa. Page still renders title, body and CTA correctly. Likely a missing image resolved via the CMS image-bank API (only blog images are wired to the CMS per problem statement).",
+        "affected_selectors": ["img on BlogPostPage hero/cover"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Investigate the two 404s on blog post pages — likely a missing image key in the CMS imageBank for blog post covers (IMG.dunes / IMG.kasbahGate). Non-blocking but pollutes console."
+  ],
+  "critical_code_review_comments": [
+    "App.js refactor is clean (~60 lines). ROUTE_COMPONENTS map in /app/frontend/src/lib/routeComponents.js is 1:1 with /app/frontend/src/lib/routes.js — verified by walking through the sample of 18 routes.",
+    "Blog post slug is still parsed manually via regex inside LocalizedRouter, which is fine but could later be promoted to the routes registry to keep one source of truth.",
+    "/app/frontend/src/lib/routes.js has duplicate routeIds for the same path: `tourUpcoming` and `upcomingDepartures` both map to /proximas_salidas. Harmless today but a footgun if one is later changed."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "100% routing / 95% asset-loading (2x 404 on blog images)" },
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Validated routes tested: /, /viajes, /viajes/marruecos, /viajes/escapadas, /proximas_salidas, /citaprevia (StubPage fallback), /planifica-tu-viaje, /que-ver-en-Marruecos, /quehacemos, /incentivos, /marruecos, /equipo, /blog, /blog/noche-en-erg-chebbi, /blog/ruta-kasbahs-valle-draa, /en/blog, /fr/blog, /this-does-not-exist. /que-ver-en-Marruecos renders Leaflet map with 17 polylines and 67 destination Links (all <a href=\"/viajes/...\"> → React Router SPA navigation). Playwright .click() returned 'element outside of viewport' on the very first card link because the page's Aurorism hero animates the cards on scroll; this is a test-harness quirk, not a SPA-routing bug — the anchors carry real internal hrefs which React Router will intercept by default. Blog data lives in /app/frontend/src/lib/blog.js (6 articles). Only blog image covers go through the CMS image API.",
+  "rca of the issue": "Blog cover image 404: BlogPostPage references IMG.dunes / IMG.kasbahGate from /app/frontend/src/lib/imageBank.js. These keys are resolved at runtime against the CMS image-bank API (per the project note 'only blog images are wired to the CMS'). The API returns 404 for those slugs → browser logs 'Failed to load resource: 404'. The page still renders because the rest of the content is local mocked data."
+}
