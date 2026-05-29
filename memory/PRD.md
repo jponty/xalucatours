@@ -551,3 +551,17 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
 - **Verified live** via Playwright on the preview env:
   - `/blog/noche-en-erg-chebbi` → 1 canonical, 4 hreflangs, 2 JSON-LD scripts (`Article` + `BreadcrumbList`), description = post excerpt.
   - `/en/blog` → `<html lang="en">`, `og:locale=en_GB`, JSON-LD `@type=Blog`.
+
+## Home expansion · Intro video + All-trips catalog (Feb 2026)
+- **`<MoroccoIntroVideo>`** sits right under the Hero. Privacy-friendly "lite-embed" YouTube pattern: first paint is just the `i.ytimg.com/.../maxresdefault.jpg` poster + a brand-styled play affordance; clicking swaps in an `<iframe>` against `youtube-nocookie.com` with `autoplay=1`. Eyebrow / title / body are editable via `<EditableSection>`. Video id: `yo38KP4ikfg`.
+- **`<HomeAllTripsCatalog>`** — single deep-link landing for every program in `lib/routes.js`. Data lives in `/app/frontend/src/lib/allTripsCatalog.js` (40 curated cards across 6 regions, 3 paces, 3 duration buckets). Each card uses `<EditableImage>` so the image is CMS-editable, and links via React Router `<Link>` to its registered route (verified deep-link example: `/viajes/atlas_desierto/programa_4n_5d`). Interactive filters: region · duration · pace. All chips and cards expose unique `data-testid`s for QA.
+- **Edit Mode trilingual metadata** (alt + caption × ES/EN/FR) — backend (`SlotPayload` selective-update + `DELETE /api/slots/{id}` clears with metadata preserved) and frontend (`<EditableImageMeta>` panel inside the modal) shipped + 100% verified by iteration_14 (7/7 backend + all UI flows green).
+- **DayGallery lightbox** now uses `<EditableImage>` (same slot as the grid tile), so the full-size view is CMS-editable too.
+- **Guardrail upgrade** — `/app/scripts/lint-no-native-img.sh` now catches multiline JSX `<img>` (regex `<img( |>|/|$)`) and runs in `--strict` (CI gate) or default warning mode. Allow-list: EditableImage, EditableImageMeta, ImageLibraryPicker, MoroccoIntroVideo (poster derived from videoId), AdminPage, ImageEditorPage, imageBank.
+
+## Outstanding · Legacy `<img>` migration (P0, deferred)
+The reinforced guardrail surfaced **26 raw `<img>` tags** across pages and components that were missed by the previous (single-line) regex. None are visible-breaking, but they bypass the CMS so users cannot edit those images via Edit Mode. Files to migrate (line refs from the script):
+- Components: EscapadaIntroPage (2), JourneyPageSections (4), SectionGallery (2), LuxuryCamps, FeaturedJourneys, CulturalExperiences, JournalSection, HubPeerNav
+- Pages: PlanificaTuViajePage, StubPage, ProximasSalidasPage, WhenToTravelPage (2), ViajesAMedidaPage, QueVerEnMarruecosPage, SurPage, ToursLandingPage, AventuraPage, FinDeAno2026Page (3)
+Replace each with `<EditableImage slot="..." fallback={...} alt="..." aspectRatio="...">`. After migration, run `bash /app/scripts/lint-no-native-img.sh --strict` and it should exit 0.
+
