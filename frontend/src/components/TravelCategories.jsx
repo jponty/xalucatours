@@ -5,7 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
 import { pathFor } from "@/lib/routes";
-import EditableImage from "@/components/EditableImage";
+import CategoryImageCarousel from "@/components/CategoryImageCarousel";
 import EditableText from "@/components/EditableText";
 
 const BADGE_KEY = {
@@ -56,16 +56,14 @@ export const TravelCategories = () => {
                     reverse ? "md:order-2" : ""
                   }`}
                 >
-                  <EditableImage
-                    slot={`home.cat.${c.slug}`}
-                    fallback={c.image}
+                  <CategoryImageCarousel
+                    slug={c.slug}
+                    images={(c.images && c.images.length > 0) ? c.images : [c.image]}
                     alt={pick(c.title, lang)}
-                    imgProps={{ loading: "lazy" }}
                     aspectRatio="4/5"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/20 to-transparent" />
-                  <span className="film-grain" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/20 to-transparent pointer-events-none" />
+                  <span className="film-grain pointer-events-none" />
 
                   {/* Number watermark */}
                   <span className="absolute top-6 left-6 font-serif-x-italic text-7xl md:text-8xl text-[#FDFBF7]/70 leading-none">

@@ -10,6 +10,12 @@ export const TRAVEL_CATEGORIES = [
     number: "01",
     accent: "#C16542",
     image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1565689157206-0fddef7589a2?auto=format&fit=crop&w=2000&q=85",
+    ],
     title: {
       en: "The magic of Southern Morocco",
       fr: "La magie du Sud marocain",
@@ -29,6 +35,12 @@ export const TRAVEL_CATEGORIES = [
     number: "02",
     accent: "#A07042",
     image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1538485399081-7c8970d27d56?auto=format&fit=crop&w=2000&q=85",
+    ],
     title: {
       en: "Morocco from north to south",
       fr: "Le Maroc du nord au sud",
@@ -48,6 +60,12 @@ export const TRAVEL_CATEGORIES = [
     number: "03",
     accent: "#D97742",
     image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1565689157206-0fddef7589a2?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1538485399081-7c8970d27d56?auto=format&fit=crop&w=2000&q=85",
+    ],
     title: {
       en: "Short escapes in Morocco",
       fr: "Escapades courtes au Maroc",
@@ -67,6 +85,12 @@ export const TRAVEL_CATEGORIES = [
     number: "04",
     accent: "#3A4A5F",
     image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1538485399081-7c8970d27d56?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
+    ],
     title: {
       en: "The richness of Northern Morocco",
       fr: "La richesse du Nord marocain",
@@ -86,6 +110,12 @@ export const TRAVEL_CATEGORIES = [
     number: "05",
     accent: "#C8A24B",
     image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
+      "https://images.unsplash.com/photo-1565689157206-0fddef7589a2?auto=format&fit=crop&w=2000&q=85",
+    ],
     title: {
       en: "Upcoming group departures",
       fr: "Prochains départs en groupe",
