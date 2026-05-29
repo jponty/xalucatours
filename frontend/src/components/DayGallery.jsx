@@ -3,7 +3,6 @@ import { X, Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { DAY_GALLERIES, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
 import EditableImage from "@/components/EditableImage";
-
 const SECTION_LABELS = {
   es: { eyebrow: "Galería del día", title: "El recorrido en imágenes.", count_singular: "imagen", count_plural: "imágenes", close: "Cerrar", prev: "Anterior", next: "Siguiente" },
   en: { eyebrow: "Day gallery", title: "The journey in pictures.", count_singular: "image", count_plural: "images", close: "Close", prev: "Previous", next: "Next" },
@@ -60,8 +59,16 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
       </button>
 
       <figure className="relative max-w-6xl w-full" onClick={(e) => e.stopPropagation()}>
-        <img src={current.src} alt={pick(current.caption, lang)}
-             className="w-full max-h-[78vh] object-contain" />
+        <div className="relative w-full max-h-[78vh] flex items-center justify-center bg-[#1A1513]">
+          <EditableImage
+            slot={current.slot}
+            fallback={current.src}
+            alt={pick(current.caption, lang)}
+            aspectRatio="3/2"
+            imgProps={{ loading: "eager" }}
+            className="max-w-full max-h-[78vh] w-auto h-auto object-contain"
+          />
+        </div>
         <figcaption className="mt-5 md:mt-6 flex flex-wrap items-center justify-between gap-4 text-[#FDFBF7]">
           <div>
             {kindLabel && (
@@ -88,8 +95,12 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
 
   if (!images || images.length === 0) return null;
 
-  // Pad to 6 for a stable editorial grid
-  const cells = images.slice(0, 7);
+  // Pad to 6 for a stable editorial grid. Each cell carries the slot id
+  // so the lightbox shares the same CMS-editable surface as the grid tile.
+  const cells = images.slice(0, 7).map((img, i) => ({
+    ...img,
+    slot: `day.${day.route_id}.gallery.${i}`,
+  }));
 
   // Pre-defined column/row spans per cell for the asymmetric editorial collage.
   // The grid uses fixed-height rows; aspect classes removed to prevent overlap.
@@ -137,7 +148,7 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
                 className={`group relative overflow-hidden bg-[#1A1513] cursor-zoom-in h-[200px] md:h-auto ${layout[i] || "md:col-span-2 md:row-span-1"}`}
               >
                 <EditableImage
-                  slot={`day.${day.route_id}.gallery.${i}`}
+                  slot={img.slot}
                   fallback={img.src}
                   alt={pick(img.caption, lang)}
                   aspectRatio="3/2"

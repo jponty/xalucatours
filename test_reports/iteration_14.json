@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 14 — Comprehensive verification of the trilingual EditableImage refactor (backend slot metadata + frontend edit overlays + DayGallery migration + SEO + guardrail). 7/7 backend tests passing; full UI flows validated end-to-end against the public preview URL.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/blog hero after Vaciar imagen",
+        "issues": [
+          "Cleared placeholder for the blog.hero slot renders as an empty beige rectangle without the documented 'Sin imagen' label or ImageOff icon (only a plain colored area). Spec allowed either visual; this is fine functionally but the empty-state hint helps editors. Consider rendering the 'Sin imagen' label/icon even on hero-sized slots."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_slots_meta.py",
+    "/app/test_reports/pytest/iter14_slots_meta.xml"
+  ],
+  "action_items": [
+    "(Optional) Always show the 'Sin imagen' + ImageOff placeholder content for cleared hero-sized slots so editors get clear visual feedback (currently the area renders as a blank beige rectangle on /blog hero)."
+  ],
+  "critical_code_review_comments": [
+    "/api/slots PUT correctly uses $set with selective fields — Pydantic exclude_unset semantics verified via test_04 (alt_i18n only does not clobber url).",
+    "DELETE /api/slots/{id} returns {url:null, cleared:true} and preserves alt_i18n/caption_i18n as required — verified via tests 5 & 6.",
+    "GET response shape stable: always includes exists boolean (true for fresh-and-empty docs too? Test 1 shows exists:false for never-written slot — correct).",
+    "Frontend EditableImage exposes data-testid='editable-overlay-*' only when edit mode is ON (0 overlays on /blog before toggle, 8+ after — verified).",
+    "DayGallery lightbox migration confirmed by code (lines 62-78 of DayGallery.jsx wrap the lightbox <img> in <EditableImage slot={current.slot}>). On /viajes/atlas_desierto/programa_4n_5d we found 30 editable-overlay-day.X.gallery.N nodes in the DOM (matches the 6 days × 5 images of the AD program). Note: clicking a tile while edit mode is ON opens the meta-edit modal instead of the lightbox (by design — overlay button captures the click), so the lightbox <EditableImage> is exercised only when edit mode is OFF.",
+    "Guardrail bash /app/scripts/lint-no-native-img.sh exits 0 with the expected success message — passes."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_slots_meta.py (new pytest module for /api/slots/{id} trilingual flow)"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 pytest cases)",
+    "frontend": "100% (all flows: overlays gated by edit mode, meta panel save persists ES+EN, alt rendering switches per locale, clear flow flips cleared=true, re-PUT resets cleared=false, DayGallery overlays present, 9-route regression sweep 0 console/API errors, SEO tags exact counts on noche-en-erg-chebbi)"
+  },
+  "test_credentials": "Not required — endpoints are unauthenticated for the slot API.",
+  "seed_data_creation": "Temporary slot regression.meta.test_<uuid> created by pytest and dropped via Mongo in the module teardown. Test slot blog.hero used by frontend flow was also deleted (DELETE /api/slots/blog.hero) and removed from Mongo (db.image_slots.delete_one({'_id':'blog.hero'})). Verified existing seed slots (home.hero.0/1, sur.hero, atlas-desierto.hero) are still intact.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 7 functional checks from the review request are GREEN. The pytest module backend/tests/test_slots_meta.py is reusable as a regression suite and runs in ~0.7s. Frontend testid conventions used: 'header-edit-mode-toggle' (NOT 'edit-mode-toggle'), 'editable-overlay-<slot>', 'editable-edit-btn-<slot>', 'edit-modal-meta-<slot>', 'edit-modal-meta-lang-{es,en,fr}-<slot>', 'edit-modal-meta-alt-{lang}-<slot>', 'edit-modal-meta-caption-{lang}-<slot>', 'edit-modal-meta-save-<slot>', 'edit-modal-meta-clear-<slot>'. DayGallery tiles use 'day-gallery-tile-<route_id>-<i>' and the lightbox EditableImage slot pattern is 'day.<route_id>.gallery.<i>'. Routes with populated DAY_GALLERIES include atlas_desierto/programa_4n_5d (ad-* keys) but NOT marrakech_ergchebbi/programa_4n_5d (me-* keys not present in /app/frontend/src/lib/dayGalleries.js). The native confirm() dialog on 'Vaciar imagen' must be accepted via page.on('dialog', d:d.accept()).",
+  "rca_of_the_issue": "No bugs found — this was a verification-only iteration. The minor design observation about the cleared-hero placeholder is cosmetic, not a regression."
+}

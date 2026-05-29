@@ -220,17 +220,23 @@ MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB
 
 
 class SlotPayload(BaseModel):
-    url: str = Field(..., min_length=4, max_length=2000)
+    # url is optional so the same endpoint can update metadata-only
+    # (alt_i18n / caption_i18n) without touching the image itself,
+    # and can also persist a "cleared" state (url=None + cleared=True).
+    url: Optional[str] = Field(default=None, max_length=2000)
     alt: Optional[str] = Field(default=None, max_length=300)
-    source: Optional[str] = Field(default="external", max_length=40)
+    alt_i18n: Optional[Dict[str, str]] = None
+    caption_i18n: Optional[Dict[str, str]] = None
+    cleared: Optional[bool] = None
+    source: Optional[str] = Field(default=None, max_length=40)
 
 
 @api_router.get("/slots/{slot_id}")
 async def get_slot(slot_id: str):
     doc = await db.image_slots.find_one({"_id": slot_id}, {"_id": 0})
     if not doc:
-        return {"slot_id": slot_id, "url": None}
-    return {"slot_id": slot_id, **doc}
+        return {"slot_id": slot_id, "url": None, "exists": False}
+    return {"slot_id": slot_id, "exists": True, **doc}
 
 
 @api_router.get("/slots")
@@ -250,18 +256,42 @@ async def list_image_slots():
 
 @api_router.put("/slots/{slot_id}")
 async def put_slot(slot_id: str, payload: SlotPayload):
-    doc = {
-        "url": payload.url,
-        "alt": payload.alt,
-        "source": payload.source or "external",
+    # Selective update: only fields explicitly provided are written, so
+    # editing alt_i18n doesn't blow away the url, and vice versa.
+    update: Dict = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    payload_dict = payload.model_dump(exclude_unset=True)
+    for key in ("url", "alt", "alt_i18n", "caption_i18n", "cleared", "source"):
+        if key in payload_dict:
+            update[key] = payload_dict[key]
+    # If a fresh image URL is being set, the slot is no longer "cleared".
+    if "url" in update and update.get("url"):
+        update["cleared"] = False
+    await db.image_slots.update_one(
+        {"_id": slot_id},
+        {"$set": update},
+        upsert=True,
+    )
+    doc = await db.image_slots.find_one({"_id": slot_id}, {"_id": 0})
+    return {"slot_id": slot_id, "exists": True, **(doc or {})}
+
+
+@api_router.delete("/slots/{slot_id}")
+async def clear_slot(slot_id: str):
+    """Mark a slot as explicitly cleared (url=None, cleared=True) so the
+    frontend renders the empty placeholder instead of the original fallback.
+    The document is preserved so any persisted metadata (alt_i18n, caption_i18n)
+    survives a future re-upload."""
+    update = {
+        "url": None,
+        "cleared": True,
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.image_slots.update_one(
         {"_id": slot_id},
-        {"$set": doc},
+        {"$set": update},
         upsert=True,
     )
-    return {"slot_id": slot_id, **doc}
+    return {"slot_id": slot_id, "url": None, "cleared": True}
 
 
 @api_router.post("/slots/{slot_id}/upload")

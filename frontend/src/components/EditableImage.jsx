@@ -8,8 +8,10 @@ import {
 } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useEditableGroup } from "@/contexts/EditableGroupContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useSlotId } from "@/components/slotScope";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
+import EditableImageMeta from "@/components/EditableImageMeta";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -111,9 +113,18 @@ export const EditableImage = ({
   const scopedSlot = useSlotId(name);
   const slot = explicitSlot || (name ? scopedSlot : null);
   const { editMode } = useEditMode();
+  const { lang } = useLanguage();
   const group = useEditableGroup();
   const [url, setUrl] = useState(fallback || null);
+  const [cleared, setCleared] = useState(false);
+  const [altI18n, setAltI18n] = useState(null);
   const [open, setOpen] = useState(false);
+
+  // Effective alt: persisted localized alt wins, falls back to the prop.
+  const effectiveAlt = (altI18n && altI18n[lang]) || alt;
+  // When the user explicitly cleared the image, override fallback with null
+  // so the empty-state placeholder renders instead of the original asset.
+  const effectiveUrl = cleared ? null : url;
 
   // Always-fresh refs so a stale registration entry can still update
   // this child's image after a save.
@@ -129,7 +140,11 @@ export const EditableImage = ({
       try {
         const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`);
         const data = await res.json();
-        if (!cancelled && data && data.url) setUrl(data.url);
+        if (cancelled || !data) return;
+        if (data.url)            setUrl(data.url);
+        if (data.cleared)        setCleared(true);
+        else if (data.exists)    setCleared(false);
+        if (data.alt_i18n)       setAltI18n(data.alt_i18n);
       } catch (err) {
         // Slot not yet persisted or upstream offline — keep fallback.
         console.debug(`[image_slots] fetch failed for ${slot}:`, err);
@@ -153,13 +168,23 @@ export const EditableImage = ({
 
   const onSavedOne = (newUrl) => {
     setUrl(newUrl);
+    setCleared(false);   // a fresh upload always re-activates the slot
+  };
+
+  const onClearedFromMeta = () => {
+    setCleared(true);
+    setUrl(null);
+  };
+
+  const onMetaSaved = (meta) => {
+    if (meta?.alt_i18n) setAltI18n(meta.alt_i18n);
   };
 
   return (
     <>
       <ImageOrPlaceholder
-        url={url}
-        alt={alt}
+        url={effectiveUrl}
+        alt={effectiveAlt}
         className={className}
         imgProps={imgProps}
         aspectRatio={aspectRatio}
@@ -217,6 +242,8 @@ export const EditableImage = ({
           group={group}
           onClose={() => setOpen(false)}
           onSavedOne={onSavedOne}
+          onClearedFromMeta={onClearedFromMeta}
+          onMetaSaved={onMetaSaved}
         />
       )}
     </>
@@ -414,7 +441,7 @@ const RATIO_PRESETS = [
   { code: "9:16",  value: 9 / 16 },
 ];
 
-const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) => {
+const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne, onClearedFromMeta, onMetaSaved }) => {
   // Build the list of items the modal operates on. In single mode we
   // synthesise a one-item list so the rest of the UI is uniform.
   const groupSnapshot = group ? group.list() : [];
@@ -1003,6 +1030,23 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne }) 
                   />
                 )}
               </div>
+
+              {/* Metadata editor — alt text + caption (trilingual) +
+                  destructive "clear" action. Always visible in the upload
+                  pane so editors can manage SEO/accessibility without
+                  having to first re-upload the picture. */}
+              <EditableImageMeta
+                slot={current.slot}
+                hasImage={!!slotUrls[current.slot]}
+                onCleared={() => {
+                  setSlotUrls((p) => ({ ...p, [current.slot]: null }));
+                  // Tell the page-level <EditableImage> so it switches to placeholder.
+                  const it = items.find((i) => i.slot === current.slot);
+                  it?.setUrl?.(null);
+                  onClearedFromMeta?.();
+                }}
+                onMetaSaved={(meta) => onMetaSaved?.(meta)}
+              />
             </>
           ) : (
             <>
