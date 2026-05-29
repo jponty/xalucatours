@@ -1,4 +1,13 @@
 
+## /juego — interactive gamified Morocco explorer (Feb 2026)
+- New public page at `/juego` (en: `/en/game`, fr: `/fr/jeu`) — registered in `routes.js`, `routeComponents.js`, and linked from the side menu (`menu-link-juego`).
+- **Concept**: users tick off Moroccan places they've visited/know across 9 categories (Regiones, Ciudades, Pueblos y Kasbahs, Desiertos, Montañas y Valles, Playas y Costa, Monumentos e Historia, Atracciones, Experiencias Clave). 73 curated trilingual places in `lib/juegoData.js`, each tagged with a region + (most) map coords.
+- **Gamification**: 6 levels/badges unlocked by overall exploration % — Explorador Principiante (0%), Viajero Curioso (10%), Aventurero del Atlas (30%), Nómada del Desierto (50%), Conquistador de Marruecos (75%), Leyenda de Marruecos (100%). Level-up shows a celebration banner.
+- **Dashboard**: hero progress ring (total %), stat cards (exploration %, places X/73, regions completed X/6, current badge), visual rank stepper (6 levels + progress-to-next bar), interactive Leaflet map (CartoDB light) where clicking a marker toggles visited (synced with category chips), and per-category progress bars. Reset button with confirm.
+- **Persistence**: client-side only — localStorage key `xaluca_juego_visited_v1` (no login; chosen by user). Personal visual rank (no global leaderboard).
+- **Files**: `pages/JuegoPage.jsx`, `lib/juegoData.js`; route/menu wiring in `lib/routes.js`, `lib/routeComponents.js`, `lib/menu.js`.
+- Verified by testing agent (iteration_23): 100% — load, toggle+stats, persistence, level-up @10%, reset, trilingual routing, menu link. No bugs.
+
 ## /viajes region map · video section · carousel editability · per-page image slots (Feb 2026)
 - **P0 — Independent image slots per program page**: program images were sharing CMS slots across itineraries that reuse the same `route_id`/`day.id` (text was already page-scoped). Fixed by namespacing all program image slots with the page URL via `useSlotId`:
   - `ProgramTemplate.jsx`: hero now `useSlotId("hero")` (previously `${tripKey}.hero` with `tripKey` undefined → ALL heroes shared `undefined.hero`); day image now `useSlotId(`day.${day.id}.image`)`.
