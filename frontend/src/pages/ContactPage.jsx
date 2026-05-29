@@ -18,12 +18,14 @@
 import React, { useEffect, useState } from "react";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
-  Headphones, Users, Sparkles, ShieldCheck, MessageCircle,
+  Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import EditableImage from "@/components/EditableImage";
 import EditableSection from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
+import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 
 const CALENDLY_PHONE  = "https://calendly.com/xalucatours/cita-previa-telefonica";
@@ -188,21 +190,58 @@ const ContactPage = () => {
 
   return (
     <SlotScope id="contact">
-      <main data-testid="contact-page" className="bg-[#FDFBF7] pt-[88px] md:pt-[96px]">
+      <main data-testid="contact-page" className="bg-[#FDFBF7]">
 
-        {/* ============== HERO ============== */}
+        {/* ============== HERO · full-bleed (same pattern as Equipo/QueHacemos) ============== */}
         <section
           data-testid="contact-hero"
-          className="relative w-full bg-[#1A1513] berber-bg-cross py-20 md:py-28 overflow-hidden"
+          className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#1A1513]"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1A1513] via-[#2C2621] to-[#1A1513] opacity-95" />
-          <div className="relative max-w-5xl mx-auto px-6 md:px-12 text-center">
-            <EditableSection name="hero.eyebrow" fallback={pick(COPY.hero.eyebrow, lang)} as="span"
-              className="inline-flex items-center gap-2 text-[11px] tracking-[0.4em] uppercase text-[#D4A373] mb-6" />
-            <EditableSection name="hero.title" fallback={pick(COPY.hero.title, lang)} as="h1"
-              className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#FDFBF7] leading-[1.05] tracking-tight" />
-            <EditableSection name="hero.body" fallback={pick(COPY.hero.body, lang)} as="p"
-              className="mt-7 text-base md:text-lg text-[#D4A373]/90 leading-relaxed max-w-3xl mx-auto" />
+          <EditableImage
+            slot="contact.hero"
+            fallback={IMG.medinaPeople || IMG.koutoubia}
+            alt={pick(COPY.hero.title, lang)}
+            aspectRatio="auto"
+            imgProps={{ loading: "eager" }}
+            className="ken-burns absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Legibility stack — matches every other hero on the site */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />
+          <div className="absolute inset-0 berber-bg-cross opacity-25 pointer-events-none" aria-hidden="true" />
+          <span className="film-grain" />
+
+          <div className="relative z-10 h-full flex flex-col">
+            <div className="flex-1 flex items-end pt-32 md:pt-40 pb-24 md:pb-32">
+              <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
+                <div className="max-w-3xl">
+                  <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
+                    <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+                    <EditableSection name="hero.eyebrow" fallback={pick(COPY.hero.eyebrow, lang)} as="span"
+                      className="text-[11px] tracking-[0.35em] uppercase font-semibold" />
+                    <span className="w-8 h-px bg-[#D4A373]/50" />
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">
+                      {lang === "en" ? "Tremp · Lleida" : lang === "fr" ? "Tremp · Lleida" : "Tremp · Lleida"}
+                    </span>
+                  </div>
+                  <EditableSection name="hero.title" fallback={pick(COPY.hero.title, lang)} as="h1"
+                    className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6 block" />
+                  <EditableSection name="hero.body" fallback={pick(COPY.hero.body, lang)} as="p"
+                    className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image block" />
+                  <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
+                    <a href="#booking" data-testid="hero-cta-book"
+                       className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+                      {lang === "en" ? "Book a session" : lang === "fr" ? "Réserver une séance" : "Reservar cita"}
+                      <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />
+                    </a>
+                    <a href={`tel:${CONTACT.phoneRaw || "+34937268366"}`} data-testid="hero-cta-call"
+                       className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+                      <Phone className="w-3.5 h-3.5" strokeWidth={1.5} />
+                      {CONTACT.phone || "+34 937 268 366"}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -238,6 +277,7 @@ const ContactPage = () => {
 
         {/* ============== CALENDLY BOOKING ============== */}
         <section
+          id="booking"
           data-testid="contact-booking"
           className="py-20 md:py-28 bg-[#F8F2E6]/40 border-b border-[#2C2621]/10"
         >
@@ -292,7 +332,7 @@ const ContactPage = () => {
           </div>
         </section>
 
-        {/* ============== DIRECT CONTACT ============== */}
+        {/* ============== DIRECT CONTACT — phone + email cards ============== */}
         <section data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-2xl mb-12">
@@ -307,16 +347,14 @@ const ContactPage = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {/* Phone card */}
-              <div className="lg:col-span-2 flex flex-col">
-                <div className="flex items-center gap-3 mb-3">
-                  <Phone className="w-5 h-5 text-[#C16542]" strokeWidth={1.7} />
-                  <h3 className="font-serif text-2xl text-[#2C2621]">
-                    {pick(COPY.contact.phoneTitle, lang)}
-                  </h3>
-                </div>
-                <p className="text-[14px] text-[#5C5248] leading-relaxed mb-6">
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <Phone className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <h3 className="font-serif text-2xl text-[#2C2621] mb-3">
+                  {pick(COPY.contact.phoneTitle, lang)}
+                </h3>
+                <p className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1">
                   {pick(COPY.contact.phoneBody, lang)}
                 </p>
                 <a
@@ -327,30 +365,25 @@ const ContactPage = () => {
                   <Phone className="w-3.5 h-3.5" strokeWidth={1.7} />
                   {CONTACT.phone || "+34 937 268 366"}
                 </a>
-                <a
-                  href={`mailto:${CONTACT.email || "xalucatours@xaluca.com"}`}
-                  data-testid="contact-email-link"
-                  className="inline-flex items-center gap-3 mt-4 text-[13px] text-[#2C2621] hover:text-[#C16542] transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
-                  {CONTACT.email || "xalucatours@xaluca.com"}
-                </a>
               </div>
 
-              {/* Form card */}
-              <div className="lg:col-span-3 flex flex-col">
-                <div className="flex items-center gap-3 mb-3">
-                  <MessageCircle className="w-5 h-5 text-[#C16542]" strokeWidth={1.7} />
-                  <h3 className="font-serif text-2xl text-[#2C2621]">
-                    {pick(COPY.contact.formTitle, lang)}
-                  </h3>
-                </div>
-                <p className="text-[14px] text-[#5C5248] leading-relaxed mb-6">
+              {/* Email card */}
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <h3 className="font-serif text-2xl text-[#2C2621] mb-3">
+                  {pick(COPY.contact.formTitle, lang)}
+                </h3>
+                <p className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1">
                   {pick(COPY.contact.formBody, lang)}
                 </p>
-                <div className="bg-[#FDFBF7] border border-[#2C2621]/10 p-6 md:p-8">
-                  <ContactForm />
-                </div>
+                <a
+                  href="#contact-form"
+                  data-testid="contact-form-anchor"
+                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                >
+                  <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  {lang === "en" ? "Go to form" : lang === "fr" ? "Aller au formulaire" : "Ir al formulario"}
+                </a>
               </div>
             </div>
           </div>
@@ -432,6 +465,11 @@ const ContactPage = () => {
             </div>
           </div>
         </section>
+
+        {/* ============== FORM — autonomous section, native ContactForm ============== */}
+        <div id="contact-form" data-testid="contact-form-section">
+          <ContactForm />
+        </div>
 
       </main>
     </SlotScope>
