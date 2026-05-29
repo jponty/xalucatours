@@ -120,6 +120,9 @@ export const ROUTES = {
   morocco:            { es: "marruecos",                 en: "morocco",                  fr: "maroc" },
   contact:            { es: "contacto",                  en: "contact",                  fr: "contact" },
 
+  // Interactive
+  juego:              { es: "juego",                     en: "game",                     fr: "jeu" },
+
   // Editorial guides
   whenToTravel:       { es: "cuando-viajar",             en: "when-to-travel",           fr: "quand-partir" },
   blog:               { es: "blog",                      en: "blog",                     fr: "blog" },

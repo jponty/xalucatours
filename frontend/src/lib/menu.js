@@ -73,6 +73,12 @@ export const MENU_TREE = [
     icon: "landmark",
   },
   {
+    id: "juego",
+    routeId: "juego",
+    label: { es: "Juego: descubre Marruecos", en: "Game: discover Morocco", fr: "Jeu : découvrir le Maroc" },
+    icon: "compass",
+  },
+  {
     id: "contact",
     routeId: "contact",
     label: { es: "Contacto", en: "Contact", fr: "Contact" },

@@ -109,6 +109,7 @@ import BlogPage from "@/pages/BlogPage";
 import ContactPage from "@/pages/ContactPage";
 import CitaPreviaPage from "@/pages/CitaPreviaPage";
 import CatalogoPage from "@/pages/CatalogoPage";
+import JuegoPage from "@/pages/JuegoPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -228,4 +229,5 @@ export const ROUTE_COMPONENTS = {
   blog:                          BlogPage,
   contact:                       ContactPage,
   appointment:                   CitaPreviaPage,
+  juego:                         JuegoPage,
 };
