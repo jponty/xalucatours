@@ -20,7 +20,7 @@ export const MENU_TREE = [
     label: { es: "Nuestros viajes", en: "Our journeys", fr: "Nos voyages" },
     icon: "compass",
     // Top-level link to catalog landing (rendered as a header CTA when expanded).
-    routeIdHeader: "catalog",
+    routeIdHeader: "toursLanding",
     headerLabel: { es: "Ver todos los viajes", en: "See all tours", fr: "Voir tous les voyages" },
     groups: [
       {

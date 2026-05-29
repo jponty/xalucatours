@@ -780,6 +780,95 @@ const COPY = {
 /* ============================================================
    Page
 ============================================================ */
+/* ============================================================
+   Catalogo CTA — direct shortcut to the Publuu flipbook page.
+   Editorial dark band with eyebrow + headline + body + a
+   primary CTA pointing to /catalogo. Sits between Asesoramiento
+   and the contact form so it lands in the user's flow before
+   reading the form, encouraging exploration of the printed
+   catalogue alongside the interactive listing they just browsed.
+============================================================ */
+const CATALOGO_CTA_COPY = {
+  es: {
+    eyebrow: "Catálogo digital",
+    title:   "Hojea todos nuestros catálogos en un solo lugar",
+    body:    "Descubre rutas, escapadas y experiencias en formato revista — itinerarios día a día, mapas y fotografía editorial — listos para inspirar tu próxima aventura por Marruecos.",
+    cta:     "Abrir el catálogo",
+    note:    "Formato flipbook · Lectura desde cualquier dispositivo",
+  },
+  en: {
+    eyebrow: "Digital catalogue",
+    title:   "Browse every catalogue in one place",
+    body:    "Discover routes, short escapes and experiences in a magazine-style flipbook — day-by-day itineraries, maps and editorial photography — ready to inspire your next Moroccan adventure.",
+    cta:     "Open the catalogue",
+    note:    "Flipbook format · Reads on any device",
+  },
+  fr: {
+    eyebrow: "Catalogue numérique",
+    title:   "Feuilletez tous nos catalogues au même endroit",
+    body:    "Découvrez nos routes, escapades et expériences en format magazine — itinéraires jour par jour, cartes et photographie éditoriale — prêts à inspirer votre prochaine aventure marocaine.",
+    cta:     "Ouvrir le catalogue",
+    note:    "Format flipbook · Lecture sur tout appareil",
+  },
+};
+
+const CatalogoCTA = ({ lang }) => {
+  const c = CATALOGO_CTA_COPY[lang] || CATALOGO_CTA_COPY.es;
+  return (
+    <section
+      data-testid="tours-landing-catalogo-cta"
+      className="relative w-full py-20 md:py-28 bg-[#1A1513] overflow-hidden"
+    >
+      <div className="absolute inset-0 berber-bg-cross opacity-25 pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1513] via-[#2C2621] to-[#1A1513] pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 items-center">
+          <div className="lg:col-span-7">
+            <span className="block text-[11px] tracking-[0.4em] uppercase text-[#D4A373] mb-5">
+              {c.eyebrow}
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#FDFBF7] leading-tight tracking-tight">
+              {c.title}
+            </h2>
+            <p className="mt-6 text-[14px] md:text-base text-[#FDFBF7]/80 leading-relaxed max-w-2xl">
+              {c.body}
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-5">
+              <Link
+                to={pathFor(lang, "catalog")}
+                data-testid="tours-landing-catalogo-cta-link"
+                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors"
+              >
+                {c.cta}
+                <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
+              </Link>
+              <span className="text-[10px] tracking-[0.28em] uppercase text-[#D4A373]/80">
+                {c.note}
+              </span>
+            </div>
+          </div>
+          <div className="lg:col-span-5 relative">
+            <div className="relative aspect-[3/4] overflow-hidden border border-[#D4A373]/25 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.6)]">
+              <EditableImage
+                slot="tours-landing.catalogo-cta.cover"
+                fallback="https://images.unsplash.com/photo-1565689157206-0fddef7589a2?auto=format&fit=crop&w=900&q=85"
+                alt={c.title}
+                aspectRatio="3/4"
+                imgProps={{ loading: "lazy" }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <span className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#1A1513] to-transparent pointer-events-none" />
+              <span className="absolute bottom-4 left-4 text-[9px] tracking-[0.32em] uppercase text-[#FDFBF7]/85">
+                Xaluca Tours · Catálogo 2026
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export default function ToursLandingPage() {
   const { lang } = useLanguage();
   const t = COPY[lang] || COPY.es;
@@ -798,6 +887,7 @@ export default function ToursLandingPage() {
       <TripExplorer t={t.explorer} lang={lang} />
       <ProximasSalidas t={t.proximas} lang={lang} />
       <Asesoramiento t={t.asesoramiento} lang={lang} />
+      <CatalogoCTA lang={lang} />
       <ContactIntro t={t.contact} />
       <ContactForm />
     </div>
