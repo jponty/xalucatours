@@ -1216,10 +1216,10 @@ const G = ({ k, defaults, as = "span", className, multiline = false, ...rest }) 
 /* ============================================================
    Hero
 ============================================================ */
-const ProgramHero = ({ vt, t, program, lang, variant }) => (
+const ProgramHero = ({ vt, t, program, lang, variant, tripKey }) => (
   <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
-      slot={`program.${vt.id || program.id || "default"}.hero`}
+      slot={`${tripKey}.hero`}
       fallback={vt.hero_image}
       alt=""
       aspectRatio="21/9"
