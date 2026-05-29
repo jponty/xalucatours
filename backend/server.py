@@ -617,6 +617,7 @@ class PexelsImportRequest(BaseModel):
     pexels_id: int = Field(..., gt=0)
 
 
+
 @api_router.post("/pexels/import")
 async def pexels_import(payload: PexelsImportRequest):
     """Download the Pexels original, store it in our object storage,
@@ -689,6 +690,190 @@ async def pexels_import(payload: PexelsImportRequest):
         "size": record["size"],
         "source": "pexels",
         "pexels": attribution,
+    }
+
+
+# ----------------------------------------------------------
+#  Unsplash integration
+#  ----
+#  Mirrors the Pexels integration. Three endpoints:
+#    GET  /api/unsplash/search?query=...&page=1&per_page=24
+#    GET  /api/unsplash/featured?page=1&per_page=24
+#    POST /api/unsplash/import {"unsplash_id": "abc123"}
+#
+#  Unsplash API guidelines REQUIRE us to ping `links.download_location`
+#  whenever a photo is "downloaded for use". We do this from the backend
+#  immediately before persisting the asset (and after the actual file
+#  fetch, since we don't want to count failed imports).
+#
+#  Attribution is appended with UTM params per Unsplash branding guide:
+#  `?utm_source=<APP>&utm_medium=referral`.
+# ----------------------------------------------------------
+UNSPLASH_ACCESS_KEY = os.environ.get("UNSPLASH_ACCESS_KEY", "").strip()
+UNSPLASH_APP_NAME   = os.environ.get("UNSPLASH_APP_NAME", "xaluca_tours").strip()
+UNSPLASH_BASE       = "https://api.unsplash.com"
+UNSPLASH_UTM        = f"?utm_source={UNSPLASH_APP_NAME}&utm_medium=referral"
+
+
+async def _unsplash_get(path: str, params: Dict | None = None) -> Dict | List:
+    if not UNSPLASH_ACCESS_KEY:
+        raise HTTPException(status_code=503, detail="Unsplash access key not configured.")
+    headers = {
+        "Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}",
+        "Accept-Version": "v1",
+    }
+    async with httpx.AsyncClient(timeout=httpx.Timeout(15.0, connect=5.0)) as cx:
+        try:
+            r = await cx.get(f"{UNSPLASH_BASE}{path}", headers=headers, params=params)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Unsplash request failed: {exc}")
+    if r.status_code == 403:
+        # Unsplash returns 403 when the hourly rate limit is hit
+        raise HTTPException(status_code=429, detail="Unsplash rate limit exceeded — try again later.")
+    if r.status_code >= 400:
+        raise HTTPException(status_code=502, detail=f"Unsplash error {r.status_code}: {r.text[:200]}")
+    return r.json()
+
+
+def _unsplash_summary(p: Dict) -> Dict:
+    urls  = p.get("urls")  or {}
+    user  = p.get("user")  or {}
+    links = (user.get("links") or {})
+    return {
+        "id": p.get("id"),
+        "width":  p.get("width", 0),
+        "height": p.get("height", 0),
+        "thumb_url":   urls.get("small"),
+        "preview_url": urls.get("regular"),
+        "photographer":     user.get("name") or user.get("username") or "Unsplash",
+        "photographer_url": (links.get("html") or "https://unsplash.com") + UNSPLASH_UTM,
+        "unsplash_url": (p.get("links") or {}).get("html", "") + UNSPLASH_UTM,
+        "avg_color":  p.get("color"),
+        "alt":        p.get("alt_description") or p.get("description") or "",
+    }
+
+
+@api_router.get("/unsplash/search")
+async def unsplash_search(query: str, page: int = 1, per_page: int = 24):
+    """Proxy search → Unsplash /search/photos."""
+    if not query.strip():
+        raise HTTPException(status_code=400, detail="Empty query.")
+    per_page = max(1, min(per_page, 30))   # Unsplash max is 30
+    page = max(1, page)
+    raw = await _unsplash_get("/search/photos", {"query": query.strip(), "page": page, "per_page": per_page})
+    results = (raw.get("results") or []) if isinstance(raw, dict) else []
+    total_pages = raw.get("total_pages", 1) if isinstance(raw, dict) else 1
+    return {
+        "page": page,
+        "per_page": per_page,
+        "total_results": (raw.get("total", len(results)) if isinstance(raw, dict) else len(results)),
+        "next_page": page < total_pages,
+        "photos": [_unsplash_summary(p) for p in results],
+    }
+
+
+@api_router.get("/unsplash/featured")
+async def unsplash_featured(page: int = 1, per_page: int = 24):
+    """Recent/featured editorial feed — default state of the Unsplash tab."""
+    per_page = max(1, min(per_page, 30))
+    page = max(1, page)
+    raw = await _unsplash_get("/photos", {"page": page, "per_page": per_page, "order_by": "popular"})
+    items = raw if isinstance(raw, list) else []
+    return {
+        "page": page,
+        "per_page": per_page,
+        "total_results": len(items),
+        "next_page": len(items) >= per_page,   # Unsplash /photos doesn't expose total
+        "photos": [_unsplash_summary(p) for p in items],
+    }
+
+
+class UnsplashImportRequest(BaseModel):
+    unsplash_id: str = Field(..., min_length=1, max_length=64)
+
+
+@api_router.post("/unsplash/import")
+async def unsplash_import(payload: UnsplashImportRequest):
+    """Download the Unsplash photo, store it locally, and write a
+    library record with full attribution. Triggers Unsplash's
+    `download_location` endpoint as required by the API guidelines."""
+    # 1. Get the photo (authoritative metadata + download_location link)
+    photo = await _unsplash_get(f"/photos/{payload.unsplash_id}")
+    urls  = photo.get("urls") or {}
+    links = photo.get("links") or {}
+    raw_url = urls.get("raw") or urls.get("full") or urls.get("regular")
+    if not raw_url:
+        raise HTTPException(status_code=502, detail="Unsplash photo has no usable URL.")
+
+    # Cap delivered dimension to keep storage sane (Unsplash raw can be 6000px+).
+    fetch_url = f"{raw_url}&w=2400&q=85&fm=jpg&auto=compress" if "?" in raw_url else f"{raw_url}?w=2400&q=85&fm=jpg&auto=compress"
+
+    # 2. Download the resized JPEG
+    async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0), follow_redirects=True) as cx:
+        try:
+            dl = await cx.get(fetch_url)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Image download failed: {exc}")
+    if dl.status_code != 200:
+        raise HTTPException(status_code=502, detail=f"Image download status {dl.status_code}")
+    data = dl.content
+    if len(data) > MAX_UPLOAD_BYTES * 3:
+        raise HTTPException(status_code=413, detail="Image exceeds size cap.")
+    content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
+
+    # 3. Trigger the Unsplash download_location ping (mandatory per API ToS).
+    #    Fire-and-forget: log on failure but never block the import.
+    dl_loc = links.get("download_location")
+    if dl_loc:
+        try:
+            await _unsplash_get(dl_loc.replace(UNSPLASH_BASE, ""))
+        except Exception as exc:
+            logger.warning("Unsplash download_location ping failed: %s", exc)
+
+    # 4. Upload to object storage
+    storage_path = f"xaluca/library/unsplash_{photo.get('id')}_{uuid.uuid4().hex[:8]}.jpg"
+    try:
+        result = put_object(storage_path, data, content_type)
+    except Exception as exc:
+        logger.exception("Unsplash import — storage put failed")
+        raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
+    canonical_path = result.get("path", storage_path)
+
+    # 5. Persist library record with attribution
+    user = photo.get("user") or {}
+    user_links = user.get("links") or {}
+    attribution = {
+        "unsplash_id": photo.get("id"),
+        "photographer":     user.get("name") or user.get("username") or "Unsplash",
+        "photographer_url": (user_links.get("html") or "https://unsplash.com") + UNSPLASH_UTM,
+        "unsplash_url":     (links.get("html") or "") + UNSPLASH_UTM,
+        "alt": photo.get("alt_description") or photo.get("description") or "",
+    }
+    now_iso = datetime.now(timezone.utc).isoformat()
+    record = {
+        "id": str(uuid.uuid4()),
+        "slot_id": None,
+        "storage_path": canonical_path,
+        "original_filename": f"Unsplash · {attribution['photographer']}.jpg",
+        "content_type": content_type,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "tags": ["library", "unsplash"],
+        "source": "unsplash",
+        "unsplash": attribution,
+        "created_at": now_iso,
+    }
+    await db.files.insert_one(record)
+
+    return {
+        "id": record["id"],
+        "url": f"/api/files/{canonical_path}",
+        "storage_path": canonical_path,
+        "original_filename": record["original_filename"],
+        "content_type": content_type,
+        "size": record["size"],
+        "source": "unsplash",
+        "unsplash": attribution,
     }
 
 

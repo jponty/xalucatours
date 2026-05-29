@@ -591,3 +591,27 @@ Replace each with `<EditableImage slot="..." fallback={...} alt="..." aspectRati
   - Click a card → `POST /api/pexels/import` → backend downloads + stores + returns asset → `onSelect` pipes the URL into the existing slot-update flow → modal auto-closes
   - "Subir varias" button hidden on the Pexels tab to avoid UX confusion
 - **Verified (iteration_15)**: 6/6 pytest cases green (`/app/backend/tests/test_pexels.py`), full UI flow E2E confirmed on the preview URL (open editor → library → Pexels tab → search → click → slot URL contains `pexels_`). Testing agent added `PexelsTab.jsx` to the lint guardrail allow-list.
+
+
+## Unsplash integration shipped (Feb 2026)
+
+### Backend (3 endpoints, parallel to Pexels)
+- Access Key in `backend/.env` as `UNSPLASH_ACCESS_KEY` + `UNSPLASH_APP_NAME=xaluca_tours` (UTM source for attribution links). Never sent to the browser.
+- Endpoints (prefix `/api/unsplash`, auth via `Client-ID` header):
+  - `GET /search?query=...&page=1&per_page=24` (`per_page` capped at 30 per Unsplash limit) — proxies `/search/photos`.
+  - `GET /featured?page=1&per_page=24` — proxies `/photos?order_by=popular`, the default state of the Unsplash tab.
+  - `POST /import {"unsplash_id": "abc123"}` — fetches metadata via `/photos/{id}`, downloads a resized JPEG (`raw?w=2400&q=85`), **pings the mandatory `links.download_location` endpoint** per Unsplash API guidelines, stores asset at `xaluca/library/unsplash_{id}_{hex}.jpg`, persists a `db.files` record tagged `["library","unsplash"]` with a nested `unsplash` attribution object (`unsplash_id`, `photographer`, `photographer_url`, `unsplash_url`, `alt`). Attribution URLs include the required `?utm_source=xaluca_tours&utm_medium=referral` UTMs.
+- Rate limit: 50 req/h (Demo); upgradeable to 5000/h via "Apply for Production" once attribution is shown publicly (already implemented).
+- Verified end-to-end with curl: featured returns 24 photos, search "morocco desert" returns 864 results, import of `kiYzznir-uo` (Carlos Leret) successfully downloaded 934 KB.
+
+### Frontend
+- `UnsplashTab.jsx` mirrors `PexelsTab.jsx` for UX consistency (search form with Enter submit, 250ms debounce, explicit submit button, clear button, status row, skeleton loader, error banner with retry, load-more pagination, license-compliant per-card attribution + footer credit).
+- Wired into `ImageLibraryPicker.jsx` as a **3rd tab** alongside Biblioteca and Pexels (subtitle, footer copy, and bulk-upload button visibility all switch contextually per active tab).
+- **Bug fix during integration**: the Emergent preview env's `fetch` monkey-patch (in `assets.emergent.sh/scripts/emergent-main.js`) tries to `postMessage()` the `Request` object for telemetry, but the embedded `AbortSignal` is not structurally cloneable — throwing `DataCloneError` even though the network call succeeded. Removed `AbortSignal` from both `PexelsTab` and `UnsplashTab` fetches, replaced with a `let cancelled = false` closure flag. Same race-condition guarantees, no false-positive error banners.
+
+### Verified flows (Playwright)
+- ✅ 3 tabs render (library, pexels, unsplash)
+- ✅ Type "morocco kasbah" + **Enter** → 24 cards, status `24 resultados para "morocco kasbah"`, 0 errors
+- ✅ Click card → `POST /api/unsplash/import` → 200 → `PUT /api/slots/blog.hero` → 200 → slot url contains `unsplash_*`
+- ✅ Pexels regression: 24 cards, 0 errors after the shared fix
+- ✅ Mobile 390×844: search input + submit button visible
