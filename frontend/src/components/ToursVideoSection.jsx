@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, Volume2, VolumeX, Film } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import EditableText from "@/components/EditableText";
 
 /* ============================================================
    ToursVideoSection — inspirational intermediate video block
@@ -75,6 +76,8 @@ const COPY = {
 export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
   const { lang } = useLanguage();
   const t = COPY[lang] || COPY.es;
+  // Trilingual defaults for the inline text-edit (CMS) surfaces.
+  const D = (k) => ({ es: COPY.es[k], en: COPY.en[k], fr: COPY.fr[k] });
 
   const stageRef = useRef(null);   // stable wrapper that holds the iframe
   const playerRef = useRef(null);
@@ -187,14 +190,21 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
         <div className="text-center max-w-3xl mx-auto mb-10 md:mb-14">
           <span className="overline inline-flex items-center gap-2 text-[#C16542]">
             <Film className="w-3.5 h-3.5" strokeWidth={1.8} />
-            {t.eyebrow}
+            <EditableText slot="viajes.video.eyebrow" defaults={D("eyebrow")} multiline={false} />
           </span>
-          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.06] tracking-tight mt-5 text-[#2C2621]">
-            {t.title}
-          </h2>
-          <p className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed">
-            {t.caption}
-          </p>
+          <EditableText
+            as="h2"
+            slot="viajes.video.title"
+            defaults={D("title")}
+            multiline={false}
+            className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.06] tracking-tight mt-5 text-[#2C2621] block"
+          />
+          <EditableText
+            as="p"
+            slot="viajes.video.caption"
+            defaults={D("caption")}
+            className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed block"
+          />
         </div>
 
         {/* Video card */}

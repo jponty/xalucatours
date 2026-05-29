@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-le
 import { ArrowRight, MapPin, Sparkles, Route, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import EditableText from "@/components/EditableText";
 
 /* ============================================================
    ToursRegionMap — interactive geographic explorer for /viajes
@@ -163,6 +164,7 @@ const FlyTo = ({ coords }) => {
 export const ToursRegionMap = () => {
   const { lang } = useLanguage();
   const t = COPY[lang] || COPY.es;
+  const SD = (k) => ({ es: COPY.es[k], en: COPY.en[k], fr: COPY.fr[k] });
   const [activeId, setActiveId] = useState(REGIONS[0].id);
   const active = useMemo(() => REGIONS.find((r) => r.id === activeId) || REGIONS[0], [activeId]);
 
@@ -176,12 +178,21 @@ export const ToursRegionMap = () => {
         <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
           <span className="overline inline-flex items-center gap-2 text-[#C16542]">
             <Compass className="w-3.5 h-3.5" strokeWidth={1.8} />
-            {t.eyebrow}
+            <EditableText slot="viajes.region-map.eyebrow" defaults={SD("eyebrow")} multiline={false} />
           </span>
-          <h3 className="font-serif-x text-3xl md:text-4xl leading-[1.08] tracking-tight mt-4 text-[#2C2621]">
-            {t.title}
-          </h3>
-          <p className="mt-4 text-[15px] md:text-base text-[#5C5248] leading-relaxed">{t.helper}</p>
+          <EditableText
+            as="h3"
+            slot="viajes.region-map.title"
+            defaults={SD("title")}
+            multiline={false}
+            className="font-serif-x text-3xl md:text-4xl leading-[1.08] tracking-tight mt-4 text-[#2C2621] block"
+          />
+          <EditableText
+            as="p"
+            slot="viajes.region-map.helper"
+            defaults={SD("helper")}
+            className="mt-4 text-[15px] md:text-base text-[#5C5248] leading-relaxed block"
+          />
         </div>
 
         {/* Region chips */}
@@ -269,7 +280,13 @@ export const ToursRegionMap = () => {
             <h4 className="font-serif-x text-2xl md:text-[28px] leading-[1.15] tracking-tight mt-3 text-[#2C2621]">
               {pick(active.name, lang)}
             </h4>
-            <p className="mt-4 text-[15px] text-[#5C5248] leading-[1.75]">{pick(active.desc, lang)}</p>
+            <p className="mt-4 text-[15px] text-[#5C5248] leading-[1.75]">
+              <EditableText
+                as="span"
+                slot={`viajes.region-map.${active.id}.desc`}
+                defaults={active.desc}
+              />
+            </p>
 
             {/* Experiences */}
             <div className="mt-6">
@@ -282,10 +299,14 @@ export const ToursRegionMap = () => {
                   <span
                     key={i}
                     data-testid={`region-map-exp-${active.id}-${i}`}
-                    className="text-[11px] px-3 py-1.5 border bg-[#F7F1E4]"
-                    style={{ borderColor: `${active.accent}44`, color: "#5C5248" }}
+                    className="text-[11px] px-3 py-1.5 border bg-[#F7F1E4] text-[#5C5248]"
+                    style={{ borderColor: `${active.accent}44` }}
                   >
-                    {pick(e, lang)}
+                    <EditableText
+                      slot={`viajes.region-map.${active.id}.exp.${i}`}
+                      defaults={e}
+                      multiline={false}
+                    />
                   </span>
                 ))}
               </div>
