@@ -199,7 +199,7 @@ export default function EscapadasPage() {
         primaryCta={t.hero.primaryCta}
         primaryHref="#itineraries"
         secondaryCta={t.hero.secondaryCta}
-        secondaryHref="#community"
+        secondaryHref={pathFor(lang, "appointment")}
         scroll={t.hero.scroll}
         testid="escapadas-hero"
       />

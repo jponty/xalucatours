@@ -48,7 +48,7 @@ export default function StubPage({ routeId }) {
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
-                to={pathFor(lang, "contact")}
+                to={pathFor(lang, "planTrip")}
                 data-testid="stub-cta-contact"
                 className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
               >

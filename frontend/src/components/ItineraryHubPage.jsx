@@ -238,7 +238,7 @@ export default function ItineraryHubPage({ hub }) {
           primaryCta={<L k="cta_primary" />}
           primaryHref="#options"
           secondaryCta={<L k="cta_secondary" />}
-          secondaryHref="#community"
+          secondaryHref={pathFor(lang, "appointment")}
           scroll={<L k="scroll" />}
           testid={`hub-hero-${hub.id}`}
         />

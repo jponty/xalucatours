@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Phone, Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { translations } from "@/lib/i18n";
 import { CONTACT } from "@/lib/data";
 import EditableImage from "@/components/EditableImage";
@@ -114,7 +116,7 @@ export const PersonalConsultation = () => {
 
 /* ---------------- Community CTA (dark cinematic) ---------------- */
 export const CommunityCTA = () => {
-  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
+  const { t, lang } = useLanguage(); // eslint-disable-line no-unused-vars
   return (
     <section
       data-testid="community-cta-section"
@@ -152,8 +154,8 @@ export const CommunityCTA = () => {
           className="mt-8 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed max-w-3xl mx-auto block"
         />
         <div className="mt-12 flex flex-wrap justify-center gap-4">
-          <a
-            href="#contact"
+          <Link
+            to={pathFor(lang, "planTrip")}
             data-testid="community-cta-plan"
             className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
@@ -163,7 +165,7 @@ export const CommunityCTA = () => {
               multiline={false}
             />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-          </a>
+          </Link>
           <a
             href="#contact"
             data-testid="community-cta-specialist"

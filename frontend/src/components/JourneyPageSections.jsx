@@ -87,14 +87,25 @@ export const JourneyHero = ({
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
               </a>
               {secondaryCta && (
-                <a
-                  href={secondaryHref}
-                  data-testid={`${testid}-cta-secondary`}
-                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
-                >
-                  {secondaryCta}
-                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-                </a>
+                secondaryHref?.startsWith("/") ? (
+                  <Link
+                    to={secondaryHref}
+                    data-testid={`${testid}-cta-secondary`}
+                    className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                  >
+                    {secondaryCta}
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  </Link>
+                ) : (
+                  <a
+                    href={secondaryHref}
+                    data-testid={`${testid}-cta-secondary`}
+                    className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                  >
+                    {secondaryCta}
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  </a>
+                )
               )}
             </div>
           </div>

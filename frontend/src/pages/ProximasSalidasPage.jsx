@@ -567,7 +567,7 @@ export default function ProximasSalidasPage() {
         primaryCta={t.hero.primaryCta}
         primaryHref="#departures"
         secondaryCta={t.hero.secondaryCta}
-        secondaryHref="#community"
+        secondaryHref={pathFor(lang, "appointment")}
         scroll={t.hero.scroll}
         testid="upcoming-hero"
       />

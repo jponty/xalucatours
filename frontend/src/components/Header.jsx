@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, ArrowRight, ImagePlus, Check, Type, Library, CalendarClock } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
@@ -17,8 +17,6 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const SCROLL_THRESHOLD = 12; // px movement required to flip direction
@@ -56,17 +54,6 @@ export const Header = () => {
 
   // Keep header visible while side menu is open so the close button stays reachable
   const isHeaderHidden = hidden && !open;
-
-  const onEnquireClick = (e) => {
-    e.preventDefault();
-    const homePath = pathFor(lang, "home");
-    const isHome = location.pathname === homePath || location.pathname === "/";
-    if (isHome) {
-      document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      navigate(pathFor(lang, "contact"));
-    }
-  };
 
   return (
     <>
@@ -167,8 +154,7 @@ export const Header = () => {
             </Link>
 
             <Link
-              to={pathFor(lang, "contact")}
-              onClick={onEnquireClick}
+              to={pathFor(lang, "planTrip")}
               data-testid="header-enquire-button"
               className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
@@ -176,7 +162,7 @@ export const Header = () => {
                 <EditableText slot="header.cta_plan" defaults={translations.cta_plan} multiline={false} />
               </span>
               <span className="sm:hidden">
-                <EditableText slot="header.nav_contact" defaults={translations.nav_contact} multiline={false} />
+                <EditableText slot="header.cta_plan_short" defaults={{ es: "Planificar", en: "Plan trip", fr: "Planifier" }} multiline={false} />
               </span>
               <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
             </Link>

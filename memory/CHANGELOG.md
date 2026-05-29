@@ -1,4 +1,9 @@
 
+## CTA routing fixes (Feb 2026)
+- **"Planificar mi viaje"** buttons now link to `/planifica-tu-viaje` (route `planTrip`): Header CTA (removed old scroll-to-contact handler + cleaned unused `useNavigate`/`useLocation`), Home hero primary CTA (`<a href="#contact">` → router `Link`), Footer CTA, and the Community/PersonalConsultation CTA. StubPage primary CTA too.
+- **"Pedir asesoramiento"** buttons now link to `/citaprevia` (route `appointment`): the JourneyHero `secondaryCta` on Sur, Norte, Escapadas, Aventura, Marruecos, Próximas Salidas, Atlas-Desierto hub and `ItineraryHubPage`. `JourneyHero` now renders a router `Link` when `secondaryHref` is an internal route (starts with `/`), else a plain anchor.
+- ViajesAMedida secondary ("Crear mi viaje") and "Más información" (`cta_info`) buttons left unchanged. Verified via DOM checks: all 4 plan CTAs → `/planifica-tu-viaje`; Sur hero secondary → `/citaprevia`. Lint clean.
+
 ## Hero background video → clean, chrome-free (Feb 2026)
 - Reworked the Home hero background video (`HeroSlider.jsx`) from a static `youtube-nocookie` iframe to the **YouTube IFrame Player API** (same proven pattern as `ToursVideoSection`).
 - No YouTube chrome at all: `controls=0`, `modestbranding`, `rel=0`, `disablekb`, `fs=0`, iframe `pointer-events:none` + `aria-hidden`/`tabindex=-1` (no hover title bar, share/watch-later buttons or clicks).

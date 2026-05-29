@@ -361,7 +361,7 @@ export default function AventuraPage() {
         primaryCta={t.hero.primaryCta}
         primaryHref="#experiences"
         secondaryCta={t.hero.secondaryCta}
-        secondaryHref="#community"
+        secondaryHref={pathFor(lang, "appointment")}
         scroll={t.hero.scroll}
         testid="aventura-hero"
       />

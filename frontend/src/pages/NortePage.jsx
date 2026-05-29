@@ -211,7 +211,7 @@ export default function NortePage() {
         primaryCta={t.hero.primaryCta}
         primaryHref="#itineraries"
         secondaryCta={t.hero.secondaryCta}
-        secondaryHref="#asesoramiento"
+        secondaryHref={pathFor(lang, "appointment")}
         scroll={t.hero.scroll}
         testid="norte-hero"
       />

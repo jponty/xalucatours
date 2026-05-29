@@ -485,7 +485,7 @@ export default function AtlasDesiertoHubPage() {
         primaryCta={t.hero.primaryCta}
         primaryHref="#options"
         secondaryCta={t.hero.secondaryCta}
-        secondaryHref="#community"
+        secondaryHref={pathFor(lang, "appointment")}
         scroll={t.hero.scroll}
         testid="hub-hero"
       />

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
@@ -228,8 +230,8 @@ export const HeroSlider = () => {
               />
 
               <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
-                <a
-                  href="#contact"
+                <Link
+                  to={pathFor(lang, "planTrip")}
                   data-testid="hero-cta-primary"
                   className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
@@ -239,7 +241,7 @@ export const HeroSlider = () => {
                     multiline={false}
                   />
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-                </a>
+                </Link>
                 <a
                   href="#categories"
                   data-testid="hero-cta-secondary"

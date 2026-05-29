@@ -271,7 +271,7 @@ export default function SurPage() {
         primaryCta={t.hero.primaryCta}
         primaryHref="#itineraries"
         secondaryCta={t.hero.secondaryCta}
-        secondaryHref="#community"
+        secondaryHref={pathFor(lang, "appointment")}
         scroll={t.hero.scroll}
         testid="sur-hero"
       />
