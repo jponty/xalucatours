@@ -1,0 +1,36 @@
+{
+  "summary": "Phase 1 ProgramTemplate inline CMS (EditableText) tested end-to-end on /viajes/marrakech_ergchebbi_marrakech/programa_4n_5d (mem variant). All 7 program sections render in normal mode with real content. Enabling text edit mode exposes 165 editable surfaces (well over the 'dozens' bar), spanning hero, quick info, day blocks, pricing, details, contact and global program-ui labels. Per-page CONTENT edit and GLOBAL program-ui label edit both persist via PUT /api/text_slots/<slot> (200 OK) and survive a hard reload (verified hero title now reads 'Escapa al desierto del Erg Chebbi desde Marrakech. [E2E-TEST]' after GET /api/text_slots on reload). Language switch and navigation work without crashes. One minor observation around the in-page language switcher behavior (see frontend_issues).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "In-page language switcher on program page",
+        "issue": "Clicking the ES/EN/FR pill (text-buttons 'EN'/'FR' at bottom of hero) did not change the displayed copy to English on the program page — H1 remained Spanish after clicking EN. Clicking FR scrolled / navigated away (program-hero no longer in DOM, page shows the 'Contacto · Cita previa' band). No crash, but lang-en may not be wired to LanguageContext.setLang on this route. data-testid for these buttons appears non-standard (no data-testid='lang-en' was found; we matched by text). Recommend adding data-testid='lang-{code}' for reliable testing and verifying setLang is actually invoked.",
+        "affected_selectors": ["button:has-text('EN')", "button:has-text('FR')"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add data-testid='lang-es|en|fr' attributes to the language-switcher pills and confirm clicking them updates LanguageContext.lang (program H1 must change to English/French copy from VARIANT_COPY).",
+    "Verify that switching language does not unmount ProgramTemplate (program-hero disappeared after clicking FR in our run — could be a route remount or a stray link click)."
+  ],
+  "critical_code_review_comments": [
+    "ProgramTemplate.jsx is very large (likely >700 LOC of VARIANT_COPY + sub-components). Consider splitting VARIANT_COPY into /lib/programVariants.{da,desierto,atlas,...}.js to ease maintenance and code review.",
+    "EditableText caches /api/text_slots in a module-level Map but never invalidates after PUT for non-subscribed slots — fine for now, but if a future bulk import endpoint lands, add a refresh() helper.",
+    "Good: PUT path encodes slot via encodeURIComponent, GET bulk-load is shared across all instances (no N+1 storm)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "95%"},
+  "test_credentials": "N/A — text edit toggle is public via header button data-testid='header-text-edit-toggle'",
+  "seed_data_creation": "Two slots written during test (real persistence, please reset if needed): 'viajes.marrakech_ergchebbi_marrakech.programa_4n_5d.program.hero.title' (es) appended ' [E2E-TEST]'; 'program-ui.eyebrow_duration' (es) appended ' *'.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Phase 1 (ProgramTemplate) confirmed working. The /api/text_slots GET (bulk) + PUT (single) contract works. 165 editable surfaces appear on a single program page when toggling header-text-edit-toggle. Slot id format confirmed: per-page = '<dot-joined-path>.program.<name>' (e.g. viajes.marrakech_ergchebbi_marrakech.programa_4n_5d.program.hero.title), global = 'program-ui.<key>'. EditableText fallback chain: stored[lang] -> defaults[lang] -> defaults.es/en/fr. Reset the two seed slots above before re-running visual screenshots if needed.",
+  "rca of the issue": "N/A — no blocking issues. The only finding is a minor language-switcher wiring concern (no testid, behavior unclear when clicked) which is outside Phase 1's ProgramTemplate-editability scope."
+}

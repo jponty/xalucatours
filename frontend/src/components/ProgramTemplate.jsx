@@ -15,8 +15,9 @@ import { TripOverview } from "@/components/TripOverview";
 import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
-import { EditableSection, E, EImg } from "@/components/EditableSection";
+import { useSlotId } from "@/components/EditableSection";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
@@ -1171,9 +1172,50 @@ const LABELS = {
 };
 
 /* ============================================================
+   Inline-CMS text helpers
+   ---------------------------------------------------------------
+   <L> — Global UI label, shared across EVERY program page. Editing
+         it once updates the label on all 56 itineraries.
+         Slot: `program-ui.<k>`  (bypasses the page namespace).
+   <C> — Per-page CONTENT text. Auto-namespaced by the current page
+         path so each itinerary keeps its own copy.
+         Slot: `<page>.program.<name>`.
+   <G> — Global content text keyed by an explicit id (used for data
+         shared across pages, e.g. seasons). Slot: `program-ui.<k>`.
+============================================================ */
+const L = ({ k, as = "span", className, multiline = false, ...rest }) => (
+  <EditableText
+    slot={`program-ui.${k}`}
+    defaults={{ es: LABELS.es[k], en: LABELS.en[k], fr: LABELS.fr[k] }}
+    as={as}
+    multiline={multiline}
+    className={className}
+    {...rest}
+  />
+);
+
+const C = ({ name, defaults, as = "span", className, multiline = true, ...rest }) => {
+  const slot = useSlotId(`program.${name}`);
+  return (
+    <EditableText slot={slot} defaults={defaults || {}} as={as} multiline={multiline} className={className} {...rest} />
+  );
+};
+
+const G = ({ k, defaults, as = "span", className, multiline = false, ...rest }) => (
+  <EditableText
+    slot={`program-ui.${k}`}
+    defaults={defaults || {}}
+    as={as}
+    multiline={multiline}
+    className={className}
+    {...rest}
+  />
+);
+
+/* ============================================================
    Hero
 ============================================================ */
-const ProgramHero = ({ vt, t, program, lang }) => (
+const ProgramHero = ({ vt, t, program, lang, variant }) => (
   <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
       slot={`program.${vt.id || program.id || "default"}.hero`}
@@ -1192,23 +1234,25 @@ const ProgramHero = ({ vt, t, program, lang }) => (
           <div className="max-w-4xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-              <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">{vt.eyebrow_prefix} · {pick(program.duration, lang)}</span>
+              <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">
+                <C name="hero.eyebrow" defaults={metaAllLangs(program, variant, "eyebrow_prefix")} multiline={false} /> · <C name="hero.duration" defaults={program.duration} multiline={false} />
+              </span>
               <span className="w-8 h-px bg-[#D4A373]/50" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">{vt.place}</span>
+              <C name="hero.place" defaults={metaAllLangs(program, variant, "place")} multiline={false} className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80" />
             </div>
             <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
-              {vt.title}
+              <C name="hero.title" defaults={metaAllLangs(program, variant, "title")} multiline={false} />
             </h1>
             <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
-              {vt.subtitle}
+              <C name="hero.subtitle" defaults={metaAllLangs(program, variant, "subtitle")} />
             </p>
             <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-3xl">
               {[
-                { Icon: Clock,    label: t.eyebrow_duration,   value: pick(program.duration, lang) },
-                { Icon: Plane,    label: t.eyebrow_airports,   value: vt.airports },
-                { Icon: Sparkles, label: t.eyebrow_highlights, value: vt.highlights },
-              ].map(({ Icon, label, value }) => (
-                <div key={label} className="bg-[#1A1513]/80 backdrop-blur-md p-5 flex flex-col gap-2">
+                { id: "duration",   Icon: Clock,    label: <L k="eyebrow_duration" />,   value: <C name="hero.q.duration" defaults={program.duration} multiline={false} /> },
+                { id: "airports",   Icon: Plane,    label: <L k="eyebrow_airports" />,   value: <C name="hero.q.airports" defaults={metaAllLangs(program, variant, "airports")} multiline={false} /> },
+                { id: "highlights", Icon: Sparkles, label: <L k="eyebrow_highlights" />, value: <C name="hero.q.highlights" defaults={metaAllLangs(program, variant, "highlights")} multiline={false} /> },
+              ].map(({ id, Icon, label, value }) => (
+                <div key={id} className="bg-[#1A1513]/80 backdrop-blur-md p-5 flex flex-col gap-2">
                   <div className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
                     <Icon className="w-3 h-3" strokeWidth={1.6} />{label}
                   </div>
@@ -1219,48 +1263,74 @@ const ProgramHero = ({ vt, t, program, lang }) => (
             <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
               <a href="#contact" data-testid="program-hero-cta-primary"
                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
-                {t.cta_primary}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+                <L k="cta_primary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
               </a>
               <a href="#itinerary" data-testid="program-hero-cta-secondary"
                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
-                {t.cta_secondary}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
             </div>
           </div>
         </div>
       </div>
       <a href="#description" className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
-        <span className="text-[10px] tracking-[0.35em] uppercase">{t.scroll}</span>
+        <L k="scroll" className="text-[10px] tracking-[0.35em] uppercase" />
         <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
       </a>
     </div>
   </section>
 );
 
-const Description = ({ vt, t }) => (
-  <section id="description" data-testid="program-description"
-           className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
-    <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
-      <span className="overline">{t.desc_overline}</span>
-      <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-        {vt.description_title}
-      </h2>
-      <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
-        {vt.description.map((p, i) => (
-          <p key={`desc-${i}`} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
-        ))}
+const Description = ({ vt, t, program, variant }) => {
+  const descAll = metaAllLangs(program, variant, "description");
+  const descLen = Array.isArray(vt.description) ? vt.description.length : 0;
+  return (
+    <section id="description" data-testid="program-description"
+             className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
+      <div className="relative max-w-4xl mx-auto px-6 md:px-12 text-center">
+        <L k="desc_overline" className="overline" />
+        <C
+          name="desc.title"
+          as="h2"
+          multiline={false}
+          defaults={metaAllLangs(program, variant, "description_title")}
+          className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]"
+        />
+        <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
+          {Array.from({ length: descLen }).map((_, i) => (
+            <C
+              key={`desc-${i}`}
+              name={`desc.p${i}`}
+              as="p"
+              defaults={{
+                es: (descAll.es || [])[i] || "",
+                en: (descAll.en || [])[i] || "",
+                fr: (descAll.fr || [])[i] || "",
+              }}
+              className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
+
+const TYPE_KEY = {
+  frz: "type_frz", frm: "type_frm", me: "type_me", em: "type_em", mem: "type_mem",
+  mes: "type_mes", fae: "type_fae", eaf: "type_eaf", atlas: "type_atlas",
+  desierto: "type_desierto", fez: "type_fez", rak: "type_rak", raga: "type_raga",
+  enduro: "type_enduro", ad: "type_ad", da: "type_da",
+};
 
 const QuickInfo = ({ t, vt, program, lang, variant }) => {
+  const typeKey = TYPE_KEY[variant] || "type_da";
   const cards = [
-    { Icon: Clock,    label: t.card_duration,   value: pick(program.duration, lang) },
-    { Icon: MapPin,   label: t.card_places,     value: vt.quick_places },
-    { Icon: Plane,    label: t.card_airports,   value: vt.quick_airports },
-    { Icon: Mountain, label: t.card_type,       value: variant === "frz" ? (t.type_frz || "Fez · Erg Chebbi · Marrakech") : variant === "frm" ? (t.type_frm || "Marrakech · Erg Chebbi · Fez") : variant === "me" ? (t.type_me || "Marrakech · Atlas · Erg Chebbi") : variant === "em" ? (t.type_em || "Erg Chebbi · Atlas · Marrakech") : variant === "mem" ? (t.type_mem || "Marrakech · Erg Chebbi · Marrakech") : variant === "mes" ? (t.type_mes || "Marrakech · Essaouira · Marrakech") : variant === "fae" ? (t.type_fae || "Fez · Alto Atlas · Erg Chebbi · Errachidia") : variant === "eaf" ? (t.type_eaf || "Errachidia · Erg Chebbi · Alto Atlas · Fez") : variant === "atlas" ? (t.type_atlas || "Alto Atlas · Drâa") : variant === "desierto" ? (t.type_desierto || "Sáhara · Erg Chebbi") : variant === "fez" ? (t.type_fez || "Medina de Fez · UNESCO") : variant === "rak" ? (t.type_rak || "Marrakech · ciudad imperial") : variant === "raga" ? (t.type_raga || "Marrakech · Agafay") : variant === "enduro" ? (t.type_enduro || "Enduro · Erg Chebbi · Saghro · Anti Atlas") : (variant === "ad" ? t.type_ad : t.type_da) },
-    { Icon: Sparkles, label: t.card_experiences,value: t.experiences_value },
+    { id: "duration",    Icon: Clock,    label: <L k="card_duration" />,    value: <C name="quick.duration" defaults={program.duration} multiline={false} /> },
+    { id: "places",      Icon: MapPin,   label: <L k="card_places" />,      value: <C name="quick.places" defaults={metaAllLangs(program, variant, "quick_places")} /> },
+    { id: "airports",    Icon: Plane,    label: <L k="card_airports" />,    value: <C name="quick.airports" defaults={metaAllLangs(program, variant, "quick_airports")} multiline={false} /> },
+    { id: "type",        Icon: Mountain, label: <L k="card_type" />,        value: <L k={typeKey} /> },
+    { id: "experiences", Icon: Sparkles, label: <L k="card_experiences" />, value: <L k="experiences_value" multiline /> },
   ];
   return (
     <section id="quick" data-testid="program-quick"
@@ -1268,14 +1338,12 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
       <div className="absolute inset-0 berber-bg-diamond opacity-30 pointer-events-none" aria-hidden="true" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="mb-12 text-center max-w-3xl mx-auto">
-          <span className="overline">{t.quick_overline}</span>
-          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-            {t.quick_title}
-          </h2>
+          <L k="quick_overline" className="overline" />
+          <L k="quick_title" as="h2" className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
           {cards.map((c, i) => (
-            <div key={c.label} data-testid={`program-quick-${i}`}
+            <div key={c.id} data-testid={`program-quick-${i}`}
                  className="bg-[#FDFBF7] p-5 md:p-6 flex flex-col gap-3">
               <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#C16542]/40 text-[#C16542]">
                 <c.Icon className="w-4 h-4" strokeWidth={1.6} />
@@ -1312,7 +1380,7 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
               <span className="film-grain" />
               <div className="absolute top-5 left-5 inline-flex items-center gap-3 bg-[#FDFBF7]/95 backdrop-blur-sm px-4 py-2">
                 <span className="font-serif-x text-xl leading-none" style={{ color: day.accent }}>
-                  {t.day_label} {dayNum}
+                  <L k="day_label" /> {dayNum}
                 </span>
               </div>
             </div>
@@ -1320,23 +1388,35 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase" style={{ color: day.accent }}>
               <span className="w-6 h-px" style={{ background: "currentColor" }} />
-              {t.day_label} {dayNum}
+              <L k="day_label" /> {dayNum}
             </span>
-            <h3 className="font-serif-x text-3xl md:text-4xl lg:text-[42px] leading-[1.1] tracking-tight mt-5 text-[#2C2621]">
-              {pick(day.title, lang)}
-            </h3>
-            <p className="mt-8 text-[15px] md:text-base text-[#5C5248] leading-[1.85]">
-              {pick(day.body, lang)}
-            </p>
+            <C
+              name={`day.${day.id}.title`}
+              as="h3"
+              multiline={false}
+              defaults={day.title}
+              className="font-serif-x text-3xl md:text-4xl lg:text-[42px] leading-[1.1] tracking-tight mt-5 text-[#2C2621]"
+            />
+            <C
+              name={`day.${day.id}.body`}
+              as="p"
+              defaults={day.body}
+              className="mt-8 text-[15px] md:text-base text-[#5C5248] leading-[1.85]"
+            />
             {day.wellness && (
               <div className="mt-8">
-                <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">{t.wellness_label}</p>
+                <L k="wellness_label" as="p" className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3" />
                 <ul className="flex flex-wrap gap-2">
                   {day.wellness.map((w, i) => (
-                    <li key={`${day.id}-w-${i}`} className="text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border"
-                        style={{ borderColor: `${day.accent}55`, color: day.accent }}>
-                      {pick(w, lang)}
-                    </li>
+                    <C
+                      key={`${day.id}-w-${i}`}
+                      name={`day.${day.id}.wellness.${i}`}
+                      as="li"
+                      multiline={false}
+                      defaults={w}
+                      className="text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border"
+                      style={{ borderColor: `${day.accent}55`, color: day.accent }}
+                    />
                   ))}
                 </ul>
               </div>
@@ -1345,17 +1425,24 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
               <div className="mt-10">
                 <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-4 inline-flex items-center gap-2">
                   <Camera className="w-3 h-3" strokeWidth={1.6} style={{ color: day.accent }} />
-                  {t.culture_label}
+                  <L k="culture_label" />
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {day.culture.map((c, i) => (
                     <div key={`${day.id}-c-${i}`} className="bg-[#F2EBE1] border-l-2 p-5" style={{ borderColor: day.accent }}>
-                      <p className="font-serif-x text-base md:text-lg text-[#2C2621] leading-snug">
-                        {pick(c.title, lang)}
-                      </p>
-                      <p className="mt-2 text-sm text-[#5C5248] leading-relaxed">
-                        {pick(c.body, lang)}
-                      </p>
+                      <C
+                        name={`day.${day.id}.culture.${i}.title`}
+                        as="p"
+                        multiline={false}
+                        defaults={c.title}
+                        className="font-serif-x text-base md:text-lg text-[#2C2621] leading-snug"
+                      />
+                      <C
+                        name={`day.${day.id}.culture.${i}.body`}
+                        as="p"
+                        defaults={c.body}
+                        className="mt-2 text-sm text-[#5C5248] leading-relaxed"
+                      />
                     </div>
                   ))}
                 </div>
@@ -1374,10 +1461,8 @@ const Itinerary = ({ t, lang, days }) => (
   <section id="itinerary" data-testid="program-itinerary"
            className="relative bg-[#FDFBF7] pt-20 md:pt-28">
     <div className="relative max-w-7xl mx-auto px-6 md:px-12 text-center mb-12">
-      <span className="overline">{t.itinerary_overline}</span>
-      <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-        {t.itinerary_title}
-      </h2>
+      <L k="itinerary_overline" className="overline" />
+      <L k="itinerary_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
     </div>
     {days.map((d, i) => (
       <DayBlock key={`${d.id}-${i}`} day={d} idx={i} total={days.length} lang={lang} t={t} />
@@ -1393,24 +1478,22 @@ const Pricing = ({ t, lang, program }) => (
     <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-14">
         <div className="md:col-span-7">
-          <span className="overline text-[#D4A373]">{t.pricing_overline}</span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5">
-            {t.pricing_title}
-          </h2>
+          <L k="pricing_overline" className="overline text-[#D4A373]" />
+          <L k="pricing_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5" />
         </div>
         <div className="md:col-span-5">
-          <p className="text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed">{t.pricing_body}</p>
+          <L k="pricing_body" multiline as="p" className="text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed" />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15">
         {SHARED_SEASONS.map((s) => (
           <div key={s.id} data-testid={`program-season-${s.id}`}
                className="bg-[#1A1513] hover:bg-[#221A16] transition-colors duration-300 p-6 md:p-7 flex flex-col gap-4">
-            <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">{t.pricing_season}</span>
-            <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.1]">{pick(s.label, lang)}</h3>
+            <L k="pricing_season" className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]" />
+            <G k={`season.${s.id}.label`} defaults={s.label} as="h3" className="font-serif-x text-2xl md:text-[26px] leading-[1.1]" />
             <p className="text-sm text-[#FDFBF7]/65">
-              <span className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/45 block mb-1">{t.pricing_months}</span>
-              {pick(s.months, lang)}
+              <L k="pricing_months" className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/45 block mb-1" />
+              <G k={`season.${s.id}.months`} defaults={s.months} />
             </p>
             <div className="flex gap-1 mt-2">
               {[1,2,3,4].map((lv) => (
@@ -1418,9 +1501,9 @@ const Pricing = ({ t, lang, program }) => (
               ))}
             </div>
             <div className="mt-auto pt-5 border-t border-[#FDFBF7]/10">
-              <span className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/55">{t.pricing_from}</span>
+              <L k="pricing_from" className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/55" />
               <p className="font-serif-x text-3xl text-[#FDFBF7] mt-1">€{program.prices[s.id].toLocaleString()}</p>
-              <p className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/55 mt-1">{t.pricing_per}</p>
+              <L k="pricing_per" as="p" className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/55 mt-1" />
             </div>
           </div>
         ))}
@@ -1428,7 +1511,7 @@ const Pricing = ({ t, lang, program }) => (
       <div className="mt-10 flex justify-center">
         <a href="#contact" data-testid="program-pricing-cta"
            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
-          {t.pricing_cta}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+          <L k="pricing_cta" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </a>
       </div>
     </div>
@@ -1438,20 +1521,18 @@ const Pricing = ({ t, lang, program }) => (
 const DetailsAccordion = ({ t, lang, program }) => {
   const [open, setOpen] = useState("includes");
   const tabs = [
-    { id: "includes", label: t.tab_includes },
-    { id: "excludes", label: t.tab_excludes },
-    { id: "notes",    label: t.tab_notes },
-    { id: "terms",    label: t.tab_terms },
+    { id: "includes", lk: "tab_includes" },
+    { id: "excludes", lk: "tab_excludes" },
+    { id: "notes",    lk: "tab_notes" },
+    { id: "terms",    lk: "tab_terms" },
   ];
   return (
     <section id="includes" data-testid="program-details"
              className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
       <div className="relative max-w-5xl mx-auto px-6 md:px-12">
         <div className="text-center mb-12">
-          <span className="overline">{t.details_overline}</span>
-          <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-            {t.details_title}
-          </h2>
+          <L k="details_overline" className="overline" />
+          <L k="details_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
         </div>
         <div className="border border-[#2C2621]/15">
           {tabs.map((tab) => {
@@ -1463,7 +1544,7 @@ const DetailsAccordion = ({ t, lang, program }) => {
                 <button data-testid={`program-detail-tab-${tab.id}`}
                         onClick={() => setOpen(isOpen ? null : tab.id)}
                         className="w-full px-6 md:px-8 py-5 flex items-center justify-between text-left hover:bg-[#F2EBE1] transition-colors">
-                  <span className="font-serif-x text-lg md:text-xl text-[#2C2621]">{tab.label}</span>
+                  <L k={tab.lk} className="font-serif-x text-lg md:text-xl text-[#2C2621]" />
                   {isOpen ? <ChevronUp className="w-4 h-4 text-[#C16542]" strokeWidth={1.6} /> : <ChevronDown className="w-4 h-4 text-[#5C5248]" strokeWidth={1.6} />}
                 </button>
                 {isOpen && (
@@ -1472,7 +1553,14 @@ const DetailsAccordion = ({ t, lang, program }) => {
                       {items.map((it, i) => (
                         <li key={`${tab.id}-${i}`} className="flex items-start gap-3">
                           <span className="mt-2.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#C16542" }} />
-                          <span>{it}</span>
+                          <C
+                            name={`details.${tab.id}.${i}`}
+                            defaults={{
+                              es: detailsObj[tab.id]?.es?.[i] || "",
+                              en: detailsObj[tab.id]?.en?.[i] || "",
+                              fr: detailsObj[tab.id]?.fr?.[i] || "",
+                            }}
+                          />
                         </li>
                       ))}
                     </ul>
@@ -1493,42 +1581,40 @@ const ContactBand = ({ t, lang }) => (
     <div className="absolute inset-0 berber-bg-diamond opacity-30" aria-hidden="true" />
     <div className="relative max-w-5xl mx-auto px-6 md:px-12">
       <div className="text-center max-w-3xl mx-auto">
-        <span className="overline">{t.contact_overline}</span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]">
-          {t.contact_title}
-        </h2>
-        <p className="mt-6 font-serif-x-italic text-xl md:text-2xl text-[#5C5248]">{t.contact_body}</p>
+        <L k="contact_overline" className="overline" />
+        <L k="contact_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
+        <L k="contact_body" multiline as="p" className="mt-6 font-serif-x-italic text-xl md:text-2xl text-[#5C5248]" />
       </div>
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-left">
         <a href={`tel:${CONTACT.phoneRaw}`} data-testid="program-contact-phone"
            className="group bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#C16542]/40 p-6 md:p-7 transition-all duration-500">
-          <span className="overline">{t.phone_label}</span>
+          <L k="phone_label" className="overline" />
           <p className="mt-3 flex items-center gap-3 font-serif-x text-xl text-[#2C2621] group-hover:text-[#C16542] transition-colors">
             <Phone className="w-5 h-5 text-[#C16542]" strokeWidth={1.5} />{CONTACT.phone}
           </p>
         </a>
         <a href={`mailto:${CONTACT.email}`} data-testid="program-contact-email"
            className="group bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#C16542]/40 p-6 md:p-7 transition-all duration-500">
-          <span className="overline">{t.email_label}</span>
+          <L k="email_label" className="overline" />
           <p className="mt-3 flex items-center gap-3 font-serif-x text-xl text-[#2C2621] group-hover:text-[#C16542] transition-colors break-all">
             <Mail className="w-5 h-5 text-[#C16542]" strokeWidth={1.5} />{CONTACT.email}
           </p>
         </a>
         <div className="bg-[#FDFBF7] border border-[#2C2621]/10 p-6 md:p-7">
-          <span className="overline">{t.hours_label}</span>
+          <L k="hours_label" className="overline" />
           <p className="mt-3 flex items-center gap-3 font-serif-x text-xl text-[#2C2621]">
-            <Calendar className="w-5 h-5 text-[#C16542]" strokeWidth={1.5} />{t.hours_value}
+            <Calendar className="w-5 h-5 text-[#C16542]" strokeWidth={1.5} /><L k="hours_value" />
           </p>
         </div>
       </div>
       <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
         <a href="#form" data-testid="program-cta-budget"
            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
-          {t.cta_budget}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+          <L k="cta_budget" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </a>
         <Link to={pathFor(lang, "appointment")} data-testid="program-cta-appointment"
               className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
-          <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />{t.cta_appointment}
+          <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} /><L k="cta_appointment" />
         </Link>
         <a href={`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`} target="_blank" rel="noreferrer"
            data-testid="program-cta-whatsapp"
@@ -1571,10 +1657,10 @@ export default function ProgramTemplate({ program, variant = "da" }) {
 
   return (
     <div data-testid={`program-page-${program.duration_key}`}>
-      <ProgramHero vt={vt} t={t} program={program} lang={lang} />
+      <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} />
       <StickyNav items={navItems} testid="program-nav" />
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
-      <Description vt={vt} t={t} />
+      <Description vt={vt} t={t} program={program} variant={variant} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <Itinerary t={t} lang={lang} days={program.days} />
       <TripOverview days={program.days} />
