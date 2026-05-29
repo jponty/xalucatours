@@ -106,6 +106,7 @@ import IncentivosPage from "@/pages/IncentivosPage";
 import MoroccoLandingPage from "@/pages/MoroccoLandingPage";
 import EquipoPage from "@/pages/EquipoPage";
 import BlogPage from "@/pages/BlogPage";
+import ContactPage from "@/pages/ContactPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -223,4 +224,5 @@ export const ROUTE_COMPONENTS = {
   morocco:                       MoroccoLandingPage,
   about:                         EquipoPage,
   blog:                          BlogPage,
+  contact:                       ContactPage,
 };
