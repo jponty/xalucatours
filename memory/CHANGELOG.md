@@ -1,5 +1,13 @@
 
-## "When to travel" — removed discouraging "Avoid" language (Feb 2026)
+## Recommended itineraries → card carousel · /cuando-viajar (Feb 2026)
+- The "Itinerarios recomendados" subsection inside each of the 4 "Cuatro estaciones" blocks was upgraded from a simple vertical link list into a **horizontal card carousel** (`SeasonRecommendedCarousel` in `WhenToTravelPage.jsx`).
+- Each card shows: CMS-editable image (`EditableImage` slot `when-travel.season.{id}.reco.{i}`, 4:3, fallback from verified `imageBank.js`), region badge with `MapPin` (season accent), serif title, short trilingual description, duration with `Clock` icon, dynamic **"Desde €X por persona"** via the centralised `<FromPrice tone="dark">`, and an accent CTA button → `pathFor(lang, route)`.
+- `lib/bestTimeData.js`: each `recommended` item enriched with `image`, `duration`, `region`, `desc` (all trilingual). 12 items across spring/summer/autumn/winter.
+- Carousel: `overflow-x-auto` + scroll-snap; desktop prev/next arrow buttons (`season-recommended-prev/next-{id}`) scroll by one card width. Cards are 260–280px, snap-start.
+- Testids preserved/added: `season-recommended-{id}`, `season-recommended-{id}-{i}` (now on the card), `season-recommended-cta-{id}-{i}`, `season-recommended-prev/next-{id}`.
+- Note: pricing is global (single configured "from" price, /admin-editable) per user confirmation — all cards show the same "Desde" value by design.
+- Verified via screenshot: spring shows 3 cards, region badges, durations, "Desde €790 por persona", working nav arrows; lint clean.
+
 - Per agency policy (travellers welcome year-round), reframed the "Avoid months" concept into neutral seasonal guidance across the "When to Travel" page and the "Best month for my trip" panel (`BestMonthFab`).
 - `lib/bestTimeData.js`: the per-region `avoid` values now describe seasonal characteristics instead of months to skip (e.g. "Jun–Ago: calor intenso de día", "Dic–Feb: mar fresco para el baño"). Narrative bodies for the desert travel-style and the "cheapest months" FAQ were rewritten to suggest alternatives (Atlas/coast) rather than telling users to skip months.
 - Label renamed everywhere from "Evita / Avoid / À éviter" → "A tener en cuenta / Good to know / À noter" (`WhenToTravelPage.jsx` COPY.labels.avoid, `BestMonthFab.jsx` COPY.avoid + intro). No red/warning iconography. Visual tone stays neutral.

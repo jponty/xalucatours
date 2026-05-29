@@ -1,16 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Tooltip } from "react-leaflet";
 import {
-  ChevronRight, Home, Sunrise, ArrowRight, Compass, MapPin,
+  ChevronRight, ChevronLeft, Home, Sunrise, ArrowRight, Compass, MapPin,
   Sun, Snowflake, Leaf, Flower, Calendar, Sparkles, Camera,
-  Mountain, Waves, Building2, Tent, Star,
+  Mountain, Waves, Building2, Tent, Star, Clock,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import {
   HERO, INTRO, SEASONS, REGIONS, TRAVEL_STYLES, MONTHS, FAQ, INTERNAL_LINKS,
 } from "@/lib/bestTimeData";
+import EditableImage from "@/components/EditableImage";
+import FromPrice from "@/components/FromPrice";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
@@ -125,6 +127,111 @@ const MonthBar = ({ activeMonths, accent }) => {
     </div>
   );
 };
+
+/* ----- Recommended itineraries · horizontal card carousel ----- */
+const SeasonRecommendedCarousel = ({ season, lang, label }) => {
+  const scrollRef = useRef(null);
+  const items = season.recommended || [];
+
+  const scrollBy = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const card = el.querySelector("[data-reco-card]");
+    const delta = card ? card.offsetWidth + 20 : 320;
+    el.scrollBy({ left: dir * delta, behavior: "smooth" });
+  };
+
+  return (
+    <div className="mt-7 pt-6 border-t border-[#2C2621]/10" data-testid={`season-recommended-${season.id}`}>
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">{label}</p>
+        {items.length > 1 && (
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => scrollBy(-1)}
+              data-testid={`season-recommended-prev-${season.id}`}
+              aria-label="Anterior"
+              className="w-9 h-9 inline-flex items-center justify-center border border-[#2C2621]/20 text-[#2C2621] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" strokeWidth={1.8} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              data-testid={`season-recommended-next-${season.id}`}
+              aria-label="Siguiente"
+              className="w-9 h-9 inline-flex items-center justify-center border border-[#2C2621]/20 text-[#2C2621] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" strokeWidth={1.8} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div
+        ref={scrollRef}
+        className="flex gap-5 overflow-x-auto pb-3 -mx-1 px-1 snap-x snap-mandatory scrollbar-thin"
+        style={{ scrollbarWidth: "thin" }}
+      >
+        {items.map((it, i) => (
+          <article
+            key={`${it.route}-${i}`}
+            data-reco-card
+            data-testid={`season-recommended-${season.id}-${i}`}
+            className="group/reco relative shrink-0 w-[260px] sm:w-[280px] snap-start flex flex-col bg-[#FDFBF7] border border-[#2C2621]/12 hover:border-[var(--accent)] transition-colors duration-300"
+          >
+            <div className="relative overflow-hidden aspect-[4/3]">
+              <EditableImage
+                slot={`when-travel.season.${season.id}.reco.${i}`}
+                fallback={it.image}
+                alt={pick(it.label, lang)}
+                aspectRatio="4 / 3"
+                className="w-full h-full"
+                imgProps={{ className: "w-full h-full object-cover transition-transform duration-[1200ms] group-hover/reco:scale-105" }}
+              />
+              <span
+                className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] tracking-[0.22em] uppercase text-[#FDFBF7] pointer-events-none"
+                style={{ backgroundColor: `${season.accent}E6` }}
+              >
+                <MapPin className="w-3 h-3" strokeWidth={1.8} />
+                {pick(it.region, lang)}
+              </span>
+            </div>
+
+            <div className="flex flex-col flex-1 p-4">
+              <h4 className="font-serif-x text-lg md:text-xl leading-snug text-[#2C2621] mb-1.5">
+                {pick(it.label, lang)}
+              </h4>
+              <p className="text-[13px] leading-relaxed text-[#5C5248] mb-3 flex-1">
+                {pick(it.desc, lang)}
+              </p>
+
+              <div className="flex items-center gap-2 text-[11px] tracking-[0.12em] uppercase text-[#5C5248] mb-3">
+                <Clock className="w-3.5 h-3.5 shrink-0" strokeWidth={1.8} style={{ color: season.accent }} />
+                {pick(it.duration, lang)}
+              </div>
+
+              <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#2C2621]/10">
+                <FromPrice tone="dark" size="sm" />
+                <Link
+                  to={pathFor(lang, it.route)}
+                  data-testid={`season-recommended-cta-${season.id}-${i}`}
+                  aria-label={pick(it.label, lang)}
+                  className="inline-flex items-center justify-center w-9 h-9 shrink-0 text-[#FDFBF7] transition-transform duration-300 group-hover/reco:translate-x-0.5"
+                  style={{ backgroundColor: season.accent }}
+                >
+                  <ArrowRight className="w-4 h-4" strokeWidth={1.8} />
+                </Link>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 
 /* ============================================================
    Page
@@ -384,31 +491,11 @@ export default function WhenToTravelPage() {
                     </dl>
 
                     {Array.isArray(season.recommended) && season.recommended.length > 0 && (
-                      <div className="mt-7 pt-6 border-t border-[#2C2621]/10" data-testid={`season-recommended-${season.id}`}>
-                        <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-4">
-                          {pick(COPY.labels.recommended, lang)}
-                        </p>
-                        <ul className="space-y-2.5">
-                          {season.recommended.map((it, i) => (
-                            <li key={it.route}>
-                              <Link
-                                to={pathFor(lang, it.route)}
-                                data-testid={`season-recommended-${season.id}-${i}`}
-                                className="group/itin flex items-center justify-between gap-4 px-4 py-3 border border-[#2C2621]/15 hover:border-[var(--accent)] bg-[#FDFBF7] transition-colors duration-300"
-                              >
-                                <span className="text-sm md:text-[15px] text-[#2C2621] group-hover/itin:text-[var(--accent)] transition-colors">
-                                  {pick(it.label, lang)}
-                                </span>
-                                <ArrowRight
-                                  className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover/itin:translate-x-1"
-                                  strokeWidth={1.8}
-                                  style={{ color: season.accent }}
-                                />
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      <SeasonRecommendedCarousel
+                        season={season}
+                        lang={lang}
+                        label={pick(COPY.labels.recommended, lang)}
+                      />
                     )}
                   </div>
                 </div>

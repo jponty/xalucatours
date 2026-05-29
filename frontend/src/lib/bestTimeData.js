@@ -6,6 +6,8 @@
    without touching the page component.
 ============================================================ */
 
+import { IMG } from "./imageBank";
+
 export const HERO = {
   eyebrow: { es: "Cuándo viajar · Marruecos a lo largo del año", en: "When to travel · Morocco year-round", fr: "Quand partir · le Maroc au fil de l'année" },
   title: {
@@ -55,9 +57,9 @@ export const SEASONS = [
     months: { es: "Marzo · Abril · Mayo", en: "March · April · May", fr: "Mars · Avril · Mai" },
     idealFor: { es: "Alto Atlas en flor, desierto templado y medinas sin calor.", en: "the Atlas in bloom, a mild desert and medinas without the heat.", fr: "l'Atlas en fleurs, un désert tempéré et les médinas sans la chaleur." },
     recommended: [
-      { route: "tourAtlasDesierto67", label: { es: "Atlas y desierto · 6n/7d", en: "Atlas & desert · 6n/7d", fr: "Atlas & désert · 6n/7j" } },
-      { route: "tourCiudadesImperiales45", label: { es: "Ciudades imperiales · 4n/5d", en: "Imperial cities · 4n/5d", fr: "Cités impériales · 4n/5j" } },
-      { route: "tourMarrakechErg45", label: { es: "Marrakech – Erg Chebbi · 4n/5d", en: "Marrakech – Erg Chebbi · 4n/5d", fr: "Marrakech – Erg Chebbi · 4n/5j" } },
+      { route: "tourAtlasDesierto67", image: IMG.atlasSnowy, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Atlas y desierto", en: "Atlas & desert", fr: "Atlas & désert" }, label: { es: "Atlas y desierto", en: "Atlas & desert", fr: "Atlas & désert" }, desc: { es: "Del Alto Atlas en flor a las dunas templadas del Erg Chebbi.", en: "From the blooming High Atlas to the mild Erg Chebbi dunes.", fr: "Du Haut Atlas en fleurs aux dunes tempérées de l'Erg Chebbi." } },
+      { route: "tourCiudadesImperiales45", image: IMG.koutoubia, duration: { es: "4 noches · 5 días", en: "4 nights · 5 days", fr: "4 nuits · 5 jours" }, region: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" }, label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" }, desc: { es: "Marrakech, Fez y Rabat con luz suave y terrazas sin calor.", en: "Marrakech, Fez and Rabat with soft light and heat-free rooftops.", fr: "Marrakech, Fès et Rabat avec une lumière douce et des terrasses sans chaleur." } },
+      { route: "tourMarrakechErg45", image: IMG.camelCaravan, duration: { es: "4 noches · 5 días", en: "4 nights · 5 days", fr: "4 nuits · 5 jours" }, region: { es: "Sur · Sáhara", en: "South · Sahara", fr: "Sud · Sahara" }, label: { es: "Marrakech – Erg Chebbi", en: "Marrakech – Erg Chebbi", fr: "Marrakech – Erg Chebbi" }, desc: { es: "Escapada exprés al desierto con una noche en bivouac.", en: "Express desert escape with one night in a bivouac.", fr: "Escapade express au désert avec une nuit en bivouac." } },
     ],
     title: { es: "Primavera. El Marruecos en flor.", en: "Spring. Morocco in bloom.", fr: "Printemps. Le Maroc en fleurs." },
     weather: {
@@ -93,9 +95,9 @@ export const SEASONS = [
     months: { es: "Junio · Julio · Agosto", en: "June · July · August", fr: "Juin · Juillet · Août" },
     idealFor: { es: "costa atlántica, montañas del Atlas y noches en las ciudades imperiales.", en: "the Atlantic coast, the Atlas mountains and imperial cities by night.", fr: "la côte atlantique, les montagnes de l'Atlas et les cités impériales le soir." },
     recommended: [
-      { route: "tourMarrakechEss67", label: { es: "Marrakech – Essaouira · 6n/7d", en: "Marrakech – Essaouira · 6n/7d", fr: "Marrakech – Essaouira · 6n/7j" } },
-      { route: "tourCiudadesImperialesRif67", label: { es: "Imperiales y Rif · 6n/7d", en: "Imperial cities & Rif · 6n/7d", fr: "Cités impériales & Rif · 6n/7j" } },
-      { route: "tourCiudadesImperiales67", label: { es: "Ciudades imperiales · 6n/7d", en: "Imperial cities · 6n/7d", fr: "Cités impériales · 6n/7j" } },
+      { route: "tourMarrakechEss67", image: IMG.essaouiraPort, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Costa atlántica", en: "Atlantic coast", fr: "Côte atlantique" }, label: { es: "Marrakech – Essaouira", en: "Marrakech – Essaouira", fr: "Marrakech – Essaouira" }, desc: { es: "Brisa atlántica, surf y la medina marinera de Essaouira.", en: "Atlantic breeze, surf and Essaouira's seafaring medina.", fr: "Brise atlantique, surf et la médina marine d'Essaouira." } },
+      { route: "tourCiudadesImperialesRif67", image: IMG.chefBlueCity, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Norte · Rif", en: "North · Rif", fr: "Nord · Rif" }, label: { es: "Imperiales y Rif", en: "Imperial cities & Rif", fr: "Cités impériales & Rif" }, desc: { es: "Ciudades imperiales y el azul fresco de Chefchaouen.", en: "Imperial cities and the cool blue of Chefchaouen.", fr: "Cités impériales et le bleu frais de Chefchaouen." } },
+      { route: "tourCiudadesImperiales67", image: IMG.medinaPeople, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" }, label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" }, desc: { es: "Medinas vivas al atardecer, cuando baja el calor del día.", en: "Living medinas at dusk, when the day's heat fades.", fr: "Médinas vivantes au crépuscule, quand la chaleur retombe." } },
     ],
     title: { es: "Verano. Atlas, Atlántico y noches sin fin.", en: "Summer. Atlas, Atlantic and endless nights.", fr: "Été. Atlas, Atlantique et nuits sans fin." },
     weather: {
@@ -131,9 +133,9 @@ export const SEASONS = [
     months: { es: "Septiembre · Octubre · Noviembre", en: "September · October · November", fr: "Septembre · Octobre · Novembre" },
     idealFor: { es: "el desierto recién reabierto, la mejor luz del año y rutas por todo el país.", en: "the freshly reopened desert, the year's best light and journeys countrywide.", fr: "le désert rouvert, la plus belle lumière de l'année et des itinéraires partout." },
     recommended: [
-      { route: "tourFezRak78", label: { es: "Gran ruta Fez – Marrakech · 7n/8d", en: "Grand route Fez – Marrakech · 7n/8d", fr: "Grande route Fès – Marrakech · 7n/8j" } },
-      { route: "tourMarrakechErg67", label: { es: "Marrakech – Erg Chebbi · 6n/7d", en: "Marrakech – Erg Chebbi · 6n/7d", fr: "Marrakech – Erg Chebbi · 6n/7j" } },
-      { route: "tourAtlasDesierto67", label: { es: "Atlas y desierto · 6n/7d", en: "Atlas & desert · 6n/7d", fr: "Atlas & désert · 6n/7j" } },
+      { route: "tourFezRak78", image: IMG.kasbahArch, duration: { es: "7 noches · 8 días", en: "7 nights · 8 days", fr: "7 nuits · 8 jours" }, region: { es: "Gran Sur", en: "Grand South", fr: "Grand Sud" }, label: { es: "Gran ruta Fez – Marrakech", en: "Grand route Fez – Marrakech", fr: "Grande route Fès – Marrakech" }, desc: { es: "La gran travesía de norte a sur con la mejor luz del año.", en: "The great north-to-south crossing with the year's best light.", fr: "La grande traversée nord-sud avec la plus belle lumière de l'année." } },
+      { route: "tourMarrakechErg67", image: IMG.dunes, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Sur · Sáhara", en: "South · Sahara", fr: "Sud · Sahara" }, label: { es: "Marrakech – Erg Chebbi", en: "Marrakech – Erg Chebbi", fr: "Marrakech – Erg Chebbi" }, desc: { es: "Dunas doradas y noches estrelladas en plena temporada del Sáhara.", en: "Golden dunes and starry nights in the peak Sahara season.", fr: "Dunes dorées et nuits étoilées en pleine saison du Sahara." } },
+      { route: "tourAtlasDesierto67", image: IMG.atlasMisty, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Atlas y desierto", en: "Atlas & desert", fr: "Atlas & désert" }, label: { es: "Atlas y desierto", en: "Atlas & desert", fr: "Atlas & désert" }, desc: { es: "Montañas del Atlas y dunas en una sola ruta otoñal.", en: "Atlas mountains and dunes in a single autumn route.", fr: "Montagnes de l'Atlas et dunes sur un seul itinéraire d'automne." } },
     ],
     title: { es: "Otoño. La temporada dorada del Sáhara.", en: "Autumn. The Sahara's golden season.", fr: "Automne. La saison dorée du Sahara." },
     weather: {
@@ -169,9 +171,9 @@ export const SEASONS = [
     months: { es: "Diciembre · Enero · Febrero", en: "December · January · February", fr: "Décembre · Janvier · Février" },
     idealFor: { es: "dunas del Sáhara al sol, ciudades imperiales y hasta esquí en Oukaïmeden.", en: "sunny Sahara dunes, imperial cities and even skiing in Oukaimeden.", fr: "les dunes ensoleillées du Sahara, les cités impériales et même le ski à Oukaïmeden." },
     recommended: [
-      { route: "tourMarrakechErg45", label: { es: "Marrakech – Erg Chebbi · 4n/5d", en: "Marrakech – Erg Chebbi · 4n/5d", fr: "Marrakech – Erg Chebbi · 4n/5j" } },
-      { route: "tourCiudadesImperiales45", label: { es: "Ciudades imperiales · 4n/5d", en: "Imperial cities · 4n/5d", fr: "Cités impériales · 4n/5j" } },
-      { route: "tourDesiertoAtlas67", label: { es: "Desierto y Atlas · 6n/7d", en: "Desert & Atlas · 6n/7d", fr: "Désert & Atlas · 6n/7j" } },
+      { route: "tourMarrakechErg45", image: IMG.camelDunes, duration: { es: "4 noches · 5 días", en: "4 nights · 5 days", fr: "4 nuits · 5 jours" }, region: { es: "Sur · Sáhara", en: "South · Sahara", fr: "Sud · Sahara" }, label: { es: "Marrakech – Erg Chebbi", en: "Marrakech – Erg Chebbi", fr: "Marrakech – Erg Chebbi" }, desc: { es: "Dunas al sol y noches estrelladas — ideal para Fin de Año.", en: "Sunny dunes and starry nights — perfect for New Year's Eve.", fr: "Dunes ensoleillées et nuits étoilées — idéal pour le réveillon." } },
+      { route: "tourCiudadesImperiales45", image: IMG.riadFountain, duration: { es: "4 noches · 5 días", en: "4 nights · 5 days", fr: "4 nuits · 5 jours" }, region: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" }, label: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" }, desc: { es: "Riads con chimenea y medinas tranquilas, sin multitudes.", en: "Riads with fireplaces and quiet medinas, free of crowds.", fr: "Riads à cheminée et médinas calmes, sans la foule." } },
+      { route: "tourDesiertoAtlas67", image: IMG.atlasSnowy, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Desierto y Atlas", en: "Desert & Atlas", fr: "Désert & Atlas" }, label: { es: "Desierto y Atlas", en: "Desert & Atlas", fr: "Désert & Atlas" }, desc: { es: "Contraste de nieve en el Atlas y dunas cálidas del Sáhara.", en: "A contrast of Atlas snow and warm Sahara dunes.", fr: "Le contraste entre la neige de l'Atlas et les dunes chaudes du Sahara." } },
     ],
     title: { es: "Invierno. Nieve en el Atlas, fuego en el desierto.", en: "Winter. Snow on the Atlas, fire in the desert.", fr: "Hiver. Neige sur l'Atlas, feu dans le désert." },
     weather: {
