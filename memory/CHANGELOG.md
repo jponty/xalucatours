@@ -1,4 +1,10 @@
 
+## Hero background video → clean, chrome-free (Feb 2026)
+- Reworked the Home hero background video (`HeroSlider.jsx`) from a static `youtube-nocookie` iframe to the **YouTube IFrame Player API** (same proven pattern as `ToursVideoSection`).
+- No YouTube chrome at all: `controls=0`, `modestbranding`, `rel=0`, `disablekb`, `fs=0`, iframe `pointer-events:none` + `aria-hidden`/`tabindex=-1` (no hover title bar, share/watch-later buttons or clicks).
+- Muted autoplay + seamless loop driven by the API (`onReady` → mute+play, `onStateChange` ENDED → seek(0)+play). End-screen / related-video grid suppressed by looping back ~1.2s before the clip ends (400ms poll).
+- Iframe over-scaled with `scale-[1.35]` inside the aspect-cover wrapper so the title bar (top) and any progress/branding (bottom) are cropped outside the frame. Brand gradient + berber + grain overlays unchanged.
+
 ## Travel postcard editorial block · /viajes (Feb 2026)
 - Added an emotional **postcard block** inside the "Marruecos, explorado a tu manera" intro section (`TravelPostcard` in `ToursLandingPage.jsx`).
 - Aged-paper card (rotated, tape corners, faint berber texture), handwritten **Caveat** font (`.font-hand`), "POSTAL DESDE MARRUECOS" label, handwritten tagline "El viaje lejano más cercano", greeting + 2-paragraph message + "Nos vemos en el camino." + "Xaluca Tours" signature.

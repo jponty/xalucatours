@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
@@ -25,11 +25,30 @@ import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
      elsewhere; default export is the same.
 ============================================================ */
 const VIDEO_ID = "yo38KP4ikfg";
-const VIDEO_SRC =
-  `https://www.youtube-nocookie.com/embed/${VIDEO_ID}` +
-  `?autoplay=1&mute=1&loop=1&playlist=${VIDEO_ID}` +
-  `&controls=0&showinfo=0&rel=0&modestbranding=1` +
-  `&iv_load_policy=3&disablekb=1&playsinline=1`;
+
+/* Lazy-load the YouTube IFrame Player API exactly once (shared promise). */
+let ytApiPromise = null;
+const loadYouTubeAPI = () => {
+  if (ytApiPromise) return ytApiPromise;
+  ytApiPromise = new Promise((resolve) => {
+    if (window.YT && window.YT.Player) {
+      resolve(window.YT);
+      return;
+    }
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prev === "function") prev();
+      resolve(window.YT);
+    };
+    if (!document.getElementById("youtube-iframe-api")) {
+      const tag = document.createElement("script");
+      tag.id = "youtube-iframe-api";
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+    }
+  });
+  return ytApiPromise;
+};
 
 const HERO_PLACE = {
   en: "Morocco · From north to south",
@@ -39,6 +58,89 @@ const HERO_PLACE = {
 
 export const HeroSlider = () => {
   const { lang } = useLanguage();
+  const stageRef = useRef(null);
+
+  /* ---- Background video driven by the YouTube IFrame API ----
+     No native chrome at all: muted autoplay, seamless loop, and the
+     end-screen / related-video grid is skipped by looping back ~1.2s
+     before the clip actually ends. The iframe is pointer-events-none
+     and the whole surface is over-scaled + cropped so the title bar
+     (top) and any branding/progress (bottom) sit outside the frame. */
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return undefined;
+
+    const holder = document.createElement("div");
+    holder.className = "absolute inset-0 w-full h-full";
+    stage.appendChild(holder);
+
+    let cancelled = false;
+    let player = null;
+    let loopTimer = null;
+
+    loadYouTubeAPI().then((YT) => {
+      if (cancelled || !YT) return;
+      player = new YT.Player(holder, {
+        videoId: VIDEO_ID,
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          loop: 1,
+          playlist: VIDEO_ID,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+          iv_load_policy: 3,
+          playsinline: 1,
+          fs: 0,
+          disablekb: 1,
+          cc_load_policy: 0,
+        },
+        events: {
+          onReady: (e) => {
+            try {
+              e.target.mute();
+              e.target.playVideo();
+              const f = e.target.getIframe && e.target.getIframe();
+              if (f) {
+                f.setAttribute("title", "Marruecos · vídeo de fondo");
+                f.setAttribute("tabindex", "-1");
+                f.setAttribute("aria-hidden", "true");
+              }
+            } catch (_) { /* noop */ }
+            // Skip the YouTube end-screen by looping just before the end.
+            loopTimer = window.setInterval(() => {
+              try {
+                const d = e.target.getDuration ? e.target.getDuration() : 0;
+                const c = e.target.getCurrentTime ? e.target.getCurrentTime() : 0;
+                if (d > 0 && c >= d - 1.2) {
+                  e.target.seekTo(0, true);
+                  e.target.playVideo();
+                }
+              } catch (_) { /* noop */ }
+            }, 400);
+          },
+          onStateChange: (e) => {
+            const S = window.YT.PlayerState;
+            if (e.data === S.ENDED) {
+              try {
+                e.target.seekTo(0, true);
+                e.target.playVideo();
+              } catch (_) { /* noop */ }
+            }
+          },
+        },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      if (loopTimer) window.clearInterval(loopTimer);
+      try { if (player && player.destroy) player.destroy(); } catch (_) { /* noop */ }
+      stage.innerHTML = "";
+    };
+  }, []);
 
   return (
     <section
@@ -51,25 +153,16 @@ export const HeroSlider = () => {
         className="absolute inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
-        {/* Aspect-cover wrapper: forces the iframe to always cover the section
-            (16:9 ratio, scaled to whichever axis is larger). */}
+        {/* Aspect-cover wrapper + extra scale so the YouTube title bar
+            (top) and any progress/branding (bottom) are cropped away. */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[1.35]"
           style={{
-            // 100vh × (16/9) / 100vw × (9/16) — picks the bigger side.
             width:  "max(100vw, calc(100vh * 16 / 9))",
             height: "max(100vh, calc(100vw * 9 / 16))",
           }}
         >
-          <iframe
-            title="Marruecos · vídeo de fondo"
-            src={VIDEO_SRC}
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen={false}
-            frameBorder="0"
-            tabIndex={-1}
-            className="w-full h-full pointer-events-none select-none"
-          />
+          <div ref={stageRef} className="relative w-full h-full pointer-events-none select-none" />
         </div>
       </div>
 
