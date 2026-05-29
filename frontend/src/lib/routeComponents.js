@@ -107,11 +107,12 @@ import MoroccoLandingPage from "@/pages/MoroccoLandingPage";
 import EquipoPage from "@/pages/EquipoPage";
 import BlogPage from "@/pages/BlogPage";
 import ContactPage from "@/pages/ContactPage";
+import CatalogoPage from "@/pages/CatalogoPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
   toursLanding:                  ToursLandingPage,
-  catalog:                       ToursLandingPage,        // alias of /viajes
+  catalog:                       CatalogoPage,            // /catalogo · Publuu flipbook
   tourFull:                      MarruecosPage,
   tourNorth:                     NortePage,
   tourSouth:                     SurPage,
