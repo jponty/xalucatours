@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend-only verification of responsive srcset/sizes + modern-format (WebP/AVIF) delivery + comprehensive lazy/eager loading across /, /viajes, /viajes/surdemarruecos, /viajes/marruecos, /viajes/desierto_atlas/programa_4n_5d. All success criteria met. Edit mode + admin Pexels fill still work — no regressions from iteration_19.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "MINOR (not a regression): /api/files transformed responses are intended to be served with `Cache-Control: public, max-age=31536000, immutable` (server.py line 1228) but the actual response Cache-Control on the wire is `no-store, no-cache, must-revalidate` — a downstream middleware/ingress is overriding it. WebP/size savings still reach the browser, but long-term caching benefit is lost. Worth investigating: a global FastAPI middleware or starlette CORS layer adding no-store, or the preview ingress stripping cache headers."
+  ],
+  "critical_code_review_comments": [
+    "Cache-Control on transformed image responses is being overridden to no-store by a downstream middleware/ingress (see action item). Backend code sets the right header; investigate middleware order.",
+    "imageUrl.js is clean and well-scoped; isOptimizable correctly excludes .svg/.gif/data: URIs.",
+    "EditableImage.jsx still at 1500+ lines (carried from iteration_19) — split recommendation stands but is not blocking."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "100%"},
+  "test_credentials": "Admin /admin password: xaluca (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Per-page metrics after 2.5–6s wait + scroll: home (170 imgs, 130 with srcset, 46 /api/files proxy imgs all carrying w=&fmt=auto, 0 broken, 0 stuck-visible, 0 black slots, body 29k px). viajes (27/26/1/1, 0/0/0). surdemarruecos (75/36/34/34 with 1 hero eager+fp=high, 0/0/0). marruecos (29/14/10/10, 0/0/0). program_4n_5d (90/19/17/17 with 1 hero eager+fp=high at w=1920, 0/0/0). WebP negotiation verified — fetch with Accept: image/webp returns Content-Type: image/webp (136KB) vs Accept */* JPEG (183KB) → ~25% smaller payload. Browser Performance entries confirm actual <img> requests transferred the WebP-size bytes. Hero <img> on program page has classes 'ken-burns absolute inset-0 w-full h-full object-cover cms-img-fade is-loaded', loading=eager, fetchPriority=high, currentSrc w=1920. Edit mode toggle has data-testid='header-edit-mode-toggle' (lucide ImagePlus icon); after toggling 134 [data-testid^='editable-overlay-'] + 134 [data-testid^='editable-edit-btn'] appear on home, EDITAR badges visible in screenshot, modal opens with library / upload / metadata fields. Admin Pexels fill: login w/ xaluca → click admin-route-tourSouth → wait 8s for preview iframe slots → click admin-fill-images → admin-fill-msg shows 'Rellenando 34 imágenes desde Pexels…' immediately (final ✓ takes 30-90s due to per-slot Pexels HTTP fan-out — not waited).",
+  "rca of the issue": "No bugs. All three new goals (responsive srcset/sizes via imageUrl.js, modern format via /api/files?fmt=auto + Accept header negotiation, lazy/eager hints) are working as designed. The previously-reverted IntersectionObserver-withholding-src approach is NOT in effect — img.src is always set, loading=lazy lets the browser natively intersection-observe, and below-fold images do load on scroll without collapsing (body heights are normal 11k–32k px and skeleton boxes reserve space). The only sub-optimal observation is Cache-Control being downgraded to no-store by a downstream layer — performance benefit (smaller WebP payload) still reaches the user but repeat-visit caching is weaker than intended."
+}

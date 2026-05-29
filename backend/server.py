@@ -7,6 +7,9 @@ import os
 import logging
 import asyncio
 import httpx
+import hashlib
+from io import BytesIO
+from PIL import Image
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from typing import List, Optional, Dict
@@ -18,6 +21,10 @@ from storage import init_storage, put_object, get_object
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# On-disk cache for transformed image variants (resize / webp / avif).
+IMG_CACHE_DIR = ROOT_DIR / "img_cache"
+IMG_CACHE_DIR.mkdir(exist_ok=True)
 
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -1161,22 +1168,120 @@ async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, ta
 
 
 @api_router.get("/files/{path:path}")
-async def download_file(path: str):
+async def download_file(
+    path: str,
+    w: Optional[int] = None,
+    fmt: Optional[str] = None,
+    accept: str = Header(default=""),
+):
     """Public proxy that streams an object from Emergent storage.
     Used by <img src="/api/files/..."> tags in the CMS — no auth needed
-    because CMS images are part of the public site content."""
-    data: bytes = b""
-    content_type: str = "application/octet-stream"
+    because CMS images are part of the public site content.
+
+    Optional on-the-fly optimisation (responsive + modern formats):
+      • ?w=640        → downscale to <= 640px wide (aspect preserved)
+      • ?fmt=webp     → re-encode as WebP
+      • ?fmt=avif     → re-encode as AVIF
+      • ?fmt=auto     → negotiate via the request Accept header
+                        (WebP preferred for fast encode + broad support)
+    Transformed variants are content-addressed and cached on disk, then
+    served with a long immutable Cache-Control for aggressive caching.
+    Passthrough (no w/fmt) keeps the original bytes — zero regression."""
+    # ---- Fast path: original bytes, unchanged behaviour ----
+    if not w and not fmt:
+        try:
+            data, content_type = get_object(path)
+        except Exception as exc:
+            logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
+            raise HTTPException(status_code=404, detail="File not found")
+        return Response(
+            content=data,
+            media_type=content_type,
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
+
+    # ---- Resolve target format ----
+    accept_l = (accept or "").lower()
+    target = None
+    if fmt == "avif":
+        target = "avif"
+    elif fmt == "webp":
+        target = "webp"
+    elif fmt == "auto":
+        # Prefer WebP (fast encode + ~97% support); only AVIF if WebP unsupported.
+        if "image/webp" in accept_l:
+            target = "webp"
+        elif "image/avif" in accept_l:
+            target = "avif"
+
+    # ---- Snap width to a small set of buckets to maximise cache hits ----
+    width = None
+    if w and w > 0:
+        buckets = [320, 480, 640, 768, 960, 1280, 1600, 1920, 2400]
+        width = next((b for b in buckets if b >= w), buckets[-1])
+
+    # ---- Disk cache lookup ----
+    ext = target or "orig"
+    key = hashlib.sha1(f"{path}|{width}|{ext}".encode("utf-8")).hexdigest()
+    cache_file = IMG_CACHE_DIR / f"{key}.{ext}"
+    mime_map = {"avif": "image/avif", "webp": "image/webp"}
+    long_cache = {"Cache-Control": "public, max-age=31536000, immutable"}
+    if cache_file.exists():
+        return Response(
+            content=cache_file.read_bytes(),
+            media_type=mime_map.get(target, "image/jpeg"),
+            headers=long_cache,
+        )
+
+    # ---- Fetch original + transform ----
     try:
         data, content_type = get_object(path)
     except Exception as exc:
         logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
         raise HTTPException(status_code=404, detail="File not found")
-    return Response(
-        content=data,
-        media_type=content_type,
-        headers={"Cache-Control": "public, max-age=86400"},
-    )
+
+    try:
+        img = Image.open(BytesIO(data))
+        img.load()
+        # Downscale only (never upscale) to preserve sharpness.
+        if width and img.width > width:
+            new_h = max(1, round(img.height * width / img.width))
+            img = img.resize((width, new_h), Image.LANCZOS)
+
+        save_fmt = {"avif": "AVIF", "webp": "WEBP"}.get(target)
+        out = BytesIO()
+        if save_fmt in ("WEBP", "AVIF"):
+            if img.mode not in ("RGB", "RGBA"):
+                img = img.convert("RGBA" if "A" in img.getbands() else "RGB")
+            save_kwargs = {"quality": 80}
+            if save_fmt == "AVIF":
+                save_kwargs["speed"] = 6   # keep encode latency reasonable
+            img.save(out, format=save_fmt, **save_kwargs)
+            out_mime = mime_map[target]
+        else:
+            # Resize-only, keep original format.
+            orig_fmt = (img.format or "JPEG")
+            if orig_fmt.upper() == "JPEG" and img.mode != "RGB":
+                img = img.convert("RGB")
+            img.save(out, format=orig_fmt)
+            out_mime = content_type
+            ext = "orig"
+            cache_file = IMG_CACHE_DIR / f"{key}.{ext}"
+
+        result = out.getvalue()
+        try:
+            cache_file.write_bytes(result)
+        except Exception as exc:
+            logger.debug("img cache write failed: %s", exc)
+        return Response(content=result, media_type=out_mime, headers=long_cache)
+    except Exception as exc:
+        # Anything Pillow can't handle (SVG, corrupt, etc.) → original bytes.
+        logger.debug("img transform fallback for %s: %s", path, exc)
+        return Response(
+            content=data,
+            media_type=content_type,
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
 
 
 # ---------- Text slots (admin inline editing) ----------

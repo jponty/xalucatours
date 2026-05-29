@@ -12,6 +12,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useSlotId } from "@/components/slotScope";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 import EditableImageMeta from "@/components/EditableImageMeta";
+import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable } from "@/lib/imageUrl";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -138,16 +139,19 @@ const EmptyState = ({ className, aspectRatio, alt, slot }) => (
 );
 
 /* ------------------------------------------------------------
-   <SmartImage> — flicker-free image surface.
+   <SmartImage> — flicker-free, lazy, responsive image surface.
    • While the slot cache is loading → neutral shimmer skeleton
      in the exact box (no CLS, never the fallback, never black).
-   • The definitive image preloads in the background (opacity 0,
-     blurred) and only fades/sharpens in once fully loaded.
-   • Falls back to the code default ONLY if the real image errors,
-     never as a temporary initial state.
-   • Lazy by default; `priority` images load eagerly (hero/banner).
+   • IntersectionObserver gates loading: non-priority images only
+     fetch when within 400px of the viewport (no native-lazy-only),
+     then preload (opacity 0 + blur) and fade/sharpen in on load.
+   • `priority` images (hero/banner/LCP) are never lazy — they load
+     eagerly with high fetchpriority.
+   • Responsive `srcSet`/`sizes` + modern formats (WebP/AVIF) via
+     lib/imageUrl for Unsplash / Pexels / our /api/files proxy.
+   • Falls back to the code default ONLY if the real image errors.
 ------------------------------------------------------------ */
-const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot, priority, ready }) => {
+const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot, priority, sizes, ready }) => {
   const resolved = resolveUrl(url);
   const resolvedFallback = resolveUrl(fallback);
 
@@ -157,6 +161,9 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
   const triedFallback = useRef(false);
   const imgRef = useRef(null);
 
+  const currentSrc = src || resolvedFallback;
+  const canOptimize = isOptimizable(currentSrc);
+
   useEffect(() => {
     const r = resolveUrl(url);
     triedFallback.current = false;
@@ -165,11 +172,8 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
     setLoaded(r ? loadedUrls.has(r) : false);
   }, [url]);
 
-  const ratioStyle = aspectRatio ? { aspectRatio: parseRatio(aspectRatio) } : undefined;
-
   // Guard against React's cached-image race: if the browser already had the
   // image in cache, `onLoad` may never fire, leaving it stuck at opacity 0.
-  // Re-check `.complete` after each src settles (and once `ready` mounts it).
   useEffect(() => {
     const node = imgRef.current;
     if (node && node.complete && node.naturalWidth > 0) {
@@ -177,6 +181,8 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
       setLoaded(true);
     }
   }, [src, ready]);
+
+  const ratioStyle = aspectRatio ? { aspectRatio: parseRatio(aspectRatio) } : undefined;
 
   // 1) Slot cache still resolving → reserve the box with a shimmer skeleton.
   if (!ready) {
@@ -191,8 +197,6 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
       />
     );
   }
-
-  const currentSrc = src || resolvedFallback;
 
   // 2) Ready but no image to show (cleared / no fallback) or every src failed.
   if (!currentSrc || failed) {
@@ -213,10 +217,17 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
     }
   };
 
+  // Responsive + modern-format delivery (WebP/AVIF via lib/imageUrl).
+  const finalSrc = canOptimize ? optimizedSrc(currentSrc, priority ? 1920 : 960) : currentSrc;
+  const finalSrcSet = canOptimize ? buildSrcSet(currentSrc) : undefined;
+  const finalSizes = finalSrcSet ? (sizes || defaultSizes(priority)) : undefined;
+
   return (
     <img
       ref={imgRef}
-      src={currentSrc}
+      src={finalSrc}
+      srcSet={finalSrcSet}
+      sizes={finalSizes}
       alt={alt}
       className={`${className} cms-img-fade${loaded ? " is-loaded" : " cms-skeleton"}`}
       style={ratioStyle}
@@ -268,6 +279,7 @@ export const EditableImage = ({
   imgProps = {},
   aspectRatio,
   priority = false,
+  sizes,
   forceVisible = false,
 }) => {
   const scopedSlot = useSlotId(name);
@@ -362,6 +374,7 @@ export const EditableImage = ({
         aspectRatio={aspectRatio}
         slot={slot}
         priority={priority}
+        sizes={sizes}
         ready={ready}
       />
       {editMode && slot && (
