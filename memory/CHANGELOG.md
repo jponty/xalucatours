@@ -1,4 +1,15 @@
 
+## Responsive images + WebP/AVIF proxy + lazy optimization (Feb 2026)
+- **User mandate**: responsive delivery (srcset/sizes), modern formats (WebP/AVIF), comprehensive lazy loading with eager/high-priority hero (LCP), no flicker / no CLS / no placeholder flashes.
+- **Backend** (`server.py` `GET /api/files/{path}`): optional `?w=<width>&fmt=auto|webp|avif`. Pillow downscales (LANCZOS, never upscale) + converts (`fmt=auto`→WebP when `Accept: image/webp`, else AVIF; explicit `avif` uses speed=6). Variants are content-addressed and **disk-cached** in `backend/img_cache/` (cache-hit ~0.1s); served with `Cache-Control: public, max-age=31536000, immutable`. No-param requests = original bytes (zero regression). Width snapped to buckets [320…2400] to maximise cache hits. Pillow 12.2 has native WebP+AVIF.
+- **Frontend** `lib/imageUrl.js`: `optimizedSrc`/`buildSrcSet`/`defaultSizes`/`isOptimizable` — Unsplash (`auto=format` negotiates WebP/AVIF + `w`), Pexels (`auto=compress`+`w`), and our `/api/files` proxy (`w`+`fmt=auto`). Skips data:/.svg/.gif/unknown hosts.
+- **`SmartImage`** (in `EditableImage.jsx`): renders `src=optimizedSrc(currentSrc, priority?1920:960)` + `srcSet=buildSrcSet(...)` + `sizes` (priority→100vw, else card heuristic). `src` is ALWAYS set (never withheld) with native `loading="lazy"` (browser's intersection-based loader); `priority` → `eager` + `fetchPriority="high"` for hero/LCP. Keeps shimmer skeleton + blur-to-sharp fade + cached-image guard + `data-cms-image-slot`/`data-cms-alt`.
+  - NOTE: an experimental manual IntersectionObserver that *withheld* `src` was tried and **reverted** — withholding src collapses no-dimension images to 0px (0 area → IO threshold never fires → never load). Native lazy avoids this and is more efficient. A custom IO prefetch was also dropped to avoid double-downloads with `srcset`.
+- **Measured**: a 300KB JPEG → 22KB WebP at w=640 (~93% smaller); program hero WebP 136KB vs 183KB JPEG.
+- **Verified** by testing agent (iteration_20): 100% frontend, 0 bugs across home/viajes/sur/marruecos/program — 130+ imgs with srcset, /api/files imgs carry `w=&fmt=auto`, WebP served (Content-Type image/webp), 0 broken / 0 stuck / 0 black / no collapse on scroll, hero eager+fp=high at w=1920; Edit Mode (134 overlays) + /admin Pexels fill still work.
+- **Known preview-only limitation**: the preview ingress/Cloudflare overrides `Cache-Control` to `no-store` for all `/api/*` (backend sends the correct immutable header on :8001). Browser long-term caching is weaker in preview but the backend disk cache keeps re-fetches ~0.1s; production (user-controlled headers) will honour the immutable cache.
+
+
 ## Global Edit-Text rollout — Phase 1: ProgramTemplate (Feb 2026)
 - Instrumented shared `ProgramTemplate.jsx` (56 itinerary pages) so EVERY visible text is editable in Edit-Text mode.
 - Two helpers added: `<L k>` = global UI label (slot `program-ui.<k>`, one edit applies to all program pages); `<C name>` = per-page content (auto-slot `<page>.program.<name>`); `<G k defaults>` for shared season data.
