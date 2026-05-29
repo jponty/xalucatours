@@ -21,9 +21,11 @@ import {
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import EditableImage from "@/components/EditableImage";
 import EditableSection from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
+import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 
 const CALENDLY_PHONE  = "https://calendly.com/xalucatours/cita-previa-telefonica";
@@ -193,63 +195,45 @@ const ContactPage = () => {
     <SlotScope id="contact">
       <main data-testid="contact-page" className="bg-[#FDFBF7]">
 
-        {/* ============== HERO · same video-background pattern as Home ============== */}
+        {/* ============== HERO · same pattern as /quehacemos (image + Ken Burns, no video) ============== */}
         <section
           data-testid="contact-hero"
-          className="relative h-[100svh] min-h-[820px] w-full overflow-hidden bg-[#1A1513]"
+          className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#1A1513]"
         >
-          {/* Background video — same source + parameters as the homepage hero */}
-          <div
-            data-testid="contact-hero-bg-video"
-            className="absolute inset-0 pointer-events-none overflow-hidden"
-            aria-hidden="true"
-          >
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              style={{
-                width:  "max(100vw, calc(100vh * 16 / 9))",
-                height: "max(100vh, calc(100vw * 9 / 16))",
-              }}
-            >
-              <iframe
-                title="Marruecos · vídeo de fondo"
-                src="https://www.youtube-nocookie.com/embed/yo38KP4ikfg?autoplay=1&mute=1&loop=1&playlist=yo38KP4ikfg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen={false}
-                frameBorder="0"
-                tabIndex={-1}
-                className="w-full h-full pointer-events-none select-none"
-              />
-            </div>
-          </div>
+          <EditableImage
+            slot="contact.hero"
+            fallback={IMG.medinaPeople || IMG.koutoubia}
+            alt=""
+            aspectRatio="auto"
+            imgProps={{ loading: "eager" }}
+            className="ken-burns absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Legibility stack — identical to QueHacemos hero */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
+          <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
+          <span className="film-grain pointer-events-none" />
 
-          {/* Legibility overlays — identical stack to the Home hero */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/65 to-[#1A1513]/45 pointer-events-none" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_45%,_rgba(26,21,19,0.6)_100%)] pointer-events-none" />
-          <div className="absolute inset-0 berber-bg-cross opacity-30 pointer-events-none" aria-hidden="true" />
-          <span className="film-grain" />
-
-          {/* Foreground content — same grid as Home hero, contact-specific copy */}
           <div className="relative z-10 h-full flex flex-col">
-            <div className="flex-1 flex items-end pt-32 md:pt-40 pb-24 md:pb-32">
+            <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full" />
+            <div className="flex-1 flex items-end pb-24 md:pb-32">
               <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
                 <div className="max-w-3xl">
                   <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
                     <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-                    <EditableSection name="hero.eyebrow" fallback={pick(COPY.hero.eyebrow, lang)} as="span"
-                      className="text-[11px] tracking-[0.35em] uppercase font-semibold" />
+                    <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">
+                      {pick(COPY.hero.eyebrow, lang)}
+                    </span>
                   </div>
 
-                  <EditableSection name="hero.title" fallback={pick(COPY.hero.title, lang)} as="h1"
-                    className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6 block" />
+                  <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
+                    {pick(COPY.hero.title, lang)}
+                  </h1>
 
-                  <EditableSection name="hero.body" fallback={pick(COPY.hero.body, lang)} as="p"
-                    className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image block" />
+                  <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
+                    {pick(COPY.hero.body, lang)}
+                  </p>
 
-                  <EditableSection name="hero.support" fallback={pick(COPY.hero.support, lang)} as="p"
-                    className="fade-up fade-up-delay-3 mt-4 max-w-2xl text-sm md:text-base text-[#FDFBF7]/75 leading-relaxed text-on-image block" />
-
-                  <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
+                  <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
                     <a
                       href="#booking"
                       data-testid="hero-cta-book"
@@ -259,37 +243,12 @@ const ContactPage = () => {
                       <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />
                     </a>
                     <a
-                      href="#contact-form"
-                      data-testid="hero-cta-form"
+                      href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
+                      data-testid="hero-cta-call"
                       className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                     >
-                      {lang === "en" ? "Send a message" : lang === "fr" ? "Envoyer un message" : "Enviar mensaje"}
-                      <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
-                    </a>
-                  </div>
-
-                  {/* Quick contact pill — identical to Home hero */}
-                  <div className="fade-up fade-up-delay-4 mt-10 inline-flex flex-wrap items-center gap-x-6 gap-y-3 bg-[#1A1513]/55 backdrop-blur-md border border-[#FDFBF7]/15 px-5 py-3"
-                       data-testid="contact-hero-quick">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
-                      {lang === "en" ? "Reach us now" : lang === "fr" ? "Joignez-nous" : "Contacto directo"}
-                    </span>
-                    <a
-                      href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
-                      data-testid="contact-hero-phone"
-                      className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
-                    >
-                      <Phone className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
+                      <Phone className="w-3.5 h-3.5" strokeWidth={1.5} />
                       {CONTACT.phone || "+34 937 268 366"}
-                    </a>
-                    <span className="w-px h-4 bg-[#FDFBF7]/20 hidden sm:inline-block" />
-                    <a
-                      href={`mailto:${CONTACT.email || "xalucatours@xaluca.com"}`}
-                      data-testid="contact-hero-email"
-                      className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
-                    >
-                      <Mail className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
-                      {CONTACT.email || "xalucatours@xaluca.com"}
                     </a>
                   </div>
                 </div>
