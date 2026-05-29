@@ -266,13 +266,16 @@ export default function WhenToTravelPage() {
 
       {/* ======================== HERO ======================== */}
       <section className="relative h-[88vh] min-h-[640px] w-full overflow-hidden">
-        <img
-          src={HERO.hero_image}
+        <EditableImage
+          slot="when-travel.hero.bg"
+          fallback={HERO.hero_image}
           alt="Marruecos a través del año"
+          priority
+          aspectRatio="16/9"
           className="absolute inset-0 w-full h-full object-cover scale-[1.04]"
-          style={{ animation: "slow-zoom 18s ease-out forwards" }}
+          imgProps={{ style: { animation: "slow-zoom 18s ease-out forwards" } }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/55 via-[#1A1513]/15 to-[#1A1513]/85" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/55 via-[#1A1513]/15 to-[#1A1513]/85 pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(26,21,19,0.35)_100%)]" />
 
         {/* Breadcrumb chip */}
@@ -444,9 +447,12 @@ export default function WhenToTravelPage() {
                 }`}>
                   <div className="md:col-span-6">
                     <div className="relative overflow-hidden">
-                      <img
-                        src={season.image}
+                      <EditableImage
+                        slot={`when-travel.season.${season.id}.image`}
+                        fallback={season.image}
                         alt={pick(season.title, lang)}
+                        aspectRatio="4/5"
+                        imgProps={{ loading: "lazy" }}
                         className="w-full h-[420px] md:h-[560px] object-cover transition-transform duration-[1200ms] hover:scale-105"
                       />
                       <span

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap");
 @import "leaflet/dist/leaflet.css";
 
 @tailwind base;
@@ -516,4 +516,55 @@ body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5
 @media (prefers-reduced-motion: reduce) {
     .cms-skeleton { animation: none; }
     .cms-img-fade { transition: opacity 200ms ease; filter: none; transform: none; }
+}
+
+
+/* ============================================================
+   Travel postcard block (/viajes editorial)
+============================================================ */
+.font-hand {
+    font-family: 'Caveat', 'Segoe Script', cursive;
+    letter-spacing: 0.01em;
+}
+
+/* Aged paper surface with subtle warm mottling + faint horizontal rules */
+.postcard-paper {
+    background-color: #F6EEDC;
+    background-image:
+        radial-gradient(circle at 18% 22%, rgba(193,101,66,0.06) 0, transparent 42%),
+        radial-gradient(circle at 82% 78%, rgba(90,107,79,0.06) 0, transparent 45%),
+        radial-gradient(circle at 60% 12%, rgba(160,112,66,0.05) 0, transparent 40%);
+}
+.postcard-rule {
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 37px,
+        rgba(44,38,33,0.10) 37px,
+        rgba(44,38,33,0.10) 38px
+    );
+}
+
+/* Perforated postage-stamp edge */
+.postcard-stamp {
+    background:
+        radial-gradient(circle at 6px 6px, transparent 5px, #FDFBF7 5px) -6px -6px / 12px 12px;
+    padding: 7px;
+    filter: drop-shadow(0 2px 6px rgba(26,21,19,0.25));
+}
+
+/* Round ink postmark */
+.postcard-postmark {
+    border: 2px solid rgba(44,38,33,0.55);
+    color: rgba(44,38,33,0.6);
+    box-shadow: inset 0 0 0 1px rgba(44,38,33,0.18);
+    transform: rotate(-12deg);
+    mix-blend-mode: multiply;
+}
+
+/* Tape pieces holding the postcard */
+.postcard-tape {
+    background: rgba(212,163,115,0.32);
+    box-shadow: 0 1px 4px rgba(26,21,19,0.12);
+    backdrop-filter: blur(1px);
 }

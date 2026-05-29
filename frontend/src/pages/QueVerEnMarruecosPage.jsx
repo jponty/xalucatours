@@ -1003,10 +1003,12 @@ const DestinationsMap = ({ lang }) => {
                 className="bg-[#FDFBF7] text-[#2C2621] h-full flex flex-col animate-slide-down"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
-                  <img
-                    src={active.card.image}
+                  <EditableImage
+                    slot={`que-ver.map-detail.${active.card.id}.image`}
+                    fallback={active.card.image}
                     alt={pick(active.card.name, lang)}
-                    loading="lazy"
+                    aspectRatio="4/3"
+                    imgProps={{ loading: "lazy" }}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 to-transparent pointer-events-none" />

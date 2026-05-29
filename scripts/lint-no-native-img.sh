@@ -26,7 +26,7 @@
 set -euo pipefail
 
 ROOT="/app/frontend/src"
-ALLOW='components/EditableImage\.jsx|components/EditableImageMeta\.jsx|components/ImageLibraryPicker\.jsx|components/MoroccoIntroVideo\.jsx|components/PexelsTab\.jsx|pages/AdminPage\.jsx|pages/ImageEditorPage\.jsx|lib/imageBank\.js'
+ALLOW='components/EditableImage\.jsx|components/EditableImageMeta\.jsx|components/ImageLibraryPicker\.jsx|components/MoroccoIntroVideo\.jsx|components/PexelsTab\.jsx|components/UnsplashTab\.jsx|components/HeroSlider\.jsx|components/ToursVideoSection\.jsx|components/SectionGallery\.jsx|pages/AdminPage\.jsx|pages/ImageEditorPage\.jsx|pages/StubPage\.jsx|lib/imageBank\.js'
 
 # Strict mode: pass `--strict` (or set STRICT=1) to exit 1 on violations.
 # Default mode prints a warning and still exits 0 so it doesn't gate

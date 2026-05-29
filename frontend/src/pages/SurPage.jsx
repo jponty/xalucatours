@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import EditableImage from "@/components/EditableImage";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { SUR_ITINERARIES, SUR_EDITORIAL, SUR_PILLARS } from "@/lib/surItineraries";
@@ -400,13 +401,15 @@ export default function SurPage() {
                 data-testid={`sur-more-${card.target}`}
                 className="group relative block overflow-hidden h-[360px] md:h-[400px]"
               >
-                <img
-                  src={card.image}
+                <EditableImage
+                  slot={`sur.more.${card.target}.image`}
+                  fallback={card.image}
                   alt={card.title[lang]}
-                  loading="lazy"
+                  aspectRatio="16/10"
+                  imgProps={{ loading: "lazy" }}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                 <span className="film-grain" />
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
                   <p className="text-[10px] tracking-[0.3em] uppercase text-[#E8C5A3] mb-3">{card.eyebrow[lang]}</p>

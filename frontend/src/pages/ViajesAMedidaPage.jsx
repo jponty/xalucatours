@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import EditableImage from "@/components/EditableImage";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Compass, Heart, Users, Sparkles, Baby, Activity,
@@ -373,13 +374,15 @@ const TripTypesGrid = ({ t, lang }) => (
               className="group relative bg-[#FDFBF7] hover:bg-[#F2EBE1] transition-colors duration-500 flex flex-col overflow-hidden"
             >
               <div className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
-                <img
-                  src={tt.image}
+                <EditableImage
+                  slot={`bespoke.type.${tt.id}.image`}
+                  fallback={tt.image}
                   alt={pick(tt.title, lang)}
-                  loading="lazy"
+                  aspectRatio="5/4"
+                  imgProps={{ loading: "lazy" }}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent pointer-events-none" />
                 <span
                   className="absolute top-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#FDFBF7]/95 backdrop-blur-sm"
                   style={{ borderColor: `${tt.accent}66`, color: tt.accent }}

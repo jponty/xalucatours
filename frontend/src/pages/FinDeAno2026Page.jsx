@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import EditableImage from "@/components/EditableImage";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Calendar, MapPin, Plane, Clock,
@@ -305,12 +306,15 @@ function Hero({ lang }) {
       data-testid="findeano-hero"
       className="relative min-h-[92vh] flex items-end overflow-hidden"
     >
-      <img
-        src="https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2800&q=85"
+      <EditableImage
+        slot="findeano.hero.bg"
+        fallback="https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2800&q=85"
         alt=""
+        priority
+        aspectRatio="16/9"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/55 to-[#1A1513]/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/55 to-[#1A1513]/30 pointer-events-none" />
       <span className="film-grain pointer-events-none" />
 
       <div className="relative w-full max-w-7xl mx-auto px-6 md:px-12 pb-20 md:pb-28">
@@ -425,10 +429,12 @@ function Itinerary({ lang }) {
             >
               <div className="lg:col-span-6 [direction:ltr]">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={d.image}
+                  <EditableImage
+                    slot={`findeano.day.${d.id}.image`}
+                    fallback={d.image}
                     alt={pick(d.title, lang)}
-                    loading="lazy"
+                    aspectRatio="4/3"
+                    imgProps={{ loading: "lazy" }}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                   <span className="film-grain pointer-events-none" />
@@ -682,9 +688,12 @@ function ContactBand({ lang }) {
       data-testid="findeano-contact-band"
       className="relative bg-[#1A1513] py-24 md:py-32 text-[#FDFBF7] overflow-hidden"
     >
-      <img
-        src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
+      <EditableImage
+        slot="findeano.contact.bg"
+        fallback="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
         alt=""
+        aspectRatio="16/9"
+        imgProps={{ loading: "lazy" }}
         className="absolute inset-0 w-full h-full object-cover opacity-25"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/85 to-[#1A1513]/60" />

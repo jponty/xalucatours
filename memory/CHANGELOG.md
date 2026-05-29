@@ -1,4 +1,18 @@
 
+## Travel postcard editorial block · /viajes (Feb 2026)
+- Added an emotional **postcard block** inside the "Marruecos, explorado a tu manera" intro section (`TravelPostcard` in `ToursLandingPage.jsx`).
+- Aged-paper card (rotated, tape corners, faint berber texture), handwritten **Caveat** font (`.font-hand`), "POSTAL DESDE MARRUECOS" label, handwritten tagline "El viaje lejano más cercano", greeting + 2-paragraph message + "Nos vemos en el camino." + "Xaluca Tours" signature.
+- Perforated postage stamp with CMS-editable image (slot `viajes.postcard.stamp`, fallback Sahara dunes) + circular ink postmark (plane + destination). Trilingual copy in `COPY.postcard` (es/en/fr).
+- Added `Caveat` Google font import + `.font-hand` / `.postcard-*` styles in `index.css`. Verified via screenshot (stamp renders, all elements visible); lint clean.
+
+## Legacy <img> → EditableImage migration · global editability (Feb 2026)
+- Migrated all editorial raw `<img>` tags to `<EditableImage>` so 100% of content images are CMS-editable. Guardrail `lint-no-native-img.sh` now passes (0 violations outside allow-list).
+- Converted images in: ToursLandingPage hero, ProximasSalidas departures, WhenToTravel hero + season blocks, ViajesAMedida types, SurPage cards, AventuraPage experiences, PlanificaTuViaje hero, QueVer map detail, FinDeAno hero/day/contact, EscapadaIntroPage hero+gallery (passed `routeId`), HubPeerNav peers, SectionGallery grid, JourneyPageSections (ItineraryBlock/EditorialBlock via `useSlotId`, ItinerariesOverview literal slots).
+- Slots use page/section-scoped ids (e.g. `proximas.departure.${id}.image`, `escapada.${routeId}.hero`). All overlays add `pointer-events-none`.
+- **Deleted 4 dead unused components**: FeaturedJourneys, CulturalExperiences, JournalSection, LuxuryCamps.
+- Allow-listed intentional raw imgs: HeroSlider logo, ToursVideoSection poster, UnsplashTab/PexelsTab admin UI, SectionGallery lightbox, StubPage placeholder, AdminPage/ImageEditorPage.
+- Verified: edit mode shows overlays on converted slots (6 departure overlays), 0 broken images across pages, lint clean.
+
 ## Recommended itineraries → card carousel · /cuando-viajar (Feb 2026)
 - The "Itinerarios recomendados" subsection inside each of the 4 "Cuatro estaciones" blocks was upgraded from a simple vertical link list into a **horizontal card carousel** (`SeasonRecommendedCarousel` in `WhenToTravelPage.jsx`).
 - Each card shows: CMS-editable image (`EditableImage` slot `when-travel.season.{id}.reco.{i}`, 4:3, fallback from verified `imageBank.js`), region badge with `MapPin` (season accent), serif title, short trilingual description, duration with `Clock` icon, dynamic **"Desde €X por persona"** via the centralised `<FromPrice tone="dark">`, and an accent CTA button → `pathFor(lang, route)`.

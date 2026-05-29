@@ -279,12 +279,15 @@ export default function PlanificaTuViajePage() {
     <div data-testid="plan-trip-page" className="bg-[#FBF5EA] text-[#2C2621]">
       {/* HERO */}
       <section className="relative h-[68svh] min-h-[520px] overflow-hidden bg-[#1A1513]">
-        <img
-          src="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
+        <EditableImage
+          slot="plan-trip.hero.bg"
+          fallback="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
           alt=""
+          priority
+          aspectRatio="16/9"
           className="absolute inset-0 w-full h-full object-cover opacity-90"
         />
-        <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent" />
+        <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent pointer-events-none" />
         <span className="film-grain opacity-50" aria-hidden="true" />
         <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-16 md:pb-20">
           <ET k="eyebrow" multiline={false} className="overline text-[#D4A373]" />

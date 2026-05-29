@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight, Compass, Mountain, Sparkles, MapPin, Calendar,
   Phone, MessageCircle, Mail, Building2, ChevronDown, BookOpen, Crown, Users,
-  Globe2, Tag, Filter, Clock,
+  Globe2, Tag, Filter, Clock, Plane, Send,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { REGIONS, EXPERIENCES, TRIPS } from "@/lib/tripsData";
+import { IMG } from "@/lib/imageBank";
 import ContactForm from "@/components/ContactForm";
 import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
@@ -25,13 +26,15 @@ const Hero = ({ t }) => (
     data-testid="viajes-hero"
     className="relative h-[100svh] min-h-[660px] w-full overflow-hidden bg-[#1A1513]"
   >
-    <img
-      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
+    <EditableImage
+      slot="viajes.hero.bg"
+      fallback="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=85"
       alt=""
-      loading="eager"
+      priority
+      aspectRatio="16/9"
       className="ken-burns absolute inset-0 w-full h-full object-cover"
     />
-    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
     <span className="film-grain" />
 
@@ -82,7 +85,7 @@ const Hero = ({ t }) => (
 /* ============================================================
    2 — Editorial intro (brief)
 ============================================================ */
-const EditorialIntro = ({ t }) => (
+const EditorialIntro = ({ t, postcard }) => (
   <section id="intro" data-testid="viajes-intro"
            className="relative bg-[#FDFBF7] py-20 md:py-28 overflow-hidden">
     <div className="relative max-w-5xl mx-auto px-6 md:px-12 text-center">
@@ -94,7 +97,78 @@ const EditorialIntro = ({ t }) => (
         {t.body}
       </p>
     </div>
+
+    {postcard && <TravelPostcard p={postcard} />}
   </section>
+);
+
+/* ----- Travel postcard — emotional editorial block ----- */
+const TravelPostcard = ({ p }) => (
+  <div className="relative mt-16 md:mt-20 max-w-4xl mx-auto px-3 sm:px-6" data-testid="viajes-postcard">
+    {/* tape pieces */}
+    <span className="postcard-tape absolute -top-3 left-10 w-20 h-7 rotate-[-6deg] z-20 hidden sm:block" aria-hidden="true" />
+    <span className="postcard-tape absolute -top-3 right-12 w-16 h-7 rotate-[5deg] z-20 hidden sm:block" aria-hidden="true" />
+
+    <article className="postcard-paper relative overflow-hidden border border-[#2C2621]/15 shadow-[0_30px_60px_-25px_rgba(26,21,19,0.45)] rotate-[-1.2deg] transition-transform duration-500 hover:rotate-0">
+      <div className="absolute inset-0 berber-bg-diamond opacity-[0.05] pointer-events-none" aria-hidden="true" />
+
+      {/* header strip */}
+      <div className="relative flex flex-wrap items-center justify-between gap-2 px-6 md:px-10 pt-6">
+        <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase text-[#A07042]">
+          <Send className="w-3.5 h-3.5" strokeWidth={1.6} /> {p.label}
+        </span>
+        <span className="font-hand text-2xl md:text-3xl text-[#C16542] -rotate-2">{p.tagline}</span>
+      </div>
+
+      <div className="mx-6 md:mx-10 mt-4 border-t border-dashed border-[#2C2621]/20" />
+
+      <div className="relative grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 px-6 md:px-10 py-8 md:py-10">
+        {/* message side */}
+        <div className="md:col-span-8 order-2 md:order-1">
+          <p className="font-hand text-3xl md:text-4xl text-[#3A2E26] leading-tight mb-3" data-testid="postcard-greeting">
+            {p.greeting}
+          </p>
+          <div className="space-y-4">
+            {p.body.map((para, i) => (
+              <p key={`pc-${i}`} className="font-hand text-[22px] md:text-[26px] leading-[1.5] text-[#2C2621]/90">
+                {para}
+              </p>
+            ))}
+          </div>
+          <p className="font-hand text-2xl md:text-3xl text-[#5A6B4F] mt-6">{p.closing}</p>
+          <p className="font-hand text-4xl md:text-5xl text-[#C16542] mt-1 -rotate-2" data-testid="postcard-signature">
+            {p.signature}
+          </p>
+        </div>
+
+        {/* stamp + postmark side */}
+        <div className="md:col-span-4 order-1 md:order-2 md:border-l md:border-dashed md:border-[#2C2621]/20 md:pl-8 flex flex-col items-center md:items-end gap-7">
+          <div className="relative">
+            <div className="relative w-28 rotate-3 bg-[#FDFBF7] p-[5px] shadow-[0_3px_12px_rgba(26,21,19,0.28)]">
+              <div className="relative overflow-hidden bg-[#1A1513]">
+                <EditableImage
+                  slot="viajes.postcard.stamp"
+                  fallback={IMG.camelCaravan}
+                  alt={p.stamp_caption}
+                  aspectRatio="7/8"
+                  imgProps={{ loading: "lazy" }}
+                  className="block w-full"
+                />
+              </div>
+              <span className="absolute inset-0 border border-dashed border-[#2C2621]/30 pointer-events-none" aria-hidden="true" />
+            </div>
+            {/* postmark overlapping the stamp */}
+            <div className="postcard-postmark absolute -bottom-5 -left-7 w-24 h-24 rounded-full flex flex-col items-center justify-center text-center bg-[#F6EEDC]/40">
+              <span className="text-[7px] tracking-[0.2em] uppercase leading-tight">Xaluca Tours</span>
+              <Plane className="w-4 h-4 my-0.5" strokeWidth={1.4} />
+              <span className="text-[10px] font-semibold tracking-[0.12em]">{p.postmark}</span>
+            </div>
+          </div>
+          <p className="font-hand text-xl text-[#2C2621]/65 text-center md:text-right mt-2">{p.stamp_caption}</p>
+        </div>
+      </div>
+    </article>
+  </div>
 );
 
 /* ============================================================
@@ -630,6 +704,19 @@ const COPY = {
       title: "Marruecos, explorado a tu manera.",
       body: "Tres regiones, cinco estilos de experiencia y decenas de itinerarios — para que encuentres exactamente el viaje que estás imaginando.",
     },
+    postcard: {
+      label: "Postal desde Marruecos",
+      greeting: "Querido viajero,",
+      body: [
+        "Hay lugares que parecen estar al otro lado del mundo y, sin embargo, están sorprendentemente cerca. Marruecos es uno de ellos. A pocas horas de casa, te esperan medinas llenas de vida, montañas infinitas, oasis escondidos y noches bajo las estrellas del desierto.",
+        "Quizás por eso muchos lo llaman el país más cercano de los viajes lejanos. Porque aquí todo cambia: los colores, los aromas, los paisajes y la forma de vivir cada día. Y, al mismo tiempo, todo resulta accesible, auténtico y acogedor.",
+      ],
+      closing: "Nos vemos en el camino.",
+      signature: "Xaluca Tours",
+      tagline: "El viaje lejano más cercano",
+      postmark: "MARRUECOS",
+      stamp_caption: "Sáhara · Marruecos",
+    },
     regions: {
       overline: "Por región", title: "Tres maneras de entrar en Marruecos.",
       body: "Cada región tiene su carácter, su luz y su ritmo. Elige por dónde quieres empezar — o recorre el país entero.",
@@ -685,6 +772,19 @@ const COPY = {
       title: "Morocco, explored your way.",
       body: "Three regions, five experience styles and dozens of itineraries — so you find exactly the journey you're imagining.",
     },
+    postcard: {
+      label: "A postcard from Morocco",
+      greeting: "Dear traveller,",
+      body: [
+        "Some places seem to be on the other side of the world and yet they are surprisingly close. Morocco is one of them. Just a few hours from home, living medinas, endless mountains, hidden oases and nights under the desert stars await you.",
+        "Maybe that's why many call it the nearest of faraway journeys. Because here everything changes: the colours, the scents, the landscapes and the way each day is lived. And, at the same time, it all feels accessible, authentic and welcoming.",
+      ],
+      closing: "See you on the road.",
+      signature: "Xaluca Tours",
+      tagline: "The nearest faraway journey",
+      postmark: "MOROCCO",
+      stamp_caption: "Sahara · Morocco",
+    },
     regions: {
       overline: "By region", title: "Three ways into Morocco.",
       body: "Each region has its own character, light and rhythm. Choose where to start — or cross the whole country.",
@@ -739,6 +839,19 @@ const COPY = {
       eyebrow: "Une aventure, un pays",
       title: "Le Maroc, à votre façon.",
       body: "Trois régions, cinq styles d'expérience et des dizaines d'itinéraires — pour trouver exactement le voyage que vous imaginez.",
+    },
+    postcard: {
+      label: "Une carte postale du Maroc",
+      greeting: "Cher voyageur,",
+      body: [
+        "Certains lieux semblent être à l'autre bout du monde et pourtant ils sont étonnamment proches. Le Maroc est l'un d'eux. À quelques heures de chez vous vous attendent des médinas pleines de vie, des montagnes infinies, des oasis cachées et des nuits sous les étoiles du désert.",
+        "C'est peut-être pour cela que beaucoup l'appellent le plus proche des voyages lointains. Parce qu'ici tout change : les couleurs, les parfums, les paysages et la façon de vivre chaque jour. Et, en même temps, tout y est accessible, authentique et chaleureux.",
+      ],
+      closing: "On se retrouve sur la route.",
+      signature: "Xaluca Tours",
+      tagline: "Le voyage lointain le plus proche",
+      postmark: "MAROC",
+      stamp_caption: "Sahara · Maroc",
     },
     regions: {
       overline: "Par région", title: "Trois portes d'entrée au Maroc.",
@@ -887,7 +1000,7 @@ export default function ToursLandingPage() {
   return (
     <div data-testid="tours-landing-page">
       <Hero t={t.hero} />
-      <EditorialIntro t={t.intro} />
+      <EditorialIntro t={t.intro} postcard={t.postcard} />
       <ToursRegionMap />
       <ToursVideoSection videoId="nzD3e3Qr7g8" />
       <RegionsSection t={t.regions} lang={lang} />

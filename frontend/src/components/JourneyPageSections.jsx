@@ -179,6 +179,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
   const reverse = index % 2 === 1;
   const paragraphs = pick(itinerary.body, lang) || [];
   const stages = (itinerary.stages || []).map((s) => pick(s, lang));
+  const imgSlot = useSlotId(`itinerary.${itinerary.id}.image`);
 
   return (
     <section
@@ -193,13 +194,15 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
           {/* Image */}
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <div className="relative aspect-[4/5] md:aspect-[5/6] overflow-hidden bg-[#1A1513]">
-              <img
-                src={itinerary.image}
+              <EditableImage
+                slot={imgSlot}
+                fallback={itinerary.image}
                 alt={pick(itinerary.title, lang)}
-                loading="lazy"
+                aspectRatio="4/5"
+                imgProps={{ loading: "lazy" }}
                 className="ken-burns absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent pointer-events-none" />
               <span className="film-grain" />
 
               {/* Stage counter chip */}
@@ -347,6 +350,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
 ============================================================ */
 export const EditorialBlock = ({ block, lang }) => {
   const paragraphs = pick(block.body, lang) || [];
+  const imgSlot = useSlotId(`editorial.${block.id}.image`);
   return (
     <section
       id={block.id}
@@ -366,14 +370,16 @@ export const EditorialBlock = ({ block, lang }) => {
       <div className="hidden md:block absolute inset-y-0 right-20 lg:right-28 w-px bg-gradient-to-b from-transparent via-[#A07042]/30 to-transparent pointer-events-none" aria-hidden="true" />
 
       <div className="relative h-[70svh] min-h-[420px] w-full overflow-hidden">
-        <img
-          src={block.image}
+        <EditableImage
+          slot={imgSlot}
+          fallback={block.image}
           alt=""
-          loading="lazy"
+          priority
+          aspectRatio="16/9"
           className="ken-burns absolute inset-0 w-full h-full object-cover"
         />
         {/* Softer base overlay — the image breathes */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-[#1A1513]/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-[#1A1513]/10 to-transparent pointer-events-none" />
         {/* Localised reading shade behind the title only (bottom 45%) */}
         <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/55 to-transparent" />
         <span className="film-grain opacity-40" />
@@ -478,13 +484,15 @@ export const ItinerariesOverview = ({ itineraries, t, lang }) => (
             data-testid={`overview-card-${it.id}`}
             className="group relative block overflow-hidden h-[420px] md:h-[440px]"
           >
-            <img
-              src={it.image}
+            <EditableImage
+              slot={`overview.${it.id}.image`}
+              fallback={it.image}
               alt={pick(it.title, lang)}
-              loading="lazy"
+              aspectRatio="4/5"
+              imgProps={{ loading: "lazy" }}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/10 pointer-events-none" />
             <span className="film-grain" />
 
             <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">

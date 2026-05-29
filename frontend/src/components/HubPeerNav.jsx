@@ -1,4 +1,5 @@
 import React from "react";
+import EditableImage from "@/components/EditableImage";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -72,13 +73,15 @@ export default function HubPeerNav({ routeId }) {
                 className="group relative flex flex-col bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#2C2621]/30 overflow-hidden transition-all duration-500"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={p.image}
+                  <EditableImage
+                    slot={`hub-peer.${p.id}.image`}
+                    fallback={p.image}
                     alt={pick(p.blurb, lang) || ""}
-                    loading="lazy"
+                    aspectRatio="4/3"
+                    imgProps={{ loading: "lazy" }}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-transparent pointer-events-none" />
                   <span className="film-grain" />
                   <div
                     className="absolute top-4 left-4 inline-flex items-center gap-2 bg-[#FDFBF7]/95 px-3 py-1.5 text-[11px] tracking-[0.18em] uppercase font-semibold"

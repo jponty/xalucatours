@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import EditableImage from "@/components/EditableImage";
 import { Camera, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -172,13 +173,15 @@ export default function SectionGallery({
               className={`group relative overflow-hidden bg-[#1A1513] ${SPAN_CLASSES[i % SPAN_CLASSES.length]} focus:outline-none`}
               aria-label={pickLang(img.caption, lang)}
             >
-              <img
-                src={img.src}
+              <EditableImage
+                slot={`${testid}.image.${i}`}
+                fallback={img.src}
                 alt={pickLang(img.caption, lang)}
-                loading="lazy"
+                aspectRatio="4/3"
+                imgProps={{ loading: "lazy" }}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
               />
-              <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+              <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-transparent opacity-90 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <span className="film-grain opacity-40" />
               <span
                 className="absolute top-4 left-4 inline-block w-1.5 h-1.5"

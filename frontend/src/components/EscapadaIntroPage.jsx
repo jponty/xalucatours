@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import EditableImage from "@/components/EditableImage";
 import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Plane, Mail, Phone } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -63,17 +64,20 @@ const LABELS = {
   },
 };
 
-const Hero = ({ data, lang, t }) => (
+const Hero = ({ data, lang, t, routeId }) => (
   <section
     data-testid="escapada-intro-hero"
     className="relative w-full h-[88vh] min-h-[640px] overflow-hidden bg-[#1A1513] text-[#FDFBF7]"
   >
-    <img
-      src={data.image}
+    <EditableImage
+      slot={`escapada.${routeId}.hero`}
+      fallback={data.image}
       alt={pick(data.title, lang)}
+      priority
+      aspectRatio="16/9"
       className="absolute inset-0 w-full h-full object-cover opacity-65"
     />
-    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
+    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70 pointer-events-none" />
     <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-24">
       <span className="overline text-[#FDFBF7]/85">{pick(data.eyebrow, lang)}</span>
       <h1 className="font-serif-x text-5xl sm:text-6xl lg:text-[88px] leading-[0.95] tracking-tight mt-6 max-w-4xl">
@@ -139,7 +143,7 @@ const GALLERY_SPANS = [
   "md:col-span-12 aspect-[16/7]",                 // wide landscape
 ];
 
-const Gallery = ({ items, lang, t, accent }) => {
+const Gallery = ({ items, lang, t, accent, routeId }) => {
   if (!items || items.length === 0) return null;
   return (
     <section
@@ -166,13 +170,15 @@ const Gallery = ({ items, lang, t, accent }) => {
               data-testid={`escapada-gallery-item-${i}`}
               className={`group relative overflow-hidden bg-[#1A1513] ${GALLERY_SPANS[i] || "md:col-span-6 aspect-[5/4]"}`}
             >
-              <img
-                src={it.image}
+              <EditableImage
+                slot={`escapada.${routeId}.gallery.${i}`}
+                fallback={it.image}
                 alt={pick(it.kind, lang)}
+                aspectRatio="5/4"
+                imgProps={{ loading: "lazy" }}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105 opacity-95"
-                loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
               <figcaption className="absolute inset-x-0 bottom-0 p-5 md:p-7 text-[#FDFBF7]">
                 <span
                   className="inline-block text-[10px] tracking-[0.3em] uppercase mb-2"
@@ -257,9 +263,9 @@ export default function EscapadaIntroPage({ data, accent }) {
 
   return (
     <div data-testid={`escapada-intro-${data.routeId}`}>
-      <Hero data={data.hero} lang={lang} t={t} />
+      <Hero data={data.hero} lang={lang} t={t} routeId={data.routeId} />
       <Description paragraphs={paragraphs} t={t} />
-      <Gallery items={data.gallery} lang={lang} t={t} accent={accent} />
+      <Gallery items={data.gallery} lang={lang} t={t} accent={accent} routeId={data.routeId} />
       <ContactBand lang={lang} t={t} accent={accent} />
       <ContactForm />
     </div>

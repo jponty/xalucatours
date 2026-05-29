@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import EditableImage from "@/components/EditableImage";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Bike, Mountain, Truck, Tent, Palmtree, Flame, Sparkles, Trophy,
@@ -270,13 +271,15 @@ const ExperiencesGrid = ({ t, lang }) => (
               className="group relative bg-[#1A1513] hover:bg-[#221A16] transition-colors duration-500 flex flex-col overflow-hidden"
             >
               <div className="relative aspect-[5/4] overflow-hidden">
-                <img
-                  src={e.image}
+                <EditableImage
+                  slot={`aventura.exp.${e.id}.image`}
+                  fallback={e.image}
                   alt={pick(e.title, lang)}
-                  loading="lazy"
+                  aspectRatio="5/4"
+                  imgProps={{ loading: "lazy" }}
                   className="absolute inset-0 w-full h-full object-cover opacity-70 transition-all duration-[1400ms] ease-out group-hover:opacity-100 group-hover:scale-[1.06]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/45 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/45 to-transparent pointer-events-none" />
                 <span
                   className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/70 backdrop-blur-sm"
                   style={{ borderColor: `${e.accent}99`, color: e.accent }}

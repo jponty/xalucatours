@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import EditableImage from "@/components/EditableImage";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Calendar, Users, MapPin, Sparkles, ShieldCheck,
@@ -257,13 +258,15 @@ const DepartureCard = ({ dep, t, lang }) => {
     >
       {/* Image side */}
       <div className="lg:col-span-5 relative bg-[#1A1513] overflow-hidden min-h-[280px] lg:min-h-[420px]">
-        <img
-          src={dep.image}
+        <EditableImage
+          slot={`proximas.departure.${dep.id}.image`}
+          fallback={dep.image}
           alt={pick(dep.title, lang)}
-          loading="lazy"
+          aspectRatio="4/3"
+          imgProps={{ loading: "lazy" }}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/15 to-transparent pointer-events-none" />
         <span className="film-grain" />
         {/* Season badge */}
         <span
