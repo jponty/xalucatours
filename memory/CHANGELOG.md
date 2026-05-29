@@ -1,4 +1,12 @@
 
+## /citaprevia page (book-appointment) (Feb 2026)
+- **User request**: complement the `/citaprevia` page with the provided 3-step copy + the Calendly integration accesses.
+- The `appointment` route (`citaprevia` / `book-appointment` / `prendre-rendez-vous`) existed in routes.js but was unmapped. Now wired to a new **`CitaPreviaPage.jsx`** in routeComponents.js.
+- **New page** `pages/CitaPreviaPage.jsx` (SlotScope id="citaprevia", trilingual, fully `<E>`-editable): hero ("Planifica tu próxima aventura por Marruecos" + intro paragraph), **3 detailed steps using the user's exact ES copy** (1·Planifica tu próxima aventura → 2·Selecciona el día y hora → 3·Confirma la sesión), a **Calendly booking surface with phone/office tabs**, and an outro CTA to /contacto + phone. Hero image priority-loaded; SEO keywords injected as a `<meta name=keywords>`.
+- **DRY refactor**: extracted the Calendly bootstrap + inline-widget into shared `components/CalendlyEmbed.jsx` (`useCalendlyScript`, `CalendlyEmbed`, `CALENDLY_PHONE`, `CALENDLY_OFFICE`). `ContactPage.jsx` now imports from it (removed ~50 lines of duplicate); its booking testids/behaviour unchanged.
+- **Verified** (smoke test): /citaprevia renders page+hero+3 steps+booking+2 tabs, document.title correct; Calendly phone embed loads (1 iframe) and switching to the office tab loads the office widget; /contacto booking still loads its iframe (no regression). Uses the existing Calendly account URLs (xalucatours/cita-previa-telefonica & -oficinas) — no new keys.
+
+
 ## Standardised pricing system (placeholder) (Feb 2026)
 - **User mandate**: every itinerary page needs a dedicated 2-season (High/Low) × traveller-tier (2/3/4) pricing table for the "Accommodation & Excursions · 4x4" package + season definitions + occupancy note; every trip card/listing/featured/related/overview/planner-reco/upcoming must show "From €790 per person" (lowest configured). Prices placeholder now, stored centrally AND editable from /admin ("on both sides"), updatable globally with no page/design changes.
 - **Centralised config** `lib/pricing.js`: `DEFAULT_PRICING` (tiers 2p:1010/1085, 3p:865/920, 4p:790/835; trilingual labels, season defs, note), `getFromPrice` (min across tiers→€790), `fmtEuro`, `mergePricing`. `lib/pricingStore.js`: bulk-loads `/api/pricing` once + `usePricing()` hook + `setPricingOverride`.

@@ -25,11 +25,9 @@ import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
+import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
-
-const CALENDLY_PHONE  = "https://calendly.com/xalucatours/cita-previa-telefonica";
-const CALENDLY_OFFICE = "https://calendly.com/xalucatours/cita-previa-oficinas";
 
 const COPY = {
   hero: {
@@ -130,51 +128,6 @@ const COPY = {
     hoursLabel: { es: "Horario de oficina", en: "Office hours", fr: "Horaires" },
     hoursValue: { es: "Lunes a viernes · 10:00 – 20:00", en: "Mon – Fri · 10:00 – 20:00", fr: "Lun – Ven · 10h00 – 20h00" },
   },
-};
-
-/* -------- Calendly loader (idempotent) -------- */
-const CALENDLY_SRC = "https://assets.calendly.com/assets/external/widget.js";
-const useCalendlyScript = () => {
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    if (document.querySelector(`script[src="${CALENDLY_SRC}"]`)) return;
-    const s = document.createElement("script");
-    s.src = CALENDLY_SRC;
-    s.async = true;
-    document.body.appendChild(s);
-  }, []);
-};
-
-/* Each mount of a Calendly widget needs an explicit `initInlineWidget`
-   call. Without it the global script bootstraps only the first widget
-   it sees on initial page load — switching tabs leaves the new div
-   empty. We poll briefly for window.Calendly while the script is
-   still downloading, then fire the init once. */
-const CalendlyEmbed = ({ url, testid }) => {
-  const ref = React.useRef(null);
-  useEffect(() => {
-    let cancelled = false;
-    let attempts = 0;
-    const tryInit = () => {
-      if (cancelled || !ref.current) return;
-      const C = typeof window !== "undefined" ? window.Calendly : null;
-      if (C && typeof C.initInlineWidget === "function") {
-        ref.current.innerHTML = "";   // clear any prior render before re-init
-        C.initInlineWidget({ url, parentElement: ref.current });
-        return;
-      }
-      if (attempts++ < 40) setTimeout(tryInit, 150);    // up to ~6 s
-    };
-    tryInit();
-    return () => { cancelled = true; };
-  }, [url]);
-  return (
-    <div
-      ref={ref}
-      data-testid={testid}
-      style={{ minWidth: 320, height: 720 }}
-    />
-  );
 };
 
 /* ===================================================================== */
