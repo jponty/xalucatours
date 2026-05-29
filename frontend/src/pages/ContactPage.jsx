@@ -38,6 +38,9 @@ const COPY = {
     body:    { es: "Planifica tu próxima aventura por Marruecos y resuelve directamente todas tus dudas a través de sesiones informativas online o en nuestras oficinas con agentes de viajes especialistas en ofrecerte la experiencia que mejor se adapte a ti.",
                en: "Plan your next Moroccan adventure and clear every question in a one-on-one session — online or at our offices — with travel specialists who will tailor the experience to you.",
                fr: "Planifiez votre prochaine aventure marocaine et levez tous vos doutes lors d'une séance personnalisée — en ligne ou dans nos bureaux — avec des spécialistes du voyage qui adapteront l'expérience à votre style." },
+    support: { es: "Reserva una sesión informativa sin compromiso. Te respondemos en menos de 24 h con un itinerario inicial pensado para ti.",
+               en: "Book a no-strings info session. We reply within 24 hours with a first-draft itinerary tailored to you.",
+               fr: "Réservez une séance d'information sans engagement. Nous vous répondons en moins de 24 h avec un premier itinéraire pensé pour vous." },
   },
   steps: {
     eyebrow: { es: "Tres pasos · cero compromiso",
@@ -235,10 +238,6 @@ const ContactPage = () => {
                     <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
                     <EditableSection name="hero.eyebrow" fallback={pick(COPY.hero.eyebrow, lang)} as="span"
                       className="text-[11px] tracking-[0.35em] uppercase font-semibold" />
-                    <span className="w-8 h-px bg-[#D4A373]/50" />
-                    <span data-testid="contact-hero-place" className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">
-                      Tremp · Lleida
-                    </span>
                   </div>
 
                   <EditableSection name="hero.title" fallback={pick(COPY.hero.title, lang)} as="h1"
@@ -246,6 +245,9 @@ const ContactPage = () => {
 
                   <EditableSection name="hero.body" fallback={pick(COPY.hero.body, lang)} as="p"
                     className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image block" />
+
+                  <EditableSection name="hero.support" fallback={pick(COPY.hero.support, lang)} as="p"
+                    className="fade-up fade-up-delay-3 mt-4 max-w-2xl text-sm md:text-base text-[#FDFBF7]/75 leading-relaxed text-on-image block" />
 
                   <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
                     <a
