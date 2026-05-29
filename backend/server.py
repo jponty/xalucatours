@@ -700,6 +700,127 @@ async def pexels_import(payload: PexelsImportRequest):
 
 
 # ----------------------------------------------------------
+#  Pexels BULK FILL
+#  ----
+#  Populate many image slots at once with contextually relevant
+#  Pexels photos. One API search per UNIQUE query (downloads of the
+#  actual image bytes come from images.pexels.com and do NOT count
+#  against the Pexels API rate limit). Distinct photos are spread
+#  across slots that share a query. Stores RELATIVE /api/files/...
+#  URLs so images survive host changes.
+# ----------------------------------------------------------
+class BulkFillItem(BaseModel):
+    slot_id: str = Field(..., max_length=300)
+    query: str = Field(..., max_length=200)
+    alt: Optional[str] = Field(default=None, max_length=300)
+    alt_i18n: Optional[Dict[str, str]] = None
+
+
+class BulkFillRequest(BaseModel):
+    items: List[BulkFillItem]
+    orientation: str = Field(default="landscape", pattern="^(landscape|portrait|square)$")
+    force: bool = True
+    per_page: int = 40
+
+
+@api_router.post("/pexels/bulk-fill")
+async def pexels_bulk_fill(payload: BulkFillRequest):
+    """Batch-import Pexels images into many image slots."""
+    from collections import defaultdict
+    by_query: Dict[str, List[BulkFillItem]] = defaultdict(list)
+    for it in payload.items:
+        by_query[it.query.strip()].append(it)
+
+    results: List[Dict] = []
+    ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
+
+    for query, items in by_query.items():
+        # One search per unique query
+        try:
+            raw = await _pexels_get("/search", {
+                "query": query,
+                "per_page": max(len(items) + 4, min(payload.per_page, 80)),
+                "orientation": payload.orientation,
+            })
+        except HTTPException as exc:
+            for it in items:
+                results.append({"slot_id": it.slot_id, "ok": False, "error": f"search-failed: {exc.detail}"})
+            continue
+
+        photos = raw.get("photos") or []
+        if not photos:
+            for it in items:
+                results.append({"slot_id": it.slot_id, "ok": False, "error": "no-results", "query": query})
+            continue
+
+        for idx, it in enumerate(items):
+            if not payload.force:
+                existing = await db.image_slots.find_one({"_id": it.slot_id})
+                if existing and existing.get("url") and not existing.get("cleared"):
+                    results.append({"slot_id": it.slot_id, "ok": True, "skipped": True})
+                    continue
+
+            photo = photos[idx % len(photos)]
+            src = photo.get("src") or {}
+            dl_url = src.get("large2x") or src.get("large") or src.get("original")
+            if not dl_url:
+                results.append({"slot_id": it.slot_id, "ok": False, "error": "no-src"})
+                continue
+            try:
+                async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0), follow_redirects=True) as cx:
+                    dl = await cx.get(dl_url)
+                if dl.status_code != 200:
+                    raise RuntimeError(f"download status {dl.status_code}")
+                data = dl.content
+                content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
+                ext = ext_map.get(content_type, "jpg")
+                storage_path = f"xaluca/library/pexels_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
+                result = put_object(storage_path, data, content_type)
+                canonical_path = result.get("path", storage_path)
+                public_url = f"/api/files/{canonical_path}"
+                now_iso = datetime.now(timezone.utc).isoformat()
+                attribution = {
+                    "pexels_id": photo.get("id"),
+                    "photographer": photo.get("photographer", ""),
+                    "photographer_url": photo.get("photographer_url", ""),
+                    "pexels_url": photo.get("url", ""),
+                    "alt": photo.get("alt", ""),
+                }
+                await db.files.insert_one({
+                    "id": str(uuid.uuid4()),
+                    "slot_id": it.slot_id,
+                    "storage_path": canonical_path,
+                    "original_filename": f"Pexels · {attribution['photographer'] or photo.get('id')}.{ext}",
+                    "content_type": content_type,
+                    "size": result.get("size", len(data)),
+                    "is_deleted": False,
+                    "tags": ["library", "pexels", "bulk-fill"],
+                    "source": "pexels",
+                    "pexels": attribution,
+                    "created_at": now_iso,
+                })
+                slot_update = {
+                    "url": public_url,
+                    "alt": it.alt or photo.get("alt") or query,
+                    "source": "pexels",
+                    "cleared": False,
+                    "pexels": attribution,
+                    "updated_at": now_iso,
+                }
+                if it.alt_i18n:
+                    slot_update["alt_i18n"] = it.alt_i18n
+                await db.image_slots.update_one({"_id": it.slot_id}, {"$set": slot_update}, upsert=True)
+                results.append({"slot_id": it.slot_id, "ok": True, "url": public_url, "pexels_id": photo.get("id"), "query": query})
+            except Exception as exc:  # noqa: BLE001
+                logger.exception("bulk-fill failed for %s", it.slot_id)
+                results.append({"slot_id": it.slot_id, "ok": False, "error": str(exc)[:160], "query": query})
+
+    ok = sum(1 for r in results if r.get("ok"))
+    return {"total": len(results), "ok": ok, "failed": len(results) - ok, "results": results}
+
+
+
+# ----------------------------------------------------------
 #  Unsplash integration
 #  ----
 #  Mirrors the Pexels integration. Three endpoints:

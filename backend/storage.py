@@ -12,6 +12,7 @@ Path convention used by Xaluca Tours:
 from __future__ import annotations
 
 import os
+import time
 import logging
 from typing import Tuple
 
@@ -49,25 +50,32 @@ def _key_or_init() -> str:
 
 
 def put_object(path: str, data: bytes, content_type: str) -> dict:
-    """Upload bytes to storage. Returns {"path": str, "size": int, ...}."""
+    """Upload bytes to storage. Returns {"path": str, "size": int, ...}.
+    Retries on transient 5xx errors and refreshes the key on 403."""
     key = _key_or_init()
-    resp = requests.put(
-        f"{STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key, "Content-Type": content_type},
-        data=data,
-        timeout=120,
-    )
-    if resp.status_code == 403:
-        # Refresh the key once and retry — handles expired session keys.
-        global _storage_key
-        _storage_key = None
-        key = init_storage()
+    last_exc: Exception | None = None
+    for attempt in range(4):
         resp = requests.put(
             f"{STORAGE_URL}/objects/{path}",
             headers={"X-Storage-Key": key, "Content-Type": content_type},
             data=data,
             timeout=120,
         )
+        if resp.status_code == 403:
+            # Refresh the key once and retry — handles expired session keys.
+            global _storage_key
+            _storage_key = None
+            key = init_storage()
+            continue
+        if resp.status_code >= 500:
+            # Transient storage error — back off and retry.
+            last_exc = requests.HTTPError(f"{resp.status_code} storage error")
+            time.sleep(0.8 * (attempt + 1))
+            continue
+        resp.raise_for_status()
+        return resp.json()
+    if last_exc:
+        raise last_exc
     resp.raise_for_status()
     return resp.json()
 

@@ -9,11 +9,14 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
 import EditableImage from "@/components/EditableImage";
+import { useSlotId } from "@/components/slotScope";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
 
 /* ============================================================
-   JourneyHero — full-bleed cinematic hero used by both gateways
+   JourneyHero — full-bleed cinematic hero used by both gateways.
+   The background image is CMS-editable via an auto-namespaced slot
+   (`<page>.hero.bg`) so each page keeps its own hero image.
 ============================================================ */
 export const JourneyHero = ({
   image,
@@ -28,15 +31,20 @@ export const JourneyHero = ({
   secondaryHref = "#editorial",
   scroll,
   testid = "journey-hero",
-}) => (
+  slotId,
+}) => {
+  const autoSlot = useSlotId("hero.bg");
+  const heroSlot = slotId || autoSlot;
+  return (
   <section
     data-testid={testid}
     className="relative h-[100svh] min-h-[820px] w-full overflow-hidden bg-[#1A1513]"
   >
-    <img
-      src={image}
+    <EditableImage
+      slot={heroSlot}
+      fallback={image}
       alt=""
-      loading="eager"
+      imgProps={{ loading: "eager" }}
       className="ken-burns absolute inset-0 w-full h-full object-cover"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35" />
@@ -102,7 +110,8 @@ export const JourneyHero = ({
       </a>
     </div>
   </section>
-);
+  );
+};
 
 /* ============================================================
    StickyNav — anchor chips that follow the user as they scroll
