@@ -55,15 +55,17 @@ const ratioLabel = (ratio) => {
 };
 
 /* Render the saved/cropped image. Empty-state placeholder when no source. */
-const ImageOrPlaceholder = ({ url, alt, className, imgProps, aspectRatio }) => {
+const ImageOrPlaceholder = ({ url, alt, className, imgProps, aspectRatio, slot }) => {
   if (url) {
-    return <img src={resolveUrl(url)} alt={alt} className={className} {...imgProps} />;
+    return <img src={resolveUrl(url)} alt={alt} className={className} data-cms-image-slot={slot || undefined} data-cms-alt={alt || undefined} {...imgProps} />;
   }
   return (
     <div
       className={`${className} flex items-center justify-center bg-[#EDE5D5]`}
       style={{ aspectRatio: parseRatio(aspectRatio) || undefined }}
       aria-label={alt || "Imagen sin definir"}
+      data-cms-image-slot={slot || undefined}
+      data-cms-alt={alt || undefined}
     >
       <span className="inline-flex items-center gap-2 text-[#9C8E78] text-[10px] tracking-[0.32em] uppercase">
         <ImageOff className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -188,6 +190,7 @@ export const EditableImage = ({
         className={className}
         imgProps={imgProps}
         aspectRatio={aspectRatio}
+        slot={slot}
       />
       {editMode && slot && (
         <div

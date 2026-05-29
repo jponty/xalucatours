@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
-  Lock, LogOut,
+  Lock, LogOut, Wand2,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 
@@ -158,6 +158,62 @@ export default function AdminPage() {
     });
     bumpPreview((k) => k + 1);
     fetchSlots();
+  };
+
+  // ----- One-click: fill THIS page's images from Pexels -----
+  const iframeRef = useRef(null);
+  const [fillBusy, setFillBusy] = useState(false);
+  const [fillMsg, setFillMsg] = useState("");
+
+  const buildQuery = (node) => {
+    let base = (node.getAttribute("data-cms-alt") || "").trim();
+    if (base.length < 4) {
+      let el = node, heading = "";
+      for (let i = 0; i < 6 && el; i++) {
+        el = el.parentElement;
+        if (!el) break;
+        const h = el.querySelector && el.querySelector("h1,h2,h3,h4");
+        if (h && h.textContent.trim().length > 3) { heading = h.textContent.trim(); break; }
+      }
+      base = heading || selectedRoute.replace(/([A-Z])/g, " $1").replace(/[._-]+/g, " ");
+    }
+    base = base.replace(/[•·|–—:]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+    const low = base.toLowerCase();
+    if (!/(morocco|marruecos|maroc)/.test(low)) base += " Morocco";
+    return base;
+  };
+
+  const fillPageImages = async () => {
+    const doc = iframeRef.current && iframeRef.current.contentDocument;
+    if (!doc) { setFillMsg("No se pudo leer la página (recarga el preview)."); return; }
+    const nodes = Array.from(doc.querySelectorAll("[data-cms-image-slot]"));
+    const seen = new Set();
+    const items = [];
+    nodes.forEach((n) => {
+      const slot_id = n.getAttribute("data-cms-image-slot");
+      if (!slot_id || seen.has(slot_id)) return;
+      seen.add(slot_id);
+      const alt = (n.getAttribute("data-cms-alt") || "").trim();
+      items.push({ slot_id, query: buildQuery(n), alt: alt || undefined });
+    });
+    if (!items.length) { setFillMsg("No hay imágenes detectables en esta página."); return; }
+    setFillBusy(true);
+    setFillMsg(`Rellenando ${items.length} imágenes desde Pexels…`);
+    try {
+      const r = await fetch(`${API}/pexels/bulk-fill`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, orientation: "landscape", force: true }),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      const d = await r.json();
+      setFillMsg(`✓ ${d.ok}/${d.total} imágenes rellenadas${d.failed ? ` · ${d.failed} fallaron` : ""}.`);
+      bumpPreview((k) => k + 1);
+      fetchSlots();
+    } catch {
+      setFillMsg("Error al rellenar (la página puede tener demasiadas imágenes; reinténtalo).");
+    }
+    setFillBusy(false);
   };
 
   if (authed === null) {
@@ -365,25 +421,42 @@ export default function AdminPage() {
 
         {/* Right: live preview */}
         <section className="col-span-12 md:col-span-5 lg:col-span-6 bg-[#0F0D0B] flex flex-col">
-          <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between">
+          <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-white/60">
               <Layout className="w-3.5 h-3.5" /> Live preview · {selectedRoute}
             </div>
-            <div className="flex items-center gap-1 bg-white/5 p-1">
-              {DEVICES.map((d) => {
-                const Icon = d.icon;
-                return (
-                  <button
-                    key={d.id}
-                    data-testid={`admin-device-${d.id}`}
-                    onClick={() => setDevice(d.id)}
-                    aria-label={d.label}
-                    className={`p-2 transition-colors ${device === d.id ? "bg-[#C16542] text-white" : "text-white/60 hover:bg-white/10"}`}
-                  >
-                    <Icon className="w-4 h-4" strokeWidth={1.7} />
-                  </button>
-                );
-              })}
+            <div className="flex items-center gap-3 flex-wrap">
+              {fillMsg && (
+                <span data-testid="admin-fill-msg" className="text-[10px] tracking-[0.12em] text-white/70 max-w-[280px] truncate">{fillMsg}</span>
+              )}
+              <button
+                data-testid="admin-fill-images"
+                onClick={fillPageImages}
+                disabled={fillBusy}
+                title="Detecta los slots de imagen visibles en esta página y los rellena con fotos de Pexels"
+                className={`inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase transition-colors ${
+                  fillBusy ? "bg-white/10 text-white/40 cursor-not-allowed" : "bg-[#3E7C59] hover:bg-[#326449] text-white"
+                }`}
+              >
+                <Wand2 className={`w-3.5 h-3.5 ${fillBusy ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+                {fillBusy ? "Rellenando…" : "Rellenar imágenes (Pexels)"}
+              </button>
+              <div className="flex items-center gap-1 bg-white/5 p-1">
+                {DEVICES.map((d) => {
+                  const Icon = d.icon;
+                  return (
+                    <button
+                      key={d.id}
+                      data-testid={`admin-device-${d.id}`}
+                      onClick={() => setDevice(d.id)}
+                      aria-label={d.label}
+                      className={`p-2 transition-colors ${device === d.id ? "bg-[#C16542] text-white" : "text-white/60 hover:bg-white/10"}`}
+                    >
+                      <Icon className="w-4 h-4" strokeWidth={1.7} />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="flex-1 overflow-auto bg-[#1A1513] p-3 md:p-6 flex items-start justify-center">
@@ -394,6 +467,7 @@ export default function AdminPage() {
             >
               <iframe
                 key={previewKey}
+                ref={iframeRef}
                 title="Live preview"
                 src={previewSrc}
                 className="w-full h-full border-0"
