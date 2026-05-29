@@ -4,6 +4,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
 import EditableImage from "@/components/EditableImage";
+import { useSlotId } from "@/components/slotScope";
 
 const LABELS = {
   es: {
@@ -77,6 +78,9 @@ const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => (
 export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
+  // Page-namespaced base so each itinerary keeps its own independent
+  // landmark gallery images (landmark ids repeat across programmes).
+  const galleryBase = useSlotId(`landmark.${landmark ? landmark.id : "x"}.gallery`);
   // Galleries can come either from the inline `landmark.gallery` (used by
   // synthetic city-profile waypoints) or the static LANDMARK_GALLERIES dict
   // keyed by landmark.id (the original curated landmark days).
@@ -194,7 +198,7 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
               lang={lang}
               index={i}
               total={images.length}
-              slot={`landmark.${landmark.id}.gallery.${i}`}
+              slot={`${galleryBase}.${i}`}
             />
           ))}
         </div>

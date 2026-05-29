@@ -1216,10 +1216,14 @@ const G = ({ k, defaults, as = "span", className, multiline = false, ...rest }) 
 /* ============================================================
    Hero
 ============================================================ */
-const ProgramHero = ({ vt, t, program, lang, variant, tripKey }) => (
+const ProgramHero = ({ vt, t, program, lang, variant }) => {
+  // Namespaced by the current program URL so every itinerary keeps its
+  // own independent hero image (text was already page-scoped via <C>).
+  const heroSlot = useSlotId("hero");
+  return (
   <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
-      slot={`${tripKey}.hero`}
+      slot={heroSlot}
       fallback={vt.hero_image}
       alt=""
       aspectRatio="21/9"
@@ -1280,7 +1284,8 @@ const ProgramHero = ({ vt, t, program, lang, variant, tripKey }) => (
       </a>
     </div>
   </section>
-);
+  );
+};
 
 const Description = ({ vt, t, program, variant }) => {
   const descAll = metaAllLangs(program, variant, "description");
@@ -1362,6 +1367,9 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
 const DayBlock = ({ day, idx, total, lang, t }) => {
   const reverse = idx % 2 === 1;
   const dayNum = String(idx + 1).padStart(2, "0");
+  // Page-namespaced so the day image is independent per itinerary URL,
+  // even when several programmes reuse the same shared `day.id`.
+  const dayImageSlot = useSlotId(`day.${day.id}.image`);
   return (
     <article id={day.id} data-testid={`program-day-${day.id}`}
              className="relative bg-[#FDFBF7] py-20 md:py-24 overflow-hidden border-b border-[#2C2621]/10">
@@ -1370,7 +1378,7 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <div className="relative aspect-[4/5] md:aspect-[5/6] overflow-hidden bg-[#1A1513] sticky lg:top-24">
               <EditableImage
-                slot={`day.${day.id}.image`}
+                slot={dayImageSlot}
                 fallback={day.image}
                 alt={pick(day.title, lang)}
                 aspectRatio="5/6"

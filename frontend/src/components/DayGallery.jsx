@@ -3,6 +3,7 @@ import { X, Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { DAY_GALLERIES, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
 import EditableImage from "@/components/EditableImage";
+import { useSlotId } from "@/components/slotScope";
 const SECTION_LABELS = {
   es: { eyebrow: "Galería del día", title: "El recorrido en imágenes.", count_singular: "imagen", count_plural: "imágenes", close: "Cerrar", prev: "Anterior", next: "Siguiente" },
   en: { eyebrow: "Day gallery", title: "The journey in pictures.", count_singular: "image", count_plural: "images", close: "Close", prev: "Previous", next: "Next" },
@@ -92,6 +93,9 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
   const t = SECTION_LABELS[lang] || SECTION_LABELS.es;
   const images = DAY_GALLERIES[day.route_id];
   const [open, setOpen] = useState(null);
+  // Page-namespaced base so the gallery is independent per itinerary URL,
+  // even when several programmes reuse the same shared `route_id`.
+  const galleryBase = useSlotId(`day.${day.route_id}.gallery`);
 
   if (!images || images.length === 0) return null;
 
@@ -99,7 +103,7 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
   // so the lightbox shares the same CMS-editable surface as the grid tile.
   const cells = images.slice(0, 7).map((img, i) => ({
     ...img,
-    slot: `day.${day.route_id}.gallery.${i}`,
+    slot: `${galleryBase}.${i}`,
   }));
 
   // Pre-defined column/row spans per cell for the asymmetric editorial collage.

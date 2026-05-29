@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import EditableImage from "@/components/EditableImage";
+import { useEditMode } from "@/contexts/EditModeContext";
 
 /* ============================================================
    CategoryImageCarousel
@@ -29,6 +30,7 @@ export default function CategoryImageCarousel({
   const list = Array.isArray(images) && images.length > 0 ? images : [];
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const { editMode } = useEditMode();
   const total = list.length;
   const touchStartX = useRef(null);
   const SWIPE_THRESHOLD = 50; // px
@@ -60,10 +62,12 @@ export default function CategoryImageCarousel({
   };
 
   useEffect(() => {
-    if (paused || total <= 1) return undefined;
+    // Never auto-advance while editing — the user needs the visible slide
+    // to stay put so they can click it and open its image editor.
+    if (paused || editMode || total <= 1) return undefined;
     const id = setInterval(next, interval);
     return () => clearInterval(id);
-  }, [paused, total, interval, next]);
+  }, [paused, editMode, total, interval, next]);
 
   if (total === 0) return null;
 
@@ -77,17 +81,26 @@ export default function CategoryImageCarousel({
       onTouchEnd={onTouchEnd}
     >
       {list.map((img, i) => (
-        <EditableImage
+        <div
           key={i}
-          slot={`home.cat.${slug}.image-${i}`}
-          fallback={img}
-          alt={alt}
-          imgProps={{ loading: i === 0 ? "eager" : "lazy" }}
-          aspectRatio={aspectRatio}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1400ms] ease-in-out ${
+          aria-hidden={i !== active}
+          className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${
             i === active ? "opacity-100" : "opacity-0"
+          } ${
+            /* Only the visible slide receives clicks so edit-mode targets
+               the currently shown image instead of a hidden stacked one. */
+            i === active ? "pointer-events-auto" : "pointer-events-none"
           }`}
-        />
+        >
+          <EditableImage
+            slot={`home.cat.${slug}.image-${i}`}
+            fallback={img}
+            alt={alt}
+            imgProps={{ loading: i === 0 ? "eager" : "lazy" }}
+            aspectRatio={aspectRatio}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
       ))}
 
       {/* Arrows */}
@@ -98,7 +111,10 @@ export default function CategoryImageCarousel({
             onClick={prev}
             aria-label="Previous image"
             data-testid={`cat-carousel-prev-${slug}`}
-            className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+            data-edit-allow="true"
+            className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 ${
+              editMode ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+            }`}
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.6} />
           </button>
@@ -107,7 +123,10 @@ export default function CategoryImageCarousel({
             onClick={handleNext}
             aria-label="Next image"
             data-testid={`cat-carousel-next-${slug}`}
-            className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+            data-edit-allow="true"
+            className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 ${
+              editMode ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+            }`}
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.6} />
           </button>
@@ -115,7 +134,7 @@ export default function CategoryImageCarousel({
           {/* Dots */}
           <div
             data-testid={`cat-carousel-dots-${slug}`}
-            className="absolute bottom-5 right-6 z-10 inline-flex items-center gap-1.5"
+            className="absolute bottom-5 right-6 z-[50] inline-flex items-center gap-1.5"
           >
             {list.map((_, i) => (
               <button
@@ -123,6 +142,7 @@ export default function CategoryImageCarousel({
                 type="button"
                 aria-label={`Go to image ${i + 1}`}
                 aria-current={i === active}
+                data-edit-allow="true"
                 onClick={(e) => { e.preventDefault(); go(i); }}
                 className={`h-1.5 transition-all duration-300 border-0 ${
                   i === active
