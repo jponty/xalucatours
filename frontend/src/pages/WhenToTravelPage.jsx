@@ -166,7 +166,7 @@ export default function WhenToTravelPage() {
           </div>
         </nav>
 
-        <div className="relative z-10 h-full flex items-end pb-24 md:pb-32">
+        <div className="relative z-10 h-full flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-4xl">
               <span

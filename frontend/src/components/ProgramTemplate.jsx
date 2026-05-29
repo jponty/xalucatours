@@ -1230,7 +1230,7 @@ const ProgramHero = ({ vt, t, program, lang, variant }) => (
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
     <span className="film-grain" />
     <div className="relative z-10 h-full flex flex-col">
-      <div className="flex-1 flex items-end pb-24 md:pb-36">
+      <div className="flex-1 flex items-end pt-32 md:pt-44 pb-20 md:pb-28">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-4xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">

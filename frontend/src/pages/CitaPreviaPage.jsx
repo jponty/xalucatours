@@ -132,7 +132,7 @@ const CitaPreviaPage = () => {
           <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
           <span className="film-grain pointer-events-none" />
 
-          <div className="relative z-10 h-full flex items-end pb-24 md:pb-28">
+          <div className="relative z-10 h-full flex items-end pt-32 md:pt-44 pb-24 md:pb-28">
             <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
               <div className="max-w-3xl">
                 <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">

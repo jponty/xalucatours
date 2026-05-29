@@ -53,7 +53,7 @@ export const JourneyHero = ({
     <span className="film-grain" />
 
     <div className="relative z-10 h-full flex flex-col">
-      <div className="flex-1 flex items-end pt-32 md:pt-40 pb-24 md:pb-32">
+      <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-3xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">

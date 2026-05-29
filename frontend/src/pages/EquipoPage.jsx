@@ -208,7 +208,7 @@ const Hero = ({ lang }) => (
       <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
         <InlineBreadcrumb lang={lang} />
       </div>
-      <div className="flex-1 flex items-end pb-24 md:pb-32">
+      <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-3xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
