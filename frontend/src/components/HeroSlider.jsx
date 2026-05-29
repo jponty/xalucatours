@@ -43,7 +43,7 @@ export const HeroSlider = () => {
   return (
     <section
       data-testid="hero-section"
-      className="relative h-[100svh] min-h-[820px] w-full overflow-hidden bg-[#1A1513]"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]"
     >
       {/* ---------- Background video ---------- */}
       <div
