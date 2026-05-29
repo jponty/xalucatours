@@ -9,7 +9,6 @@
    All copy is editable via <E> (SlotScope id="citaprevia").
 ============================================================ */
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Compass, Calendar, CheckCircle2, Phone, MapPin, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
@@ -19,7 +18,6 @@ import ContactForm from "@/components/ContactForm";
 import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
-import { pathFor } from "@/lib/routes";
 
 const COPY = {
   hero: {
@@ -86,7 +84,7 @@ const COPY = {
       en: "If you prefer, call us or send your query through the form and a specialist agent will get back to you.",
       fr: "Si vous préférez, appelez-nous ou envoyez votre demande via le formulaire et un agent spécialiste vous recontactera.",
     },
-    cta: { es: "Ir a contacto", en: "Go to contact", fr: "Aller au contact" },
+    cta: { es: "Escríbenos", en: "Write to us", fr: "Écrivez-nous" },
   },
 };
 
@@ -248,11 +246,11 @@ const CitaPreviaPage = () => {
             <E name="outro.body" defaults={COPY.outro.body} as="p"
                className="mt-4 text-[14px] md:text-base text-[#5C5248] leading-relaxed max-w-2xl mx-auto" />
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Link to={pathFor(lang, "contact")} data-testid="citaprevia-outro-contact"
-                    className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+              <a href="#contact-form" data-testid="citaprevia-outro-contact"
+                 className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
                 <E name="outro.cta" defaults={COPY.outro.cta} multiline={false} />
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-              </Link>
+              </a>
               <a href={`tel:${CONTACT.phoneRaw || "+34937268366"}`} data-testid="citaprevia-outro-call"
                  className="inline-flex items-center gap-3 text-[11px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors">
                 <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
