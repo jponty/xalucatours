@@ -7,6 +7,7 @@
 - **Persistence**: client-side only — localStorage key `xaluca_juego_visited_v1` (no login; chosen by user). Personal visual rank (no global leaderboard).
 - **Files**: `pages/JuegoPage.jsx`, `lib/juegoData.js`; route/menu wiring in `lib/routes.js`, `lib/routeComponents.js`, `lib/menu.js`.
 - Verified by testing agent (iteration_23): 100% — load, toggle+stats, persistence, level-up @10%, reset, trilingual routing, menu link. No bugs.
+- **Visual cards upgrade** (Feb 2026): the selection pills were replaced by visual selectable cards — each with a representative image (`EditableImage`, CMS-editable, slot `juego.{id}.image`, lazy 4:3), clear title and a short trilingual description (educational/exploratory). Selection state is obvious (terracotta border + check badge + "Marcado" ribbon; unselected cards are dimmed). Whole card toggles on click. 73 representative images sourced via the Pexels API (one per place, baked as `image` fallbacks in `juegoData.js`); each place also gained a trilingual `desc`.
 
 ## /viajes region map · video section · carousel editability · per-page image slots (Feb 2026)
 - **P0 — Independent image slots per program page**: program images were sharing CMS slots across itineraries that reuse the same `route_id`/`day.id` (text was already page-scoped). Fixed by namespacing all program image slots with the page URL via `useSlotId`:

@@ -11,6 +11,7 @@ import {
   resolveLevel,
 } from "@/lib/juegoData";
 import ContactForm from "@/components/ContactForm";
+import EditableImage from "@/components/EditableImage";
 
 const ICONS = {
   Map: MapIcon, Building2, Castle, Sun, Mountain, Waves, Landmark, Camera,
@@ -388,7 +389,7 @@ export default function JuegoPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                   {items.map((p) => {
                     const isOn = visited.has(p.id);
                     return (
@@ -398,20 +399,57 @@ export default function JuegoPage() {
                         onClick={() => toggle(p.id)}
                         aria-pressed={isOn}
                         data-testid={`juego-item-${p.id}`}
-                        className={`group inline-flex items-center gap-2 pl-2.5 pr-3.5 py-2 rounded-full border text-sm transition-all duration-300 ${
+                        className={`group relative text-left rounded-2xl overflow-hidden border bg-[#FDFBF7] transition-all duration-300 focus:outline-none ${
                           isOn
-                            ? "bg-[#C16542] border-[#C16542] text-[#FDFBF7] shadow-[0_8px_20px_-10px_rgba(193,101,66,0.8)]"
-                            : "bg-[#FDFBF7] border-[#2C2621]/20 text-[#2C2621] hover:border-[#C16542]/60"
+                            ? "border-[#C16542] shadow-[0_18px_38px_-20px_rgba(193,101,66,0.85)]"
+                            : "border-[#2C2621]/12 hover:border-[#C16542]/50 hover:shadow-[0_18px_38px_-24px_rgba(26,21,19,0.5)]"
                         }`}
                       >
-                        <span
-                          className={`inline-flex items-center justify-center w-5 h-5 rounded-full border transition-colors ${
-                            isOn ? "bg-[#FDFBF7] border-[#FDFBF7]" : "border-[#2C2621]/30 group-hover:border-[#C16542]"
-                          }`}
-                        >
-                          {isOn && <Check className="w-3.5 h-3.5 text-[#C16542]" strokeWidth={3} />}
-                        </span>
-                        {pick(p.name, lang)}
+                        {/* Image */}
+                        <div className="relative w-full overflow-hidden">
+                          <EditableImage
+                            slot={`juego.${p.id}.image`}
+                            fallback={p.image}
+                            alt={pick(p.name, lang)}
+                            aspectRatio="4/3"
+                            imgProps={{ loading: "lazy" }}
+                            className={`w-full h-full object-cover transition-transform duration-500 ${
+                              isOn ? "" : "group-hover:scale-[1.04]"
+                            }`}
+                          />
+                          {/* Dim veil when not selected, to highlight chosen ones */}
+                          <div
+                            className={`absolute inset-0 transition-opacity duration-300 pointer-events-none ${
+                              isOn ? "opacity-0" : "bg-[#1A1513]/25 group-hover:opacity-0 opacity-100"
+                            }`}
+                          />
+                          {/* Selection badge */}
+                          <span
+                            className={`absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-300 ${
+                              isOn
+                                ? "bg-[#C16542] border-[#FDFBF7] scale-100"
+                                : "bg-[#FDFBF7]/85 border-[#FDFBF7] scale-90 group-hover:scale-100"
+                            }`}
+                          >
+                            <Check
+                              className={`w-4 h-4 ${isOn ? "text-[#FDFBF7]" : "text-[#2C2621]/40"}`}
+                              strokeWidth={3}
+                            />
+                          </span>
+                          {/* "Visitado" ribbon */}
+                          {isOn && (
+                            <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#C16542]/90 to-transparent text-[#FDFBF7] text-[10px] tracking-[0.22em] uppercase font-semibold px-3 pt-6 pb-2">
+                              {t.selectHint}
+                            </span>
+                          )}
+                        </div>
+                        {/* Text */}
+                        <div className="p-4">
+                          <h4 className="font-serif-x text-lg leading-tight text-[#2C2621]">{pick(p.name, lang)}</h4>
+                          {p.desc && (
+                            <p className="mt-1.5 text-[13px] leading-snug text-[#5C5248] line-clamp-3">{pick(p.desc, lang)}</p>
+                          )}
+                        </div>
                       </button>
                     );
                   })}
