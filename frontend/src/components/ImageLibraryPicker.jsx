@@ -241,7 +241,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                 Biblioteca de imágenes
               </h3>
               <p className="text-[11px] tracking-[0.18em] uppercase text-[#5C5248] mt-0.5 truncate">
-                {counterLine}
+                {tab === "pexels" ? "Pexels · Stock fotográfico gratuito" : counterLine}
               </p>
             </div>
           </div>
@@ -423,7 +423,9 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         {/* Footer */}
         <div className="px-6 md:px-8 py-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3 text-[11px] text-[#5C5248]">
           <span className="tracking-[0.2em] uppercase hidden md:inline">
-            Las fotos se reutilizan al pulsar — no se vuelven a subir.
+            {tab === "pexels"
+              ? "Stock libre · Pexels descarga al storage al pulsar."
+              : "Las fotos se reutilizan al pulsar — no se vuelven a subir."}
           </span>
           <button
             type="button"
