@@ -17,6 +17,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import Testimonials from "@/components/Testimonials";
+import ToursRegionMap from "@/components/ToursRegionMap";
 
 const EXP_ICONS = { Bike, Mountain, Truck, Tent, Palmtree, Flame, Sparkles, Trophy };
 
@@ -459,6 +460,8 @@ export default function AventuraPage() {
         image="https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85"
         testid="aventura-community"
       />
+
+      <ToursRegionMap defaultZone="sahara" topPadClass="pt-20 md:pt-28" />
 
       <ContactForm />
     </div>

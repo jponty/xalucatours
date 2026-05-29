@@ -193,17 +193,18 @@ const FlyTo = ({ coords }) => {
   return null;
 };
 
-export const ToursRegionMap = () => {
+export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
   const { lang } = useLanguage();
   const t = COPY[lang] || COPY.es;
   const SD = (k) => ({ es: COPY.es[k], en: COPY.en[k], fr: COPY.fr[k] });
-  const [activeId, setActiveId] = useState(REGIONS[0].id);
+  const initialId = REGIONS.some((r) => r.id === defaultZone) ? defaultZone : REGIONS[0].id;
+  const [activeId, setActiveId] = useState(initialId);
   const active = useMemo(() => REGIONS.find((r) => r.id === activeId) || REGIONS[0], [activeId]);
 
   return (
     <section
       data-testid="viajes-region-map"
-      className="relative bg-[#FDFBF7] pb-20 md:pb-28 pt-4 overflow-hidden"
+      className={`relative bg-[#FDFBF7] pb-20 md:pb-28 ${topPadClass} overflow-hidden`}
     >
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         {/* Heading */}

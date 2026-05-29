@@ -24,6 +24,7 @@ import SectionGallery from "@/components/SectionGallery";
 import Testimonials from "@/components/Testimonials";
 import { SUR_GALLERIES } from "@/lib/sectionGalleries";
 import VideoSection from "@/components/VideoSection";
+import ToursRegionMap from "@/components/ToursRegionMap";
 
 /* ----------------------------------------------------------------
    Sur de Marruecos — 3 immersive videos paired to the editorial
@@ -447,6 +448,8 @@ export default function SurPage() {
         image="https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85"
         testid="sur-community"
       />
+
+      <ToursRegionMap defaultZone="south" topPadClass="pt-20 md:pt-28" />
 
       <ContactForm />
     </div>

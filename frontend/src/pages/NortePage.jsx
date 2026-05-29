@@ -16,6 +16,7 @@ import VideoSection from "@/components/VideoSection";
 import { NORTE_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
+import ToursRegionMap from "@/components/ToursRegionMap";
 
 /* ============================================================
    Trilingual copy for the Norte de Marruecos gateway
@@ -278,6 +279,8 @@ export default function NortePage() {
         tone="sage"
         testid="norte-testimonials"
       />
+
+      <ToursRegionMap defaultZone="north" topPadClass="pt-20 md:pt-28" />
 
       <ContactForm />
     </div>

@@ -20,6 +20,7 @@ import VideoSection from "@/components/VideoSection";
 import { MARRUECOS_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { MARRUECOS_GALLERIES } from "@/lib/sectionGalleries";
+import ToursRegionMap from "@/components/ToursRegionMap";
 
 /* ============================================================
    Trilingual copy for the Marruecos gateway
@@ -356,6 +357,8 @@ export default function MarruecosPage() {
         image="https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85"
         testid="marruecos-community"
       />
+
+      <ToursRegionMap topPadClass="pt-20 md:pt-28" />
 
       <ContactForm />
     </div>
