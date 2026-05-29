@@ -54,6 +54,11 @@ export const SEASONS = [
     accent: "#5A6B4F",
     months: { es: "Marzo · Abril · Mayo", en: "March · April · May", fr: "Mars · Avril · Mai" },
     idealFor: { es: "Alto Atlas en flor, desierto templado y medinas sin calor.", en: "the Atlas in bloom, a mild desert and medinas without the heat.", fr: "l'Atlas en fleurs, un désert tempéré et les médinas sans la chaleur." },
+    recommended: [
+      { route: "tourAtlasDesierto67", label: { es: "Atlas y desierto · 6n/7d", en: "Atlas & desert · 6n/7d", fr: "Atlas & désert · 6n/7j" } },
+      { route: "tourCiudadesImperiales45", label: { es: "Ciudades imperiales · 4n/5d", en: "Imperial cities · 4n/5d", fr: "Cités impériales · 4n/5j" } },
+      { route: "tourMarrakechErg45", label: { es: "Marrakech – Erg Chebbi · 4n/5d", en: "Marrakech – Erg Chebbi · 4n/5d", fr: "Marrakech – Erg Chebbi · 4n/5j" } },
+    ],
     title: { es: "Primavera. El Marruecos en flor.", en: "Spring. Morocco in bloom.", fr: "Printemps. Le Maroc en fleurs." },
     weather: {
       es: "Temperaturas de 16 a 26 °C en interior. Cielos limpios, noches frescas en el Atlas, dunas todavía templadas. Algunas lluvias breves en el norte.",
@@ -87,6 +92,11 @@ export const SEASONS = [
     accent: "#C16542",
     months: { es: "Junio · Julio · Agosto", en: "June · July · August", fr: "Juin · Juillet · Août" },
     idealFor: { es: "costa atlántica, montañas del Atlas y noches en las ciudades imperiales.", en: "the Atlantic coast, the Atlas mountains and imperial cities by night.", fr: "la côte atlantique, les montagnes de l'Atlas et les cités impériales le soir." },
+    recommended: [
+      { route: "tourMarrakechEss67", label: { es: "Marrakech – Essaouira · 6n/7d", en: "Marrakech – Essaouira · 6n/7d", fr: "Marrakech – Essaouira · 6n/7j" } },
+      { route: "tourCiudadesImperialesRif67", label: { es: "Imperiales y Rif · 6n/7d", en: "Imperial cities & Rif · 6n/7d", fr: "Cités impériales & Rif · 6n/7j" } },
+      { route: "tourCiudadesImperiales67", label: { es: "Ciudades imperiales · 6n/7d", en: "Imperial cities · 6n/7d", fr: "Cités impériales · 6n/7j" } },
+    ],
     title: { es: "Verano. Atlas, Atlántico y noches sin fin.", en: "Summer. Atlas, Atlantic and endless nights.", fr: "Été. Atlas, Atlantique et nuits sans fin." },
     weather: {
       es: "Marrakech, Fez y el desierto rozan los 40 °C. La costa atlántica respira entre 22 y 27 °C. El Alto Atlas se mantiene fresco al amanecer.",
@@ -120,6 +130,11 @@ export const SEASONS = [
     accent: "#D97742",
     months: { es: "Septiembre · Octubre · Noviembre", en: "September · October · November", fr: "Septembre · Octobre · Novembre" },
     idealFor: { es: "el desierto recién reabierto, la mejor luz del año y rutas por todo el país.", en: "the freshly reopened desert, the year's best light and journeys countrywide.", fr: "le désert rouvert, la plus belle lumière de l'année et des itinéraires partout." },
+    recommended: [
+      { route: "tourFezRak78", label: { es: "Gran ruta Fez – Marrakech · 7n/8d", en: "Grand route Fez – Marrakech · 7n/8d", fr: "Grande route Fès – Marrakech · 7n/8j" } },
+      { route: "tourMarrakechErg67", label: { es: "Marrakech – Erg Chebbi · 6n/7d", en: "Marrakech – Erg Chebbi · 6n/7d", fr: "Marrakech – Erg Chebbi · 6n/7j" } },
+      { route: "tourAtlasDesierto67", label: { es: "Atlas y desierto · 6n/7d", en: "Atlas & desert · 6n/7d", fr: "Atlas & désert · 6n/7j" } },
+    ],
     title: { es: "Otoño. La temporada dorada del Sáhara.", en: "Autumn. The Sahara's golden season.", fr: "Automne. La saison dorée du Sahara." },
     weather: {
       es: "El calor retrocede: 22–30 °C de día, noches frescas en el desierto, lluvias raras. Septiembre todavía es caluroso en el interior; noviembre ya pide chaqueta de noche.",
@@ -153,6 +168,11 @@ export const SEASONS = [
     accent: "#5A7F9C",
     months: { es: "Diciembre · Enero · Febrero", en: "December · January · February", fr: "Décembre · Janvier · Février" },
     idealFor: { es: "dunas del Sáhara al sol, ciudades imperiales y hasta esquí en Oukaïmeden.", en: "sunny Sahara dunes, imperial cities and even skiing in Oukaimeden.", fr: "les dunes ensoleillées du Sahara, les cités impériales et même le ski à Oukaïmeden." },
+    recommended: [
+      { route: "tourMarrakechErg45", label: { es: "Marrakech – Erg Chebbi · 4n/5d", en: "Marrakech – Erg Chebbi · 4n/5d", fr: "Marrakech – Erg Chebbi · 4n/5j" } },
+      { route: "tourCiudadesImperiales45", label: { es: "Ciudades imperiales · 4n/5d", en: "Imperial cities · 4n/5d", fr: "Cités impériales · 4n/5j" } },
+      { route: "tourDesiertoAtlas67", label: { es: "Desierto y Atlas · 6n/7d", en: "Desert & Atlas · 6n/7d", fr: "Désert & Atlas · 6n/7j" } },
+    ],
     title: { es: "Invierno. Nieve en el Atlas, fuego en el desierto.", en: "Winter. Snow on the Atlas, fire in the desert.", fr: "Hiver. Neige sur l'Atlas, feu dans le désert." },
     weather: {
       es: "Días suaves (15–22 °C) en Marrakech y el sur, noches frías en el Atlas (con nieve sobre los 2.000 m) y en el desierto (0–8 °C). El norte se vuelve más húmedo.",

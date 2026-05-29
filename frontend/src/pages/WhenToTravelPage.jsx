@@ -61,6 +61,7 @@ const COPY = {
     activities:{ es: "Experiencias", en: "Experiences", fr: "Expériences" },
     pros:      { es: "Por qué viajar", en: "Why travel", fr: "Pourquoi partir" },
     itinerary: { es: "Itinerario tipo", en: "Sample itinerary", fr: "Itinéraire type" },
+    recommended: { es: "Itinerarios recomendados", en: "Recommended itineraries", fr: "Itinéraires recommandés" },
     best:      { es: "Mejor",      en: "Best",         fr: "Meilleur" },
     avoid:     { es: "A tener en cuenta", en: "Good to know", fr: "À noter" },
     months:    { es: "Meses ideales", en: "Ideal months", fr: "Mois idéals" },
@@ -381,6 +382,34 @@ export default function WhenToTravelPage() {
                         <dd className="font-serif-x text-lg md:text-xl text-[#2C2621]">{pick(season.itinerary, lang)}</dd>
                       </div>
                     </dl>
+
+                    {Array.isArray(season.recommended) && season.recommended.length > 0 && (
+                      <div className="mt-7 pt-6 border-t border-[#2C2621]/10" data-testid={`season-recommended-${season.id}`}>
+                        <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-4">
+                          {pick(COPY.labels.recommended, lang)}
+                        </p>
+                        <ul className="space-y-2.5">
+                          {season.recommended.map((it, i) => (
+                            <li key={it.route}>
+                              <Link
+                                to={pathFor(lang, it.route)}
+                                data-testid={`season-recommended-${season.id}-${i}`}
+                                className="group/itin flex items-center justify-between gap-4 px-4 py-3 border border-[#2C2621]/15 hover:border-[var(--accent)] bg-[#FDFBF7] transition-colors duration-300"
+                              >
+                                <span className="text-sm md:text-[15px] text-[#2C2621] group-hover/itin:text-[var(--accent)] transition-colors">
+                                  {pick(it.label, lang)}
+                                </span>
+                                <ArrowRight
+                                  className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover/itin:translate-x-1"
+                                  strokeWidth={1.8}
+                                  style={{ color: season.accent }}
+                                />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
               </article>
