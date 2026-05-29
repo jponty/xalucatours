@@ -1,0 +1,36 @@
+{
+  "summary": "Tested centralised PLACEHOLDER pricing system: backend GET/PUT /api/pricing endpoints, program detail pricing section, From-price labels across cards, trilingual ES/EN/FR localisation, and the /admin Precios tab. Backend pytest: 4/4 PASS. Frontend pricing section, from-prices, trilingual switch, and admin editor all work correctly. Found several MISSING from-price testids on hub/plan/home-featured surfaces listed in the spec.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "FeaturedJourneys (home)", "issue": "No journey-from-* testids found on the home page; only home-all-trips-from-* (40) exist. Per spec, featured journeys should expose journey-from-* labels.", "selector": "[data-testid^='journey-from-']", "priority": "MEDIUM"},
+      {"component": "ItineraryHubPage (/viajes/surdemarruecos)", "issue": "hub-program-from-* testids MISSING on hub-preview-card-* elements. Spec expects hub-program-from-* visible on hub program cards. (itinerary-from-* x4 and overview-from-* x4 are present and correct.)", "selector": "[data-testid^='hub-program-from-']", "priority": "MEDIUM"},
+      {"component": "PlanificaTuViajePage (/planifica-tu-viaje)", "issue": "plan-trip-reco-from-* testids MISSING and page body does NOT contain '€790'. RecoCard does not render the FromPrice label.", "selector": "[data-testid^='plan-trip-reco-from-']", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_pricing.py", "/app/test_reports/pytest/pytest_pricing.xml"],
+  "action_items": [
+    "Add FromPrice (journey-from-{slug}) to FeaturedJourneys cards on the home page.",
+    "Add FromPrice (hub-program-from-{slug}) to hub-preview-card-* items in ItineraryHubPage.jsx so /viajes/surdemarruecos hub cards expose the 'Desde €790 por persona' label.",
+    "Add FromPrice (plan-trip-reco-from-{slug}) to RecoCard in PlanificaTuViajePage.jsx — currently no €790 label renders there at all.",
+    "(Optional) Audit /proximas-salidas: visible 'Desde €790 por persona' shows fine via reused home-all-trips-from-* testids, but adding dedicated departure-from-* testids would match other surfaces."
+  ],
+  "critical_code_review_comments": [
+    "lib/pricing.js + pricingStore.js + FromPrice.jsx + PricingSection.jsx — clean single source of truth; merge function and getFromPrice (lowest across all low/high tiers) are correct.",
+    "Backend PUT /api/pricing correctly: 401 without token, 422 on empty tiers, 200 on valid; persistence verified via subsequent GET.",
+    "Admin tab Precios: editor inputs, auto Desde preview (€790), save with success message all wired up. Localisation chips (Abril/Agosto/Octubre/Semana Santa/Navidad/Nochevieja/Festivos) render correctly in the pricing section."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "~85%"},
+  "test_credentials": "/admin password: xaluca",
+  "seed_data_creation": "None. Pricing tiers were saved during admin test with the same default values (2p:1010/1085, 3p:865/920, 4p:790/835) — From price remains €790.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pricing API fully working (pytest 4/4). Program detail pricing section is perfect on /viajes/desierto_atlas/programa_4n_5d (3 tier rows €1.010/€1.085, €865/€920, €790/€835; all 7 high-season chips; occupancy note; pricing-from='Desde €790 / por persona'; sticky nav PRECIOS anchor #pricing scrolls correctly). Trilingual switching via [data-testid='lang-button-es|en|fr'] localises both the pricing section headers (Precios/Pricing/Tarifs, Viajeros/Travellers/Voyageurs, Temporada baja/Low season/Basse saison) and FromPrice label (Desde/From/Dès & por persona/per person/par personne). Admin /admin login (admin-login-password='xaluca' + admin-login-submit), then admin-tab-pricing → admin-pricing editor with 3 sets of people/low/high inputs, admin-pricing-from auto-preview '€790', admin-pricing-save shows '✓ Precios guardados. Se reflejan en toda la web.' From-price testids present and showing '€790': home-all-trips-from-* (40), region-from-{south,north,all} (3), trip-from-* (13), proxima-from-0, itinerary-from-* (4), overview-from-* (4). MISSING: journey-from-* (home), hub-program-from-* (hub), plan-trip-reco-from-* (plan page also has NO €790 visible).",
+  "rca_of_the_issue": "The missing from-price testids on hub/plan/home-featured surfaces indicate that FromPrice was not wired into those card components (FeaturedJourneys, hub-preview-card in ItineraryHubPage, RecoCard in PlanificaTuViajePage). The PlanificaTuViajePage RecoCard is the most impactful miss because the page contains NO €790 text at all — users land there without seeing the placeholder price."
+}

@@ -10,6 +10,7 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
 import EditableImage from "@/components/EditableImage";
+import FromPrice from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
@@ -696,6 +697,9 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
             <ET k="title" defaults={trip.title} multiline={false} />
           </h4>
           <ET k="summary" as="p" defaults={trip.summary} className="text-[12px] text-[#5C5248] leading-relaxed flex-1" />
+          <div className="mt-3">
+            <FromPrice tone="dark" size="xs" testid={`plan-trip-reco-from-${trip.routeId}`} />
+          </div>
           {/* Independent "View details" link — opens in a new tab, does NOT toggle selection */}
           <Link
             to={pathFor(lang, trip.routeId)}

@@ -173,6 +173,43 @@ async def admin_verify(authorization: str = Header(default="")):
     return {"ok": True}
 
 
+# ---------- Global pricing (centralised, admin-editable) ----------
+# Stored as a single document {_id:"pricing"} in collection `config`.
+# Only the PRICE NUMBERS are overridden here; labels/season defs live
+# in the frontend lib/pricing.js config. Empty doc → frontend defaults.
+class PricingTier(BaseModel):
+    people: int = Field(..., ge=1, le=20)
+    low: int = Field(..., ge=0, le=100000)
+    high: int = Field(..., ge=0, le=100000)
+
+
+class PricingPayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    tiers: List[PricingTier] = Field(..., min_length=1, max_length=12)
+    currency: Optional[str] = Field(default="EUR", max_length=8)
+
+
+@api_router.get("/pricing")
+async def get_pricing():
+    doc = await db.config.find_one({"_id": "pricing"}, {"_id": 0})
+    return doc or {}
+
+
+@api_router.put("/pricing")
+async def put_pricing(payload: PricingPayload, authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    update = {
+        "tiers": [t.model_dump() for t in payload.tiers],
+        "currency": payload.currency or "EUR",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.config.update_one({"_id": "pricing"}, {"$set": update}, upsert=True)
+    doc = await db.config.find_one({"_id": "pricing"}, {"_id": 0})
+    return doc or {}
+
+
 
 @api_router.post("/contact-requests", response_model=ContactRequest)
 async def create_contact_request(payload: ContactRequestCreate):

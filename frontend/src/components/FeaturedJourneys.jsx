@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowRight, MapPin, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { JOURNEYS } from "@/lib/data";
+import FromPrice from "@/components/FromPrice";
 import { BerberDiamondDivider } from "./BerberDivider";
 
 export const FeaturedJourneys = () => {
@@ -64,14 +65,7 @@ export const FeaturedJourneys = () => {
                 </p>
 
                 <div className="mt-6 pt-5 border-t border-[#2C2621]/10 flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
-                      {t("from_price")}
-                    </p>
-                    <p className="font-serif-x text-xl text-[#2C2621] mt-0.5">
-                      €{j.from.toLocaleString()} <span className="text-xs text-[#5C5248]">{t("per_person")}</span>
-                    </p>
-                  </div>
+                  <FromPrice tone="dark" size="md" testid={`journey-from-${j.slug}`} />
                   <a
                     href="#contact"
                     data-testid={`journey-cta-${j.slug}`}

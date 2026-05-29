@@ -7,6 +7,8 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
+import { usePricing } from "@/lib/pricingStore";
+import { getFromPrice, fmtEuro } from "@/lib/pricing";
 import {
   JourneyHero,
   StickyNav,
@@ -235,6 +237,8 @@ const seasonOf = (id) => {
    Departure card
 ============================================================ */
 const DepartureCard = ({ dep, t, lang }) => {
+  const pricing = usePricing();
+  const fromPrice = getFromPrice(pricing);
   const statusLabel =
     dep.status === "last" ? t.status_last :
     dep.status === "sold-out" ? t.status_sold :
@@ -319,7 +323,7 @@ const DepartureCard = ({ dep, t, lang }) => {
               {t.from}
             </p>
             <p className="text-[#2C2621] font-serif-x text-base normal-case tracking-normal">
-              €{dep.price.toLocaleString()}
+              {fmtEuro(fromPrice)}
               <span className="block text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">{t.per_person}</span>
             </p>
           </div>

@@ -8,7 +8,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { StickyNav } from "@/components/JourneyPageSections";
-import { SHARED_SEASONS, SHARED_DETAILS } from "@/lib/programData";
+import { SHARED_DETAILS } from "@/lib/programData";
 import { DayRouteMap } from "@/components/DayRouteMap";
 import { DayGallery } from "@/components/DayGallery";
 import { TripOverview } from "@/components/TripOverview";
@@ -18,6 +18,7 @@ import HubPeerNav from "@/components/HubPeerNav";
 import { useSlotId } from "@/components/EditableSection";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import PricingSection from "@/components/PricingSection";
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
@@ -1470,54 +1471,6 @@ const Itinerary = ({ t, lang, days }) => (
   </section>
 );
 
-const Pricing = ({ t, lang, program }) => (
-  <section id="pricing" data-testid="program-pricing"
-           className="relative bg-[#1A1513] text-[#FDFBF7] py-24 md:py-32 overflow-hidden">
-    <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
-    <span className="film-grain" />
-    <div className="relative max-w-7xl mx-auto px-6 md:px-12">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-14">
-        <div className="md:col-span-7">
-          <L k="pricing_overline" className="overline text-[#D4A373]" />
-          <L k="pricing_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-[54px] leading-[1.05] tracking-tight mt-5" />
-        </div>
-        <div className="md:col-span-5">
-          <L k="pricing_body" multiline as="p" className="text-base md:text-lg text-[#FDFBF7]/75 leading-relaxed" />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15">
-        {SHARED_SEASONS.map((s) => (
-          <div key={s.id} data-testid={`program-season-${s.id}`}
-               className="bg-[#1A1513] hover:bg-[#221A16] transition-colors duration-300 p-6 md:p-7 flex flex-col gap-4">
-            <L k="pricing_season" className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]" />
-            <G k={`season.${s.id}.label`} defaults={s.label} as="h3" className="font-serif-x text-2xl md:text-[26px] leading-[1.1]" />
-            <p className="text-sm text-[#FDFBF7]/65">
-              <L k="pricing_months" className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/45 block mb-1" />
-              <G k={`season.${s.id}.months`} defaults={s.months} />
-            </p>
-            <div className="flex gap-1 mt-2">
-              {[1,2,3,4].map((lv) => (
-                <span key={lv} className={`h-1 w-6 ${lv <= s.level ? "bg-[#C16542]" : "bg-[#FDFBF7]/15"}`} />
-              ))}
-            </div>
-            <div className="mt-auto pt-5 border-t border-[#FDFBF7]/10">
-              <L k="pricing_from" className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/55" />
-              <p className="font-serif-x text-3xl text-[#FDFBF7] mt-1">€{program.prices[s.id].toLocaleString()}</p>
-              <L k="pricing_per" as="p" className="text-[10px] tracking-[0.25em] uppercase text-[#FDFBF7]/55 mt-1" />
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-10 flex justify-center">
-        <a href="#contact" data-testid="program-pricing-cta"
-           className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
-          <L k="pricing_cta" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-        </a>
-      </div>
-    </div>
-  </section>
-);
-
 const DetailsAccordion = ({ t, lang, program }) => {
   const [open, setOpen] = useState("includes");
   const tabs = [
@@ -1664,7 +1617,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <Itinerary t={t} lang={lang} days={program.days} />
       <TripOverview days={program.days} />
-      <Pricing t={t} lang={lang} program={program} />
+      <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" />
       <DetailsAccordion t={t} lang={lang} program={program} />
       <HubPeerNav routeId={routeId} />
       <ContactBand t={t} lang={lang} />

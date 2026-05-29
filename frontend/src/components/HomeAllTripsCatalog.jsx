@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Moon, Compass, Gauge } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
+import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 import {
@@ -127,10 +128,13 @@ const TripCard = ({ trip, lang }) => {
           <p className="text-[13px] text-[#5C5248] leading-relaxed flex-1">
             {pick(trip.summary, lang)}
           </p>
-          <span className="mt-4 inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
-            {pick(COPY.details, lang)}
-            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
-          </span>
+          <div className="mt-4 flex items-center justify-between gap-3 pt-3 border-t border-[#2C2621]/10">
+            <FromPrice tone="dark" size="sm" testid={`home-all-trips-from-${trip.routeId}`} />
+            <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
+              {pick(COPY.details, lang)}
+              <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
+            </span>
+          </div>
         </div>
       </Link>
     </SlotScope>

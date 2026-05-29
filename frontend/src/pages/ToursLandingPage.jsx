@@ -11,6 +11,7 @@ import { CONTACT } from "@/lib/data";
 import { REGIONS, EXPERIENCES, TRIPS } from "@/lib/tripsData";
 import ContactForm from "@/components/ContactForm";
 import EditableImage from "@/components/EditableImage";
+import FromPrice from "@/components/FromPrice";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users };
 
@@ -143,7 +144,10 @@ const RegionsSection = ({ t, lang }) => (
               <p className="mt-4 text-sm text-[#FDFBF7]/85 leading-relaxed max-w-md">
                 {pick(r.body, lang)}
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
+              <div className="mt-4">
+                <FromPrice tone="light" size="sm" testid={`region-from-${r.id}`} />
+              </div>
+              <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
                 {t.cta}
                 <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
               </span>
@@ -368,10 +372,7 @@ const TripExplorer = ({ t, lang }) => {
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">{t.from_label}</p>
-                      <p className="font-serif-x text-xl text-[#2C2621] mt-0.5">€{trip.from.toLocaleString()}</p>
-                    </div>
+                    <FromPrice tone="dark" size="sm" testid={`trip-from-${trip.id}`} />
                     <Link to={pathFor(lang, "contact")}
                           data-testid={`trip-cta-${trip.id}`}
                           className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300 border-b border-[#C16542]/40 pb-1">
@@ -470,6 +471,9 @@ const ProximasSalidas = ({ t, lang }) => {
                 <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] mt-2 text-[#2C2621]">
                   {pick(d.title, lang)}
                 </h3>
+                <div className="mt-3">
+                  <FromPrice tone="dark" size="sm" testid={`proxima-from-${i}`} />
+                </div>
                 <div className="mt-auto pt-5 border-t border-[#2C2621]/10 flex items-center justify-between">
                   <span className="text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
                     {d.spots} {t.spots}

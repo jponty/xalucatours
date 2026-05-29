@@ -2,9 +2,11 @@ import React, { useEffect, useMemo, useState, useCallback, useRef } from "react"
 import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
-  Lock, LogOut, Wand2,
+  Lock, LogOut, Wand2, Tag, Plus, Trash2,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
+import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
+import { setPricingOverride } from "@/lib/pricingStore";
 
 const API = process.env.REACT_APP_BACKEND_URL + "/api";
 
@@ -310,6 +312,7 @@ export default function AdminPage() {
               { id: "urls",   label: "URLs",          icon: Globe },
               { id: "images", label: `Images (${imageSlots.length})`, icon: ImageIcon },
               { id: "texts",  label: `Texts (${textSlots.length})`,  icon: Type },
+              { id: "pricing", label: "Precios",       icon: Tag },
             ].map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -415,6 +418,12 @@ export default function AdminPage() {
               {filteredTexts.length === 0 && (
                 <p className="text-sm text-white/50">Sin textos guardados todavía. Cualquier `EditableText` editado en la web aparecerá aquí.</p>
               )}
+            </div>
+          )}
+
+          {tab === "pricing" && (
+            <div data-testid="admin-pricing" className="p-4">
+              <PricingEditor onSaved={() => bumpPreview((k) => k + 1)} />
             </div>
           )}
         </section>
@@ -569,5 +578,151 @@ const TextEditor = ({ slot, onSave }) => {
         </button>
       </div>
     </li>
+  );
+};
+
+/* ---------- Global pricing editor ----------
+   Edits the centralised price matrix (people × low/high) stored
+   in the DB via PUT /api/pricing. Updates the live <FromPrice>/
+   <PricingSection> store and reloads the preview on save. */
+const PricingEditor = ({ onSaved }) => {
+  const [tiers, setTiers] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    fetch(`${API}/pricing`)
+      .then((r) => r.json())
+      .then((d) => {
+        const base =
+          d && Array.isArray(d.tiers) && d.tiers.length ? d.tiers : DEFAULT_PRICING.tiers;
+        setTiers(base.map((t) => ({ people: String(t.people), low: String(t.low), high: String(t.high) })));
+      })
+      .catch(() => setTiers(DEFAULT_PRICING.tiers.map((t) => ({ people: String(t.people), low: String(t.low), high: String(t.high) }))));
+  }, []);
+
+  if (!tiers) return <p className="text-sm text-white/50">Cargando precios…</p>;
+
+  const onlyDigits = (v) => v.replace(/[^0-9]/g, "");
+  const update = (i, key, val) =>
+    setTiers((ts) => ts.map((t, idx) => (idx === i ? { ...t, [key]: onlyDigits(val) } : t)));
+  const addTier = () =>
+    setTiers((ts) => [...ts, { people: String((Number(ts[ts.length - 1]?.people) || 1) + 1), low: "0", high: "0" }]);
+  const removeTier = (i) => setTiers((ts) => ts.filter((_, idx) => idx !== i));
+
+  const nums = tiers.flatMap((t) => [Number(t.low), Number(t.high)]).filter((n) => n > 0);
+  const fromPreview = nums.length ? Math.min(...nums) : 0;
+
+  const save = async () => {
+    setBusy(true);
+    setMsg("");
+    const token = localStorage.getItem("xaluca_admin_token");
+    const payload = {
+      currency: "EUR",
+      tiers: tiers
+        .map((t) => ({ people: Number(t.people) || 0, low: Number(t.low) || 0, high: Number(t.high) || 0 }))
+        .filter((t) => t.people > 0),
+    };
+    try {
+      const r = await fetch(`${API}/pricing`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      const d = await r.json();
+      setPricingOverride(d);
+      setMsg("✓ Precios guardados. Se reflejan en toda la web.");
+      onSaved && onSaved();
+    } catch {
+      setMsg("Error al guardar los precios.");
+    }
+    setBusy(false);
+  };
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <h3 className="text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-1.5">
+          Precios globales · Paquete 4x4
+        </h3>
+        <p className="text-xs text-white/55 leading-relaxed">
+          Tarifa por persona según el número de viajeros. Estos precios se aplican a TODOS los
+          viajes y a la etiqueta «Desde» de todas las cards. El mínimo se usa como «Desde».
+        </p>
+      </div>
+
+      {/* Matrix header */}
+      <div className="grid grid-cols-12 gap-2 text-[9px] tracking-[0.22em] uppercase text-white/45 px-1">
+        <span className="col-span-4">Viajeros</span>
+        <span className="col-span-3">Baja €</span>
+        <span className="col-span-3">Alta €</span>
+        <span className="col-span-2" />
+      </div>
+
+      {tiers.map((t, i) => (
+        <div key={i} data-testid={`admin-pricing-row-${i}`} className="grid grid-cols-12 gap-2 items-center">
+          <div className="col-span-4 flex items-center gap-2">
+            <input
+              value={t.people}
+              onChange={(e) => update(i, "people", e.target.value)}
+              data-testid={`admin-pricing-people-${i}`}
+              className="w-14 bg-white/5 border border-white/10 px-2 py-1.5 text-sm text-white outline-none focus:border-[#D4A373]"
+            />
+            <span className="text-[10px] tracking-[0.18em] uppercase text-white/45">pers.</span>
+          </div>
+          <input
+            value={t.low}
+            onChange={(e) => update(i, "low", e.target.value)}
+            data-testid={`admin-pricing-low-${i}`}
+            className="col-span-3 bg-white/5 border border-white/10 px-2 py-1.5 text-sm text-white outline-none focus:border-[#D4A373]"
+          />
+          <input
+            value={t.high}
+            onChange={(e) => update(i, "high", e.target.value)}
+            data-testid={`admin-pricing-high-${i}`}
+            className="col-span-3 bg-white/5 border border-white/10 px-2 py-1.5 text-sm text-white outline-none focus:border-[#D4A373]"
+          />
+          <button
+            onClick={() => removeTier(i)}
+            data-testid={`admin-pricing-remove-${i}`}
+            title="Eliminar tramo"
+            className="col-span-2 inline-flex items-center justify-center py-1.5 text-white/40 hover:text-[#E07856] hover:bg-white/5"
+          >
+            <Trash2 className="w-3.5 h-3.5" strokeWidth={1.8} />
+          </button>
+        </div>
+      ))}
+
+      <button
+        onClick={addTier}
+        data-testid="admin-pricing-add"
+        className="inline-flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase border border-white/15 px-3 py-2 text-white/70 hover:bg-white/5"
+      >
+        <Plus className="w-3.5 h-3.5" strokeWidth={1.8} /> Añadir tramo
+      </button>
+
+      <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+        <div className="text-xs text-white/60">
+          <span className="block text-[9px] tracking-[0.22em] uppercase text-white/40">Desde (auto)</span>
+          <span className="font-serif text-lg text-white" data-testid="admin-pricing-from">
+            {fromPreview ? fmtEuro(fromPreview) : "—"}
+          </span>
+        </div>
+        <button
+          onClick={save}
+          disabled={busy}
+          data-testid="admin-pricing-save"
+          className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.22em] uppercase transition-colors ${
+            busy ? "bg-white/10 text-white/40 cursor-not-allowed" : "bg-[#C16542] hover:bg-[#A8533A] text-white"
+          }`}
+        >
+          <Save className="w-3.5 h-3.5" strokeWidth={2} /> {busy ? "Guardando…" : "Guardar precios"}
+        </button>
+      </div>
+      {msg && (
+        <p data-testid="admin-pricing-msg" className="text-xs text-white/70">{msg}</p>
+      )}
+    </div>
   );
 };

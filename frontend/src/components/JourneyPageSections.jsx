@@ -9,6 +9,7 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
 import EditableImage from "@/components/EditableImage";
+import FromPrice from "@/components/FromPrice";
 import { useSlotId } from "@/components/slotScope";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
@@ -258,7 +259,11 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
               ))}
             </div>
 
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-8">
+              <FromPrice tone="dark" size="md" testid={`itinerary-from-${itinerary.id}`} />
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center gap-4">
               <Link
                 to={itinerary.link ? pathFor(lang, itinerary.link) : ctaTarget}
                 data-testid={`itinerary-cta-${itinerary.id}`}
@@ -492,7 +497,10 @@ export const ItinerariesOverview = ({ itineraries, t, lang }) => (
               <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.1] mt-3">
                 {pick(it.title, lang)}
               </h3>
-              <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
+              <div className="mt-3">
+                <FromPrice tone="light" size="sm" testid={`overview-from-${it.id}`} />
+              </div>
+              <span className="mt-4 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
                 {t.cta}
                 <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
               </span>

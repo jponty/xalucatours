@@ -5,6 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import FromPrice from "@/components/FromPrice";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import {
   JourneyHero,
@@ -194,6 +195,9 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                       <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
                         <L k="cta_card" /><ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                       </span>
+                      <div className="mt-4 pt-4 border-t border-[#FDFBF7]/15">
+                        <FromPrice tone="light" size="sm" testid={`hub-program-from-${p.id}`} />
+                      </div>
                     </div>
                   </Link>
                 ))}
