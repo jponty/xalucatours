@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import EditableImage from "@/components/EditableImage";
 
@@ -30,6 +30,8 @@ export default function CategoryImageCarousel({
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const total = list.length;
+  const touchStartX = useRef(null);
+  const SWIPE_THRESHOLD = 50; // px
 
   const go = useCallback((i) => setActive(((i % total) + total) % total), [total]);
   const next = useCallback(() => go(active + 1), [active, go]);
@@ -42,6 +44,21 @@ export default function CategoryImageCarousel({
     next();
   }, [next]);
 
+  // Swipe gestures (mobile)
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+    setPaused(true); // pause auto-advance while user is interacting
+  };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current == null || total <= 1) { setPaused(false); return; }
+    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (delta <= -SWIPE_THRESHOLD)      go(active + 1); // swipe left → next
+    else if (delta >= SWIPE_THRESHOLD)  go(active - 1); // swipe right → prev
+    setPaused(false);
+  };
+
   useEffect(() => {
     if (paused || total <= 1) return undefined;
     const id = setInterval(next, interval);
@@ -53,9 +70,11 @@ export default function CategoryImageCarousel({
   return (
     <div
       data-testid={`cat-carousel-${slug}`}
-      className="absolute inset-0"
+      className="absolute inset-0 touch-pan-y"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       {list.map((img, i) => (
         <EditableImage
@@ -79,7 +98,7 @@ export default function CategoryImageCarousel({
             onClick={prev}
             aria-label="Previous image"
             data-testid={`cat-carousel-prev-${slug}`}
-            className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-colors opacity-0 group-hover:opacity-100"
+            className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.6} />
           </button>
@@ -88,7 +107,7 @@ export default function CategoryImageCarousel({
             onClick={handleNext}
             aria-label="Next image"
             data-testid={`cat-carousel-next-${slug}`}
-            className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-colors opacity-0 group-hover:opacity-100"
+            className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.6} />
           </button>
