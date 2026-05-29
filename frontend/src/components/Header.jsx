@@ -74,12 +74,12 @@ export const Header = () => {
         data-testid="site-header"
         aria-hidden={isHeaderHidden}
         style={{ willChange: "transform" }}
-        className={`fixed top-0 inset-x-0 z-40 transform-gpu transition-[transform,background-color,backdrop-filter,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed top-0 inset-x-0 z-40 transform-gpu transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] bg-[#FDFBF7] ${
           isHeaderHidden ? "-translate-y-full" : "translate-y-0"
         } ${
           scrolled
-            ? "bg-[#FDFBF7]/92 backdrop-blur-xl backdrop-saturate-150 border-b border-[#2C2621]/12 shadow-[0_10px_30px_-22px_rgba(26,21,19,0.35)]"
-            : "bg-[#FDFBF7]/55 backdrop-blur-md backdrop-saturate-150 border-b border-[#FDFBF7]/15 shadow-[0_1px_0_rgba(44,38,33,0.05)]"
+            ? "border-b border-[#2C2621]/12 shadow-[0_10px_30px_-22px_rgba(26,21,19,0.35)]"
+            : "border-b border-[#2C2621]/8 shadow-[0_1px_0_rgba(44,38,33,0.05)]"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 md:h-20 flex items-center justify-between">
