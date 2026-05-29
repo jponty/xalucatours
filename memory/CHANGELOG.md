@@ -1,4 +1,10 @@
 
+## "When to travel" — removed discouraging "Avoid" language (Feb 2026)
+- Per agency policy (travellers welcome year-round), reframed the "Avoid months" concept into neutral seasonal guidance across the "When to Travel" page and the "Best month for my trip" panel (`BestMonthFab`).
+- `lib/bestTimeData.js`: the per-region `avoid` values now describe seasonal characteristics instead of months to skip (e.g. "Jun–Ago: calor intenso de día", "Dic–Feb: mar fresco para el baño"). Narrative bodies for the desert travel-style and the "cheapest months" FAQ were rewritten to suggest alternatives (Atlas/coast) rather than telling users to skip months.
+- Label renamed everywhere from "Evita / Avoid / À éviter" → "A tener en cuenta / Good to know / À noter" (`WhenToTravelPage.jsx` COPY.labels.avoid, `BestMonthFab.jsx` COPY.avoid + intro). No red/warning iconography. Visual tone stays neutral.
+- Verified on `/cuando-viajar`: no "Evita/Avoid/À éviter" remains; cards/map popup show the reframed label + values.
+
 ## /juego — interactive gamified Morocco explorer (Feb 2026)
 - New public page at `/juego` (en: `/en/game`, fr: `/fr/jeu`) — registered in `routes.js`, `routeComponents.js`, and linked from the side menu (`menu-link-juego`).
 - **Concept**: users tick off Moroccan places they've visited/know across 9 categories (Regiones, Ciudades, Pueblos y Kasbahs, Desiertos, Montañas y Valles, Playas y Costa, Monumentos e Historia, Atracciones, Experiencias Clave). 73 curated trilingual places in `lib/juegoData.js`, each tagged with a region + (most) map coords.

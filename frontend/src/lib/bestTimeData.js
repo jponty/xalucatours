@@ -186,7 +186,7 @@ export const REGIONS = [
     name: { es: "Sáhara", en: "Sahara", fr: "Sahara" },
     accent: "#D97742",
     best: { es: "Oct – Abr", en: "Oct – Apr", fr: "Oct – Avr" },
-    avoid: { es: "Jun – Ago", en: "Jun – Aug", fr: "Juin – Août" },
+    avoid: { es: "Jun–Ago: calor intenso de día", en: "Jun–Aug: very hot days", fr: "Juin–Août : journées très chaudes" },
     body: {
       es: "Clima desértico extremo. De junio a agosto el termómetro supera los 45 °C — el bivouac queda cerrado y las salidas en dromedario se reducen al amanecer. De octubre a abril, en cambio, los días son perfectos (20–28 °C) y las noches estrelladas piden manta.",
       en: "Extreme desert climate. June to August can top 45 °C — bivouacs close and camel rides are dawn-only. From October to April the days are perfect (20–28 °C) and the starry nights call for a blanket.",
@@ -198,7 +198,7 @@ export const REGIONS = [
     name: { es: "Marrakech y centro", en: "Marrakech & centre", fr: "Marrakech et centre" },
     accent: "#C16542",
     best: { es: "Mar – Mayo · Oct – Nov", en: "Mar – May · Oct – Nov", fr: "Mars – Mai · Oct – Nov" },
-    avoid: { es: "Pleno julio y agosto (42 °C+)", en: "Peak July & August (42 °C+)", fr: "Juillet et août en plein cœur (+42 °C)" },
+    avoid: { es: "Jul–Ago: calor de hasta 42 °C", en: "Jul–Aug: heat up to 42 °C", fr: "Juil–Août : chaleur jusqu'à 42 °C" },
     body: {
       es: "Clima continental semi-árido. La ciudad explota de color en primavera y se vacía agradablemente en otoño. En invierno hay noches que bajan a 5 °C, pero los días son luminosos. En verano, riad con piscina obligatorio.",
       en: "Semi-arid continental climate. The city bursts with colour in spring and empties pleasantly in autumn. Winter nights drop to 5 °C but days stay bright. In summer, riad-with-pool is non-negotiable.",
@@ -210,7 +210,7 @@ export const REGIONS = [
     name: { es: "Alto Atlas", en: "High Atlas", fr: "Haut Atlas" },
     accent: "#5A6B4F",
     best: { es: "Abr – Jun · Sep – Oct", en: "Apr – Jun · Sep – Oct", fr: "Avr – Juin · Sep – Oct" },
-    avoid: { es: "Dic – Feb (pasos cerrados, nieve)", en: "Dec – Feb (passes closed, snow)", fr: "Déc – Fév (cols fermés, neige)" },
+    avoid: { es: "Dic–Feb: nieve y algún paso de montaña cerrado", en: "Dec–Feb: snow, some mountain passes closed", fr: "Déc–Fév : neige, certains cols fermés" },
     body: {
       es: "Clima de montaña: agradable en primavera y otoño (15–25 °C), nevadas serias en invierno por encima de 1.800 m. Imlil y el Toubkal exigen guía en invierno. En verano la altura suaviza el calor: una escapada perfecta desde Marrakech.",
       en: "Mountain climate: pleasant in spring and autumn (15–25 °C), serious snowfall in winter above 1,800 m. Imlil and Toubkal require a guide in winter. In summer altitude tempers the heat — a perfect day-trip from Marrakech.",
@@ -222,7 +222,7 @@ export const REGIONS = [
     name: { es: "Norte (Rif y Tánger)", en: "North (Rif & Tangier)", fr: "Nord (Rif et Tanger)" },
     accent: "#5A7F9C",
     best: { es: "Abr – Jun · Sep – Oct", en: "Apr – Jun · Sep – Oct", fr: "Avr – Juin · Sep – Oct" },
-    avoid: { es: "Nov – Feb (lluvias)", en: "Nov – Feb (rainy)", fr: "Nov – Fév (pluies)" },
+    avoid: { es: "Nov–Feb: temporada de lluvias", en: "Nov–Feb: rainy season", fr: "Nov–Fév : saison des pluies" },
     body: {
       es: "Clima mediterráneo, húmedo y verde. Chefchaouen y Tánger viven sus mejores momentos en primavera y otoño. En invierno llueve con frecuencia — algo poético si lo abordas con paraguas y café en una medina.",
       en: "Mediterranean, humid and green. Chefchaouen and Tangier shine in spring and autumn. Winter is rainy — poetic, if you embrace umbrella-and-coffee medina days.",
@@ -234,7 +234,7 @@ export const REGIONS = [
     name: { es: "Costa atlántica", en: "Atlantic coast", fr: "Côte atlantique" },
     accent: "#7B9ECA",
     best: { es: "May – Sep (todo el verano)", en: "May – Sep (all summer)", fr: "Mai – Sep (tout l'été)" },
-    avoid: { es: "Dic – Feb si buscas baño", en: "Dec – Feb if you want to swim", fr: "Déc – Fév pour la baignade" },
+    avoid: { es: "Dic–Feb: mar fresco para el baño", en: "Dec–Feb: cool sea for swimming", fr: "Déc–Fév : mer fraîche pour la baignade" },
     body: {
       es: "Essaouira, Agadir y Asilah viven verano largo: 22–28 °C, brisa atlántica y olas para el surf. La temperatura del mar nunca pasa de 21 °C, así que el baño requiere espíritu vasco más que mediterráneo.",
       en: "Essaouira, Agadir and Asilah enjoy a long summer: 22–28 °C, Atlantic breeze and good surf. Sea temperature never tops 21 °C — swimming is closer to the Basque than to the Mediterranean.",
@@ -250,9 +250,9 @@ export const TRAVEL_STYLES = [
     label: { es: "Viajes al desierto", en: "Desert trips", fr: "Voyages au désert" },
     bestMonths: [10, 11, 12, 1, 2, 3, 4],
     body: {
-      es: "Octubre a abril es la ventana ideal: días templados, noches estrelladas y bivouac abiertos. Evita junio–agosto, cuando el calor del Sáhara hace inviable la noche al raso.",
-      en: "October to April is the sweet spot: mild days, starry nights and open bivouacs. Skip June–August, when Saharan heat makes outdoor sleeping unbearable.",
-      fr: "D'octobre à avril, la fenêtre idéale : journées douces, nuits étoilées et bivouacs ouverts. Évitez juin–août, quand la chaleur du Sahara rend la nuit à la belle étoile impossible.",
+      es: "Octubre a abril es la ventana ideal: días templados, noches estrelladas y bivouac abiertos. En junio–agosto el calor del Sáhara es intenso y la noche al raso resulta más exigente, así que es un momento perfecto para descubrir el Atlas o la costa.",
+      en: "October to April is the sweet spot: mild days, starry nights and open bivouacs. In June–August the Saharan heat is intense and sleeping outdoors is more demanding — a perfect time to explore the Atlas or the coast instead.",
+      fr: "D'octobre à avril, la fenêtre idéale : journées douces, nuits étoilées et bivouacs ouverts. En juin–août, la chaleur du Sahara est intense et la nuit à la belle étoile plus exigeante — l'occasion parfaite de découvrir l'Atlas ou la côte.",
     },
     accent: "#D97742",
   },
@@ -350,9 +350,9 @@ export const FAQ = [
   {
     q: { es: "¿Cuándo es más barato viajar a Marruecos?", en: "When is travel cheapest?", fr: "Quand le voyage est-il le moins cher ?" },
     a: {
-      es: "Enero–febrero y junio–agosto (excluyendo el desierto). En esas ventanas los hoteles bajan precios y los vuelos cuestan hasta un 40 % menos que en la temporada alta de marzo–mayo o septiembre–noviembre.",
-      en: "January–February and June–August (skipping the desert). Hotels lower prices and flights run up to 40% cheaper than the March–May or September–November peak.",
-      fr: "Janvier–février et juin–août (hors désert). Les hôtels baissent leurs tarifs et les vols sont jusqu'à 40 % moins chers que pendant les pics mars–mai ou septembre–novembre.",
+      es: "Enero–febrero y junio–agosto son las ventanas más económicas (ideales para ciudades, costa y montaña). En esas fechas los hoteles bajan precios y los vuelos cuestan hasta un 40 % menos que en la temporada alta de marzo–mayo o septiembre–noviembre.",
+      en: "January–February and June–August are the most affordable windows (ideal for cities, coast and mountains). Hotels lower prices and flights run up to 40% cheaper than the March–May or September–November peak.",
+      fr: "Janvier–février et juin–août sont les fenêtres les plus économiques (idéales pour les villes, la côte et la montagne). Les hôtels baissent leurs tarifs et les vols sont jusqu'à 40 % moins chers que pendant les pics mars–mai ou septembre–novembre.",
     },
   },
   {

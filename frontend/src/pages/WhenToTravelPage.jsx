@@ -47,7 +47,7 @@ const COPY = {
     pros:      { es: "Por qué viajar", en: "Why travel", fr: "Pourquoi partir" },
     itinerary: { es: "Itinerario tipo", en: "Sample itinerary", fr: "Itinéraire type" },
     best:      { es: "Mejor",      en: "Best",         fr: "Meilleur" },
-    avoid:     { es: "Evita",      en: "Avoid",        fr: "À éviter" },
+    avoid:     { es: "A tener en cuenta", en: "Good to know", fr: "À noter" },
     months:    { es: "Meses ideales", en: "Ideal months", fr: "Mois idéals" },
     suggestedItinerary: { es: "Itinerario sugerido", en: "Suggested itinerary", fr: "Itinéraire suggéré" },
     highlight: { es: "Lo destacado", en: "Highlight",  fr: "À retenir" },
