@@ -26,3 +26,16 @@
 - Region/landing page heroes (Sur, Norte, Aventura, Escapadas, Marruecos, QueVer, etc.) via the now-editable JourneyHero slot `<page>.hero.bg` + any custom hero slots (sur.hero, atlas-desierto.hero...).
 - Home section/module images (TravelCategories, OurTrips carousel, MoroccoCircuits, MapSection, testimonials, etc.).
 - 56 program itineraries: hero (program hero uses EditableImage slot `<page>...`), per-day gallery images, quick-info — largest batch, throttle by Pexels 200/hr.
+
+
+## Smart image loading — flicker-free / shimmer / fade-in (Feb 2026)
+- **User mandate**: eliminate the visible fallback→definitive image swap, any black placeholder, and layout shifts (CLS). Show a neutral shimmer skeleton while the final image preloads, then fade/blur-to-sharp; lazy-load off-viewport, eager-load critical heroes; fallback shown ONLY if the real image truly fails.
+- **Central change in `components/EditableImage.jsx`** (all site imagery flows through it):
+  - New global `imgCache` (mirrors `<EditableText>` coordinator): one bulk `GET /api/slots` fetch hydrates a `slot_id → {url, cleared, alt_i18n}` map + subscriber notify. `EditableImage` now reads its definitive URL synchronously from the cache instead of doing a per-component `/api/slots/{slot}` fetch → no fallback flash; on SPA navigation the cache is already warm so images render their definitive URL on first paint.
+  - New `<SmartImage>` renderer (replaces `ImageOrPlaceholder`): while `ready===false` shows a `.cms-skeleton` shimmer box (warm `#EDE5D5`, never black) sized to the exact aspect-ratio (no CLS); once ready, renders the `<img>` with `.cms-img-fade` (opacity 0 + blur 12px + scale 1.015) → `.is-loaded` on load (fade/blur-to-sharp). Error recovery: tries the code fallback only if the definitive image errors, then `EmptyState` ("Sin imagen"). Session-level `loadedUrls` Set renders previously-loaded URLs instantly. Cached-image race guarded via a `useEffect` re-checking `img.complete && naturalWidth>0`.
+  - `loading="lazy"` + `decoding="async"` by default; new `priority` prop → `loading="eager"` + `fetchPriority="high"` (wired on `JourneyHero` and `ProgramTemplate` hero).
+  - `data-cms-image-slot` + `data-cms-alt` preserved on every render path (img/skeleton/empty) so the /admin Pexels-fill button keeps detecting slots.
+- **Backend**: `GET /api/slots` list now also returns `cleared` + `alt_i18n` (parity with the per-slot endpoint) so the bulk cache is complete.
+- **CSS** (`index.css`): `@keyframes cms-shimmer`, `.cms-skeleton`, `.cms-img-fade`/`.is-loaded`, with `prefers-reduced-motion` fallback.
+- **Verified** by testing agent (iteration_19): 100% frontend, 0 bugs across /, /viajes, /viajes/surdemarruecos, /viajes/marruecos, a program page — 0 broken images, 0 black placeholders, 0 stuck-invisible images; skeletons resolve on scroll; hero sharp; image Edit Mode (134 overlays) + /admin Pexels fill (36 slots detected) still work.
+- **Backlog note**: `EditableImage.jsx` is now ~1550 lines — split `SmartImage`/`imgCache`/`EditModal`/`LivePreview` into modules in a future refactor.
