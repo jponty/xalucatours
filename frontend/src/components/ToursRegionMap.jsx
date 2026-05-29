@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import { ArrowRight, MapPin, Sparkles, Route, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { pathFor } from "@/lib/routes";
+import { ROUTES, pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 
 /* ============================================================
@@ -147,10 +147,42 @@ const REGIONS = [
 ];
 
 const COPY = {
-  es: { eyebrow: "Explora por mapa", title: "Marruecos, región por región.", helper: "Pulsa una zona del mapa para descubrir sus experiencias e itinerarios.", exp: "Experiencias destacadas", itineraries: "Itinerarios relacionados", cta: "Ver viajes de" },
-  en: { eyebrow: "Explore by map", title: "Morocco, region by region.", helper: "Tap a zone on the map to discover its experiences and itineraries.", exp: "Highlighted experiences", itineraries: "Related itineraries", cta: "See trips in" },
-  fr: { eyebrow: "Explorer par carte", title: "Le Maroc, région par région.", helper: "Touchez une zone de la carte pour découvrir ses expériences et itinéraires.", exp: "Expériences phares", itineraries: "Itinéraires associés", cta: "Voir les voyages du" },
+  es: { eyebrow: "Explora por mapa", title: "Marruecos, región por región.", helper: "Pulsa una zona del mapa para descubrir sus experiencias e itinerarios.", exp: "Experiencias destacadas", itineraries: "Itinerarios relacionados", cta: "Ver viajes de", tripsOne: "itinerario disponible", tripsMany: "itinerarios disponibles" },
+  en: { eyebrow: "Explore by map", title: "Morocco, region by region.", helper: "Tap a zone on the map to discover its experiences and itineraries.", exp: "Highlighted experiences", itineraries: "Related itineraries", cta: "See trips in", tripsOne: "itinerary available", tripsMany: "itineraries available" },
+  fr: { eyebrow: "Explorer par carte", title: "Le Maroc, région par région.", helper: "Touchez une zone de la carte pour découvrir ses expériences et itinéraires.", exp: "Expériences phares", itineraries: "Itinéraires associés", cta: "Voir les voyages du", tripsOne: "itinéraire disponible", tripsMany: "itinéraires disponibles" },
 };
+
+/* Map a real itinerary route path to its primary region zone. Each
+   `programa_*` route is assigned to a single zone by its path prefix so
+   the per-region counts read straight from the live ROUTES registry. */
+const zoneForPath = (p) => {
+  if (!p || !p.includes("/programa_")) return null;
+  if (p.startsWith("viajes/gransur/")) return "south";
+  if (p.startsWith("viajes/marrakech_essaouira/")) return "coast";
+  if (p.includes("ergchebbi")) return "sahara";
+  if (p.includes("rak_erg_rak")) return "sahara";
+  if (p.startsWith("viajes/escapadas/desierto/")) return "sahara";
+  if (p.startsWith("viajes/aventura/enduro/")) return "sahara";
+  if (p.startsWith("viajes/atlas_desierto/")) return "atlas";
+  if (p.startsWith("viajes/desierto_atlas/")) return "sahara";
+  if (p.includes("atlas")) return "atlas";
+  if (p.startsWith("viajes/norte/ciudadesimperiales_rif/")) return "north";
+  if (p.startsWith("viajes/norte/tanger_fez/") || p.startsWith("viajes/norte/fez_tanger/")) return "north";
+  if (p.startsWith("viajes/norte/ciudades_imperiales/")) return "imperial";
+  if (p.startsWith("viajes/escapadas/fez")) return "imperial";
+  if (p.startsWith("viajes/escapadas/marrakech")) return "imperial";
+  return null;
+};
+
+/* Live counts derived once from the real ROUTES registry. */
+const TRIP_COUNTS = (() => {
+  const c = { north: 0, imperial: 0, coast: 0, atlas: 0, sahara: 0, south: 0 };
+  for (const r of Object.values(ROUTES)) {
+    const z = zoneForPath(r && r.es);
+    if (z && c[z] !== undefined) c[z] += 1;
+  }
+  return c;
+})();
 
 /** Smoothly recenters the map on the active region. */
 const FlyTo = ({ coords }) => {
@@ -280,6 +312,17 @@ export const ToursRegionMap = () => {
             <h4 className="font-serif-x text-2xl md:text-[28px] leading-[1.15] tracking-tight mt-3 text-[#2C2621]">
               {pick(active.name, lang)}
             </h4>
+            {TRIP_COUNTS[active.id] > 0 && (
+              <span
+                data-testid={`region-map-count-${active.id}`}
+                className="mt-3 inline-flex items-center gap-2 self-start text-[11px] tracking-[0.16em] uppercase px-3 py-1.5 rounded-full font-semibold"
+                style={{ background: `${active.accent}1A`, color: active.accent }}
+              >
+                <Route className="w-3.5 h-3.5" strokeWidth={1.8} />
+                {TRIP_COUNTS[active.id]}{" "}
+                {TRIP_COUNTS[active.id] === 1 ? t.tripsOne : t.tripsMany}
+              </span>
+            )}
             <p className="mt-4 text-[15px] text-[#5C5248] leading-[1.75]">
               <EditableText
                 as="span"
