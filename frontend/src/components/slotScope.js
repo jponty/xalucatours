@@ -40,7 +40,10 @@ const normalisePathname = (pathname) => {
   const clean = (pathname || "/").replace(/^\/+|\/+$/g, "");
   const parts = clean.split("/").filter(Boolean);
   if (parts[0] === "en" || parts[0] === "fr") parts.shift();
-  return parts.join("/") || "home";
+  // Join with "." (not "/") so slot ids are safe for FastAPI path params
+  // (FastAPI rejects encoded slashes in `{slot_id}` and the slot id is
+  // also used as a Mongo _id where dots are the established separator).
+  return parts.join(".") || "home";
 };
 
 /** Hook: returns the current page path (minus language prefix). */

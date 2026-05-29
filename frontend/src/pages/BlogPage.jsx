@@ -317,16 +317,18 @@ export function BlogPostPage() {
     <div data-testid={`blog-post-${post.slug}`} className="bg-[#FDFBF7]">
       {/* Hero */}
       <section className="relative w-full bg-[#1A1513] overflow-hidden pt-[88px] md:pt-[96px]">
-        <SlotScope id={post.slug}>
-          <EditableImage
-            name="cover"
-            fallback={post.cover}
-            alt={pick(post.title, lang)}
-            aspectRatio="auto"
-            imgProps={{ loading: "eager" }}
-            className="ken-burns absolute inset-0 w-full h-full object-cover opacity-40"
-          />
-        </SlotScope>
+        {/* Page namespace already resolves to `blog.<slug>`, so no SlotScope
+            wrapper is needed here — that would duplicate the slug segment.
+            Sharing slot id with the listing card means the cover is edited
+            in one place and used in both the index and the article. */}
+        <EditableImage
+          name="cover"
+          fallback={post.cover}
+          alt={pick(post.title, lang)}
+          aspectRatio="auto"
+          imgProps={{ loading: "eager" }}
+          className="ken-burns absolute inset-0 w-full h-full object-cover opacity-40"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/75 to-[#1A1513]/40 pointer-events-none" />
         <div className="absolute inset-0 berber-bg-cross opacity-25 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-8 pb-20 md:pb-28">

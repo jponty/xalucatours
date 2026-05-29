@@ -516,3 +516,21 @@ Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN
   - `BestMonthFab.jsx` and `DayRouteMap.jsx` complex helpers (the latter just rewritten for the universal-gallery mandate).
   - Oversized components: `EditableImage.jsx` (~1330 lines), `ImageEditorPage.jsx` (657), `WhenToTravelPage.jsx` (790), `ImageLibraryPicker.jsx` (424).
   - Remaining ~95 hook-dep strict warnings (all false positives or stable-ref cases).
+
+
+## App.js routing refactor + slot-id fix (Feb 2026)
+- **`App.js` reduced from 262 → ~60 lines.** Extracted the massive `if (routeId === "…") return <Page/>` chain into a centralized `ROUTE_COMPONENTS` map at `/app/frontend/src/lib/routeComponents.js`. Adding/removing a route is now a single-line change. Aliases (`catalog → ToursLandingPage`, `tourEscapadaRakErgRakXX → MarrakechLoopXXPage`) are preserved as separate keys pointing to the same component reference.
+- **Blog cover slot-id bug (404 on `/blog/<slug>`)** — Resolved.
+  - **Root cause**: `slotScope.js#normalisePathname` joined URL segments with `/`, producing slot ids like `blog/noche-en-erg-chebbi.<slug>.cover`. FastAPI rejects encoded `/` (`%2F`) inside `{slot_id}` path params, so the `/api/slots/{id}` call returned 404. Additionally, `BlogPostPage` wrapped its `<EditableImage name="cover">` in `<SlotScope id={post.slug}>`, duplicating the slug now that the page namespace already includes it.
+  - **Fix 1** (`/app/frontend/src/components/slotScope.js`): page namespace now joins segments with `.` instead of `/`. Zero regression risk because no existing slot id in the DB contains a slash.
+  - **Fix 2** (`/app/frontend/src/pages/BlogPage.jsx`): removed the redundant `<SlotScope id={post.slug}>` wrapper around the post hero. The article and the blog listing card now share a single editable slot (`blog.<slug>.cover`) — edit once, see it in both places.
+- **Validation**: `testing_agent_v3_fork` (iteration_13) covered 18 representative routes — 100% routing pass on existing + new pages + EN/FR variants + 404 fallback. Post-fix smoke confirmed **0 network failures** on `/blog/noche-en-erg-chebbi` and `/blog/ruta-kasbahs-valle-draa`.
+
+## Pending / Backlog
+- **P1** — Phase 2/3/4 navigation & linking sweeps for the home category bands (Marruecos de norte a sur · Escapadas cortas · La riqueza del norte de Marruecos). Verify implicit route aliases cover them or wire missing ones.
+- **P2** — Add aliases/redirects for inconsistent slugs (`ciudades_imperiales` ↔ `ciudadesimperiales_rif`, `3n4d` ↔ `3n_4d`).
+- **P2** — Global header search/filter.
+- **P2** — Promote the blog `/blog/:slug` regex match to the routes registry to keep one source of truth.
+- **P2** — Deduplicate the routeId alias `tourUpcoming` vs `upcomingDepartures` in `routes.js`.
+- **P3** — Stripe Checkout on `/proximas_salidas`.
+- **Tech debt** — `EditableImage.jsx` (~1330 lines) and `WhenToTravelPage.jsx` (790 lines) still oversized — defer to a dedicated refactor pass.
