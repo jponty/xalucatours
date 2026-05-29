@@ -233,6 +233,21 @@ async def get_slot(slot_id: str):
     return {"slot_id": slot_id, **doc}
 
 
+@api_router.get("/slots")
+async def list_image_slots():
+    """List every image slot ever set — used by the /admin dashboard."""
+    cursor = db.image_slots.find({}, {"updated_at": 0})
+    items = []
+    async for d in cursor:
+        items.append({
+            "slot_id": d.pop("_id"),
+            "url":     d.get("url"),
+            "alt":     d.get("alt"),
+            "source":  d.get("source", "external"),
+        })
+    return {"slots": items}
+
+
 @api_router.put("/slots/{slot_id}")
 async def put_slot(slot_id: str, payload: SlotPayload):
     doc = {
