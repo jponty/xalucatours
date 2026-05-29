@@ -13,6 +13,7 @@ import ContactForm from "@/components/ContactForm";
 import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ToursVideoSection from "@/components/ToursVideoSection";
+import ToursRegionMap from "@/components/ToursRegionMap";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users };
 
@@ -887,6 +888,7 @@ export default function ToursLandingPage() {
     <div data-testid="tours-landing-page">
       <Hero t={t.hero} />
       <EditorialIntro t={t.intro} />
+      <ToursRegionMap />
       <ToursVideoSection videoId="nzD3e3Qr7g8" />
       <RegionsSection t={t.regions} lang={lang} />
       <ExperiencesSection t={t.experiences} lang={lang} />

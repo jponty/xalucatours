@@ -120,6 +120,12 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
             e.target.mute();
             setMuted(true);
             setReady(true);
+            try {
+              const f = e.target.getIframe && e.target.getIframe();
+              if (f) f.setAttribute("title", "Xaluca Tours — Marruecos");
+            } catch (_) {
+              /* noop */
+            }
           },
           onStateChange: (e) => {
             const S = window.YT.PlayerState;
