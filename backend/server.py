@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Response
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Response, Header
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -25,6 +25,48 @@ db = client[os.environ['DB_NAME']]
 
 app = FastAPI(title="Xaluca Tours API")
 api_router = APIRouter(prefix="/api")
+
+
+
+# ----------------------------------------------------------
+#  Admin gate — single shared password protecting /admin.
+#  Secret lives in backend .env; a short-lived HMAC-signed token
+#  is issued on login and verified on protected access. No user
+#  accounts — just one access password.
+# ----------------------------------------------------------
+import hmac as _hmac
+import hashlib as _hashlib
+import base64 as _base64
+import json as _json
+import time as _time
+
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+ADMIN_TOKEN_SECRET = os.environ.get("ADMIN_TOKEN_SECRET", "")
+ADMIN_TOKEN_TTL = 7 * 24 * 3600  # 7 days
+
+
+def _admin_sign(raw: str) -> str:
+    return _hmac.new(ADMIN_TOKEN_SECRET.encode(), raw.encode(), _hashlib.sha256).hexdigest()
+
+
+def make_admin_token() -> str:
+    payload = {"scope": "admin", "exp": int(_time.time()) + ADMIN_TOKEN_TTL}
+    raw = _base64.urlsafe_b64encode(_json.dumps(payload).encode()).decode().rstrip("=")
+    return f"{raw}.{_admin_sign(raw)}"
+
+
+def verify_admin_token(token: str) -> bool:
+    if not token or "." not in token or not ADMIN_TOKEN_SECRET:
+        return False
+    try:
+        raw, sig = token.rsplit(".", 1)
+        if not _hmac.compare_digest(sig, _admin_sign(raw)):
+            return False
+        padded = raw + "=" * (-len(raw) % 4)
+        payload = _json.loads(_base64.urlsafe_b64decode(padded.encode()))
+        return payload.get("scope") == "admin" and int(payload.get("exp", 0)) > _time.time()
+    except Exception:
+        return False
 
 
 # ---------- Models ----------
@@ -99,6 +141,30 @@ class TripPlannerCreate(BaseModel):
 @api_router.get("/")
 async def root():
     return {"service": "Xaluca Tours", "status": "ok"}
+
+
+class AdminLoginBody(BaseModel):
+    password: str = Field(..., max_length=200)
+
+
+@api_router.post("/admin/login")
+async def admin_login(body: AdminLoginBody):
+    """Verify the shared admin password and issue a signed access token."""
+    if not ADMIN_PASSWORD:
+        raise HTTPException(status_code=500, detail="Admin no configurado")
+    if not _hmac.compare_digest(body.password, ADMIN_PASSWORD):
+        raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+    return {"token": make_admin_token()}
+
+
+@api_router.get("/admin/verify")
+async def admin_verify(authorization: str = Header(default="")):
+    """Validate an admin token (sent as `Authorization: Bearer <token>`)."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    return {"ok": True}
+
 
 
 @api_router.post("/contact-requests", response_model=ContactRequest)

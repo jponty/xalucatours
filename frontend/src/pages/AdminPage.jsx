@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
+  Lock, LogOut,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 
@@ -26,6 +27,40 @@ const DEVICES = [
    - Live preview iframe re-renders on save (refresh trigger).
 ============================================================ */
 export default function AdminPage() {
+  // ----- Admin password gate -----
+  const [authed, setAuthed] = useState(null);   // null = checking, false = locked, true = ok
+  const [pw, setPw] = useState("");
+  const [authErr, setAuthErr] = useState("");
+  const [authBusy, setAuthBusy] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("xaluca_admin_token");
+    if (!token) { setAuthed(false); return; }
+    fetch(`${API}/admin/verify`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => setAuthed(r.ok))
+      .catch(() => setAuthed(false));
+  }, []);
+
+  const doLogin = async (e) => {
+    e.preventDefault();
+    setAuthBusy(true); setAuthErr("");
+    try {
+      const r = await fetch(`${API}/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      if (!r.ok) { setAuthErr("Contraseña incorrecta"); setAuthBusy(false); return; }
+      const d = await r.json();
+      localStorage.setItem("xaluca_admin_token", d.token);
+      setAuthed(true);
+    } catch {
+      setAuthErr("Error de conexión");
+    }
+    setAuthBusy(false);
+  };
+  const logout = () => { localStorage.removeItem("xaluca_admin_token"); setAuthed(false); };
+
   const [tab, setTab]            = useState("urls"); // urls | images | texts
   const [query, setQuery]        = useState("");
   const [selectedRoute, setRoute] = useState("home");
@@ -43,11 +78,21 @@ export default function AdminPage() {
     setLoading(true);
     try {
       const [imgRes, txtRes] = await Promise.all([
-        fetch(`${API}/slots`).then((r) => r.json()).catch(() => ({ slots: [] })),
-        fetch(`${API}/text_slots`).then((r) => r.json()).catch(() => ({ slots: [] })),
+        fetch(`${API}/slots`).then((r) => r.json()).catch(() => ({})),
+        fetch(`${API}/text_slots`).then((r) => r.json()).catch(() => ({})),
       ]);
-      setImageSlots(imgRes.slots || []);
-      setTextSlots(txtRes.slots || []);
+      const imgArr = Array.isArray(imgRes) ? imgRes : (Array.isArray(imgRes?.slots) ? imgRes.slots : []);
+      const ts = txtRes?.slots ?? txtRes;
+      let txtArr = [];
+      if (Array.isArray(ts)) txtArr = ts;
+      else if (ts && typeof ts === "object") {
+        txtArr = Object.entries(ts).map(([slot_id, v]) => ({
+          slot_id,
+          values: v && typeof v === "object" ? v : { es: v || "" },
+        }));
+      }
+      setImageSlots(imgArr);
+      setTextSlots(txtArr);
     } finally { setLoading(false); }
   }, []);
   useEffect(() => { fetchSlots(); }, [fetchSlots]);
@@ -115,6 +160,47 @@ export default function AdminPage() {
     fetchSlots();
   };
 
+  if (authed === null) {
+    return (
+      <div data-testid="admin-loading" className="min-h-screen bg-[#0F0D0B] text-white/60 flex items-center justify-center text-sm tracking-[0.2em] uppercase">
+        Cargando…
+      </div>
+    );
+  }
+  if (!authed) {
+    return (
+      <div data-testid="admin-login" className="min-h-screen bg-[#0F0D0B] text-[#FDFBF7] flex items-center justify-center px-6">
+        <form onSubmit={doLogin} className="w-full max-w-sm bg-[#14110F] border border-white/10 p-8">
+          <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase text-[#D4A373] mb-6">
+            <Lock className="w-4 h-4" strokeWidth={1.6} /> Xaluca · Admin
+          </div>
+          <h1 className="font-serif text-2xl mb-2">Acceso restringido</h1>
+          <p className="text-sm text-white/55 mb-6">Introduce la contraseña para gestionar el contenido.</p>
+          <input
+            type="password"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+            placeholder="Contraseña"
+            autoFocus
+            data-testid="admin-login-password"
+            className="w-full bg-white/5 border border-white/15 px-3 py-2.5 text-sm text-white outline-none focus:border-[#D4A373]"
+          />
+          {authErr && <p data-testid="admin-login-error" className="mt-3 text-xs text-[#E07856]">{authErr}</p>}
+          <button
+            type="submit"
+            disabled={authBusy || !pw}
+            data-testid="admin-login-submit"
+            className={`mt-5 w-full py-2.5 text-[11px] tracking-[0.25em] uppercase transition-colors ${
+              authBusy || !pw ? "bg-white/10 text-white/40 cursor-not-allowed" : "bg-[#C16542] hover:bg-[#A8533A] text-white"
+            }`}
+          >
+            {authBusy ? "Comprobando…" : "Entrar"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div data-testid="admin-page" className="min-h-screen bg-[#0F0D0B] text-[#FDFBF7]">
       {/* Top bar */}
@@ -149,6 +235,14 @@ export default function AdminPage() {
         >
           <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.8} /> Open page
         </a>
+        <button
+          data-testid="admin-logout"
+          onClick={logout}
+          title="Cerrar sesión"
+          className="inline-flex items-center gap-2 text-[10px] tracking-[0.22em] uppercase border border-white/15 px-3 py-2 hover:bg-white/5"
+        >
+          <LogOut className="w-3.5 h-3.5" strokeWidth={1.8} /> Salir
+        </button>
       </header>
 
       {/* Body */}

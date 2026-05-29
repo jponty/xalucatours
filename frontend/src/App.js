@@ -11,6 +11,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { EditModeProvider } from "@/contexts/EditModeContext";
 import Layout from "@/components/Layout";
 import StubPage from "@/pages/StubPage";
+import AdminPage from "@/pages/AdminPage";
 import { BlogPostPage } from "@/pages/BlogPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
@@ -43,11 +44,19 @@ function App() {
       <BrowserRouter>
         <LanguageProvider>
           <EditModeProvider>
-            <Layout>
-              <Routes>
-                <Route path="*" element={<LocalizedRouter />} />
-              </Routes>
-            </Layout>
+            <Routes>
+              <Route path="/admin" element={<AdminPage />} />
+              <Route
+                path="*"
+                element={
+                  <Layout>
+                    <Routes>
+                      <Route path="*" element={<LocalizedRouter />} />
+                    </Routes>
+                  </Layout>
+                }
+              />
+            </Routes>
           </EditModeProvider>
         </LanguageProvider>
       </BrowserRouter>
