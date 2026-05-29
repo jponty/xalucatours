@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ArrowRight, ImagePlus, Check, Type, Library } from "lucide-react";
+import { Menu, ArrowRight, ImagePlus, Check, Type, Library, CalendarClock } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -156,6 +156,15 @@ export const Header = () => {
                 <Type className="w-4 h-4" strokeWidth={1.7} />
               )}
             </button>
+
+            <Link
+              to={pathFor(lang, "appointment")}
+              data-testid="header-appointment-button"
+              className="hidden lg:inline-flex items-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
+            >
+              <CalendarClock className="w-3.5 h-3.5" strokeWidth={1.6} />
+              <EditableText slot="header.cta_appointment" defaults={{ es: "Cita previa", en: "Book appointment", fr: "Rendez-vous" }} multiline={false} />
+            </Link>
 
             <Link
               to={pathFor(lang, "contact")}
