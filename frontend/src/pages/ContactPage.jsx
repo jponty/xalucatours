@@ -20,9 +20,9 @@ import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
 } from "lucide-react";
-import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
-import EditableSection from "@/components/EditableSection";
+import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
 import { IMG } from "@/lib/imageBank";
@@ -220,18 +220,15 @@ const ContactPage = () => {
                 <div className="max-w-3xl">
                   <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
                     <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-                    <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">
-                      {pick(COPY.hero.eyebrow, lang)}
-                    </span>
+                    <E name="hero.eyebrow" defaults={COPY.hero.eyebrow} multiline={false}
+                       className="text-[11px] tracking-[0.35em] uppercase font-semibold" />
                   </div>
 
-                  <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
-                    {pick(COPY.hero.title, lang)}
-                  </h1>
+                  <E name="hero.title" defaults={COPY.hero.title} multiline={false} as="h1"
+                     className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6" />
 
-                  <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
-                    {pick(COPY.hero.body, lang)}
-                  </p>
+                  <E name="hero.body" defaults={COPY.hero.body} as="p"
+                     className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed" />
 
                   <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
                     <a
@@ -239,7 +236,8 @@ const ContactPage = () => {
                       data-testid="hero-cta-book"
                       className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                     >
-                      {lang === "en" ? "Book a session" : lang === "fr" ? "Réserver une séance" : "Reservar cita"}
+                      <E name="hero.ctaBook" multiline={false}
+                         defaults={{ es: "Reservar cita", en: "Book a session", fr: "Réserver une séance" }} />
                       <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />
                     </a>
                     <a
@@ -261,9 +259,9 @@ const ContactPage = () => {
         <section data-testid="contact-steps" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-2xl mb-14">
-              <EditableSection name="steps.eyebrow" fallback={pick(COPY.steps.eyebrow, lang)} as="span"
+              <E name="steps.eyebrow" defaults={COPY.steps.eyebrow} multiline={false} as="span"
                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
-              <EditableSection name="steps.title" fallback={pick(COPY.steps.title, lang)} as="h2"
+              <E name="steps.title" defaults={COPY.steps.title} multiline={false} as="h2"
                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
@@ -277,10 +275,10 @@ const ContactPage = () => {
                       0{i + 1}
                     </span>
                   </div>
-                  <h3 className="font-serif text-xl md:text-2xl text-[#2C2621] leading-tight mb-3">
-                    {pick(s.title, lang)}
-                  </h3>
-                  <p className="text-[14px] text-[#5C5248] leading-relaxed">{pick(s.body, lang)}</p>
+                  <E name={`steps.items.${i}.title`} defaults={s.title} multiline={false} as="h3"
+                     className="font-serif text-xl md:text-2xl text-[#2C2621] leading-tight mb-3" />
+                  <E name={`steps.items.${i}.body`} defaults={s.body} as="p"
+                     className="text-[14px] text-[#5C5248] leading-relaxed" />
                 </div>
               ))}
             </div>
@@ -295,22 +293,19 @@ const ContactPage = () => {
         >
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4">
-                {pick(COPY.booking.eyebrow, lang)}
-              </span>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight">
-                {pick(COPY.booking.title, lang)}
-              </h2>
-              <p className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed">
-                {pick(COPY.booking.body, lang)}
-              </p>
+              <E name="booking.eyebrow" defaults={COPY.booking.eyebrow} multiline={false} as="span"
+                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
+              <E name="booking.title" defaults={COPY.booking.title} multiline={false} as="h2"
+                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
+              <E name="booking.body" defaults={COPY.booking.body} as="p"
+                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
             </div>
 
             {/* Tabs */}
             <div role="tablist" className="flex items-stretch justify-center gap-0 mb-8">
               {[
-                { id: "phone",  Icon: Phone,  label: pick(COPY.booking.tabPhone,  lang), testid: "tab-phone" },
-                { id: "office", Icon: MapPin, label: pick(COPY.booking.tabOffice, lang), testid: "tab-office" },
+                { id: "phone",  Icon: Phone,  label: <E name="booking.tabPhone" defaults={COPY.booking.tabPhone} multiline={false} />, testid: "tab-phone" },
+                { id: "office", Icon: MapPin, label: <E name="booking.tabOffice" defaults={COPY.booking.tabOffice} multiline={false} />, testid: "tab-office" },
               ].map((t) => {
                 const active = tab === t.id;
                 return (
@@ -348,27 +343,22 @@ const ContactPage = () => {
         <section data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-2xl mb-12">
-              <span className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4">
-                {pick(COPY.contact.eyebrow, lang)}
-              </span>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight">
-                {pick(COPY.contact.title, lang)}
-              </h2>
-              <p className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed">
-                {pick(COPY.contact.body, lang)}
-              </p>
+              <E name="contact.eyebrow" defaults={COPY.contact.eyebrow} multiline={false} as="span"
+                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
+              <E name="contact.title" defaults={COPY.contact.title} multiline={false} as="h2"
+                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
+              <E name="contact.body" defaults={COPY.contact.body} as="p"
+                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {/* Phone card */}
               <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
                 <Phone className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
-                <h3 className="font-serif text-2xl text-[#2C2621] mb-3">
-                  {pick(COPY.contact.phoneTitle, lang)}
-                </h3>
-                <p className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1">
-                  {pick(COPY.contact.phoneBody, lang)}
-                </p>
+                <E name="contact.phoneTitle" defaults={COPY.contact.phoneTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.phoneBody" defaults={COPY.contact.phoneBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
                 <a
                   href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
                   data-testid="contact-phone-link"
@@ -382,19 +372,18 @@ const ContactPage = () => {
               {/* Email card */}
               <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
                 <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
-                <h3 className="font-serif text-2xl text-[#2C2621] mb-3">
-                  {pick(COPY.contact.formTitle, lang)}
-                </h3>
-                <p className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1">
-                  {pick(COPY.contact.formBody, lang)}
-                </p>
+                <E name="contact.formTitle" defaults={COPY.contact.formTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.formBody" defaults={COPY.contact.formBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
                 <a
                   href="#contact-form"
                   data-testid="contact-form-anchor"
                   className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
-                  {lang === "en" ? "Go to form" : lang === "fr" ? "Aller au formulaire" : "Ir al formulario"}
+                  <E name="contact.goForm" multiline={false}
+                     defaults={{ es: "Ir al formulario", en: "Go to form", fr: "Aller au formulaire" }} />
                 </a>
               </div>
             </div>
@@ -405,15 +394,12 @@ const ContactPage = () => {
         <section data-testid="contact-reasons" className="py-20 md:py-28 bg-[#F8F2E6]/40 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-3xl mb-14">
-              <span className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4">
-                {pick(COPY.reasons.eyebrow, lang)}
-              </span>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight">
-                {pick(COPY.reasons.title, lang)}
-              </h2>
-              <p className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed">
-                {pick(COPY.reasons.body, lang)}
-              </p>
+              <E name="reasons.eyebrow" defaults={COPY.reasons.eyebrow} multiline={false} as="span"
+                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
+              <E name="reasons.title" defaults={COPY.reasons.title} multiline={false} as="h2"
+                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
+              <E name="reasons.body" defaults={COPY.reasons.body} as="p"
+                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
               {COPY.reasons.items.map((r, i) => (
@@ -423,10 +409,10 @@ const ContactPage = () => {
                   className="bg-[#FDFBF7] border border-[#2C2621]/10 p-7 hover:border-[#C16542]/50 hover:shadow-[0_18px_40px_-22px_rgba(44,38,33,0.35)] hover:-translate-y-0.5 transition-all duration-300"
                 >
                   <r.icon className="w-7 h-7 text-[#C16542] mb-5" strokeWidth={1.5} />
-                  <h3 className="font-serif text-xl text-[#2C2621] leading-tight mb-3">
-                    {pick(r.title, lang)}
-                  </h3>
-                  <p className="text-[13px] text-[#5C5248] leading-relaxed">{pick(r.body, lang)}</p>
+                  <E name={`reasons.items.${i}.title`} defaults={r.title} multiline={false} as="h3"
+                     className="font-serif text-xl text-[#2C2621] leading-tight mb-3" />
+                  <E name={`reasons.items.${i}.body`} defaults={r.body} as="p"
+                     className="text-[13px] text-[#5C5248] leading-relaxed" />
                 </div>
               ))}
             </div>
@@ -440,18 +426,18 @@ const ContactPage = () => {
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-[#C16542] mt-1" strokeWidth={1.7} />
                 <div>
-                  <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1">
-                    {pick(COPY.quick.hoursLabel, lang)}
-                  </p>
-                  <p className="text-[14px] text-[#2C2621]">{pick(COPY.quick.hoursValue, lang)}</p>
+                  <E name="quick.hoursLabel" defaults={COPY.quick.hoursLabel} multiline={false} as="p"
+                     className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1" />
+                  <E name="quick.hoursValue" defaults={COPY.quick.hoursValue} multiline={false} as="p"
+                     className="text-[14px] text-[#2C2621]" />
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-[#C16542] mt-1" strokeWidth={1.7} />
                 <div>
-                  <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1">
-                    {lang === "en" ? "Phone" : lang === "fr" ? "Téléphone" : "Teléfono"}
-                  </p>
+                  <E name="quick.phoneLabel" multiline={false} as="p"
+                     defaults={{ es: "Teléfono", en: "Phone", fr: "Téléphone" }}
+                     className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1" />
                   <a
                     href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
                     className="text-[14px] text-[#2C2621] hover:text-[#C16542] transition-colors"
@@ -463,9 +449,9 @@ const ContactPage = () => {
               <div className="flex items-start gap-3">
                 <Mail className="w-5 h-5 text-[#C16542] mt-1" strokeWidth={1.7} />
                 <div>
-                  <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1">
-                    {lang === "en" ? "Email" : "Email"}
-                  </p>
+                  <E name="quick.emailLabel" multiline={false} as="p"
+                     defaults={{ es: "Email", en: "Email", fr: "E-mail" }}
+                     className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1" />
                   <a
                     href={`mailto:${CONTACT.email || "xalucatours@xaluca.com"}`}
                     className="text-[14px] text-[#2C2621] hover:text-[#C16542] transition-colors break-all"

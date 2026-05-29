@@ -11,6 +11,7 @@ import { CONTACT } from "@/lib/data";
 import { IMG, banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
 import { SlotScope } from "@/components/slotScope";
+import { E } from "@/components/EditableSection";
 
 const DOC_TITLES = {
   es: "Equipo · Conoce Xaluca Tours",
@@ -180,12 +181,12 @@ const InlineBreadcrumb = ({ lang }) => (
   >
     <Link to={pathFor(lang, "home")} data-testid="eq-bc-home" className="flex items-center gap-1.5 hover:text-[#D4A373] transition-colors">
       <Home className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
-      <span>{pick(COPY.breadcrumb, lang)}</span>
+      <E name="bc.home" defaults={COPY.breadcrumb} multiline={false} />
     </Link>
     <ChevronRight className="w-3 h-3 text-[#FDFBF7]/40" strokeWidth={1.6} />
-    <span>{pick(COPY.cluster, lang)}</span>
+    <E name="bc.cluster" defaults={COPY.cluster} multiline={false} />
     <ChevronRight className="w-3 h-3 text-[#FDFBF7]/40" strokeWidth={1.6} />
-    <span className="text-[#D4A373]">{pick(COPY.current, lang)}</span>
+    <E name="bc.current" defaults={COPY.current} multiline={false} className="text-[#D4A373]" />
   </nav>
 );
 
@@ -212,16 +213,14 @@ const Hero = ({ lang }) => (
           <div className="max-w-3xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-              <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">{pick(COPY.hero.eyebrow, lang)}</span>
+              <E name="hero.eyebrow" defaults={COPY.hero.eyebrow} multiline={false} className="text-[11px] tracking-[0.35em] uppercase font-semibold" />
               <span className="w-8 h-px bg-[#D4A373]/50" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80">{pick(COPY.hero.place, lang)}</span>
+              <E name="hero.place" defaults={COPY.hero.place} multiline={false} className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80" />
             </div>
-            <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
-              {pick(COPY.hero.title, lang)}
-            </h1>
-            <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
-              {pick(COPY.hero.subtitle, lang)}
-            </p>
+            <E name="hero.title" defaults={COPY.hero.title} multiline={false} as="h1"
+               className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6" />
+            <E name="hero.subtitle" defaults={COPY.hero.subtitle} as="p"
+               className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed" />
           </div>
         </div>
       </div>
@@ -235,15 +234,14 @@ const Intro = ({ lang }) => (
       <div className="md:col-span-5">
         <span className="overline inline-flex items-center gap-2 text-[#C16542]">
           <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
-          {pick(COPY.intro.overline, lang)}
+          <E name="intro.overline" defaults={COPY.intro.overline} multiline={false} />
         </span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.06] tracking-tight mt-5 text-[#2C2621]">
-          {pick(COPY.intro.title, lang)}
-        </h2>
+        <E name="intro.title" defaults={COPY.intro.title} multiline={false} as="h2"
+           className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.06] tracking-tight mt-5 text-[#2C2621]" />
       </div>
       <div className="md:col-span-7 md:pt-2 space-y-5">
-        <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{pick(COPY.intro.p1, lang)}</p>
-        <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{pick(COPY.intro.p2, lang)}</p>
+        <E name="intro.p1" defaults={COPY.intro.p1} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
+        <E name="intro.p2" defaults={COPY.intro.p2} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
       </div>
     </div>
   </section>
@@ -258,14 +256,13 @@ const GroupPillars = ({ lang }) => (
           <div className="md:col-span-7">
             <span className="overline inline-flex items-center gap-2 text-[#C16542]">
               <Hotel className="w-3.5 h-3.5" strokeWidth={1.6} />
-              {pick(COPY.group.overline, lang)}
+              <E name="overline" defaults={COPY.group.overline} multiline={false} />
             </span>
-            <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
-              {pick(COPY.group.title, lang)}
-            </h2>
+            <E name="title" defaults={COPY.group.title} multiline={false} as="h2"
+               className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]" />
           </div>
           <div className="md:col-span-5">
-            <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{pick(COPY.group.body, lang)}</p>
+            <E name="body" defaults={COPY.group.body} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
           </div>
         </div>
 
@@ -293,12 +290,10 @@ const GroupPillars = ({ lang }) => (
                     </span>
                   </div>
                   <div className="p-6 md:p-7 flex flex-col flex-1">
-                    <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621]">
-                      {pick(p.title, lang)}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
-                      {pick(p.body, lang)}
-                    </p>
+                    <E name="title" defaults={p.title} multiline={false} as="h3"
+                       className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621]" />
+                    <E name="body" defaults={p.body} as="p"
+                       className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1" />
                   </div>
                 </article>
               </SlotScope>
@@ -315,7 +310,7 @@ const Stats = ({ lang }) => (
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <span className="overline inline-flex items-center gap-2 text-[#C16542] mb-8">
         <CalendarCheck className="w-3.5 h-3.5" strokeWidth={1.6} />
-        {pick(COPY.stats.overline, lang)}
+        <E name="stats.overline" defaults={COPY.stats.overline} multiline={false} />
       </span>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10 mt-4">
         {COPY.stats.items.map((s) => (
@@ -324,8 +319,10 @@ const Stats = ({ lang }) => (
             data-testid={`eq-stat-${s.id}`}
             className="bg-[#FDFBF7] p-7 md:p-9"
           >
-            <p className="font-serif-x text-5xl md:text-6xl text-[#C16542] tabular-nums leading-none">{s.value}</p>
-            <p className="mt-3 text-xs md:text-sm tracking-[0.22em] uppercase text-[#5C5248]">{pick(s.label, lang)}</p>
+            <E name={`stats.${s.id}.value`} defaults={{ es: s.value, en: s.value, fr: s.value }} multiline={false} as="p"
+               className="font-serif-x text-5xl md:text-6xl text-[#C16542] tabular-nums leading-none" />
+            <E name={`stats.${s.id}.label`} defaults={s.label} multiline={false} as="p"
+               className="mt-3 text-xs md:text-sm tracking-[0.22em] uppercase text-[#5C5248]" />
           </div>
         ))}
       </div>
@@ -339,11 +336,10 @@ const Bridge = ({ lang }) => (
       <div className="max-w-3xl mb-12 md:mb-16">
         <span className="overline inline-flex items-center gap-2 text-[#C16542]">
           <Globe2 className="w-3.5 h-3.5" strokeWidth={1.6} />
-          {pick(COPY.bridge.overline, lang)}
+          <E name="bridge.overline" defaults={COPY.bridge.overline} multiline={false} />
         </span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
-          {pick(COPY.bridge.title, lang)}
-        </h2>
+        <E name="bridge.title" defaults={COPY.bridge.title} multiline={false} as="h2"
+           className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
@@ -362,12 +358,10 @@ const Bridge = ({ lang }) => (
                 </span>
               </div>
               <div>
-                <h3 className="font-serif-x text-2xl md:text-[28px] leading-[1.12] text-[#2C2621]">
-                  {pick(c.title, lang)}
-                </h3>
-                <p className="mt-4 text-sm md:text-base leading-relaxed text-[#5C5248]">
-                  {pick(c.body, lang)}
-                </p>
+                <E name={`bridge.${c.id}.title`} defaults={c.title} multiline={false} as="h3"
+                   className="font-serif-x text-2xl md:text-[28px] leading-[1.12] text-[#2C2621]" />
+                <E name={`bridge.${c.id}.body`} defaults={c.body} as="p"
+                   className="mt-4 text-sm md:text-base leading-relaxed text-[#5C5248]" />
               </div>
             </article>
           );
@@ -384,11 +378,10 @@ const Values = ({ lang }) => (
       <div className="max-w-3xl mb-12 md:mb-16">
         <span className="overline inline-flex items-center gap-2 text-[#C16542]">
           <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
-          {pick(COPY.values.overline, lang)}
+          <E name="values.overline" defaults={COPY.values.overline} multiline={false} />
         </span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]">
-          {pick(COPY.values.title, lang)}
-        </h2>
+        <E name="values.title" defaults={COPY.values.title} multiline={false} as="h2"
+           className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
@@ -408,12 +401,10 @@ const Values = ({ lang }) => (
                   <Icon className="w-5 h-5" strokeWidth={1.5} />
                 </span>
               </div>
-              <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621] mt-6">
-                {pick(v.title, lang)}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
-                {pick(v.body, lang)}
-              </p>
+              <E name={`values.${v.id}.title`} defaults={v.title} multiline={false} as="h3"
+                 className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621] mt-6" />
+              <E name={`values.${v.id}.body`} defaults={v.body} as="p"
+                 className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1" />
             </article>
           );
         })}
@@ -439,14 +430,12 @@ const FinalCta = ({ lang }) => (
       <div className="text-center max-w-3xl mx-auto">
         <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
           <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
-          {pick(COPY.cta.eyebrow, lang)}
+          <E name="cta.eyebrow" defaults={COPY.cta.eyebrow} multiline={false} />
         </span>
-        <h2 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#FDFBF7]">
-          {pick(COPY.cta.title, lang)}
-        </h2>
-        <p className="mt-6 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed">
-          {pick(COPY.cta.body, lang)}
-        </p>
+        <E name="cta.title" defaults={COPY.cta.title} multiline={false} as="h2"
+           className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#FDFBF7]" />
+        <E name="cta.body" defaults={COPY.cta.body} as="p"
+           className="mt-6 text-base md:text-lg text-[#FDFBF7]/80 leading-relaxed" />
       </div>
 
       <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-4xl mx-auto">
@@ -457,7 +446,7 @@ const FinalCta = ({ lang }) => (
         >
           <Phone className="w-5 h-5 text-[#D4A373] mt-1 flex-shrink-0" strokeWidth={1.6} />
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">{pick(COPY.cta.phoneLabel, lang)}</p>
+            <E name="cta.phoneLabel" defaults={COPY.cta.phoneLabel} multiline={false} as="p" className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55" />
             <p className="mt-1 text-base text-[#FDFBF7]">{CONTACT.phone}</p>
           </div>
         </a>
@@ -468,7 +457,7 @@ const FinalCta = ({ lang }) => (
         >
           <Mail className="w-5 h-5 text-[#D4A373] mt-1 flex-shrink-0" strokeWidth={1.6} />
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">{pick(COPY.cta.emailLabel, lang)}</p>
+            <E name="cta.emailLabel" defaults={COPY.cta.emailLabel} multiline={false} as="p" className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55" />
             <p className="mt-1 text-base text-[#FDFBF7] break-all">{CONTACT.email}</p>
           </div>
         </a>
@@ -478,8 +467,8 @@ const FinalCta = ({ lang }) => (
         >
           <Clock className="w-5 h-5 text-[#D4A373] mt-1 flex-shrink-0" strokeWidth={1.6} />
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">{pick(COPY.cta.hoursLabel, lang)}</p>
-            <p className="mt-1 text-base text-[#FDFBF7]">{pick(COPY.cta.hours, lang)}</p>
+            <E name="cta.hoursLabel" defaults={COPY.cta.hoursLabel} multiline={false} as="p" className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55" />
+            <E name="cta.hours" defaults={COPY.cta.hours} multiline={false} as="p" className="mt-1 text-base text-[#FDFBF7]" />
           </div>
         </div>
       </div>
@@ -490,7 +479,7 @@ const FinalCta = ({ lang }) => (
           data-testid="eq-cta-plan"
           className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
-          {pick(COPY.cta.planCta, lang)}
+          <E name="cta.planCta" defaults={COPY.cta.planCta} multiline={false} />
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
         </Link>
         <Link
@@ -498,7 +487,7 @@ const FinalCta = ({ lang }) => (
           data-testid="eq-cta-contact"
           className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
-          {pick(COPY.cta.contactCta, lang)}
+          <E name="cta.contactCta" defaults={COPY.cta.contactCta} multiline={false} />
           <MapPin className="w-4 h-4" strokeWidth={1.6} />
         </Link>
       </div>

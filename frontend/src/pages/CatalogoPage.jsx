@@ -7,8 +7,9 @@
 ============================================================ */
 import React, { useEffect } from "react";
 import { BookOpen, Download, ExternalLink } from "lucide-react";
-import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { SlotScope } from "@/components/slotScope";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { SlotScope, useSlotId } from "@/components/slotScope";
+import EditableText from "@/components/EditableText";
 
 const COPY = {
   eyebrow: { es: "Catálogo digital · Xaluca Tours",
@@ -21,6 +22,12 @@ const COPY = {
              en: "Flip through every Moroccan route we offer — itineraries, maps and editorial photography in a single magazine-style flipbook.",
              fr: "Parcourez toutes nos routes au Maroc — itinéraires, cartes et photographie éditoriale dans un seul flipbook." },
   openExternal: { es: "Abrir en pestaña nueva", en: "Open in new tab", fr: "Ouvrir dans un nouvel onglet" },
+};
+
+/* Inline-CMS per-page text editor (auto-namespaced by page path). */
+const ET = ({ k, as = "span", className, multiline = true, defaults, ...rest }) => {
+  const slot = useSlotId(k);
+  return <EditableText slot={slot} defaults={defaults || COPY[k] || {}} as={as} className={className} multiline={multiline} {...rest} />;
 };
 
 const FLIPBOOK_URL = "https://xalucatours.publuu.com";
@@ -48,14 +55,10 @@ const CatalogoPage = () => {
           <div className="max-w-5xl mx-auto px-6 md:px-10">
             <div className="inline-flex items-center gap-2 text-[11px] tracking-[0.35em] uppercase text-[#C16542] mb-5">
               <BookOpen className="w-3.5 h-3.5" strokeWidth={1.6} />
-              {pick(COPY.eyebrow, lang)}
+              <ET k="eyebrow" multiline={false} />
             </div>
-            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight max-w-3xl">
-              {pick(COPY.title, lang)}
-            </h1>
-            <p className="mt-5 max-w-2xl text-[14px] md:text-base text-[#5C5248] leading-relaxed">
-              {pick(COPY.body, lang)}
-            </p>
+            <ET k="title" as="h1" multiline={false} className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight max-w-3xl" />
+            <ET k="body" as="p" className="mt-5 max-w-2xl text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
             <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href={FLIPBOOK_URL}
@@ -65,7 +68,7 @@ const CatalogoPage = () => {
                 className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] px-4 py-2.5 transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.7} />
-                {pick(COPY.openExternal, lang)}
+                <ET k="openExternal" multiline={false} />
               </a>
             </div>
           </div>

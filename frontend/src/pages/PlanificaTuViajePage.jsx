@@ -10,7 +10,8 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
 import EditableImage from "@/components/EditableImage";
-import { SlotScope } from "@/components/slotScope";
+import EditableText from "@/components/EditableText";
+import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 
 /* ============================================================
@@ -174,6 +175,13 @@ const Field = ({ label, hint, required, children, error }) => (
 const inputCls =
   "w-full bg-transparent border-b border-[#2C2621]/30 focus:border-[#C16542] outline-none py-3 text-[15px] text-[#2C2621] placeholder:text-[#5C5248]/45 transition-colors";
 
+/* Inline-CMS per-page text editor (auto-namespaced by page path).
+   Pass `k` to pull defaults from COPY, or `defaults` for data-driven items. */
+const ET = ({ k, defaults, as = "span", className, multiline = true, ...rest }) => {
+  const slot = useSlotId(k);
+  return <EditableText slot={slot} defaults={defaults || (k ? COPY[k] : {}) || {}} as={as} className={className} multiline={multiline} {...rest} />;
+};
+
 /* ============================================================
    Component
 ============================================================ */
@@ -278,13 +286,9 @@ export default function PlanificaTuViajePage() {
         <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent" />
         <span className="film-grain opacity-50" aria-hidden="true" />
         <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-16 md:pb-20">
-          <span className="overline text-[#D4A373]">{tr("eyebrow")}</span>
-          <h1 className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 max-w-3xl text-[#FDFBF7]">
-            {tr("title")}
-          </h1>
-          <p className="mt-6 max-w-xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">
-            {tr("intro")}
-          </p>
+          <ET k="eyebrow" multiline={false} className="overline text-[#D4A373]" />
+          <ET k="title" as="h1" multiline={false} className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 max-w-3xl text-[#FDFBF7]" />
+          <ET k="intro" as="p" className="mt-6 max-w-xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed" />
         </div>
       </section>
 
@@ -300,18 +304,14 @@ export default function PlanificaTuViajePage() {
               <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#5A6B4F]/12 text-[#5A6B4F]">
                 <Check className="w-6 h-6" strokeWidth={1.6} />
               </span>
-              <h2 className="font-serif-x text-3xl md:text-4xl tracking-tight mt-7 text-[#2C2621]">
-                {tr("success_t")}
-              </h2>
-              <p className="mt-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85] max-w-xl mx-auto">
-                {tr("success_b")}
-              </p>
+              <ET k="success_t" as="h2" multiline={false} className="font-serif-x text-3xl md:text-4xl tracking-tight mt-7 text-[#2C2621]" />
+              <ET k="success_b" as="p" className="mt-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85] max-w-xl mx-auto" />
               <Link
                 to="/"
                 className="inline-flex items-center gap-2 mt-9 px-7 py-3.5 bg-[#2C2621] text-[#FDFBF7] text-[11px] tracking-[0.25em] uppercase hover:bg-[#C16542] transition-colors"
                 data-testid="plan-trip-success-home"
               >
-                {tr("send_back")}
+                <ET k="send_back" multiline={false} />
               </Link>
             </div>
           ) : (
@@ -324,13 +324,13 @@ export default function PlanificaTuViajePage() {
               {/* ============ STEP 1 · DATES ============ */}
               <SectionBlock
                 step="01" icon={CalendarRange}
-                title={tr("s1_title")} help={tr("s1_help")}
+                title={<ET k="s1_title" multiline={false} />} help={<ET k="s1_help" />}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
-                    { id: "range",    label: tr("mode_range"),   icon: CalendarRange },
-                    { id: "exact",    label: tr("mode_exact"),   icon: Calendar },
-                    { id: "flexible", label: tr("mode_flex"),    icon: CalendarClock },
+                    { id: "range",    label: <ET k="mode_range" multiline={false} />, icon: CalendarRange },
+                    { id: "exact",    label: <ET k="mode_exact" multiline={false} />, icon: Calendar },
+                    { id: "flexible", label: <ET k="mode_flex" multiline={false} />,  icon: CalendarClock },
                   ].map(({ id, label, icon: I }) => {
                     const on = form.dateMode === id;
                     return (
@@ -355,24 +355,24 @@ export default function PlanificaTuViajePage() {
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
                   {form.dateMode === "range" && (
                     <>
-                      <Field label={tr("start_date")}>
+                      <Field label={<ET k="start_date" multiline={false} />}>
                         <input type="date" data-testid="start-date" className={inputCls}
                           value={form.startDate} onChange={(e) => set("startDate", e.target.value)} />
                       </Field>
-                      <Field label={tr("end_date")}>
+                      <Field label={<ET k="end_date" multiline={false} />}>
                         <input type="date" data-testid="end-date" className={inputCls}
                           value={form.endDate} onChange={(e) => set("endDate", e.target.value)} />
                       </Field>
                     </>
                   )}
                   {form.dateMode === "exact" && (
-                    <Field label={tr("exact_date")}>
+                    <Field label={<ET k="exact_date" multiline={false} />}>
                       <input type="date" data-testid="exact-date" className={inputCls}
                         value={form.exactDate} onChange={(e) => set("exactDate", e.target.value)} />
                     </Field>
                   )}
                   {form.dateMode === "flexible" && (
-                    <Field label={tr("flex_month")}>
+                    <Field label={<ET k="flex_month" multiline={false} />}>
                       <input
                         type="text"
                         data-testid="flex-month"
@@ -390,14 +390,14 @@ export default function PlanificaTuViajePage() {
               {/* ============ STEP 2 · TRAVELLERS ============ */}
               <SectionBlock
                 step="02" icon={Users}
-                title={tr("s2_title")} help={tr("s2_help")}
+                title={<ET k="s2_title" multiline={false} />} help={<ET k="s2_help" />}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
-                  <Field label={tr("adults")}>
+                  <Field label={<ET k="adults" multiline={false} />}>
                     <input type="number" min={1} max={40} data-testid="adults" className={inputCls}
                       value={form.adults} onChange={(e) => set("adults", e.target.value.replace(/[^0-9]/g, ""))} />
                   </Field>
-                  <Field label={tr("children")}>
+                  <Field label={<ET k="children" multiline={false} />}>
                     <input type="number" min={0} max={20} data-testid="children" className={inputCls}
                       value={form.children} onChange={(e) => set("children", e.target.value.replace(/[^0-9]/g, ""))} />
                   </Field>
@@ -410,7 +410,7 @@ export default function PlanificaTuViajePage() {
               {/* ============ STEP 3 · ACCOMMODATION ============ */}
               <SectionBlock
                 step="03" icon={BedDouble}
-                title={tr("s3_title")} help={tr("s3_help")}
+                title={<ET k="s3_title" multiline={false} />} help={<ET k="s3_help" />}
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {ACCOMMODATIONS.map((a) => {
@@ -428,12 +428,8 @@ export default function PlanificaTuViajePage() {
                         }`}
                         style={on ? { borderTopColor: a.accent, borderTopWidth: 3 } : undefined}
                       >
-                        <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: a.accent }}>
-                          {pick(a.title, lang)}
-                        </span>
-                        <p className="mt-3 text-sm text-[#5C5248] leading-[1.7] min-h-[3.2rem]">
-                          {pick(a.desc, lang)}
-                        </p>
+                        <ET k={`accommodation.${a.id}.title`} defaults={a.title} multiline={false} className="text-[10px] tracking-[0.3em] uppercase" style={{ color: a.accent }} />
+                        <ET k={`accommodation.${a.id}.desc`} as="p" defaults={a.desc} className="mt-3 text-sm text-[#5C5248] leading-[1.7] min-h-[3.2rem]" />
                         {on && (
                           <span className="absolute top-4 right-4 inline-flex items-center justify-center w-6 h-6 rounded-full text-white" style={{ background: a.accent }}>
                             <Check className="w-3.5 h-3.5" strokeWidth={2} />
@@ -448,7 +444,7 @@ export default function PlanificaTuViajePage() {
               {/* ============ STEP 4 · REGIONS ============ */}
               <SectionBlock
                 step="04" icon={Compass}
-                title={tr("s4r_title")} help={tr("s4r_help")}
+                title={<ET k="s4r_title" multiline={false} />} help={<ET k="s4r_help" />}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" data-testid="plan-regions">
                   {REGION_OPTIONS.map((reg) => {
@@ -470,12 +466,10 @@ export default function PlanificaTuViajePage() {
                       >
                         <span className="flex items-center gap-2.5">
                           {I && <I className="w-4 h-4 shrink-0" strokeWidth={1.6} style={{ color: on ? "#D4A373" : "#C16542" }} />}
-                          <span className="text-[12px] tracking-[0.18em] uppercase flex-1">{pick(reg.label, lang)}</span>
+                          <ET k={`region.${reg.id}.label`} defaults={reg.label} multiline={false} className="text-[12px] tracking-[0.18em] uppercase flex-1" />
                           {on && <Check className="w-4 h-4 text-[#D4A373]" strokeWidth={2.2} />}
                         </span>
-                        <p className={`mt-2.5 text-[12px] leading-[1.6] ${on ? "text-[#FDFBF7]/75" : "text-[#5C5248]"}`}>
-                          {pick(reg.desc, lang)}
-                        </p>
+                        <ET k={`region.${reg.id}.desc`} as="p" defaults={reg.desc} className={`mt-2.5 text-[12px] leading-[1.6] ${on ? "text-[#FDFBF7]/75" : "text-[#5C5248]"}`} />
                         <span className={`mt-3 inline-block text-[10px] tracking-[0.25em] uppercase ${on ? "text-[#D4A373]" : "text-[#A07042]"}`}>
                           {count} · {tr("s4r_nights") === "noches" ? (count === 1 ? "itinerario" : "itinerarios") : count === 1 ? "itinerary" : "itineraries"}
                         </span>
@@ -489,28 +483,24 @@ export default function PlanificaTuViajePage() {
                   {form.regions.length === 0 ? (
                     <p className="text-[13px] text-[#5C5248]/80 italic flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-[#C16542]" strokeWidth={1.6} />
-                      {tr("s4r_help")}
+                      <ET k="s4r_help" />
                     </p>
                   ) : (
                     <>
                       <div className="flex items-baseline justify-between flex-wrap gap-3 mb-2">
-                        <h3 className="font-serif-x text-xl md:text-2xl tracking-tight text-[#2C2621]">
-                          {tr("s4r_recos")}
-                        </h3>
+                        <ET k="s4r_recos" as="h3" multiline={false} className="font-serif-x text-xl md:text-2xl tracking-tight text-[#2C2621]" />
                         <span data-testid="plan-trip-recos-count" className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
-                          {recommendedTrips.length} · {tr("s4r_match")}
+                          {recommendedTrips.length} · <ET k="s4r_match" multiline={false} />
                         </span>
                       </div>
-                      <p className="text-[12px] text-[#5C5248]/80 leading-relaxed mb-5 pb-5 border-b border-[#2C2621]/10 max-w-2xl">
-                        {tr("s4r_help2")}
-                      </p>
+                      <ET k="s4r_help2" as="p" className="text-[12px] text-[#5C5248]/80 leading-relaxed mb-5 pb-5 border-b border-[#2C2621]/10 max-w-2xl" />
                       {form.selectedTrips.length > 0 && (
                         <p
                           data-testid="plan-trip-selected-count"
                           className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-[#2C2621] text-[#FDFBF7] text-[10px] tracking-[0.28em] uppercase"
                         >
                           <Check className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={2.2} />
-                          {form.selectedTrips.length} · {tr("s4r_selcount")}
+                          {form.selectedTrips.length} · <ET k="s4r_selcount" multiline={false} />
                         </p>
                       )}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -530,7 +520,7 @@ export default function PlanificaTuViajePage() {
                         data-testid="plan-trip-recos-seeall"
                         className="inline-flex items-center gap-2 mt-8 text-[11px] tracking-[0.28em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
                       >
-                        {tr("s4r_seeall")}
+                        <ET k="s4r_seeall" multiline={false} />
                         <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
                       </Link>
                     </>
@@ -541,7 +531,7 @@ export default function PlanificaTuViajePage() {
               {/* ============ STEP 5 · ACTIVITIES ============ */}
               <SectionBlock
                 step="05" icon={Sparkles}
-                title={tr("s4_title")} help={tr("s4_help")}
+                title={<ET k="s4_title" multiline={false} />} help={<ET k="s4_help" />}
               >
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {ACTIVITIES.map((act) => {
@@ -561,7 +551,7 @@ export default function PlanificaTuViajePage() {
                         }`}
                       >
                         {I && <I className="w-4 h-4 shrink-0" strokeWidth={1.6} style={{ color: on ? "#D4A373" : "#C16542" }} />}
-                        <span className="flex-1 leading-tight">{pick(act.label, lang)}</span>
+                        <ET k={`activity.${act.id}`} defaults={act.label} multiline={false} className="flex-1 leading-tight" />
                         {on && <Check className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={2.2} />}
                       </button>
                     );
@@ -572,10 +562,10 @@ export default function PlanificaTuViajePage() {
               {/* ============ STEP 6 · CONTACT ============ */}
               <SectionBlock
                 step="06" icon={Send}
-                title={tr("s5_title")} help={tr("s5_help")}
+                title={<ET k="s5_title" multiline={false} />} help={<ET k="s5_help" />}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
-                  <Field label={tr("name")} required error={errors.fullName}>
+                  <Field label={<ET k="name" multiline={false} />} required error={errors.fullName}>
                     <input
                       type="text"
                       data-testid="full-name"
@@ -586,7 +576,7 @@ export default function PlanificaTuViajePage() {
                       onChange={(e) => set("fullName", e.target.value)}
                     />
                   </Field>
-                  <Field label={tr("email")} required error={errors.email}>
+                  <Field label={<ET k="email" multiline={false} />} required error={errors.email}>
                     <input
                       type="email"
                       data-testid="email"
@@ -597,7 +587,7 @@ export default function PlanificaTuViajePage() {
                       onChange={(e) => set("email", e.target.value)}
                     />
                   </Field>
-                  <Field label={tr("phone")}>
+                  <Field label={<ET k="phone" multiline={false} />}>
                     <input
                       type="tel"
                       data-testid="phone"
@@ -611,7 +601,7 @@ export default function PlanificaTuViajePage() {
                 </div>
 
                 <div className="mt-8">
-                  <Field label={tr("notes")}>
+                  <Field label={<ET k="notes" multiline={false} />}>
                     <textarea
                       data-testid="notes"
                       rows={4}
@@ -635,10 +625,10 @@ export default function PlanificaTuViajePage() {
                   disabled={status === "sending"}
                   className="group relative inline-flex items-center gap-3 px-9 py-5 bg-[#C16542] text-[#FDFBF7] text-[11px] tracking-[0.3em] uppercase hover:bg-[#2C2621] transition-all duration-300 disabled:opacity-60"
                 >
-                  {status === "sending" ? tr("sending") : tr("submit")}
+                  {status === "sending" ? tr("sending") : <ET k="submit" multiline={false} />}
                   <Send className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.6} />
                 </button>
-                <p className="mt-5 text-xs text-[#5C5248]/70 max-w-xl">{tr("privacy")}</p>
+                <ET k="privacy" as="p" className="mt-5 text-xs text-[#5C5248]/70 max-w-xl" />
               </div>
             </form>
           )}
@@ -703,11 +693,9 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
             {trip.nights} {tr("s4r_nights")}
           </div>
           <h4 className="font-serif text-[17px] text-[#2C2621] leading-snug mb-1.5">
-            {pick(trip.title, lang)}
+            <ET k="title" defaults={trip.title} multiline={false} />
           </h4>
-          <p className="text-[12px] text-[#5C5248] leading-relaxed flex-1">
-            {pick(trip.summary, lang)}
-          </p>
+          <ET k="summary" as="p" defaults={trip.summary} className="text-[12px] text-[#5C5248] leading-relaxed flex-1" />
           {/* Independent "View details" link — opens in a new tab, does NOT toggle selection */}
           <Link
             to={pathFor(lang, trip.routeId)}

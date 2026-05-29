@@ -1,0 +1,29 @@
+{
+  "summary": "Phase 3 (partial) — Inline CMS editability validation for /catalogo, /planifica-tu-viaje, /contacto, /equipo. All 4 pages render with their data-testids; in TEXT EDIT mode they expose a large set of editable surfaces. PERSIST CHECK on /equipo confirmed PUT /api/text_slots/equipo.hero.title returned 200, value persisted across hard reload, then was reset to original (cleanup). Regressions OK: language switch (es→en→fr) navigates without console errors; /planifica-tu-viaje region selection still triggers reco cards with 'Ver detalle' opening trip in new tab. Contacto step-rail eyebrow/title bug fix verified — slots `contacto.contact.steps.eyebrow` and `contacto.contact.steps.title` now render and are editable.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/planifica-tu-viaje", "issues": ["Date inputs (start_date/end_date) use the browser-native HTML date picker (mm/dd/yyyy) instead of a localized shadcn calendar component — date order/format does not respect ES/FR locale and is inconsistent with the rest of the design system. Pre-existing, not introduced by Phase 3, but worth flagging."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Optional / pre-existing) Replace native <input type='date'> with shadcn Calendar/DatePicker on /planifica-tu-viaje for consistent locale & visual styling.",
+    "Phase 3 in-scope pages PASS — proceed to next phase (QueHacemos, Incentivos, ToursLanding, region pages, leftover Home components)."
+  ],
+  "critical_code_review_comments": [
+    "EditableText slot wrapper data-testid is only present while textEditMode is ON; after reload (mode OFF) the same node renders as a plain element. Locator-based reload checks need to either re-toggle edit mode or assert via API/text content. Consider exposing data-testid in both modes to simplify e2e/regression scripts (this only affects testability, not UX).",
+    "PlanificaTuViajePage exposes 61 editable surfaces — verify per-locale fallback strategy (some FR/EN translations currently fall back to Spanish defaults; not a Phase 3 blocker).",
+    "ContactPage previously rendered the 3-step rail eyebrow/title empty due to wrong component — fix verified; ensure other pages don't repeat the <E> vs <ET> mix-up (consider one canonical helper)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "n/a (no auth)",
+  "seed_data_creation": "Edited slot equipo.hero.title (PUT 200), then reset to original empty body via PUT {values:{}} (cleanup confirmed via GET — equipo.hero.title now {}). No residual test data.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase 3 (catalogo/planifica/contacto/equipo) PASSED. Editable-surface counts: catalogo=9 (5 header + 4 page), planifica-tu-viaje=61, contacto=61, equipo=61. PERSIST CHECK validated against equipo.hero.title (PUT/GET roundtrip OK). To exercise editing programmatically, toggle [data-testid='header-text-edit-toggle'] first. On reload to verify persistence, re-toggle edit mode before locating data-testid='editable-text-...' wrapper, OR assert via GET /api/text_slots. Date-picker design issue on /planifica-tu-viaje is pre-existing.",
+  "rca of the issue": "n/a — no functional bugs found in Phase 3 scope. Earlier ContactPage step-rail empty-render bug (mentioned in problem statement) is fixed: the 3-step rail now renders the eyebrow/title text and exposes them as editable slots `contacto.contact.steps.eyebrow` and `contacto.contact.steps.title`."
+}
