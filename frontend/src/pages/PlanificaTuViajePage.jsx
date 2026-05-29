@@ -5,9 +5,12 @@ import {
   Users, BedDouble, Sparkles, Send, Check,
   Sun, Bike, Camera, Flower, Music, Waves,
   Mountain, MountainSnow, MapPin, ArrowRight, Compass,
+  Moon, ArrowUpRight,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
+import EditableImage from "@/components/EditableImage";
+import { SlotScope } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 
 /* ============================================================
@@ -120,6 +123,30 @@ const ACTIVITIES = [
 
 const ICONS = { sun: Sun, bike: Bike, camera: Camera, flower: Flower, music: Music, waves: Waves, mountain: Mountain, "mountain-snow": MountainSnow, sparkles: Sparkles };
 
+/* ---------- Regions (geographic preferences) ----------
+   Built from the same TRIP_REGIONS source the whole catalog uses, so
+   the selector stays coherent with every itinerary. Each region keeps
+   its icon and a short geographic descriptor. */
+const REGION_ICONS = {
+  sur: Sun, norte: MapPin, completo: Compass,
+  escapadas: CalendarClock, aventura: Bike, eventos: Calendar,
+};
+const REGION_DESC = {
+  sur:       T("Atlas, valles de kasbahs y dunas del Erg Chebbi.", "Atlas, kasbah valleys and Erg Chebbi dunes.", "Atlas, vallées des kasbahs et dunes de l'Erg Chebbi."),
+  norte:     T("Ciudades imperiales, Rif y la costa del estrecho.", "Imperial cities, the Rif and the strait coast.", "Cités impériales, Rif et côte du détroit."),
+  completo:  T("De Tánger o Fez hasta Marrakech y el desierto.", "From Tangier or Fez down to Marrakech and the desert.", "De Tanger ou Fès jusqu'à Marrakech et le désert."),
+  escapadas: T("Estancias cortas centradas en una sola zona.", "Short stays focused on a single zone.", "Séjours courts centrés sur une seule zone."),
+  aventura:  T("Rutas activas: enduro y pistas del Drâa.", "Active routes: enduro and Drâa tracks.", "Itinéraires actifs : enduro et pistes du Drâa."),
+  eventos:   T("Salidas especiales en fechas señaladas.", "Special departures on key dates.", "Départs spéciaux à des dates clés."),
+};
+const REGION_OPTIONS = TRIP_REGIONS
+  .filter((r) => r.id !== "all")
+  .map((r) => ({ ...r, icon: REGION_ICONS[r.id] || Compass, desc: REGION_DESC[r.id] }));
+const REGION_COUNTS = ALL_TRIPS.reduce((acc, t) => {
+  acc[t.region] = (acc[t.region] || 0) + 1;
+  return acc;
+}, {});
+
 /* ============================================================
    Helpers
 ============================================================ */
@@ -197,6 +224,7 @@ export default function PlanificaTuViajePage() {
         travellers_adults: Number(form.adults) || 1,
         travellers_children: Number(form.children) || 0,
         accommodation: form.accommodation,
+        regions: form.regions,
         activities: form.activities,
         notes: form.notes.trim() || null,
         language: lang,
@@ -220,6 +248,13 @@ export default function PlanificaTuViajePage() {
     () => Number(form.adults || 0) + Number(form.children || 0),
     [form.adults, form.children],
   );
+
+  // Live itinerary recommendations driven by the geographic regions
+  // the traveller selected. Stays coherent with the full catalog.
+  const recommendedTrips = useMemo(() => {
+    if (!form.regions.length) return [];
+    return ALL_TRIPS.filter((t) => form.regions.includes(t.region));
+  }, [form.regions]);
 
   return (
     <div data-testid="plan-trip-page" className="bg-[#FBF5EA] text-[#2C2621]">
@@ -400,9 +435,83 @@ export default function PlanificaTuViajePage() {
                 </div>
               </SectionBlock>
 
-              {/* ============ STEP 4 · ACTIVITIES ============ */}
+              {/* ============ STEP 4 · REGIONS ============ */}
               <SectionBlock
-                step="04" icon={Sparkles}
+                step="04" icon={Compass}
+                title={tr("s4r_title")} help={tr("s4r_help")}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" data-testid="plan-regions">
+                  {REGION_OPTIONS.map((reg) => {
+                    const I = reg.icon;
+                    const on = form.regions.includes(reg.id);
+                    const count = REGION_COUNTS[reg.id] || 0;
+                    return (
+                      <button
+                        type="button"
+                        key={reg.id}
+                        onClick={() => toggleRegion(reg.id)}
+                        data-testid={`region-${reg.id}`}
+                        aria-pressed={on}
+                        className={`group text-left p-5 border transition-all duration-300 relative ${
+                          on
+                            ? "bg-[#2C2621] text-[#FDFBF7] border-[#2C2621]"
+                            : "bg-white text-[#3D352C] border-[#2C2621]/12 hover:border-[#2C2621]/40"
+                        }`}
+                      >
+                        <span className="flex items-center gap-2.5">
+                          {I && <I className="w-4 h-4 shrink-0" strokeWidth={1.6} style={{ color: on ? "#D4A373" : "#C16542" }} />}
+                          <span className="text-[12px] tracking-[0.18em] uppercase flex-1">{pick(reg.label, lang)}</span>
+                          {on && <Check className="w-4 h-4 text-[#D4A373]" strokeWidth={2.2} />}
+                        </span>
+                        <p className={`mt-2.5 text-[12px] leading-[1.6] ${on ? "text-[#FDFBF7]/75" : "text-[#5C5248]"}`}>
+                          {pick(reg.desc, lang)}
+                        </p>
+                        <span className={`mt-3 inline-block text-[10px] tracking-[0.25em] uppercase ${on ? "text-[#D4A373]" : "text-[#A07042]"}`}>
+                          {count} · {tr("s4r_nights") === "noches" ? (count === 1 ? "itinerario" : "itinerarios") : count === 1 ? "itinerary" : "itineraries"}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Live recommendations */}
+                <div className="mt-10" data-testid="plan-trip-recos">
+                  {form.regions.length === 0 ? (
+                    <p className="text-[13px] text-[#5C5248]/80 italic flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#C16542]" strokeWidth={1.6} />
+                      {tr("s4r_help")}
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex items-baseline justify-between flex-wrap gap-3 mb-6 pb-4 border-b border-[#2C2621]/10">
+                        <h3 className="font-serif-x text-xl md:text-2xl tracking-tight text-[#2C2621]">
+                          {tr("s4r_recos")}
+                        </h3>
+                        <span data-testid="plan-trip-recos-count" className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
+                          {recommendedTrips.length} · {tr("s4r_match")}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {recommendedTrips.slice(0, 6).map((trip) => (
+                          <RecoCard key={trip.routeId} trip={trip} lang={lang} tr={tr} />
+                        ))}
+                      </div>
+                      <Link
+                        to={pathFor(lang, "toursLanding")}
+                        data-testid="plan-trip-recos-seeall"
+                        className="inline-flex items-center gap-2 mt-8 text-[11px] tracking-[0.28em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
+                      >
+                        {tr("s4r_seeall")}
+                        <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </SectionBlock>
+
+              {/* ============ STEP 5 · ACTIVITIES ============ */}
+              <SectionBlock
+                step="05" icon={Sparkles}
                 title={tr("s4_title")} help={tr("s4_help")}
               >
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -431,9 +540,9 @@ export default function PlanificaTuViajePage() {
                 </div>
               </SectionBlock>
 
-              {/* ============ STEP 5 · CONTACT ============ */}
+              {/* ============ STEP 6 · CONTACT ============ */}
               <SectionBlock
-                step="05" icon={Send}
+                step="06" icon={Send}
                 title={tr("s5_title")} help={tr("s5_help")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
@@ -507,6 +616,50 @@ export default function PlanificaTuViajePage() {
         </div>
       </section>
     </div>
+  );
+}
+
+/* ============================================================
+   RecoCard — Compact itinerary recommendation card shown in the
+   region step. Deep-links into the matching trip page and keeps
+   its image editable through the global CMS.
+============================================================ */
+function RecoCard({ trip, lang, tr }) {
+  return (
+    <SlotScope id={`plan-recos.${trip.routeId}`}>
+      <Link
+        to={pathFor(lang, trip.routeId)}
+        data-testid={`plan-trip-reco-${trip.routeId}`}
+        className="group flex flex-col bg-white border border-[#2C2621]/10 hover:border-[#C16542]/60 transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(44,38,33,0.35)]"
+      >
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1513]">
+          <EditableImage
+            slot={`plan-recos.${trip.routeId}.cover`}
+            fallback={trip.image}
+            alt={pick(trip.title, lang)}
+            aspectRatio="4/3"
+            imgProps={{ loading: "lazy" }}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+          />
+        </div>
+        <div className="flex flex-col flex-1 p-4">
+          <div className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#C16542] mb-1.5">
+            <Moon className="w-3 h-3" strokeWidth={1.7} />
+            {trip.nights} {tr("s4r_nights")}
+          </div>
+          <h4 className="font-serif text-[17px] text-[#2C2621] leading-snug mb-1.5">
+            {pick(trip.title, lang)}
+          </h4>
+          <p className="text-[12px] text-[#5C5248] leading-relaxed flex-1">
+            {pick(trip.summary, lang)}
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.26em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
+            {tr("s4r_see")}
+            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
+          </span>
+        </div>
+      </Link>
+    </SlotScope>
   );
 }
 

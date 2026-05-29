@@ -615,3 +615,21 @@ Replace each with `<EditableImage slot="..." fallback={...} alt="..." aspectRati
 - ✅ Click card → `POST /api/unsplash/import` → 200 → `PUT /api/slots/blog.hero` → 200 → slot url contains `unsplash_*`
 - ✅ Pexels regression: 24 cards, 0 errors after the shared fix
 - ✅ Mobile 390×844: search input + submit button visible
+
+
+## Region-based itinerary recommendations on /planifica-tu-viaje (Feb 2026)
+
+### What shipped
+- Added a new **"Regiones que quieres visitar"** step (Step 04) to the trip planner, inserted between Accommodation (03) and Activities (now 05); Contact renumbered to 06.
+- Region selector is built from the same `TRIP_REGIONS` source the whole catalog uses (excluding `all`), so it stays coherent with every itinerary: `sur · norte · completo · escapadas · aventura · eventos`. Each option is a multi-select card with icon, short geographic descriptor, and live itinerary count.
+- **Live recommendations**: selecting one or more regions filters `ALL_TRIPS` by `region` and renders matching itinerary cards (max 6) with match count, deep-linking into each trip page via `pathFor`. Cards use `<EditableImage>` (slot `plan-recos.{routeId}.cover`) so images stay CMS-editable. Empty state prompts the user to pick a zone. Includes a "Ver todos los viajes" CTA → `toursLanding` (/viajes).
+- Backend: `regions: List[str]` added to `TripPlannerRequest` and `TripPlannerCreate` models + sanitized in `POST /api/trip-planner`. Verified via curl that regions persist.
+
+### Files
+- `/app/frontend/src/pages/PlanificaTuViajePage.jsx` (region step + RecoCard + payload)
+- `/app/backend/server.py` (regions field on both models + endpoint sanitize)
+
+### Verification
+- ✅ Backend curl: POST with `regions:["sur","norte"]` persists & returns regions.
+- ✅ Frontend lint: no issues. Webpack compiles (warnings are pre-existing Tailwind arbitrary-value warnings only).
+- ⚠️ Visual screenshot blocked by Emergent preview inactivity gate ("Preview Unavailable") at time of build — not a code issue; frontend serves 200 locally.
