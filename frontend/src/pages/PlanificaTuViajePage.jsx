@@ -708,9 +708,11 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
           <p className="text-[12px] text-[#5C5248] leading-relaxed flex-1">
             {pick(trip.summary, lang)}
           </p>
-          {/* Independent "View details" link — does NOT toggle selection */}
+          {/* Independent "View details" link — opens in a new tab, does NOT toggle selection */}
           <Link
             to={pathFor(lang, trip.routeId)}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             data-testid={`plan-trip-reco-detail-${trip.routeId}`}
             className="mt-4 inline-flex items-center gap-1.5 self-start text-[10px] tracking-[0.26em] uppercase text-[#2C2621] hover:text-[#C16542] border-b border-[#2C2621]/25 hover:border-[#C16542] pb-0.5 transition-colors"
