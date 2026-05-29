@@ -70,6 +70,7 @@ class TripPlannerRequest(BaseModel):
     travellers_children: int = 0
     accommodation: str = "superior"     # "basic" | "superior" | "premium"
     regions: List[str] = Field(default_factory=list)
+    selected_trips: List[str] = Field(default_factory=list)
     activities: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
     language: Optional[str] = "es"
@@ -88,6 +89,7 @@ class TripPlannerCreate(BaseModel):
     travellers_children: int = Field(default=0, ge=0, le=20)
     accommodation: str = Field(default="superior", pattern="^(basic|superior|premium)$")
     regions: List[str] = Field(default_factory=list, max_length=20)
+    selected_trips: List[str] = Field(default_factory=list, max_length=50)
     activities: List[str] = Field(default_factory=list, max_length=20)
     notes: Optional[str] = Field(default=None, max_length=4000)
     language: Optional[str] = "es"
@@ -125,7 +127,8 @@ async def create_trip_planner(payload: TripPlannerCreate):
     # Sanitize activity list (strip + cap length per item)
     activities = [a.strip()[:60] for a in (payload.activities or []) if a and a.strip()]
     regions = [r.strip()[:40] for r in (payload.regions or []) if r and r.strip()]
-    obj = TripPlannerRequest(**{**payload.model_dump(), "activities": activities, "regions": regions})
+    selected_trips = [s.strip()[:80] for s in (payload.selected_trips or []) if s and s.strip()]
+    obj = TripPlannerRequest(**{**payload.model_dump(), "activities": activities, "regions": regions, "selected_trips": selected_trips})
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.trip_planner_requests.insert_one(doc)

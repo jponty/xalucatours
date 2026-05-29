@@ -633,3 +633,11 @@ Replace each with `<EditableImage slot="..." fallback={...} alt="..." aspectRati
 - ✅ Backend curl: POST with `regions:["sur","norte"]` persists & returns regions.
 - ✅ Frontend lint: no issues. Webpack compiles (warnings are pre-existing Tailwind arbitrary-value warnings only).
 - ⚠️ Visual screenshot blocked by Emergent preview inactivity gate ("Preview Unavailable") at time of build — not a code issue; frontend serves 200 locally.
+
+## Itinerary selection in trip planner (Feb 2026)
+- Changed reco card behavior on /planifica-tu-viaje: main click now TOGGLES selecting the itinerary into the traveller's plan (was: opened trip page). Card is a keyboard-accessible role=button with selected ring + "Añadido/Seleccionar" badge.
+- Added an independent "Ver detalle" Link inside each card (stopPropagation) that opens the trip page.
+- Recommendations now render ALL region-matched trips (removed 6-card cap) so any can be selected; added a "X · itinerarios en tu planificación" badge + help text.
+- Form state `selectedTrips: []` (toggleTrip). Payload sends `selected_trips`.
+- Backend: `selected_trips: List[str]` added to TripPlannerRequest/Create + sanitized in POST /api/trip-planner. Verified via curl (regions + selected_trips persist). Frontend lint clean.
+- NOTE: external preview screenshot blocked by Emergent inactivity gate at build time; not a code issue.

@@ -59,8 +59,15 @@ const COPY = {
                  "Pick one or several zones. We use your choice to recommend itineraries that match.",
                  "Choisissez une ou plusieurs zones. Nous l'utilisons pour vous recommander les itinéraires adaptés."),
   s4r_recos:   T("Itinerarios sugeridos para ti", "Suggested itineraries for you", "Itinéraires suggérés pour vous"),
+  s4r_help2:   T("Haz clic en un itinerario para añadirlo a tu planificación. Usa «Ver detalle» para abrir su página.",
+                 "Click an itinerary to add it to your plan. Use \"View details\" to open its page.",
+                 "Cliquez sur un itinéraire pour l'ajouter à votre plan. Utilisez « Voir le détail » pour ouvrir sa page."),
   s4r_match:   T("coinciden con tu selección", "match your selection", "correspondent à votre sélection"),
   s4r_see:     T("Ver itinerario", "View itinerary", "Voir l'itinéraire"),
+  s4r_detail:  T("Ver detalle", "View details", "Voir le détail"),
+  s4r_select:  T("Seleccionar", "Select", "Sélectionner"),
+  s4r_selected: T("Añadido", "Added", "Ajouté"),
+  s4r_selcount: T("itinerarios en tu planificación", "itineraries in your plan", "itinéraires dans votre plan"),
   s4r_seeall:  T("Ver todos los viajes", "See all trips", "Voir tous les voyages"),
   s4r_nights:  T("noches", "nights", "nuits"),
   // Section 5 (was 4 — Activities)
@@ -182,6 +189,7 @@ export default function PlanificaTuViajePage() {
     adults: 2, children: 0,
     accommodation: "superior",
     regions: [],
+    selectedTrips: [],
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
   });
@@ -197,6 +205,7 @@ export default function PlanificaTuViajePage() {
     }));
   const toggleRegion   = toggleArrayItem("regions");
   const toggleActivity = toggleArrayItem("activities");
+  const toggleTrip     = toggleArrayItem("selectedTrips");
 
   const validate = () => {
     const e = {};
@@ -225,6 +234,7 @@ export default function PlanificaTuViajePage() {
         travellers_children: Number(form.children) || 0,
         accommodation: form.accommodation,
         regions: form.regions,
+        selected_trips: form.selectedTrips,
         activities: form.activities,
         notes: form.notes.trim() || null,
         language: lang,
@@ -483,7 +493,7 @@ export default function PlanificaTuViajePage() {
                     </p>
                   ) : (
                     <>
-                      <div className="flex items-baseline justify-between flex-wrap gap-3 mb-6 pb-4 border-b border-[#2C2621]/10">
+                      <div className="flex items-baseline justify-between flex-wrap gap-3 mb-2">
                         <h3 className="font-serif-x text-xl md:text-2xl tracking-tight text-[#2C2621]">
                           {tr("s4r_recos")}
                         </h3>
@@ -491,9 +501,28 @@ export default function PlanificaTuViajePage() {
                           {recommendedTrips.length} · {tr("s4r_match")}
                         </span>
                       </div>
+                      <p className="text-[12px] text-[#5C5248]/80 leading-relaxed mb-5 pb-5 border-b border-[#2C2621]/10 max-w-2xl">
+                        {tr("s4r_help2")}
+                      </p>
+                      {form.selectedTrips.length > 0 && (
+                        <p
+                          data-testid="plan-trip-selected-count"
+                          className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-[#2C2621] text-[#FDFBF7] text-[10px] tracking-[0.28em] uppercase"
+                        >
+                          <Check className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={2.2} />
+                          {form.selectedTrips.length} · {tr("s4r_selcount")}
+                        </p>
+                      )}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {recommendedTrips.slice(0, 6).map((trip) => (
-                          <RecoCard key={trip.routeId} trip={trip} lang={lang} tr={tr} />
+                        {recommendedTrips.map((trip) => (
+                          <RecoCard
+                            key={trip.routeId}
+                            trip={trip}
+                            lang={lang}
+                            tr={tr}
+                            selected={form.selectedTrips.includes(trip.routeId)}
+                            onToggle={() => toggleTrip(trip.routeId)}
+                          />
                         ))}
                       </div>
                       <Link
@@ -620,17 +649,32 @@ export default function PlanificaTuViajePage() {
 }
 
 /* ============================================================
-   RecoCard — Compact itinerary recommendation card shown in the
-   region step. Deep-links into the matching trip page and keeps
-   its image editable through the global CMS.
+   RecoCard — Itinerary recommendation card shown in the region
+   step. The main click toggles selection (adds the trip to the
+   traveller's plan); a separate "View details" link opens the
+   trip page. Image stays editable through the global CMS.
 ============================================================ */
-function RecoCard({ trip, lang, tr }) {
+function RecoCard({ trip, lang, tr, selected, onToggle }) {
+  const onKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onToggle();
+    }
+  };
   return (
     <SlotScope id={`plan-recos.${trip.routeId}`}>
-      <Link
-        to={pathFor(lang, trip.routeId)}
+      <div
+        role="button"
+        tabIndex={0}
+        aria-pressed={selected}
+        onClick={onToggle}
+        onKeyDown={onKeyDown}
         data-testid={`plan-trip-reco-${trip.routeId}`}
-        className="group flex flex-col bg-white border border-[#2C2621]/10 hover:border-[#C16542]/60 transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(44,38,33,0.35)]"
+        className={`group relative flex flex-col cursor-pointer bg-white border transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(44,38,33,0.35)] ${
+          selected
+            ? "border-[#C16542] ring-2 ring-[#C16542]/40"
+            : "border-[#2C2621]/10 hover:border-[#C16542]/60"
+        }`}
       >
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1513]">
           <EditableImage
@@ -639,8 +683,19 @@ function RecoCard({ trip, lang, tr }) {
             alt={pick(trip.title, lang)}
             aspectRatio="4/3"
             imgProps={{ loading: "lazy" }}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+            className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06] ${selected ? "scale-[1.03]" : ""}`}
           />
+          {/* Selection state badge */}
+          <span
+            className={`absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] tracking-[0.26em] uppercase transition-all ${
+              selected
+                ? "bg-[#C16542] text-[#FDFBF7]"
+                : "bg-[#FDFBF7]/95 text-[#2C2621] opacity-0 group-hover:opacity-100"
+            }`}
+          >
+            <Check className="w-3 h-3" strokeWidth={2.4} />
+            {selected ? tr("s4r_selected") : tr("s4r_select")}
+          </span>
         </div>
         <div className="flex flex-col flex-1 p-4">
           <div className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#C16542] mb-1.5">
@@ -653,12 +708,18 @@ function RecoCard({ trip, lang, tr }) {
           <p className="text-[12px] text-[#5C5248] leading-relaxed flex-1">
             {pick(trip.summary, lang)}
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.26em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
-            {tr("s4r_see")}
+          {/* Independent "View details" link — does NOT toggle selection */}
+          <Link
+            to={pathFor(lang, trip.routeId)}
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`plan-trip-reco-detail-${trip.routeId}`}
+            className="mt-4 inline-flex items-center gap-1.5 self-start text-[10px] tracking-[0.26em] uppercase text-[#2C2621] hover:text-[#C16542] border-b border-[#2C2621]/25 hover:border-[#C16542] pb-0.5 transition-colors"
+          >
+            {tr("s4r_detail")}
             <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
-          </span>
+          </Link>
         </div>
-      </Link>
+      </div>
     </SlotScope>
   );
 }
