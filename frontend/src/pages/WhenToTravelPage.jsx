@@ -53,6 +53,7 @@ const COPY = {
       fr: "Le Maroc se savoure douze mois sur douze. Seul change le type de voyage qui vous attend.",
     },
     idealFor: { es: "Ideal para", en: "Ideal for", fr: "Idéal pour" },
+    cta: { es: "Ver viajes de temporada", en: "See seasonal trips", fr: "Voir les voyages de saison" },
   },
   labels: {
     weather:   { es: "Clima",      en: "Weather",      fr: "Climat" },
@@ -85,6 +86,13 @@ const SEASON_NAMES = {
   summer: { es: "Verano", en: "Summer", fr: "Été" },
   autumn: { es: "Otoño", en: "Autumn", fr: "Automne" },
   winter: { es: "Invierno", en: "Winter", fr: "Hiver" },
+};
+// Recommended region/route per season → connects discovery to real itineraries.
+const SEASON_ROUTE = {
+  spring: "tourSouth",
+  summer: "tourMarrakechEssHub",
+  autumn: "tourFull",
+  winter: "tourMarrakechErgHub",
 };
 const STYLE_ICONS  = {
   desert: Tent, hiking: Mountain, cities: Building2,
@@ -281,6 +289,15 @@ export default function WhenToTravelPage() {
                     </span>{" "}
                     {pick(season.idealFor, lang)}
                   </p>
+                  <Link
+                    to={pathFor(lang, SEASON_ROUTE[season.id])}
+                    data-testid={`year-round-cta-${season.id}`}
+                    className="group/cta mt-auto pt-4 border-t border-[#2C2621]/10 inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold transition-colors"
+                    style={{ color: season.accent }}
+                  >
+                    {pick(COPY.yearRound.cta, lang)}
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/cta:translate-x-1" strokeWidth={1.8} />
+                  </Link>
                 </div>
               );
             })}
