@@ -1,4 +1,9 @@
 
+## Day Gallery → clickable + square tiles (Feb 2026)
+- Re-enabled click-to-enlarge: tiles are now `<button>` (cursor zoom-in) that open the image in a **larger format lightbox** with prev/next, close and keyboard (Esc / ← / →) navigation. The `Maximize2` hover icon hints clickability.
+- Changed the layout from the asymmetric wide collage to a **uniform square grid** (`grid-cols-2 sm:grid-cols-3 lg:grid-cols-5`, `aspect-square` tiles) so images read square rather than narrow/rectangular. Still 10 images per day; each tile + lightbox share the same CMS slot.
+- Verified on `/viajes/atlas_desierto/programa_6n_7d`: 10 square `BUTTON` tiles (w/h ratio 1.00), click opens lightbox, close/next work. Lint clean.
+
 ## Day Gallery → 10 static, non-clickable images (Feb 2026)
 - Expanded the per-day gallery on individual itinerary pages from 6/7 to **10 images** for a richer visual overview. Added 3-5 new themed entries (verified Moroccan Unsplash, trilingual captions + kind) to each of the 5 galleries in `dayGalleries.js`.
 - `DayGallery.jsx`: rewrote as a **purely visual, static** collage — removed the Lightbox entirely (no pop-up, expansion, keyboard nav or image switching). Tiles are now non-interactive `<figure>` elements (no `onClick`, no `cursor-zoom-in`, no hover-zoom). Removed unused state/imports (`useState`, `useEffect`, `X`, `ChevronLeft/Right`).
