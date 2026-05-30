@@ -1,5 +1,5 @@
 // Editorial image galleries shown on each day of the program detail page.
-// Each key is a `day.route_id`. Each gallery has 5-7 images with optional caption.
+// Each key is a `day.route_id`. Each gallery has up to 10 images with optional caption.
 // kind: paisaje | hotel | gastronomia | cultura | ruta | actividad
 
 const T = (es, en, fr) => ({ es, en, fr });
@@ -19,6 +19,14 @@ export const DAY_GALLERIES = {
       kind: "cultura", caption: T("Campos de rosa damascena del Valle de las Rosas", "Damask rose fields in the Rose Valley", "Champs de rose de Damas dans la Vallée des Roses") },
     { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
       kind: "paisaje", caption: T("Mercado semanal de Boumalne Dades", "Boumalne Dades weekly market", "Marché hebdomadaire de Boumalne Dadès") },
+    { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
+      kind: "ruta", caption: T("Kasbah de Aït Ben Haddou · Patrimonio UNESCO", "Aït Ben Haddou Kasbah · UNESCO heritage", "Kasbah d'Aït Ben Haddou · patrimoine UNESCO") },
+    { src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=85",
+      kind: "cultura", caption: T("Estudios de cine de Ouarzazate", "Ouarzazate film studios", "Studios de cinéma de Ouarzazate") },
+    { src: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85",
+      kind: "paisaje", caption: T("«Dedos de mono» · formaciones rocosas del Dadès", "«Monkey Fingers» · Dades rock formations", "« Doigts de singe » · formations rocheuses du Dadès") },
+    { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+      kind: "gastronomia", caption: T("Tajín bereber humeante en ruta", "Steaming Berber tagine on the road", "Tajine berbère fumant en route") },
   ],
 
   // Day 2 — Boumalne Dades → Erfoud
@@ -35,6 +43,14 @@ export const DAY_GALLERIES = {
       kind: "paisaje", caption: T("Erfoud · la puerta del desierto", "Erfoud · the gateway to the desert", "Erfoud · la porte du désert") },
     { src: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=1600&q=85",
       kind: "hotel", caption: T("Kasbah Hotel Xaluca · arquitectura única en Marruecos", "Kasbah Hotel Xaluca · unique architecture in Morocco", "Kasbah Hôtel Xaluca · architecture unique au Maroc") },
+    { src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=85",
+      kind: "actividad", caption: T("Senderismo entre las paredes del Todra", "Hiking between the Todra walls", "Randonnée entre les parois du Todra") },
+    { src: "https://images.unsplash.com/photo-1519594445471-0e5f86b3fb09?auto=format&fit=crop&w=1600&q=85",
+      kind: "cultura", caption: T("Cooperativa de alfombras bereberes", "Berber rug cooperative", "Coopérative de tapis berbères") },
+    { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
+      kind: "paisaje", caption: T("Oasis y kasbahs del valle", "Oasis and kasbahs of the valley", "Oasis et kasbahs de la vallée") },
+    { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+      kind: "paisaje", caption: T("Atardecer dorado desde la terraza", "Golden sunset from the terrace", "Coucher de soleil doré depuis la terrasse") },
   ],
 
   // Day 3 — Erfoud → Erg Chebbi (Total Desert)
@@ -53,6 +69,12 @@ export const DAY_GALLERIES = {
       kind: "hotel", caption: T("Bivouac de Luxe · cena bajo las estrellas", "Bivouac de Luxe · dinner under the stars", "Bivouac de Luxe · dîner sous les étoiles") },
     { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
       kind: "paisaje", caption: T("Cielo absolutamente estrellado del Sahara", "Absolute Saharan starry sky", "Ciel étoilé absolu du Sahara") },
+    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=85",
+      kind: "actividad", caption: T("Sandboard sobre las dunas doradas", "Sandboarding on the golden dunes", "Sandboard sur les dunes dorées") },
+    { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+      kind: "cultura", caption: T("Té de bienvenida en el campamento", "Welcome tea at the camp", "Thé de bienvenue au campement") },
+    { src: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1600&q=85",
+      kind: "paisaje", caption: T("Primeras luces sobre el mar de dunas", "First light over the sea of dunes", "Premières lueurs sur la mer de dunes") },
   ],
 
   // Day 4 — Sunrise + Khamlia + Rissani + Erfoud
@@ -69,6 +91,14 @@ export const DAY_GALLERIES = {
       kind: "gastronomia", caption: T("Té a la menta tradicional", "Traditional mint tea", "Thé à la menthe traditionnel") },
     { src: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=1600&q=85",
       kind: "hotel", caption: T("Piscina climatizada de Kasbah Xaluca", "Heated pool at Kasbah Xaluca", "Piscine chauffée de la Kasbah Xaluca") },
+    { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
+      kind: "cultura", caption: T("Ksar de Rissani · arquitectura de adobe", "Ksar of Rissani · adobe architecture", "Ksar de Rissani · architecture en adobe") },
+    { src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=85",
+      kind: "cultura", caption: T("Mausoleo de Moulay Ali Cherif", "Mausoleum of Moulay Ali Cherif", "Mausolée de Moulay Ali Chérif") },
+    { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+      kind: "gastronomia", caption: T("Madfouna · la «pizza bereber»", "Madfouna · the «Berber pizza»", "Madfouna · la « pizza berbère »") },
+    { src: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85",
+      kind: "actividad", caption: T("Ruta en 4x4 por el desierto negro", "4x4 route across the black desert", "Circuit 4x4 à travers le désert noir") },
   ],
 
   // Day 5 — Erfoud → Errachidia (return)
@@ -83,6 +113,14 @@ export const DAY_GALLERIES = {
       kind: "ruta", caption: T("Carretera panorámica al aeropuerto de Errachidia", "Scenic road to Errachidia airport", "Route panoramique vers l'aéroport d'Errachidia") },
     { src: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1600&q=85",
       kind: "gastronomia", caption: T("Dátiles medjoul del oasis del Ziz", "Medjool dates from the Ziz oasis", "Dattes medjoul de l'oasis du Ziz") },
+    { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
+      kind: "cultura", caption: T("Ksour fortificados a lo largo del Ziz", "Fortified ksour along the Ziz", "Ksour fortifiés le long du Ziz") },
+    { src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=85",
+      kind: "paisaje", caption: T("Garganta del Ziz · «túnel del Legionario»", "Ziz Gorge · the «Legionnaire's tunnel»", "Gorge du Ziz · le « tunnel du Légionnaire »") },
+    { src: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=1600&q=85",
+      kind: "hotel", caption: T("Café con vistas al oasis antes del vuelo", "Coffee with oasis views before the flight", "Café avec vue sur l'oasis avant le vol") },
+    { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+      kind: "paisaje", caption: T("Naranjos y olivos del Tafilalet", "Orange and olive groves of Tafilalet", "Orangers et oliviers du Tafilalet") },
   ],
 };
 

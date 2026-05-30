@@ -1,4 +1,10 @@
 
+## Day Gallery → 10 static, non-clickable images (Feb 2026)
+- Expanded the per-day gallery on individual itinerary pages from 6/7 to **10 images** for a richer visual overview. Added 3-5 new themed entries (verified Moroccan Unsplash, trilingual captions + kind) to each of the 5 galleries in `dayGalleries.js`.
+- `DayGallery.jsx`: rewrote as a **purely visual, static** collage — removed the Lightbox entirely (no pop-up, expansion, keyboard nav or image switching). Tiles are now non-interactive `<figure>` elements (no `onClick`, no `cursor-zoom-in`, no hover-zoom). Removed unused state/imports (`useState`, `useEffect`, `X`, `ChevronLeft/Right`).
+- Extended the asymmetric `LAYOUT` to 10 cells that tile the 6-col grid perfectly. Each tile keeps its CMS-editable slot (`day.${route_id}.gallery.${i}`).
+- Verified on `/viajes/atlas_desierto/programa_6n_7d`: 10 `FIGURE` tiles, no lightbox in DOM, `cursor:auto`, clicking a tile does nothing. Lint clean.
+
 ## CTA routing fixes (Feb 2026)
 - **"Planificar mi viaje"** buttons now link to `/planifica-tu-viaje` (route `planTrip`): Header CTA (removed old scroll-to-contact handler + cleaned unused `useNavigate`/`useLocation`), Home hero primary CTA (`<a href="#contact">` → router `Link`), Footer CTA, and the Community/PersonalConsultation CTA. StubPage primary CTA too.
 - **"Pedir asesoramiento"** buttons now link to `/citaprevia` (route `appointment`): the JourneyHero `secondaryCta` on Sur, Norte, Escapadas, Aventura, Marruecos, Próximas Salidas, Atlas-Desierto hub and `ItineraryHubPage`. `JourneyHero` now renders a router `Link` when `secondaryHref` is an internal route (starts with `/`), else a plain anchor.
