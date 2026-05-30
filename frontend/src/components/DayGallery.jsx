@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X, Camera, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { DAY_GALLERIES, DEFAULT_DAY_GALLERY, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
+import { DAY_GALLERIES_GENERATED } from "@/lib/dayGalleriesGenerated";
 import EditableImage from "@/components/EditableImage";
 import { useSlotId } from "@/components/slotScope";
 
@@ -96,9 +97,13 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
 export const DayGallery = ({ day, accent = "#C16542" }) => {
   const { lang } = useLanguage();
   const t = SECTION_LABELS[lang] || SECTION_LABELS.es;
-  // Curated gallery for this day if it exists, otherwise a generic fallback
-  // so the section appears on every itinerary day across all trip pages.
-  const images = DAY_GALLERIES[day.route_id] || DEFAULT_DAY_GALLERY;
+  // Stage-specific Pexels gallery (auto-generated) takes priority, then any
+  // hand-curated gallery, then a generic fallback — so every itinerary day
+  // shows real, stage-coherent imagery.
+  const images =
+    DAY_GALLERIES_GENERATED[day.route_id] ||
+    DAY_GALLERIES[day.route_id] ||
+    DEFAULT_DAY_GALLERY;
   const [open, setOpen] = useState(null);
   // Page-namespaced base so the gallery is independent per itinerary URL,
   // even when several programmes reuse the same shared `route_id`.

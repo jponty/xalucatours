@@ -1,4 +1,10 @@
 
+## Pexels auto-fill of Day Galleries — stage-specific imagery + captions (Feb 2026)
+- New re-runnable script `scripts/fill_day_galleries_pexels.mjs` (Node 20): loads `programData.js` + `dayLandmarks.js`, and for each of the 46 itinerary days builds 10 cells with **real Pexels photos** matched to the stage and **trilingual overlay captions reused from the day's own content** (landmark names → culture titles → day title → themed fills built from the day's main place). Pexels queries are derived from place names + theme; results cached per query (110 unique queries) to respect rate limits.
+- Output: `frontend/src/lib/dayGalleriesGenerated.js` — `DAY_GALLERIES_GENERATED` keyed by `route_id`, 460 cells, **all 460 from Pexels (0 fallbacks)**.
+- `DayGallery.jsx` priority: `DAY_GALLERIES_GENERATED[route_id] || DAY_GALLERIES[route_id] || DEFAULT_DAY_GALLERY`. Each cell stays CMS-editable per day/URL via its slot.
+- Captions match the stage (e.g. Marrakech day → "Djemaa el-Fna al caer la tarde", "Vivir en un riad de la Medina", "Aeropuerto Menara de Marrakech"…). Verified: 70/70 gallery imgs on a 7-day program resolve to `images.pexels.com`, 0 broken; lint clean. Re-run the script anytime to refresh imagery.
+
 ## Day Gallery on ALL itineraries (Feb 2026)
 - The "Galería del día · El recorrido en imágenes" section now appears on **every day of every trip page**. `DayGallery` is already rendered per day in `ProgramTemplate`; it previously returned `null` for the ~41 of 46 days without a curated gallery.
 - Added `DEFAULT_DAY_GALLERY` (10 square, clickable, CMS-editable images with trilingual captions covering varied themes: landscapes, medina, route, Atlas, kasbahs, desert, food, stay, souks, oasis) in `dayGalleries.js`.
