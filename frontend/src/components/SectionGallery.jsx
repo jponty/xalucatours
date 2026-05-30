@@ -167,7 +167,7 @@ export default function SectionGallery({
           {images.map((img, i) => (
             <button
               type="button"
-              key={i}
+              key={img.src || `${testid}-img-${i}`}
               onClick={() => setOpen(i)}
               data-testid={`${testid}-image-${i}`}
               className={`group relative overflow-hidden bg-[#1A1513] ${SPAN_CLASSES[i % SPAN_CLASSES.length]} focus:outline-none`}

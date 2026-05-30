@@ -346,8 +346,8 @@ export default function WhenToTravelPage() {
             </h2>
           </div>
           <div className="md:col-span-7 space-y-5 text-base md:text-lg text-[#5C5248] leading-relaxed">
-            {(INTRO.body[lang] || INTRO.body.es).map((p, i) => (
-              <p key={i}>{p}</p>
+            {(INTRO.body[lang] || INTRO.body.es).map((p) => (
+              <p key={p}>{p}</p>
             ))}
           </div>
         </div>

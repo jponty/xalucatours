@@ -482,7 +482,7 @@ const ProcessTimeline = ({ t, lang }) => (
       <ol className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
         {t.steps.map((s, i) => (
           <li
-            key={i}
+            key={s.n}
             data-testid={`bespoke-step-${i + 1}`}
             className="relative bg-[#FDFBF7] p-7 md:p-9 flex flex-col gap-5"
           >

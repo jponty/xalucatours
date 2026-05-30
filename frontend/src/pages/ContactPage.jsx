@@ -219,7 +219,7 @@ const ContactPage = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
               {COPY.steps.items.map((s, i) => (
-                <div key={i} data-testid={`contact-step-${i + 1}`} className="relative pl-0">
+                <div key={s.title.es} data-testid={`contact-step-${i + 1}`} className="relative pl-0">
                   <div className="flex items-center gap-4 mb-4">
                     <span className="inline-flex items-center justify-center w-12 h-12 bg-[#2C2621] text-[#FDFBF7]">
                       <s.icon className="w-5 h-5" strokeWidth={1.6} />
@@ -357,7 +357,7 @@ const ContactPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
               {COPY.reasons.items.map((r, i) => (
                 <div
-                  key={i}
+                  key={r.title.es}
                   data-testid={`contact-reason-${i + 1}`}
                   className="bg-[#FDFBF7] border border-[#2C2621]/10 p-7 hover:border-[#C16542]/50 hover:shadow-[0_18px_40px_-22px_rgba(44,38,33,0.35)] hover:-translate-y-0.5 transition-all duration-300"
                 >

@@ -98,8 +98,8 @@ const useVisited = () => {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify([...visited]));
-    } catch {
-      /* ignore quota errors */
+    } catch (err) {
+      console.warn("Juego: no se pudo guardar el progreso en localStorage", err);
     }
   }, [visited]);
   const toggle = (id) =>

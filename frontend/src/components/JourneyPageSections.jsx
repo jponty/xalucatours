@@ -252,9 +252,9 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
 
             {/* Stages chips */}
             <ul className="mt-8 flex flex-wrap gap-2" data-testid={`itinerary-stages-${itinerary.id}`}>
-              {stages.map((s, i) => (
+              {stages.map((s) => (
                 <li
-                  key={i}
+                  key={`${itinerary.id}-stage-${s}`}
                   className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 border"
                   style={{ borderColor: `${itinerary.accent}55`, color: itinerary.accent }}
                 >
@@ -267,7 +267,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
             {/* Body paragraphs */}
             <div className="mt-8 space-y-5 text-[15px] md:text-base text-[#5C5248] leading-[1.75]">
               {paragraphs.map((p, i) => (
-                <p key={i} className={i === 0 ? "font-serif-x-italic text-lg md:text-xl text-[#2C2621]" : ""}>
+                <p key={`${itinerary.id}-body-${i}`} className={i === 0 ? "font-serif-x-italic text-lg md:text-xl text-[#2C2621]" : ""}>
                   {p}
                 </p>
               ))}
@@ -303,7 +303,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                 data-testid={`itinerary-related-${itinerary.id}`}
               >
                 {itinerary.relatedHubs.map((rh, i) => (
-                  <li key={i}>
+                  <li key={rh.link}>
                     <Link
                       to={pathFor(lang, rh.link)}
                       data-testid={`itinerary-related-link-${itinerary.id}-${i}`}
@@ -329,7 +329,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                 </span>
                 <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {itinerary.variants.map((v, i) => (
-                    <li key={i}>
+                    <li key={v.link}>
                       <Link
                         to={pathFor(lang, v.link)}
                         data-testid={`itinerary-variant-link-${itinerary.id}-${i}`}
