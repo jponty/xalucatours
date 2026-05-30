@@ -124,6 +124,32 @@ export const DAY_GALLERIES = {
   ],
 };
 
+// Generic fallback gallery shown on every itinerary day that has no curated
+// gallery yet, so the "Galería del día" section appears on ALL trip pages.
+// Each cell stays CMS-editable per day via its page-namespaced slot.
+export const DEFAULT_DAY_GALLERY = [
+  { src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
+    kind: "paisaje", caption: T("Paisajes de Marruecos en ruta", "Moroccan landscapes along the way", "Paysages du Maroc en chemin") },
+  { src: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=85",
+    kind: "cultura", caption: T("Medina histórica y vida local", "Historic medina and local life", "Médina historique et vie locale") },
+  { src: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85",
+    kind: "ruta", caption: T("Carreteras escénicas entre etapas", "Scenic roads between stages", "Routes panoramiques entre les étapes") },
+  { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+    kind: "paisaje", caption: T("Montañas y valles del Atlas", "Atlas mountains and valleys", "Montagnes et vallées de l'Atlas") },
+  { src: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=85",
+    kind: "cultura", caption: T("Kasbahs de tierra y adobe", "Earth and adobe kasbahs", "Kasbahs de terre et d'adobe") },
+  { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=85",
+    kind: "paisaje", caption: T("Dunas del desierto del Sahara", "Sahara desert dunes", "Dunes du désert du Sahara") },
+  { src: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85",
+    kind: "gastronomia", caption: T("Sabores de la cocina marroquí", "Flavours of Moroccan cuisine", "Saveurs de la cuisine marocaine") },
+  { src: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=1600&q=85",
+    kind: "hotel", caption: T("Alojamientos con encanto Xaluca", "Charming Xaluca stays", "Hébergements de charme Xaluca") },
+  { src: "https://images.unsplash.com/photo-1519594445471-0e5f86b3fb09?auto=format&fit=crop&w=1600&q=85",
+    kind: "cultura", caption: T("Zocos y artesanía tradicional", "Souks and traditional crafts", "Souks et artisanat traditionnel") },
+  { src: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1600&q=85",
+    kind: "paisaje", caption: T("Oasis y palmerales del sur", "Oases and palm groves of the south", "Oasis et palmeraies du sud") },
+];
+
 export const GALLERY_KIND_LABELS = {
   paisaje:     { es: "Paisaje",     en: "Landscape",     fr: "Paysage" },
   hotel:       { es: "Alojamiento", en: "Stay",          fr: "Hébergement" },

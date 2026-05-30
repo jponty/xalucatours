@@ -1,4 +1,10 @@
 
+## Day Gallery on ALL itineraries (Feb 2026)
+- The "Galería del día · El recorrido en imágenes" section now appears on **every day of every trip page**. `DayGallery` is already rendered per day in `ProgramTemplate`; it previously returned `null` for the ~41 of 46 days without a curated gallery.
+- Added `DEFAULT_DAY_GALLERY` (10 square, clickable, CMS-editable images with trilingual captions covering varied themes: landscapes, medina, route, Atlas, kasbahs, desert, food, stay, souks, oasis) in `dayGalleries.js`.
+- `DayGallery.jsx`: `images = DAY_GALLERIES[day.route_id] || DEFAULT_DAY_GALLERY`; slot base hardened to `day.${route_id || id}.gallery`. Curated days keep their specific images; all others get the default (still editable per day).
+- Verified on Marrakech–Essaouira 6n/7d (previously 0 galleries): 7 day galleries × 10 square tiles each. Lint clean.
+
 ## Day Gallery → clickable + square tiles (Feb 2026)
 - Re-enabled click-to-enlarge: tiles are now `<button>` (cursor zoom-in) that open the image in a **larger format lightbox** with prev/next, close and keyboard (Esc / ← / →) navigation. The `Maximize2` hover icon hints clickability.
 - Changed the layout from the asymmetric wide collage to a **uniform square grid** (`grid-cols-2 sm:grid-cols-3 lg:grid-cols-5`, `aspect-square` tiles) so images read square rather than narrow/rectangular. Still 10 images per day; each tile + lightbox share the same CMS slot.

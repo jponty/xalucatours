@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X, Camera, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { DAY_GALLERIES, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
+import { DAY_GALLERIES, DEFAULT_DAY_GALLERY, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
 import EditableImage from "@/components/EditableImage";
 import { useSlotId } from "@/components/slotScope";
 
@@ -96,11 +96,13 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
 export const DayGallery = ({ day, accent = "#C16542" }) => {
   const { lang } = useLanguage();
   const t = SECTION_LABELS[lang] || SECTION_LABELS.es;
-  const images = DAY_GALLERIES[day.route_id];
+  // Curated gallery for this day if it exists, otherwise a generic fallback
+  // so the section appears on every itinerary day across all trip pages.
+  const images = DAY_GALLERIES[day.route_id] || DEFAULT_DAY_GALLERY;
   const [open, setOpen] = useState(null);
   // Page-namespaced base so the gallery is independent per itinerary URL,
   // even when several programmes reuse the same shared `route_id`.
-  const galleryBase = useSlotId(`day.${day.route_id}.gallery`);
+  const galleryBase = useSlotId(`day.${day.route_id || day.id}.gallery`);
 
   if (!images || images.length === 0) return null;
 
