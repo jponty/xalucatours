@@ -54,6 +54,7 @@ def put_object(path: str, data: bytes, content_type: str) -> dict:
     Retries on transient 5xx errors and refreshes the key on 403."""
     key = _key_or_init()
     last_exc: Exception | None = None
+    resp = None
     for attempt in range(4):
         resp = requests.put(
             f"{STORAGE_URL}/objects/{path}",
@@ -76,6 +77,8 @@ def put_object(path: str, data: bytes, content_type: str) -> dict:
         return resp.json()
     if last_exc:
         raise last_exc
+    if resp is None:
+        raise RuntimeError("storage upload failed: no response")
     resp.raise_for_status()
     return resp.json()
 

@@ -34,7 +34,7 @@ export const CalendlyEmbed = ({ url, testid, height = 720 }) => {
       if (cancelled || !ref.current) return;
       const C = typeof window !== "undefined" ? window.Calendly : null;
       if (C && typeof C.initInlineWidget === "function") {
-        ref.current.innerHTML = "";
+        ref.current.replaceChildren();
         C.initInlineWidget({ url, parentElement: ref.current });
         return;
       }

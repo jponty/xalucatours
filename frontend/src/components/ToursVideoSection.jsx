@@ -152,7 +152,7 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
         /* noop */
       }
       playerRef.current = null;
-      stage.innerHTML = "";
+      stage.replaceChildren();
     };
   }, [videoId]);
 

@@ -140,7 +140,7 @@ export const HeroSlider = () => {
       cancelled = true;
       if (loopTimer) window.clearInterval(loopTimer);
       try { if (player && player.destroy) player.destroy(); } catch (_) { /* noop */ }
-      stage.innerHTML = "";
+      stage.replaceChildren();
     };
   }, []);
 
