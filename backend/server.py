@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import re
 import logging
 import asyncio
 import httpx
@@ -353,6 +354,48 @@ async def get_slot(slot_id: str):
     if not doc:
         return {"slot_id": slot_id, "url": None, "exists": False}
     return {"slot_id": slot_id, "exists": True, **doc}
+
+
+@api_router.get("/slots/{slot_id}/usage")
+async def slot_usage(slot_id: str):
+    """Given a slot, find every OTHER slot across the site that renders the
+    same image (matched by storage_path or url). Powers the 'Usada en' panel
+    inside the Image Editor so editors see where a photo lives before changing
+    it. Returns the current slot first (is_current=True), then the rest."""
+    doc = await db.image_slots.find_one({"_id": slot_id}, {"_id": 0})
+    if not doc or not (doc.get("url") or doc.get("storage_path")):
+        return {"slot_id": slot_id, "count": 0, "slots": []}
+
+    storage_path = doc.get("storage_path")
+    url = doc.get("url")
+
+    conditions = []
+    if storage_path:
+        conditions.append({"storage_path": storage_path})
+        conditions.append({"url": {"$regex": f"/{re.escape(storage_path)}$"}})
+    if url:
+        conditions.append({"url": url})
+    if not conditions:
+        return {"slot_id": slot_id, "count": 0, "slots": []}
+
+    cursor = db.image_slots.find(
+        {"$or": conditions},
+        {"_id": 1, "url": 1, "updated_at": 1, "source": 1},
+    )
+    docs = await cursor.to_list(500)
+    slots = [
+        {
+            "slot_id": d["_id"],
+            "url": d.get("url"),
+            "source": d.get("source"),
+            "updated_at": d.get("updated_at"),
+            "is_current": d["_id"] == slot_id,
+        }
+        for d in docs
+    ]
+    # Current slot first, then by slot id for stable ordering.
+    slots.sort(key=lambda s: (not s["is_current"], s["slot_id"]))
+    return {"slot_id": slot_id, "count": len(slots), "slots": slots}
 
 
 @api_router.get("/slots")

@@ -12,6 +12,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useSlotId } from "@/components/slotScope";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 import EditableImageMeta from "@/components/EditableImageMeta";
+import SlotUsagePanel from "@/components/SlotUsagePanel";
 import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable } from "@/lib/imageUrl";
 
 const API = process.env.REACT_APP_BACKEND_URL;
@@ -1102,6 +1103,9 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne, on
               {rLabel.label} · {rLabel.code}
             </span>
           </div>
+
+          {/* Where this image is used across the site */}
+          <SlotUsagePanel slotId={current.slot} compact />
 
           {!currentDraft.imageSrc ? (
             <>

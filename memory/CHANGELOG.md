@@ -1,4 +1,14 @@
 
+## Image Usage Tracker — "Dónde se usa esta imagen" en el editor (Feb 2026)
+- **User request (msg 10)**: al seleccionar una imagen en el editor, mostrar en qué páginas/secciones se usa esa misma foto en todo el sitio.
+- **Backend**: nuevo endpoint `GET /api/slots/{slot_id}/usage` (server.py) — lee la imagen del slot (`storage_path`/`url`) y devuelve todos los slots que renderizan la misma foto, con flag `is_current` y el slot actual primero. Reusa el patrón de matching de `/api/files/{id}/usage`. Añadido `import re` a nivel de módulo.
+- **Frontend**: nuevo componente reutilizable `components/SlotUsagePanel.jsx` (panel + `describeSlot()` que mapea slot_id → página legible + sección + href). Maneja slots page-namespaced (`viajes/gransur/fez-rak.hub…` → `/viajes/gransur/fez-rak`) y prefijos literales (`home.* → Inicio`, `surdemarruecos.* → Sur de Marruecos`, etc.). Enlaces "Ver" abren la página en pestaña nueva (no se pierden los borradores del editor).
+- **Integrado** en el editor real `EditModal` (dentro de `EditableImage.jsx`, el panel deslizante que ve el usuario en modo edición) y también en la página huérfana `ImageEditorPage.jsx` (DRY).
+- Aviso contextual: si la imagen se usa en >1 ubicación, banner ámbar "Atención: esta imagen se usa en N ubicaciones… cada espacio es independiente"; si solo se usa ahí, mensaje tranquilizador.
+- **NOTA**: `ImageEditorPage.jsx` (ruta `/image-editor`) NO está enrutada en `App.js`/`routeComponents.js` — es código huérfano; el editor real es el `EditModal` de `EditableImage`.
+- **Verificado**: 3 pytest `tests/test_slot_usage.py` (sin uso / único / compartido) PASS; screenshot real del `EditModal` muestra el panel (1 ubicación, badge "Aquí", enlace "Ver"). Lint JS/PY limpio.
+
+
 ## Pexels auto-fill of Day Galleries — stage-specific imagery + captions (Feb 2026)
 - New re-runnable script `scripts/fill_day_galleries_pexels.mjs` (Node 20): loads `programData.js` + `dayLandmarks.js`, and for each of the 46 itinerary days builds 10 cells with **real Pexels photos** matched to the stage and **trilingual overlay captions reused from the day's own content** (landmark names → culture titles → day title → themed fills built from the day's main place). Pexels queries are derived from place names + theme; results cached per query (110 unique queries) to respect rate limits.
 - Output: `frontend/src/lib/dayGalleriesGenerated.js` — `DAY_GALLERIES_GENERATED` keyed by `route_id`, 460 cells, **all 460 from Pexels (0 fallbacks)**.

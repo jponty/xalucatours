@@ -6,6 +6,7 @@ import {
   ChevronLeft, ChevronRight, Images, Layers, ArrowLeft, X,
 } from "lucide-react";
 import { getImageGroup, getGroupSlot } from "@/lib/imageGroups";
+import SlotUsagePanel from "@/components/SlotUsagePanel";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -447,6 +448,7 @@ const EditorBody = ({ group, initialIndex, backHref, page, section, onCancel }) 
             <p className="font-mono text-[12px] text-[#9C8E78] mt-1 break-all">
               {current.id}
             </p>
+            <SlotUsagePanel slotId={current.id} />
           </div>
 
           {!currentDraft.imageSrc ? (
