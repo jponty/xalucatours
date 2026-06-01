@@ -7,6 +7,8 @@ import { LandmarkCarousel, LandmarkCarouselHint } from "@/components/LandmarkCar
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { resolveDayRoute } from "@/lib/dayRouteResolver";
 import { CITY_PROFILES } from "@/lib/cityProfiles";
+import EditableText from "@/components/EditableText";
+import { useSlotId } from "@/components/slotScope";
 
 /* ============================================================
    <DayRouteMap />
@@ -80,6 +82,61 @@ const TYPE_COLORS = {
   end:       "#5A7F9C",
 };
 
+/* Trilingual defaults for the editable section chrome. GLOBAL slots
+   (`daymap-ui.*`) so editing one heading updates every "Mapa del día"
+   section across the whole site. */
+const UI_DEF = {
+  route: { es: "Mapa del día", en: "Day map", fr: "Carte du jour" },
+  landmarks_title: { es: "Puntos de interés del día", en: "Day's landmarks", fr: "Points d'intérêt du jour" },
+  progress: { es: "Progreso del viaje", en: "Trip progress", fr: "Progression du voyage" },
+  day_short: { es: "Día", en: "Day", fr: "Jour" },
+  count_singular: { es: "punto destacado", en: "landmark", fr: "point d'intérêt" },
+  count_plural: { es: "puntos destacados", en: "landmarks", fr: "points d'intérêt" },
+  stops_singular: { es: "etapa", en: "stop", fr: "étape" },
+  stops_plural: { es: "etapas", en: "stops", fr: "étapes" },
+  approx_km: { es: "km aprox.", en: "approx. km", fr: "km env." },
+  waypoints_title: { es: "Etapas del trayecto", en: "Today's stops", fr: "Étapes du jour" },
+  stay_title: { es: "Día sin desplazamientos", en: "A stationary day", fr: "Une journée sans déplacements" },
+  stay_body: {
+    es: "Esta jornada se vive sin grandes traslados — un día para reposar el viaje, dejar que el lugar te penetre y vivir el ritmo lento de Marruecos.",
+    en: "This day unfolds without long transfers — a day to let the destination sink in and live the slow rhythm of Morocco.",
+    fr: "Une journée sans grands transferts — pour reposer le voyage et vivre le rythme lent du Maroc.",
+  },
+  stay_in: { es: "En", en: "At", fr: "À" },
+  no_data_title: { es: "Mapa del día", en: "Day map", fr: "Carte du jour" },
+  no_data_body: {
+    es: "Los detalles geográficos exactos de esta etapa se confirman al diseñar tu itinerario a medida.",
+    en: "Exact geographic details of this leg are confirmed when we design your bespoke itinerary.",
+    fr: "Les détails géographiques exacts de cette étape sont confirmés lors de la conception de votre voyage sur mesure.",
+  },
+};
+
+/* Editable global UI micro-copy (section chrome, count words, labels). */
+const UI = ({ k, as = "span", multiline = false, className = "", style }) => (
+  <EditableText slot={`daymap-ui.${k}`} defaults={UI_DEF[k]} as={as} multiline={multiline} className={className} style={style} />
+);
+
+/* Editable kind taxonomy label (Kasbah, Mirador…). GLOBAL per-kind so the
+   map legend and every POI of that kind stay in sync. */
+const KindLabel = ({ kindKey, className = "", style }) => {
+  const cfg = LANDMARK_KINDS[kindKey];
+  if (!cfg) return null;
+  return (
+    <EditableText
+      slot={`daymap-ui.kind.${kindKey}`}
+      defaults={cfg.label}
+      as="span"
+      multiline={false}
+      className={className}
+      style={style}
+    />
+  );
+};
+
+/* Helper to derive a {es,en,fr} defaults object from a value that may be
+   a trilingual object already or a plain string (waypoint names). */
+const asTri = (v) => (v && typeof v === "object" ? v : { es: v || "", en: v || "", fr: v || "" });
+
 /* MapController flies to the active landmark when selection changes */
 const MapController = ({ position, bounds }) => {
   const map = useMap();
@@ -93,12 +150,12 @@ const MapController = ({ position, bounds }) => {
   return null;
 };
 
-const ProgressBar = ({ idx, total, accent, t }) => {
+const ProgressBar = ({ idx, total, accent }) => {
   const pct = ((idx + 1) / total) * 100;
   return (
     <div className="flex items-center gap-3">
-      <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] whitespace-nowrap">
-        {t.day_short} {String(idx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+      <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] whitespace-nowrap inline-flex items-center gap-1">
+        <UI k="day_short" /> {String(idx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </span>
       <div className="flex-1 h-1 bg-[#2C2621]/10 overflow-hidden">
         <div className="h-full transition-all duration-500" style={{ width: `${pct}%`, background: accent }} />
@@ -124,8 +181,9 @@ const haversine = (a, b) => {
 /* ============================================================
    Tier 1 — Rich landmark experience
 ============================================================ */
-const LandmarkMode = ({ day, idx, total, accent, t, lang, landmarks }) => {
+const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
   const bounds = useMemo(() => computeLandmarkBounds(landmarks), [landmarks]);
+  const mapBase = useSlotId("daymap");
   const [activeId, setActiveId] = useState(null);
   const activeLandmark = landmarks.find((l) => l.id === activeId);
   const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
@@ -195,7 +253,7 @@ const LandmarkMode = ({ day, idx, total, accent, t, lang, landmarks }) => {
                 return cfg ? (
                   <li key={k} className="inline-flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ background: cfg.color }} />
-                    {pick(cfg.label, lang)}
+                    <KindLabel kindKey={k} />
                   </li>
                 ) : null;
               })}
@@ -206,21 +264,21 @@ const LandmarkMode = ({ day, idx, total, accent, t, lang, landmarks }) => {
             <div>
               <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
                 <Navigation className="w-3 h-3" strokeWidth={1.8} />
-                {t.route}
+                <UI k="route" />
               </span>
               <h4 className="font-serif-x text-2xl md:text-3xl text-[#2C2621] mt-3 leading-[1.15]">
-                {t.landmarks_title}
+                <UI k="landmarks_title" />
               </h4>
               <p className="mt-2 text-[12px] tracking-[0.18em] uppercase text-[#5C5248] inline-flex items-center gap-2">
                 <Sparkles className="w-3 h-3" style={{ color: accent }} strokeWidth={1.6} />
-                {landmarks.length} {landmarks.length === 1 ? t.count_singular : t.count_plural}
+                {landmarks.length} <UI k={landmarks.length === 1 ? "count_singular" : "count_plural"} />
               </p>
             </div>
 
             <div>
-              <span className="overline">{t.progress}</span>
+              <span className="overline"><UI k="progress" /></span>
               <div className="mt-3">
-                <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+                <ProgressBar idx={idx} total={total} accent={accent} />
               </div>
             </div>
 
@@ -247,17 +305,18 @@ const LandmarkMode = ({ day, idx, total, accent, t, lang, landmarks }) => {
                         isActive ? "ring-[#FDFBF7] scale-125" : "ring-[#F2EBE1]"
                       }`} style={{ background: color }} />
                       <span className="flex-1 min-w-0">
-                        <span className="block text-[10px] tracking-[0.25em] uppercase" style={{ color }}>
-                          {pick(kindCfg.label, lang)}
-                        </span>
+                        <KindLabel kindKey={l.kind} className="block text-[10px] tracking-[0.25em] uppercase" style={{ color }} />
                         <span className="block font-serif-x text-[16px] md:text-[17px] text-[#2C2621] leading-snug mt-1 inline-flex items-center gap-2">
                           <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
-                          {pick(l.name, lang)}
+                          <EditableText slot={`${mapBase}.lm.${l.id}.name`} defaults={asTri(l.name)} as="span" multiline={false} />
                         </span>
                         {isActive && (
-                          <span className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]">
-                            {pick(l.blurb, lang)}
-                          </span>
+                          <EditableText
+                            slot={`${mapBase}.lm.${l.id}.blurb`}
+                            defaults={asTri(l.blurb)}
+                            as="span"
+                            className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]"
+                          />
                         )}
                       </span>
                     </button>
@@ -303,7 +362,8 @@ const waypointToLandmark = (w, idx, routeId) => {
   };
 };
 
-const WaypointMode = ({ day, idx, total, accent, t, lang, waypoints }) => {
+const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
+  const mapBase = useSlotId("daymap");
   const positions = useMemo(() => waypoints.map((w) => [w[1], w[2]]), [waypoints]);
   const bounds = useMemo(() => {
     const lats = waypoints.map((w) => w[1]);
@@ -410,24 +470,24 @@ const WaypointMode = ({ day, idx, total, accent, t, lang, waypoints }) => {
             <div>
               <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
                 <Navigation className="w-3 h-3" strokeWidth={1.8} />
-                {t.route}
+                <UI k="route" />
               </span>
               <h4 className="font-serif-x text-2xl md:text-3xl text-[#2C2621] mt-3 leading-[1.15]">
-                {t.waypoints_title}
+                <UI k="waypoints_title" />
               </h4>
               <p className="mt-2 text-[12px] tracking-[0.18em] uppercase text-[#5C5248] inline-flex items-center gap-4">
                 <span className="inline-flex items-center gap-2">
                   <Sparkles className="w-3 h-3" style={{ color: accent }} strokeWidth={1.6} />
-                  {waypoints.length} {waypoints.length === 1 ? t.stops_singular : t.stops_plural}
+                  {waypoints.length} <UI k={waypoints.length === 1 ? "stops_singular" : "stops_plural"} />
                 </span>
-                {totalKm > 0 && <span>· {totalKm.toLocaleString()} {t.approx_km}</span>}
+                {totalKm > 0 && <span className="inline-flex items-center gap-1">· {totalKm.toLocaleString()} <UI k="approx_km" /></span>}
               </p>
             </div>
 
             <div>
-              <span className="overline">{t.progress}</span>
+              <span className="overline"><UI k="progress" /></span>
               <div className="mt-3">
-                <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+                <ProgressBar idx={idx} total={total} accent={accent} />
               </div>
             </div>
 
@@ -468,12 +528,15 @@ const WaypointMode = ({ day, idx, total, accent, t, lang, waypoints }) => {
                       <span className="flex-1 min-w-0">
                         <span className="block font-serif-x text-[15px] md:text-[16px] text-[#2C2621] leading-snug inline-flex items-center gap-2">
                           <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
-                          {w[0]}
+                          <EditableText slot={`${mapBase}.wp.${i}.name`} defaults={asTri(w[0])} as="span" multiline={false} />
                         </span>
                         {isActive && lm && (
-                          <span className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]">
-                            {pick(lm.blurb, lang)}
-                          </span>
+                          <EditableText
+                            slot={`${mapBase}.wp.${i}.blurb`}
+                            defaults={asTri(lm.blurb)}
+                            as="span"
+                            className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]"
+                          />
                         )}
                       </span>
                       {!isLast && (
@@ -505,6 +568,7 @@ const WaypointMode = ({ day, idx, total, accent, t, lang, waypoints }) => {
    Tier 3 — Editorial "stationary day" / no-data card
 ============================================================ */
 const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
+  const mapBase = useSlotId("daymap");
   // Try to upgrade the static card into an interactive single-point map
   // when the anchor has a CITY_PROFILES entry — every day must yield a
   // clickable map experience with a gallery drawer.
@@ -551,22 +615,25 @@ const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
           style={{ color: accent }}
         >
           <Navigation className="w-3 h-3" strokeWidth={1.8} />
-          {t.route}
+          <UI k="route" />
         </span>
         <h4 className="font-serif-x text-2xl md:text-4xl text-[#2C2621] leading-[1.1] tracking-tight">
-          {anchor ? t.stay_title : t.no_data_title}
+          {anchor ? <UI k="stay_title" /> : <UI k="no_data_title" />}
         </h4>
         {title && (
           <p className="mt-5 inline-flex items-center gap-2 text-[12px] md:text-[13px] tracking-[0.25em] uppercase text-[#5C5248]">
             <HomeIcon className="w-3.5 h-3.5" style={{ color: accent }} strokeWidth={1.7} />
-            {t.stay_in} {title}
+            <UI k="stay_in" />{" "}
+            <EditableText slot={`${mapBase}.stay.place`} defaults={asTri(title)} as="span" multiline={false} />
           </p>
         )}
         <p className="mt-6 max-w-2xl mx-auto text-[14px] md:text-[15px] text-[#5C5248] leading-relaxed italic">
-          {anchor ? t.stay_body : t.no_data_body}
+          {anchor
+            ? <UI k="stay_body" multiline />
+            : <UI k="no_data_body" multiline />}
         </p>
         <div className="mt-8 max-w-md mx-auto">
-          <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+          <ProgressBar idx={idx} total={total} accent={accent} />
         </div>
       </div>
     </section>
@@ -575,8 +642,9 @@ const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
 
 /* Interactive variant of StayCard — used when the anchor city has a profile.
    Mini-map + single side card + gallery drawer (mirrors the Tier 1 layout). */
-const StayInteractive = ({ day, idx, total, accent, t, lang, landmark }) => {
+const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
   const [open, setOpen] = useState(false);
+  const mapBase = useSlotId("daymap");
   const center = [landmark.lat, landmark.lng];
   const bounds = useMemo(() => {
     const pad = 0.45;
@@ -640,21 +708,22 @@ const StayInteractive = ({ day, idx, total, accent, t, lang, landmark }) => {
             <div>
               <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
                 <Navigation className="w-3 h-3" strokeWidth={1.8} />
-                {t.route}
+                <UI k="route" />
               </span>
               <h4 className="font-serif-x text-2xl md:text-3xl text-[#2C2621] mt-3 leading-[1.15]">
-                {t.stay_title}
+                <UI k="stay_title" />
               </h4>
               <p className="mt-2 text-[12px] tracking-[0.18em] uppercase text-[#5C5248] inline-flex items-center gap-2">
                 <HomeIcon className="w-3.5 h-3.5" style={{ color: accent }} strokeWidth={1.7} />
-                {t.stay_in} {pick(landmark.name, lang)}
+                <UI k="stay_in" />{" "}
+                <EditableText slot={`${mapBase}.stay.name`} defaults={asTri(landmark.name)} as="span" multiline={false} />
               </p>
             </div>
 
             <div>
-              <span className="overline">{t.progress}</span>
+              <span className="overline"><UI k="progress" /></span>
               <div className="mt-3">
-                <ProgressBar idx={idx} total={total} accent={accent} t={t} />
+                <ProgressBar idx={idx} total={total} accent={accent} />
               </div>
             </div>
 
@@ -674,16 +743,17 @@ const StayInteractive = ({ day, idx, total, accent, t, lang, landmark }) => {
                 open ? "ring-[#FDFBF7] scale-125" : "ring-[#F2EBE1]"
               }`} style={{ background: color }} />
               <span className="flex-1 min-w-0">
-                <span className="block text-[10px] tracking-[0.25em] uppercase" style={{ color }}>
-                  {pick(kindCfg.label, lang)}
-                </span>
+                <KindLabel kindKey={landmark.kind} className="block text-[10px] tracking-[0.25em] uppercase" style={{ color }} />
                 <span className="block font-serif-x text-[16px] md:text-[17px] text-[#2C2621] leading-snug mt-1 inline-flex items-center gap-2">
                   <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
-                  {pick(landmark.name, lang)}
+                  <EditableText slot={`${mapBase}.stay.name`} defaults={asTri(landmark.name)} as="span" multiline={false} />
                 </span>
-                <span className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]">
-                  {pick(landmark.blurb, lang)}
-                </span>
+                <EditableText
+                  slot={`${mapBase}.stay.blurb`}
+                  defaults={asTri(landmark.blurb)}
+                  as="span"
+                  className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]"
+                />
               </span>
             </button>
           </div>

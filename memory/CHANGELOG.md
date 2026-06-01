@@ -1,4 +1,15 @@
 
+## "Mapa del día – Puntos de interés del día" totalmente editable (Feb 2026)
+- **User request**: hacer 100% editable desde el modo edición la sección del mapa del día (títulos, descripciones, nombres de POIs, contenido de desplegables, textos asociados, imágenes, galerías). Criterio general: todas las secciones de todas las páginas deben ser editables sin excepciones.
+- **`DayRouteMap.jsx`** (3 tiers: landmarks / waypoints / stay) instrumentado con `<EditableText>`:
+  - **Chrome de sección (slots GLOBALES `daymap-ui.*`)**: eyebrow "Mapa del día", títulos ("Puntos de interés del día", "Etapas del trayecto", "Día sin desplazamientos", no-data), label "Progreso del viaje", "Día" del ProgressBar, palabras de conteo (punto destacado/etapa/km aprox.), cuerpos editoriales de estancia/no-data, "En". Helpers `<UI k>` y `UI_DEF` (trilingüe).
+  - **Etiquetas de tipo (taxonomía, GLOBAL por tipo `daymap-ui.kind.{kind}`)**: leyenda del mapa + kind de cada POI en la lista lateral, sincronizados.
+  - **Contenido por POI (page-scoped vía `useSlotId("daymap")`)**: nombre (`{base}.lm/.wp/.stay.{id|i}.name`) y descripción del desplegable (`...blurb`). En el modo estancia, el indicador "En {lugar}" y el nombre de la lista comparten slot (sincronizados).
+  - Las galerías del mapa (LandmarkCarousel) ya eran editables (tarea anterior). Tooltips de Leaflet quedan como display (reflejan el nombre).
+- Sin cambios de backend (reusa `EditableText` → `/api/text_slots`). Limpieza de props `t`/`lang` sin uso en los tiers.
+- **Verificado** (screenshot en modo texto, Tier 1): eyebrow+título+progreso editables, 31 etiquetas de tipo, 16 nombres de POI, blurb editable al seleccionar un POI. Lint JS limpio. Tiers 2/3 mismo patrón, página renderiza sin errores.
+
+
 ## Textos editables en "Galería del día" y "Galería del lugar" (Feb 2026)
 - **User request**: en las páginas de viaje, hacer editables desde el modo edición de texto TODOS los textos de ambas galerías (títulos, subtítulos, descripciones, captions, textos superpuestos y cualquier texto asociado a las imágenes).
 - **`DayGallery.jsx` (Galería del día)**: eyebrow + título de sección → `<EditableText>` con slots GLOBALES (`gallery-ui.day.eyebrow`, `gallery-ui.day.title`, una edición aplica a todas las páginas). Por imagen: kind (`{base}.{i}.kind`) + caption (`{base}.{i}.caption`) page-scoped vía `useSlotId`. El lightbox comparte los mismos slots que la grid (editar uno actualiza ambos). `pointer-events` del overlay y `line-clamp` se desactivan en modo texto; el botón de tile no abre el lightbox mientras se edita.
