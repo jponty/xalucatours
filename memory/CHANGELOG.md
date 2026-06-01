@@ -247,3 +247,10 @@
 
 ### Verificación post-publicación (Feb 2026)
 - Tras importar, `SyncPanel` consulta `GET {target}/api/cms/export` y compara los conteos origen↔destino. Banner visual `admin-sync-verify`: verde "✓ Producción sincronizada" (modo wipe = espejo exacto; upsert = destino ≥ origen) o ámbar "⚠ Revisar sincronización" con los conteos. Log incluye línea de verificación.
+
+## Formularios en pestañas: Detallado + Contacto rápido (Feb 2026)
+- **Petición**: dos formularios accesibles vía pestañas — "Planificación detallada" (multi-paso) y "Contacto rápido" (formulario compacto de /contacto) — en AMBAS páginas (`/planifica-tu-viaje` y `/contacto`), con "Detallado" activo por defecto.
+- **Nuevo `components/PlannerForm.jsx`**: extracción del formulario detallado multi-paso (fechas, viajeros, alojamiento, regiones+recomendaciones, actividades, datos) desde `PlanificaTuViajePage`. Slots CMS siguen page-namespaced vía `useSlotId` → ediciones existentes en /planifica-tu-viaje se conservan. POST `/api/trip-planner`.
+- **Nuevo `components/FormTabs.jsx`**: selector de pestañas trilingüe (Detallado/Contacto rápido), default configurable. Renderiza `PlannerForm` o `ContactForm` (compacto, POST `/api/contact-requests`).
+- **`PlanificaTuViajePage.jsx`** adelgazado: hero + `<FormTabs defaultTab="detailed" />`. **`ContactPage.jsx`**: reemplazado `<ContactForm/>` por `<FormTabs defaultTab="detailed" />` (manteniendo ancla `#contact-form`).
+- **Verificado**: lint OK; screenshots de ambas páginas con cambio de pestaña funcionando; curl 200 en `/api/contact-requests` y `/api/trip-planner`.

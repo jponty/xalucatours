@@ -24,7 +24,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
-import ContactForm from "@/components/ContactForm";
+import FormTabs from "@/components/FormTabs";
 import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
@@ -417,9 +417,9 @@ const ContactPage = () => {
           </div>
         </section>
 
-        {/* ============== FORM — autonomous section, native ContactForm ============== */}
+        {/* ============== FORMS — tabbed: detailed planner + quick contact ============== */}
         <div id="contact-form" data-testid="contact-form-section">
-          <ContactForm />
+          <FormTabs defaultTab="detailed" />
         </div>
 
       </main>
