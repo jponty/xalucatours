@@ -1466,6 +1466,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Guarantee CMS data (image/text slots, pricing, etc.) is NEVER served stale.
+# Without this, the published site can hand a browser a cached /api/slots or
+# /api/text_slots response, making freshly-saved edits appear to "revert" on
+# refresh or on another device. Image binaries under /api/files & /api/uploads
+# keep their own long cache for performance.
+@app.middleware("http")
+async def no_store_for_dynamic_api(request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/api/") and not (
+        path.startswith("/api/files/") or path.startswith("/api/uploads/")
+    ):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'

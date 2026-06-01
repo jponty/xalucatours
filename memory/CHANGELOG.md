@@ -1,4 +1,15 @@
 
+## Garantía de persistencia y frescura del CMS en producción (Feb 2026)
+- **User request**: asegurar que en la versión publicada (no solo preview) toda edición de imagen/texto se guarde en BD y persista tras refrescos, sesiones nuevas, despliegues y otros dispositivos, sin revertir.
+- **Auditoría/verificación**:
+  - Texto: PUT `/api/text_slots/{slot}` → GET single + bulk → persiste en MongoDB. Verificado E2E real desde la UI (editar título de galería en modo texto → guardar en blur → recargar → valor persistido en BD).
+  - Imagen: ya cubierto por el fix de URLs relativas (sesión previa) + persistencia en BD.
+- **Fix de frescura (clave para "consistente entre dispositivos/refrescos")**: middleware backend `no_store_for_dynamic_api` que añade `Cache-Control: no-store, no-cache, must-revalidate` (+ Pragma/Expires) a TODOS los endpoints de datos `/api/...`, EXCEPTO los binarios de imagen `/api/files/*` y `/api/uploads/*` (que conservan su caché larga para rendimiento). Antes, en producción `/api/slots` y `/api/text_slots` no enviaban `no-store`, lo que podía hacer que un navegador sirviera datos CMS obsoletos.
+- **Verificado (headers crudos backend)**: `/api/slots` → `no-store`; `/api/files/...` → `public, max-age=86400` (caché intacta); `/api/uploads` → estático. Lint PY limpio. 41 tests relevantes pasan.
+- **Nota**: efectos en producción tras **redeploy**. Los datos viven en MongoDB → sobreviven a despliegues.
+- **Pre-existente (fuera de alcance)**: `tests/test_text_slots_reset.py` (3) falla porque el endpoint DELETE de "Restablecer texto original" nunca se implementó (ni el frontend lo invoca). No afecta a la persistencia de guardados.
+
+
 ## FIX: imágenes CMS revertían a fallback (URLs absolutas con dominio incrustado) (Feb 2026)
 - **Síntoma**: al subir o seleccionar imagen (Pexels/Unsplash) en modo edición, las imágenes revertían a la versión fallback. Observado en producción.
 - **Causa raíz**: los imports de Pexels/Unsplash guardaban la URL del slot ABSOLUTA (`${origin}/api/files/...`) con el dominio incrustado. Al desplegar el contenido del preview a producción, varios slots quedaban apuntando al dominio del PREVIEW (`https://trip-curator-8.preview.emergentagent.com/...`). En producción, esa carga cross-domain fallaba y `<SmartImage>` (handleError) revertía automáticamente al fallback del código → "todas las imágenes vuelven a fallback".
