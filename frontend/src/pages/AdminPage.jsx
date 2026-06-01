@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback, useRef } from "react"
 import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
-  Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download,
+  Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
@@ -752,6 +752,7 @@ const SyncPanel = () => {
   const [busy, setBusy] = useState(false);
   const [log, setLog] = useState([]);
   const [counts, setCounts] = useState(null);
+  const [verify, setVerify] = useState(null); // null | {status:'ok'|'warn', src, dst}
 
   const pushLog = (line) => setLog((l) => [...l, line]);
   const trimUrl = (u) => (u || "").trim().replace(/\/+$/, "");
@@ -787,7 +788,7 @@ const SyncPanel = () => {
       return;
     }
     localStorage.setItem("xaluca_sync_target", to);
-    setBusy(true); setLog([]);
+    setBusy(true); setLog([]); setVerify(null);
     try {
       pushLog("→ Exportando contenido del entorno actual…");
       const exp = await fetch(`${API}/cms/export`).then((r) => r.json());
@@ -820,6 +821,22 @@ const SyncPanel = () => {
       }
       const res = await ir.json();
       pushLog(`✓ Hecho. Importado: ${res.imported?.image_slots ?? res.image_slots ?? 0} imágenes, ${res.imported?.text_slots ?? res.text_slots ?? 0} textos, precios: ${(res.imported?.pricing ?? res.pricing) ? "sí" : "no"}.`);
+
+      // ---- Post-publish verification: compare source ↔ destination counts ----
+      pushLog("→ Verificando el destino…");
+      const dst = await fetch(`${to}/api/cms/export`).then((r) => r.json());
+      const src = exp.counts;
+      const dstC = dst.counts;
+      // wipe → exact mirror; upsert → destination must contain at least the source slots
+      const ok = wipe
+        ? dstC.image_slots === src.image_slots && dstC.text_slots === src.text_slots
+        : dstC.image_slots >= src.image_slots && dstC.text_slots >= src.text_slots;
+      setVerify({ status: ok ? "ok" : "warn", src, dst: dstC, wipe });
+      if (ok) {
+        pushLog(`✓ Verificación correcta: destino con ${dstC.image_slots} imágenes y ${dstC.text_slots} textos.`);
+      } else {
+        pushLog(`⚠ Discrepancia: destino ${dstC.image_slots}/${dstC.text_slots} vs origen ${src.image_slots}/${src.text_slots}.`);
+      }
       pushLog("Tip: recarga el sitio destino (Ctrl/Cmd+Shift+R) para ver los cambios.");
     } catch (e) {
       pushLog(`✗ ${e.message}`);
@@ -903,6 +920,34 @@ const SyncPanel = () => {
           <Download className="w-3.5 h-3.5" strokeWidth={1.8} /> Snapshot
         </button>
       </div>
+
+      {verify && (
+        <div
+          data-testid="admin-sync-verify"
+          data-status={verify.status}
+          className={`flex items-start gap-3 border p-3 ${
+            verify.status === "ok"
+              ? "border-[#3E7C59]/50 bg-[#3E7C59]/10"
+              : "border-[#C9871F]/50 bg-[#C9871F]/10"
+          }`}
+        >
+          {verify.status === "ok"
+            ? <CheckCircle2 className="w-5 h-5 text-[#7BB98A] flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+            : <AlertTriangle className="w-5 h-5 text-[#E0B25A] flex-shrink-0 mt-0.5" strokeWidth={1.8} />}
+          <div className="min-w-0">
+            <p className={`text-[11px] tracking-[0.18em] uppercase font-medium ${verify.status === "ok" ? "text-[#7BB98A]" : "text-[#E0B25A]"}`}>
+              {verify.status === "ok" ? "✓ Producción sincronizada" : "⚠ Revisar sincronización"}
+            </p>
+            <p className="mt-1 text-xs text-white/70 leading-relaxed">
+              Origen: {verify.src.image_slots} imágenes · {verify.src.text_slots} textos.{" "}
+              Destino: {verify.dst.image_slots} imágenes · {verify.dst.text_slots} textos.
+              {verify.status === "ok"
+                ? " La migración se completó al 100%."
+                : " Los conteos no coinciden; revisa el log y reintenta."}
+            </p>
+          </div>
+        </div>
+      )}
 
       {log.length > 0 && (
         <div
