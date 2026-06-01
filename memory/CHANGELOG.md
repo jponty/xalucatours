@@ -1,4 +1,14 @@
 
+## Precios por-programa (tarifas distintas por itinerario) (Feb 2026)
+- **User request**: aplicar precios DISTINTOS a 6 itinerarios Atlas↔Desierto (el sistema antes solo tenía un precio global).
+- **Nuevo** `lib/programPricing.js`: matriz de tarifas por `routeId` (`[{people, low, high}]`, low=Temporada baja, high=Temporada alta). `getProgramTiers(routeId)` devuelve la tarifa propia o `null` (fallback al precio global).
+- **`PricingSection.jsx`**: nueva prop `routeId`; usa `getProgramTiers(routeId) || pricing.tiers` para la matriz y recalcula el "Desde" por programa.
+- **`ProgramTemplate.jsx`**: pasa `routeId` (de `resolvePath`) al `PricingSection`.
+- Rutas configuradas: tourAtlasDesierto45 (1010/1085·865/920·790/835), AtlasDesierto56 (1255/1350·1075/1145·985/1045), AtlasDesierto67 (1430/1535·1215/1295·1105/1170), DesiertoAtlas45 (=45), DesiertoAtlas56 (1230/1325·1050/1120·960/1020), DesiertoAtlas67 (=67).
+- En código (no DB) → se despliega limpio a producción. Las rutas no listadas siguen con el precio global/admin. Texto de temporadas/observaciones sin cambios (global, ya coincide en significado).
+- **Verificado** (screenshots): las 6 rutas muestran sus tarifas correctas y distintas; "Desde" recalculado. Lint JS limpio.
+
+
 ## Imágenes reales de Unsplash en las 40 tarjetas de "viajes disponibles" (Feb 2026)
 - **User request**: actualizar las imágenes de TODAS las tarjetas de la sección "40 viajes disponibles" (Home) con fotos reales y relevantes de Unsplash por itinerario.
 - **Script** `scripts/fill_alltrips_unsplash.mjs`: mapea cada `routeId` a un tema (dunas, kasbah, Atlas, camello, Marrakech, Koutoubia, Essaouira, Fez, curtiembre, Chefchaouen, Meknes, Volúbilis, Tánger, gargantas, Agafay, enduro, fin de año). Hace 1 búsqueda por tema (cacheada, `orientation=landscape`), reparte fotos ÚNICAS por tarjeta (dedupe por id), descarga el JPEG recortado 4:3 del CDN de Unsplash y lo sube al slot `home.all-trips.{routeId}` vía `POST /api/slots/{slot}/upload` (auto-hospedado).

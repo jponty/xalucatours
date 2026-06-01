@@ -1625,7 +1625,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <Itinerary t={t} lang={lang} days={program.days} />
       <TripOverview days={program.days} />
-      <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" />
+      <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />
       <HubPeerNav routeId={routeId} />
       <ContactBand t={t} lang={lang} />

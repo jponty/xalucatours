@@ -3,6 +3,7 @@ import { ArrowRight, Users, Car, CalendarDays } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePricing } from "@/lib/pricingStore";
 import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
+import { getProgramTiers } from "@/lib/programPricing";
 
 /* ============================================================
    <PricingSection> — dedicated, standardised pricing block for
@@ -17,12 +18,15 @@ import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
      testid  root data-testid (default "pricing-section")
      ctaHref where the CTA points (default "#contact")
 ============================================================ */
-export const PricingSection = ({ id = "pricing", testid = "pricing-section", ctaHref = "#contact" }) => {
+export const PricingSection = ({ id = "pricing", testid = "pricing-section", ctaHref = "#contact", routeId = null }) => {
   const { lang } = useLanguage();
   const pricing = usePricing();
   const L = pricing.labels;
   const p = (o) => pickLang(o, lang);
-  const from = getFromPrice(pricing);
+  // Per-program tariff (if this itinerary has its own) overrides the global
+  // tiers; otherwise fall back to the global/admin pricing.
+  const tiers = getProgramTiers(routeId) || pricing.tiers;
+  const from = getFromPrice({ tiers });
 
   return (
     <section
@@ -74,7 +78,7 @@ export const PricingSection = ({ id = "pricing", testid = "pricing-section", cta
             </div>
           </div>
           {/* Tier rows */}
-          {pricing.tiers.map((tier) => (
+          {tiers.map((tier) => (
             <div
               key={tier.people}
               data-testid={`pricing-row-${tier.people}`}
