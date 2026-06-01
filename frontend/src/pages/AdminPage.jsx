@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback, useRef } from "react"
 import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
-  Lock, LogOut, Wand2, Tag, Plus, Trash2,
+  Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
@@ -313,6 +313,7 @@ export default function AdminPage() {
               { id: "images", label: `Images (${imageSlots.length})`, icon: ImageIcon },
               { id: "texts",  label: `Texts (${textSlots.length})`,  icon: Type },
               { id: "pricing", label: "Precios",       icon: Tag },
+              { id: "sync",   label: "Sincronizar",   icon: UploadCloud },
             ].map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -424,6 +425,12 @@ export default function AdminPage() {
           {tab === "pricing" && (
             <div data-testid="admin-pricing" className="p-4">
               <PricingEditor onSaved={() => bumpPreview((k) => k + 1)} />
+            </div>
+          )}
+
+          {tab === "sync" && (
+            <div data-testid="admin-sync" className="p-4">
+              <SyncPanel />
             </div>
           )}
         </section>
@@ -722,6 +729,192 @@ const PricingEditor = ({ onSaved }) => {
       </div>
       {msg && (
         <p data-testid="admin-pricing-msg" className="text-xs text-white/70">{msg}</p>
+      )}
+    </div>
+  );
+};
+
+
+/* ---------- CMS Sync panel ----------
+   Pushes all CMS content (image slots, text slots, global pricing) from the
+   CURRENT backend (source = REACT_APP_BACKEND_URL) to a TARGET environment
+   (e.g. production). Runs entirely in the browser:
+     1. GET  {source}/api/cms/export
+     2. POST {target}/api/admin/login  → token
+     3. POST {target}/api/cms/import   (Bearer token)
+   Also offers a one-click snapshot download for manual backups. */
+const SyncPanel = () => {
+  const [targetUrl, setTargetUrl] = useState(
+    () => localStorage.getItem("xaluca_sync_target") || ""
+  );
+  const [password, setPassword] = useState("");
+  const [wipe, setWipe] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [log, setLog] = useState([]);
+  const [counts, setCounts] = useState(null);
+
+  const pushLog = (line) => setLog((l) => [...l, line]);
+  const trimUrl = (u) => (u || "").trim().replace(/\/+$/, "");
+
+  useEffect(() => {
+    fetch(`${API}/cms/export`)
+      .then((r) => r.json())
+      .then((d) => setCounts(d.counts))
+      .catch(() => setCounts(null));
+  }, []);
+
+  const downloadSnapshot = async () => {
+    try {
+      const r = await fetch(`${API}/cms/export`);
+      const data = await r.json();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `xaluca_cms_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch {
+      pushLog("✗ No se pudo descargar el snapshot.");
+    }
+  };
+
+  const publish = async () => {
+    const to = trimUrl(targetUrl);
+    if (!to) { pushLog("✗ Indica la URL del entorno destino."); return; }
+    if (!password) { pushLog("✗ Indica la contraseña de admin del destino."); return; }
+    if (to === trimUrl(process.env.REACT_APP_BACKEND_URL)) {
+      pushLog("✗ El destino es el mismo entorno actual. Usa la URL de producción.");
+      return;
+    }
+    localStorage.setItem("xaluca_sync_target", to);
+    setBusy(true); setLog([]);
+    try {
+      pushLog("→ Exportando contenido del entorno actual…");
+      const exp = await fetch(`${API}/cms/export`).then((r) => r.json());
+      pushLog(`  ✓ ${exp.counts.image_slots} imágenes + ${exp.counts.text_slots} textos.`);
+
+      pushLog(`→ Iniciando sesión en ${to}…`);
+      const lr = await fetch(`${to}/api/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (!lr.ok) throw new Error(`login destino falló (${lr.status}) — revisa la contraseña`);
+      const { token } = await lr.json();
+      if (!token) throw new Error("el destino no devolvió token");
+
+      pushLog(`→ Importando en destino${wipe ? " (modo reemplazo total)" : ""}…`);
+      const ir = await fetch(`${to}/api/cms/import`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          image_slots: exp.image_slots || [],
+          text_slots: exp.text_slots || [],
+          pricing: exp.pricing || null,
+          wipe,
+        }),
+      });
+      if (!ir.ok) {
+        const t = await ir.text();
+        throw new Error(`import falló (${ir.status}): ${t.slice(0, 160)}`);
+      }
+      const res = await ir.json();
+      pushLog(`✓ Hecho. Importado: ${res.imported?.image_slots ?? res.image_slots ?? 0} imágenes, ${res.imported?.text_slots ?? res.text_slots ?? 0} textos, precios: ${(res.imported?.pricing ?? res.pricing) ? "sí" : "no"}.`);
+      pushLog("Tip: recarga el sitio destino (Ctrl/Cmd+Shift+R) para ver los cambios.");
+    } catch (e) {
+      pushLog(`✗ ${e.message}`);
+    }
+    setBusy(false);
+  };
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <h3 className="text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-1.5">
+          Sincronizar contenido CMS
+        </h3>
+        <p className="text-xs text-white/55 leading-relaxed">
+          Publica todas tus ediciones (imágenes, textos y precios) de este entorno a producción
+          con un clic. {counts && (
+            <span className="text-white/75">
+              Snapshot actual: {counts.image_slots} imágenes · {counts.text_slots} textos.
+            </span>
+          )}
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <label className="block text-[9px] tracking-[0.22em] uppercase text-white/45 mb-1.5">
+            URL del entorno destino (producción)
+          </label>
+          <input
+            value={targetUrl}
+            onChange={(e) => setTargetUrl(e.target.value)}
+            placeholder="https://tu-sitio.emergent.host"
+            data-testid="admin-sync-target"
+            className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm text-white outline-none focus:border-[#D4A373]"
+          />
+        </div>
+        <div>
+          <label className="block text-[9px] tracking-[0.22em] uppercase text-white/45 mb-1.5">
+            Contraseña de admin del destino
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Contraseña"
+            data-testid="admin-sync-password"
+            className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm text-white outline-none focus:border-[#D4A373]"
+          />
+        </div>
+        <label className="flex items-center gap-2 text-xs text-white/65 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={wipe}
+            onChange={(e) => setWipe(e.target.checked)}
+            data-testid="admin-sync-wipe"
+            className="accent-[#C16542]"
+          />
+          Reemplazo total (borra el contenido del destino antes de importar)
+        </label>
+      </div>
+
+      <div className="flex items-center gap-2 border-t border-white/10 pt-4">
+        <button
+          onClick={publish}
+          disabled={busy}
+          data-testid="admin-sync-publish"
+          className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.22em] uppercase transition-colors ${
+            busy ? "bg-white/10 text-white/40 cursor-not-allowed" : "bg-[#C16542] hover:bg-[#A8533A] text-white"
+          }`}
+        >
+          <UploadCloud className={`w-3.5 h-3.5 ${busy ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+          {busy ? "Publicando…" : "Publicar en producción"}
+        </button>
+        <button
+          onClick={downloadSnapshot}
+          disabled={busy}
+          data-testid="admin-sync-download"
+          title="Descargar copia JSON del contenido actual"
+          className="inline-flex items-center gap-2 px-3 py-2.5 text-[10px] tracking-[0.22em] uppercase border border-white/15 text-white/70 hover:bg-white/5"
+        >
+          <Download className="w-3.5 h-3.5" strokeWidth={1.8} /> Snapshot
+        </button>
+      </div>
+
+      {log.length > 0 && (
+        <div
+          data-testid="admin-sync-log"
+          className="bg-black/40 border border-white/10 p-3 text-[11px] leading-relaxed text-white/80 font-mono space-y-0.5 max-h-64 overflow-y-auto"
+        >
+          {log.map((line, i) => (
+            <div key={i} className={line.startsWith("✗") ? "text-[#E07856]" : line.startsWith("✓") ? "text-[#7BB98A]" : ""}>
+              {line}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

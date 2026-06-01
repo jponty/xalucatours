@@ -238,3 +238,9 @@
 - **CSS** (`index.css`): `@keyframes cms-shimmer`, `.cms-skeleton`, `.cms-img-fade`/`.is-loaded`, with `prefers-reduced-motion` fallback.
 - **Verified** by testing agent (iteration_19): 100% frontend, 0 bugs across /, /viajes, /viajes/surdemarruecos, /viajes/marruecos, a program page — 0 broken images, 0 black placeholders, 0 stuck-invisible images; skeletons resolve on scroll; hero sharp; image Edit Mode (134 overlays) + /admin Pexels fill (36 slots detected) still work.
 - **Backlog note**: `EditableImage.jsx` is now ~1550 lines — split `SmartImage`/`imgCache`/`EditModal`/`LivePreview` into modules in a future refactor.
+
+
+## CMS Sync UI + DELETE text-slot reset endpoint (Feb 2026)
+- **DELETE `/api/text_slots/{slot_id}`** implemented in `server.py`. Supports `?lang=<es|en|fr>` to clear a single language (deletes the doc when no langs remain) or no param to remove the whole slot. Powers the "Restablecer texto original" button. Fixes 3 failing pytests in `tests/test_text_slots_reset.py` (all pass).
+- **Sync panel in `/admin`** (`AdminPage.jsx` → new `SyncPanel`, tab "Sincronizar"): one-click publish of CMS content (image slots + text slots + global pricing) from the current env to a target (production). Browser flow: `GET /api/cms/export` → `POST {target}/api/admin/login` → `POST {target}/api/cms/import` (Bearer). Optional "Reemplazo total" (wipe) checkbox + "Snapshot" JSON download for manual backups. Live progress log. Target URL persisted in localStorage.
+- **Verified**: 3/3 pytests pass; curl export/DELETE OK via external URL; screenshot of Sync tab confirms UI renders.

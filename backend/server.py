@@ -1516,6 +1516,32 @@ async def put_text_slot(slot_id: str, payload: TextSlotPayload):
     return {"slot_id": slot_id, **doc}
 
 
+@api_router.delete("/text_slots/{slot_id}")
+async def delete_text_slot(slot_id: str, lang: Optional[str] = None):
+    """Reset a text slot back to its code default.
+
+    - With ?lang=<es|en|fr>: removes only that language. If no languages
+      remain afterwards, the document is deleted entirely.
+    - Without lang: removes the whole slot document.
+    Always returns the resulting values ({} when the slot no longer exists).
+    """
+    if lang:
+        doc = await db.text_slots.find_one({"_id": slot_id})
+        values = (doc or {}).get("values") or {}
+        values.pop(lang, None)
+        if values:
+            await db.text_slots.update_one(
+                {"_id": slot_id},
+                {"$set": {"values": values, "updated_at": datetime.now(timezone.utc).isoformat()}},
+            )
+            return {"slot_id": slot_id, "values": values}
+        await db.text_slots.delete_one({"_id": slot_id})
+        return {"slot_id": slot_id, "values": {}}
+
+    await db.text_slots.delete_one({"_id": slot_id})
+    return {"slot_id": slot_id, "values": {}}
+
+
 @api_router.get("/text_slots")
 async def list_text_slots():
     """Return every saved text slot as a dict {slot_id: values}. Used by
