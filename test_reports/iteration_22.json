@@ -19,6 +19,6 @@
   "seed_data_creation": "none",
   "retest_needed": false,
   "main_agent_can_self_test": true,
-  "context_for_next_testing_agent": "Preview URL: https://trip-curator-8.preview.emergentagent.com. Edit mode is global and persists across navigations within the same tab — read aria-pressed of [data-testid=header-edit-mode-toggle] before clicking. For the carousel arrow/dot test, use JS .click() inside page.evaluate to bypass any overlay z-index issues. For Feature 3 verification, scrolling the program page fully (yields lazy-mounted DayGallery components) is required before collecting all editable-overlay testids. Programs differ structurally — one program may have day-galleries while another doesn't; that's not a bug.",
+  "context_for_next_testing_agent": "Preview URL: https://marruecos-cms-sync.preview.emergentagent.com. Edit mode is global and persists across navigations within the same tab — read aria-pressed of [data-testid=header-edit-mode-toggle] before clicking. For the carousel arrow/dot test, use JS .click() inside page.evaluate to bypass any overlay z-index issues. For Feature 3 verification, scrolling the program page fully (yields lazy-mounted DayGallery components) is required before collecting all editable-overlay testids. Programs differ structurally — one program may have day-galleries while another doesn't; that's not a bug.",
   "rca of the issue": "n/a — no defects observed in this iteration."
 }
