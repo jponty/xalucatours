@@ -211,6 +211,87 @@ async def put_pricing(payload: PricingPayload, authorization: str = Header(defau
     return doc or {}
 
 
+# ---------- CMS export / import (sync content between environments) ----------
+# All editable content (image slots, text slots, global pricing) lives in
+# MongoDB. Image binaries live in the SHARED object storage, so syncing the DB
+# records alone is enough to move edits from preview → production without a
+# database redeploy. Export is read-only/public (content is already public);
+# import WRITES and is admin-protected.
+def _jsonable_doc(doc):
+    """Make a Mongo doc JSON-safe: keep the string _id, ISO-format datetimes."""
+    if not doc:
+        return doc
+    out = {}
+    for k, v in doc.items():
+        out[k] = v.isoformat() if isinstance(v, datetime) else v
+    return out
+
+
+class CmsImportPayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    image_slots: List[dict] = Field(default_factory=list)
+    text_slots: List[dict] = Field(default_factory=list)
+    pricing: Optional[dict] = None
+    wipe: bool = False  # when true, clear the slot collections before importing
+
+
+@api_router.get("/cms/export")
+async def cms_export():
+    image_slots = await db.image_slots.find({}).to_list(10000)
+    text_slots = await db.text_slots.find({}).to_list(10000)
+    pricing = await db.config.find_one({"_id": "pricing"})
+    return {
+        "version": 1,
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "counts": {"image_slots": len(image_slots), "text_slots": len(text_slots)},
+        "image_slots": [_jsonable_doc(d) for d in image_slots],
+        "text_slots": [_jsonable_doc(d) for d in text_slots],
+        "pricing": _jsonable_doc(pricing),
+    }
+
+
+@api_router.post("/cms/import")
+async def cms_import(payload: CmsImportPayload, authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+
+    now = datetime.now(timezone.utc).isoformat()
+    result = {"image_slots": 0, "text_slots": 0, "pricing": False, "wiped": payload.wipe}
+
+    if payload.wipe:
+        await db.image_slots.delete_many({})
+        await db.text_slots.delete_many({})
+
+    for doc in payload.image_slots:
+        sid = doc.get("_id")
+        if not sid:
+            continue
+        update = {k: v for k, v in doc.items() if k != "_id"}
+        if update.get("url"):
+            update["url"] = _relativize_url(update["url"])  # keep domain-independent
+        update["updated_at"] = now
+        await db.image_slots.update_one({"_id": sid}, {"$set": update}, upsert=True)
+        result["image_slots"] += 1
+
+    for doc in payload.text_slots:
+        sid = doc.get("_id")
+        if not sid:
+            continue
+        update = {k: v for k, v in doc.items() if k != "_id"}
+        update["updated_at"] = now
+        await db.text_slots.update_one({"_id": sid}, {"$set": update}, upsert=True)
+        result["text_slots"] += 1
+
+    if payload.pricing:
+        pdoc = {k: v for k, v in payload.pricing.items() if k != "_id"}
+        pdoc["updated_at"] = now
+        await db.config.update_one({"_id": "pricing"}, {"$set": pdoc}, upsert=True)
+        result["pricing"] = True
+
+    return {"ok": True, "imported": result}
+
+
 
 @api_router.post("/contact-requests", response_model=ContactRequest)
 async def create_contact_request(payload: ContactRequestCreate):

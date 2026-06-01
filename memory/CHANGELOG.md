@@ -1,4 +1,17 @@
 
+## Sincronización CMS entre entornos (export/import sin redeploy) (Feb 2026)
+- **User request**: script de export/import de slots CMS para sincronizar producción con las ediciones del preview con un clic, sin depender del redeploy de la BD.
+- **Backend** (`server.py`):
+  - `GET /api/cms/export` (lectura): devuelve `image_slots` + `text_slots` + `pricing` con metadatos y counts (datetimes a ISO).
+  - `POST /api/cms/import` (protegido por token admin Bearer): upsert por `_id` de image/text slots + pricing; relativiza URLs propias al importar; flag `wipe` para espejo completo.
+- **Script** `scripts/sync_cms.mjs` (Node):
+  - `sync --from <SRC> --to <DST> --password <pwd>` → un comando: export del origen + import al destino.
+  - `export --from <URL> --out file.json` y `import --to <URL> --in file.json --password <pwd>`.
+  - Defaults: `--from` = REACT_APP_BACKEND_URL (preview); `--password` = backend/.env ADMIN_PASSWORD. Flag `--wipe` opcional.
+- Las imágenes (binarios) viven en object storage COMPARTIDO entre entornos → basta sincronizar los registros de la BD.
+- **Verificado**: export (311 img + 19 txt + pricing); import sin auth → 401; `sync` preview→preview idempotente OK; modo fichero export/import OK. 10 tests pytest pasan (`test_cms_sync.py` + relativize + slot_usage).
+
+
 ## Garantía de persistencia y frescura del CMS en producción (Feb 2026)
 - **User request**: asegurar que en la versión publicada (no solo preview) toda edición de imagen/texto se guarde en BD y persista tras refrescos, sesiones nuevas, despliegues y otros dispositivos, sin revertir.
 - **Auditoría/verificación**:
