@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { X, Camera, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import { DAY_GALLERIES, DEFAULT_DAY_GALLERY, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
 import { DAY_GALLERIES_GENERATED } from "@/lib/dayGalleriesGenerated";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 
 const SECTION_LABELS = {
   es: { eyebrow: "Galería del día", title: "El recorrido en imágenes.", count_singular: "imagen", count_plural: "imágenes", close: "Cerrar", prev: "Anterior", next: "Siguiente" },
   en: { eyebrow: "Day gallery", title: "The journey in pictures.", count_singular: "image", count_plural: "images", close: "Close", prev: "Previous", next: "Next" },
   fr: { eyebrow: "Galerie du jour", title: "L'itinéraire en images.", count_singular: "image", count_plural: "images", close: "Fermer", prev: "Précédent", next: "Suivant" },
+};
+
+/* Trilingual defaults for the editable section chrome. These use GLOBAL
+   slots so editing the heading once updates every day gallery across the
+   site (consistent section chrome). Per-image captions stay page-scoped. */
+const DAY_UI = {
+  eyebrow: { es: "Galería del día", en: "Day gallery", fr: "Galerie du jour" },
+  title: { es: "El recorrido en imágenes.", en: "The journey in pictures.", fr: "L'itinéraire en images." },
 };
 
 /* Full-screen viewer — opens a single image in a larger format. */
@@ -75,11 +85,20 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
         <figcaption className="mt-5 md:mt-6 flex flex-wrap items-center justify-between gap-4 text-[#FDFBF7]">
           <div>
             {kindLabel && (
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
-                {pick(kindLabel, lang)}
-              </span>
+              <EditableText
+                slot={current.kindSlot}
+                defaults={kindLabel}
+                as="span"
+                multiline={false}
+                className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]"
+              />
             )}
-            <p className="font-serif-x text-lg md:text-xl mt-1.5">{pick(current.caption, lang)}</p>
+            <EditableText
+              slot={current.captionSlot}
+              defaults={current.caption}
+              as="p"
+              className="font-serif-x text-lg md:text-xl mt-1.5"
+            />
           </div>
           <span className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/60">
             {String(idx + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
@@ -96,6 +115,7 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
  */
 export const DayGallery = ({ day, accent = "#C16542" }) => {
   const { lang } = useLanguage();
+  const { textEditMode } = useEditMode();
   const t = SECTION_LABELS[lang] || SECTION_LABELS.es;
   // Stage-specific Pexels gallery (auto-generated) takes priority, then any
   // hand-curated gallery, then a generic fallback — so every itinerary day
@@ -112,10 +132,12 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
   if (!images || images.length === 0) return null;
 
   // Up to 10 square cells. Each cell carries its slot id so the tile and the
-  // lightbox share the same CMS-editable surface.
+  // lightbox share the same CMS-editable surface (image + caption + kind).
   const cells = images.slice(0, 10).map((img, i) => ({
     ...img,
     slot: `${galleryBase}.${i}`,
+    captionSlot: `${galleryBase}.${i}.caption`,
+    kindSlot: `${galleryBase}.${i}.kind`,
   }));
 
   const showNext = () => setOpen((i) => (i + 1) % cells.length);
@@ -129,11 +151,14 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
           <div>
             <span className="overline inline-flex items-center gap-2" style={{ color: accent }}>
               <Camera className="w-3 h-3" strokeWidth={1.8} />
-              {t.eyebrow}
+              <EditableText slot="gallery-ui.day.eyebrow" defaults={DAY_UI.eyebrow} as="span" multiline={false} />
             </span>
-            <h4 className="font-serif-x text-2xl md:text-3xl lg:text-4xl text-[#2C2621] mt-3 leading-[1.1] tracking-tight">
-              {t.title}
-            </h4>
+            <EditableText
+              slot="gallery-ui.day.title"
+              defaults={DAY_UI.title}
+              as="h4"
+              className="font-serif-x text-2xl md:text-3xl lg:text-4xl text-[#2C2621] mt-3 leading-[1.1] tracking-tight"
+            />
           </div>
           <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
             {cells.length} {cells.length === 1 ? t.count_singular : t.count_plural}
@@ -148,7 +173,7 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
               <button
                 key={img.slot}
                 type="button"
-                onClick={() => setOpen(i)}
+                onClick={() => { if (!textEditMode) setOpen(i); }}
                 data-testid={`day-gallery-tile-${day.route_id}-${i}`}
                 className="group relative aspect-square overflow-hidden bg-[#1A1513] cursor-zoom-in"
               >
@@ -168,15 +193,23 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
                   <Maximize2 className="w-4 h-4" strokeWidth={1.6} />
                 </span>
 
-                <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 text-left text-[#FDFBF7] pointer-events-none">
+                <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 text-left text-[#FDFBF7] ${textEditMode ? "" : "pointer-events-none"}`}>
                   {kindLabel && (
-                    <span className="block text-[9px] md:text-[10px] tracking-[0.3em] uppercase" style={{ color: accent }}>
-                      {pick(kindLabel, lang)}
-                    </span>
+                    <EditableText
+                      slot={img.kindSlot}
+                      defaults={kindLabel}
+                      as="span"
+                      multiline={false}
+                      className="block text-[9px] md:text-[10px] tracking-[0.3em] uppercase"
+                      style={{ color: accent }}
+                    />
                   )}
-                  <span className="block font-serif-x text-sm md:text-[15px] leading-[1.2] mt-1 line-clamp-2">
-                    {pick(img.caption, lang)}
-                  </span>
+                  <EditableText
+                    slot={img.captionSlot}
+                    defaults={img.caption}
+                    as="span"
+                    className={`block font-serif-x text-sm md:text-[15px] leading-[1.2] mt-1 ${textEditMode ? "" : "line-clamp-2"}`}
+                  />
                 </div>
               </button>
             );

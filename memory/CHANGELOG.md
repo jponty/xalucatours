@@ -1,4 +1,12 @@
 
+## Textos editables en "Galería del día" y "Galería del lugar" (Feb 2026)
+- **User request**: en las páginas de viaje, hacer editables desde el modo edición de texto TODOS los textos de ambas galerías (títulos, subtítulos, descripciones, captions, textos superpuestos y cualquier texto asociado a las imágenes).
+- **`DayGallery.jsx` (Galería del día)**: eyebrow + título de sección → `<EditableText>` con slots GLOBALES (`gallery-ui.day.eyebrow`, `gallery-ui.day.title`, una edición aplica a todas las páginas). Por imagen: kind (`{base}.{i}.kind`) + caption (`{base}.{i}.caption`) page-scoped vía `useSlotId`. El lightbox comparte los mismos slots que la grid (editar uno actualiza ambos). `pointer-events` del overlay y `line-clamp` se desactivan en modo texto; el botón de tile no abre el lightbox mientras se edita.
+- **`LandmarkCarousel.jsx` (Galería del lugar)**: eyebrow de sección (`gallery-ui.place.eyebrow`) y helper del hint (`gallery-ui.place.helper`) globales; por tarjeta: kind (`{slot}.kind`), título (`{slot}.title`) y descripción (`{slot}.desc`) page-scoped. `pointer-events` del badge de kind se reactiva en modo texto.
+- Persistencia vía la infra existente `EditableText`/`/api/text_slots` (sin cambios de backend). Captions independientes por URL de itinerario; chrome de sección compartido.
+- **Verificado** (2 screenshots en modo texto): Galería del día → eyebrow+título+70 captions+70 kinds con anillo de edición; Galería del lugar → eyebrow+helper+3 títulos+3 descripciones+3 kinds editables. Lint JS limpio.
+
+
 ## Image Usage Tracker — "Dónde se usa esta imagen" en el editor (Feb 2026)
 - **User request (msg 10)**: al seleccionar una imagen en el editor, mostrar en qué páginas/secciones se usa esa misma foto en todo el sitio.
 - **Backend**: nuevo endpoint `GET /api/slots/{slot_id}/usage` (server.py) — lee la imagen del slot (`storage_path`/`url`) y devuelve todos los slots que renderizan la misma foto, con flag `is_current` y el slot actual primero. Reusa el patrón de matching de `/api/files/{id}/usage`. Añadido `import re` a nivel de módulo.

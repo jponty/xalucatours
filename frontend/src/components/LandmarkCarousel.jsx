@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Camera, X, MapPin } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 
 const LABELS = {
@@ -36,7 +38,20 @@ const LABELS = {
   },
 };
 
-const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => (
+/* Trilingual defaults for the editable section chrome (GLOBAL slots — one
+   edit updates the heading on every place gallery across the site). */
+const PLACE_UI = {
+  eyebrow: { es: "Galería del lugar", en: "Place gallery", fr: "Galerie du lieu" },
+  helper: {
+    es: "Selecciona un punto del mapa o de la lista para conocer cada lugar a través de pequeñas historias visuales.",
+    en: "Pick a point on the map or the side list to read each place through small visual stories.",
+    fr: "Sélectionnez un point sur la carte ou dans la liste pour découvrir chaque lieu à travers de petites histoires visuelles.",
+  },
+};
+
+const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => {
+  const { textEditMode } = useEditMode();
+  return (
   <article
     data-testid={`landmark-card-${index}`}
     className="landmark-story-card snap-start shrink-0 w-[78vw] sm:w-[320px] md:w-[300px] lg:w-[320px] bg-[#FDFBF7] border border-[#2C2621]/12 overflow-hidden flex flex-col group transition-shadow duration-500 hover:shadow-[0_30px_60px_-30px_rgba(26,21,19,0.45)]"
@@ -53,27 +68,36 @@ const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => (
       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent opacity-90 pointer-events-none" />
       <span className="film-grain pointer-events-none" />
       <span
-        className="absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase pointer-events-none z-[1]"
+        className={`absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase z-[1] ${textEditMode ? "" : "pointer-events-none"}`}
         style={{ color: accent }}
       >
         <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
-        {kindLabel || ""}
+        {kindLabel ? (
+          <EditableText slot={`${slot}.kind`} defaults={kindLabel} as="span" multiline={false} />
+        ) : null}
       </span>
       <span className="absolute top-3.5 right-3.5 inline-flex items-center justify-center bg-[#1A1513]/85 text-[#FDFBF7] font-serif-x text-[12px] tracking-[0.18em] px-2.5 py-1 pointer-events-none z-[1]">
         {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </span>
     </div>
     <div className="flex-1 p-5 md:p-6 flex flex-col gap-3">
-      <h5 className="font-serif-x text-[18px] md:text-[20px] leading-[1.2] text-[#2C2621]">
-        {pick(image.title, lang)}
-      </h5>
-      <p className="text-[13px] md:text-[13.5px] text-[#5C5248] leading-[1.7] flex-1">
-        {pick(image.description, lang)}
-      </p>
+      <EditableText
+        slot={`${slot}.title`}
+        defaults={image.title}
+        as="h5"
+        className="font-serif-x text-[18px] md:text-[20px] leading-[1.2] text-[#2C2621]"
+      />
+      <EditableText
+        slot={`${slot}.desc`}
+        defaults={image.description}
+        as="p"
+        className="text-[13px] md:text-[13.5px] text-[#5C5248] leading-[1.7] flex-1"
+      />
       <span className="block w-10 h-px mt-1" style={{ background: accent }} />
     </div>
   </article>
-);
+  );
+};
 
 export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   const { lang } = useLanguage();
@@ -104,7 +128,7 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   if (!landmark || images.length === 0) return null;
 
   const kindCfg = LANDMARK_KINDS[landmark.kind];
-  const kindLabel = kindCfg ? pick(kindCfg.label, lang) : "";
+  const kindLabel = kindCfg ? kindCfg.label : null;
 
   const scrollBy = (dir) => {
     if (!trackRef.current) return;
@@ -130,12 +154,14 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
             <Camera className="w-4 h-4" strokeWidth={1.7} />
           </span>
           <div className="min-w-0">
-            <span
+            <EditableText
+              slot="gallery-ui.place.eyebrow"
+              defaults={PLACE_UI.eyebrow}
+              as="span"
+              multiline={false}
               className="block text-[10px] tracking-[0.3em] uppercase"
               style={{ color: accent }}
-            >
-              {t.eyebrow}
-            </span>
+            />
             <p className="font-serif-x text-[16px] md:text-[18px] text-[#2C2621] leading-snug mt-0.5 inline-flex items-center gap-2 truncate">
               <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: accent }} strokeWidth={1.6} />
               <span className="truncate">{pick(landmark.name, lang)}</span>
@@ -233,8 +259,6 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
 
 /* Subtle helper card shown when no landmark is selected. */
 export const LandmarkCarouselHint = ({ accent = "#C16542" }) => {
-  const { lang } = useLanguage();
-  const t = LABELS[lang] || LABELS.es;
   return (
     <div
       data-testid="landmark-carousel-hint"
@@ -247,7 +271,7 @@ export const LandmarkCarouselHint = ({ accent = "#C16542" }) => {
         <Camera className="w-4 h-4" strokeWidth={1.6} />
       </span>
       <p className="text-[12px] md:text-[13px] tracking-[0.04em] text-[#5C5248] leading-relaxed">
-        {t.helper}
+        <EditableText slot="gallery-ui.place.helper" defaults={PLACE_UI.helper} as="span" />
       </p>
     </div>
   );
