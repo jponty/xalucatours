@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback, useRef } from "react"
 import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
-  Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle,
+  Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
@@ -844,6 +844,60 @@ const SyncPanel = () => {
     setBusy(false);
   };
 
+  // ---- Reverse sync: pull content FROM production INTO this (preview) env ----
+  const pullFromProd = async () => {
+    const from = trimUrl(targetUrl);
+    if (!from) { pushLog("✗ Indica la URL de producción en el campo de arriba."); return; }
+    if (from === trimUrl(process.env.REACT_APP_BACKEND_URL)) {
+      pushLog("✗ El origen es el mismo entorno actual. Usa la URL de producción.");
+      return;
+    }
+    const token = localStorage.getItem("xaluca_admin_token");
+    if (!token) { pushLog("✗ Sesión admin no válida. Vuelve a iniciar sesión."); return; }
+    localStorage.setItem("xaluca_sync_target", from);
+    setBusy(true); setLog([]); setVerify(null);
+    try {
+      pushLog(`→ Exportando contenido de producción (${from})…`);
+      const exp = await fetch(`${from}/api/cms/export`).then((r) => r.json());
+      pushLog(`  ✓ ${exp.counts.image_slots} imágenes + ${exp.counts.text_slots} textos.`);
+
+      pushLog("→ Importando en este entorno (preview)…");
+      const ir = await fetch(`${API}/cms/import`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          image_slots: exp.image_slots || [],
+          text_slots: exp.text_slots || [],
+          pricing: exp.pricing || null,
+          wipe,
+        }),
+      });
+      if (!ir.ok) {
+        const t = await ir.text();
+        throw new Error(`import falló (${ir.status}): ${t.slice(0, 160)}`);
+      }
+      const res = await ir.json();
+      pushLog(`✓ Hecho. Importado: ${res.imported?.image_slots ?? 0} imágenes, ${res.imported?.text_slots ?? 0} textos, precios: ${res.imported?.pricing ? "sí" : "no"}.`);
+
+      pushLog("→ Verificando preview…");
+      const dst = await fetch(`${API}/cms/export`).then((r) => r.json());
+      const src = exp.counts;
+      const dstC = dst.counts;
+      const ok = wipe
+        ? dstC.image_slots === src.image_slots && dstC.text_slots === src.text_slots
+        : dstC.image_slots >= src.image_slots && dstC.text_slots >= src.text_slots;
+      setVerify({ status: ok ? "ok" : "warn", src, dst: dstC, wipe });
+      pushLog(ok
+        ? `✓ Preview igualado: ${dstC.image_slots} imágenes y ${dstC.text_slots} textos.`
+        : `⚠ Discrepancia: preview ${dstC.image_slots}/${dstC.text_slots} vs producción ${src.image_slots}/${src.text_slots}.`);
+      pushLog("Tip: recarga esta web (Ctrl/Cmd+Shift+R) para ver los cambios.");
+      setCounts(dstC);
+    } catch (e) {
+      pushLog(`✗ ${e.message}`);
+    }
+    setBusy(false);
+  };
+
   return (
     <div className="space-y-5">
       <div>
@@ -896,9 +950,13 @@ const SyncPanel = () => {
           />
           Reemplazo total (borra el contenido del destino antes de importar)
         </label>
+        <p className="text-[11px] text-white/40 leading-relaxed">
+          La contraseña solo es necesaria para <span className="text-white/60">Publicar</span> (escribe en producción).
+          «Traer de producción» solo lee de producción e importa aquí (usa tu sesión actual).
+        </p>
       </div>
 
-      <div className="flex items-center gap-2 border-t border-white/10 pt-4">
+      <div className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-4">
         <button
           onClick={publish}
           disabled={busy}
@@ -909,6 +967,18 @@ const SyncPanel = () => {
         >
           <UploadCloud className={`w-3.5 h-3.5 ${busy ? "animate-pulse" : ""}`} strokeWidth={1.8} />
           {busy ? "Publicando…" : "Publicar en producción"}
+        </button>
+        <button
+          onClick={pullFromProd}
+          disabled={busy}
+          data-testid="admin-sync-pull"
+          title="Trae el contenido de producción e iguala este entorno (preview)"
+          className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.22em] uppercase transition-colors ${
+            busy ? "bg-white/10 text-white/40 cursor-not-allowed" : "bg-[#3E6B8A] hover:bg-[#335874] text-white"
+          }`}
+        >
+          <DownloadCloud className={`w-3.5 h-3.5 ${busy ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+          {busy ? "Trayendo…" : "Traer de producción"}
         </button>
         <button
           onClick={downloadSnapshot}

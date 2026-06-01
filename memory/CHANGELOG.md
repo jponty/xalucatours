@@ -254,3 +254,9 @@
 - **Nuevo `components/FormTabs.jsx`**: selector de pestañas trilingüe (Detallado/Contacto rápido), default configurable. Renderiza `PlannerForm` o `ContactForm` (compacto, POST `/api/contact-requests`).
 - **`PlanificaTuViajePage.jsx`** adelgazado: hero + `<FormTabs defaultTab="detailed" />`. **`ContactPage.jsx`**: reemplazado `<ContactForm/>` por `<FormTabs defaultTab="detailed" />` (manteniendo ancla `#contact-form`).
 - **Verificado**: lint OK; screenshots de ambas páginas con cambio de pestaña funcionando; curl 200 en `/api/contact-requests` y `/api/trip-planner`.
+
+## Botón "Traer de producción" (sync inverso, Feb 2026)
+- Nueva función `pullFromProd` + botón `admin-sync-pull` en la pestaña Sincronizar del `/admin`: trae el contenido de PRODUCCIÓN e iguala el entorno actual (preview) con un clic. Flujo browser: `GET {prod}/api/cms/export` → `POST {preview}/api/cms/import` (token admin de la sesión actual; export es público, no requiere contraseña de producción). Reutiliza el campo URL destino y el checkbox wipe; muestra el mismo banner de verificación.
+- Aviso UI: la contraseña solo es necesaria para "Publicar" (escribir en producción); "Traer" solo lee de producción.
+- **Bug corregido durante la edición**: se eliminó accidentalmente `return (` al insertar la función (compilación babel fallaba aunque eslint pasaba) → restaurado.
+- **Verificado**: clic en navegador trae 318 imágenes + 24 textos + precios, banner verde "Producción sincronizada".
