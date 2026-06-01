@@ -72,7 +72,7 @@ export default function FormTabs({ defaultTab = "detailed" }) {
           <PlannerForm />
         </div>
       ) : (
-        <div data-testid="form-tab-panel-quick" role="tabpanel">
+        <div className="bg-[#FBF5EA] pt-12 md:pt-16" data-testid="form-tab-panel-quick" role="tabpanel">
           <ContactForm />
         </div>
       )}
