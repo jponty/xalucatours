@@ -536,6 +536,23 @@ const uploadBlobToSlot = async (slot, blob, filename) => {
 
 const safeFilename = (slot) => `${slot.replace(/[^a-z0-9._-]/gi, "_")}.jpg`;
 
+/* Normalise any image URL that points at our own backend to a RELATIVE
+   path (`/api/...`). Pexels/Unsplash imports hand back an absolute URL with
+   the current origin baked in; storing that in the DB breaks the image when
+   the same record is served from a different domain (preview ↔ production),
+   which then trips <SmartImage>'s onError → code fallback. Keeping URLs
+   domain-independent fixes that. External (non-/api) URLs are left as-is. */
+const toRelativeUrl = (u) => {
+  if (!u || typeof u !== "string") return u;
+  try {
+    const parsed = new URL(u, typeof window !== "undefined" ? window.location.origin : "http://localhost");
+    if (parsed.pathname.startsWith("/api/")) return parsed.pathname + parsed.search;
+    return u;
+  } catch {
+    return u;
+  }
+};
+
 /* ============================================================
    LivePreview — final result preview at the placeholder's aspect
    ------------------------------------------------------------
@@ -846,11 +863,12 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne, on
     setError(null);
     try {
       const slot = current.slot;
+      const relUrl = toRelativeUrl(libItem.url);
       const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          url: libItem.url,
+          url: relUrl,
           alt: libItem.original_filename || null,
           source: "library",
         }),
@@ -860,7 +878,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne, on
         throw new Error(data?.detail || "No se pudo aplicar la imagen.");
       }
       const data = await res.json();
-      const newUrl = data.url || libItem.url;
+      const newUrl = data.url || relUrl;
       const it = items.find((i) => i.slot === slot);
       it?.setUrl?.(newUrl);
       setSlotUrls((p) => ({ ...p, [slot]: newUrl }));

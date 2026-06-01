@@ -1,4 +1,15 @@
 
+## FIX: imágenes CMS revertían a fallback (URLs absolutas con dominio incrustado) (Feb 2026)
+- **Síntoma**: al subir o seleccionar imagen (Pexels/Unsplash) en modo edición, las imágenes revertían a la versión fallback. Observado en producción.
+- **Causa raíz**: los imports de Pexels/Unsplash guardaban la URL del slot ABSOLUTA (`${origin}/api/files/...`) con el dominio incrustado. Al desplegar el contenido del preview a producción, varios slots quedaban apuntando al dominio del PREVIEW (`https://trip-curator-8.preview.emergentagent.com/...`). En producción, esa carga cross-domain fallaba y `<SmartImage>` (handleError) revertía automáticamente al fallback del código → "todas las imágenes vuelven a fallback".
+- **Diagnóstico**: preview funcionaba (subida/guardado OK y persistía); producción servía imágenes con 200; pero `/api/slots` tenía 14 (prod) / 18 (preview) slots con URL absoluta, algunos con el dominio del preview. Los mismos ficheros cargan 200 por ruta RELATIVA en producción (storage compartido).
+- **Fix (domain-independent)**:
+  - Backend `server.py`: helper `_relativize_url()` que convierte cualquier URL propia `https?://host/api/...` → `/api/...` (las CDNs externas como images.unsplash.com/pexels.com se dejan intactas). Aplicado al ESCRIBIR (`PUT /slots`) y al LEER (`GET /slots` lista + `GET /slots/{id}`), por lo que TODOS los slots existentes con URL absoluta se sirven ya relativos sin migrar la BD.
+  - Frontend `EditableImage.jsx`: helper `toRelativeUrl()` en `useLibraryImage` (defensa adicional al guardar).
+- **Verificado**: `/api/slots` ya devuelve 0 URLs absolutas propias; PUT con URL absoluta se guarda relativa; CDNs externas intactas; los ficheros cargan 200 por ruta relativa en producción. 7 tests pytest pasan (`tests/test_relativize_slots.py` + `test_slot_usage.py`). Lint JS/PY limpio.
+- **Nota**: el fix está en código; en producción surtirá efecto tras **volver a desplegar**.
+
+
 ## Precios por-programa (tarifas distintas por itinerario) (Feb 2026)
 - **User request**: aplicar precios DISTINTOS a 6 itinerarios Atlas↔Desierto (el sistema antes solo tenía un precio global).
 - **Nuevo** `lib/programPricing.js`: matriz de tarifas por `routeId` (`[{people, low, high}]`, low=Temporada baja, high=Temporada alta). `getProgramTiers(routeId)` devuelve la tarifa propia o `null` (fallback al precio global).

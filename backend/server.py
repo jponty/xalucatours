@@ -336,6 +336,19 @@ ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp", "image/avif"}
 MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB
 
 
+def _relativize_url(url):
+    """Strip scheme+host from URLs that point at our own `/api/...` paths so
+    image slots are DOMAIN-INDEPENDENT across environments (preview ↔
+    production). Storing an absolute URL with the origin baked in breaks the
+    image when the same record is served from another domain — the frontend
+    <img> then errors out and reverts to its code fallback. External stock
+    CDNs (images.unsplash.com, images.pexels.com, …) are left untouched."""
+    if not url or not isinstance(url, str):
+        return url
+    m = re.match(r"^https?://[^/]+(/api/.*)$", url, re.IGNORECASE)
+    return m.group(1) if m else url
+
+
 class SlotPayload(BaseModel):
     # url is optional so the same endpoint can update metadata-only
     # (alt_i18n / caption_i18n) without touching the image itself,
@@ -353,6 +366,8 @@ async def get_slot(slot_id: str):
     doc = await db.image_slots.find_one({"_id": slot_id}, {"_id": 0})
     if not doc:
         return {"slot_id": slot_id, "url": None, "exists": False}
+    if doc.get("url"):
+        doc["url"] = _relativize_url(doc["url"])
     return {"slot_id": slot_id, "exists": True, **doc}
 
 
@@ -406,7 +421,7 @@ async def list_image_slots():
     async for d in cursor:
         items.append({
             "slot_id":  d.pop("_id"),
-            "url":      d.get("url"),
+            "url":      _relativize_url(d.get("url")),
             "alt":      d.get("alt"),
             "alt_i18n": d.get("alt_i18n"),
             "cleared":  bool(d.get("cleared")),
@@ -424,6 +439,9 @@ async def put_slot(slot_id: str, payload: SlotPayload):
     for key in ("url", "alt", "alt_i18n", "caption_i18n", "cleared", "source"):
         if key in payload_dict:
             update[key] = payload_dict[key]
+    # Persist our own image URLs as domain-independent relative paths.
+    if "url" in update and update.get("url"):
+        update["url"] = _relativize_url(update["url"])
     # If a fresh image URL is being set, the slot is no longer "cleared".
     if "url" in update and update.get("url"):
         update["cleared"] = False
