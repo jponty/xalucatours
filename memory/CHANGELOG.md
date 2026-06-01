@@ -1,4 +1,13 @@
 
+## Imágenes reales de Unsplash en las 40 tarjetas de "viajes disponibles" (Feb 2026)
+- **User request**: actualizar las imágenes de TODAS las tarjetas de la sección "40 viajes disponibles" (Home) con fotos reales y relevantes de Unsplash por itinerario.
+- **Script** `scripts/fill_alltrips_unsplash.mjs`: mapea cada `routeId` a un tema (dunas, kasbah, Atlas, camello, Marrakech, Koutoubia, Essaouira, Fez, curtiembre, Chefchaouen, Meknes, Volúbilis, Tánger, gargantas, Agafay, enduro, fin de año). Hace 1 búsqueda por tema (cacheada, `orientation=landscape`), reparte fotos ÚNICAS por tarjeta (dedupe por id), descarga el JPEG recortado 4:3 del CDN de Unsplash y lo sube al slot `home.all-trips.{routeId}` vía `POST /api/slots/{slot}/upload` (auto-hospedado).
+- **Rate-limit aware**: la clave Unsplash es DEMO (50/h). Solo las ~17 búsquedas consumen cuota; las 40 descargas van por CDN (sin cuota). Resultado: **40/40 tarjetas actualizadas** en una pasada.
+- Relevancia verificada: Volúbilis → viaje con Volúbilis, Chefchaouen → Tánger/Rif, patio imperial → Ciudades Imperiales, Atlas/dunas/camello según ruta. 1 sola repetición (tema "dunes" con 4 fotos landscape para 5 usos).
+- **Verificado** (screenshot Home): 40 tarjetas renderizadas, 12/12 imágenes muestreadas cargadas (naturalWidth>0). Imágenes auto-hospedadas vía `/api/files` (robustas).
+- **Nota deploy**: las imágenes se guardan como slots CMS en la base de datos (igual que el resto del sitio). Para verlas en producción hay que volver a desplegar.
+
+
 ## "Mapa del día – Puntos de interés del día" totalmente editable (Feb 2026)
 - **User request**: hacer 100% editable desde el modo edición la sección del mapa del día (títulos, descripciones, nombres de POIs, contenido de desplegables, textos asociados, imágenes, galerías). Criterio general: todas las secciones de todas las páginas deben ser editables sin excepciones.
 - **`DayRouteMap.jsx`** (3 tiers: landmarks / waypoints / stay) instrumentado con `<EditableText>`:
