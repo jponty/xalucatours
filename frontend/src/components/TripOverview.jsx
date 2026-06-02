@@ -5,6 +5,7 @@ import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { buildRouteGalleryCells } from "@/lib/routeLandmarks";
 import EditableImage from "@/components/EditableImage";
+import EditableText from "@/components/EditableText";
 
 /* ----- Trilingual labels ----- */
 const T = {
@@ -109,23 +110,38 @@ const RouteImageGallery = ({ days, t }) => {
       <span className="overline inline-flex items-center gap-2 text-[#C16542]">
         <Images className="w-3 h-3" strokeWidth={1.8} />{t.gallery_label}
       </span>
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+      {/* Pinterest-style masonry — variable image heights, itinerary route
+          order preserved (DOM order = route order). Mobile 2 cols · tablet 3
+          · desktop 4. Images AND titles reference the SAME global Galería del
+          lugar slots (poi.{poiKey}.gallery.{i} / .title) — no duplicate
+          records; edits in the place gallery reflect here automatically. */}
+      <div className="mt-6 columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4">
         {cells.map((c, i) => (
-          <div
+          <figure
             key={`${c.slot}-${i}`}
             data-testid={`route-gallery-tile-${i}`}
             data-route-gallery-slot={c.slot}
-            className="relative aspect-square overflow-hidden bg-[#1A1513]"
+            className="relative mb-3 md:mb-4 break-inside-avoid overflow-hidden bg-[#1A1513] group"
           >
             <EditableImage
               slot={c.slot}
               fallback={c.src}
               alt={pick(c.caption, lang)}
-              aspectRatio="1/1"
               imgProps={{ loading: "lazy" }}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="block w-full h-auto transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
             />
-          </div>
+            {c.caption && (
+              <figcaption className="absolute inset-x-0 bottom-0 z-[2] p-3 md:p-4 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent">
+                <EditableText
+                  slot={`${c.slot}.title`}
+                  defaults={c.caption}
+                  as="h6"
+                  multiline={false}
+                  className="font-serif-x text-[#FDFBF7] text-[13px] md:text-[15px] leading-snug [text-shadow:_0_1px_6px_rgba(0,0,0,0.55)]"
+                />
+              </figcaption>
+            )}
+          </figure>
         ))}
       </div>
     </div>

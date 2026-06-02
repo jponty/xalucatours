@@ -1,4 +1,13 @@
 
+## Route Gallery → masonry estilo Pinterest con título superpuesto (Feb 2026)
+- **User request**: reemplazar el grid cuadrado de la "Galería del recorrido" (Resumen visual del viaje) por un masonry responsive estilo Pinterest con alturas variables; mantener las mismas imágenes sincronizadas de la Galería del lugar (sin duplicar registros, referenciando los slots existentes, en orden de itinerario); superponer el TÍTULO de cada imagen usando el mismo título sincronizado de la Galería del lugar (se actualiza automáticamente si se edita allí); responsive: desktop multi-columna, tablet menos columnas, móvil 1-2 columnas.
+- **Implementación** (`components/TripOverview.jsx` → `RouteImageGallery`):
+  - Layout masonry con CSS multi-columna: `columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4`, items `break-inside-avoid`. Imágenes con `w-full h-auto` (altura natural → masonry real). Sin `aspectRatio` (SmartImage renderiza tamaño natural).
+  - Título superpuesto: `<EditableText slot={\`${c.slot}.title\`} defaults={c.caption}>` con gradiente inferior. `c.slot = poi.${poiKey}.gallery.${i}` → el título usa `poi.${poiKey}.gallery.${i}.title`, el MISMO slot global que la card de la Galería del lugar → sincronizado y editable desde cualquier sitio, sin títulos separados.
+  - Orden de itinerario preservado (orden del DOM = orden de ruta).
+- **Validado** (Playwright): masonry presente con 72 items; `poi.marrakech.gallery.0` → título "Jemaa el-Fna", `.1` → "Medersa Ben Youssef", `.2` → "Jardín Majorelle" (coinciden con la Galería del lugar). Columnas responsive: **móvil 2 · tablet 3 · desktop 4**.
+
+
 ## Sincronización global de Puntos de interés (Galería del lugar) (Feb 2026)
 - **User request**: el mismo punto de interés (Mapa del día → Puntos de interés → Galería del lugar) debe estar SINCRONIZADO en todas las páginas: mismas cards/imágenes/títulos/descripciones/captions; editar en una página actualiza en todas; sin versiones duplicadas; colección/origen global; emparejado por identificador estable (no por nombre); textos traducibles por idioma pero ligados al mismo contenido compartido; aplica a todas las páginas y días.
 - **Antes**: los slots de la Galería del lugar eran POR PÁGINA (`${pageNs}.landmark.${id}.gallery.${i}`) → el mismo POI en páginas distintas no se sincronizaba.
