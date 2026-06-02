@@ -1461,7 +1461,7 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
         </div>
       </div>
       <DayRouteMap day={day} idx={idx} total={total} accent={day.accent} />
-      <DayGallery day={day} accent={day.accent} />
+      <DayGallery day={day} accent={day.accent} dayNumber={idx + 1} />
     </article>
   );
 };

@@ -290,3 +290,8 @@
 - **Añadir a tag existente (frontend `ImageLibraryPicker.jsx`)**: «Subir varias» ahora envía el tag activo (cuando hay un filtro de tag seleccionado) → las imágenes se unen a ese grupo. Pista visual `image-library-active-tag-hint`. Importar una carpeta con el mismo nombre que un tag también fusiona automáticamente. Banner muestra subidas / duplicadas / omitidas.
 - **Fix rendimiento (crítico)**: `put_object` (requests síncrono) bloqueaba el event loop de async durante toda la subida, congelando el backend. Ahora todas las llamadas a `put_object` se ejecutan en thread pool (`asyncio.to_thread`). Resultado medido: subida de 2 imágenes 14.5s → 0.83s, y otros endpoints responden en paralelo durante subidas.
 - **Verificado**: e2e en navegador (carpeta→tag, añadir a tag activo, duplicado detectado sin almacenar) + tests `test_dedupe.py` (2) y `test_folder_upload.py` (2) PASS.
+
+## Tag de día en la Galería del día (Feb 2026)
+- **Petición**: en las páginas de viaje, en la sección "Galería del día", sustituir las tags de categoría de cada imagen (CULTURA, GASTRONOMÍA, PAISAJE…) por la tag del día del itinerario (DÍA 1, DÍA 2…).
+- **Implementado** (`DayGallery.jsx` + `ProgramTemplate.jsx`): `DayBlock` pasa `dayNumber={idx+1}` a `<DayGallery>`. La tag de cada imagen (tile y lightbox) ahora muestra "DÍA N" (trilingüe: Día/Day/Jour, renderizado en mayúsculas por CSS) en color de acento del día. Se eliminó el uso de `GALLERY_KIND_LABELS` y los `kindSlot` editables de la galería; la caption sigue siendo editable.
+- **Verificado**: página Tánger-Fez muestra Día 1→Día 6 correctamente, una tag por galería. Aplica a todas las páginas que usan ProgramTemplate. Lint OK.

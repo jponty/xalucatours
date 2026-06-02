@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import { X, Camera, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
-import { DAY_GALLERIES, DEFAULT_DAY_GALLERY, GALLERY_KIND_LABELS } from "@/lib/dayGalleries";
+import { DAY_GALLERIES, DEFAULT_DAY_GALLERY } from "@/lib/dayGalleries";
 import { DAY_GALLERIES_GENERATED } from "@/lib/dayGalleriesGenerated";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
+
+/* Per-image tag shown on every day-gallery image: the itinerary day it
+   belongs to (DÍA 1, DÍA 2…) instead of a content category. */
+const DAY_TAG = { es: "Día", en: "Day", fr: "Jour" };
+const dayTagLabel = (dayNumber, lang) =>
+  dayNumber ? `${pick(DAY_TAG, lang)} ${dayNumber}` : null;
 
 const SECTION_LABELS = {
   es: { eyebrow: "Galería del día", title: "El recorrido en imágenes.", count_singular: "imagen", count_plural: "imágenes", close: "Cerrar", prev: "Anterior", next: "Siguiente" },
@@ -23,7 +29,7 @@ const DAY_UI = {
 };
 
 /* Full-screen viewer — opens a single image in a larger format. */
-const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
+const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t, dayLabel, accent }) => {
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
@@ -40,7 +46,6 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
 
   const current = images[idx];
   if (!current) return null;
-  const kindLabel = GALLERY_KIND_LABELS[current.kind];
 
   return (
     <div data-testid="day-gallery-lightbox"
@@ -84,14 +89,14 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
         </div>
         <figcaption className="mt-5 md:mt-6 flex flex-wrap items-center justify-between gap-4 text-[#FDFBF7]">
           <div>
-            {kindLabel && (
-              <EditableText
-                slot={current.kindSlot}
-                defaults={kindLabel}
-                as="span"
-                multiline={false}
-                className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]"
-              />
+            {dayLabel && (
+              <span
+                data-testid="lightbox-day-tag"
+                className="text-[10px] tracking-[0.3em] uppercase"
+                style={{ color: accent || "#D4A373" }}
+              >
+                {dayLabel}
+              </span>
             )}
             <EditableText
               slot={current.captionSlot}
@@ -113,10 +118,11 @@ const Lightbox = ({ images, idx, onClose, onPrev, onNext, lang, t }) => {
  * DayGallery — clickable square-tile collage of up to 10 images per day.
  * Clicking a tile opens it in a larger format (lightbox) with prev/next nav.
  */
-export const DayGallery = ({ day, accent = "#C16542" }) => {
+export const DayGallery = ({ day, accent = "#C16542", dayNumber }) => {
   const { lang } = useLanguage();
   const { textEditMode } = useEditMode();
   const t = SECTION_LABELS[lang] || SECTION_LABELS.es;
+  const dayLabel = dayTagLabel(dayNumber, lang);
   // Stage-specific Pexels gallery (auto-generated) takes priority, then any
   // hand-curated gallery, then a generic fallback — so every itinerary day
   // shows real, stage-coherent imagery.
@@ -137,7 +143,6 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
     ...img,
     slot: `${galleryBase}.${i}`,
     captionSlot: `${galleryBase}.${i}.caption`,
-    kindSlot: `${galleryBase}.${i}.kind`,
   }));
 
   const showNext = () => setOpen((i) => (i + 1) % cells.length);
@@ -168,7 +173,6 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
         {/* Uniform square grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {cells.map((img, i) => {
-            const kindLabel = GALLERY_KIND_LABELS[img.kind];
             return (
               <button
                 key={img.slot}
@@ -194,15 +198,14 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
                 </span>
 
                 <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 text-left text-[#FDFBF7] ${textEditMode ? "" : "pointer-events-none"}`}>
-                  {kindLabel && (
-                    <EditableText
-                      slot={img.kindSlot}
-                      defaults={kindLabel}
-                      as="span"
-                      multiline={false}
+                  {dayLabel && (
+                    <span
+                      data-testid={`day-gallery-tag-${day.route_id}-${i}`}
                       className="block text-[9px] md:text-[10px] tracking-[0.3em] uppercase"
                       style={{ color: accent }}
-                    />
+                    >
+                      {dayLabel}
+                    </span>
                   )}
                   <EditableText
                     slot={img.captionSlot}
@@ -226,6 +229,8 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
           onNext={showNext}
           lang={lang}
           t={t}
+          dayLabel={dayLabel}
+          accent={accent}
         />
       )}
     </section>
