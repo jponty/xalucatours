@@ -619,13 +619,15 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="File exceeds 20 MB limit.")
 
+    sha = hashlib.sha256(data).hexdigest()
+    size_original = len(data)
     # Optimise: resize to max width + convert to WebP before storing.
     data, ctype, ext = optimize_image(data, file.content_type)
     safe_slot = "".join(c for c in slot_id if c.isalnum() or c in "._-")[:60] or "slot"
     storage_path = f"xaluca/slots/{safe_slot}/{uuid.uuid4().hex}.{ext}"
 
     try:
-        result = put_object(storage_path, data, ctype)
+        result = await asyncio.to_thread(put_object, storage_path, data, ctype)
     except Exception as exc:
         logger.exception("Emergent storage upload failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
@@ -656,6 +658,8 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         "original_filename": file.filename,
         "content_type": ctype,
         "size": doc["size"],
+        "sha256": sha,
+        "size_original": size_original,
         "is_deleted": False,
         "created_at": doc["updated_at"],
     })
@@ -684,6 +688,7 @@ async def upload_library_images(
 
     uploaded: List[Dict] = []
     skipped: List[Dict] = []
+    duplicates: List[Dict] = []
     now_iso = datetime.now(timezone.utc).isoformat()
 
     for f in files:
@@ -694,10 +699,33 @@ async def upload_library_images(
         if len(data) > MAX_UPLOAD_BYTES:
             skipped.append({"filename": f.filename, "reason": "too-large"})
             continue
+
+        # Duplicate detection: hash the ORIGINAL bytes (content + size).
+        sha = hashlib.sha256(data).hexdigest()
+        existing = await db.files.find_one(
+            {"sha256": sha, "size_original": len(data), "is_deleted": {"$ne": True}}
+        )
+        if not existing:  # fall back to hash-only (older records lacked size_original)
+            existing = await db.files.find_one({"sha256": sha, "is_deleted": {"$ne": True}})
+        if existing:
+            # Already in the gallery — never store again. If a tag was
+            # requested, just add this image to that group.
+            tag_added = False
+            if folder_tag and folder_tag not in (existing.get("tags") or []):
+                await db.files.update_one({"id": existing["id"]}, {"$addToSet": {"tags": folder_tag}})
+                tag_added = True
+            duplicates.append({
+                "filename": f.filename,
+                "existing_id": existing.get("id"),
+                "url": f"/api/files/{existing.get('storage_path')}",
+                "tag_added": tag_added,
+            })
+            continue
+
         data, ctype, ext = optimize_image(data, f.content_type)
         storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
         try:
-            result = put_object(storage_path, data, ctype)
+            result = await asyncio.to_thread(put_object, storage_path, data, ctype)
         except Exception as exc:
             logger.exception("Bulk upload — storage put failed for %s", f.filename)
             skipped.append({"filename": f.filename, "reason": f"storage-error:{exc}"})
@@ -710,6 +738,8 @@ async def upload_library_images(
             "original_filename": f.filename,
             "content_type": ctype,
             "size": result.get("size", len(data)),
+            "sha256": sha,
+            "size_original": len(data),
             "is_deleted": False,
             "tags": list(base_tags),
             "created_at": now_iso,
@@ -724,7 +754,12 @@ async def upload_library_images(
             "size": record["size"],
         })
 
-    return {"uploaded": uploaded, "skipped": skipped, "count": len(uploaded)}
+    return {
+        "uploaded": uploaded,
+        "skipped": skipped,
+        "duplicates": duplicates,
+        "count": len(uploaded),
+    }
 
 
 class FileUpdate(BaseModel):
@@ -795,11 +830,13 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
     if not record:
         raise HTTPException(status_code=404, detail="File not found.")
 
+    sha = hashlib.sha256(data).hexdigest()
+    size_original = len(data)
     data, ctype, ext = optimize_image(data, file.content_type)
     storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
     result: Dict = {}
     try:
-        result = put_object(storage_path, data, ctype)
+        result = await asyncio.to_thread(put_object, storage_path, data, ctype)
     except Exception as exc:
         logger.exception("Replace — storage put failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
@@ -812,6 +849,8 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
             "storage_path": canonical_path,
             "content_type": ctype,
             "size": result.get("size", len(data)),
+            "sha256": sha,
+            "size_original": size_original,
             "original_filename": file.filename or record.get("original_filename"),
             "updated_at": now_iso,
         }},
@@ -966,7 +1005,7 @@ async def pexels_import(payload: PexelsImportRequest):
     # 3. Upload to object storage (same path convention as bulk-upload)
     storage_path = f"xaluca/library/pexels_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
     try:
-        result = put_object(storage_path, data, content_type)
+        result = await asyncio.to_thread(put_object, storage_path, data, content_type)
     except Exception as exc:
         logger.exception("Pexels import — storage put failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
@@ -1084,7 +1123,7 @@ async def pexels_bulk_fill(payload: BulkFillRequest):
                 content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
                 ext = ext_map.get(content_type, "jpg")
                 storage_path = f"xaluca/library/pexels_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
-                result = put_object(storage_path, data, content_type)
+                result = await asyncio.to_thread(put_object, storage_path, data, content_type)
                 canonical_path = result.get("path", storage_path)
                 public_url = f"/api/files/{canonical_path}"
                 now_iso = datetime.now(timezone.utc).isoformat()
@@ -1269,7 +1308,7 @@ async def unsplash_import(payload: UnsplashImportRequest):
     # 4. Upload to object storage
     storage_path = f"xaluca/library/unsplash_{photo.get('id')}_{uuid.uuid4().hex[:8]}.jpg"
     try:
-        result = put_object(storage_path, data, content_type)
+        result = await asyncio.to_thread(put_object, storage_path, data, content_type)
     except Exception as exc:
         logger.exception("Unsplash import — storage put failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
@@ -1732,3 +1771,8 @@ async def startup_storage():
         # Don't crash the app — uploads will surface a 502 if storage is down,
         # but every other endpoint stays available.
         logger.error("Emergent object storage init failed: %s", exc)
+    # Index for fast duplicate detection on the library/files collection.
+    try:
+        await db.files.create_index("sha256")
+    except Exception as exc:
+        logger.error("files.sha256 index creation failed: %s", exc)

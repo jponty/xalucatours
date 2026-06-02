@@ -120,7 +120,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
     return () => { cancelled = true; };
   }, [open, items, usageById]);
 
-  /* ---- Bulk upload ---- */
+  /* ---- Bulk upload (adds to the active tag group when one is filtered) ---- */
   const handleBulkUpload = useCallback(async (fileList) => {
     if (!fileList || fileList.length === 0) return;
     setUploading(true);
@@ -129,18 +129,24 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
     try {
       const fd = new FormData();
       Array.from(fileList).forEach((f) => fd.append("files", f));
+      if (activeTag) fd.append("tag", activeTag);   // join the group being viewed
       const res = await fetch(`${API}/api/library/upload`, { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.detail || "Error al subir los archivos.");
-      setUploadResult({ count: data.count || 0, skipped: (data.skipped || []).length });
+      setUploadResult({
+        count: data.count || 0,
+        skipped: (data.skipped || []).length,
+        duplicates: (data.duplicates || []).length,
+        tag: activeTag || null,
+      });
       setRefreshTick((n) => n + 1);
-      setTimeout(() => setUploadResult(null), 3500);
+      setTimeout(() => setUploadResult(null), 4500);
     } catch (err) {
       setError(err.message || "No se pudieron subir los archivos.");
     } finally {
       setUploading(false);
     }
-  }, []);
+  }, [activeTag]);
 
   /* ---- Folder import: upload a whole folder, group under its name ---- */
   const slugifyTag = (raw) =>
@@ -189,6 +195,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
 
     let uploaded = 0;
     let skipped = 0;
+    let dups = 0;
     let done = 0;
     try {
       for (const batch of batches) {
@@ -200,13 +207,14 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         if (!res.ok) throw new Error(data?.detail || "Error al subir la carpeta.");
         uploaded += data.count || 0;
         skipped += (data.skipped || []).length;
+        dups += (data.duplicates || []).length;
         done += batch.length;
         setFolderProgress({ done, total: all.length, tag: folderTag });
       }
-      setUploadResult({ count: uploaded, skipped, tag: folderTag });
+      setUploadResult({ count: uploaded, skipped, duplicates: dups, tag: folderTag });
       setActiveTag(folderTag);          // jump straight to the new group
       setRefreshTick((n) => n + 1);
-      setTimeout(() => setUploadResult(null), 5000);
+      setTimeout(() => setUploadResult(null), 6000);
     } catch (err) {
       setError(err.message || "No se pudo importar la carpeta.");
     } finally {
@@ -463,6 +471,12 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
               ))}
             </div>
           )}
+          {activeTag && (
+            <p className="text-[11px] text-[#7C3B23] flex items-center gap-1.5" data-testid="image-library-active-tag-hint">
+              <UploadCloud className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
+              <span>Las imágenes que subas con «Subir varias» se añadirán a <strong>#{activeTag}</strong> (las duplicadas no se vuelven a guardar).</span>
+            </p>
+          )}
         </div>
 
         {/* Grid */}
@@ -482,13 +496,17 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                 <span>«{uploadResult.deletedName}» eliminada de la biblioteca.</span>
               ) : uploadResult.tag ? (
                 <span>
-                  Carpeta importada: {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"} agrupada{uploadResult.count === 1 ? "" : "s"} bajo <strong>#{uploadResult.tag}</strong>.
-                  {uploadResult.skipped > 0 && ` (${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"})`}
+                  {uploadResult.count > 0
+                    ? <>Importado a <strong>#{uploadResult.tag}</strong>: {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"}.</>
+                    : <>No se añadió ninguna foto nueva a <strong>#{uploadResult.tag}</strong>.</>}
+                  {uploadResult.duplicates > 0 && ` ${uploadResult.duplicates} ya existía${uploadResult.duplicates === 1 ? "" : "n"} (sin duplicar).`}
+                  {uploadResult.skipped > 0 && ` ${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"}.`}
                 </span>
               ) : (
                 <span>
                   {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"} subida{uploadResult.count === 1 ? "" : "s"}.
-                  {uploadResult.skipped > 0 && ` (${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"})`}
+                  {uploadResult.duplicates > 0 && ` ${uploadResult.duplicates} ya existía${uploadResult.duplicates === 1 ? "" : "n"} (sin duplicar).`}
+                  {uploadResult.skipped > 0 && ` ${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"}.`}
                 </span>
               )}
             </div>
