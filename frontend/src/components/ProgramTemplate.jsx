@@ -16,7 +16,7 @@ import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
 import { useSlotId } from "@/components/EditableSection";
-import { tripHeroSlot } from "@/lib/tripHero";
+import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
@@ -1226,7 +1226,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId }) => {
   <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
       slot={heroSlot}
-      fallback={vt.hero_image}
+      fallback={tripHeroImage(routeId) || vt.hero_image}
       alt=""
       aspectRatio="21/9"
       priority

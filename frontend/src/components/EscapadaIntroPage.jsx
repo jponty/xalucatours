@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Plane, Mail, Phone } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { tripHeroSlot } from "@/lib/tripHero";
+import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import ContactForm from "@/components/ContactForm";
 
 /* ============================================================
@@ -72,7 +72,7 @@ const Hero = ({ data, lang, t, routeId }) => (
   >
     <EditableImage
       slot={tripHeroSlot(routeId)}
-      fallback={data.image}
+      fallback={tripHeroImage(routeId) || data.image}
       alt={pick(data.title, lang)}
       priority
       aspectRatio="16/9"

@@ -22,6 +22,52 @@ import { IMG } from "./imageBank";
 
 const i18n = (es, en, fr) => ({ es, en, fr });
 
+/* Per-route MASTER images (unique, relevant photos sourced from Unsplash by
+   destination/title). These are the reference images for each route; the
+   Hero and every listing inherit them via lib/tripHero.js. */
+const ROUTE_IMAGES = {
+  tourAtlasDesierto45: "https://images.unsplash.com/photo-1581080565335-47b4b5e7abf1?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxBaXQlMjBCZW5oYWRkb3UlMjBrYXNiYWglMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MTZ8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourAtlasDesierto56: "https://images.unsplash.com/photo-1527960299979-ae13298358b6?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxrYXNiYWglMjByb2FkJTIwRGFkZXMlMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MTd8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourAtlasDesierto67: "https://images.unsplash.com/photo-1553523291-8bac4d75344d?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxUb2RyYSUyMGdvcmdlJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzE3fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourDesiertoAtlas67: "https://images.unsplash.com/photo-1548364504-57247d6f96bb?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxTYWhhcmElMjBkdW5lcyUyME1vcm9jY28lMjBzdW5yaXNlfGVufDF8MHx8fDE3ODA0MzU3MTh8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechErg45: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxLb3V0b3ViaWElMjBNYXJyYWtlY2glMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MTl8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechErg56: "https://images.unsplash.com/photo-1559586616-361e18714958?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxFcmclMjBDaGViYmklMjBkdW5lcyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTcxOXww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechErg67: "https://images.unsplash.com/photo-1597662786834-8eea85ad4841?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxBdGxhcyUyMG1vdW50YWlucyUyMHNub3clMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MjB8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechLoop34: "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxNYXJyYWtlY2glMjBtZWRpbmElMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MjF8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechLoop45: "https://images.unsplash.com/photo-1511185307590-3c29c11275ca?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxNZXJ6b3VnYSUyMGRlc2VydCUyMGR1bmVzJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzIxfDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechLoop56: "https://images.unsplash.com/photo-1597823262196-cc7e878d73ce?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxBdGxhcyUyMGJlcmJlciUyMHZpbGxhZ2UlMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MjJ8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechLoop67: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxEcmFhJTIwdmFsbGV5JTIwcGFsbSUyMGdyb3ZlJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzIzfDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechEss45: "https://images.unsplash.com/photo-1624802746702-60ca95bdb605?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxFc3Nhb3VpcmElMjBwb3J0JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzI0fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourFezRak67: "https://images.unsplash.com/photo-1527338611623-4e242563220a?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHw0fHxGZXolMjBtZWRpbmElMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MjR8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourFezRak78: "https://images.unsplash.com/photo-1613506021358-356ee3885696?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxGZXolMjB0YW5uZXJ5JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzI1fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechFez67: "https://images.unsplash.com/photo-1760681556332-c7b60e649332?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxNb3JvY2NhbiUyMHJpYWQlMjBjb3VydHlhcmR8ZW58MXwwfHx8MTc4MDQzNTcyNnww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechFez89: "https://images.unsplash.com/photo-1650709042954-960b207eda51?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxWb2x1YmlsaXMlMjBSb21hbiUyMHJ1aW5zJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzI2fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechFez910: "https://images.unsplash.com/photo-1729442045650-8753bd2e6d93?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxBdGxhcyUyMG1vdW50YWluJTIwcm9hZCUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTcyN3ww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourTangerRak89: "https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxDaGVmY2hhb3VlbiUyMGJsdWUlMjBjaXR5JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzI4fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourTangerRak910: "https://images.unsplash.com/flagged/photo-1555169048-3c4845cfcf1c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxDaGVmY2hhb3VlbiUyMGJsdWUlMjBzdHJlZXQlMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3Mjh8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourCiudadesImperiales45: "https://images.unsplash.com/photo-1737921650058-200b00360ada?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxIYXNzYW4lMjB0b3dlciUyMFJhYmF0JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzI5fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourCiudadesImperiales67: "https://images.unsplash.com/photo-1538230575309-59dfc388ae36?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxDYXNhYmxhbmNhJTIwSGFzc2FuJTIwSUklMjBtb3NxdWUlMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3Mjl8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourCiudadesImperialesRif67: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxDaGVmY2hhb3VlbiUyMG1lZGluYSUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTczMHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourCiudadesImperialesRif78: "https://images.unsplash.com/photo-1515386474292-47555758ef2e?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxUZXRvdWFuJTIwbWVkaW5hJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzMxfDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourTangerFez45: "https://images.unsplash.com/photo-1654022945053-f61ac2bf839a?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxUYW5naWVyJTIwTW9yb2NjbyUyMGNvYXN0fGVufDF8MHx8fDE3ODA0MzU3MzF8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourTangerFez56: "https://images.unsplash.com/photo-1701676639172-421b5e0b148b?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwzfHxDaGVmY2hhb3VlbiUyMGFsbGV5JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzMyfDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourFezTanger56: "https://images.unsplash.com/photo-1768213469879-bd3358bc8aa2?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxGZXolMjByb29mdG9wcyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTczMnww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourFezTanger67: "https://images.unsplash.com/photo-1536237717235-0acadb345d8c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHw0fHxBc2lsYWglMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MzN8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaMarrakech23: "https://images.unsplash.com/photo-1531230689007-0b32d7a7c33e?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwzfHxKZW1hYSUyMGVsJTIwRm5hJTIwTWFycmFrZWNoJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM0fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaRakAgafay34: "https://images.unsplash.com/photo-1489573280374-2e193c63726c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHw0fHxBZ2FmYXklMjBkZXNlcnQlMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MzV8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaRakErgRak23: "https://images.unsplash.com/photo-1689322366136-4740ee40d932?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxTYWhhcmElMjBzdW5zZXQlMjBjYW1lbCUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTczNXww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaRakErgRak34: "https://images.unsplash.com/photo-1624802294472-4dc449c1c127?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxIaWdoJTIwQXRsYXMlMjB2aWxsYWdlJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM2fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaFez23: "https://images.unsplash.com/flagged/photo-1555169048-5c540765a212?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxGZXolMjBibHVlJTIwZ2F0ZSUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTczN3ww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaFez34: "https://images.unsplash.com/photo-1534273006427-1686266049b7?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxNb3JvY2NhbiUyMHBvdHRlcnklMjBjcmFmdHN8ZW58MXwwfHx8MTc4MDQzNTczN3ww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaAtlas34: "https://images.unsplash.com/photo-1539790721942-75e9e9840c0c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHw1fHxIaWdoJTIwQXRsYXMlMjBrYXNiYWglMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3Mzh8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEscapadaDesierto34: "https://images.unsplash.com/photo-1769537145747-ff380b863f49?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxFcmclMjBDaGViYmklMjBzdW5yaXNlJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM5fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEnduroAventura45: "https://images.unsplash.com/photo-1545167496-31b3aa75296c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmN5Y2xlJTIwZGVzZXJ0JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM5fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEnduroAventura67: "https://images.unsplash.com/photo-1535191059345-c16453b851b2?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmJpa2UlMjBTYWhhcmElMjBkdW5lcyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc0MHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourFinDeAno2025: "https://images.unsplash.com/photo-1697666326566-a405766d995f?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxkZXNlcnQlMjBjYW1wJTIwbmlnaHQlMjBzdGFycyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc0MHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourDesiertoAtlas45: "https://images.unsplash.com/photo-1731169243672-9f935e40b6c8?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxFcmclMjBDaGViYmklMjBjYW1lbCUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc2M3ww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourMarrakechEss67: "https://images.unsplash.com/photo-1624802704371-c76faa34c3a0?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxFc3Nhb3VpcmElMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3NjR8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+};
+
 export const TRIP_REGIONS = [
   { id: "all",        label: i18n("Todos",               "All",                 "Tous") },
   { id: "sur",        label: i18n("Sur · Desierto",      "South · Desert",      "Sud · Désert") },
@@ -56,7 +102,7 @@ const mk = ({ routeId, region, pace, nights, image, title, summary }) => ({
   pace,
   nights,
   durationBucket: durationBucket(nights),
-  image,
+  image: ROUTE_IMAGES[routeId] || image,
   title:   typeof title   === "string" ? i18n(title, title, title) : title,
   summary: typeof summary === "string" ? i18n(summary, summary, summary) : summary,
 });
