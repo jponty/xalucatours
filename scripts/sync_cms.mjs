@@ -14,7 +14,7 @@
  * USAGE
  *   # One-click: copy preview → production
  *   node scripts/sync_cms.mjs sync \
- *        --from https://marruecos-cms-sync.preview.emergentagent.com \
+ *        --from https://morocco-trips-2.preview.emergentagent.com \
  *        --to   https://trip-curator-8.emergent.host \
  *        --password xaluca
  *

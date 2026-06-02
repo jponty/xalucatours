@@ -322,6 +322,9 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   return (
     <div
       data-testid="image-library-picker"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Biblioteca de imágenes"
       className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1A1513]/85 backdrop-blur-sm p-4 md:p-8"
       onClick={(e) => { if (e.target === e.currentTarget) onClose?.(); }}
     >
