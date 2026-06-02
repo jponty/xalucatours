@@ -7,6 +7,11 @@ import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 
+/* Master switch — the "Galería del día / El recorrido en imágenes" section
+   is hidden across ALL trip pages. All code, images and data remain intact;
+   set this back to `true` to re-enable the section everywhere. */
+const SHOW_DAY_GALLERY = false;
+
 const SECTION_LABELS = {
   es: { count_singular: "imagen", count_plural: "imágenes" },
   en: { count_singular: "image", count_plural: "images" },
@@ -40,6 +45,9 @@ export const DayGallery = ({ day, accent = "#C16542" }) => {
   // Page-namespaced base so the gallery is independent per itinerary URL,
   // even when several programmes reuse the same shared `route_id`.
   const galleryBase = useSlotId(`day.${day.route_id || day.id}.gallery`);
+
+  // Globally hidden across all trip pages (kept for easy re-enabling).
+  if (!SHOW_DAY_GALLERY) return null;
 
   if (!images || images.length === 0) return null;
 
