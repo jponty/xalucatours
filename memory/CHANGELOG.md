@@ -337,3 +337,7 @@
 - **UI** (`components/PexelsSelectionTab.jsx`): chips agrupados por categoría (Ciudad Imperial, Desierto, Kasbah, Costa, Cultura, Montaña, Oasis, Naturaleza) con punto de color; al pulsar un destino se abre su galería (24 fotos), cacheada por query para no re-llamar a la API. Importar reutiliza `/api/pexels/import`.
 - **Integración** (`components/ImageLibraryPicker.jsx`): 4ª pestaña con `overflow-x-auto` para móvil; subtítulo y footer contextuales.
 - **Verificado** (Playwright, localhost): 8 grupos / 27 destinos correctamente categorizados y rankeados; "Erg Chebbi" → `GET /api/pexels/search` 200 → 24 fotos de dunas del Sáhara on-topic con overlay "Usar esta". Lint OK. *(La importación final no se ejecutó en test para no sobrescribir slots reales; usa el flujo idéntico ya probado de la pestaña Pexels.)*
+
+## 2026-02-02 — Feature: botón "Cargar más resultados" en Selección Pexels
+- Añadida paginación a las galerías por destino de la pestaña "Selección" (`PexelsSelectionTab.jsx`): botón "Cargar más resultados" que carga la siguiente página de Pexels y la añade a la cuadrícula. Estados `page`/`hasMore`/`loadingMore`; la caché por destino guarda `{photos, page, hasMore}` para restaurar el set completo al volver. Mismo estilo que el botón de la pestaña Pexels.
+- **Verificado** (Playwright, localhost): Erg Chebbi → 24 fotos → "Cargar más" → 48 fotos (páginas 1 y 2). Lint OK.

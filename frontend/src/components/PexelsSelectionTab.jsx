@@ -32,6 +32,7 @@ const COPY = {
   inserted:  "Imagen insertada",
   importErr: "No se pudo importar la imagen. Inténtalo de nuevo.",
   by:        "por",
+  more:      "Cargar más resultados",
 };
 
 const fetchPexels = async (path, params) => {
@@ -51,27 +52,41 @@ export default function PexelsSelectionTab({ onSelect }) {
   const [active, setActive] = useState(null);   // { id, label, query }
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState(null);
   const [importingId, setImpId] = useState(null);
   const [importedId, setImpOk] = useState(null);
 
-  const cacheRef = useRef(new Map());            // query → photos[]
+  const cacheRef = useRef(new Map());            // query → { photos, page, hasMore }
 
   const openDestination = useCallback(async (dest) => {
     setActive(dest);
     setError(null);
     setImpOk(null);
     const cached = cacheRef.current.get(dest.query);
-    if (cached) { setPhotos(cached); setLoading(false); return; }
+    if (cached) {
+      setPhotos(cached.photos);
+      setPage(cached.page);
+      setHasMore(cached.hasMore);
+      setLoading(false);
+      return;
+    }
     setPhotos([]);
+    setPage(1);
+    setHasMore(false);
     setLoading(true);
     try {
       const data = await fetchPexels("/api/pexels/search", {
         query: dest.query, page: 1, per_page: PER_PAGE,
       });
       const list = data.photos || [];
-      cacheRef.current.set(dest.query, list);
+      const more = !!data.next_page;
+      cacheRef.current.set(dest.query, { photos: list, page: 1, hasMore: more });
       setPhotos(list);
+      setHasMore(more);
+      setPage(1);
     } catch (e) {
       if (e.name === "DataCloneError" || /postMessage|clone/i.test(e.message || "")) return;
       setError(e.message || "Pexels error");
@@ -81,10 +96,37 @@ export default function PexelsSelectionTab({ onSelect }) {
     }
   }, []);
 
+  const loadMore = useCallback(async () => {
+    if (!active || loadingMore) return;
+    setLoadingMore(true);
+    setError(null);
+    try {
+      const next = page + 1;
+      const data = await fetchPexels("/api/pexels/search", {
+        query: active.query, page: next, per_page: PER_PAGE,
+      });
+      const more = !!data.next_page;
+      setPhotos((prev) => {
+        const merged = [...prev, ...(data.photos || [])];
+        cacheRef.current.set(active.query, { photos: merged, page: next, hasMore: more });
+        return merged;
+      });
+      setHasMore(more);
+      setPage(next);
+    } catch (e) {
+      if (e.name === "DataCloneError" || /postMessage|clone/i.test(e.message || "")) return;
+      setError(e.message || "Pexels error");
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [active, page, loadingMore]);
+
   const back = useCallback(() => {
     setActive(null);
     setPhotos([]);
     setError(null);
+    setHasMore(false);
+    setPage(1);
   }, []);
 
   const importPhoto = useCallback(async (photo) => {
@@ -221,6 +263,21 @@ export default function PexelsSelectionTab({ onSelect }) {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {hasMore && photos.length > 0 && (
+          <div className="mt-6 flex justify-center">
+            <button
+              type="button"
+              data-testid="pexels-selection-load-more"
+              disabled={loadingMore}
+              onClick={loadMore}
+              className="inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#1A1513] disabled:opacity-40 disabled:cursor-not-allowed text-[#FDFBF7] px-5 py-2.5 text-[10px] tracking-[0.28em] uppercase transition-colors"
+            >
+              {loadingMore && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {COPY.more}
+            </button>
           </div>
         )}
 
