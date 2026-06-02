@@ -352,3 +352,12 @@
 - **(B) Dependencias de hooks**: tras inspección, NO había dependencias realmente ausentes — los ítems del informe eran constantes/funciones de módulo (`MONTHS`, `TRIPS`, `ALL_DESTINATIONS`, `FEATURED_ROUTES`, `resolveRouteCoords`, `seasonOf`), correctamente excluidas por `react-hooks`, o variables de callback (`m`, `d`, `titles` local). ESLint real pasa limpio. Falsos positivos del informe.
 - **Rechazado** del informe (incorrecto/arriesgado): `is None`→`==None` (PEP8 correcto), index-key en skeletons estáticos, localStorage→cookies (rompería persistencia de edición).
 - **Verificado**: ESLint sin issues en los 12 archivos; smoke test (home + modo edición) OK, sin errores de consola.
+
+## 2026-02-02 — Feature GLOBAL: "Mapa del día" derivado del texto del itinerario
+- **Qué**: La sección "Puntos de interés del día" ahora muestra, en TODOS los itinerarios, únicamente los lugares explícitamente mencionados en la descripción (`body`) de cada día. Se eliminan atracciones cercanas genéricas y aeropuertos.
+- **Nuevo** `lib/dayPlaceGazetteer.js`: gazetteer geolocalizado (~50 lugares: ciudades, kasbahs, gargantas, valles, montañas, oasis, hoteles/vivac) con alias trilingües normalizados (sin acentos). `deriveDayPlaces(day, lang)` escanea `day.body[lang]`, devuelve los lugares mencionados ordenados por aparición. Excluye aeropuertos por diseño (no hay entradas de aeropuerto) y excluye hubs de conexión (Casablanca) cuando solo aparecen en contexto de vuelo (heurística de ventana con palabras "vuelo/conexión/aeropuerto…").
+- `lib/dayLandmarks.js`: añadidos kinds `town`, `valley`, `camp`, `site`. `DAY_LANDMARKS` (lista curada con atracciones incorrectas) ya no se usa.
+- `components/DayRouteMap.jsx`: Tier 1 ahora usa `deriveDayPlaces` (memoizado) como fuente global; galería del landmark soporta `gallery` inline (vía CITY_PROFILES).
+- **Verificado** (Playwright, 2 itinerarios):
+  - Desierto día 1 `ad-ouarzazate-dades` → Ouarzazate · Boumalne Dades · Alto Atlas · Hotel Xaluca Dades (coincide exactamente con el ejemplo del usuario; sin Casablanca/aeropuertos/Skoura/Patas de Mono/Gargantas).
+  - Norte día 1 `trk89-tanger-chefchaouen` → Tánger · Cabo Espartel · Grutas de Hércules · Chefchaouen · Rif. Días 2-5 correctos. Lint OK.

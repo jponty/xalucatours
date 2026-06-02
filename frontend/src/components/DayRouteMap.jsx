@@ -1,11 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline, useMap } from "react-leaflet";
 import { MapPin, Navigation, Sparkles, ArrowRight, Home as HomeIcon } from "lucide-react";
-import { DAY_LANDMARKS, LANDMARK_KINDS, computeLandmarkBounds } from "@/lib/dayLandmarks";
+import { LANDMARK_KINDS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LandmarkCarousel, LandmarkCarouselHint } from "@/components/LandmarkCarousel";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { resolveDayRoute } from "@/lib/dayRouteResolver";
+import { deriveDayPlaces } from "@/lib/dayPlaceGazetteer";
 import { CITY_PROFILES } from "@/lib/cityProfiles";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
@@ -13,7 +14,10 @@ import { useSlotId } from "@/components/slotScope";
 /* ============================================================
    <DayRouteMap />
    Renders ONE "Mapa del día" section per day, with three tiers:
-     1) Rich landmark experience  – when DAY_LANDMARKS[route_id]
+     1) Rich landmark experience  – when deriveDayPlaces() finds ≥ 1 place
+        named in the day's own description text (the global rule: only
+        places explicitly mentioned in the itinerary, no airports, no
+        flight-only transit hubs, no generic nearby attractions).
      2) Polyline waypoint map     – when resolveDayRoute returns ≥ 2 stops
      3) Editorial "estancia" card – when only a single anchor or no data
    Every day always shows a section (never returns null) so the
@@ -327,7 +331,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
           </div>
         </div>
 
-        {activeLandmark && LANDMARK_GALLERIES[activeLandmark.id] ? (
+        {activeLandmark && ((activeLandmark.gallery && activeLandmark.gallery.length > 0) || LANDMARK_GALLERIES[activeLandmark.id]) ? (
           <LandmarkCarousel
             landmark={activeLandmark}
             accent={accent}
@@ -779,12 +783,14 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
 export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
   const { lang } = useLanguage();
   const t = LABEL_T[lang] || LABEL_T.es;
+  // Tier 1 — rich landmarks derived STRICTLY from the day's own description
+  // text (lib/dayPlaceGazetteer). Only places explicitly named in the
+  // itinerary appear; airports and flight-only transit hubs are excluded.
+  const landmarks = useMemo(() => deriveDayPlaces(day, lang), [day, lang]);
 
   if (!day || !day.route_id) return null;
 
-  // Tier 1 — rich landmarks
-  const landmarks = DAY_LANDMARKS[day.route_id];
-  if (landmarks && landmarks.length > 0) {
+  if (landmarks.length > 0) {
     return <LandmarkMode day={day} idx={idx} total={total} accent={accent} t={t} lang={lang} landmarks={landmarks} />;
   }
 

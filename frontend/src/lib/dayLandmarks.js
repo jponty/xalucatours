@@ -19,6 +19,10 @@ export const LANDMARK_KINDS = {
   airport:   { color: "#5C5248", label: T("Aeropuerto", "Airport", "Aéroport") },
   village:   { color: "#A07042", label: T("Pueblo bereber", "Berber village", "Village berbère") },
   mountain:  { color: "#5A6B4F", label: T("Montaña", "Mountain", "Montagne") },
+  town:      { color: "#8A5A44", label: T("Ciudad", "Town", "Ville") },
+  valley:    { color: "#7C8B5C", label: T("Valle", "Valley", "Vallée") },
+  camp:      { color: "#C97B3C", label: T("Vivac", "Desert camp", "Bivouac") },
+  site:      { color: "#9C6B3F", label: T("Sitio histórico", "Historic site", "Site historique") },
 };
 
 export const DAY_LANDMARKS = {
