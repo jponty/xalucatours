@@ -1,4 +1,12 @@
 
+## Galería del recorrido en "Resumen visual del viaje" (Feb 2026)
+- **User request**: añadir al final de la sección "Resumen visual del viaje / El recorrido completo de un vistazo" una galería que muestre el recorrido completo, REUTILIZANDO las imágenes ya existentes en la "Galería del lugar" de cada día y lugar; en orden de itinerario (por día y por lugar); sin buscar nuevas imágenes; independiente por página; y que refleje automáticamente cualquier edición hecha en la Galería del lugar (sin duplicar registros).
+- **Implementación**:
+  - NUEVO `lib/routeLandmarks.js`: `resolveDayLandmarks(day, lang)` replica EXACTAMENTE la lógica de tiers de `DayRouteMap` (Tier 1 `deriveDayPlaces` → id de gazetteer; Tier 2 waypoints → `${routeId}-${profileKey}-${idx}`; Tier 3 stay → `${routeId}-${profileKey}-stay`), devolviendo landmarks con su galería de 3 cards. `buildRouteGalleryCells(days, pageNs, lang)` genera las celdas en orden día→lugar→card con `slot = ${pageNs}.landmark.${id}.gallery.${i}` (mismo slot que usa `LandmarkCarousel`).
+  - `components/TripOverview.jsx`: nuevo subcomponente `RouteImageGallery` (usa `usePageNamespace` + `EditableImage`) renderizado al final de la sección. Eyebrow trilingüe "Galería del recorrido / Route gallery / Galerie de l'itinéraire".
+- **Validado** (Playwright, `marrakech_ergchebbi/programa_6n_7d`): galería presente al final con 72 tiles (24 lugares × 3); los slots del carrusel de la Galería del lugar coinciden 1:1 con los de la galería del recorrido (MATCH OK) → las ediciones se comparten. Reutiliza solo imágenes existentes; sin duplicar registros.
+
+
 ## CMS: "Editar" abre la biblioteca de imágenes directamente (Feb 2026)
 - **User request**: en modo edición, al pulsar "Editar" en una imagen debe abrirse directamente el diálogo de la biblioteca de imágenes, manteniendo disponible el uploader.
 - **Implementación**: `EditableImage.jsx` (componente `EditModal`) — `showLibrary` ahora inicia en `true`, de modo que al abrir el editor el `ImageLibraryPicker` aparece directamente sobre él. El uploader queda disponible tanto en el propio picker (Subir varias / Subir carpeta) como en el editor de detrás (subida single/multi + recorte). Al cerrar la biblioteca se vuelve al editor.

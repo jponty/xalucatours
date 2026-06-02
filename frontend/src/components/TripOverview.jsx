@@ -1,8 +1,11 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
-import { Compass, Thermometer, CloudSun, MapPin, Activity } from "lucide-react";
+import { Compass, Thermometer, CloudSun, MapPin, Activity, Images } from "lucide-react";
 import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { buildRouteGalleryCells } from "@/lib/routeLandmarks";
+import { usePageNamespace } from "@/components/slotScope";
+import EditableImage from "@/components/EditableImage";
 
 /* ----- Trilingual labels ----- */
 const T = {
@@ -20,6 +23,7 @@ const T = {
     climate_live_loading: "Cargando datos reales del clima…",
     climate_live_error: "No se han podido cargar los datos en vivo · mostrando datos orientativos.",
     day_label: "Día", night_label: "Noche",
+    gallery_label: "Galería del recorrido",
   },
   en: {
     eyebrow: "Visual trip summary",
@@ -35,6 +39,7 @@ const T = {
     climate_live_loading: "Loading live weather data…",
     climate_live_error: "Couldn't load live data · showing indicative values.",
     day_label: "Day", night_label: "Night",
+    gallery_label: "Route gallery",
   },
   fr: {
     eyebrow: "Résumé visuel du voyage",
@@ -50,6 +55,7 @@ const T = {
     climate_live_loading: "Chargement des données météo en direct…",
     climate_live_error: "Impossible de charger les données en direct · valeurs indicatives affichées.",
     day_label: "Jour", night_label: "Nuit",
+    gallery_label: "Galerie de l'itinéraire",
   },
 };
 
@@ -80,6 +86,52 @@ const FitBoundsCtl = ({ bounds }) => {
     if (bounds) map.flyToBounds(bounds, { padding: [50, 50], duration: 0.9 });
   }, [bounds, map]);
   return null;
+};
+
+/* ============================================================
+   RouteImageGallery — full-journey gallery at the bottom of the
+   Visual Trip Summary. It REUSES the existing "Galería del lugar"
+   images for every day and place, in real itinerary order (by day →
+   by place → by card). Each tile references the same CMS slot as the
+   place carousel, so editing an image there is reflected here
+   automatically (no new images, no duplicate records).
+============================================================ */
+const RouteImageGallery = ({ days, t }) => {
+  const { lang } = useLanguage();
+  const pageNs = usePageNamespace();
+  const cells = useMemo(
+    () => buildRouteGalleryCells(days, pageNs, lang),
+    [days, pageNs, lang],
+  );
+
+  if (cells.length === 0) return null;
+
+  return (
+    <div className="mt-14 md:mt-16" data-testid="trip-overview-route-gallery">
+      <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+        <Images className="w-3 h-3" strokeWidth={1.8} />{t.gallery_label}
+      </span>
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+        {cells.map((c, i) => (
+          <div
+            key={`${c.slot}-${i}`}
+            data-testid={`route-gallery-tile-${i}`}
+            data-route-gallery-slot={c.slot}
+            className="relative aspect-square overflow-hidden bg-[#1A1513]"
+          >
+            <EditableImage
+              slot={c.slot}
+              fallback={c.src}
+              alt={pick(c.caption, lang)}
+              aspectRatio="1/1"
+              imgProps={{ loading: "lazy" }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 /* ============================================================
@@ -394,6 +446,9 @@ export const TripOverview = ({ days }) => {
             </div>
           </div>
         </div>
+
+        {/* Full-journey gallery — reuses Galería del lugar images in route order */}
+        <RouteImageGallery days={days} t={t} />
       </div>
     </section>
   );
