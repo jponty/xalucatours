@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Camera, X, MapPin } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { useEditMode } from "@/contexts/EditModeContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
-import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 
@@ -48,8 +46,7 @@ const PLACE_UI = {
   },
 };
 
-const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => {
-  const { textEditMode } = useEditMode();
+const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
   return (
   <article
     data-testid={`landmark-card-${index}`}
@@ -66,14 +63,15 @@ const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent opacity-90 pointer-events-none" />
       <span className="film-grain pointer-events-none" />
+      {/* Location tag — always the real place name (e.g. "Ouarzazate"), using
+          the same accent colour the point has in the day's highlighted POIs. */}
       <span
-        className={`absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase z-[1] ${textEditMode ? "" : "pointer-events-none"}`}
+        data-testid={`landmark-card-tag-${index}`}
+        className="absolute top-3.5 left-3.5 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase z-[1] pointer-events-none"
         style={{ color: accent }}
       >
         <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
-        {kindLabel ? (
-          <EditableText slot={`${slot}.kind`} defaults={kindLabel} as="span" multiline={false} />
-        ) : null}
+        <span>{pick(placeName, lang)}</span>
       </span>
       <span className="absolute top-3.5 right-3.5 inline-flex items-center justify-center bg-[#1A1513]/85 text-[#FDFBF7] font-serif-x text-[12px] tracking-[0.18em] px-2.5 py-1 pointer-events-none z-[1]">
         {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
@@ -128,9 +126,6 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   }, [landmark && landmark.id]);
 
   if (!landmark || images.length === 0) return null;
-
-  const kindCfg = LANDMARK_KINDS[landmark.kind];
-  const kindLabel = kindCfg ? kindCfg.label : null;
 
   const scrollBy = (dir) => {
     if (!trackRef.current) return;
@@ -222,7 +217,7 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
               key={i}
               image={img}
               accent={accent}
-              kindLabel={kindLabel}
+              placeName={landmark.name}
               lang={lang}
               index={i}
               total={images.length}

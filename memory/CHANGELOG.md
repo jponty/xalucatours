@@ -1,4 +1,11 @@
 
+## Tag de la Galería del lugar = nombre real de la localización (Feb 2026)
+- **User request**: el tag superior-izquierdo de cada card de la "Galería del lugar" debe mostrar SIEMPRE el nombre real del lugar (ej. "Ouarzazate") en vez del tipo ("CIUDAD"), y usar el mismo color que ese punto tiene en los "Puntos de interés destacados del día".
+- **Implementación** (`components/LandmarkCarousel.jsx`): la `Card` ahora recibe `placeName={landmark.name}` y renderiza `pick(placeName, lang)` en el tag (con punto + color `accent`, que es el color del POI del día). Se eliminó el tag editable `${slot}.kind` (mostraba el tipo) y los imports/variables sin uso (`useEditMode`, `LANDMARK_KINDS`, `kindCfg`/`kindLabel`).
+- El nombre proviene del gazetteer/perfil (mismo `landmark.name` en todas las páginas) → consistente globalmente por lugar.
+- **Validado** (Playwright): POI "Ouarzazate" → tags "OUARZAZATE" en las 3 cards; POI "Marrakech" → "MARRAKECH"; color del tag = `rgb(193,101,66)` (#C16542, el accent del día).
+
+
 ## Route Gallery → masonry estilo Pinterest con título superpuesto (Feb 2026)
 - **User request**: reemplazar el grid cuadrado de la "Galería del recorrido" (Resumen visual del viaje) por un masonry responsive estilo Pinterest con alturas variables; mantener las mismas imágenes sincronizadas de la Galería del lugar (sin duplicar registros, referenciando los slots existentes, en orden de itinerario); superponer el TÍTULO de cada imagen usando el mismo título sincronizado de la Galería del lugar (se actualiza automáticamente si se edita allí); responsive: desktop multi-columna, tablet menos columnas, móvil 1-2 columnas.
 - **Implementación** (`components/TripOverview.jsx` → `RouteImageGallery`):
