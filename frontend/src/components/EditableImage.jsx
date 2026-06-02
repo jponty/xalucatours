@@ -298,6 +298,11 @@ export const EditableImage = ({
   const [altI18n, setAltI18n] = useState(initial ? (initial.alt_i18n || null) : null);
   const [ready, setReady] = useState(slot ? imgCache.ready : true);
   const [open, setOpen] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [dropBusy, setDropBusy] = useState(false);
+  const [dropError, setDropError] = useState(null);
+  const [dropOk, setDropOk] = useState(false);
+  const dragDepth = useRef(0);
 
   // Effective alt: persisted localized alt wins, falls back to the prop.
   const effectiveAlt = (altI18n && altI18n[lang]) || alt;
@@ -364,6 +369,65 @@ export const EditableImage = ({
     }
   };
 
+  /* ---- In-page drag-and-drop quick-replace (Image Edit Mode only) ----
+     Drop an image file straight onto a placeholder to replace its slot
+     instantly, without opening the editor. */
+  const flashDropError = useCallback((msg) => {
+    setDropError(msg);
+    setTimeout(() => setDropError(null), 4000);
+  }, []);
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+  }, []);
+
+  const handleDragEnter = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragDepth.current += 1;
+    setDragActive(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
+    if (dragDepth.current === 0) setDragActive(false);
+  }, []);
+
+  const handleDrop = useCallback(async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragDepth.current = 0;
+    setDragActive(false);
+    if (!slot || dropBusy) return;
+    const file = e.dataTransfer?.files?.[0];
+    if (!file) return;
+    const typeOk = DND_ALLOWED_TYPES.includes(file.type) || DND_IMG_RE.test(file.name || "");
+    if (!typeOk) {
+      flashDropError("Formato no válido · usa JPG, PNG, WEBP o AVIF");
+      return;
+    }
+    if (file.size > DND_MAX_BYTES) {
+      flashDropError("La imagen supera el límite de 20 MB");
+      return;
+    }
+    setDropBusy(true);
+    setDropError(null);
+    try {
+      const newUrl = await uploadFileToSlot(slot, file);
+      onSavedOne(toRelativeUrl(newUrl));
+      setDropOk(true);
+      setTimeout(() => setDropOk(false), 1600);
+    } catch (err) {
+      flashDropError(err.message || "No se pudo subir la imagen");
+    } finally {
+      setDropBusy(false);
+    }
+  }, [slot, dropBusy, flashDropError]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <>
       <SmartImage
@@ -381,6 +445,10 @@ export const EditableImage = ({
       {editMode && slot && (
         <div
           data-testid={`editable-overlay-${slot}`}
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
           className="absolute inset-0 z-[45]"
         >
           <button
@@ -406,7 +474,13 @@ export const EditableImage = ({
             }}
             className="absolute inset-0 w-full h-full bg-transparent cursor-pointer focus:outline-none"
           />
-          <div className="absolute inset-2 border-2 border-dashed border-[#FDFBF7] opacity-70 animate-pulse pointer-events-none" />
+          <div
+            className={`absolute inset-2 border-2 border-dashed pointer-events-none transition-colors duration-150 ${
+              dragActive
+                ? "border-[#C16542] border-solid bg-[#C16542]/15"
+                : "border-[#FDFBF7] opacity-70 animate-pulse"
+            }`}
+          />
           <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#1A1513]/85 text-[#FDFBF7] text-[9px] tracking-[0.2em] uppercase px-2 py-1 max-w-[60%] truncate pointer-events-none">
             {slot}
           </span>
@@ -418,10 +492,60 @@ export const EditableImage = ({
               {ratioLabel(aspectRatio).code}
             </span>
           )}
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none">
-            {group ? <Images className="w-3 h-3" strokeWidth={1.8} /> : <Pencil className="w-3 h-3" strokeWidth={1.8} />}
-            <span>{group ? "Editar galería" : "Editar"}</span>
-          </span>
+
+          {/* Default hint badge — hidden while dragging / busy */}
+          {!dragActive && !dropBusy && !dropOk && !dropError && (
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none">
+              {group ? <Images className="w-3 h-3" strokeWidth={1.8} /> : <Pencil className="w-3 h-3" strokeWidth={1.8} />}
+              <span>{group ? "Editar galería" : "Editar"}</span>
+            </span>
+          )}
+
+          {/* Drag-over prompt */}
+          {dragActive && !dropBusy && (
+            <span
+              data-testid={`editable-drop-prompt-${slot}`}
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#1A1513] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none"
+            >
+              <Upload className="w-3 h-3" strokeWidth={1.8} />
+              <span>Soltar para reemplazar</span>
+            </span>
+          )}
+
+          {/* Uploading state */}
+          {dropBusy && (
+            <span
+              data-testid={`editable-drop-busy-${slot}`}
+              className="absolute inset-0 flex items-center justify-center bg-[#1A1513]/60 pointer-events-none"
+            >
+              <span className="inline-flex items-center gap-2 bg-[#FDFBF7] text-[#2C2621] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg">
+                <Loader2 className="w-3 h-3 animate-spin" strokeWidth={1.8} />
+                <span>Subiendo…</span>
+              </span>
+            </span>
+          )}
+
+          {/* Success flash */}
+          {dropOk && !dropBusy && (
+            <span
+              data-testid={`editable-drop-ok-${slot}`}
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#5A6B4F] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none"
+            >
+              <Check className="w-3 h-3" strokeWidth={2} />
+              <span>Imagen actualizada</span>
+            </span>
+          )}
+
+          {/* Error flash */}
+          {dropError && !dropBusy && (
+            <span
+              data-testid={`editable-drop-error-${slot}`}
+              className="absolute left-1/2 bottom-2 -translate-x-1/2 inline-flex items-center gap-2 bg-[#7C3B23] text-[#FDFBF7] px-3 py-2 text-[9px] tracking-[0.2em] uppercase shadow-lg pointer-events-none max-w-[90%] text-center"
+            >
+              <AlertCircle className="w-3 h-3 shrink-0" strokeWidth={1.8} />
+              <span>{dropError}</span>
+            </span>
+          )}
         </div>
       )}
       {open && (
@@ -525,6 +649,25 @@ const fileToDataURL = (file) =>
 const uploadBlobToSlot = async (slot, blob, filename) => {
   const fd = new FormData();
   fd.append("file", new File([blob], filename, { type: "image/jpeg" }));
+  const res = await fetch(
+    `${API}/api/slots/${encodeURIComponent(slot)}/upload`,
+    { method: "POST", body: fd },
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.detail || "Error al subir la imagen.");
+  return data.url;
+};
+
+/* Upload an original (un-cropped) file straight to a slot — used by the
+   in-page drag-and-drop quick-replace. Preserves the file's real type so
+   PNG transparency survives; the backend re-optimises to WebP. */
+const DND_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const DND_MAX_BYTES = 20 * 1024 * 1024;
+const DND_IMG_RE = /\.(jpe?g|png|webp|avif)$/i;
+
+const uploadFileToSlot = async (slot, file) => {
+  const fd = new FormData();
+  fd.append("file", file);
   const res = await fetch(
     `${API}/api/slots/${encodeURIComponent(slot)}/upload`,
     { method: "POST", body: fd },

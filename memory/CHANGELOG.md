@@ -309,3 +309,12 @@
 - **Causa raíz**: el guard de captura de `EditModeContext` bloquea TODOS los clics en `<a>` mientras el modo edición está activo, salvo los que estén dentro de un ancestro `[role="dialog"]`. El `ImageLibraryPicker` se renderiza como **hermano** del `<aside role="dialog">` del editor (no como hijo) y **no tenía** `role="dialog"`, por lo que sus anclas de enlace externo quedaban con `preventDefault`. (Seleccionar imágenes seguía funcionando porque usa `<button>`, no `<a>`.)
 - **Fix**: añadido `role="dialog"` + `aria-modal="true"` + `aria-label` al div raíz de `ImageLibraryPicker.jsx`. Esto incluye al picker en la lista blanca del guard.
 - **Verificado** (Playwright, localhost:3000 por wake-page del preview): `pickerRole=dialog`, ancla DENTRO del picker `defaultPrevented=False` (el enlace navega), ancla FUERA `defaultPrevented=True` (la navegación de página sigue bloqueada → sin regresión del lockdown de edición). Lint OK.
+
+## 2026-02-02 — Feature: Arrastrar y soltar para reemplazar imágenes (Modo edición)
+- **Qué**: En Modo edición de imágenes, ahora se puede arrastrar un archivo desde el escritorio y soltarlo directamente sobre cualquier placeholder de imagen de la página para reemplazar/actualizar ese slot al instante, sin abrir el editor.
+- **Frontend** (`EditableImage.jsx`):
+  - Nuevo helper `uploadFileToSlot(slot, file)` que sube el archivo original (preserva el tipo; el backend re-optimiza a WebP) a `POST /api/slots/{slot}/upload`.
+  - Handlers `onDragEnter/onDragOver/onDragLeave/onDrop` en el overlay `editable-overlay-{slot}`, con contador de profundidad para evitar parpadeo. Validación de tipo (JPG/PNG/WEBP/AVIF) y tamaño (máx 20 MB).
+  - Feedback visual: resaltado naranja al arrastrar ("Soltar para reemplazar"), overlay con spinner ("Subiendo…"), flash de éxito ("Imagen actualizada") y flash de error. Nuevos data-testids: `editable-drop-prompt/busy/ok/error-{slot}`.
+  - Al completar, actualiza el slot vía `onSavedOne` (estado + caché global de slots), por lo que la imagen se ve actualizada inmediatamente.
+- **Verificado** (Playwright, localhost:3000): drop sintético de un PNG sobre `editable-overlay-home.all-trips.tourAtlasDesierto45` → `POST .../upload` devolvió **200** y la tarjeta mostró la nueva imagen. Imagen de prueba restaurada en BD tras el test. Lint OK.
