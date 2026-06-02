@@ -393,10 +393,11 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         </div>
 
         {/* ---------- Tabs · Biblioteca local / Pexels ---------- */}
+        <div className="px-6 md:px-8 pt-5 bg-[#FDFBF7] border-b border-[#2C2621]/10">
         <div
           role="tablist"
           aria-label="Fuente de imágenes"
-          className="flex items-center gap-1 px-6 md:px-8 pt-3 pb-0 bg-[#FDFBF7] border-b border-[#2C2621]/10 overflow-x-auto whitespace-nowrap"
+          className="flex items-center gap-1 overflow-x-auto whitespace-nowrap -mb-px"
         >
           {[
             { id: "library",  label: "Biblioteca", Icon: Library },
@@ -413,7 +414,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                 aria-selected={active}
                 data-testid={`image-library-tab-${t.id}`}
                 onClick={() => setTab(t.id)}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.28em] uppercase border-b-2 transition-colors -mb-px shrink-0 ${
+                className={`inline-flex items-center gap-2 px-4 py-3 text-[10px] tracking-[0.28em] uppercase border-b-2 transition-colors shrink-0 ${
                   active
                     ? "border-[#C16542] text-[#2C2621]"
                     : "border-transparent text-[#5C5248] hover:text-[#2C2621]"
@@ -425,11 +426,12 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
             );
           })}
         </div>
+        </div>
 
         {tab === "library" ? (
           <>
           {/* Search + tags */}
-        <div className="px-6 md:px-8 py-4 border-b border-[#2C2621]/10 bg-[#F8F2E6]/40 space-y-3">
+        <div className="px-6 md:px-8 pt-6 pb-4 border-b border-[#2C2621]/10 bg-[#F8F2E6]/40 space-y-3">
           <label className="flex items-center gap-3 bg-[#FDFBF7] border border-[#2C2621]/15 focus-within:border-[#C16542] px-4 py-2.5 transition-colors">
             <Search className="w-4 h-4 text-[#5C5248] flex-shrink-0" strokeWidth={1.6} />
             <input
@@ -487,7 +489,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         </div>
 
         {/* Grid */}
-        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
+        <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
           {folderProgress && (
             <div className="mb-4 flex items-center gap-3 p-3 bg-[#F2EBE1] border border-[#C16542]/40 text-[#7C3B23] text-sm" data-testid="image-library-folder-progress">
               <Loader2 className="w-4 h-4 flex-shrink-0 animate-spin" strokeWidth={1.8} />
@@ -558,15 +560,15 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         </div>
           </>
         ) : tab === "pexels" ? (
-          <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
+          <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
             <PexelsTab onSelect={onSelect} onClose={onClose} />
           </div>
         ) : tab === "unsplash" ? (
-          <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
+          <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
             <UnsplashTab onSelect={onSelect} onClose={onClose} />
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
+          <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
             <PexelsSelectionTab onSelect={onSelect} onClose={onClose} />
           </div>
         )}
