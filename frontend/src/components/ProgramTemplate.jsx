@@ -1364,7 +1364,7 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
   );
 };
 
-const DayBlock = ({ day, idx, total, lang, t }) => {
+const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
   const reverse = idx % 2 === 1;
   const dayNum = String(idx + 1).padStart(2, "0");
   // Page-namespaced so the day image is independent per itinerary URL,
@@ -1461,12 +1461,16 @@ const DayBlock = ({ day, idx, total, lang, t }) => {
         </div>
       </div>
       <DayRouteMap day={day} idx={idx} total={total} accent={day.accent} />
-      <DayGallery day={day} accent={day.accent} dayNumber={idx + 1} />
+      {/* DayGallery hidden on a per-page basis (e.g. tourMarrakechErg56).
+          Section/code/data kept intact for easy re-enabling later. */}
+      {!hideDayGallery && (
+        <DayGallery day={day} accent={day.accent} dayNumber={idx + 1} />
+      )}
     </article>
   );
 };
 
-const Itinerary = ({ t, lang, days }) => (
+const Itinerary = ({ t, lang, days, hideDayGallery = false }) => (
   <section id="itinerary" data-testid="program-itinerary"
            className="relative bg-[#FDFBF7] pt-20 md:pt-28">
     <div className="relative max-w-7xl mx-auto px-6 md:px-12 text-center mb-12">
@@ -1474,7 +1478,7 @@ const Itinerary = ({ t, lang, days }) => (
       <L k="itinerary_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
     </div>
     {days.map((d, i) => (
-      <DayBlock key={`${d.id}-${i}`} day={d} idx={i} total={days.length} lang={lang} t={t} />
+      <DayBlock key={`${d.id}-${i}`} day={d} idx={i} total={days.length} lang={lang} t={t} hideDayGallery={hideDayGallery} />
     ))}
   </section>
 );
@@ -1623,7 +1627,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
-      <Itinerary t={t} lang={lang} days={program.days} />
+      <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <TripOverview days={program.days} />
       <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />
