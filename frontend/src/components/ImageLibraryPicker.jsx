@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import {
   Library, Search, X, Loader2, Check, AlertCircle, UploadCloud,
-  Trash2, Pencil, Replace, Tag, ChevronRight, Eye, ExternalLink, Sparkles, FolderUp,
+  Trash2, Pencil, Replace, Tag, ChevronRight, Eye, ExternalLink, Sparkles, FolderUp, Compass,
 } from "lucide-react";
 import PexelsTab from "@/components/PexelsTab";
 import UnsplashTab from "@/components/UnsplashTab";
+import PexelsSelectionTab from "@/components/PexelsSelectionTab";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -344,6 +345,8 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                   ? "Pexels · Stock fotográfico gratuito"
                   : tab === "unsplash"
                   ? "Unsplash · Fotografía editorial gratuita"
+                  : tab === "pexels-selection"
+                  ? "Selección Pexels · galerías por destino"
                   : counterLine}
               </p>
             </div>
@@ -393,12 +396,13 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         <div
           role="tablist"
           aria-label="Fuente de imágenes"
-          className="flex items-center gap-1 px-6 md:px-8 pt-3 pb-0 bg-[#FDFBF7] border-b border-[#2C2621]/10"
+          className="flex items-center gap-1 px-6 md:px-8 pt-3 pb-0 bg-[#FDFBF7] border-b border-[#2C2621]/10 overflow-x-auto whitespace-nowrap"
         >
           {[
             { id: "library",  label: "Biblioteca", Icon: Library },
             { id: "pexels",   label: "Pexels",     Icon: Sparkles },
             { id: "unsplash", label: "Unsplash",   Icon: Sparkles },
+            { id: "pexels-selection", label: "Selección", Icon: Compass },
           ].map((t) => {
             const active = tab === t.id;
             return (
@@ -409,7 +413,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                 aria-selected={active}
                 data-testid={`image-library-tab-${t.id}`}
                 onClick={() => setTab(t.id)}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.28em] uppercase border-b-2 transition-colors -mb-px ${
+                className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.28em] uppercase border-b-2 transition-colors -mb-px shrink-0 ${
                   active
                     ? "border-[#C16542] text-[#2C2621]"
                     : "border-transparent text-[#5C5248] hover:text-[#2C2621]"
@@ -557,9 +561,13 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
           <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
             <PexelsTab onSelect={onSelect} onClose={onClose} />
           </div>
-        ) : (
+        ) : tab === "unsplash" ? (
           <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
             <UnsplashTab onSelect={onSelect} onClose={onClose} />
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
+            <PexelsSelectionTab onSelect={onSelect} onClose={onClose} />
           </div>
         )}
 
@@ -570,6 +578,8 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
               ? "Stock libre · Pexels descarga al storage al pulsar."
               : tab === "unsplash"
               ? "Fotografía editorial · Unsplash descarga al storage al pulsar."
+              : tab === "pexels-selection"
+              ? "Galerías por destino · Pexels descarga al storage al pulsar."
               : "Las fotos se reutilizan al pulsar — no se vuelven a subir."}
           </span>
           <button
