@@ -416,7 +416,50 @@ async def climate_current_month():
 # Stored in collection `image_slots` as a single document per slot id
 # (e.g. "home.hero.0") with { url, alt, source, updated_at }.
 ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp", "image/avif"}
-MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB
+MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB (originals are compressed server-side)
+
+# ---------- Automatic image optimisation on upload ----------
+# Every image uploaded through the CMS is resized (max width) and
+# re-encoded to WebP for fast web delivery, without the editor having
+# to optimise anything manually.
+from io import BytesIO as _BytesIO
+from PIL import Image as _PILImage, ImageOps as _PILImageOps
+
+MAX_IMAGE_WIDTH = 2000   # px — downscale anything wider, never upscale
+WEBP_QUALITY = 80        # sweet spot: visually lossless, light files
+_EXT_BY_MIME = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
+
+
+def optimize_image(data: bytes, content_type: str):
+    """Resize (to MAX_IMAGE_WIDTH) and convert to WebP (quality 80).
+
+    Returns (out_bytes, out_content_type, out_ext). Falls back to the
+    original bytes/type if the image cannot be processed (e.g. an AVIF
+    without the decode plugin) so an upload never fails because of
+    optimisation."""
+    fallback_ext = _EXT_BY_MIME.get(content_type, "bin")
+    try:
+        img = _PILImage.open(_BytesIO(data))
+        img = _PILImageOps.exif_transpose(img)  # honour camera orientation
+        has_alpha = img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info)
+        img = img.convert("RGBA" if has_alpha else "RGB")
+        resized = False
+        if img.width > MAX_IMAGE_WIDTH:
+            new_h = max(1, round(img.height * MAX_IMAGE_WIDTH / img.width))
+            img = img.resize((MAX_IMAGE_WIDTH, new_h), _PILImage.LANCZOS)
+            resized = True
+        buf = _BytesIO()
+        img.save(buf, format="WEBP", quality=WEBP_QUALITY, method=6)
+        out = buf.getvalue()
+        # If we didn't need to resize and WebP isn't smaller, keep the
+        # original to avoid bloating already-optimised assets.
+        if not resized and len(out) >= len(data):
+            return data, content_type, fallback_ext
+        return out, "image/webp", "webp"
+    except Exception as exc:
+        logger.warning(f"image optimize skipped ({content_type}): {exc}")
+        return data, content_type, fallback_ext
+
 
 
 def _relativize_url(url):
@@ -565,19 +608,15 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         )
     data = await file.read()
     if len(data) > MAX_UPLOAD_BYTES:
-        raise HTTPException(status_code=413, detail="File exceeds 8 MB limit.")
+        raise HTTPException(status_code=413, detail="File exceeds 20 MB limit.")
 
-    ext = {
-        "image/jpeg": "jpg",
-        "image/png": "png",
-        "image/webp": "webp",
-        "image/avif": "avif",
-    }[file.content_type]
+    # Optimise: resize to max width + convert to WebP before storing.
+    data, ctype, ext = optimize_image(data, file.content_type)
     safe_slot = "".join(c for c in slot_id if c.isalnum() or c in "._-")[:60] or "slot"
     storage_path = f"xaluca/slots/{safe_slot}/{uuid.uuid4().hex}.{ext}"
 
     try:
-        result = put_object(storage_path, data, file.content_type)
+        result = put_object(storage_path, data, ctype)
     except Exception as exc:
         logger.exception("Emergent storage upload failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
@@ -591,7 +630,7 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         "source": "emergent-objstore",
         "storage_path": canonical_path,
         "original_filename": file.filename,
-        "content_type": file.content_type,
+        "content_type": ctype,
         "size": result.get("size", len(data)),
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -606,7 +645,7 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
         "slot_id": slot_id,
         "storage_path": canonical_path,
         "original_filename": file.filename,
-        "content_type": file.content_type,
+        "content_type": ctype,
         "size": doc["size"],
         "is_deleted": False,
         "created_at": doc["updated_at"],
@@ -624,10 +663,6 @@ async def upload_library_images(files: List[UploadFile] = File(...)):
     if len(files) > 30:
         raise HTTPException(status_code=400, detail="Máximo 30 archivos por lote.")
 
-    ext_map = {
-        "image/jpeg": "jpg", "image/png": "png",
-        "image/webp": "webp", "image/avif": "avif",
-    }
     uploaded: List[Dict] = []
     skipped: List[Dict] = []
     now_iso = datetime.now(timezone.utc).isoformat()
@@ -640,10 +675,10 @@ async def upload_library_images(files: List[UploadFile] = File(...)):
         if len(data) > MAX_UPLOAD_BYTES:
             skipped.append({"filename": f.filename, "reason": "too-large"})
             continue
-        ext = ext_map[f.content_type]
+        data, ctype, ext = optimize_image(data, f.content_type)
         storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
         try:
-            result = put_object(storage_path, data, f.content_type)
+            result = put_object(storage_path, data, ctype)
         except Exception as exc:
             logger.exception("Bulk upload — storage put failed for %s", f.filename)
             skipped.append({"filename": f.filename, "reason": f"storage-error:{exc}"})
@@ -654,7 +689,7 @@ async def upload_library_images(files: List[UploadFile] = File(...)):
             "slot_id": None,
             "storage_path": canonical_path,
             "original_filename": f.filename,
-            "content_type": f.content_type,
+            "content_type": ctype,
             "size": result.get("size", len(data)),
             "is_deleted": False,
             "tags": ["library"],
@@ -666,7 +701,7 @@ async def upload_library_images(files: List[UploadFile] = File(...)):
             "url": f"/api/files/{canonical_path}",
             "storage_path": canonical_path,
             "original_filename": f.filename,
-            "content_type": f.content_type,
+            "content_type": ctype,
             "size": record["size"],
         })
 
@@ -735,18 +770,17 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
         )
     data = await file.read()
     if len(data) > MAX_UPLOAD_BYTES:
-        raise HTTPException(status_code=413, detail="File exceeds 8 MB limit.")
+        raise HTTPException(status_code=413, detail="File exceeds 20 MB limit.")
 
     record = await db.files.find_one({"id": file_id, "is_deleted": {"$ne": True}})
     if not record:
         raise HTTPException(status_code=404, detail="File not found.")
 
-    ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
-    ext = ext_map[file.content_type]
+    data, ctype, ext = optimize_image(data, file.content_type)
     storage_path = f"xaluca/library/{uuid.uuid4().hex}.{ext}"
     result: Dict = {}
     try:
-        result = put_object(storage_path, data, file.content_type)
+        result = put_object(storage_path, data, ctype)
     except Exception as exc:
         logger.exception("Replace — storage put failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
@@ -757,7 +791,7 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
         {"id": file_id},
         {"$set": {
             "storage_path": canonical_path,
-            "content_type": file.content_type,
+            "content_type": ctype,
             "size": result.get("size", len(data)),
             "original_filename": file.filename or record.get("original_filename"),
             "updated_at": now_iso,
@@ -768,7 +802,7 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
         "url": f"/api/files/{canonical_path}",
         "storage_path": canonical_path,
         "original_filename": file.filename or record.get("original_filename"),
-        "content_type": file.content_type,
+        "content_type": ctype,
         "size": result.get("size", len(data)),
     }
 

@@ -268,3 +268,12 @@
 - **Autotraducción (Emergent LLM key)**: nuevo `POST /api/translate` en `server.py` (emergentintegrations `LlmChat`, modelo `gpt-4o-mini`) traduce a EN+FR en una sola llamada JSON. `EditableText.save()`: al editar en ES, persiste ES al instante y luego rellena EN/FR; prop `noTranslate` para campos que no deban traducirse. Editar en EN/FR solo guarda ese idioma (ajuste manual).
 - **Tests**: `tests/test_translate.py` (3) + e2e del flujo. 10/10 backend PASS; agente de pruebas confirmó identidad de slots entre idiomas y autotraducción ES→EN/FR persistida en el mismo slot. Sin issues.
 - **Nota redeploy**: `emergentintegrations==0.1.2` ya en requirements.txt; `EMERGENT_LLM_KEY` en backend/.env (debe existir también en producción tras el redeploy).
+
+## Optimización automática de imágenes al subir (Feb 2026)
+- **Petición**: que toda imagen subida por el CMS se optimice sola para web.
+- **Implementado**: helper `optimize_image()` en `server.py` (Pillow) — redimensiona a máx. 2000 px de ancho (sin ampliar), convierte a **WebP calidad 80**, respeta orientación EXIF y preserva transparencia (RGBA). Si una imagen no se puede procesar, hace fallback al original (la subida nunca falla por la optimización).
+- Integrado en los 3 endpoints de subida de usuario: `POST /api/slots/{id}/upload`, `POST /api/library/upload` (lote), `POST /api/files/{id}/replace`.
+- `MAX_UPLOAD_BYTES` subido de 8MB → **20MB** (coincide con el límite del frontend) ya que ahora comprimimos en servidor.
+- Añadido `Pillow==12.2.0` a requirements.txt.
+- **Verificado**: 3000x2000 JPG (5.2MB) → 2000x1333 WebP (1.27MB); 500px no se amplía; PNG RGBA conserva alpha. Tests `tests/test_image_optimize.py` (2) + suite: 8/8 PASS.
+- Nota: las imágenes ya guardadas no se reprocesan; solo las nuevas subidas. Las de Unsplash/Pexels ya vienen optimizadas por su CDN.
