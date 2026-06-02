@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { tripHeroSlot } from "@/lib/tripHero";
 import {
   lookupProgram,
   hubLabel,
@@ -74,7 +75,7 @@ export default function HubPeerNav({ routeId }) {
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <EditableImage
-                    slot={`hub-peer.${p.id}.image`}
+                    slot={tripHeroSlot(p.link)}
                     fallback={p.image}
                     alt={pick(p.blurb, lang) || ""}
                     aspectRatio="4/3"

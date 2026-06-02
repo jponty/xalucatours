@@ -16,6 +16,7 @@ import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
 import { useSlotId } from "@/components/EditableSection";
+import { tripHeroSlot } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
@@ -1216,10 +1217,11 @@ const G = ({ k, defaults, as = "span", className, multiline = false, ...rest }) 
 /* ============================================================
    Hero
 ============================================================ */
-const ProgramHero = ({ vt, t, program, lang, variant }) => {
-  // Namespaced by the current program URL so every itinerary keeps its
-  // own independent hero image (text was already page-scoped via <C>).
-  const heroSlot = useSlotId("hero");
+const ProgramHero = ({ vt, t, program, lang, variant, routeId }) => {
+  // MASTER trip image: a single global slot shared by the Hero and every
+  // card/listing of this trip across the site (see lib/tripHero.js), so
+  // editing it anywhere updates everywhere automatically.
+  const heroSlot = tripHeroSlot(routeId);
   return (
   <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
@@ -1622,7 +1624,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
 
   return (
     <div data-testid={`program-page-${program.duration_key}`}>
-      <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} />
+      <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} />
       <StickyNav items={navItems} testid="program-nav" />
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />

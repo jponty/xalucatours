@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Plane, Mail, Phone } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { tripHeroSlot } from "@/lib/tripHero";
 import ContactForm from "@/components/ContactForm";
 
 /* ============================================================
@@ -70,7 +71,7 @@ const Hero = ({ data, lang, t, routeId }) => (
     className="relative w-full h-[88vh] min-h-[640px] overflow-hidden bg-[#1A1513] text-[#FDFBF7]"
   >
     <EditableImage
-      slot={`escapada.${routeId}.hero`}
+      slot={tripHeroSlot(routeId)}
       fallback={data.image}
       alt={pick(data.title, lang)}
       priority

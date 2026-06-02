@@ -16,6 +16,7 @@ import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
+import { tripHeroSlot } from "@/lib/tripHero";
 import {
   ALL_TRIPS,
   TRIP_REGIONS,
@@ -91,7 +92,8 @@ const ChipGroup = ({ icon: Icon, label, options, value, onChange, testidBase }) 
 /* ---------- Card ---------- */
 const TripCard = ({ trip, lang }) => {
   const href = pathFor(lang, trip.routeId);
-  const slot = `home.all-trips.${trip.routeId}`;
+  // Shares the trip's MASTER image slot with the page Hero and all listings.
+  const slot = tripHeroSlot(trip.routeId);
   return (
     <SlotScope id={trip.routeId}>
       <Link

@@ -1,4 +1,18 @@
 
+## Imagen maestra por viaje: Hero ↔ tarjetas sincronizadas (Feb 2026)
+- **User request**: la imagen de cada tarjeta de "Todos los viajes" (home) debe estar totalmente sincronizada con la imagen principal (Hero) de las páginas específicas de ese viaje. Una única imagen maestra por viaje, compartida y bidireccional, reflejada en: tarjeta de la home, Hero de todas las páginas del viaje, y cualquier otra tarjeta/listado/recomendación que enlace a ese viaje. Emparejado por ID estable, sin duplicidades.
+- **Implementación**:
+  - NUEVO `lib/tripHero.js`: `tripHeroSlot(routeId)` → slot GLOBAL `trip.${routeId}.hero` (sin prefijo de página/idioma; keyed por `routeId` estable).
+  - Aplicado en TODAS las apariciones de imagen de viaje específico:
+    - `ProgramTemplate.jsx` `ProgramHero` (Hero de páginas de programa) — antes `${pageNs}.hero`.
+    - `HomeAllTripsCatalog.jsx` (tarjetas "Todos los viajes") — antes `home.all-trips.${routeId}`.
+    - `AllTripsCarousel.jsx` (carrusel de viajes) — antes `home.alltrips.${id}`.
+    - `HubPeerNav.jsx` (tarjetas peer/recomendaciones, vía `p.link`) — antes `hub-peer.${id}.image`.
+    - `EscapadaIntroPage.jsx` (Hero de escapadas, vía `data.routeId`) — antes `escapada.${routeId}.hero`.
+- **Validado** (Playwright): home con 61 tarjetas usando `trip.${routeId}.hero`; tarjeta de `atlas_desierto/programa_4n_5d` = `trip.tourAtlasDesierto45.hero` y el Hero de esa página usa el MISMO slot (MATCH). Edición bidireccional confirmada por slot compartido.
+- **Nota de migración**: ediciones previas de Hero/tarjetas bajo los antiguos slots por página dejan de leerse; el nuevo slot maestro `trip.*` parte de los defaults del código hasta fijar la imagen maestra una vez. Los defaults por aparición pueden diferir hasta que se establezca la imagen maestra.
+
+
 ## Tag de la Galería del lugar = nombre real de la localización (Feb 2026)
 - **User request**: el tag superior-izquierdo de cada card de la "Galería del lugar" debe mostrar SIEMPRE el nombre real del lugar (ej. "Ouarzazate") en vez del tipo ("CIUDAD"), y usar el mismo color que ese punto tiene en los "Puntos de interés destacados del día".
 - **Implementación** (`components/LandmarkCarousel.jsx`): la `Card` ahora recibe `placeName={landmark.name}` y renderiza `pick(placeName, lang)` en el tag (con punto + color `accent`, que es el color del POI del día). Se eliminó el tag editable `${slot}.kind` (mostraba el tipo) y los imports/variables sin uso (`useEditMode`, `LANDMARK_KINDS`, `kindCfg`/`kindLabel`).

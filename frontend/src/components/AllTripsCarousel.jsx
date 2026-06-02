@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { tripHeroSlot } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 
@@ -214,7 +215,7 @@ export default function AllTripsCarousel() {
             >
               <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
                 <EditableImage
-                  slot={`home.alltrips.${trip.id}`}
+                  slot={tripHeroSlot(trip.routeId)}
                   fallback={trip.image}
                   alt={pick(trip.title, lang)}
                   imgProps={{ loading: "lazy" }}
