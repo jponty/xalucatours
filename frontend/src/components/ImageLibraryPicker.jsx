@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import {
   Library, Search, X, Loader2, Check, AlertCircle, UploadCloud,
-  Trash2, Pencil, Replace, Tag, ChevronRight, Eye, ExternalLink, Sparkles,
+  Trash2, Pencil, Replace, Tag, ChevronRight, Eye, ExternalLink, Sparkles, FolderUp,
 } from "lucide-react";
 import PexelsTab from "@/components/PexelsTab";
 import UnsplashTab from "@/components/UnsplashTab";
@@ -32,9 +32,23 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   const [editing, setEditing] = useState(null); // {id, original_filename, tags, ...}
   const [confirmDelete, setConfirmDelete] = useState(null); // item to confirm
   const [usageById, setUsageById] = useState({}); // {id: count}
+  const [folderProgress, setFolderProgress] = useState(null); // {done, total, tag}
   const bulkInputRef = useRef(null);
+  const folderInputRef = useRef(null);
   const replaceInputRef = useRef(null);
   const replaceForIdRef = useRef(null);
+
+  /* Callback ref: set the directory-picker attributes the moment the
+     hidden input mounts (the modal is conditionally rendered, so a
+     mount-only useEffect would miss it). */
+  const setFolderInput = useCallback((el) => {
+    folderInputRef.current = el;
+    if (el) {
+      el.setAttribute("webkitdirectory", "");
+      el.setAttribute("directory", "");
+      el.setAttribute("mozdirectory", "");
+    }
+  }, []);
 
   /* ---- Debounce search ---- */
   useEffect(() => {
@@ -125,6 +139,79 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
       setError(err.message || "No se pudieron subir los archivos.");
     } finally {
       setUploading(false);
+    }
+  }, []);
+
+  /* ---- Folder import: upload a whole folder, group under its name ---- */
+  const slugifyTag = (raw) =>
+    (raw || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9._-]/g, "")
+      .slice(0, 40);
+
+  const handleFolderUpload = useCallback(async (fileList) => {
+    const IMG_RE = /\.(jpe?g|png|webp|avif)$/i;
+    const all = Array.from(fileList || []).filter(
+      (f) => (f.type && f.type.startsWith("image/")) || IMG_RE.test(f.name || "")
+    );
+    if (all.length === 0) {
+      setError("La carpeta no contiene imágenes compatibles (JPG, PNG, WEBP o AVIF).");
+      return;
+    }
+    // Folder name = first segment of the relative path of any file.
+    const rel = all[0].webkitRelativePath || all[0].name || "";
+    const rawFolder = rel.includes("/") ? rel.split("/")[0] : "carpeta";
+    const folderTag = slugifyTag(rawFolder) || "carpeta";
+
+    // Chunk by size budget to stay under proxy limits.
+    const MAX_BATCH_BYTES = 25 * 1024 * 1024;
+    const MAX_BATCH_FILES = 8;
+    const batches = [];
+    let cur = [];
+    let curSize = 0;
+    for (const f of all) {
+      if (cur.length && (curSize + (f.size || 0) > MAX_BATCH_BYTES || cur.length >= MAX_BATCH_FILES)) {
+        batches.push(cur);
+        cur = [];
+        curSize = 0;
+      }
+      cur.push(f);
+      curSize += f.size || 0;
+    }
+    if (cur.length) batches.push(cur);
+
+    setUploading(true);
+    setError(null);
+    setUploadResult(null);
+    setFolderProgress({ done: 0, total: all.length, tag: folderTag });
+
+    let uploaded = 0;
+    let skipped = 0;
+    let done = 0;
+    try {
+      for (const batch of batches) {
+        const fd = new FormData();
+        batch.forEach((f) => fd.append("files", f));
+        fd.append("tag", rawFolder);
+        const res = await fetch(`${API}/api/library/upload`, { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.detail || "Error al subir la carpeta.");
+        uploaded += data.count || 0;
+        skipped += (data.skipped || []).length;
+        done += batch.length;
+        setFolderProgress({ done, total: all.length, tag: folderTag });
+      }
+      setUploadResult({ count: uploaded, skipped, tag: folderTag });
+      setActiveTag(folderTag);          // jump straight to the new group
+      setRefreshTick((n) => n + 1);
+      setTimeout(() => setUploadResult(null), 5000);
+    } catch (err) {
+      setError(err.message || "No se pudo importar la carpeta.");
+    } finally {
+      setUploading(false);
+      setFolderProgress(null);
     }
   }, []);
 
@@ -266,6 +353,19 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                 <span className="hidden sm:inline">{uploading ? "Subiendo…" : "Subir varias"}</span>
               </button>
             )}
+            {tab === "library" && (
+              <button
+                type="button"
+                onClick={() => folderInputRef.current?.click()}
+                disabled={uploading}
+                data-testid="image-library-folder-upload"
+                title="Importar una carpeta completa — se agrupa con el nombre de la carpeta"
+                className="inline-flex items-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-4 py-2.5 text-[10px] tracking-[0.25em] uppercase disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <FolderUp className="w-3.5 h-3.5" strokeWidth={1.8} />
+                <span className="hidden sm:inline">Subir carpeta</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={onClose}
@@ -367,11 +467,24 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
 
         {/* Grid */}
         <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6 bg-[#FDFBF7]">
+          {folderProgress && (
+            <div className="mb-4 flex items-center gap-3 p-3 bg-[#F2EBE1] border border-[#C16542]/40 text-[#7C3B23] text-sm" data-testid="image-library-folder-progress">
+              <Loader2 className="w-4 h-4 flex-shrink-0 animate-spin" strokeWidth={1.8} />
+              <span>
+                Importando carpeta <strong>#{folderProgress.tag}</strong> — {folderProgress.done}/{folderProgress.total} foto{folderProgress.total === 1 ? "" : "s"}…
+              </span>
+            </div>
+          )}
           {uploadResult && (
             <div className="mb-4 flex items-center gap-3 p-3 bg-[#E8EFE5] border border-[#5A6B4F]/40 text-[#3E4D34] text-sm" data-testid="image-library-banner">
               <Check className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
               {uploadResult.deletedName ? (
                 <span>«{uploadResult.deletedName}» eliminada de la biblioteca.</span>
+              ) : uploadResult.tag ? (
+                <span>
+                  Carpeta importada: {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"} agrupada{uploadResult.count === 1 ? "" : "s"} bajo <strong>#{uploadResult.tag}</strong>.
+                  {uploadResult.skipped > 0 && ` (${uploadResult.skipped} omitida${uploadResult.skipped === 1 ? "" : "s"})`}
+                </span>
               ) : (
                 <span>
                   {uploadResult.count} foto{uploadResult.count === 1 ? "" : "s"} subida{uploadResult.count === 1 ? "" : "s"}.
@@ -458,6 +571,17 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
           data-testid="image-library-bulk-input"
           onChange={(e) => {
             handleBulkUpload(e.target.files);
+            if (e.target) e.target.value = "";
+          }}
+        />
+        <input
+          ref={setFolderInput}
+          type="file"
+          multiple
+          className="hidden"
+          data-testid="image-library-folder-input"
+          onChange={(e) => {
+            handleFolderUpload(e.target.files);
             if (e.target) e.target.value = "";
           }}
         />

@@ -277,3 +277,9 @@
 - Añadido `Pillow==12.2.0` a requirements.txt.
 - **Verificado**: 3000x2000 JPG (5.2MB) → 2000x1333 WebP (1.27MB); 500px no se amplía; PNG RGBA conserva alpha. Tests `tests/test_image_optimize.py` (2) + suite: 8/8 PASS.
 - Nota: las imágenes ya guardadas no se reprocesan; solo las nuevas subidas. Las de Unsplash/Pexels ya vienen optimizadas por su CDN.
+
+## Importar carpetas completas a la biblioteca (Feb 2026)
+- **Petición**: poder subir carpetas enteras; todas las imágenes se añaden a la galería y se agrupan bajo un tag con el nombre de la carpeta.
+- **Backend** (`POST /api/library/upload`): nuevo campo opcional `tag` (Form). Se normaliza con `_slug_tag()` ('Marrakech 2026' → 'marrakech-2026') y se añade a cada imagen junto a 'library'. Compatible hacia atrás (sin tag = solo 'library').
+- **Frontend** (`ImageLibraryPicker.jsx`): nuevo botón **"Subir carpeta"** con input `webkitdirectory`/`directory` (ref callback para fijar atributos al montar el modal). Deriva el nombre de la carpeta de `webkitRelativePath`, sube por **lotes** (máx. 8 archivos / 25MB por request para respetar límites del proxy), muestra **progreso** (done/total) y al terminar filtra automáticamente por el nuevo tag. Las imágenes se optimizan a WebP igual que el resto.
+- **Verificado**: curl (tag 'Marrakech 2026' → 'marrakech-2026', filtrable en /files y /library/tags), e2e en navegador (botón + atributos webkitdirectory + subida + agrupación + banner). Tests `tests/test_folder_upload.py` (2) PASS.

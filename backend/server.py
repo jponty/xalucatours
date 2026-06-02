@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Response, Header
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -430,6 +430,15 @@ WEBP_QUALITY = 80        # sweet spot: visually lossless, light files
 _EXT_BY_MIME = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
 
 
+def _slug_tag(raw: Optional[str]) -> str:
+    """Normalise a free-form folder/tag name into a clean, filterable tag.
+    e.g. 'Marrakech 2026 ' -> 'marrakech-2026'. Returns '' when empty."""
+    s = (raw or "").strip().lower()
+    s = re.sub(r"\s+", "-", s)
+    s = re.sub(r"[^a-z0-9._-]", "", s)
+    return s[:40]
+
+
 def optimize_image(data: bytes, content_type: str):
     """Resize (to MAX_IMAGE_WIDTH) and convert to WebP (quality 80).
 
@@ -654,14 +663,24 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
 
 
 @api_router.post("/library/upload")
-async def upload_library_images(files: List[UploadFile] = File(...)):
+async def upload_library_images(
+    files: List[UploadFile] = File(...),
+    tag: Optional[str] = Form(None),
+):
     """Bulk-upload images directly into the CMS library.
     The files are NOT bound to any slot — editors browse them later
-    from the library picker and reuse them across pages."""
+    from the library picker and reuse them across pages.
+
+    When `tag` is provided (e.g. a folder name from a folder import),
+    every uploaded image is grouped under that normalised tag so the
+    whole batch can be filtered together in the library."""
     if not files:
         raise HTTPException(status_code=400, detail="No files provided.")
     if len(files) > 30:
         raise HTTPException(status_code=400, detail="Máximo 30 archivos por lote.")
+
+    folder_tag = _slug_tag(tag)
+    base_tags = ["library"] + ([folder_tag] if folder_tag else [])
 
     uploaded: List[Dict] = []
     skipped: List[Dict] = []
@@ -692,7 +711,7 @@ async def upload_library_images(files: List[UploadFile] = File(...)):
             "content_type": ctype,
             "size": result.get("size", len(data)),
             "is_deleted": False,
-            "tags": ["library"],
+            "tags": list(base_tags),
             "created_at": now_iso,
         }
         await db.files.insert_one(record)
