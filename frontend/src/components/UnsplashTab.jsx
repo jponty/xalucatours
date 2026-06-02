@@ -17,7 +17,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Search, Loader2, ExternalLink, Check, AlertCircle, Sparkles,
-  RotateCcw, X,
+  RotateCcw, X, MapPin,
 } from "lucide-react";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
@@ -325,30 +325,42 @@ export default function UnsplashTab({ onSelect }) {
                     )}
                   </span>
                 </button>
-                <div className="px-2.5 py-2 bg-[#FDFBF7] border-t border-[#2C2621]/10 flex items-center justify-between gap-2">
-                  <span className="text-[10px] text-[#5C5248] truncate flex-1">
-                    {COPY.by}{" "}
+                <div className="bg-[#FDFBF7] border-t border-[#2C2621]/10">
+                  {p.location?.display && (
+                    <div
+                      data-testid={`unsplash-location-${p.id}`}
+                      title={p.location.display}
+                      className="px-2.5 pt-2 flex items-center gap-1 text-[10px] text-[#7C3B23]"
+                    >
+                      <MapPin className="w-3 h-3 shrink-0" strokeWidth={1.8} />
+                      <span className="truncate">{p.location.display}</span>
+                    </div>
+                  )}
+                  <div className="px-2.5 py-2 flex items-center justify-between gap-2">
+                    <span className="text-[10px] text-[#5C5248] truncate flex-1">
+                      {COPY.by}{" "}
+                      <a
+                        href={p.photographer_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-[#2C2621] hover:text-[#C16542] underline-offset-2 hover:underline"
+                      >
+                        {p.photographer || "Unsplash"}
+                      </a>
+                    </span>
                     <a
-                      href={p.photographer_url}
+                      href={p.unsplash_url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      title={COPY.view}
                       onClick={(e) => e.stopPropagation()}
-                      className="text-[#2C2621] hover:text-[#C16542] underline-offset-2 hover:underline"
+                      className="text-[#5C5248] hover:text-[#C16542] shrink-0"
+                      data-testid={`unsplash-link-${p.id}`}
                     >
-                      {p.photographer || "Unsplash"}
+                      <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.7} />
                     </a>
-                  </span>
-                  <a
-                    href={p.unsplash_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={COPY.view}
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-[#5C5248] hover:text-[#C16542] shrink-0"
-                    data-testid={`unsplash-link-${p.id}`}
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.7} />
-                  </a>
+                  </div>
                 </div>
               </div>
             );

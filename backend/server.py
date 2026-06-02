@@ -1214,7 +1214,7 @@ def _unsplash_summary(p: Dict) -> Dict:
     urls  = p.get("urls")  or {}
     user  = p.get("user")  or {}
     links = (user.get("links") or {})
-    return {
+    summary = {
         "id": p.get("id"),
         "width":  p.get("width", 0),
         "height": p.get("height", 0),
@@ -1226,6 +1226,85 @@ def _unsplash_summary(p: Dict) -> Dict:
         "avg_color":  p.get("color"),
         "alt":        p.get("alt_description") or p.get("description") or "",
     }
+    # Some endpoints (single photo) already carry location inline.
+    inline_loc = _format_location(p.get("location"))
+    if inline_loc:
+        summary["location"] = inline_loc
+    return summary
+
+
+# Location is NOT returned by /search/photos — only by the single-photo
+# endpoint. We fetch it per id, cache it in-memory (dedupes across pages /
+# repeat searches), and attach it to each result. Missing/None locations are
+# cached too so we never re-hit the API for photos without geodata.
+_unsplash_loc_cache: Dict[str, Optional[Dict]] = {}
+
+
+def _format_location(loc: Optional[Dict]) -> Optional[Dict]:
+    """Build a clean, display-ready location dict, or None when absent."""
+    loc = loc or {}
+    name = (loc.get("name") or "").strip() or None
+    city = (loc.get("city") or "").strip() or None
+    country = (loc.get("country") or "").strip() or None
+    display = name or ", ".join([x for x in (city, country) if x]) or None
+    if not display:
+        return None
+    out = {"display": display}
+    if city:
+        out["city"] = city
+    if country:
+        out["country"] = country
+    return out
+
+
+async def _unsplash_location(photo_id: str) -> Optional[Dict]:
+    if not photo_id:
+        return None
+    # 1) hot in-memory cache
+    if photo_id in _unsplash_loc_cache:
+        return _unsplash_loc_cache[photo_id]
+    # 2) persistent cache (survives restarts, dedupes across all sessions &
+    #    time — so each photo's location costs at most ONE Unsplash call ever)
+    doc = await db.unsplash_locations.find_one({"_id": photo_id})
+    if doc is not None:
+        loc = doc.get("location")
+        _unsplash_loc_cache[photo_id] = loc
+        return loc
+    # 3) fetch from Unsplash (single-photo endpoint carries location)
+    try:
+        detail = await _unsplash_get(f"/photos/{photo_id}")
+    except HTTPException:
+        # Rate-limited or transient — do NOT cache so we can retry later.
+        return None
+    result = _format_location((detail or {}).get("location"))
+    _unsplash_loc_cache[photo_id] = result
+    try:
+        await db.unsplash_locations.update_one(
+            {"_id": photo_id},
+            {"$set": {"location": result, "cached_at": datetime.now(timezone.utc).isoformat()}},
+            upsert=True,
+        )
+    except Exception as exc:
+        logger.debug("unsplash location cache write failed: %s", exc)
+    return result
+
+
+async def _attach_locations(summaries: List[Dict]) -> None:
+    """Fetch & attach location to each summary that doesn't already have one,
+    with bounded concurrency to respect Unsplash rate limits."""
+    sem = asyncio.Semaphore(8)
+
+    async def fill(s: Dict):
+        if s.get("location"):
+            return
+        async with sem:
+            loc = await _unsplash_location(s.get("id"))
+        if loc:
+            s["location"] = loc
+
+    targets = [s for s in summaries if not s.get("location")]
+    if targets:
+        await asyncio.gather(*[fill(s) for s in targets])
 
 
 @api_router.get("/unsplash/search")
@@ -1238,12 +1317,14 @@ async def unsplash_search(query: str, page: int = 1, per_page: int = 24):
     raw = await _unsplash_get("/search/photos", {"query": query.strip(), "page": page, "per_page": per_page})
     results = (raw.get("results") or []) if isinstance(raw, dict) else []
     total_pages = raw.get("total_pages", 1) if isinstance(raw, dict) else 1
+    photos = [_unsplash_summary(p) for p in results]
+    await _attach_locations(photos)
     return {
         "page": page,
         "per_page": per_page,
         "total_results": (raw.get("total", len(results)) if isinstance(raw, dict) else len(results)),
         "next_page": page < total_pages,
-        "photos": [_unsplash_summary(p) for p in results],
+        "photos": photos,
     }
 
 
@@ -1254,12 +1335,14 @@ async def unsplash_featured(page: int = 1, per_page: int = 24):
     page = max(1, page)
     raw = await _unsplash_get("/photos", {"page": page, "per_page": per_page, "order_by": "popular"})
     items = raw if isinstance(raw, list) else []
+    photos = [_unsplash_summary(p) for p in items]
+    await _attach_locations(photos)
     return {
         "page": page,
         "per_page": per_page,
         "total_results": len(items),
         "next_page": len(items) >= per_page,   # Unsplash /photos doesn't expose total
-        "photos": [_unsplash_summary(p) for p in items],
+        "photos": photos,
     }
 
 

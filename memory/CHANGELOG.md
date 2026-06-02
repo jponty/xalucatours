@@ -295,3 +295,11 @@
 - **Petición**: en las páginas de viaje, en la sección "Galería del día", sustituir las tags de categoría de cada imagen (CULTURA, GASTRONOMÍA, PAISAJE…) por la tag del día del itinerario (DÍA 1, DÍA 2…).
 - **Implementado** (`DayGallery.jsx` + `ProgramTemplate.jsx`): `DayBlock` pasa `dayNumber={idx+1}` a `<DayGallery>`. La tag de cada imagen (tile y lightbox) ahora muestra "DÍA N" (trilingüe: Día/Day/Jour, renderizado en mayúsculas por CSS) en color de acento del día. Se eliminó el uso de `GALLERY_KIND_LABELS` y los `kindSlot` editables de la galería; la caption sigue siendo editable.
 - **Verificado**: página Tánger-Fez muestra Día 1→Día 6 correctamente, una tag por galería. Aplica a todas las páginas que usan ProgramTemplate. Lint OK.
+
+## Ubicación de imágenes Unsplash en la biblioteca (Feb 2026)
+- **Petición**: mostrar la ubicación de cada imagen de Unsplash (cuando tiene metadatos de localización) en la sección de búsqueda Unsplash de la biblioteca; omitir si no la tiene.
+- **Hallazgo**: la API de búsqueda `/search/photos` NO incluye `location` (solo el endpoint de detalle `/photos/{id}` la trae). Por tanto hay que pedir el detalle por foto.
+- **Backend** (`server.py`): `_unsplash_location()` obtiene la ubicación por foto y la adjunta a cada resultado de `/api/unsplash/search` y `/api/unsplash/featured`. `_format_location()` construye un `display` limpio (name o city+country). Mitigaciones de rate limit: caché **en memoria** + caché **persistente en MongoDB** (`unsplash_locations`, cada foto cuesta como máximo 1 llamada para siempre), concurrencia limitada (semáforo 8), y degradación elegante (si hay 429, se omite la ubicación y la búsqueda sigue devolviendo fotos).
+- **Frontend** (`UnsplashTab.jsx`): cada tarjeta muestra la ubicación con icono de pin (`unsplash-location-{id}`) sobre el fotógrafo, cuando existe; se omite si no.
+- **Verificado**: búsqueda 'marrakech' mostró ubicación en 12/24 tarjetas (ej. "Marrakech, Morocco", "Tinmel Mosque, Tinmel, Morocco"); las demás omiten el campo. Tests `test_unsplash_location.py` (toleran 429).
+- ⚠️ **Tradeoff rate limit**: enriquecer ubicaciones añade ~1 llamada extra por foto. Con una key de Unsplash demo (~50 req/h) esto agota el cupo rápido. La caché persistente reduce el coste a largo plazo, pero para uso intensivo conviene una key de Unsplash de producción (5000 req/h).
