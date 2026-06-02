@@ -205,9 +205,8 @@ const EditorBody = ({ group, initialIndex, backHref, page, section, onCancel }) 
           const res = await fetch(`${API}/api/slots/${encodeURIComponent(s.id)}`);
           const data = await res.json();
           if (data && data.url) next[s.id] = data.url;
-        } catch (err) {
+        } catch {
           // Slot not yet persisted or offline — keep placeholder fallback.
-          console.debug(`[slots] fetch failed for ${s.id}:`, err);
         }
       }));
       if (!cancelled) {

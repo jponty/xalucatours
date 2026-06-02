@@ -58,9 +58,8 @@ const ensureImgLoaded = () => {
           alt_i18n: s.alt_i18n || null,
         });
       }
-    } catch (err) {
+    } catch {
       // Network/parse failure — keep cache empty so code fallbacks render.
-      console.debug("[image_slots] bulk fetch failed:", err);
     }
     imgCache.ready = true;
     imgCache.loading = null;

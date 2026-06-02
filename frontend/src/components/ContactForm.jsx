@@ -36,8 +36,7 @@ export const ContactForm = () => {
       setDone(true);
       toast.success(t("form_success"));
       setForm(initialState);
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error(t("form_error"));
     } finally {
       setSending(false);

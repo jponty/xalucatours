@@ -346,3 +346,9 @@
 - `ImageLibraryPicker.jsx`: reestructurada la fila de pestañas (Biblioteca/Pexels/Unsplash/Selección). El `overflow-x-auto` estaba en el mismo elemento que las pestañas y recortaba el texto verticalmente; ahora va en un wrapper exterior (que lleva el `border-b` y `pt-5`), con la tablist scrolleable dentro usando `-mb-px` para una línea activa limpia. Botones a `py-3`.
 - Aumentado el espacio superior del contenido: sección de búsqueda (Biblioteca) `py-4` → `pt-6 pb-4`; áreas de Pexels/Unsplash/Selección `py-6` → `pt-8 pb-6`.
 - **Verificado** (screenshot): texto de pestañas ya no se recorta, línea activa limpia y separación clara con el contenido. Lint OK.
+
+## 2026-02-02 — Code review: limpieza segura (opción A+B)
+- **(A) Eliminados los 11 `console.*`** de bloques catch en: `pricingStore.js`, `EditableText.jsx` (x2), `EditableImage.jsx`, `SlotUsagePanel.jsx`, `ImageEditorPage.jsx`, `JuegoPage.jsx`, `ContactForm.jsx`, `ToursVideoSection.jsx` (x2). Convertidos a `catch {` sin binding (sin variables sin usar). Lógica de manejo de errores intacta.
+- **(B) Dependencias de hooks**: tras inspección, NO había dependencias realmente ausentes — los ítems del informe eran constantes/funciones de módulo (`MONTHS`, `TRIPS`, `ALL_DESTINATIONS`, `FEATURED_ROUTES`, `resolveRouteCoords`, `seasonOf`), correctamente excluidas por `react-hooks`, o variables de callback (`m`, `d`, `titles` local). ESLint real pasa limpio. Falsos positivos del informe.
+- **Rechazado** del informe (incorrecto/arriesgado): `is None`→`==None` (PEP8 correcto), index-key en skeletons estáticos, localStorage→cookies (rompería persistencia de edición).
+- **Verificado**: ESLint sin issues en los 12 archivos; smoke test (home + modo edición) OK, sin errores de consola.

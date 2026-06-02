@@ -102,8 +102,7 @@ export default function SlotUsagePanel({ slotId, compact = false }) {
         if (!cancelled) {
           setState({ loading: false, count: data.count || 0, slots: data.slots || [], error: false });
         }
-      } catch (err) {
-        console.debug(`[usage] fetch failed for ${slotId}:`, err);
+      } catch {
         if (!cancelled) setState({ loading: false, count: 0, slots: [], error: true });
       }
     })();

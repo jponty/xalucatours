@@ -33,10 +33,8 @@ const ensureLoaded = async () => {
       for (const [slot, vals] of Object.entries(slots)) {
         cache.values.set(slot, vals || {});
       }
-    } catch (err) {
+    } catch {
       // Network/parse failure — keep cache empty so defaults render.
-      // Logged at debug level so production consoles stay clean.
-      console.debug("[text_slots] bulk fetch failed:", err);
     }
     cache.ready = true;
     cache.loading = null;
@@ -144,14 +142,12 @@ export const EditableText = ({
               await persistSlot(slot, merged);
             }
           }
-        } catch (err) {
+        } catch {
           // Translation is best-effort; the ES edit is already saved.
-          console.debug("[translate] failed:", err);
         }
       }
-    } catch (err) {
+    } catch {
       // Save failed (offline, 5xx). Caller can retry by re-editing.
-      console.error(`[text_slots] persist failed for ${slot}:`, err);
     } finally {
       setSaving(false);
     }

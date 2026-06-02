@@ -126,8 +126,8 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
             try {
               const f = e.target.getIframe && e.target.getIframe();
               if (f) f.setAttribute("title", "Xaluca Tours — Marruecos");
-            } catch (err) {
-              console.warn("ToursVideoSection: no se pudo ajustar el título del iframe", err);
+            } catch {
+              // Non-critical: iframe title is a progressive enhancement.
             }
           },
           onStateChange: (e) => {
@@ -148,8 +148,8 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
       cancelled = true;
       try {
         if (player && player.destroy) player.destroy();
-      } catch (err) {
-        console.warn("ToursVideoSection: error al destruir el reproductor", err);
+      } catch {
+        // Player already torn down — safe to ignore on cleanup.
       }
       playerRef.current = null;
       stage.replaceChildren();

@@ -26,8 +26,7 @@ export const ensurePricing = () => {
     try {
       const res = await fetch(`${API}/api/pricing`);
       store.override = await res.json();
-    } catch (err) {
-      console.debug("[pricing] fetch failed:", err);
+    } catch {
       store.override = null;
     }
     store.ready = true;
