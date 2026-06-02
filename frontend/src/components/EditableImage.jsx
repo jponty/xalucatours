@@ -665,58 +665,58 @@ const DND_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"
 const DND_MAX_BYTES = 20 * 1024 * 1024;
 const DND_IMG_RE = /\.(jpe?g|png|webp|avif)$/i;
 
-/* Upload an image dropped onto a placeholder. We re-encode it through a
-   canvas to an in-memory Blob (downscaled to a sane max dimension) BEFORE
-   uploading — this mirrors the crop-flow upload path (which works reliably
-   in the instrumented preview), avoids the proxy choking on very large
-   originals, and produces an in-memory File the preview's wrapped fetch can
-   serialise (raw OS-backed File objects can trip it → "Failed to fetch"). */
+/* Re-encode a dropped image through a canvas to a downscaled in-memory
+   Blob BEFORE uploading. We load the file via a **data: URL** (FileReader),
+   NOT a blob: URL — the instrumented preview/production may block `blob:` in
+   the CSP `img-src`, which makes `<img src=blob:…>` fail to decode → the
+   "No se pudo leer la imagen" error. The crop flow loads images the same way
+   (data: URL) and works reliably in every environment. */
 const DND_MAX_DIM = 2560;
 const DND_ENCODE_QUALITY = 0.9;
 
-const prepareUploadBlob = (file) =>
-  new Promise((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      let w = img.naturalWidth || img.width;
-      let h = img.naturalHeight || img.height;
-      if (!w || !h) { reject(new Error("No se pudo leer la imagen.")); return; }
-      const longest = Math.max(w, h);
-      if (longest > DND_MAX_DIM) {
-        const scale = DND_MAX_DIM / longest;
-        w = Math.round(w * scale);
-        h = Math.round(h * scale);
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { reject(new Error("Canvas no disponible.")); return; }
-      ctx.drawImage(img, 0, 0, w, h);
-      const wantsAlpha = /png|webp|avif/i.test(file.type || file.name || "");
-      const primary = wantsAlpha ? "image/webp" : "image/jpeg";
-      canvas.toBlob(
-        (blob) => {
-          if (blob && blob.size > 0) { resolve({ blob, type: blob.type || primary }); return; }
-          // Fallback for browsers without WebP encode support.
-          canvas.toBlob(
-            (b2) => (b2 ? resolve({ blob: b2, type: "image/jpeg" }) : reject(new Error("No se pudo procesar la imagen."))),
-            "image/jpeg",
-            DND_ENCODE_QUALITY,
-          );
-        },
-        primary,
-        DND_ENCODE_QUALITY,
-      );
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("No se pudo leer la imagen."));
-    };
-    img.src = objectUrl;
+const prepareUploadBlob = async (file) => {
+  let img;
+  try {
+    const dataUrl = await fileToDataURL(file);
+    img = await loadImage(dataUrl);
+  } catch {
+    throw new Error("No se pudo leer la imagen.");
+  }
+  let w = img.naturalWidth || img.width;
+  let h = img.naturalHeight || img.height;
+  if (!w || !h) throw new Error("No se pudo leer la imagen.");
+  const longest = Math.max(w, h);
+  if (longest > DND_MAX_DIM) {
+    const scale = DND_MAX_DIM / longest;
+    w = Math.round(w * scale);
+    h = Math.round(h * scale);
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("No se pudo procesar la imagen.");
+  ctx.drawImage(img, 0, 0, w, h);
+  const wantsAlpha = /png|webp|avif/i.test(file.type || file.name || "");
+  const primary = wantsAlpha ? "image/webp" : "image/jpeg";
+  const result = await new Promise((resolve) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob && blob.size > 0) { resolve({ blob, type: blob.type || primary }); return; }
+        // Fallback for browsers without WebP encode support.
+        canvas.toBlob(
+          (b2) => resolve(b2 ? { blob: b2, type: "image/jpeg" } : null),
+          "image/jpeg",
+          DND_ENCODE_QUALITY,
+        );
+      },
+      primary,
+      DND_ENCODE_QUALITY,
+    );
   });
+  if (!result) throw new Error("No se pudo procesar la imagen.");
+  return result;
+};
 
 const uploadFileToSlot = async (slot, file) => {
   const { blob, type } = await prepareUploadBlob(file);
