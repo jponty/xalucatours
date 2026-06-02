@@ -260,3 +260,11 @@
 - Aviso UI: la contraseña solo es necesaria para "Publicar" (escribir en producción); "Traer" solo lee de producción.
 - **Bug corregido durante la edición**: se eliminó accidentalmente `return (` al insertar la función (compilación babel fallaba aunque eslint pasaba) → restaurado.
 - **Verificado**: clic en navegador trae 318 imágenes + 24 textos + precios, banner verde "Producción sincronizada".
+
+## Sincronización de contenido entre idiomas + autotraducción ES→EN/FR (Feb 2026)
+- **Petición**: el contenido editado en la versión ES de una página debe sincronizarse con EN/FR — IMÁGENES compartidas (misma imagen en los 3 idiomas), TEXTO con su propia traducción por idioma.
+- **Causa raíz**: los ids de slot se derivaban del path de la URL, pero EN/FR usan slugs localizados distintos (`viajes/norte/...` vs `tours/northern/...` vs `voyages/nord/...`) → ids de slot distintos por idioma → las imágenes NO se compartían.
+- **Fix central (`slotScope.js` → `normalisePathname`)**: ahora resuelve cualquier ruta (ES/EN/FR) a su `routeId` vía `resolvePath`/`ROUTES` y usa el slug **canónico ES** como namespace. Las páginas ES conservan sus ids actuales (sin migración); EN/FR convergen a los mismos slots. Verificado: ES/EN/FR de la página Tánger-Fez exponen 67 `data-cms-image-slot` idénticos.
+- **Autotraducción (Emergent LLM key)**: nuevo `POST /api/translate` en `server.py` (emergentintegrations `LlmChat`, modelo `gpt-4o-mini`) traduce a EN+FR en una sola llamada JSON. `EditableText.save()`: al editar en ES, persiste ES al instante y luego rellena EN/FR; prop `noTranslate` para campos que no deban traducirse. Editar en EN/FR solo guarda ese idioma (ajuste manual).
+- **Tests**: `tests/test_translate.py` (3) + e2e del flujo. 10/10 backend PASS; agente de pruebas confirmó identidad de slots entre idiomas y autotraducción ES→EN/FR persistida en el mismo slot. Sin issues.
+- **Nota redeploy**: `emergentintegrations==0.1.2` ya en requirements.txt; `EMERGENT_LLM_KEY` en backend/.env (debe existir también en producción tras el redeploy).
