@@ -318,3 +318,9 @@
   - Feedback visual: resaltado naranja al arrastrar ("Soltar para reemplazar"), overlay con spinner ("Subiendo…"), flash de éxito ("Imagen actualizada") y flash de error. Nuevos data-testids: `editable-drop-prompt/busy/ok/error-{slot}`.
   - Al completar, actualiza el slot vía `onSavedOne` (estado + caché global de slots), por lo que la imagen se ve actualizada inmediatamente.
 - **Verificado** (Playwright, localhost:3000): drop sintético de un PNG sobre `editable-overlay-home.all-trips.tourAtlasDesierto45` → `POST .../upload` devolvió **200** y la tarjeta mostró la nueva imagen. Imagen de prueba restaurada en BD tras el test. Lint OK.
+
+## 2026-02-02 — Fix: "Failed to fetch" al arrastrar y soltar imágenes
+- **Síntoma**: al soltar una imagen sobre un placeholder, el upload fallaba con "Failed to fetch".
+- **Diagnóstico**: "Failed to fetch" es un fallo a nivel de red (sin respuesta). El flujo de subida del editor (recorte) funciona porque sube un Blob generado por canvas (en memoria); el drag&drop subía el **`File` original del SO** sin procesar. El `fetch` instrumentado del entorno de preview puede fallar al serializar un File respaldado por el SO, y los originales muy grandes añaden riesgo en el ingress.
+- **Fix** (`EditableImage.jsx`): `uploadFileToSlot` ahora **re-codifica la imagen vía `<canvas>` a un Blob en memoria** (`prepareUploadBlob`) antes de subir — reduce a máx. 2560 px de lado mayor, conserva alfa usando WebP para PNG/WEBP/AVIF (JPEG para el resto, con fallback si el navegador no codifica WebP). Esto replica el camino probado del recorte y evita el problema de clonado del File.
+- **Verificado** (Playwright, localhost:3000): drop de un JPEG real 1600×1067 → re-codificado (~28 KB) → `POST .../upload` **200**, sin `requestfailed`, imagen actualizada. *Nota: el problema original solo ocurre en el preview instrumentado (no reproducible en localhost); pendiente de confirmación del usuario en el preview.*
