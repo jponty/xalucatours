@@ -20,6 +20,7 @@
    consistently on every page.
 ============================================================ */
 import { CITY_PROFILES } from "@/lib/cityProfiles";
+import { buildPlaceGallery } from "@/lib/placeGalleries";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -141,7 +142,9 @@ const buildLandmark = (entry) => {
     kind: entry.kind,
     name: entry.name || (profile && profile.name),
     blurb: entry.blurb || (profile && profile.blurb) || null,
-    gallery: (profile && profile.gallery) || null,
+    // Every POI is guaranteed a 3-card "Galería del lugar" so its drawer
+    // always opens — own profile gallery, curated cards, or a thematic set.
+    gallery: buildPlaceGallery(entry),
   };
 };
 

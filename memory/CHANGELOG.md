@@ -1,4 +1,16 @@
 
+## Galería del día narrativa + Galería del lugar garantizada (Feb 2026)
+- **User request 1**: La "Galería del día – El recorrido en imágenes" debe tener exactamente 10 imágenes, en el orden cronológico real del itinerario, derivadas EXCLUSIVAMENTE de los puntos mencionados en el texto del día (ciudades, kasbahs, valles, gargantas, dunas, oasis, actividades, mercados, hoteles, bivouacs, experiencias). Captions de SOLO el nombre. Sin aeropuertos. Lugares importantes pueden repetirse con otra imagen.
+- **User request 2**: En el "Mapa del día – Puntos de interés del día", cada POI debe abrir obligatoriamente su "Galería del lugar" con sus 3 cards. Algunos POIs no abrían porque no tenían cards asociadas.
+- **Implementación**:
+  - NUEVO `lib/dayNarrativeGallery.js`: extractor narrativo global. `buildDayNarrativeGallery(day)` escanea `day.body.es` contra un léxico (lugares del gazetteer + actividades/experiencias + alojamientos), ordena por aparición en el texto, excluye aeropuertos/contexto de vuelo, y devuelve exactamente 10 cells con captions name-only (trilingües) e imágenes temáticas verificadas del `imageBank`. Si hay <10 puntos, repite los puntos en orden con imagen alternativa.
+  - `components/DayGallery.jsx`: ahora usa `buildDayNarrativeGallery(day)` (useMemo) en lugar de las galerías estáticas. Fallback a `DEFAULT_DAY_GALLERY`.
+  - NUEVO `lib/placeGalleries.js`: `buildPlaceGallery(entry)` garantiza SIEMPRE 3 cards: (1) galería propia de CITY_PROFILES vía `profileKey` o `ALIAS_PROFILE` (enlaza imlil/toubkal/mgoun/tinerhir/ziz/draa/dades/atlas/antiatlas/merzouga/boumalne a perfiles existentes), (2) `CURATED_PLACE_CARDS` (14 lugares sin perfil: moulayidriss, midelt, ouzoud, rif, boutaghrar, rosevalley, fossils, zagora, cabospartel, grutashercules + 4 alojamientos), (3) fallback temático por `kind` (nunca vacío).
+  - `lib/dayPlaceGazetteer.js` `buildLandmark`: `gallery: buildPlaceGallery(entry)` (antes `null` cuando no había perfil).
+  - Limpieza: eliminado `lib/dayGalleriesGenerated.js` (558 líneas, código muerto).
+- **Validado** (Playwright e2e, ES+FR): 6 galerías del día con 10 imágenes en orden narrativo correcto; 21/21 POIs abren su carrusel con exactamente 3 cards. Todo CMS-editable (mismos slots por índice).
+
+
 ## Sincronización CMS entre entornos (export/import sin redeploy) (Feb 2026)
 - **User request**: script de export/import de slots CMS para sincronizar producción con las ediciones del preview con un clic, sin depender del redeploy de la BD.
 - **Backend** (`server.py`):

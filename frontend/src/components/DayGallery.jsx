@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { X, Camera, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
-import { DAY_GALLERIES, DEFAULT_DAY_GALLERY } from "@/lib/dayGalleries";
-import { DAY_GALLERIES_GENERATED } from "@/lib/dayGalleriesGenerated";
+import { DEFAULT_DAY_GALLERY } from "@/lib/dayGalleries";
+import { buildDayNarrativeGallery } from "@/lib/dayNarrativeGallery";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
@@ -123,13 +123,15 @@ export const DayGallery = ({ day, accent = "#C16542", dayNumber }) => {
   const { textEditMode } = useEditMode();
   const t = SECTION_LABELS[lang] || SECTION_LABELS.es;
   const dayLabel = dayTagLabel(dayNumber, lang);
-  // Stage-specific Pexels gallery (auto-generated) takes priority, then any
-  // hand-curated gallery, then a generic fallback — so every itinerary day
-  // shows real, stage-coherent imagery.
-  const images =
-    DAY_GALLERIES_GENERATED[day.route_id] ||
-    DAY_GALLERIES[day.route_id] ||
-    DEFAULT_DAY_GALLERY;
+  // The day gallery is a visual narration of the itinerary: exactly 10
+  // images, in chronological order, derived STRICTLY from the points
+  // explicitly named in this day's own description (places, landscapes,
+  // monuments, villages, activities, lodging, experiences). Airports and
+  // flight-only transit hubs are excluded. Captions are name-only.
+  const images = useMemo(() => {
+    const narrative = buildDayNarrativeGallery(day);
+    return narrative.length > 0 ? narrative : DEFAULT_DAY_GALLERY;
+  }, [day]);
   const [open, setOpen] = useState(null);
   // Page-namespaced base so the gallery is independent per itinerary URL,
   // even when several programmes reuse the same shared `route_id`.
