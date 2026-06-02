@@ -1,4 +1,10 @@
 
+## CMS: "Editar" abre la biblioteca de imágenes directamente (Feb 2026)
+- **User request**: en modo edición, al pulsar "Editar" en una imagen debe abrirse directamente el diálogo de la biblioteca de imágenes, manteniendo disponible el uploader.
+- **Implementación**: `EditableImage.jsx` (componente `EditModal`) — `showLibrary` ahora inicia en `true`, de modo que al abrir el editor el `ImageLibraryPicker` aparece directamente sobre él. El uploader queda disponible tanto en el propio picker (Subir varias / Subir carpeta) como en el editor de detrás (subida single/multi + recorte). Al cerrar la biblioteca se vuelve al editor.
+- **Validado**: modo edición → clic "Editar" abre "Biblioteca de imágenes" con pestañas (Biblioteca/Pexels/Unsplash/Selección) y botones de subida visibles.
+
+
 ## Galería del día narrativa + Galería del lugar garantizada (Feb 2026)
 - **User request 1**: La "Galería del día – El recorrido en imágenes" debe tener exactamente 10 imágenes, en el orden cronológico real del itinerario, derivadas EXCLUSIVAMENTE de los puntos mencionados en el texto del día (ciudades, kasbahs, valles, gargantas, dunas, oasis, actividades, mercados, hoteles, bivouacs, experiencias). Captions de SOLO el nombre. Sin aeropuertos. Lugares importantes pueden repetirse con otra imagen.
 - **User request 2**: En el "Mapa del día – Puntos de interés del día", cada POI debe abrir obligatoriamente su "Galería del lugar" con sus 3 cards. Algunos POIs no abrían porque no tenían cards asociadas.

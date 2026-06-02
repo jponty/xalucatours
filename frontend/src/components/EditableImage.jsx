@@ -891,7 +891,10 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne, on
   const [busy, setBusy] = useState(false);
   const [busyAll, setBusyAll] = useState(false);
   const [error, setError] = useState(null);
-  const [showLibrary, setShowLibrary] = useState(false);
+  // Clicking "Editar" opens the image library dialog directly. The uploader
+  // stays available both inside the library picker (bulk/folder upload) and
+  // in the editor panel behind it (single/multi upload + crop tools).
+  const [showLibrary, setShowLibrary] = useState(true);
   const inputSingleRef = useRef(null);
   const inputMultiRef = useRef(null);
 
