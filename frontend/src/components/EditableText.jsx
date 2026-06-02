@@ -83,6 +83,7 @@ export const EditableText = ({
   as: Tag = "span",
   multiline = true,
   className = "",
+  noTranslate = false,  // skip ES->EN/FR autotranslation (dates, numbers, codes)
   children,             // ignored — kept for ergonomic markup
   ...rest
 }) => {
@@ -119,16 +120,42 @@ export const EditableText = ({
     }
     setSaving(true);
     try {
-      const nextValues = { ...(stored || {}), [lang]: newText };
-      await persistSlot(slot, nextValues);
+      const baseValues = { ...(stored || {}), [lang]: newText };
+      // Persist the edited language first so the edit is saved instantly.
+      await persistSlot(slot, baseValues);
       setDirty(false);
+
+      // Autotranslation: when editing Spanish (source of truth), generate
+      // English & French so every language variant stays synchronized.
+      if (lang === "es" && newText && !noTranslate) {
+        try {
+          const res = await fetch(`${API}/api/translate`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: newText, source: "es", targets: ["en", "fr"] }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const tr = (data && data.translations) || {};
+            if (tr.en || tr.fr) {
+              const merged = { ...baseValues };
+              if (tr.en) merged.en = tr.en;
+              if (tr.fr) merged.fr = tr.fr;
+              await persistSlot(slot, merged);
+            }
+          }
+        } catch (err) {
+          // Translation is best-effort; the ES edit is already saved.
+          console.debug("[translate] failed:", err);
+        }
+      }
     } catch (err) {
       // Save failed (offline, 5xx). Caller can retry by re-editing.
       console.error(`[text_slots] persist failed for ${slot}:`, err);
     } finally {
       setSaving(false);
     }
-  }, [slot, lang, stored, defaults]);
+  }, [slot, lang, stored, defaults, noTranslate]);
 
   const onInput = () => setDirty(true);
   const onKeyDown = (e) => {

@@ -1,0 +1,34 @@
+{
+  "summary": "Validated trilingual CMS sync: (1) cross-language image slot identity is perfect — ES/EN/FR program page yield 67 IDENTICAL [data-cms-image-slot] ids all prefixed 'viajes.norte.tanger_fez.programa_5n_6d.*'; (2) POST /api/translate ES→EN/FR works (200, real translations, empty/whitespace returns {}, source==target returns {}); (3) existing CMS endpoints (GET /api/slots, GET/PUT/DELETE /api/text_slots[?lang], GET /api/cms/export) all 200; (4) E2E autotranslation flow verified — toggled header-text-edit-toggle on /, typed 'Aventura inolvidable por Marruecos PRUEBA85103' into editable-text-home.hero.eyebrow, blurred, then via /api/text_slots?lang=… confirmed the SAME slot id stores {es: ES phrase, en: 'UNFORGETTABLE ADVENTURE IN MOROCCO TEST85103', fr: 'AVENTURE INOUBLIABLE PAR MAROC TEST85103'} and /fr renders the FR translation. 10/10 backend tests pass.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_results": {
+    "backend_pytest": "10/10 PASS — test_translate (3), test_text_slots_reset (3), test_text_slots_crud (4)",
+    "translate_endpoint": "PASS — POST /api/translate returns real LLM translations; empty/whitespace and source-in-targets both return {translations:{}}; status 200 for all 3 cases",
+    "cms_endpoints": "PASS — /api/slots, /api/text_slots (es/en/fr), /api/text_slots/{id} PUT+DELETE roundtrip, /api/cms/export all return 200",
+    "cross_language_image_slots": "PASS — ES (/viajes/norte/tanger_fez/programa_5n_6d) / EN (/en/tours/northern/tangier-fez/program-5n-6d) / FR (/fr/voyages/nord/tanger-fes/programme-5n-6j) all expose exactly 67 [data-cms-image-slot] attributes; sets identical (ES==EN, ES==FR); every id starts with 'viajes.norte.tanger_fez.programa_5n_6d.'",
+    "autotranslation_e2e": "PASS — Edited ES hero eyebrow → after blur (~6s wait) the same slot id home.hero.eyebrow stored ES=typed phrase, EN+FR auto-translated by LLM. /fr DOM rendered the FR translation in the eyebrow position. Edit mode toggle and navigation lockdown observed correctly.",
+    "rendering_check": "PASS — /fr loaded with localized hero ('Voyages sur mesure à travers le Maroc') and the new auto-translated eyebrow text visible in the page."
+  },
+  "critical_code_review_comments": [
+    "Backend POST /api/translate: relies on emergentintegrations LlmChat with gpt-4o-mini and EMERGENT_LLM_KEY (configured). Empty/whitespace + source==targets both short-circuit to {} — good.",
+    "EditableText.save runs translate only when lang==='es' — correct per design. If translate API fails the ES write still persists (best-effort fan-out) — verified non-fatal.",
+    "slotScope.normalisePathname() correctly canonicalises localized routes to the ES slug, producing language-independent slot ids. Verified empirically by the 67-slot identity check.",
+    "Header editable items (e.g. header.nav_menu) also get translated when edited in ES — same mechanism. Side effect during testing: clicking 'editable-text-header.nav_menu' opens the side menu (because the Menu button is the same DOM region). The Menu's overlay then blocks subsequent typing on body content. Not a bug, just a testing-ergonomics note — header editable items should be edited carefully or via direct focus.",
+    "API GET /api/text_slots?lang=… still returns the full multilingual payload per slot (es/en/fr keys inside each entry) — the ?lang param appears to be advisory; effective filtering happens client-side. Acceptable; no behaviour issue."
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_translate.py",
+    "/app/backend/tests/test_text_slots_reset.py",
+    "/app/backend/tests/test_text_slots_crud.py",
+    "/app/test_reports/pytest/cms_results.xml"
+  ],
+  "action_items": [],
+  "updated_files": ["/app/backend/tests/test_text_slots_crud.py", "/app/test_reports/iteration_24.json"],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "100%"},
+  "test_credentials": "None used — public toggles. Admin password 'xaluca' available in /app/memory/test_credentials.md but not needed.",
+  "seed_data_creation": "During E2E: temporarily wrote home.hero.eyebrow (es/en/fr) and header.nav_menu. Both cleaned up afterwards via PUT 'Xaluca Tours' on hero.eyebrow and DELETE on header.nav_menu — verified slots now fall back to defaults.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Cross-language slot identity uses the ES canonical slug as the slot key for ALL languages. To verify autotranslation: enable header-text-edit-toggle, edit any editable-text-* in body area (avoid header.nav_menu — its container opens the side menu and intercepts clicks), type a unique ES phrase, blur (NOT navigate, edit mode blocks navigation). After ~5-8s the translate API populates en+fr on the same slot id. The text_slots endpoint stores all 3 langs inside one record; ?lang filter is advisory. To restore a slot to default, DELETE /api/text_slots/{slot_id} (no lang param) removes overrides for all langs."
+}

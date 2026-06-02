@@ -30,13 +30,38 @@
 ============================================================ */
 import React, { createContext, useContext, useMemo } from "react";
 import { useLocation } from "react-router-dom";
+import { resolvePath, ROUTES } from "@/lib/routes";
 
 /** Internal: current scope path as an array of dot-joined ids. */
 export const SectionContext = createContext({ path: [] });
 
-/** Strip /en/ or /fr/ from the location pathname so the slot id
- *  is identical across language variants. */
+/** Map ANY localized pathname (ES/EN/FR) to a LANGUAGE-INDEPENDENT slot
+ *  namespace so every language variant of a page reads & writes the SAME
+ *  CMS slots. We resolve the path to its `routeId` and use the canonical
+ *  ES slug as the namespace:
+ *
+ *    /viajes/norte/tanger_fez/...      (es)  ┐
+ *    /en/tours/northern/tangier-fez/.. (en)  ├─► "viajes.norte.tanger_fez..."
+ *    /fr/voyages/nord/tanger-fes/...   (fr)  ┘
+ *
+ *  Because ES pages already use their ES slug as the namespace, existing
+ *  slot ids are UNCHANGED (no migration); only EN/FR pages now converge
+ *  onto the same shared slots. Images become identical across languages,
+ *  while text keeps its per-language {es,en,fr} values inside one slot.
+ *
+ *  Fallback: unregistered routes keep the legacy behaviour (strip the
+ *  /en|/fr prefix) so nothing breaks for dynamic/unknown paths. */
 const normalisePathname = (pathname) => {
+  const { routeId } = resolvePath(pathname);
+  if (routeId && ROUTES[routeId]) {
+    const canonical = (ROUTES[routeId].es || "")
+      .replace(/^\/+|\/+$/g, "")
+      .split("/")
+      .filter(Boolean)
+      .join(".");
+    return canonical || "home";
+  }
+  // Legacy fallback for paths not registered in ROUTES.
   const clean = (pathname || "/").replace(/^\/+|\/+$/g, "");
   const parts = clean.split("/").filter(Boolean);
   if (parts[0] === "en" || parts[0] === "fr") parts.shift();

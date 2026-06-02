@@ -52,6 +52,8 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 ADMIN_TOKEN_SECRET = os.environ.get("ADMIN_TOKEN_SECRET", "")
 ADMIN_TOKEN_TTL = 7 * 24 * 3600  # 7 days
 
+EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+
 
 def _admin_sign(raw: str) -> str:
     return _hmac.new(ADMIN_TOKEN_SECRET.encode(), raw.encode(), _hashlib.sha256).hexdigest()
@@ -1554,6 +1556,71 @@ async def list_text_slots():
         if slot_id:
             items[slot_id] = doc.get("values") or {}
     return {"slots": items}
+
+
+# ----------------------------------------------------------
+# CMS autotranslation (ES -> EN/FR) via Emergent LLM key
+# ----------------------------------------------------------
+LANG_NAMES = {"es": "Spanish", "en": "English", "fr": "French"}
+
+
+class TranslateBody(BaseModel):
+    text: str = Field(..., max_length=6000)
+    source: str = "es"
+    targets: List[str] = Field(default_factory=lambda: ["en", "fr"])
+
+
+@api_router.post("/translate")
+async def translate_text(body: TranslateBody):
+    """Translate a short CMS string from `source` into each of `targets`.
+    Returns { "translations": { "en": "...", "fr": "..." } }. One LLM call
+    returns all targets as JSON to keep latency low."""
+    text = (body.text or "").strip()
+    targets = [t for t in body.targets if t in ("en", "fr", "es") and t != body.source]
+    if not text or not targets:
+        return {"translations": {}}
+    if not EMERGENT_LLM_KEY:
+        raise HTTPException(503, "Translation service not configured")
+
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+
+    target_desc = ", ".join(f'"{t}" ({LANG_NAMES[t]})' for t in targets)
+    json_shape = ", ".join(f'"{t}": "..."' for t in targets)
+    system = (
+        "You are a professional translator for a premium Moroccan travel agency website. "
+        "Translate faithfully, preserving the marketing tone, proper nouns, place names and "
+        "inline punctuation. Do not add or remove information. "
+        "Return ONLY a strict JSON object, no markdown, no commentary."
+    )
+    prompt = (
+        f"Source language: {LANG_NAMES.get(body.source, body.source)}.\n"
+        f"Translate the text into: {target_desc}.\n"
+        f"Return strictly a JSON object like {{{json_shape}}}.\n\n"
+        f"TEXT:\n{text}"
+    )
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"cms-translate-{uuid.uuid4().hex}",
+            system_message=system,
+        ).with_model("openai", "gpt-4o-mini")
+        resp = await chat.send_message(UserMessage(text=prompt))
+    except Exception as e:
+        logger.error(f"translate failed: {e}")
+        raise HTTPException(502, "Translation provider error")
+
+    out: Dict[str, str] = {}
+    try:
+        m = re.search(r"\{.*\}", resp, re.S)
+        data = _json.loads(m.group(0)) if m else {}
+        for t in targets:
+            val = data.get(t)
+            if val:
+                out[t] = str(val).strip()
+    except Exception as e:
+        logger.error(f"translate parse failed: {e} | raw={resp[:200]}")
+    return {"translations": out}
+
 
 
 app.include_router(api_router)
