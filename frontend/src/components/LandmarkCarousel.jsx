@@ -6,7 +6,6 @@ import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
-import { useSlotId } from "@/components/slotScope";
 
 const LABELS = {
   es: {
@@ -102,9 +101,12 @@ const Card = ({ image, accent, kindLabel, lang, index, total, slot }) => {
 export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
-  // Page-namespaced base so each itinerary keeps its own independent
-  // landmark gallery images (landmark ids repeat across programmes).
-  const galleryBase = useSlotId(`landmark.${landmark ? landmark.id : "x"}.gallery`);
+  // GLOBAL, page/language-independent slot base. The same point of interest
+  // (matched by its stable `poiKey`, not its display name) shares ONE CMS
+  // record across every trip page and itinerary day, so editing its cards,
+  // images, titles, descriptions or captions anywhere updates it everywhere.
+  const poiKey = landmark ? (landmark.poiKey || landmark.id) : "x";
+  const galleryBase = `poi.${poiKey}.gallery`;
   // Galleries can come either from the inline `landmark.gallery` (used by
   // synthetic city-profile waypoints) or the static LANDMARK_GALLERIES dict
   // keyed by landmark.id (the original curated landmark days).

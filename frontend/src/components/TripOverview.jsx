@@ -4,7 +4,6 @@ import { Compass, Thermometer, CloudSun, MapPin, Activity, Images } from "lucide
 import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { buildRouteGalleryCells } from "@/lib/routeLandmarks";
-import { usePageNamespace } from "@/components/slotScope";
 import EditableImage from "@/components/EditableImage";
 
 /* ----- Trilingual labels ----- */
@@ -98,10 +97,9 @@ const FitBoundsCtl = ({ bounds }) => {
 ============================================================ */
 const RouteImageGallery = ({ days, t }) => {
   const { lang } = useLanguage();
-  const pageNs = usePageNamespace();
   const cells = useMemo(
-    () => buildRouteGalleryCells(days, pageNs, lang),
-    [days, pageNs, lang],
+    () => buildRouteGalleryCells(days, lang),
+    [days, lang],
   );
 
   if (cells.length === 0) return null;

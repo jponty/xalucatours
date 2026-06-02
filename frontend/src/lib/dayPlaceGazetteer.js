@@ -20,7 +20,7 @@
    consistently on every page.
 ============================================================ */
 import { CITY_PROFILES } from "@/lib/cityProfiles";
-import { buildPlaceGallery } from "@/lib/placeGalleries";
+import { buildPlaceGallery, ALIAS_PROFILE } from "@/lib/placeGalleries";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -137,6 +137,10 @@ const buildLandmark = (entry) => {
   const profile = entry.profileKey && CITY_PROFILES[entry.profileKey];
   return {
     id: entry.id,
+    // Stable, page/language-independent point-of-interest key so the SAME
+    // place shares one global CMS record (cards/images/texts) across every
+    // trip page. Prefer the CITY_PROFILES key; fall back to the gazetteer id.
+    poiKey: entry.profileKey || ALIAS_PROFILE[entry.id] || entry.id,
     lat: entry.lat,
     lng: entry.lng,
     kind: entry.kind,

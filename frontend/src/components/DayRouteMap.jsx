@@ -357,6 +357,7 @@ const waypointToLandmark = (w, idx, routeId) => {
   if (!profile) return null;
   return {
     id: `${routeId}-${profileKey}-${idx}`,
+    poiKey: profileKey,
     kind: profile.kind,
     name: profile.name,
     blurb: profile.blurb,
@@ -582,6 +583,7 @@ const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
   if (profile && anchor) {
     const landmark = {
       id: `${day.route_id}-${profileKey}-stay`,
+      poiKey: profileKey,
       kind: profile.kind,
       name: profile.name,
       blurb: profile.blurb,

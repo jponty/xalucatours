@@ -1,4 +1,17 @@
 
+## Sincronización global de Puntos de interés (Galería del lugar) (Feb 2026)
+- **User request**: el mismo punto de interés (Mapa del día → Puntos de interés → Galería del lugar) debe estar SINCRONIZADO en todas las páginas: mismas cards/imágenes/títulos/descripciones/captions; editar en una página actualiza en todas; sin versiones duplicadas; colección/origen global; emparejado por identificador estable (no por nombre); textos traducibles por idioma pero ligados al mismo contenido compartido; aplica a todas las páginas y días.
+- **Antes**: los slots de la Galería del lugar eran POR PÁGINA (`${pageNs}.landmark.${id}.gallery.${i}`) → el mismo POI en páginas distintas no se sincronizaba.
+- **Ahora (global)**: slot compartido `poi.${poiKey}.gallery.${i}` (+ `.title/.desc/.kind`), SIN prefijo de página.
+  - `poiKey` = identificador estable del lugar: `entry.profileKey || ALIAS_PROFILE[id] || id` (Tier 1 gazetteer) y `profileKey` (Tier 2 waypoints / Tier 3 stay). Independiente de página, nombre e idioma.
+  - `LandmarkCarousel.jsx`: `galleryBase = \`poi.${poiKey}.gallery\`` (string global, ya no `useSlotId`).
+  - `dayPlaceGazetteer.js` `buildLandmark`, `DayRouteMap.jsx` `waypointToLandmark`/`StayCard`, y `routeLandmarks.js` añaden `poiKey` a cada landmark.
+  - `routeLandmarks.buildRouteGalleryCells` usa el mismo slot global → la galería del recorrido comparte slots con el carrusel en todas las páginas.
+- **Textos por idioma**: los text-slots siguen guardando `{es,en,fr}` bajo un único slot compartido.
+- **Validado** (Playwright, 2 páginas): slot del carrusel = `poi.marrakech.gallery.0` (global); 48 slots compartidos entre `marrakech_ergchebbi/programa_6n_7d` y `desierto_atlas/programa_6n_7d` (todos `poi.*`) → edición compartida.
+- **Nota de migración**: ediciones previas guardadas bajo los antiguos slots por página de estas galerías dejan de leerse; los nuevos slots globales `poi.*` parten de los defaults del código hasta editarse una vez de forma global.
+
+
 ## Galería del recorrido en "Resumen visual del viaje" (Feb 2026)
 - **User request**: añadir al final de la sección "Resumen visual del viaje / El recorrido completo de un vistazo" una galería que muestre el recorrido completo, REUTILIZANDO las imágenes ya existentes en la "Galería del lugar" de cada día y lugar; en orden de itinerario (por día y por lugar); sin buscar nuevas imágenes; independiente por página; y que refleje automáticamente cualquier edición hecha en la Galería del lugar (sin duplicar registros).
 - **Implementación**:

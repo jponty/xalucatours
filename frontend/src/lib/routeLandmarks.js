@@ -29,6 +29,7 @@ const waypointToLandmark = (w, idx, routeId) => {
   if (!profile) return null;
   return {
     id: `${routeId}-${profileKey}-${idx}`,
+    poiKey: profileKey,
     kind: profile.kind,
     name: profile.name,
     gallery: profile.gallery,
@@ -65,6 +66,7 @@ export const resolveDayLandmarks = (day, lang = "es") => {
     if (profile) {
       return [{
         id: `${day.route_id}-${profileKey}-stay`,
+        poiKey: profileKey,
         kind: profile.kind,
         name: profile.name,
         gallery: profile.gallery,
@@ -78,25 +80,26 @@ export const resolveDayLandmarks = (day, lang = "es") => {
 /**
  * Build the full-journey gallery cells for a whole programme, in real
  * itinerary order (by day → by place → by Galería-del-lugar card).
- * Each cell references the EXISTING place-gallery CMS slot so any edit
- * made in the Galería del lugar is reflected automatically here.
+ * Each cell references the EXISTING, GLOBAL place-gallery CMS slot
+ * (`poi.${poiKey}.gallery.${i}`) so any edit made in the Galería del lugar
+ * — on this or any other page — is reflected automatically here.
  *
- * @param {Array} days   – program.days
- * @param {string} pageNs – page slot namespace (from usePageNamespace)
+ * @param {Array} days – program.days
  * @param {string} lang
  * @returns {Array<{slot,src,caption}>}
  */
-export const buildRouteGalleryCells = (days, pageNs, lang = "es") => {
-  if (!Array.isArray(days) || !pageNs) return [];
+export const buildRouteGalleryCells = (days, lang = "es") => {
+  if (!Array.isArray(days)) return [];
   const cells = [];
   days.forEach((day) => {
     const landmarks = resolveDayLandmarks(day, lang);
     landmarks.forEach((lm) => {
       const gallery = Array.isArray(lm.gallery) ? lm.gallery : [];
+      const poiKey = lm.poiKey || lm.id;
       gallery.forEach((card, i) => {
         cells.push({
-          // Same id the LandmarkCarousel uses → shared CMS slot.
-          slot: `${pageNs}.landmark.${lm.id}.gallery.${i}`,
+          // Same GLOBAL slot the LandmarkCarousel uses → shared everywhere.
+          slot: `poi.${poiKey}.gallery.${i}`,
           src: card.src,
           caption: card.title || lm.name || null,
         });
