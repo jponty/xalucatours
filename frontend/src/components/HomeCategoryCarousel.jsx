@@ -5,6 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
 
 /* ============================================================
@@ -69,6 +70,7 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
           }}
         />
         <span className="film-grain pointer-events-none opacity-40" aria-hidden="true" />
+        <XalucaLogoBadge testid={`home-trip-logo-${trip.id}`} />
         <span
           className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-white text-on-image z-[2]"
           style={{ background: `${cardAccent}f0` }}

@@ -3,6 +3,7 @@ import { Play, Film, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 /* ============================================================
    Editorial video gallery — Morocco through the lens.
@@ -150,6 +151,7 @@ const VideoCard = ({ video, lang, isActive, onPlay }) => (
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent" />
           <span className="film-grain" />
+          <XalucaLogoBadge testid={`video-logo-${video.id}`} />
           <div className="absolute top-5 left-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/85">
             <Film className="w-3 h-3" strokeWidth={1.6} style={{ color: video.accent }} />
             {video.eyebrow[lang] || video.eyebrow.es}

@@ -6,6 +6,7 @@ import { pathFor } from "@/lib/routes";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 /* ============================================================
    AllTripsCarousel — quick-access rail with every concrete tour
@@ -224,6 +225,7 @@ export default function AllTripsCarousel() {
                 />
                 <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/90 via-[#1A1513]/30 to-[#1A1513]/8" />
                 <span className="film-grain opacity-40" aria-hidden="true" />
+                <XalucaLogoBadge testid={`all-trips-logo-${trip.id}`} />
 
                 <span className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image"
                   style={{ background: `${trip.accent}f0` }}>

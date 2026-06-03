@@ -5,6 +5,7 @@ import { translations } from "@/lib/i18n";
 import { CIRCUITS } from "@/lib/data";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 // Visual companion for each circuit — short summary + image
 const DETAILS = {
@@ -116,6 +117,7 @@ export const MoroccoCircuits = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-[#1A1513]/10" />
             <span className="film-grain" />
+            <XalucaLogoBadge className="top-6 right-6 w-14 h-14" testid={`circuit-logo-${active}`} />
             <span className="absolute bottom-6 left-6 font-serif-x text-[#FDFBF7] text-3xl md:text-4xl leading-[1.05]">
               {pick(currentCircuit.label, lang)}
             </span>

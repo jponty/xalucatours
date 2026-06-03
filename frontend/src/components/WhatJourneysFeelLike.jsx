@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 const CARDS = [
   {
@@ -88,6 +89,7 @@ export const WhatJourneysFeelLike = () => {
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 to-transparent" />
+                  <XalucaLogoBadge testid={`feel-logo-${c.slug}`} />
                   <span
                     className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/50 backdrop-blur-sm"
                     style={{ borderColor: `${c.accent}99`, color: c.accent }}

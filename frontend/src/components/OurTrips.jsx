@@ -5,6 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 /* ============================================================
    OurTrips — editorial bento grid of trip categories
@@ -145,6 +146,7 @@ const FeaturedCard = ({ trip, lang }) => {
       />
       <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent" />
       <span className="film-grain opacity-40" aria-hidden="true" />
+      <XalucaLogoBadge className="top-6 right-6 w-14 h-14" testid={`our-trips-logo-${trip.id}`} />
 
       <span
         className="absolute top-7 left-7 inline-flex items-center gap-2 px-3 py-1.5 text-[10px] tracking-[0.3em] uppercase text-[#1A1513]"
@@ -198,6 +200,7 @@ const SmallCard = ({ trip, lang }) => {
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
         <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-[#1A1513]/10" />
+        <XalucaLogoBadge testid={`our-trips-logo-${trip.id}`} />
         {/* Tag */}
         <span className="absolute top-4 left-4 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image">
           {I && (

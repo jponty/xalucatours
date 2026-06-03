@@ -1,0 +1,34 @@
+{
+  "summary": "Frontend-only verification of the Xaluca logo overlay change on the home page. All 6 required home-page sections render the Xaluca logo badge in the top-right of their card/poster images with the correct data-testid prefixes, all logos are visible, and the regression contract on the 'home-all-trips' catalog section holds (no new logo badge added; monogram-X overlays preserved). Top contact bar and home page render cleanly with no console errors.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verification_details": {
+    "top-info-bar": "Present at top with '+34 937 268 366' and 'Lunes a viernes de 10:00 a 20:00 h'",
+    "our-trips": "6/6 logos present and visible (our-trips-logo-full, -south, -north, -short, -adventure, -bespoke). Featured big card uses larger 56x56 badge, small cards 44x44. All positioned top-right.",
+    "all-trips-carousel": "21 all-trips-logo-* badges rendered; first 5 visible (rest off-screen in scrollable track). Sample testid: all-trips-logo-ad-4-5.",
+    "category-carousels": "All 5 carousels present (home-south-, home-full-, home-short-, home-north-, home-upcoming-carousel). Each contains 5–6 home-trip-logo-* badges, 3 visible per carousel (rest in horizontal scroll). Visible.",
+    "feel-section": "feel-logo-experiences, feel-logo-accommodations, feel-logo-connection all present & visible.",
+    "morocco-videos": "6 video-logo-* badges present and visible on poster cards (sample: video-logo-k8FtwzRCo3M).",
+    "circuits-section": "circuit-logo-sahara visible on active detail image (only the active circuit renders a badge as expected from active state).",
+    "REGRESSION home-all-trips": "0 new home-trip-logo-* badges inside data-testid='home-all-trips' (correct). 40 home-all-trips-monogram-* overlays still present (sample: home-all-trips-monogram-tourAtlasDesierto45).",
+    "console": "Only benign 'Unrecognized feature: web-share' warning. No JS errors. No broken layout."
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "XalucaLogoBadge component is clean, reusable, decorative (aria-hidden, pointer-events-none) — good a11y choice for a brand watermark.",
+    "Minor: the AllTripsCarousel renders 21 logos at once (all cards); fine for now but watch for image bandwidth — they share the same .webp asset so browser caches it (single network request)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (not tested per request)", "frontend": "100%" },
+  "test_credentials": "n/a (public home page)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Logo overlay feature fully verified at viewport 1440x900 on https://morocco-trips-2.preview.emergentagent.com/. All testids defined in review_request resolved as expected. Regression on home-all-trips monogram intact. No follow-up needed.",
+  "rca of the issue": "n/a — no issue found."
+}
