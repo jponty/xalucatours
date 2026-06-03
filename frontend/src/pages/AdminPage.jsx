@@ -1535,75 +1535,166 @@ const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSa
 
 
 /* ============================================================
-   Leads panel — captured "Descargar programa" submissions.
-   Reads GET /api/program-downloads (admin token), with search,
-   refresh and CSV export for the sales team.
+   Leads panel — captured submissions from every public form.
+   Sub-sections (one per form), each protected by the admin token,
+   with search, refresh and CSV export for the sales team.
+   Forms covered: Descargar Programa, Contacto Rápido,
+   Planificación Detallada. Add a new entry to LEAD_FORMS when a
+   new public form is wired to its own endpoint.
 ============================================================ */
+const fmtLeadDate = (iso) => {
+  try { return new Date(iso).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" }); }
+  catch { return iso || ""; }
+};
+
+const tripPlannerDates = (r) => {
+  if (r.date_mode === "exact") return r.start_date || "—";
+  if (r.date_mode === "flexible") return r.flexible_month || "Flexible";
+  if (r.start_date || r.end_date) return `${r.start_date || "?"} → ${r.end_date || "?"}`;
+  return "—";
+};
+
+const colValue = (col, r) => {
+  if (col.email) return r.email || "";
+  if (col.phone) return r.phone || "";
+  return col.get ? col.get(r) : "";
+};
+
+const LEAD_FORMS = [
+  {
+    id: "program-downloads",
+    label: "Descargar Programa",
+    endpoint: "program-downloads",
+    empty: "Aún no hay descargas registradas.",
+    search: (r) => [r.first_name, r.last_name, r.email, r.phone, r.program_title, r.route_id],
+    columns: [
+      { header: "Fecha", get: (r) => fmtLeadDate(r.created_at), nowrap: true, muted: true },
+      { header: "Nombre", get: (r) => `${r.first_name || ""} ${r.last_name || ""}`.trim(), nowrap: true },
+      { header: "Email", email: true },
+      { header: "Teléfono", phone: true },
+      { header: "Programa", get: (r) => r.program_title || r.route_id || "—", truncate: true, title: (r) => `${r.program_title || ""} · ${r.route_id || ""}` },
+      { header: "Newsletter", get: (r) => (r.newsletter ? "Sí" : "No"), dot: (r) => r.newsletter, center: true },
+      { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
+    ],
+  },
+  {
+    id: "contact-requests",
+    label: "Contacto Rápido",
+    endpoint: "contact-requests",
+    empty: "Aún no hay consultas registradas.",
+    search: (r) => [r.full_name, r.email, r.phone, r.journey_interest, r.message, r.source_label, r.source_route_id],
+    columns: [
+      { header: "Fecha", get: (r) => fmtLeadDate(r.created_at), nowrap: true, muted: true },
+      { header: "Nombre", get: (r) => r.full_name, nowrap: true },
+      { header: "Email", email: true },
+      { header: "Teléfono", phone: true },
+      { header: "Viajeros", get: (r) => r.party_size || "—", nowrap: true },
+      { header: "Fechas", get: (r) => r.travel_dates || "—", truncate: true },
+      { header: "Estilo", get: (r) => r.journey_interest || "—", truncate: true },
+      { header: "Mensaje", get: (r) => r.message || "—", truncate: true, title: (r) => r.message },
+      { header: "Origen", get: (r) => r.source_label || r.source_route_id || r.source_path || "—", truncate: true, title: (r) => `${r.source_label || ""}\n${r.source_path || ""}` },
+      { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
+    ],
+  },
+  {
+    id: "trip-planner",
+    label: "Planificación Detallada",
+    endpoint: "trip-planner",
+    empty: "Aún no hay planificaciones registradas.",
+    search: (r) => [r.full_name, r.email, r.phone, ...(r.regions || []), ...(r.activities || []), ...(r.selected_trips || [])],
+    columns: [
+      { header: "Fecha", get: (r) => fmtLeadDate(r.created_at), nowrap: true, muted: true },
+      { header: "Nombre", get: (r) => r.full_name, nowrap: true },
+      { header: "Email", email: true },
+      { header: "Teléfono", phone: true },
+      { header: "Viajeros", get: (r) => `${r.travellers_adults ?? "?"} ad · ${r.travellers_children ?? 0} niños`, nowrap: true },
+      { header: "Fechas", get: (r) => tripPlannerDates(r), truncate: true },
+      { header: "Alojamiento", get: (r) => r.accommodation || "—" },
+      { header: "Regiones", get: (r) => (r.regions || []).join(", ") || "—", truncate: true, title: (r) => (r.regions || []).join(", ") },
+      { header: "Actividades", get: (r) => (r.activities || []).join(", ") || "—", truncate: true, title: (r) => (r.activities || []).join(", ") },
+      { header: "Notas", get: (r) => r.notes || "—", truncate: true, title: (r) => r.notes },
+      { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
+    ],
+  },
+];
+
 const LeadsPanel = () => {
-  const [rows, setRows] = useState([]);
+  const [view, setView] = useState("program-downloads");
+  const [cache, setCache] = useState({});
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [q, setQ] = useState("");
 
-  const load = useCallback(async () => {
+  const cfg = LEAD_FORMS.find((f) => f.id === view);
+  const rows = cache[view] || [];
+
+  const load = useCallback(async (id) => {
     setLoading(true);
     setErr("");
     try {
       const token = localStorage.getItem("xaluca_admin_token");
-      const r = await fetch(`${API}/program-downloads`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const r = await fetch(`${API}/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       if (!r.ok) throw new Error(String(r.status));
-      setRows(await r.json());
+      const json = await r.json();
+      setCache((c) => ({ ...c, [id]: json }));
     } catch (e) {
-      setErr("No se pudieron cargar los leads.");
+      setErr("No se pudieron cargar los registros.");
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { setQ(""); load(view); }, [view, load]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return rows;
     return rows.filter((r) =>
-      [r.first_name, r.last_name, r.email, r.phone, r.program_title, r.route_id]
-        .filter(Boolean)
-        .some((v) => String(v).toLowerCase().includes(term))
+      (cfg.search(r) || []).filter(Boolean).some((v) => String(v).toLowerCase().includes(term))
     );
-  }, [rows, q]);
-
-  const fmtDate = (iso) => {
-    try { return new Date(iso).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" }); }
-    catch { return iso || ""; }
-  };
+  }, [rows, q, cfg]);
 
   const exportCsv = () => {
-    const headers = ["Fecha", "Nombre", "Apellidos", "Email", "Teléfono", "Newsletter", "Programa", "Route ID", "Idioma", "Enlace"];
     const esc = (v) => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
-    const lines = [headers.map(esc).join(",")];
+    const lines = [cfg.columns.map((c) => esc(c.header)).join(",")];
     filtered.forEach((r) => {
-      lines.push([
-        fmtDate(r.created_at), r.first_name, r.last_name, r.email, r.phone,
-        r.newsletter ? "Sí" : "No", r.program_title, r.route_id, r.language, r.download_url,
-      ].map(esc).join(","));
+      lines.push(cfg.columns.map((c) => esc(colValue(c, r))).join(","));
     });
     const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `xaluca-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `xaluca-${cfg.id}-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   return (
     <div data-testid="admin-leads" className="p-4 md:p-6 text-white">
+      {/* Sub-section tabs (one per form) */}
+      <div data-testid="admin-leads-tabs" className="flex flex-wrap gap-2 mb-5">
+        {LEAD_FORMS.map((f) => {
+          const active = view === f.id;
+          const count = (cache[f.id] || []).length;
+          return (
+            <button
+              key={f.id}
+              data-testid={`admin-leads-tab-${f.id}`}
+              onClick={() => setView(f.id)}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.18em] uppercase border transition-colors ${
+                active ? "bg-[#C16542] border-transparent text-white" : "border-white/15 text-white/70 hover:bg-white/5"
+              }`}
+            >
+              {f.label}{cache[f.id] ? ` · ${count}` : ""}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
         <div>
           <h2 className="font-serif-x text-2xl md:text-3xl flex items-center gap-2">
-            <Inbox className="w-5 h-5 text-[#D4A373]" strokeWidth={1.7} /> Leads · Descargar programa
+            <Inbox className="w-5 h-5 text-[#D4A373]" strokeWidth={1.7} /> Leads · {cfg.label}
           </h2>
           <p className="text-[11px] tracking-[0.18em] uppercase text-white/45 mt-1">
             {loading ? "Cargando…" : `${filtered.length} de ${rows.length} registros`}
@@ -1616,13 +1707,13 @@ const LeadsPanel = () => {
               data-testid="admin-leads-search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar nombre, email, programa…"
+              placeholder="Buscar nombre, email, contenido…"
               className="bg-white/5 border border-white/15 pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-[#C16542] w-[260px] max-w-[60vw]"
             />
           </div>
           <button
             data-testid="admin-leads-refresh"
-            onClick={load}
+            onClick={() => load(view)}
             className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase border border-white/15 hover:bg-white/5"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} strokeWidth={1.8} /> Recargar
@@ -1644,41 +1735,55 @@ const LeadsPanel = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-white/5 text-[10px] tracking-[0.18em] uppercase text-white/55">
-              <th className="text-left font-normal px-3 py-2.5">Fecha</th>
-              <th className="text-left font-normal px-3 py-2.5">Nombre</th>
-              <th className="text-left font-normal px-3 py-2.5">Email</th>
-              <th className="text-left font-normal px-3 py-2.5">Teléfono</th>
-              <th className="text-left font-normal px-3 py-2.5">Programa</th>
-              <th className="text-center font-normal px-3 py-2.5">News</th>
-              <th className="text-left font-normal px-3 py-2.5">Idioma</th>
+              {cfg.columns.map((c) => (
+                <th key={c.header} className={`font-normal px-3 py-2.5 ${c.center ? "text-center" : "text-left"}`}>{c.header}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {filtered.map((r) => (
-              <tr key={r.id} data-testid={`admin-lead-row-${r.id}`} className="border-t border-white/8 hover:bg-white/[0.03]">
-                <td className="px-3 py-2.5 whitespace-nowrap text-white/70">{fmtDate(r.created_at)}</td>
-                <td className="px-3 py-2.5 whitespace-nowrap">{r.first_name} {r.last_name}</td>
-                <td className="px-3 py-2.5">
-                  <a href={`mailto:${r.email}`} className="text-[#D4A373] hover:underline">{r.email}</a>
-                </td>
-                <td className="px-3 py-2.5 whitespace-nowrap">
-                  <a href={`tel:${r.phone}`} className="text-white/80 hover:text-[#D4A373]">{r.phone}</a>
-                </td>
-                <td className="px-3 py-2.5 text-white/70 max-w-[220px] truncate" title={`${r.program_title || ""} · ${r.route_id || ""}`}>
-                  {r.program_title || r.route_id || "—"}
-                </td>
-                <td className="px-3 py-2.5 text-center">
-                  {r.newsletter
-                    ? <span className="inline-block w-2 h-2 rounded-full bg-[#7BB98A]" title="Acepta newsletter" />
-                    : <span className="inline-block w-2 h-2 rounded-full bg-white/20" title="No" />}
-                </td>
-                <td className="px-3 py-2.5 uppercase text-white/55 text-[11px]">{r.language}</td>
+              <tr key={r.id} data-testid={`admin-lead-row-${r.id}`} className="border-t border-white/8 hover:bg-white/[0.03] align-top">
+                {cfg.columns.map((c) => {
+                  if (c.email) {
+                    return (
+                      <td key={c.header} className="px-3 py-2.5">
+                        <a href={`mailto:${r.email}`} className="text-[#D4A373] hover:underline">{r.email}</a>
+                      </td>
+                    );
+                  }
+                  if (c.phone) {
+                    return (
+                      <td key={c.header} className="px-3 py-2.5 whitespace-nowrap">
+                        {r.phone ? <a href={`tel:${r.phone}`} className="text-white/80 hover:text-[#D4A373]">{r.phone}</a> : <span className="text-white/40">—</span>}
+                      </td>
+                    );
+                  }
+                  if (c.dot) {
+                    return (
+                      <td key={c.header} className="px-3 py-2.5 text-center">
+                        <span className={`inline-block w-2 h-2 rounded-full ${c.dot(r) ? "bg-[#7BB98A]" : "bg-white/20"}`} title={c.dot(r) ? "Sí" : "No"} />
+                      </td>
+                    );
+                  }
+                  const val = c.get ? c.get(r) : "";
+                  const cls = [
+                    "px-3 py-2.5",
+                    c.nowrap ? "whitespace-nowrap" : "",
+                    c.muted ? "text-white/70" : "",
+                    c.small ? "uppercase text-white/55 text-[11px]" : "",
+                    c.truncate ? "max-w-[220px] truncate" : "",
+                    c.center ? "text-center" : "",
+                  ].filter(Boolean).join(" ");
+                  return (
+                    <td key={c.header} className={cls} title={c.title ? c.title(r) : undefined}>{val}</td>
+                  );
+                })}
               </tr>
             ))}
             {!loading && filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-3 py-10 text-center text-white/45">
-                  {rows.length === 0 ? "Aún no hay descargas registradas." : "Sin resultados para la búsqueda."}
+                <td colSpan={cfg.columns.length} className="px-3 py-10 text-center text-white/45">
+                  {rows.length === 0 ? cfg.empty : "Sin resultados para la búsqueda."}
                 </td>
               </tr>
             )}

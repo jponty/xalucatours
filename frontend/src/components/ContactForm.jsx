@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, Mail, Phone, Check, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
+import { resolvePath } from "@/lib/routes";
 import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
 import EditableText from "@/components/EditableText";
 
@@ -21,6 +23,7 @@ const initialState = {
 
 export const ContactForm = () => {
   const { t, lang } = useLanguage();
+  const location = useLocation();
   const [form, setForm] = useState(initialState);
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
@@ -32,7 +35,15 @@ export const ContactForm = () => {
     if (sending) return;
     setSending(true);
     try {
-      await axios.post(`${API}/contact-requests`, { ...form, language: lang });
+      let routeId = null;
+      try { routeId = resolvePath(location.pathname)?.routeId || null; } catch { routeId = null; }
+      await axios.post(`${API}/contact-requests`, {
+        ...form,
+        language: lang,
+        source_route_id: routeId,
+        source_path: location.pathname,
+        source_label: (typeof document !== "undefined" ? document.title : "") || null,
+      });
       setDone(true);
       toast.success(t("form_success"));
       setForm(initialState);

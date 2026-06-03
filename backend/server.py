@@ -90,6 +90,9 @@ class ContactRequest(BaseModel):
     party_size: Optional[str] = None
     journey_interest: Optional[str] = None
     message: str
+    source_route_id: Optional[str] = None
+    source_path: Optional[str] = None
+    source_label: Optional[str] = None
     language: Optional[str] = "en"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -102,6 +105,9 @@ class ContactRequestCreate(BaseModel):
     party_size: Optional[str] = Field(default=None, max_length=40)
     journey_interest: Optional[str] = Field(default=None, max_length=120)
     message: str = Field(..., min_length=4, max_length=4000)
+    source_route_id: Optional[str] = Field(default=None, max_length=120)
+    source_path: Optional[str] = Field(default=None, max_length=300)
+    source_label: Optional[str] = Field(default=None, max_length=300)
     language: Optional[str] = "en"
 
 
@@ -353,8 +359,11 @@ async def create_contact_request(payload: ContactRequestCreate):
 
 
 @api_router.get("/contact-requests", response_model=List[ContactRequest])
-async def list_contact_requests():
-    rows = await db.contact_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+async def list_contact_requests(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    rows = await db.contact_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(2000)
     for r in rows:
         if isinstance(r.get('created_at'), str):
             try:
@@ -378,8 +387,11 @@ async def create_trip_planner(payload: TripPlannerCreate):
 
 
 @api_router.get("/trip-planner", response_model=List[TripPlannerRequest])
-async def list_trip_planner():
-    rows = await db.trip_planner_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+async def list_trip_planner(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    rows = await db.trip_planner_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(2000)
     for r in rows:
         if isinstance(r.get('created_at'), str):
             try:
