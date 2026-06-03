@@ -22,6 +22,7 @@
 import { CITY_PROFILES } from "@/lib/cityProfiles";
 import { buildPlaceGallery, ALIAS_PROFILE } from "@/lib/placeGalleries";
 import { EXTRA_POIS } from "@/lib/extraPois";
+import { EXTRA_POI_IMAGES } from "@/lib/extraPoiImages";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -138,6 +139,10 @@ export const GAZETTEER = [
 
 const buildLandmark = (entry) => {
   const profile = entry.profileKey && CITY_PROFILES[entry.profileKey];
+  const pexels = EXTRA_POI_IMAGES[entry.id];
+  const gallery = pexels
+    ? pexels.map((src) => ({ src, title: entry.name, description: entry.blurb }))
+    : buildPlaceGallery(entry);
   return {
     id: entry.id,
     // Stable, page/language-independent point-of-interest key so the SAME
@@ -150,8 +155,8 @@ const buildLandmark = (entry) => {
     name: entry.name || (profile && profile.name),
     blurb: entry.blurb || (profile && profile.blurb) || null,
     // Every POI is guaranteed a 3-card "Galería del lugar" so its drawer
-    // always opens — own profile gallery, curated cards, or a thematic set.
-    gallery: buildPlaceGallery(entry),
+    // always opens — Pexels photos for new POIs, else profile/curated/thematic.
+    gallery,
   };
 };
 
