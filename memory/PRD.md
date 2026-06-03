@@ -1,5 +1,11 @@
 # Xaluca Tours — PRD
 
+## Logo Xaluca superpuesto (top-right) en secciones del Home — Jun 2026 (latest)
+- **User ask**: añadir el logotipo Xaluca (grup-xaluca-logo.webp) en la esquina superior derecha de las imágenes de: Nuestros viajes, Todos los viajes ("Filtra mentalmente" = AllTripsCarousel), Sur/Integral/Escapadas/Norte/Salidas en grupo (HomeCategoryCarousel), "Cómo se sienten nuestros viajes" (WhatJourneysFeelLike), "Marruecos en imágenes" (MoroccoVideos) y "Nuestros circuitos por Marruecos" (MoroccoCircuits). NO tocar la otra "Todos los viajes / para encontrar el tuyo" (HomeAllTripsCatalog) que ya tiene el monograma X.
+- **Implementación**: nuevo componente reutilizable `components/XalucaLogoBadge.jsx` (img absoluta top-right, pointer-events-none, aria-hidden, override por `className`). Insertado en OurTrips (badge grande en card destacada), AllTripsCarousel, HomeCategoryCarousel, WhatJourneysFeelLike, MoroccoVideos (solo estado póster) y MoroccoCircuits (badge grande). Testids: `our-trips-logo-*`, `all-trips-logo-*`, `home-trip-logo-*`, `feel-logo-*`, `video-logo-*`, `circuit-logo-*`.
+- **Verificado** por testing_agent iteration_25.json: 100% frontend. Regresión OK (HomeAllTripsCatalog conserva sus 40 `home-all-trips-monogram-*`, sin logo nuevo). Sin errores de consola.
+
+
 ## Barra informativa superior (top contact bar) — Jun 2026 (latest)
 - **User ask**: añadir una barra por encima del menú principal con "Llámanos | +34 937 268 366" y "Horario de oficina | Lunes a viernes de 10:00 a 20:00 h", visible en todas las páginas y diferenciada del header.
 - **Implementación**: `components/TopInfoBar.jsx` ya existía pero NUNCA estaba montado; se conectó dentro del `Header` fijo (primer hijo, encima de la fila del menú) → visible globalmente y se oculta/aparece junto al header en scroll.
