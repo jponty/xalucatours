@@ -815,6 +815,7 @@ export default function WhenToTravelPage() {
                 );
               })}
             </MapContainer>
+            <MapLogoBadge />
             <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-[#2C2621]/5" />
           </div>
 

@@ -343,7 +343,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
               <div className="flex flex-wrap gap-2">
                 {active.experiences.map((e, i) => (
                   <span
-                    key={`${active.id}-exp-${e}`}
+                    key={`${active.id}-exp-${i}`}
                     data-testid={`region-map-exp-${active.id}-${i}`}
                     className="text-[11px] px-3 py-1.5 border bg-[#F7F1E4] text-[#5C5248]"
                     style={{ borderColor: `${active.accent}44` }}

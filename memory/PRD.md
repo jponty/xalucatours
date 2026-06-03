@@ -1,5 +1,12 @@
 # Xaluca Tours — PRD
 
+## Logo Xaluca en TODOS los mapas Leaflet (top-right) — Jun 2026 (latest)
+- **User ask**: mostrar el logo Xaluca de forma consistente en la esquina superior derecha de cada mapa del sitio.
+- **Implementación**: nuevo componente reutilizable `components/MapLogoBadge.jsx` (img absoluta `top-3 right-3`, `z-[1000]` para quedar por encima de los panes/controles de Leaflet, `pointer-events-none`, `data-testid="map-logo-badge"`). Insertado como hermano dentro del wrapper `relative` de cada `<MapContainer>` en: DayRouteMap (×3), MapSection, TripOverview, TripRouteMap, ToursRegionMap, WhenToTravelPage, JuegoPage, QueVerEnMarruecosPage, MoroccoLandingPage (a este último se le añadió `relative` al wrapper). 11 mapas en total.
+- El control de zoom de Leaflet está arriba-izquierda → la esquina superior derecha queda libre. No interfiere con la interacción del mapa.
+- **Verificado** por testing_agent iteration_26.json (4/5 OK; faltaba WhenToTravelPage → corregido con el mismo patrón). Bonus: corregido warning preexistente de React "duplicate key 'north-exp-[object Object]'" en ToursRegionMap (key por índice).
+
+
 ## Logo Xaluca superpuesto (top-right) en secciones del Home — Jun 2026 (latest)
 - **User ask**: añadir el logotipo Xaluca (grup-xaluca-logo.webp) en la esquina superior derecha de las imágenes de: Nuestros viajes, Todos los viajes ("Filtra mentalmente" = AllTripsCarousel), Sur/Integral/Escapadas/Norte/Salidas en grupo (HomeCategoryCarousel), "Cómo se sienten nuestros viajes" (WhatJourneysFeelLike), "Marruecos en imágenes" (MoroccoVideos) y "Nuestros circuitos por Marruecos" (MoroccoCircuits). NO tocar la otra "Todos los viajes / para encontrar el tuyo" (HomeAllTripsCatalog) que ya tiene el monograma X.
 - **Implementación**: nuevo componente reutilizable `components/XalucaLogoBadge.jsx` (img absoluta top-right, pointer-events-none, aria-hidden, override por `className`). Insertado en OurTrips (badge grande en card destacada), AllTripsCarousel, HomeCategoryCarousel, WhatJourneysFeelLike, MoroccoVideos (solo estado póster) y MoroccoCircuits (badge grande). Testids: `our-trips-logo-*`, `all-trips-logo-*`, `home-trip-logo-*`, `feel-logo-*`, `video-logo-*`, `circuit-logo-*`.
