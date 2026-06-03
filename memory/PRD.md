@@ -1,5 +1,15 @@
 # Xaluca Tours — PRD
 
+## Fase 2 — Puntos de interés por día (CSV ampliado a 126) — Jun 2026 (latest, EN CURSO)
+- **User ask**: incluir TODOS los puntos del CSV (126) con sus cards, y que el "Mapa del día → Puntos de interés del día" refleje exactamente los lugares reales del recorrido de cada día. Imágenes vía Pexels a color; coordenadas y asignación por día deducidas leyendo cada programa; alcance: todos los itinerarios (validando circuito a circuito).
+- **Fase 1 hecha**: `poiCardCopy.js` ampliado a 67 claves (60 puntos con galería existente actualizados con el CSV, ES+EN/FR).
+- **Mecanismo clave**: solo 5 días son "curados" (DAY_LANDMARKS); el resto deriva los puntos del TEXTO del día (`deriveDayPlaces` busca aliases del gazetteer). Por eso, añadiendo POIs al gazetteer con buenos aliases, aparecen automáticamente en los días que los mencionan.
+- **Circuito 1 (Ciudades Imperiales 6n/7d) HECHO y verificado** (testing iteration_28, 100%): creado `lib/extraPois.js` con 23 POIs nuevos (Mezquita Hassan II, Oudayas, Torre Hassan, Mausoleo Mohammed V, Chellah, Bab al Mansour, Mausoleo Moulay Ismail, Heri es Souani, Habs Qara, Medina de Fez, Curtiduría Chouara, Al-Qarawiyyin, Bosques de Cedros, Azrou, Khenifra, Beni Mellal, Djemaa el-Fna, Medina de Marrakech, Koutoubia, Palacio Bahía, Zocos, Farmacia bereber, Jardín Majorelle) con coords+aliases+cards. Inyectados en `dayPlaceGazetteer.js` (`...EXTRA_POIS`) y `LandmarkCarousel` (`CARD_COPY = {...POI_CARD_COPY, ...EXTRA_POI_CARDS}`). Aparecen en el día correcto de cada jornada.
+- **BLOQUEO imágenes**: `PEXELS_API_KEY` en .env es inválida (401). Los POIs nuevos usan imágenes temáticas por `kind` como placeholder hasta tener una key válida.
+- **Pendiente Fase 2**: ~43 puntos nuevos de los demás circuitos (Essaouira y monumentos, Norte: Tánger/Tetuán/Chefchaouen/M'diq/Asilah, Saghro/N'Kob/Tafraoute/Anti-Atlas, desierto: Khamlia/Rissani/Merzouga sub-POIs, Chott, oasis, minas, etc.) + sustituir placeholders por fotos Pexels a color.
+- Herramientas dev reutilizables: `backend/_poi_cards2.csv`, `backend/_gen_extra_pois.py` (tabla id/kind/coords/aliases → traduce y genera).
+
+
 ## Día "Llegada a Ouarzazate – Boumalne Dades": solo Hotel Xaluca Dades — Jun 2026 (latest)
 - **User ask**: en el día de llegada/traslado (route_id `ad-ouarzazate-dades`), el "Mapa del día → Puntos de interés del día" debe mostrar solo el hotel; eliminar Palmeral de Skoura, Valle de las Rosas, Mercado de Boumalne, Patas de Mono, Gargantas del Dadès (puntos turísticos no incluidos en la jornada).
 - **Implementación**: `DAY_LANDMARKS["ad-ouarzazate-dades"]` en `lib/dayLandmarks.js` reducido a una sola entrada `xaluca-dades`. `DayRouteMap` prioriza la lista curada (no deriva del texto), así que el cambio aplica a TODOS los itinerarios que usan ese día. Verificado: la lista contiene solo `['xaluca-dades']`.
