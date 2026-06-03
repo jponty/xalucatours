@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
-  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera,
+  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
@@ -22,6 +22,9 @@ import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
+import DownloadProgramModal from "@/components/DownloadProgramModal";
+
+const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
@@ -1219,7 +1222,7 @@ const G = ({ k, defaults, as = "span", className, multiline = false, ...rest }) 
 /* ============================================================
    Hero
 ============================================================ */
-const ProgramHero = ({ vt, t, program, lang, variant, routeId }) => {
+const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => {
   // MASTER trip image: a single global slot shared by the Hero and every
   // card/listing of this trip across the site (see lib/tripHero.js), so
   // editing it anywhere updates everywhere automatically.
@@ -1278,6 +1281,10 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId }) => {
                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
                 <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
+              <button type="button" onClick={onDownload} data-testid="program-hero-download"
+                 className="inline-flex items-center gap-3 bg-[#FDFBF7] hover:bg-[#D4A373] text-[#1A1513] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+                {pick(DOWNLOAD_LABEL, lang)}<Download className="w-3.5 h-3.5" strokeWidth={1.7} />
+              </button>
             </div>
           </div>
         </div>
@@ -1620,6 +1627,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
   const location = useLocation();
   const { routeId } = resolvePath(location.pathname);
   const t = LABELS[lang] || LABELS.es;
+  const [downloadOpen, setDownloadOpen] = useState(false);
   const baseVt = (VARIANT_COPY[variant] && VARIANT_COPY[variant][lang]) || VARIANT_COPY.da.es;
   // Per-program meta overrides VARIANT_COPY (trilingual `meta: { es, en, fr }`)
   const metaOverride = program.meta && (program.meta[lang] || program.meta.es) || null;
@@ -1643,7 +1651,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
 
   return (
     <div data-testid={`program-page-${program.duration_key}`}>
-      <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} />
+      <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
       <StickyNav items={navItems} testid="program-nav" />
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
@@ -1655,6 +1663,12 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       <HubPeerNav routeId={routeId} />
       <ContactBand t={t} lang={lang} />
       <div id="form"><ContactForm /></div>
+      <DownloadProgramModal
+        open={downloadOpen}
+        onClose={() => setDownloadOpen(false)}
+        routeId={routeId}
+        programTitle={vt.title}
+      />
     </div>
   );
 }

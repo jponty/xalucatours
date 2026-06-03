@@ -147,6 +147,54 @@ class TripPlannerCreate(BaseModel):
     language: Optional[str] = "es"
 
 
+# ---------- Program brochure download (lead-gated) ----------
+# Default link used for every trip page for now. Each route can be assigned
+# its own brochure URL in the future by adding an entry to PROGRAM_DOWNLOAD_LINKS
+# (keyed by the frontend routeId) — the endpoint resolves per-route first,
+# then falls back to the default.
+DEFAULT_PROGRAM_DOWNLOAD_URL = "https://xalucatours.com/"
+PROGRAM_DOWNLOAD_LINKS: Dict[str, str] = {}
+
+
+def resolve_program_download_url(route_id: Optional[str]) -> str:
+    return PROGRAM_DOWNLOAD_LINKS.get(route_id or "", DEFAULT_PROGRAM_DOWNLOAD_URL)
+
+
+class ProgramDownloadRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: str
+    newsletter: bool = False
+    privacy_accepted: bool = True
+    route_id: Optional[str] = None
+    program_title: Optional[str] = None
+    download_url: str
+    language: Optional[str] = "es"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ProgramDownloadCreate(BaseModel):
+    first_name: str = Field(..., min_length=1, max_length=80)
+    last_name: str = Field(..., min_length=1, max_length=80)
+    email: EmailStr
+    phone: str = Field(..., min_length=4, max_length=40)
+    newsletter: bool = False
+    privacy_accepted: bool
+    route_id: Optional[str] = Field(default=None, max_length=120)
+    program_title: Optional[str] = Field(default=None, max_length=200)
+    language: Optional[str] = "es"
+
+    @field_validator("privacy_accepted")
+    @classmethod
+    def _privacy_must_be_accepted(cls, v: bool) -> bool:
+        if not v:
+            raise ValueError("privacy_accepted must be true")
+        return v
+
+
 # ---------- Routes ----------
 @api_router.get("/")
 async def root():
@@ -332,6 +380,28 @@ async def create_trip_planner(payload: TripPlannerCreate):
 @api_router.get("/trip-planner", response_model=List[TripPlannerRequest])
 async def list_trip_planner():
     rows = await db.trip_planner_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    for r in rows:
+        if isinstance(r.get('created_at'), str):
+            try:
+                r['created_at'] = datetime.fromisoformat(r['created_at'])
+            except ValueError:
+                pass
+    return rows
+
+
+@api_router.post("/program-downloads", response_model=ProgramDownloadRequest)
+async def create_program_download(payload: ProgramDownloadCreate):
+    url = resolve_program_download_url(payload.route_id)
+    obj = ProgramDownloadRequest(**payload.model_dump(), download_url=url)
+    doc = obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.program_downloads.insert_one(doc)
+    return obj
+
+
+@api_router.get("/program-downloads", response_model=List[ProgramDownloadRequest])
+async def list_program_downloads():
+    rows = await db.program_downloads.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
     for r in rows:
         if isinstance(r.get('created_at'), str):
             try:

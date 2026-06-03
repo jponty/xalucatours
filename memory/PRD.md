@@ -1,5 +1,13 @@
 # Xaluca Tours — PRD
 
+## Botón "Descargar programa" (lead-gated) en páginas de programa — Jun 2026 (latest)
+- **User ask**: en cada página específica de viaje, botón «Descargar programa» que NO descarga directo: abre un modal con formulario obligatorio (Nombre, Apellidos, Email, Teléfono) + checkbox newsletter (opcional) + checkbox Política de Privacidad (obligatorio). El botón de envío solo se habilita con todos los campos válidos y la privacidad aceptada. Tras enviar, redirige automáticamente al enlace de descarga del programa. Enlace general por ahora: https://xalucatours.com/. Preparado para enlace por página configurable en el futuro.
+- **Backend** (`server.py`): modelos `ProgramDownloadCreate/Request` (validator que exige `privacy_accepted=true` → 422 si no), config `PROGRAM_DOWNLOAD_LINKS` (dict por route_id) + `DEFAULT_PROGRAM_DOWNLOAD_URL` = https://xalucatours.com/ y `resolve_program_download_url(route_id)`. Endpoints `POST /api/program-downloads` (guarda en `db.program_downloads`, devuelve `{...,download_url}`) y `GET /api/program-downloads`. Para asignar enlace propio a una página: añadir entrada a `PROGRAM_DOWNLOAD_LINKS` keyed por routeId.
+- **Frontend**: nuevo `components/DownloadProgramModal.jsx` (portal, trilingüe ES/EN/FR, validación email+campos, submit deshabilitado hasta válido, al enviar abre `download_url` en nueva pestaña y cierra). Integrado en `ProgramTemplate.jsx`: botón `program-hero-download` en la fila de CTAs del hero + estado `downloadOpen`, pasa `routeId` y `programTitle` (vt.title) al modal.
+- **Verificado**: backend curl (lead guardado + url devuelta; privacy false → 422). Frontend screenshot: botón visible, modal abre, submit deshabilitado sin privacidad y habilitado al completar. Testids: `program-hero-download`, `download-program-modal/form/submit/close/backdrop/success`, `download-input-first-name/last-name/email/phone`, `download-checkbox-newsletter/privacy`, `download-privacy-link`.
+
+
+
 ## Fase 2 — Puntos de interés por día (CSV ampliado a 126) — Jun 2026 (latest, EN CURSO)
 - **User ask**: incluir TODOS los puntos del CSV (126) con sus cards, y que el "Mapa del día → Puntos de interés del día" refleje exactamente los lugares reales del recorrido de cada día. Imágenes vía Pexels a color; coordenadas y asignación por día deducidas leyendo cada programa; alcance: todos los itinerarios (validando circuito a circuito).
 - **Fase 1 hecha**: `poiCardCopy.js` ampliado a 67 claves (60 puntos con galería existente actualizados con el CSV, ES+EN/FR).
