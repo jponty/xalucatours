@@ -18,6 +18,7 @@ import HubPeerNav from "@/components/HubPeerNav";
 import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 
@@ -1389,6 +1390,14 @@ const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent pointer-events-none" />
               <span className="film-grain" />
+              {/* Xaluca logo watermark over the day's static image */}
+              <img
+                src={grupXalucaLogo}
+                alt=""
+                aria-hidden="true"
+                data-testid={`day-watermark-${day.id}`}
+                className="pointer-events-none select-none absolute inset-0 m-auto w-1/3 max-w-[150px] h-auto object-contain opacity-25 drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)]"
+              />
               <div className="absolute top-5 left-5 inline-flex items-center gap-3 bg-[#FDFBF7]/95 backdrop-blur-sm px-4 py-2">
                 <span className="font-serif-x text-xl leading-none" style={{ color: day.accent }}>
                   <L k="day_label" /> {dayNum}
