@@ -7,6 +7,7 @@ import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope, useSlotId } from "@/components/slotScope";
+import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
 import {
   JourneyHero,
   StickyNav,
@@ -161,7 +162,15 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                 </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {items.map((p) => (
+                {items.map((p) => {
+                  // When the card deep-links to a real trip page, bind its
+                  // image to that trip's shared MASTER slot so it stays in
+                  // sync with the Home catalog and every other appearance.
+                  const master = p.link && usesTripMaster(p.link);
+                  const imgSlotProps = master
+                    ? { slot: tripHeroSlot(p.link), fallback: tripHeroImage(p.link) || p.image }
+                    : { name: `program.${p.id}`, fallback: p.image };
+                  return (
                   <Link
                     key={p.id}
                     to={p.link ? pathFor(lang, p.link) : ctaTarget}
@@ -169,8 +178,7 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                     className="group relative block overflow-hidden h-[440px]"
                   >
                     <EditableImage
-                      name={`program.${p.id}`}
-                      fallback={p.image}
+                      {...imgSlotProps}
                       alt=""
                       aspectRatio="3/4"
                       imgProps={{ loading: "lazy" }}
@@ -200,7 +208,8 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                       </div>
                     </div>
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );

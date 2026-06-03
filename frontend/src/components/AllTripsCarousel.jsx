@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { tripHeroSlot } from "@/lib/tripHero";
+import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 
@@ -216,7 +216,7 @@ export default function AllTripsCarousel() {
               <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
                 <EditableImage
                   slot={tripHeroSlot(trip.routeId)}
-                  fallback={trip.image}
+                  fallback={tripHeroImage(trip.routeId) || trip.image}
                   alt={pick(trip.title, lang)}
                   imgProps={{ loading: "lazy" }}
                   aspectRatio="4/5"

@@ -5,6 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
 
 /* ============================================================
    HomeCategoryCarousel — title + lede + horizontal trip cards + CTA
@@ -34,6 +35,12 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
   const tx = LABELS[lang] || LABELS.es;
   const isDark = tone === TONES.dark;
   const cardAccent = trip.accent || accent;
+  // Shared per-trip MASTER image: every card linking to the same trip page
+  // reads `trip.${routeId}.hero` so the image stays in sync site-wide.
+  // Aggregate routes (e.g. upcoming departures) keep their own per-card slot.
+  const useMaster = usesTripMaster(trip.routeId);
+  const imgSlot = useMaster ? tripHeroSlot(trip.routeId) : `home.cat-carousel.${trip.id}`;
+  const imgFallback = (useMaster && tripHeroImage(trip.routeId)) || trip.image;
   return (
     <Link
       to={pathFor(lang, trip.routeId)}
@@ -44,8 +51,8 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
         <EditableImage
-          slot={`home.cat-carousel.${trip.id}`}
-          fallback={trip.image}
+          slot={imgSlot}
+          fallback={imgFallback}
           alt={pick(trip.title, lang)}
           imgProps={{ loading: "lazy" }}
           aspectRatio="4/3"

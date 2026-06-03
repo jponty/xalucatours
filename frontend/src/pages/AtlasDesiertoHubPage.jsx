@@ -11,6 +11,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import EditableImage from "@/components/EditableImage";
+import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
 
 /* ============================================================
    Six combined Atlas + Desert programmes — with route stages
@@ -348,8 +349,8 @@ const ProgramsGrid = ({ t, lang }) => {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <EditableImage
-                      slot={`hub.atlasdesierto.program.${p.id}`}
-                      fallback={p.image}
+                      slot={usesTripMaster(p.routeId) ? tripHeroSlot(p.routeId) : `hub.atlasdesierto.program.${p.id}`}
+                      fallback={(usesTripMaster(p.routeId) && tripHeroImage(p.routeId)) || p.image}
                       alt=""
                       aspectRatio="4/3"
                       imgProps={{ loading: "lazy" }}

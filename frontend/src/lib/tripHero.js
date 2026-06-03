@@ -19,6 +19,18 @@ import { ALL_TRIPS } from "@/lib/allTripsCatalog";
 
 export const tripHeroSlot = (routeId) => `trip.${routeId}.hero`;
 
+/* Aggregate listing routes that map MANY distinct cards to a SINGLE page
+   (e.g. all upcoming group departures share one route). These must NOT
+   collapse to a single shared master image, so cards for them keep their
+   own per-card slot instead of the trip-master slot. */
+const AGGREGATE_ROUTES = new Set(["upcomingDepartures"]);
+
+/* Whether a routeId should resolve to the shared per-trip MASTER image slot.
+   Every card linking to the same real trip page shares `trip.${routeId}.hero`,
+   so editing it anywhere updates every appearance bidirectionally. */
+export const usesTripMaster = (routeId) =>
+  Boolean(routeId) && !AGGREGATE_ROUTES.has(routeId);
+
 /* routeId → master reference image (the Home catalog card image). */
 const HERO_IMAGE_BY_ROUTE = ALL_TRIPS.reduce((map, trip) => {
   if (trip && trip.routeId && trip.image) map[trip.routeId] = trip.image;

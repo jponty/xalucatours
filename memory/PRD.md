@@ -1,5 +1,19 @@
 # Xaluca Tours — PRD
 
+## Master trip image — full per-routeId synchronization (Jun 2026)
+- **User mandate**: every card/listing/carousel linking to the SAME trip page must show ONE shared master image, keyed by trip identifier (`routeId`), never by section. Reference image = the Home "Cada ruta, en detalle" catalog card. Editing anywhere propagates everywhere bidirectionally.
+- **Architecture** (already partially in place): single global CMS slot `trip.${routeId}.hero`; `EditableImage` bulk-loads `/api/slots` once and subscribes by slot string → all components with the same slot update live. Master default = Home catalog image via `lib/tripHero.js` (`tripHeroImage`).
+- **New helper** `lib/tripHero.js → usesTripMaster(routeId)`: excludes aggregate routes (`upcomingDepartures`) that map many cards to one page.
+- **Surfaces converted to the shared master slot** (were using section-scoped slots → caused the inconsistency the user reported):
+  - `components/HomeCategoryCarousel.jsx` (Home Sur/Integral/Escapadas/Norte sections) — was `home.cat-carousel.${id}`, now `trip.${routeId}.hero` (falls back to per-card slot for aggregate departures).
+  - `components/AllTripsCarousel.jsx` — kept slot, fixed fallback to `tripHeroImage(routeId) || trip.image`.
+  - `components/ItineraryHubPage.jsx` (all delegated hub "listados") — program card now binds to `trip.${p.link}.hero` when it deep-links a real trip.
+  - `pages/AtlasDesiertoHubPage.jsx` (the ONLY custom hub page, not delegating to ItineraryHubPage) — was `hub.atlasdesierto.program.${id}`, now master slot.
+  - Already correct: `HomeAllTripsCatalog.jsx` (master source) + `ProgramTemplate.jsx` ProgramHero.
+- **Verified end-to-end**: PUT `trip.tourAtlasDesierto67.hero` test override → confirmed identical img src on master catalog card, category carousel card, AllTripsCarousel rail, and Atlas-Desierto hub card; then deleted override (cleanup). Lint clean.
+- **Out of scope (different trips, no shared routeId)**: `ToursLandingPage` explorer `TRIPS` (own catalog `tourGuide`-style ids, no routeId) keeps `viajes.trip.${id}`; upcoming departures keep per-card slots.
+
+
 ## Original Problem Statement
 Build "Xaluca Tours", a Moroccan travel agency front. Trilingual (ES default, EN, FR), MongoDB-backed contact, premium cinematic UI inspired by Grup Xaluca (glassmorphism, desert tones, serif typography, berber patterns, ken-burns + film grain).
 
