@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ArrowRight, ImagePlus, Check, Type, Library, CalendarClock } from "lucide-react";
+import { Menu, ArrowRight, CalendarClock } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useEditMode } from "@/contexts/EditModeContext";
 import { translations } from "@/lib/i18n";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
-import ImageLibraryPicker from "@/components/ImageLibraryPicker";
+import EditModeFAB from "@/components/EditModeFAB";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
-  const { imageEditMode, textEditMode, toggleImage, toggleText } = useEditMode();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [libraryOpen, setLibraryOpen] = useState(false);
 
   useEffect(() => {
     const SCROLL_THRESHOLD = 12; // px movement required to flip direction
@@ -90,60 +87,6 @@ export const Header = () => {
           <BrandMark />
 
           <div className="flex items-center gap-2 md:gap-3">
-            {/* Library shortcut — only visible when image edit mode is on */}
-            {imageEditMode && (
-              <button
-                type="button"
-                onClick={() => setLibraryOpen(true)}
-                aria-label="Abrir biblioteca de imágenes"
-                data-testid="header-library-toggle"
-                className="inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-                title="Biblioteca de imágenes"
-              >
-                <Library className="w-4 h-4" strokeWidth={1.7} />
-              </button>
-            )}
-            {/* Image edit mode toggle — icon-only, dev tool */}
-            <button
-              type="button"
-              onClick={toggleImage}
-              aria-pressed={imageEditMode}
-              aria-label={imageEditMode ? "Salir del modo edición de imágenes" : "Activar modo edición de imágenes"}
-              data-testid="header-edit-mode-toggle"
-              className={`inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 border transition-colors duration-300 ${
-                imageEditMode
-                  ? "bg-[#C16542] border-[#C16542] text-[#FDFBF7] hover:bg-[#A35133]"
-                  : "border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621]"
-              }`}
-              title={imageEditMode ? "Edición de imágenes ON · clic para salir" : "Activar edición de imágenes"}
-            >
-              {imageEditMode ? (
-                <Check className="w-4 h-4" strokeWidth={1.8} />
-              ) : (
-                <ImagePlus className="w-4 h-4" strokeWidth={1.7} />
-              )}
-            </button>
-            {/* Text edit mode toggle */}
-            <button
-              type="button"
-              onClick={toggleText}
-              aria-pressed={textEditMode}
-              aria-label={textEditMode ? "Salir del modo edición de textos" : "Activar modo edición de textos"}
-              data-testid="header-text-edit-toggle"
-              className={`inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 border transition-colors duration-300 ${
-                textEditMode
-                  ? "bg-[#2C2621] border-[#2C2621] text-[#FDFBF7] hover:bg-[#1A1513]"
-                  : "border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621]"
-              }`}
-              title={textEditMode ? "Edición de textos ON · clic para salir" : "Activar edición de textos"}
-            >
-              {textEditMode ? (
-                <Check className="w-4 h-4" strokeWidth={1.8} />
-              ) : (
-                <Type className="w-4 h-4" strokeWidth={1.7} />
-              )}
-            </button>
-
             <Link
               to={pathFor(lang, "appointment")}
               data-testid="header-appointment-button"
@@ -171,11 +114,7 @@ export const Header = () => {
       </header>
 
       <SideMenu open={open} onClose={() => setOpen(false)} />
-      <ImageLibraryPicker
-        open={libraryOpen}
-        onClose={() => setLibraryOpen(false)}
-        onSelect={() => setLibraryOpen(false)}
-      />
+      <EditModeFAB />
     </>
   );
 };
