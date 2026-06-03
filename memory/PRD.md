@@ -1,5 +1,11 @@
 # Xaluca Tours — PRD
 
+## Día "Llegada a Ouarzazate – Boumalne Dades": solo Hotel Xaluca Dades — Jun 2026 (latest)
+- **User ask**: en el día de llegada/traslado (route_id `ad-ouarzazate-dades`), el "Mapa del día → Puntos de interés del día" debe mostrar solo el hotel; eliminar Palmeral de Skoura, Valle de las Rosas, Mercado de Boumalne, Patas de Mono, Gargantas del Dadès (puntos turísticos no incluidos en la jornada).
+- **Implementación**: `DAY_LANDMARKS["ad-ouarzazate-dades"]` en `lib/dayLandmarks.js` reducido a una sola entrada `xaluca-dades`. `DayRouteMap` prioriza la lista curada (no deriva del texto), así que el cambio aplica a TODOS los itinerarios que usan ese día. Verificado: la lista contiene solo `['xaluca-dades']`.
+- Nota: existe otro día de llegada equivalente en `escapadaAtlas34.js` (route_id `atlas34-arrival-dades`, título distinto "traslado al Valle del Dadès") sin lista curada → no muestra esos puntos turísticos; pendiente de confirmar con el cliente si quiere el mismo criterio.
+
+
 ## Nuevo copy (título+descripción) de las 3 cards por punto de interés — Jun 2026 (latest)
 - **User ask**: reemplazar título y descripción de las 3 cards de cada POI con el contenido de un CSV (ES), manteniendo estructura/diseño. Elegido: actualizar ES + auto-traducir EN/FR.
 - **Implementación**: script one-off tradujo las 310 cadenas ES→EN/FR (Emergent LLM gpt-4o-mini) y generó `lib/poiCardCopy.js` (`POI_CARD_COPY`, 59 claves, trilingüe). `LandmarkCarousel.jsx` aplica el override por card (índice), resolviendo la clave por `landmark.id` / `poiKey` / `slotBase` / alias del gazetteer (`ALIAS_PROFILE`). Cubre las 3 fuentes de galería (cityProfiles, landmarkGalleries, placeGalleries).

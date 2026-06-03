@@ -28,31 +28,9 @@ export const LANDMARK_KINDS = {
 export const DAY_LANDMARKS = {
   // Day 1 — Ouarzazate → Boumalne Dades
   "ad-ouarzazate-dades": [
-    { id: "skoura-palmeraie", lat: 31.0612, lng: -6.5544, kind: "palm",
-      name: T("Palmeral de Skoura", "Skoura palm grove", "Palmeraie de Skoura"),
-      blurb: T("Oasis histórico con kasbahs de adobe del siglo XVII rodeadas de un mar de palmeras datileras.",
-               "Historic oasis with 17th-century adobe kasbahs surrounded by a sea of date palms.",
-               "Oasis historique aux kasbahs en pisé du XVIIe siècle, entourées d'une mer de palmiers.") },
-    { id: "valle-rosas", lat: 31.2400, lng: -6.2300, kind: "village",
-      name: T("Valle de las Rosas", "Rose Valley", "Vallée des Roses"),
-      blurb: T("Campos de rosa damascena usados desde hace siglos para producir agua de rosas y aceite esencial.",
-               "Damask rose fields that have produced rose water and essential oil for centuries.",
-               "Champs de roses de Damas utilisés depuis des siècles pour l'eau de rose et l'huile essentielle.") },
-    { id: "boumalne-mercado", lat: 31.3580, lng: -5.9870, kind: "market",
-      name: T("Mercado de Boumalne", "Boumalne market", "Marché de Boumalne"),
-      blurb: T("Mercado semanal de los miércoles donde los pueblos cercanos bajan a vender productos agrícolas y artesanía bereber.",
-               "Wednesday weekly market where nearby villages come down to sell produce and Berber craft.",
-               "Marché hebdomadaire du mercredi : produits agricoles et artisanat berbère.") },
-    { id: "monkey-fingers", lat: 31.4360, lng: -5.9290, kind: "viewpoint",
-      name: T("Patas de Mono", "Monkey Fingers", "Doigts de Singe"),
-      blurb: T("Formación rocosa de aspecto extraterrestre a 9-10 km de Boumalne, una de las imágenes más singulares de Marruecos.",
-               "Otherworldly rock formation 9-10 km from Boumalne — one of Morocco's most singular sights.",
-               "Formation rocheuse d'allure extraterrestre à 9-10 km de Boumalne.") },
-    { id: "gorges-dades", lat: 31.4900, lng: -5.9050, kind: "gorges",
-      name: T("Gargantas del Dadès", "Dades Gorges", "Gorges du Dadès"),
-      blurb: T("La carretera serpenteante que asciende por la garganta es una de las vistas más fotografiadas de Marruecos.",
-               "The winding road climbing the gorge is one of the most photographed views in Morocco.",
-               "La route sinueuse qui monte est l'une des vues les plus photographiées du Maroc.") },
+    // Día de llegada: vuelo a Ouarzazate y traslado por carretera hasta el
+    // alojamiento en Boumalne Dades. No hay visitas turísticas este día, por lo
+    // que el mapa muestra únicamente el hotel.
     { id: "xaluca-dades", lat: 31.3500, lng: -5.9700, kind: "hotel",
       name: T("Hotel Xaluca Dades 4★", "Hotel Xaluca Dades 4★", "Hôtel Xaluca Dadès 4★"),
       blurb: T("Hotel-kasbah a 1.612 m de altitud con piscina climatizada, hammam y vistas panorámicas al Alto Atlas.",
