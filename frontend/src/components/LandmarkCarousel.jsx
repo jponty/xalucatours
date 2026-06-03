@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Camera, X, MapPin } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
+import { ALIAS_PROFILE } from "@/lib/placeGalleries";
+import { POI_CARD_COPY } from "@/lib/poiCardCopy";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
@@ -133,6 +135,20 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   const containerRef = useRef(null);
   const trackRef = useRef(null);
 
+  // Client-provided card copy (title + description), keyed by the gallery's
+  // stable id. Falls back through poiKey, slotBase id and gazetteer aliases so
+  // the same place gets the right copy regardless of which resolver surfaced it.
+  const copyKeys = landmark
+    ? [
+        landmark.id,
+        landmark.poiKey,
+        landmark.slotBase && landmark.slotBase.replace(/^landmark\./, ""),
+        ALIAS_PROFILE[landmark.id],
+        ALIAS_PROFILE[landmark.poiKey],
+      ].filter(Boolean)
+    : [];
+  const cardCopy = copyKeys.map((k) => POI_CARD_COPY[k]).find(Boolean) || null;
+
   // Auto-scroll into view + reset scroll position when landmark changes
   useEffect(() => {
     if (containerRef.current) {
@@ -230,18 +246,22 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
           data-testid={`landmark-carousel-track-${landmark.id}`}
           className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory px-5 md:px-7 py-6 md:py-7 scroll-smooth landmark-track"
         >
-          {images.map((img, i) => (
-            <Card
-              key={i}
-              image={img}
-              accent={accent}
-              placeName={landmark.name}
-              lang={lang}
-              index={i}
-              total={images.length}
-              slot={`${galleryBase}.${i}`}
-            />
-          ))}
+          {images.map((img, i) => {
+            const ov = cardCopy && cardCopy[i];
+            const image = ov ? { ...img, title: ov.title, description: ov.description } : img;
+            return (
+              <Card
+                key={i}
+                image={image}
+                accent={accent}
+                placeName={landmark.name}
+                lang={lang}
+                index={i}
+                total={images.length}
+                slot={`${galleryBase}.${i}`}
+              />
+            );
+          })}
         </div>
 
         {/* Mobile arrows — overlay */}

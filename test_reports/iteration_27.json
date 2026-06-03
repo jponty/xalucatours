@@ -1,0 +1,45 @@
+{
+  "summary": "Frontend-only testing for new POI gallery card copy (POI_CARD_COPY override in LandmarkCarousel). Found and fixed a CRITICAL missing-import bug (ReferenceError ALIAS_PROFILE/POI_CARD_COPY) that was preventing the override from ever taking effect. After fix, verified 11+ POIs across 3 trip programs (Marrakech-ErgChebbi 3n/4d, Gran Sur Fez-Marrakech 8n/9d, Norte Ciudades Imperiales+Rif 6n/7d) in ES, plus EN and FR language switches. One remaining issue: Ouarzazate first-card TITLE shows old CMS-saved value (description override works) — likely a stale EditableText slot override in CMS.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LandmarkCarousel.jsx",
+        "issue": "Missing imports for ALIAS_PROFILE (from @/lib/placeGalleries) and POI_CARD_COPY (from @/lib/poiCardCopy). Caused a ReferenceError at runtime whenever a place gallery was opened, so NONE of the new client copy was being applied. FIXED in this iteration by adding the two imports.",
+        "selector": "src/components/LandmarkCarousel.jsx (lines 144-148)",
+        "priority": "CRITICAL"
+      },
+      {
+        "component": "LandmarkCarousel - Ouarzazate card 0 title",
+        "issue": "After fix, Ouarzazate card-0 description shows the NEW client copy ('Descubre una ciudad rodeada de kasbahs...') but the TITLE still shows the OLD value 'Kasbah Aït Ben Haddou' instead of the expected 'La puerta del gran sur marroquí'. Root cause: EditableText slot for landmark.ouarzazate.gallery.0.title appears to have a previously saved CMS override that takes precedence over the new default passed in via image.title. All other 10 verified places (marrakech, aitben, todra, xaluca-dades, ergchebbi, fez, tanger, cabospartel, chefchaouen, marrakech-on-gransur) correctly show the new title.",
+        "selector": "[data-testid='landmark-carousel-ouarzazate'] [data-testid='landmark-card-0'] h5",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Gran Sur 8n/9d - Marrakech gallery card 0",
+        "issues": ["Image shows 'SIN IMAGEN' placeholder (no image bound) — unrelated to copy override but visible regression candidate; please verify gallery image binding."]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "URGENT: Verify the import fix I applied to /app/frontend/src/components/LandmarkCarousel.jsx is acceptable. Without it the entire POI_CARD_COPY override system was a no-op due to ReferenceError. (No console errors visible to user — silent failure path.)",
+    "Resolve Ouarzazate title CMS slot override: either purge the stored EditableText override for slot landmark.ouarzazate.gallery.0.title (and any other slot.*.title that may have been edited in CMS), or make EditableText prefer the latest hardcoded defaults when the CMS value matches a previously-known default. Re-check other places that might be similarly affected (essaouira, imlil, etc. are NOT in CSV so out of scope).",
+    "Investigate missing/broken image on Marrakech card 0 in /viajes/gransur/fez_marrakech/programa_8n_9d (shows 'Sin imagen' placeholder)."
+  ],
+  "critical_code_review_comments": [
+    "LandmarkCarousel.jsx referenced ALIAS_PROFILE and POI_CARD_COPY without importing them — add a lint rule (no-undef) or a build-time check; this kind of typo/missing import silently broke the whole feature.",
+    "EditableText slot precedence over hardcoded defaults makes content updates fragile when defaults change. Consider versioning the slot keys (e.g., `landmark.<id>.gallery.0.title.v2`) when copy is rewritten so old CMS overrides don't shadow new defaults."
+  ],
+  "updated_files": ["/app/frontend/src/components/LandmarkCarousel.jsx"],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "~92% (11/12 verified place titles match; 1 fails due to CMS override, not code)" },
+  "test_credentials": "n/a (public pages)",
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "POI override system in LandmarkCarousel.jsx uses cardCopy = copyKeys.map(k=>POI_CARD_COPY[k]).find(Boolean). copyKeys built from landmark.id, landmark.poiKey, slotBase id, and ALIAS_PROFILE aliases. Both ALIAS_PROFILE and POI_CARD_COPY now imported (fix from this iter). Tested programs: /viajes/marrakech_ergchebbi_marrakech/programa_3n_4d, /viajes/gransur/fez_marrakech/programa_8n_9d, /viajes/norte/ciudadesimperiales_rif/programa_6n_7d. Selectors used: data-testid='day-landmark-btn-<route>-<id>' to open; data-testid='landmark-carousel-<id>' to scope, then landmark-card-0 h5 for title. Language switcher: data-testid='lang-button-es|en|fr'. Verified ES+EN+FR. ONLY OUTSTANDING: ouarzazate title stuck on stale CMS slot.",
+  "rca of the issue": "Primary RCA — POI_CARD_COPY/ALIAS_PROFILE used but not imported in LandmarkCarousel.jsx → runtime ReferenceError when Card list code path executed → React caught it but cardCopy resolved to undefined → no override applied → all places showed OLD copy. Reproduction: open any program page, click any place button, inspect any landmark-card-0 h5; before fix all titles were the old curated titles. Mitigation: added `import { ALIAS_PROFILE } from '@/lib/placeGalleries'` and `import { POI_CARD_COPY } from '@/lib/poiCardCopy'`. Secondary RCA — Ouarzazate title stuck: EditableText slot stored from previous CMS edits overrides the new image.title default. Description slot had no prior edit so the new description shows. Mitigation requires either CMS data cleanup or slot-version bump."
+}
