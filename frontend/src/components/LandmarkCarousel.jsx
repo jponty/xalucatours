@@ -71,7 +71,7 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
         alt=""
         aria-hidden="true"
         data-testid={`landmark-card-monogram-${index}`}
-        className="pointer-events-none select-none absolute right-0 top-1/2 -translate-y-1/2 h-[86%] w-auto object-contain opacity-60 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+        className="pointer-events-none select-none absolute right-0 bottom-0 h-[86%] w-auto object-contain opacity-60 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
       />
       {/* Location tag — always the real place name (e.g. "Ouarzazate"), using
           the same accent colour the point has in the day's highlighted POIs. */}
