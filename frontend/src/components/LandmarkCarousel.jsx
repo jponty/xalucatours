@@ -4,6 +4,9 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { ALIAS_PROFILE } from "@/lib/placeGalleries";
 import { POI_CARD_COPY } from "@/lib/poiCardCopy";
+import { EXTRA_POI_CARDS } from "@/lib/extraPois";
+
+const CARD_COPY = { ...POI_CARD_COPY, ...EXTRA_POI_CARDS };
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
@@ -147,7 +150,7 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
         ALIAS_PROFILE[landmark.poiKey],
       ].filter(Boolean)
     : [];
-  const cardCopy = copyKeys.map((k) => POI_CARD_COPY[k]).find(Boolean) || null;
+  const cardCopy = copyKeys.map((k) => CARD_COPY[k]).find(Boolean) || null;
 
   // Auto-scroll into view + reset scroll position when landmark changes
   useEffect(() => {

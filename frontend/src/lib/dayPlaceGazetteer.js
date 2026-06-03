@@ -21,6 +21,7 @@
 ============================================================ */
 import { CITY_PROFILES } from "@/lib/cityProfiles";
 import { buildPlaceGallery, ALIAS_PROFILE } from "@/lib/placeGalleries";
+import { EXTRA_POIS } from "@/lib/extraPois";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -131,6 +132,8 @@ export const GAZETTEER = [
              "Jaima camp in the heart of the Erg Chebbi dunes: dinner under the stars.",
              "Campement en jaimas au cœur des dunes de l'Erg Chebbi : dîner sous les étoiles."),
     aliases: ["bivouac de luxe", "bivouac", "haimas", "jaimas"] },
+  // New monuments / sub-POIs (coords + aliases) — see extraPois.js.
+  ...EXTRA_POIS,
 ];
 
 const buildLandmark = (entry) => {

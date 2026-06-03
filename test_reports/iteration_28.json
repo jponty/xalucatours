@@ -1,0 +1,53 @@
+{
+  "summary": "Frontend-only smoke test for the new 23 POIs (gazetteer + 3-card copy) on the Ciudades Imperiales 6n/7d program page. All expected NEW monuments/towns appear on the correct day's 'Puntos de interés del día' list; verified rich 3-card galleries open with the new Spanish titles and descriptions for 9 of the new POIs; verified EN translation wires through for Koutoubia. Existing places (Volubilis, Moulay Idriss, Meknes, Marrakech, Rabat, Casablanca, Fez) still appear. No console errors. Xaluca logo renders on the day maps. Maps render markers correctly.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "day_by_day_findings": {
+    "day_1_casa_rabat": ["Casablanca", "Mezquita Hassan II (NEW)", "Rabat"],
+    "day_2_volubilis_meknes": ["Rabat", "Kasbah de los Oudayas (NEW)", "Torre Hassan (NEW)", "Mausoleo Mohammed V (NEW)", "Chellah (NEW)", "Volubilis", "Meknès", "Moulay Idriss"],
+    "day_3_meknes_fez": ["Meknès", "Fez", "Bab al Mansour (NEW)", "Mausoleo de Moulay Ismail (NEW)", "Heri es Souani (NEW)", "Habs Qara (NEW)"],
+    "day_4_fez_medina": ["Fez", "Medina de Fez (NEW)", "Curtiduría Chouara (NEW)"],
+    "day_5_fez_marrakech": ["Marrakech", "Ifrane", "Bosques de Cedros (NEW)", "Azrou (NEW)", "Khenifra (NEW)", "Beni Mellal (NEW)", "Djemaa el-Fna (NEW)", "Medina de Marrakech (NEW)"],
+    "day_6_marrakech_medina": ["Medina de Marrakech (NEW)", "Marrakech", "Mezquita Koutoubia (NEW)", "Palacio Bahía (NEW)", "Farmacia bereber (NEW)", "Djemaa el-Fna (NEW)", "Jardín Majorelle (NEW)"],
+    "missing_expected_places": "none — every place listed in the review_request appears on the correct day"
+  },
+  "card_copy_verification_ES": {
+    "Mezquita Hassan II": "El gran icono de Casablanca / Contempla una de las mezquitas más impresionantes…",
+    "Kasbah de los Oudayas": "La fortaleza azul y blanca de Rabat / Descubre uno de los rincones más bellos de la capital…",
+    "Chellah": "La necrópolis histórica de Rabat / Descubre un recinto arqueológico lleno de historia…",
+    "Bab al Mansour": "La gran puerta imperial de Meknès / Contempla una de las puertas monumentales más impresionantes…",
+    "Curtiduría Chouara": "El oficio ancestral de Fez / Descubre una de las curtidurías más antiguas y famosas del mundo…",
+    "Bosques de Cedros": "El gran bosque del Medio Atlas / Descubre extensas masas de cedros centenarios…",
+    "Mezquita Koutoubia": "El símbolo de Marrakech / Contempla el minarete más famoso de la ciudad roja…",
+    "Palacio Bahía": "La elegancia de Marrakech / Descubre uno de los palacios más bellos de la ciudad…",
+    "Jardín Majorelle": "El jardín más icónico de Marrakech / Descubre un oasis botánico lleno de color…"
+  },
+  "card_copy_verification_EN": {
+    "Mezquita Koutoubia": "The symbol of Marrakech / Behold the most famous minaret of the red city… — EN wired correctly",
+    "Jardín Majorelle": "The most iconic garden in Marrakech / Discover a botanical oasis full of color… — verified via on-page screenshot"
+  },
+  "regression": {
+    "console_errors": "none captured",
+    "xaluca_logo_on_maps": "present (alt=\"Xaluca\" image renders on each day map)",
+    "existing_places_intact": "Casablanca, Rabat, Volubilis, Moulay Idriss, Meknès, Fez, Marrakech all still listed",
+    "map_markers": "rendered (verified day-1 Hassan II / Casablanca / Rabat markers in screenshot)"
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "EXTRA_POIS coords for Habs Qara, Heri es Souani, Mausoleo Moulay Ismail and Bab al Mansour are all clustered around ~33.88,−5.56 (Meknès) which is fine for the day-map but may overlap visually — consider tiny offsets if pin overlap becomes a UX issue.",
+    "The day map currently shows the day's POIs at the same zoom, so very dense clusters (Day 6: 7 POIs inside Marrakech medina) will overlap. Consider clustering or a slight jitter when adjacent coords are within ~50 m."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "100% — all expected places appear; all 9 sampled new POI cards show the correct new ES copy; EN translation verified" },
+  "test_credentials": "n/a (public page)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Per-day POI buttons follow data-testid='day-landmark-btn-<dayId>-<poiId>'. Each open carousel uses data-testid='landmark-carousel-<poiId>' with child data-testid='landmark-card-0..2'. IMPORTANT pitfall: opened carousels stay rendered on the page — when sampling card titles, always scope queries to a SPECIFIC landmark-carousel-<id>, otherwise the global querySelector picks up the FIRST opened carousel (which gave a false-negative in my first pass before scoping). Language switcher: data-testid='lang-button-es|en|fr'.",
+  "rca of the issue": "n/a — feature working as designed; no bug found."
+}
