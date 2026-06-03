@@ -5,6 +5,7 @@ import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
+import monogramaX from "@/assets/monograma-x.png";
 
 const LABELS = {
   es: {
@@ -64,6 +65,14 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent opacity-90 pointer-events-none" />
       <span className="film-grain pointer-events-none" />
+      {/* Xaluca "&" monogram — elegant graphic bleeding off the right edge */}
+      <img
+        src={monogramaX}
+        alt=""
+        aria-hidden="true"
+        data-testid={`landmark-card-monogram-${index}`}
+        className="pointer-events-none select-none absolute right-0 bottom-0 h-full w-auto object-contain object-right-bottom opacity-50 mix-blend-screen translate-x-[20%]"
+      />
       {/* Location tag — always the real place name (e.g. "Ouarzazate"), using
           the same accent colour the point has in the day's highlighted POIs. */}
       <span
