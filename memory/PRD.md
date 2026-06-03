@@ -1,5 +1,13 @@
 # Xaluca Tours — PRD
 
+## Nuevo copy (título+descripción) de las 3 cards por punto de interés — Jun 2026 (latest)
+- **User ask**: reemplazar título y descripción de las 3 cards de cada POI con el contenido de un CSV (ES), manteniendo estructura/diseño. Elegido: actualizar ES + auto-traducir EN/FR.
+- **Implementación**: script one-off tradujo las 310 cadenas ES→EN/FR (Emergent LLM gpt-4o-mini) y generó `lib/poiCardCopy.js` (`POI_CARD_COPY`, 59 claves, trilingüe). `LandmarkCarousel.jsx` aplica el override por card (índice), resolviendo la clave por `landmark.id` / `poiKey` / `slotBase` / alias del gazetteer (`ALIAS_PROFILE`). Cubre las 3 fuentes de galería (cityProfiles, landmarkGalleries, placeGalleries).
+- **52 puntos mapeados → 59 claves**. NO mapeados (sin galería propia/duplicados): "Agafay" (duplicado de "Desierto de Agafay"→agafay) y "Alto Atlas Central" (sin galería propia; se usó "Cordillera del Alto Atlas"→atlas).
+- Borrado 1 slot CMS antiguo (`poi.ouarzazate.gallery.0.title`) que tapaba el nuevo título en el preview.
+- **Verificado** por testing_agent iteration_27.json: 11+ POIs en 3 programas, en ES/EN/FR. Pendiente NO relacionado: una card de Marrakech en gran-sur 8n/9d muestra "Sin imagen" (binding de imagen CMS, ajeno a este cambio de copy).
+
+
 ## Fix solapamiento breadcrumb/header en páginas de viaje — Jun 2026 (latest)
 - **Causa raíz**: al añadir la barra superior (TopInfoBar) el header creció (~96px móvil / ~116px desktop), pero `Breadcrumbs.jsx` mantenía `pt-[88px] md:pt-[96px]` → el header interno (breadcrumb glassy) quedaba debajo del header principal y se solapaba.
 - **Fix**: subido a `pt-[112px] md:pt-[132px]` (deja ~16px de separación bajo el header en todas las resoluciones). Verificado en desktop: breadcrumb totalmente visible y separado.
