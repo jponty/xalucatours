@@ -1101,31 +1101,26 @@ const PoiManager = ({ query, imageSlots, textSlots, onSaveImage, onSaveText, onC
           <MapPin className="w-3.5 h-3.5" /> Puntos destacados · {list.length}/{POI_CATALOG.length}
         </h3>
         <p className="text-xs text-white/55 leading-relaxed">
-          Gestión centralizada por punto destacado. Al editar el <span className="text-white/75">Título</span>,
-          la <span className="text-white/75">Descripción</span> o la <span className="text-white/75">Imagen principal</span>,
-          el cambio se sincroniza automáticamente en todos los mapas del día, cards y galerías donde aparezca ese mismo punto.
+          Cada punto destacado es un bloque independiente. Al desplegarlo verás sus <span className="text-white/75">3 cards de la Galería del lugar</span>,
+          cada una con su Título, Descripción (ES/EN/FR) e Imagen. Al guardar, el cambio se sincroniza automáticamente
+          en todos los mapas del día, cards y galerías donde aparezca ese mismo punto.
         </p>
       </div>
       {list.length === 0 && (
         <p className="text-sm text-white/50">Ningún punto coincide con la búsqueda.</p>
       )}
       <ul className="space-y-3">
-        {list.map((poi) => {
-          const slots = poiSlots(poi.poiKey);
-          return (
-            <PoiRow
-              key={poi.poiKey}
-              poi={poi}
-              slots={slots}
-              imageOverride={imageMap[slots.image]?.url}
-              titleOverride={textMap[slots.title]}
-              descOverride={textMap[slots.desc]}
-              onSaveImage={onSaveImage}
-              onSaveText={onSaveText}
-              onChanged={onChanged}
-            />
-          );
-        })}
+        {list.map((poi) => (
+          <PoiRow
+            key={poi.poiKey}
+            poi={poi}
+            imageMap={imageMap}
+            textMap={textMap}
+            onSaveImage={onSaveImage}
+            onSaveText={onSaveText}
+            onChanged={onChanged}
+          />
+        ))}
       </ul>
     </div>
   );
@@ -1134,17 +1129,91 @@ const PoiManager = ({ query, imageSlots, textSlots, onSaveImage, onSaveText, onC
 const triEqual = (a, b) =>
   (a.es || "") === (b.es || "") && (a.en || "") === (b.en || "") && (a.fr || "") === (b.fr || "");
 
-const PoiRow = ({ poi, slots, imageOverride, titleOverride, descOverride, onSaveImage, onSaveText, onChanged }) => {
-  const initImg = imageOverride || poi.defaultImage || "";
+/* A text override only "counts" if it actually carries content (an empty
+   {} tombstone left after a delete must not flag the POI as edited). */
+const hasVals = (v) => !!(v && (v.es || v.en || v.fr));
+
+const PoiRow = ({ poi, imageMap, textMap, onSaveImage, onSaveText, onChanged }) => {
+  const [open, setOpen] = useState(false);
+  const head = poiSlots(poi.poiKey);
+  const headTitle = textMap[head.title]?.es || poi.cards[0]?.title?.es || poi.name.es || poi.poiKey;
+  const headImg = imageMap[head.image]?.url || poi.cards[0]?.image || "";
+  const overridden = poi.cards.some((_, i) => {
+    const img = `poi.${poi.poiKey}.gallery.${i}`;
+    return !!imageMap[img]?.url || hasVals(textMap[`${img}.title`]) || hasVals(textMap[`${img}.desc`]);
+  });
+
+  return (
+    <li data-testid={`admin-poi-${poi.poiKey}`} className="bg-white/[0.04] border border-white/10">
+      {/* Block header */}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        data-testid={`admin-poi-toggle-${poi.poiKey}`}
+        className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/[0.03]"
+      >
+        <div className="w-14 h-14 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
+          {headImg
+            ? <img src={headImg} alt="" className="w-full h-full object-cover" />
+            : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-4 h-4" /></div>}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-white truncate flex items-center gap-2">
+            {headTitle}
+            {overridden && <span className="text-[8px] tracking-[0.18em] uppercase bg-[#3E7C59]/30 text-[#7BB98A] px-1.5 py-0.5">editado</span>}
+          </p>
+          <p className="text-[10px] tracking-[0.14em] uppercase text-white/40 truncate">
+            {KIND_LABEL[poi.kind] || poi.kind} · {poi.poiKey} · {poi.cards.length} cards
+          </p>
+        </div>
+        {open ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
+      </button>
+
+      {/* The 3 GALERÍA DEL LUGAR cards */}
+      {open && (
+        <div className="px-3 pb-3 border-t border-white/10 pt-3 space-y-3">
+          <p className="text-[9px] tracking-[0.24em] uppercase text-white/35">Galería del lugar · {poi.cards.length} cards</p>
+          {poi.cards.map((card, i) => (
+            <PoiCardEditor
+              key={i}
+              poiKey={poi.poiKey}
+              index={i}
+              defaults={card}
+              imageMap={imageMap}
+              textMap={textMap}
+              onSaveImage={onSaveImage}
+              onSaveText={onSaveText}
+              onChanged={onChanged}
+            />
+          ))}
+        </div>
+      )}
+    </li>
+  );
+};
+
+/* One editable card of a POI's "Galería del lugar".
+   Writes the global slots poi.${poiKey}.gallery.${index}[.title|.desc]. */
+const PoiCardEditor = ({ poiKey, index, defaults, imageMap, textMap, onSaveImage, onSaveText, onChanged }) => {
+  const slots = {
+    image: `poi.${poiKey}.gallery.${index}`,
+    title: `poi.${poiKey}.gallery.${index}.title`,
+    desc: `poi.${poiKey}.gallery.${index}.desc`,
+  };
+  const imageOverride = imageMap[slots.image]?.url;
+  const titleOverride = textMap[slots.title];
+  const descOverride = textMap[slots.desc];
+
+  const initImg = imageOverride || defaults.image || "";
   const initTitle = {
-    es: titleOverride?.es ?? poi.defaultTitle.es ?? "",
-    en: titleOverride?.en ?? poi.defaultTitle.en ?? "",
-    fr: titleOverride?.fr ?? poi.defaultTitle.fr ?? "",
+    es: titleOverride?.es ?? defaults.title.es ?? "",
+    en: titleOverride?.en ?? defaults.title.en ?? "",
+    fr: titleOverride?.fr ?? defaults.title.fr ?? "",
   };
   const initDesc = {
-    es: descOverride?.es ?? poi.defaultDesc.es ?? "",
-    en: descOverride?.en ?? poi.defaultDesc.en ?? "",
-    fr: descOverride?.fr ?? poi.defaultDesc.fr ?? "",
+    es: descOverride?.es ?? defaults.desc.es ?? "",
+    en: descOverride?.en ?? defaults.desc.en ?? "",
+    fr: descOverride?.fr ?? defaults.desc.fr ?? "",
   };
 
   const [imgUrl, setImgUrl] = useState(initImg);
@@ -1153,7 +1222,6 @@ const PoiRow = ({ poi, slots, imageOverride, titleOverride, descOverride, onSave
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [translating, setTranslating] = useState(false);
-  const [open, setOpen] = useState(false);
   const [msg, setMsg] = useState("");
   const fileRef = useRef(null);
 
@@ -1161,7 +1229,7 @@ const PoiRow = ({ poi, slots, imageOverride, titleOverride, descOverride, onSave
   const titleDirty = !triEqual(title, initTitle);
   const descDirty = !triEqual(desc, initDesc);
   const dirty = imgDirty || titleDirty || descDirty;
-  const overridden = imageOverride != null || titleOverride != null || descOverride != null;
+  const overridden = !!imageOverride || hasVals(titleOverride) || hasVals(descOverride);
 
   const onUpload = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -1223,126 +1291,109 @@ const PoiRow = ({ poi, slots, imageOverride, titleOverride, descOverride, onSave
   };
 
   return (
-    <li data-testid={`admin-poi-${poi.poiKey}`} className="bg-white/[0.04] border border-white/10">
-      {/* Header row */}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        data-testid={`admin-poi-toggle-${poi.poiKey}`}
-        className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/[0.03]"
-      >
-        <div className="w-14 h-14 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
+    <div data-testid={`admin-poi-card-${poiKey}-${index}`} className="bg-black/20 border border-white/10 p-3 space-y-3">
+      <div className="flex items-center gap-2">
+        <div className="w-9 h-9 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
           {imgUrl
             ? <img src={imgUrl} alt="" className="w-full h-full object-cover" />
-            : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-4 h-4" /></div>}
+            : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-3.5 h-3.5" /></div>}
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm text-white truncate flex items-center gap-2">
-            {title.es || poi.name.es || poi.poiKey}
-            {overridden && <span className="text-[8px] tracking-[0.18em] uppercase bg-[#3E7C59]/30 text-[#7BB98A] px-1.5 py-0.5">editado</span>}
-          </p>
-          <p className="text-[10px] tracking-[0.14em] uppercase text-white/40 truncate">
-            {KIND_LABEL[poi.kind] || poi.kind} · {poi.poiKey}
-          </p>
-        </div>
-        {dirty && <span className="w-2 h-2 rounded-full bg-[#D4A373] flex-shrink-0" title="Cambios sin guardar" />}
-        {open ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
-      </button>
+        <p className="text-[9px] tracking-[0.24em] uppercase text-[#D4A373] flex items-center gap-2">
+          Card {index + 1}
+          {overridden && <span className="text-[8px] bg-[#3E7C59]/30 text-[#7BB98A] px-1.5 py-0.5">editada</span>}
+        </p>
+        {dirty && <span className="w-2 h-2 rounded-full bg-[#D4A373]" title="Cambios sin guardar" />}
+      </div>
 
-      {/* Editor body */}
-      {open && (
-        <div className="px-3 pb-3 space-y-3 border-t border-white/10 pt-3">
-          {/* Imagen principal */}
-          <div>
-            <p className="text-[9px] tracking-[0.22em] uppercase text-[#D4A373] mb-1.5">Imagen principal · {slots.image}</p>
-            <div className="flex gap-2">
+      {/* Imagen */}
+      <div>
+        <p className="text-[9px] tracking-[0.22em] uppercase text-white/45 mb-1.5">Imagen</p>
+        <div className="flex gap-2">
+          <input
+            value={imgUrl}
+            onChange={(e) => setImgUrl(e.target.value)}
+            placeholder="URL de la imagen (https://…)"
+            data-testid={`admin-poi-image-${poiKey}-${index}`}
+            className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373]"
+          />
+          <button
+            type="button"
+            onClick={() => fileRef.current && fileRef.current.click()}
+            disabled={uploading}
+            data-testid={`admin-poi-upload-${poiKey}-${index}`}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
+          >
+            <UploadCloud className={`w-3.5 h-3.5 ${uploading ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+            {uploading ? "…" : "Subir"}
+          </button>
+          <input ref={fileRef} type="file" accept="image/*" onChange={onUpload} className="hidden" />
+        </div>
+      </div>
+
+      {/* Título */}
+      <div>
+        <p className="text-[9px] tracking-[0.22em] uppercase text-white/45 mb-1.5">Título</p>
+        <div className="space-y-1.5">
+          {LANGS.map((l) => (
+            <div key={l} className="flex items-center gap-2">
+              <span className="text-[9px] tracking-[0.2em] uppercase text-white/40 w-6">{l}</span>
               <input
-                value={imgUrl}
-                onChange={(e) => setImgUrl(e.target.value)}
-                placeholder="URL de la imagen (https://…)"
-                data-testid={`admin-poi-image-${poi.poiKey}`}
+                value={title[l]}
+                onChange={(e) => setTitle((v) => ({ ...v, [l]: e.target.value }))}
+                data-testid={`admin-poi-title-${poiKey}-${index}-${l}`}
                 className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373]"
               />
-              <button
-                type="button"
-                onClick={() => fileRef.current && fileRef.current.click()}
-                disabled={uploading}
-                data-testid={`admin-poi-upload-${poi.poiKey}`}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
-              >
-                <UploadCloud className={`w-3.5 h-3.5 ${uploading ? "animate-pulse" : ""}`} strokeWidth={1.8} />
-                {uploading ? "…" : "Subir"}
-              </button>
-              <input ref={fileRef} type="file" accept="image/*" onChange={onUpload} className="hidden" />
             </div>
-          </div>
-
-          {/* Título */}
-          <div>
-            <p className="text-[9px] tracking-[0.22em] uppercase text-[#D4A373] mb-1.5">Título</p>
-            <div className="space-y-1.5">
-              {LANGS.map((l) => (
-                <div key={l} className="flex items-center gap-2">
-                  <span className="text-[9px] tracking-[0.2em] uppercase text-white/45 w-6">{l}</span>
-                  <input
-                    value={title[l]}
-                    onChange={(e) => setTitle((v) => ({ ...v, [l]: e.target.value }))}
-                    data-testid={`admin-poi-title-${poi.poiKey}-${l}`}
-                    className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373]"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Descripción */}
-          <div>
-            <p className="text-[9px] tracking-[0.22em] uppercase text-[#D4A373] mb-1.5">Descripción</p>
-            <div className="space-y-1.5">
-              {LANGS.map((l) => (
-                <div key={l} className="flex items-start gap-2">
-                  <span className="text-[9px] tracking-[0.2em] uppercase text-white/45 w-6 pt-1.5">{l}</span>
-                  <textarea
-                    value={desc[l]}
-                    onChange={(e) => setDesc((v) => ({ ...v, [l]: e.target.value }))}
-                    rows={2}
-                    data-testid={`admin-poi-desc-${poi.poiKey}-${l}`}
-                    className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373] resize-y"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <button
-              type="button"
-              onClick={autoTranslate}
-              disabled={translating || !title.es}
-              data-testid={`admin-poi-translate-${poi.poiKey}`}
-              title="Rellena EN y FR a partir del español"
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
-            >
-              <Languages className={`w-3.5 h-3.5 ${translating ? "animate-pulse" : ""}`} strokeWidth={1.8} />
-              {translating ? "Traduciendo…" : "Auto-traducir"}
-            </button>
-            <button
-              type="button"
-              onClick={save}
-              disabled={!dirty || busy}
-              data-testid={`admin-poi-save-${poi.poiKey}`}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors ${
-                dirty && !busy ? "bg-[#C16542] hover:bg-[#A8533A] text-white" : "bg-white/5 text-white/30 cursor-not-allowed"
-              }`}
-            >
-              <Save className="w-3 h-3" strokeWidth={2} /> {busy ? "Guardando…" : "Guardar"}
-            </button>
-          </div>
-          {msg && (
-            <p data-testid={`admin-poi-msg-${poi.poiKey}`} className={`text-[11px] ${msg.startsWith("✗") ? "text-[#E07856]" : "text-[#7BB98A]"}`}>{msg}</p>
-          )}
+          ))}
         </div>
+      </div>
+
+      {/* Descripción */}
+      <div>
+        <p className="text-[9px] tracking-[0.22em] uppercase text-white/45 mb-1.5">Descripción</p>
+        <div className="space-y-1.5">
+          {LANGS.map((l) => (
+            <div key={l} className="flex items-start gap-2">
+              <span className="text-[9px] tracking-[0.2em] uppercase text-white/40 w-6 pt-1.5">{l}</span>
+              <textarea
+                value={desc[l]}
+                onChange={(e) => setDesc((v) => ({ ...v, [l]: e.target.value }))}
+                rows={2}
+                data-testid={`admin-poi-desc-${poiKey}-${index}-${l}`}
+                className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373] resize-y"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <button
+          type="button"
+          onClick={autoTranslate}
+          disabled={translating || !title.es}
+          data-testid={`admin-poi-translate-${poiKey}-${index}`}
+          title="Rellena EN y FR a partir del español"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
+        >
+          <Languages className={`w-3.5 h-3.5 ${translating ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+          {translating ? "Traduciendo…" : "Auto-traducir"}
+        </button>
+        <button
+          type="button"
+          onClick={save}
+          disabled={!dirty || busy}
+          data-testid={`admin-poi-save-${poiKey}-${index}`}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors ${
+            dirty && !busy ? "bg-[#C16542] hover:bg-[#A8533A] text-white" : "bg-white/5 text-white/30 cursor-not-allowed"
+          }`}
+        >
+          <Save className="w-3 h-3" strokeWidth={2} /> {busy ? "Guardando…" : "Guardar"}
+        </button>
+      </div>
+      {msg && (
+        <p data-testid={`admin-poi-msg-${poiKey}-${index}`} className={`text-[11px] ${msg.startsWith("✗") ? "text-[#E07856]" : "text-[#7BB98A]"}`}>{msg}</p>
       )}
-    </li>
+    </div>
   );
 };

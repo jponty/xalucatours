@@ -35,14 +35,23 @@ export const poiSlots = (poiKey) => ({
 });
 
 const makePoi = ({ poiKey, kind, name, gallery }) => {
-  const main = (Array.isArray(gallery) && gallery[0]) || {};
+  const g = (Array.isArray(gallery) ? gallery : []).slice(0, 3);
+  const cards = g.map((c) => ({
+    image: c.src || "",
+    title: c.title || name || EMPTY,
+    desc: c.description || EMPTY,
+  }));
+  const main = cards[0] || { image: "", title: name || EMPTY, desc: EMPTY };
   return {
     poiKey,
     kind: kind || "site",
     name: name || EMPTY,
-    defaultImage: main.src || "",
-    defaultTitle: main.title || name || EMPTY,
-    defaultDesc: main.description || EMPTY,
+    // The 3 "Galería del lugar" cards, each with its own default image/title/desc.
+    cards,
+    // Representative (main) card — used for the block thumbnail/header.
+    defaultImage: main.image,
+    defaultTitle: main.title,
+    defaultDesc: main.desc,
   };
 };
 

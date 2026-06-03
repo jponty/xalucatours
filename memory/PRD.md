@@ -1,6 +1,14 @@
 # Xaluca Tours — PRD
 
-## /admin · "Puntos destacados" centralized POI manager (Jun 2026)
+## /admin · "Puntos destacados" — now organized per POI with its 3 gallery cards (Jun 2026)
+- **User refinement**: the section must be organized BY punto destacado; each POI is an independent block that shows, right below, its **3 GALERÍA DEL LUGAR cards**.
+- **`lib/poiCatalog.js`**: each POI now exposes `cards` = the 3 gallery cards (each `{image, title, desc}` defaults), in addition to the representative header fields.
+- **`pages/AdminPage.jsx`**: `PoiRow` = collapsible block (header thumbnail/name/kind·poiKey·"N cards" + "editado" badge). Expanded → renders 3 `PoiCardEditor` sub-blocks ("Galería del lugar · 3 cards"). Each `PoiCardEditor` edits image (URL + upload), title (ES/EN/FR), desc (ES/EN/FR), auto-translate, consolidated Guardar → writes global slots `poi.${poiKey}.gallery.${i}[.title|.desc]`.
+- Fixed "editado" false-positive: empty `{}` text tombstones no longer flag a POI/card as edited (`hasVals` helper).
+- **Verified**: Marrakech block shows 3 distinct cards (Jemaa el-Fna / Medersa Ben Youssef / Jardín Majorelle); sync proven earlier (card-0 edit propagated to trip-page galleries); identical mechanism for cards 1-2. Lint clean.
+- **Testids** (now per card index): `admin-poi-card-{poiKey}-{i}`, `admin-poi-image/upload/translate/save-{poiKey}-{i}`, `admin-poi-title/desc-{poiKey}-{i}-{lang}`, `admin-poi-msg-{poiKey}-{i}`.
+
+
 - **User mandate**: a new `/admin` section to centrally manage every "punto destacado" (Mapa del día / Puntos de interés del día). Per POI: Título, Descripción, Imagen principal. Managed by POI (single source of truth), syncing to every page/route/map/card/gallery where that POI appears — same logic as existing global POI slots.
 - **POI model** (pre-existing): each POI is keyed by a stable `poiKey` (CITY_PROFILES key or gazetteer id). Global slots: `poi.${poiKey}.gallery.${i}` (image) + `.title` / `.desc` (text). The LandmarkCarousel, day maps and the "Visual Trip Summary" route gallery all render these slots → one edit syncs everywhere.
 - **New `lib/poiCatalog.js`**: deduped UNION of all POIs (`GAZETTEER` ∪ `CITY_PROFILES`) → 50 POIs. Each exposes the REPRESENTATIVE (main) card = gallery index 0, with `poiSlots(poiKey)` → `{image, title, desc}` slot ids.
