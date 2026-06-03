@@ -4,6 +4,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 
 const LABELS = {
   es: {
@@ -73,9 +74,12 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
         <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
         <span>{pick(placeName, lang)}</span>
       </span>
-      <span className="absolute top-3.5 right-3.5 inline-flex items-center justify-center bg-[#1A1513]/85 text-[#FDFBF7] font-serif-x text-[12px] tracking-[0.18em] px-2.5 py-1 pointer-events-none z-[1]">
-        {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-      </span>
+      <img
+        src={grupXalucaLogo}
+        alt="Xaluca"
+        data-testid={`landmark-card-logo-${index}`}
+        className="absolute top-3 right-3 w-11 h-11 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] pointer-events-none z-[1]"
+      />
     </div>
     <div className="flex-1 p-5 md:p-6 flex flex-col gap-3">
       <EditableText
