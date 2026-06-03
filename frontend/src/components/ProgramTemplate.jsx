@@ -19,6 +19,7 @@ import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
+import monogramaX from "@/assets/monograma-x-crop.png";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 
@@ -1390,6 +1391,14 @@ const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent pointer-events-none" />
               <span className="film-grain" />
+              {/* Xaluca "&" monogram — anchored to the bottom-right edge */}
+              <img
+                src={monogramaX}
+                alt=""
+                aria-hidden="true"
+                data-testid={`day-monogram-${day.id}`}
+                className="pointer-events-none select-none absolute right-0 bottom-0 h-[82%] w-auto object-contain opacity-55 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+              />
               {/* Xaluca logo — visible, top-right corner of the day's image */}
               <div className="absolute top-4 right-4 z-10 pointer-events-none">
                 <img
