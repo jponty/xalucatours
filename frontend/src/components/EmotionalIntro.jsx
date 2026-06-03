@@ -4,6 +4,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
 
 /* Curated Moroccan-only Unsplash imagery — each frame carries a
@@ -162,6 +163,7 @@ export const EmotionalIntro = () => {
               {/* Soft overlay for caption readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-[#1A1513]/10 to-transparent pointer-events-none" />
               <span className="film-grain pointer-events-none" />
+              <XalucaLogoBadge testid="emotional-intro-logo" />
 
               {/* Caption — trilingual, fades with the slide */}
               <span
