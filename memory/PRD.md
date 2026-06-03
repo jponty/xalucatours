@@ -1,5 +1,10 @@
 # Xaluca Tours — PRD
 
+## Fix solapamiento breadcrumb/header en páginas de viaje — Jun 2026 (latest)
+- **Causa raíz**: al añadir la barra superior (TopInfoBar) el header creció (~96px móvil / ~116px desktop), pero `Breadcrumbs.jsx` mantenía `pt-[88px] md:pt-[96px]` → el header interno (breadcrumb glassy) quedaba debajo del header principal y se solapaba.
+- **Fix**: subido a `pt-[112px] md:pt-[132px]` (deja ~16px de separación bajo el header en todas las resoluciones). Verificado en desktop: breadcrumb totalmente visible y separado.
+
+
 ## Logo Xaluca en TODOS los mapas Leaflet (top-right) — Jun 2026 (latest)
 - **User ask**: mostrar el logo Xaluca de forma consistente en la esquina superior derecha de cada mapa del sitio.
 - **Implementación**: nuevo componente reutilizable `components/MapLogoBadge.jsx` (img absoluta `top-3 right-3`, `z-[1000]` para quedar por encima de los panes/controles de Leaflet, `pointer-events-none`, `data-testid="map-logo-badge"`). Insertado como hermano dentro del wrapper `relative` de cada `<MapContainer>` en: DayRouteMap (×3), MapSection, TripOverview, TripRouteMap, ToursRegionMap, WhenToTravelPage, JuegoPage, QueVerEnMarruecosPage, MoroccoLandingPage (a este último se le añadió `relative` al wrapper). 11 mapas en total.
