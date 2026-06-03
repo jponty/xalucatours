@@ -1,5 +1,18 @@
 # Xaluca Tours — PRD
 
+## /admin · "Puntos destacados" centralized POI manager (Jun 2026)
+- **User mandate**: a new `/admin` section to centrally manage every "punto destacado" (Mapa del día / Puntos de interés del día). Per POI: Título, Descripción, Imagen principal. Managed by POI (single source of truth), syncing to every page/route/map/card/gallery where that POI appears — same logic as existing global POI slots.
+- **POI model** (pre-existing): each POI is keyed by a stable `poiKey` (CITY_PROFILES key or gazetteer id). Global slots: `poi.${poiKey}.gallery.${i}` (image) + `.title` / `.desc` (text). The LandmarkCarousel, day maps and the "Visual Trip Summary" route gallery all render these slots → one edit syncs everywhere.
+- **New `lib/poiCatalog.js`**: deduped UNION of all POIs (`GAZETTEER` ∪ `CITY_PROFILES`) → 50 POIs. Each exposes the REPRESENTATIVE (main) card = gallery index 0, with `poiSlots(poiKey)` → `{image, title, desc}` slot ids.
+- **`pages/AdminPage.jsx`**: new sidebar tab `Puntos destacados (50)` (`admin-tab-pois`). `PoiManager` + `PoiRow` components:
+  - Searchable list (by poiKey/name); each row: thumbnail + name + kind·poiKey + "editado" badge when overridden.
+  - Expandable editor: Imagen principal (URL input + file upload via `POST /api/slots/{slot}/upload`), Título (es/en/fr), Descripción (es/en/fr), **Auto-traducir** (ES→EN/FR via `POST /api/translate`), single consolidated Guardar (writes only dirty fields via existing `PUT /api/slots` + `/api/text_slots`).
+  - Defaults pulled from the POI catalog; overrides read from the already-fetched image/text slot lists.
+- **Verified end-to-end**: edited Marrakech (image + title.es) in `/admin` → both slots persisted; the edited image appeared 3× in the route galleries of `/viajes/escapadas/marrakech/programa_2n_3d`; then deleted overrides (cleanup). Lint clean.
+- **Scope note**: manages the POI's MAIN (first) gallery card — the representative title/description/image. The 2 additional gallery cards per POI remain editable in-page (could be surfaced in admin later if requested).
+- **Testids**: `admin-tab-pois`, `admin-pois`, `admin-poi-{poiKey}`, `admin-poi-toggle-{poiKey}`, `admin-poi-image-{poiKey}`, `admin-poi-upload-{poiKey}`, `admin-poi-title-{poiKey}-{lang}`, `admin-poi-desc-{poiKey}-{lang}`, `admin-poi-translate-{poiKey}`, `admin-poi-save-{poiKey}`, `admin-poi-msg-{poiKey}`.
+
+
 ## Master trip image — full per-routeId synchronization (Jun 2026)
 - **User mandate**: every card/listing/carousel linking to the SAME trip page must show ONE shared master image, keyed by trip identifier (`routeId`), never by section. Reference image = the Home "Cada ruta, en detalle" catalog card. Editing anywhere propagates everywhere bidirectionally.
 - **Architecture** (already partially in place): single global CMS slot `trip.${routeId}.hero`; `EditableImage` bulk-loads `/api/slots` once and subscribes by slot string → all components with the same slot update live. Master default = Home catalog image via `lib/tripHero.js` (`tripHeroImage`).

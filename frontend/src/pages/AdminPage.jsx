@@ -3,10 +3,12 @@ import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
+  MapPin, Languages,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
+import { POI_CATALOG, poiSlots } from "@/lib/poiCatalog";
 
 const API = process.env.REACT_APP_BACKEND_URL + "/api";
 
@@ -312,6 +314,7 @@ export default function AdminPage() {
               { id: "urls",   label: "URLs",          icon: Globe },
               { id: "images", label: `Images (${imageSlots.length})`, icon: ImageIcon },
               { id: "texts",  label: `Texts (${textSlots.length})`,  icon: Type },
+              { id: "pois",   label: `Puntos destacados (${POI_CATALOG.length})`, icon: MapPin },
               { id: "pricing", label: "Precios",       icon: Tag },
               { id: "sync",   label: "Sincronizar",   icon: UploadCloud },
             ].map((t) => {
@@ -425,6 +428,19 @@ export default function AdminPage() {
           {tab === "pricing" && (
             <div data-testid="admin-pricing" className="p-4">
               <PricingEditor onSaved={() => bumpPreview((k) => k + 1)} />
+            </div>
+          )}
+
+          {tab === "pois" && (
+            <div data-testid="admin-pois" className="p-4">
+              <PoiManager
+                query={query}
+                imageSlots={imageSlots}
+                textSlots={textSlots}
+                onSaveImage={saveImage}
+                onSaveText={saveText}
+                onChanged={fetchSlots}
+              />
             </div>
           )}
 
@@ -1032,5 +1048,301 @@ const SyncPanel = () => {
         </div>
       )}
     </div>
+  );
+};
+
+
+/* ============================================================
+   PoiManager · centralised "Puntos destacados" editor
+   ------------------------------------------------------------
+   Lists every point of interest used across the day maps and
+   itineraries (deduped by stable poiKey). For each POI you edit
+   its MAIN card — Título, Descripción, Imagen principal — which
+   writes the GLOBAL slots `poi.${poiKey}.gallery.0[.title|.desc]`.
+   Those are the exact slots the LandmarkCarousel / route galleries
+   render, so a single edit syncs the POI everywhere it appears.
+============================================================ */
+const KIND_LABEL = {
+  town: "Ciudad", village: "Aldea", kasbah: "Kasbah", site: "Sitio",
+  palm: "Palmeral", gorges: "Gargantas", valley: "Valle", mountain: "Montaña",
+  dunes: "Dunas", viewpoint: "Mirador", market: "Mercado", music: "Música",
+  fossils: "Fósiles", hotel: "Hotel", camp: "Campamento",
+};
+
+const PoiManager = ({ query, imageSlots, textSlots, onSaveImage, onSaveText, onChanged }) => {
+  const imageMap = useMemo(() => {
+    const m = {};
+    (imageSlots || []).forEach((s) => { if (s.slot_id) m[s.slot_id] = s; });
+    return m;
+  }, [imageSlots]);
+  const textMap = useMemo(() => {
+    const m = {};
+    (textSlots || []).forEach((s) => {
+      const id = s.slot_id || s.id;
+      if (id) m[id] = s.values || (s.value ? { es: s.value } : {});
+    });
+    return m;
+  }, [textSlots]);
+
+  const q = (query || "").trim().toLowerCase();
+  const list = useMemo(
+    () => POI_CATALOG.filter((p) =>
+      !q ||
+      p.poiKey.toLowerCase().includes(q) ||
+      Object.values(p.name || {}).some((v) => (v || "").toLowerCase().includes(q))
+    ),
+    [q]
+  );
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h3 className="text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-1.5 flex items-center gap-2">
+          <MapPin className="w-3.5 h-3.5" /> Puntos destacados · {list.length}/{POI_CATALOG.length}
+        </h3>
+        <p className="text-xs text-white/55 leading-relaxed">
+          Gestión centralizada por punto destacado. Al editar el <span className="text-white/75">Título</span>,
+          la <span className="text-white/75">Descripción</span> o la <span className="text-white/75">Imagen principal</span>,
+          el cambio se sincroniza automáticamente en todos los mapas del día, cards y galerías donde aparezca ese mismo punto.
+        </p>
+      </div>
+      {list.length === 0 && (
+        <p className="text-sm text-white/50">Ningún punto coincide con la búsqueda.</p>
+      )}
+      <ul className="space-y-3">
+        {list.map((poi) => {
+          const slots = poiSlots(poi.poiKey);
+          return (
+            <PoiRow
+              key={poi.poiKey}
+              poi={poi}
+              slots={slots}
+              imageOverride={imageMap[slots.image]?.url}
+              titleOverride={textMap[slots.title]}
+              descOverride={textMap[slots.desc]}
+              onSaveImage={onSaveImage}
+              onSaveText={onSaveText}
+              onChanged={onChanged}
+            />
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+const triEqual = (a, b) =>
+  (a.es || "") === (b.es || "") && (a.en || "") === (b.en || "") && (a.fr || "") === (b.fr || "");
+
+const PoiRow = ({ poi, slots, imageOverride, titleOverride, descOverride, onSaveImage, onSaveText, onChanged }) => {
+  const initImg = imageOverride || poi.defaultImage || "";
+  const initTitle = {
+    es: titleOverride?.es ?? poi.defaultTitle.es ?? "",
+    en: titleOverride?.en ?? poi.defaultTitle.en ?? "",
+    fr: titleOverride?.fr ?? poi.defaultTitle.fr ?? "",
+  };
+  const initDesc = {
+    es: descOverride?.es ?? poi.defaultDesc.es ?? "",
+    en: descOverride?.en ?? poi.defaultDesc.en ?? "",
+    fr: descOverride?.fr ?? poi.defaultDesc.fr ?? "",
+  };
+
+  const [imgUrl, setImgUrl] = useState(initImg);
+  const [title, setTitle] = useState(initTitle);
+  const [desc, setDesc] = useState(initDesc);
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState("");
+  const fileRef = useRef(null);
+
+  const imgDirty = imgUrl !== initImg;
+  const titleDirty = !triEqual(title, initTitle);
+  const descDirty = !triEqual(desc, initDesc);
+  const dirty = imgDirty || titleDirty || descDirty;
+  const overridden = imageOverride != null || titleOverride != null || descOverride != null;
+
+  const onUpload = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setUploading(true); setMsg("");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const r = await fetch(`${API}/slots/${encodeURIComponent(slots.image)}/upload`, { method: "POST", body: fd });
+      if (!r.ok) throw new Error(String(r.status));
+      const d = await r.json();
+      if (d.url) setImgUrl(d.url);
+      setMsg("✓ Imagen subida.");
+      onChanged && onChanged();
+    } catch {
+      setMsg("✗ Error al subir la imagen.");
+    }
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const autoTranslate = async () => {
+    setTranslating(true); setMsg("");
+    try {
+      const doOne = async (text) => {
+        if (!text || !text.trim()) return { en: "", fr: "" };
+        const r = await fetch(`${API}/translate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, source: "es", targets: ["en", "fr"] }),
+        });
+        if (!r.ok) throw new Error(String(r.status));
+        const d = await r.json();
+        return d.translations || {};
+      };
+      const [tt, td] = await Promise.all([doOne(title.es), doOne(desc.es)]);
+      setTitle((v) => ({ ...v, en: tt.en || v.en, fr: tt.fr || v.fr }));
+      setDesc((v) => ({ ...v, en: td.en || v.en, fr: td.fr || v.fr }));
+      setMsg("✓ Traducido desde ES (revisa y guarda).");
+    } catch {
+      setMsg("✗ La traducción automática falló.");
+    }
+    setTranslating(false);
+  };
+
+  const save = async () => {
+    setBusy(true); setMsg("");
+    try {
+      const tasks = [];
+      if (imgDirty) tasks.push(onSaveImage(slots.image, imgUrl));
+      if (titleDirty) tasks.push(onSaveText(slots.title, title));
+      if (descDirty) tasks.push(onSaveText(slots.desc, desc));
+      await Promise.all(tasks);
+      setMsg("✓ Guardado y sincronizado en toda la web.");
+    } catch {
+      setMsg("✗ Error al guardar.");
+    }
+    setBusy(false);
+  };
+
+  return (
+    <li data-testid={`admin-poi-${poi.poiKey}`} className="bg-white/[0.04] border border-white/10">
+      {/* Header row */}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        data-testid={`admin-poi-toggle-${poi.poiKey}`}
+        className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/[0.03]"
+      >
+        <div className="w-14 h-14 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
+          {imgUrl
+            ? <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+            : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-4 h-4" /></div>}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-white truncate flex items-center gap-2">
+            {title.es || poi.name.es || poi.poiKey}
+            {overridden && <span className="text-[8px] tracking-[0.18em] uppercase bg-[#3E7C59]/30 text-[#7BB98A] px-1.5 py-0.5">editado</span>}
+          </p>
+          <p className="text-[10px] tracking-[0.14em] uppercase text-white/40 truncate">
+            {KIND_LABEL[poi.kind] || poi.kind} · {poi.poiKey}
+          </p>
+        </div>
+        {dirty && <span className="w-2 h-2 rounded-full bg-[#D4A373] flex-shrink-0" title="Cambios sin guardar" />}
+        {open ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
+      </button>
+
+      {/* Editor body */}
+      {open && (
+        <div className="px-3 pb-3 space-y-3 border-t border-white/10 pt-3">
+          {/* Imagen principal */}
+          <div>
+            <p className="text-[9px] tracking-[0.22em] uppercase text-[#D4A373] mb-1.5">Imagen principal · {slots.image}</p>
+            <div className="flex gap-2">
+              <input
+                value={imgUrl}
+                onChange={(e) => setImgUrl(e.target.value)}
+                placeholder="URL de la imagen (https://…)"
+                data-testid={`admin-poi-image-${poi.poiKey}`}
+                className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373]"
+              />
+              <button
+                type="button"
+                onClick={() => fileRef.current && fileRef.current.click()}
+                disabled={uploading}
+                data-testid={`admin-poi-upload-${poi.poiKey}`}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
+              >
+                <UploadCloud className={`w-3.5 h-3.5 ${uploading ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+                {uploading ? "…" : "Subir"}
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" onChange={onUpload} className="hidden" />
+            </div>
+          </div>
+
+          {/* Título */}
+          <div>
+            <p className="text-[9px] tracking-[0.22em] uppercase text-[#D4A373] mb-1.5">Título</p>
+            <div className="space-y-1.5">
+              {LANGS.map((l) => (
+                <div key={l} className="flex items-center gap-2">
+                  <span className="text-[9px] tracking-[0.2em] uppercase text-white/45 w-6">{l}</span>
+                  <input
+                    value={title[l]}
+                    onChange={(e) => setTitle((v) => ({ ...v, [l]: e.target.value }))}
+                    data-testid={`admin-poi-title-${poi.poiKey}-${l}`}
+                    className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373]"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Descripción */}
+          <div>
+            <p className="text-[9px] tracking-[0.22em] uppercase text-[#D4A373] mb-1.5">Descripción</p>
+            <div className="space-y-1.5">
+              {LANGS.map((l) => (
+                <div key={l} className="flex items-start gap-2">
+                  <span className="text-[9px] tracking-[0.2em] uppercase text-white/45 w-6 pt-1.5">{l}</span>
+                  <textarea
+                    value={desc[l]}
+                    onChange={(e) => setDesc((v) => ({ ...v, [l]: e.target.value }))}
+                    rows={2}
+                    data-testid={`admin-poi-desc-${poi.poiKey}-${l}`}
+                    className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373] resize-y"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={autoTranslate}
+              disabled={translating || !title.es}
+              data-testid={`admin-poi-translate-${poi.poiKey}`}
+              title="Rellena EN y FR a partir del español"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
+            >
+              <Languages className={`w-3.5 h-3.5 ${translating ? "animate-pulse" : ""}`} strokeWidth={1.8} />
+              {translating ? "Traduciendo…" : "Auto-traducir"}
+            </button>
+            <button
+              type="button"
+              onClick={save}
+              disabled={!dirty || busy}
+              data-testid={`admin-poi-save-${poi.poiKey}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors ${
+                dirty && !busy ? "bg-[#C16542] hover:bg-[#A8533A] text-white" : "bg-white/5 text-white/30 cursor-not-allowed"
+              }`}
+            >
+              <Save className="w-3 h-3" strokeWidth={2} /> {busy ? "Guardando…" : "Guardar"}
+            </button>
+          </div>
+          {msg && (
+            <p data-testid={`admin-poi-msg-${poi.poiKey}`} className={`text-[11px] ${msg.startsWith("✗") ? "text-[#E07856]" : "text-[#7BB98A]"}`}>{msg}</p>
+          )}
+        </div>
+      )}
+    </li>
   );
 };
