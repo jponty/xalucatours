@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline, useMap } from "react-leaflet";
 import { MapPin, Navigation, Sparkles, ArrowRight, Home as HomeIcon } from "lucide-react";
-import { LANDMARK_KINDS, computeLandmarkBounds } from "@/lib/dayLandmarks";
+import { LANDMARK_KINDS, computeLandmarkBounds, DAY_LANDMARKS } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LandmarkCarousel, LandmarkCarouselHint } from "@/components/LandmarkCarousel";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
@@ -312,11 +312,11 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
                         <KindLabel kindKey={l.kind} className="block text-[10px] tracking-[0.25em] uppercase" style={{ color }} />
                         <span className="block font-serif-x text-[16px] md:text-[17px] text-[#2C2621] leading-snug mt-1 inline-flex items-center gap-2">
                           <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color }} strokeWidth={1.6} />
-                          <EditableText slot={`${mapBase}.lm.${l.id}.name`} defaults={asTri(l.name)} as="span" multiline={false} />
+                          <EditableText slot={l.slotBase ? `${l.slotBase}.name` : `${mapBase}.lm.${l.id}.name`} defaults={asTri(l.name)} as="span" multiline={false} />
                         </span>
                         {isActive && (
                           <EditableText
-                            slot={`${mapBase}.lm.${l.id}.blurb`}
+                            slot={l.slotBase ? `${l.slotBase}.blurb` : `${mapBase}.lm.${l.id}.blurb`}
                             defaults={asTri(l.blurb)}
                             as="span"
                             className="block mt-2 text-[13px] text-[#5C5248] leading-[1.6]"
@@ -785,10 +785,21 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
 export const DayRouteMap = ({ day, idx, total, accent = "#C16542" }) => {
   const { lang } = useLanguage();
   const t = LABEL_T[lang] || LABEL_T.es;
-  // Tier 1 — rich landmarks derived STRICTLY from the day's own description
-  // text (lib/dayPlaceGazetteer). Only places explicitly named in the
-  // itinerary appear; airports and flight-only transit hubs are excluded.
-  const landmarks = useMemo(() => deriveDayPlaces(day, lang), [day, lang]);
+  // Prefer the CURATED day landmarks (lib/dayLandmarks) when the day has them,
+  // so the map mirrors the admin-managed "Puntos de interés del día" and each
+  // location's gallery syncs globally via `landmark.${id}.*` slots. Otherwise,
+  // derive landmarks STRICTLY from the day's own description text.
+  const curated = day && day.route_id ? DAY_LANDMARKS[day.route_id] : null;
+  const landmarks = useMemo(() => {
+    if (curated && curated.length) {
+      return curated.map((l) => ({
+        ...l,
+        slotBase: `landmark.${l.id}`,
+        gallery: LANDMARK_GALLERIES[l.id] || [],
+      }));
+    }
+    return deriveDayPlaces(day, lang);
+  }, [day, lang, curated]);
 
   if (!day || !day.route_id) return null;
 

@@ -104,7 +104,12 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
   // record across every trip page and itinerary day, so editing its cards,
   // images, titles, descriptions or captions anywhere updates it everywhere.
   const poiKey = landmark ? (landmark.poiKey || landmark.id) : "x";
-  const galleryBase = `poi.${poiKey}.gallery`;
+  // Curated day landmarks carry an explicit `slotBase` (`landmark.${id}`) so
+  // their gallery is managed centrally from /admin and synced everywhere the
+  // day map renders them. Everything else falls back to the poi-key base.
+  const galleryBase = landmark && landmark.slotBase
+    ? `${landmark.slotBase}.gallery`
+    : `poi.${poiKey}.gallery`;
   // Galleries can come either from the inline `landmark.gallery` (used by
   // synthetic city-profile waypoints) or the static LANDMARK_GALLERIES dict
   // keyed by landmark.id (the original curated landmark days).

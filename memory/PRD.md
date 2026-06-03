@@ -1,5 +1,16 @@
 # Xaluca Tours — PRD
 
+## /admin · "Puntos destacados" → sourced from CURATED day-map landmarks (Jun 2026, latest)
+- **User choice (option a)**: rebuild the admin section from the CURATED day-by-day list (`DAY_LANDMARKS`) — exact day-map names incl. Hassi Labied, Mirador del Valle del Ziz, Oasis del picnic, Pistas del Rally Dakar, Canteras de fósiles marinos — AND connect those curated galleries to the Mapa del día so edits render + sync bidirectionally.
+- **New `lib/dayLandmarkCatalog.js`**: `LANDMARK_CATALOG` = dedup of `DAY_LANDMARKS` by landmark `id` (27 records, day order). Each: name, blurb, kind, routeId, `cards` = `LANDMARK_GALLERIES[id]`. Helpers `landmarkInfoSlots(id)` → `{name,blurb}`, `landmarkCardSlots(id,i)` → `{image,title,desc}`.
+- **Global slots**: `landmark.${id}.name`, `landmark.${id}.blurb`, `landmark.${id}.gallery.${i}[.title|.desc]`.
+- **Map connection** (`components/DayRouteMap.jsx`): public component now PREFERS `DAY_LANDMARKS[day.route_id]` when present (mapping each to `slotBase: landmark.${id}` + `gallery: LANDMARK_GALLERIES[id]`); else falls back to `deriveDayPlaces`. Side-list name/blurb use global `landmark.${id}.*` for curated landmarks. `components/LandmarkCarousel.jsx`: `galleryBase` honors `landmark.slotBase` (else `poi.${poiKey}.gallery`).
+- **Admin** (`pages/AdminPage.jsx`): tab "Puntos destacados (27)". `PoiRow` block → `LandmarkInfoEditor` (Nombre + Descripción ES/EN/FR + auto-translate + save) + N `PoiCardEditor` (image URL/upload + Título + Descripción ES/EN/FR + auto-translate + save).
+- **Verified end-to-end**: 27 curated locations listed; desert day map at `/viajes/escapadas/desierto/programa_3n_4d` shows 6 curated landmarks; an override on `landmark.hassi-labied.gallery.0` rendered in the day-map gallery card 01/03; cleaned up. Lint clean. Removed orphaned `lib/poiCatalog.js`.
+- **Testids**: `admin-poi-{id}`, `admin-poi-toggle-{id}`, `admin-poi-info-{id}`, `admin-poi-name/blurb-{id}-{lang}`, `admin-poi-info-translate/save/msg-{id}`, `admin-poi-card-{id}-{i}`, `admin-poi-image/upload/title/desc/translate/save/msg-{id}-{i}`.
+- NOTE: the previous poi-key based notes below are SUPERSEDED for the admin POI tab.
+
+
 ## /admin · "Puntos destacados" — now organized per POI with its 3 gallery cards (Jun 2026)
 - **User refinement**: the section must be organized BY punto destacado; each POI is an independent block that shows, right below, its **3 GALERÍA DEL LUGAR cards**.
 - **`lib/poiCatalog.js`**: each POI now exposes `cards` = the 3 gallery cards (each `{image, title, desc}` defaults), in addition to the representative header fields.
