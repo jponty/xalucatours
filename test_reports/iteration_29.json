@@ -1,0 +1,79 @@
+{
+  "summary": "Frontend-only verification of the 2nd NEW POI batch (Essaouira / North-Morocco / Atlas-Ouarzazate) across the three program pages requested. Drove the UI at 1440x900, enumerated every day-landmark-btn-* testid, opened representative carousels, validated 3-card ES copy + real Pexels photos, and ran an EN-translation spot-check. Result: Essaouira & Northern batches surface correctly on the days whose body text names them; the Ouarzazate triplet (Tizi n'Tichka / Atlas Studios / Kasbah de Taourirt) does NOT surface on the Atlas+Desierto 6n/7d page because Day 01 body text (airport-night-transfer Casablanca→Ouarzazate→direct to Boumalne Dades) never names those landmarks — this matches the deriveDayPlaces() contract called out in agent_to_agent_context_note, so it's by design, not a bug. No console errors. Xaluca logo renders on day maps. Existing places (Marrakech, Rabat, Volubilis, Meknès, Fez, Tánger, Tetuán, Chefchaouen, Rif, Dades, Todra, Erg Chebbi, Merzouga…) all still appear.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "circuit_A_marrakech_essaouira_6n7d": {
+    "url": "/viajes/marrakech_essaouira/programa_6n_7d",
+    "new_essaouira_pois_expected": ["Medina de Essaouira","Murallas de Essaouira","Skala de la Kasbah","Puerto pesquero de Essaouira","Playa de Essaouira","Islas Purpurarias"],
+    "new_essaouira_pois_found": {
+      "Skala de la Kasbah (skala-essaouira)": "Day mes-essaouira-free — CONFIRMED",
+      "Puerto pesquero de Essaouira (puerto-essaouira)": "Day mes-marrakech-essaouira — CONFIRMED",
+      "Islas Purpurarias (islas-purpurarias)": "Day mes67-essaouira-free-2 — CONFIRMED"
+    },
+    "not_surfaced_on_any_day": ["Medina de Essaouira","Murallas de Essaouira","Playa de Essaouira"],
+    "verdict": "Meets the 'at least 2-3 appear' bar (3/6).",
+    "sampled_card_copy_ES": {
+      "Skala de la Kasbah": "Card1: 'El mirador fortificado de Essaouira / Contempla uno de los lugares más emblemáticos…' | Card2: 'Pasear por defensas históricas' | Card3: 'Una imagen icónica del océano' — 3 real Pexels images (pexels-photo-11095599, 14199922, 15289893)",
+      "Puerto pesquero de Essaouira": "Card1: 'El alma marinera de la ciudad' | Card2: 'Pasear entre redes y barcos' | Card3: 'Sabor atlántico de Marruecos' — 3 real Pexels images (6313478, 37087948, 9998392)",
+      "Islas Purpurarias": "Card1: 'El archipiélago frente a Essaouira' | Card2: 'Mirar al Atlántico desde la ciudad' | Card3: 'Historia y naturaleza marina' — 3 real Pexels images (35846256, 4906497, 11482328)"
+    }
+  },
+  "circuit_B_ciudades_imperiales_rif_7n8d": {
+    "url": "/viajes/norte/ciudadesimperiales_rif/programa_7n_8d",
+    "new_north_pois_expected": ["Medina de Tetuán","Plaza Uta el-Hammam","Ras el-Maa","M'diq","Medina de Asilah","Murallas portuguesas de Asilah"],
+    "new_north_pois_found": {
+      "Medina de Tetuán (medina-tetuan)": "Day cirf-tanger-tetuan — CONFIRMED",
+      "Plaza Uta el-Hammam (uta-hammam)": "Day cirf-chefchaouen — CONFIRMED",
+      "Ras el-Maa (ras-el-maa)": "Day cirf-chefchaouen — CONFIRMED"
+    },
+    "not_surfaced_on_any_day": ["M'diq","Medina de Asilah","Murallas portuguesas de Asilah"],
+    "verdict": "Meets the 'a few appear' bar (3/6).",
+    "sampled_card_copy_ES": {
+      "Medina de Tetuán": "Card1: 'La herencia andalusí del norte / Descubre una medina declarada Patrimonio de la Humanidad…' | Card2: 'Recorrer callejuelas auténticas' | Card3: 'Patrimonio con alma mediterránea' — 3 real Pexels images (9433813, 9726731 + 3rd visible in screenshot)"
+    },
+    "regression_check_existing_north_places": "Tánger, Tetuán (city), Chefchaouen, Rif, Cabo Espartel, Grutas de Hércules all still listed."
+  },
+  "circuit_C_atlas_desierto_6n7d": {
+    "url": "/viajes/atlas_desierto/programa_6n_7d",
+    "new_ouarzazate_pois_expected": ["Tizi n'Tichka","Atlas Studios","Kasbah de Taourirt"],
+    "new_ouarzazate_pois_found": "NONE of the three render as a day-landmark-btn",
+    "day_text_inspection": "Day 01 'Llegada a Ouarzazate – Boumalne Dades' body literally describes: 'Salida del aeropuerto … conexión con el vuelo Casablanca – Ouarzazate de las 23:20 h, con llegada a Ouarzazate a las 01:10 h. Recogida en el aeropuerto y traslado por asfalto (110 km) hasta Boumalne Dades…'. This is a night arrival + direct road transfer — the body text never mentions Tizi n'Tichka, Atlas Studios or Kasbah de Taourirt, so deriveDayPlaces() correctly does NOT pin them. (The strings DO appear elsewhere on the page inside a generic 'GALERÍA DEL RECORRIDO' headline, but that's not a day body and is not what the matcher reads.)",
+    "verdict": "By-design behavior per the agent_to_agent_context_note. NOT a bug. If E1 wants these to appear on this circuit, the Day 01 narrative would need to actually mention them (e.g. add a daytime Ouarzazate stop / Tizi n'Tichka pass to the body copy). Other circuit variants that DO have a real Ouarzazate day should pin them — worth re-testing the marrakech_desierto_4n_5d / 7n_8d variants where Marrakech→Ouarzazate via Tizi n'Tichka exists.",
+    "regression_check_existing_places": "All existing pins intact: Valle del Dadès, Tinerhir, Gargantas del Todra, Erfoud, Dakar Tracks, Hassi Labied, Erg Chebbi, Merdani, Khamlia, Minas de M'Fis, Rissani, Valle del Ziz, plus all Hotel Xaluca pins."
+  },
+  "language_switch_check": {
+    "ES_default": "All sampled new cards render with the new Spanish copy.",
+    "EN_switch": "Switching to EN via [data-testid='lang-button-en'] reloads localised content and the carousel re-renders in English (verified by clicking the EN switcher; subsequent re-open of carousels works without errors). Note: the language switch closes already-open carousels so any test needs to re-open the POI after switching."
+  },
+  "regression": {
+    "console_errors": "none captured across all 3 program pages",
+    "xaluca_logo_on_maps": "present on each day map (alt='Xaluca' image elements rendered — Circuit C reports 21 Xaluca logo IMGs on the page; Circuit B's medina-tetuan card screenshot also shows the Xaluca monogram top-right)",
+    "existing_places_intact": "Marrakech, Djemaa el-Fna, Tánger, Tetuán, Chefchaouen, Rif, Cabo Espartel, Grutas de Hércules, Rabat (Oudayas/Torre Hassan/Mausoleo/Chellah), Volubilis, Moulay Idriss, Meknès (Bab al Mansour/Mausoleo Moulay Ismail/Heri es Souani/Habs Qara), Fez (Medina/Chouara), Ifrane, Bosques de Cedros, Dades, Todra, Erfoud, Erg Chebbi, Merdani, Khamlia all still listed on the expected days.",
+    "map_markers": "rendered (day-route-map-* nodes present for every itinerary day on every circuit)"
+  },
+  "screenshot_evidence": "Medina de Tetuán 3-card gallery captured in browser run (3 cards visible with Spanish title + description + Pexels image + Xaluca monogram).",
+  "critical_code_review_comments": [
+    "Atlas+Desierto 6n/7d Day 01 narrative is a night-transfer copy that never names the famous landmarks crossed in daylight on other variants (Tizi n'Tichka pass, Ouarzazate sights). If product wants the new Ouarzazate trio to surface here, E1 should either (a) extend Day 01 body to name them, or (b) add a hard-coded day-level POI list override for this specific dayRouteId — relying purely on text matching means this circuit will never get those pins.",
+    "Of the 6 expected Essaouira POIs only 3 (Skala, Puerto, Islas Purpurarias) appear; 'Medina de Essaouira', 'Murallas de Essaouira', 'Playa de Essaouira' never surface on either Essaouira day. Their aliases ('medina de essaouira', 'murallas de essaouira', 'playa de essaouira') look correct in extraPois.js, so the cause is that the Essaouira day text in this 6n/7d itinerary uses the city's name in a generic way ('Essaouira', 'medina') without the qualified phrases the matcher requires. Consider also matching standalone 'medina' / 'murallas' / 'playa' WHEN the day already pins Essaouira — that would auto-surface these without rewriting copy.",
+    "Same root cause on Circuit B: 'M'diq', 'Medina de Asilah', 'Murallas portuguesas de Asilah' don't appear because the Tánger-Tetuán day narrative names neither town. If product wants them, either (a) add them to the day's body text or (b) extend aliases to include shorter forms like 'asilah' alone (currently 'medina de asilah' is required) and let the gazetteer infer the sub-points when the parent town is mentioned.",
+    "Carousel DOM contains 12 child cards (3 unique × 4 copies) due to loop duplication; only the first 3 are content-bearing. Not a bug, but any future regression test should slice cards 0-2 only when asserting count = 3. (Inherited from previous iteration; flagged here for the next testing agent.)"
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "Decide whether the Atlas+Desierto 6n/7d should pin Tizi n'Tichka / Atlas Studios / Kasbah de Taourirt — if yes, either edit Day 01 body to name them OR add a per-dayRoute override. Currently they do NOT appear (by design of the text matcher).",
+    "If Medina/Murallas/Playa de Essaouira are expected to appear on the Essaouira days, either rewrite the day body to use those exact phrases, OR extend extraPois aliases to match standalone 'medina' / 'murallas' / 'playa' in the context of an Essaouira day.",
+    "Same for M'diq / Medina de Asilah / Murallas portuguesas de Asilah on the Tánger-Tetuán day of Circuit B."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "Circuit A: 3/6 new POIs surfaced (meets 'at least 2-3'). Circuit B: 3/6 new POIs surfaced (meets 'a few'). Circuit C: 0/3 new POIs surfaced — by-design (day text doesn't name them). Card copy + Pexels images: 100% pass on the 4 carousels opened (Skala, Puerto, Islas Purpurarias, Medina de Tetuán)." },
+  "test_credentials": "n/a (public pages)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Per-day POI buttons: data-testid='day-landmark-btn-<dayRouteId>-<poiId>'. Carousels: data-testid='landmark-carousel-<poiId>' with children data-testid='landmark-card-0..2' (but DOM contains 12 looped children — slice first 3 when asserting). Language switcher: data-testid='lang-button-es|en|fr' (note: clicking lang switcher closes already-open carousels). The text matcher in deriveDayPlaces() reads each day's body and matches aliases case+accent-insensitive — if an expected place doesn't surface on a day, FIRST grep the rendered day body for the alias before flagging as a bug; mentions inside generic page sections like 'GALERÍA DEL RECORRIDO' do NOT count.",
+  "rca of the issue": "No bug found. The three negative findings (Circuit A: 3 Essaouira sub-points absent; Circuit B: M'diq + 2 Asilah points absent; Circuit C: all 3 Ouarzazate points absent) all reduce to the same root cause: the day's narrative body simply does not contain the alias phrases the gazetteer is configured to match. This is the documented contract of deriveDayPlaces(). Fix path (if product wants them surfaced) is either to enrich the day narratives with the exact landmark names, or to relax aliases / add per-day overrides — both are content/configuration decisions for E1, not engineering bugs."
+}
