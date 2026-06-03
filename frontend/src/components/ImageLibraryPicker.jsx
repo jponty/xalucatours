@@ -18,8 +18,21 @@ const API = process.env.REACT_APP_BACKEND_URL || "";
      · click → reuse the photo in the current slot
      · per-thumb hover actions: replace · rename + tags · delete
 ============================================================ */
+const TAB_STORAGE_KEY = "xaluca_image_picker_tab";
+const VALID_TABS = ["library", "pexels", "unsplash", "pexels-selection"];
+
 export default function ImageLibraryPicker({ open, onClose, onSelect }) {
-  const [tab, setTab] = useState("library");   // "library" | "pexels"
+  // Remember the last used tab locally so reopening the picker lands on it.
+  const [tab, setTab] = useState(() => {
+    try {
+      const saved = localStorage.getItem(TAB_STORAGE_KEY);
+      if (saved && VALID_TABS.includes(saved)) return saved;
+    } catch { /* ignore */ }
+    return "library";
+  });
+  useEffect(() => {
+    try { localStorage.setItem(TAB_STORAGE_KEY, tab); } catch { /* ignore */ }
+  }, [tab]);
   const [items, setItems] = useState([]);
   const [tags, setTags] = useState([]);
   const [activeTag, setActiveTag] = useState(null);
