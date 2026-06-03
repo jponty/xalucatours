@@ -3,7 +3,7 @@ import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
-  MapPin, Languages,
+  MapPin, Languages, Inbox,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
@@ -315,6 +315,7 @@ export default function AdminPage() {
               { id: "images", label: `Images (${imageSlots.length})`, icon: ImageIcon },
               { id: "texts",  label: `Texts (${textSlots.length})`,  icon: Type },
               { id: "pois",   label: `Puntos destacados (${LANDMARK_CATALOG.length})`, icon: MapPin },
+              { id: "leads",  label: "Leads",         icon: Inbox },
               { id: "pricing", label: "Precios",       icon: Tag },
               { id: "sync",   label: "Sincronizar",   icon: UploadCloud },
             ].map((t) => {
@@ -354,6 +355,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Middle: lists */}
+        {tab !== "leads" && (
         <section className="col-span-12 md:col-span-4 lg:col-span-4 border-r border-white/10 overflow-y-auto max-h-[calc(100vh-56px)]">
           {tab === "urls" && (
             <div data-testid="admin-url-list" className="p-4 space-y-4">
@@ -450,8 +452,10 @@ export default function AdminPage() {
             </div>
           )}
         </section>
+        )}
 
         {/* Right: live preview */}
+        {tab !== "leads" ? (
         <section className="col-span-12 md:col-span-5 lg:col-span-6 bg-[#0F0D0B] flex flex-col">
           <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-white/60">
@@ -507,6 +511,11 @@ export default function AdminPage() {
             </div>
           </div>
         </section>
+        ) : (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
+            <LeadsPanel />
+          </section>
+        )}
       </div>
     </div>
   );
@@ -1520,6 +1529,162 @@ const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSa
       {msg && (
         <p data-testid={`admin-poi-msg-${poiKey}-${index}`} className={`text-[11px] ${msg.startsWith("✗") ? "text-[#E07856]" : "text-[#7BB98A]"}`}>{msg}</p>
       )}
+    </div>
+  );
+};
+
+
+/* ============================================================
+   Leads panel — captured "Descargar programa" submissions.
+   Reads GET /api/program-downloads (admin token), with search,
+   refresh and CSV export for the sales team.
+============================================================ */
+const LeadsPanel = () => {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [q, setQ] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setErr("");
+    try {
+      const token = localStorage.getItem("xaluca_admin_token");
+      const r = await fetch(`${API}/program-downloads`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      setRows(await r.json());
+    } catch (e) {
+      setErr("No se pudieron cargar los leads.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const filtered = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((r) =>
+      [r.first_name, r.last_name, r.email, r.phone, r.program_title, r.route_id]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(term))
+    );
+  }, [rows, q]);
+
+  const fmtDate = (iso) => {
+    try { return new Date(iso).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" }); }
+    catch { return iso || ""; }
+  };
+
+  const exportCsv = () => {
+    const headers = ["Fecha", "Nombre", "Apellidos", "Email", "Teléfono", "Newsletter", "Programa", "Route ID", "Idioma", "Enlace"];
+    const esc = (v) => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
+    const lines = [headers.map(esc).join(",")];
+    filtered.forEach((r) => {
+      lines.push([
+        fmtDate(r.created_at), r.first_name, r.last_name, r.email, r.phone,
+        r.newsletter ? "Sí" : "No", r.program_title, r.route_id, r.language, r.download_url,
+      ].map(esc).join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `xaluca-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div data-testid="admin-leads" className="p-4 md:p-6 text-white">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
+        <div>
+          <h2 className="font-serif-x text-2xl md:text-3xl flex items-center gap-2">
+            <Inbox className="w-5 h-5 text-[#D4A373]" strokeWidth={1.7} /> Leads · Descargar programa
+          </h2>
+          <p className="text-[11px] tracking-[0.18em] uppercase text-white/45 mt-1">
+            {loading ? "Cargando…" : `${filtered.length} de ${rows.length} registros`}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+            <input
+              data-testid="admin-leads-search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Buscar nombre, email, programa…"
+              className="bg-white/5 border border-white/15 pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-[#C16542] w-[260px] max-w-[60vw]"
+            />
+          </div>
+          <button
+            data-testid="admin-leads-refresh"
+            onClick={load}
+            className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase border border-white/15 hover:bg-white/5"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} strokeWidth={1.8} /> Recargar
+          </button>
+          <button
+            data-testid="admin-leads-export"
+            onClick={exportCsv}
+            disabled={filtered.length === 0}
+            className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase bg-[#3E7C59] hover:bg-[#326449] disabled:opacity-40 disabled:cursor-not-allowed text-white"
+          >
+            <Download className="w-3.5 h-3.5" strokeWidth={1.8} /> Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      {err && <p data-testid="admin-leads-error" className="text-sm text-[#E07856] mb-4">{err}</p>}
+
+      <div className="overflow-x-auto border border-white/10">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-white/5 text-[10px] tracking-[0.18em] uppercase text-white/55">
+              <th className="text-left font-normal px-3 py-2.5">Fecha</th>
+              <th className="text-left font-normal px-3 py-2.5">Nombre</th>
+              <th className="text-left font-normal px-3 py-2.5">Email</th>
+              <th className="text-left font-normal px-3 py-2.5">Teléfono</th>
+              <th className="text-left font-normal px-3 py-2.5">Programa</th>
+              <th className="text-center font-normal px-3 py-2.5">News</th>
+              <th className="text-left font-normal px-3 py-2.5">Idioma</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((r) => (
+              <tr key={r.id} data-testid={`admin-lead-row-${r.id}`} className="border-t border-white/8 hover:bg-white/[0.03]">
+                <td className="px-3 py-2.5 whitespace-nowrap text-white/70">{fmtDate(r.created_at)}</td>
+                <td className="px-3 py-2.5 whitespace-nowrap">{r.first_name} {r.last_name}</td>
+                <td className="px-3 py-2.5">
+                  <a href={`mailto:${r.email}`} className="text-[#D4A373] hover:underline">{r.email}</a>
+                </td>
+                <td className="px-3 py-2.5 whitespace-nowrap">
+                  <a href={`tel:${r.phone}`} className="text-white/80 hover:text-[#D4A373]">{r.phone}</a>
+                </td>
+                <td className="px-3 py-2.5 text-white/70 max-w-[220px] truncate" title={`${r.program_title || ""} · ${r.route_id || ""}`}>
+                  {r.program_title || r.route_id || "—"}
+                </td>
+                <td className="px-3 py-2.5 text-center">
+                  {r.newsletter
+                    ? <span className="inline-block w-2 h-2 rounded-full bg-[#7BB98A]" title="Acepta newsletter" />
+                    : <span className="inline-block w-2 h-2 rounded-full bg-white/20" title="No" />}
+                </td>
+                <td className="px-3 py-2.5 uppercase text-white/55 text-[11px]">{r.language}</td>
+              </tr>
+            ))}
+            {!loading && filtered.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-3 py-10 text-center text-white/45">
+                  {rows.length === 0 ? "Aún no hay descargas registradas." : "Sin resultados para la búsqueda."}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -400,8 +400,11 @@ async def create_program_download(payload: ProgramDownloadCreate):
 
 
 @api_router.get("/program-downloads", response_model=List[ProgramDownloadRequest])
-async def list_program_downloads():
-    rows = await db.program_downloads.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+async def list_program_downloads(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    rows = await db.program_downloads.find({}, {"_id": 0}).sort("created_at", -1).to_list(2000)
     for r in rows:
         if isinstance(r.get('created_at'), str):
             try:
