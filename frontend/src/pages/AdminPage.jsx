@@ -8,7 +8,7 @@ import {
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
-import { LANDMARK_CATALOG, landmarkInfoSlots, landmarkCardSlots } from "@/lib/dayLandmarkCatalog";
+import { LANDMARK_CATALOG, infoSlots, cardSlots } from "@/lib/dayLandmarkCatalog";
 
 const API = process.env.REACT_APP_BACKEND_URL + "/api";
 
@@ -1089,6 +1089,7 @@ const PoiManager = ({ query, imageSlots, textSlots, onSaveImage, onSaveText, onC
     () => LANDMARK_CATALOG.filter((p) =>
       !q ||
       p.id.toLowerCase().includes(q) ||
+      (p.group || "").toLowerCase().includes(q) ||
       Object.values(p.name || {}).some((v) => (v || "").toLowerCase().includes(q))
     ),
     [q]
@@ -1101,8 +1102,8 @@ const PoiManager = ({ query, imageSlots, textSlots, onSaveImage, onSaveText, onC
           <MapPin className="w-3.5 h-3.5" /> Puntos destacados · {list.length}/{LANDMARK_CATALOG.length}
         </h3>
         <p className="text-xs text-white/55 leading-relaxed">
-          Cada localización del <span className="text-white/75">Mapa del día</span> es un bloque independiente. Al desplegarla
-          verás su <span className="text-white/75">nombre y descripción</span> y todas las <span className="text-white/75">cards de la Galería del lugar</span> (ES/EN/FR + imagen).
+          Cada punto del <span className="text-white/75">Mapa del día</span> (de todos los itinerarios) es un bloque independiente.
+          Al desplegarlo verás su información y todas las <span className="text-white/75">cards de la Galería del lugar</span> (ES/EN/FR + imagen).
           Al guardar, el cambio se sincroniza automáticamente en el mapa del día y en todas las galerías donde aparezca ese mismo punto.
         </p>
       </div>
@@ -1112,7 +1113,7 @@ const PoiManager = ({ query, imageSlots, textSlots, onSaveImage, onSaveText, onC
       <ul className="space-y-3">
         {list.map((poi) => (
           <PoiRow
-            key={poi.id}
+            key={poi.uid}
             poi={poi}
             imageMap={imageMap}
             textMap={textMap}
@@ -1135,24 +1136,24 @@ const hasVals = (v) => !!(v && (v.es || v.en || v.fr));
 
 const PoiRow = ({ poi, imageMap, textMap, onSaveImage, onSaveText, onChanged }) => {
   const [open, setOpen] = useState(false);
-  const info = landmarkInfoSlots(poi.id);
-  const card0 = landmarkCardSlots(poi.id, 0);
-  const headTitle = textMap[info.name]?.es || poi.name?.es || poi.id;
+  const info = infoSlots(poi.prefix);
+  const card0 = cardSlots(poi.prefix, 0);
+  const headTitle = (poi.hasInfo && textMap[info.name]?.es) || poi.name?.es || poi.id;
   const headImg = imageMap[card0.image]?.url || poi.cards[0]?.image || "";
   const overridden =
-    hasVals(textMap[info.name]) || hasVals(textMap[info.blurb]) ||
+    (poi.hasInfo && (hasVals(textMap[info.name]) || hasVals(textMap[info.blurb]))) ||
     poi.cards.some((_, i) => {
-      const s = landmarkCardSlots(poi.id, i);
+      const s = cardSlots(poi.prefix, i);
       return !!imageMap[s.image]?.url || hasVals(textMap[s.title]) || hasVals(textMap[s.desc]);
     });
 
   return (
-    <li data-testid={`admin-poi-${poi.id}`} className="bg-white/[0.04] border border-white/10">
+    <li data-testid={`admin-poi-${poi.uid}`} className="bg-white/[0.04] border border-white/10">
       {/* Block header */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        data-testid={`admin-poi-toggle-${poi.id}`}
+        data-testid={`admin-poi-toggle-${poi.uid}`}
         className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/[0.03]"
       >
         <div className="w-14 h-14 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
@@ -1166,7 +1167,7 @@ const PoiRow = ({ poi, imageMap, textMap, onSaveImage, onSaveText, onChanged }) 
             {overridden && <span className="text-[8px] tracking-[0.18em] uppercase bg-[#3E7C59]/30 text-[#7BB98A] px-1.5 py-0.5">editado</span>}
           </p>
           <p className="text-[10px] tracking-[0.14em] uppercase text-white/40 truncate">
-            {KIND_LABEL[poi.kind] || poi.kind} · {poi.id} · {poi.cards.length} cards
+            {KIND_LABEL[poi.kind] || poi.kind} · {poi.cards.length} cards · {poi.group}
           </p>
         </div>
         {open ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
@@ -1174,21 +1175,23 @@ const PoiRow = ({ poi, imageMap, textMap, onSaveImage, onSaveText, onChanged }) 
 
       {open && (
         <div className="px-3 pb-3 border-t border-white/10 pt-3 space-y-3">
-          {/* Location name + description */}
-          <LandmarkInfoEditor
-            poi={poi}
-            slots={info}
-            textMap={textMap}
-            onSaveText={onSaveText}
-          />
+          {/* Location name + description (curated landmarks only) */}
+          {poi.hasInfo && (
+            <LandmarkInfoEditor
+              poi={poi}
+              slots={info}
+              textMap={textMap}
+              onSaveText={onSaveText}
+            />
+          )}
           {/* The GALERÍA DEL LUGAR cards */}
           <p className="text-[9px] tracking-[0.24em] uppercase text-white/35 pt-1">Galería del lugar · {poi.cards.length} cards</p>
           {poi.cards.map((card, i) => (
             <PoiCardEditor
               key={i}
-              poiKey={poi.id}
+              poiKey={poi.uid}
               index={i}
-              slots={landmarkCardSlots(poi.id, i)}
+              slots={cardSlots(poi.prefix, i)}
               defaults={card}
               imageMap={imageMap}
               textMap={textMap}
@@ -1203,8 +1206,8 @@ const PoiRow = ({ poi, imageMap, textMap, onSaveImage, onSaveText, onChanged }) 
   );
 };
 
-/* Editable name + description of a day-map location (its own info, shown on
-   the map's side list). Writes landmark.${id}.name / landmark.${id}.blurb. */
+/* Editable name + description of a curated day-map location (its own info,
+   shown on the map's side list). Writes ${prefix}.name / ${prefix}.blurb. */
 const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
   const nameOv = textMap[slots.name];
   const blurbOv = textMap[slots.blurb];
@@ -1255,7 +1258,7 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
   };
 
   return (
-    <div data-testid={`admin-poi-info-${poi.id}`} className="bg-black/20 border border-white/10 p-3 space-y-3">
+    <div data-testid={`admin-poi-info-${poi.uid}`} className="bg-black/20 border border-white/10 p-3 space-y-3">
       <p className="text-[9px] tracking-[0.24em] uppercase text-[#D4A373]">Localización · nombre y descripción</p>
       <div>
         <p className="text-[9px] tracking-[0.22em] uppercase text-white/45 mb-1.5">Nombre</p>
@@ -1266,7 +1269,7 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
               <input
                 value={name[l]}
                 onChange={(e) => setName((v) => ({ ...v, [l]: e.target.value }))}
-                data-testid={`admin-poi-name-${poi.id}-${l}`}
+                data-testid={`admin-poi-name-${poi.uid}-${l}`}
                 className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373]"
               />
             </div>
@@ -1283,7 +1286,7 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
                 value={blurb[l]}
                 onChange={(e) => setBlurb((v) => ({ ...v, [l]: e.target.value }))}
                 rows={2}
-                data-testid={`admin-poi-blurb-${poi.id}-${l}`}
+                data-testid={`admin-poi-blurb-${poi.uid}-${l}`}
                 className="flex-1 bg-white/5 border border-white/10 px-2 py-1.5 text-xs text-white/90 outline-none focus:border-[#D4A373] resize-y"
               />
             </div>
@@ -1295,7 +1298,7 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
           type="button"
           onClick={autoTranslate}
           disabled={translating || !name.es}
-          data-testid={`admin-poi-info-translate-${poi.id}`}
+          data-testid={`admin-poi-info-translate-${poi.uid}`}
           className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 text-white/70 hover:bg-white/5 disabled:opacity-40"
         >
           <Languages className={`w-3.5 h-3.5 ${translating ? "animate-pulse" : ""}`} strokeWidth={1.8} />
@@ -1305,7 +1308,7 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
           type="button"
           onClick={save}
           disabled={!dirty || busy}
-          data-testid={`admin-poi-info-save-${poi.id}`}
+          data-testid={`admin-poi-info-save-${poi.uid}`}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors ${
             dirty && !busy ? "bg-[#C16542] hover:bg-[#A8533A] text-white" : "bg-white/5 text-white/30 cursor-not-allowed"
           }`}
@@ -1314,14 +1317,14 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
         </button>
       </div>
       {msg && (
-        <p data-testid={`admin-poi-info-msg-${poi.id}`} className={`text-[11px] ${msg.startsWith("✗") ? "text-[#E07856]" : "text-[#7BB98A]"}`}>{msg}</p>
+        <p data-testid={`admin-poi-info-msg-${poi.uid}`} className={`text-[11px] ${msg.startsWith("✗") ? "text-[#E07856]" : "text-[#7BB98A]"}`}>{msg}</p>
       )}
     </div>
   );
 };
 
 /* One editable card of a location's "Galería del lugar".
-   Writes the global slots given in `slots` (landmark.${id}.gallery.${i}…). */
+   Writes the global slots given in `slots` (${prefix}.gallery.${i}…). */
 const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSaveImage, onSaveText, onChanged }) => {
   const imageOverride = imageMap[slots.image]?.url;
   const titleOverride = textMap[slots.title];

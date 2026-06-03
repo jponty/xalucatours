@@ -1,6 +1,15 @@
 # Xaluca Tours — PRD
 
-## /admin · "Puntos destacados" → sourced from CURATED day-map landmarks (Jun 2026, latest)
+## /admin · "Puntos destacados" → UNIFIED, covers ALL itineraries (Jun 2026, latest)
+- **User ask**: extend curated management to every itinerary so ALL day-map points are editable from /admin (not only the desert route).
+- **`lib/dayLandmarkCatalog.js`** now builds a UNION (74+ records), each carrying its own slot `prefix`, `hasInfo`, `group`, `uid`:
+  1. CURATED desert landmarks (27) → `prefix: landmark.${id}`, `hasInfo: true` (name + blurb + gallery), group "Ruta del desierto · curado".
+  2. GAZETTEER places auto-detected on every other itinerary (47) + Tier-2/3 CITY_PROFILES waypoints → `prefix: poi.${poiKey}`, `hasInfo: false` (gallery only), group "Itinerarios · automático".
+- Helpers generalized: `infoSlots(prefix)`, `cardSlots(prefix, i)`.
+- **`pages/AdminPage.jsx`**: `PoiRow` uses `poi.prefix` for all slots and `poi.uid` for testids/keys (avoids collisions between curated `lm-merdani` and gazetteer `poi-merdani`); shows `LandmarkInfoEditor` only when `poi.hasInfo`; subtitle shows `kind · N cards · group`; search also matches group.
+- Both types write the exact GLOBAL slots the day maps render → bidirectional sync. Curated + map render verified last turn; gazetteer `poi.${poiKey}.gallery` sync proven earlier (Marrakech test). Union verified: 74 records (27 curated + 47 gazetteer), Chefchaouen (gazetteer) expands to 3 gallery cards with no info editor. Lint clean.
+
+
 - **User choice (option a)**: rebuild the admin section from the CURATED day-by-day list (`DAY_LANDMARKS`) — exact day-map names incl. Hassi Labied, Mirador del Valle del Ziz, Oasis del picnic, Pistas del Rally Dakar, Canteras de fósiles marinos — AND connect those curated galleries to the Mapa del día so edits render + sync bidirectionally.
 - **New `lib/dayLandmarkCatalog.js`**: `LANDMARK_CATALOG` = dedup of `DAY_LANDMARKS` by landmark `id` (27 records, day order). Each: name, blurb, kind, routeId, `cards` = `LANDMARK_GALLERIES[id]`. Helpers `landmarkInfoSlots(id)` → `{name,blurb}`, `landmarkCardSlots(id,i)` → `{image,title,desc}`.
 - **Global slots**: `landmark.${id}.name`, `landmark.${id}.blurb`, `landmark.${id}.gallery.${i}[.title|.desc]`.
