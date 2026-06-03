@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Moon, Compass, Gauge } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
@@ -119,6 +120,8 @@ const TripCard = ({ trip, lang }) => {
             data-testid={`home-all-trips-monogram-${trip.routeId}`}
             className="pointer-events-none select-none absolute right-0 bottom-0 h-[78%] w-auto object-contain opacity-55 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
           />
+          {/* Xaluca logo — anchored to the bottom-left edge of the image */}
+          <XalucaLogoBadge className="bottom-3 left-3 w-11 h-11" testid={`home-all-trips-logo-${trip.routeId}`} />
           {/* Region badge */}
           <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#2C2621]">
             {pick(REGION_LABEL[trip.region] || { es: trip.region }, lang)}
