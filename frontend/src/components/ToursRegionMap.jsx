@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import { ArrowRight, MapPin, Sparkles, Route, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ROUTES, pathFor } from "@/lib/routes";
@@ -296,6 +297,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
                 );
               })}
             </MapContainer>
+            <MapLogoBadge />
             <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-[#2C2621]/5 rounded-2xl" />
           </div>
 

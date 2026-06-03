@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import { Map as MapIcon, MapPin, ArrowRight, ChevronDown, Sparkles, BookOpen, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 
@@ -329,6 +330,7 @@ export const TripRouteMap = ({ route, days = [] }) => {
                   );
                 })}
               </MapContainer>
+              <MapLogoBadge />
             </div>
             {/* Legend */}
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">

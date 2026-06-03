@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   Home, ChevronRight, Compass, ArrowRight, ArrowUpRight, MapPin,
   Heart, Users, Users2, User, Briefcase, Sparkles, Star,
@@ -512,7 +513,7 @@ const InteractiveMap = ({ lang }) => (
           <p className="text-base text-[#FDFBF7]/75 leading-relaxed">{pick(COPY.map.body, lang)}</p>
         </div>
       </div>
-      <div className="overflow-hidden border border-[#FDFBF7]/15 h-[420px] md:h-[520px]">
+      <div className="relative overflow-hidden border border-[#FDFBF7]/15 h-[420px] md:h-[520px]">
         <MapContainer
           center={[31.0, -7.5]}
           zoom={5}
@@ -534,6 +535,7 @@ const InteractiveMap = ({ lang }) => (
             </CircleMarker>
           ))}
         </MapContainer>
+        <MapLogoBadge />
       </div>
     </div>
   </section>

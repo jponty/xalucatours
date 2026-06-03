@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   Home, ChevronRight, Compass, MapPin, ArrowRight, ArrowUpRight,
   Crown, Tent, Mountain, Waves, Building2, Sparkles, Star, X,
@@ -972,6 +973,7 @@ const DestinationsMap = ({ lang }) => {
                   );
                 })}
               </MapContainer>
+              <MapLogoBadge />
             </div>
 
             {/* Legend */}

@@ -1,5 +1,6 @@
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import L from "leaflet";
 import { Compass } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -67,6 +68,7 @@ export const MapSection = () => {
               </Marker>
             ))}
           </MapContainer>
+          <MapLogoBadge />
           <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-[#2C2621]/5" />
         </div>
 

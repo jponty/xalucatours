@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   Map as MapIcon, Building2, Castle, Sun, Mountain, Waves, Landmark, Camera,
   Sparkles, Footprints, Compass, Tent, Flag, Trophy, Check, RotateCcw,
@@ -354,6 +355,7 @@ export default function JuegoPage() {
                 );
               })}
             </MapContainer>
+            <MapLogoBadge />
           </div>
         </div>
       </section>

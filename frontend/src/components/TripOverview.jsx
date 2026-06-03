@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import { Compass, Thermometer, CloudSun, MapPin, Activity, Images } from "lucide-react";
 import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -282,6 +283,7 @@ export const TripOverview = ({ days }) => {
                   </React.Fragment>
                 ))}
               </MapContainer>
+              <MapLogoBadge />
             </div>
           </div>
 

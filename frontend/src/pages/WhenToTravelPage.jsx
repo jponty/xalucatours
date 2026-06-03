@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Tooltip } from "react-leaflet";
+import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   ChevronRight, ChevronLeft, Home, Sunrise, ArrowRight, Compass, MapPin,
   Sun, Snowflake, Leaf, Flower, Calendar, Sparkles, Camera,

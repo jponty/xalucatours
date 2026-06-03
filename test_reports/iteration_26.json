@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only verification of MapLogoBadge (Xaluca brand logo overlay) on every Leaflet map across the site. Tested 5 routes via Playwright at 1440x900: home /, /viajes, /marruecos, /cuando-viajar, and program detail /viajes/escapadas/desierto/programa_3n_4d. Verified data-testid='map-logo-badge' presence, visibility, top-right position (~13px offset), pointer-events:none, z-index:1000, and that it does not conflict with the Leaflet top-LEFT zoom controls. 4 of 5 pages pass; /cuando-viajar is missing the badge (component imported but never rendered).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "WhenToTravelPage (/cuando-viajar)",
+        "issue": "MapLogoBadge is imported (line 4 of src/pages/WhenToTravelPage.jsx) but never rendered. The seasonal Leaflet map (line 769-817, wrapper has 'relative' class) shows NO Xaluca badge in the top-right corner. All other 4 tested pages render the badge correctly.",
+        "selector": "[data-testid='map-logo-badge'] (count=0 on /cuando-viajar; .leaflet-container count=1)",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add <MapLogoBadge /> as a sibling after </MapContainer> (line 817) inside the relative wrapper in src/pages/WhenToTravelPage.jsx so the climate/seasonal map shows the Xaluca logo top-right like every other map.",
+    "(Optional, pre-existing) Two React 'duplicate key' console warnings on home page: 'north-exp-[object Object]'. Object is being stringified into a key. Investigate the .map() that produces these keys.",
+    "Optional: verify mobile viewport (390px) renders the 40px badge without overlapping legends/cards."
+  ],
+  "critical_code_review_comments": [
+    "WhenToTravelPage.jsx imports MapLogoBadge but does not use it — dead import + missed feature. Add <MapLogoBadge /> after </MapContainer>.",
+    "MapLogoBadge.jsx is clean: pointer-events:none, z-[1000], absolute top-3 right-3, drop-shadow, aria-hidden. Re-used consistently across DayRouteMap (3 maps), MapSection, TripOverview, TripRouteMap, ToursRegionMap, JuegoPage, QueVerEnMarruecosPage, MoroccoLandingPage.",
+    "Two stale React 'duplicate key' warnings ('north-exp-[object Object]') indicate an object is being coerced into a key string somewhere on the homepage."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (not requested)", "frontend": "80% (4/5 pages)"},
+  "test_credentials": "n/a (public pages)",
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Verified positions/visibility via Playwright bounding boxes. On /viajes the badge sits at (right_offset=13px, top_offset=13px) of [data-testid='viajes-region-map-canvas'], computed style pointer-events:none and z-index:1000. After main agent adds <MapLogoBadge/> in WhenToTravelPage.jsx, re-run the same Playwright script counting [data-testid='map-logo-badge'] on /cuando-viajar — expected count >= 1 and visible.",
+  "rca of the issue": "On /cuando-viajar the MapLogoBadge default import was added (line 4) but the JSX <MapLogoBadge /> was never placed next to <MapContainer> in the seasonal map (around line 817 in src/pages/WhenToTravelPage.jsx). The parent wrapper already has 'relative' positioning at line 769, so adding the component as a sibling after </MapContainer> will fix it instantly. Reproduction: open /cuando-viajar, scroll to 'Mapa estacional / Cada color, una estación' section — top-right is empty; screenshot saved as .screenshots/cuando_map.png."
+}
