@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Menu, ArrowRight, CalendarClock } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
+import TopInfoBar from "./TopInfoBar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import { pathFor } from "@/lib/routes";
@@ -66,6 +67,7 @@ export const Header = () => {
             : "border-b border-[#2C2621]/8 shadow-[0_1px_0_rgba(44,38,33,0.05)]"
         }`}
       >
+        <TopInfoBar />
         <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 md:h-20 flex items-center justify-between">
           <button
             data-testid="header-menu-button"

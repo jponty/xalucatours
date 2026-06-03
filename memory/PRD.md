@@ -1,5 +1,14 @@
 # Xaluca Tours — PRD
 
+## Barra informativa superior (top contact bar) — Jun 2026 (latest)
+- **User ask**: añadir una barra por encima del menú principal con "Llámanos | +34 937 268 366" y "Horario de oficina | Lunes a viernes de 10:00 a 20:00 h", visible en todas las páginas y diferenciada del header.
+- **Implementación**: `components/TopInfoBar.jsx` ya existía pero NUNCA estaba montado; se conectó dentro del `Header` fijo (primer hijo, encima de la fila del menú) → visible globalmente y se oculta/aparece junto al header en scroll.
+- Franja oscura `#2C2621` con acentos `#D4A373` para diferenciarse del menú crema. Tel como `tel:` link. Responsive: en móvil solo el número; etiqueta "Llámanos" desde `sm`; bloque de horario desde `md`.
+- Bug corregido: usaba breakpoint inexistente `xs:` (la etiqueta quedaba oculta siempre) → cambiado a `sm:`.
+- CMS-editable: slots globales `topbar.call_label`, `topbar.phone`, `topbar.hours_label`, `topbar.hours` (trilingües).
+- Verificado en preview real (`morocco-trips-2.preview.emergentagent.com`) desktop. NOTA: la URL del handoff (`trip-curator-8`) era la de PRODUCCIÓN/obsoleta; el preview real sale de `REACT_APP_BACKEND_URL`.
+
+
 ## /admin · "Puntos destacados" → UNIFIED, covers ALL itineraries (Jun 2026, latest)
 - **User ask**: extend curated management to every itinerary so ALL day-map points are editable from /admin (not only the desert route).
 - **`lib/dayLandmarkCatalog.js`** now builds a UNION (74+ records), each carrying its own slot `prefix`, `hasInfo`, `group`, `uid`:

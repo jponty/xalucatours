@@ -26,10 +26,10 @@ export const TopInfoBar = () => {
           className="inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
         >
           <Phone className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.8} />
-          <span className="hidden xs:inline text-[#D4A373] uppercase tracking-[0.2em]">
+          <span className="hidden sm:inline text-[#D4A373] uppercase tracking-[0.2em]">
             <EditableText slot="topbar.call_label" defaults={CALL_LABEL} multiline={false} />
           </span>
-          <span className="hidden xs:inline text-[#FDFBF7]/30">|</span>
+          <span className="hidden sm:inline text-[#FDFBF7]/30">|</span>
           <EditableText slot="topbar.phone" defaults={PHONE} multiline={false} />
         </a>
 
