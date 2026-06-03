@@ -54,11 +54,18 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
       setForm(initialForm);
       setDone(false);
       setSending(false);
+      // Lock scroll WITHOUT layout shift: compensate the removed
+      // scrollbar width so the centered modal doesn't jump sideways.
+      const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+      const prevOverflow = document.body.style.overflow;
+      const prevPad = document.body.style.paddingRight;
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+      if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
+      return () => {
+        document.body.style.overflow = prevOverflow;
+        document.body.style.paddingRight = prevPad;
+      };
     }
-    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   useEffect(() => {
@@ -123,7 +130,6 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
         data-testid="download-program-backdrop"
       />
       <div className="relative w-full max-w-lg bg-[#FDFBF7] text-[#2C2621] shadow-2xl border border-[#2C2621]/10 max-h-[92vh] overflow-y-auto">
-        <span className="film-grain" />
         <button
           onClick={onClose}
           data-testid="download-program-close"
