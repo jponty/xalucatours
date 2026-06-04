@@ -11,6 +11,7 @@ import { CONTACT } from "@/lib/data";
 import { REGIONS, EXPERIENCES, TRIPS } from "@/lib/tripsData";
 import { IMG } from "@/lib/imageBank";
 import ContactForm from "@/components/ContactForm";
+import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ToursVideoSection from "@/components/ToursVideoSection";
@@ -1006,6 +1007,7 @@ export default function ToursLandingPage() {
       <RegionsSection t={t.regions} lang={lang} />
       <ExperiencesSection t={t.experiences} lang={lang} />
       <TripExplorer t={t.explorer} lang={lang} />
+      <HomeAllTripsCatalog initialLimit={12} />
       <ProximasSalidas t={t.proximas} lang={lang} />
       <Asesoramiento t={t.asesoramiento} lang={lang} />
       <CatalogoCTA lang={lang} />

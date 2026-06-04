@@ -10,7 +10,7 @@
 ============================================================ */
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Moon, Compass, Gauge, Search, X } from "lucide-react";
+import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
@@ -52,6 +52,8 @@ const COPY = {
     fr: "Saisissez une destination, ville ou expérience · Marrakech, Fès, Merzouga, Désert, Atlas, Chefchaouen…",
   },
   clear: { es: "Borrar", en: "Clear", fr: "Effacer" },
+  viewAll: { es: "Ver todos los viajes", en: "View all trips", fr: "Voir tous les voyages" },
+  viewLess: { es: "Ver menos", en: "Show less", fr: "Voir moins" },
 };
 
 const PACE_LABEL = {
@@ -221,12 +223,13 @@ const TripCard = ({ trip, lang }) => {
 };
 
 /* ---------- Section ---------- */
-const HomeAllTripsCatalog = () => {
+const HomeAllTripsCatalog = ({ initialLimit = null }) => {
   const { lang } = useLanguage();
   const [query, setQuery]       = useState("");
   const [region, setRegion]     = useState("all");
   const [duration, setDuration] = useState("any");
   const [pace, setPace]         = useState("any");
+  const [showAll, setShowAll]   = useState(false);
 
   const filtered = useMemo(() => {
     return ALL_TRIPS.filter((t) => {
@@ -237,6 +240,15 @@ const HomeAllTripsCatalog = () => {
       return true;
     });
   }, [region, duration, pace, query]);
+
+  // When a search or filter is active, always show every match (even beyond the
+  // initial selection). Otherwise, on pages that pass `initialLimit`, show only
+  // the first N until the user expands with "Ver todos los viajes".
+  const hasActiveFilter =
+    query.trim() !== "" || region !== "all" || duration !== "any" || pace !== "any";
+  const isCollapsed =
+    initialLimit != null && !showAll && !hasActiveFilter && filtered.length > initialLimit;
+  const visible = isCollapsed ? filtered.slice(0, initialLimit) : filtered;
 
   // Inject the i18n-resolved label into each option for ChipGroup
   const r = TRIP_REGIONS.map((o)   => ({ ...o, _renderedLabel: pick(o.label, lang) }));
@@ -324,9 +336,28 @@ const HomeAllTripsCatalog = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-7">
-              {filtered.map((trip) => (
+              {visible.map((trip) => (
                 <TripCard key={trip.routeId} trip={trip} lang={lang} />
               ))}
+            </div>
+          )}
+
+          {/* Expand / collapse control (only when an initial limit applies) */}
+          {initialLimit != null && !hasActiveFilter && filtered.length > initialLimit && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setShowAll((v) => !v)}
+                data-testid="all-trips-view-all"
+                className="inline-flex items-center gap-3 border border-[#2C2621]/30 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              >
+                {showAll
+                  ? pick(COPY.viewLess, lang)
+                  : `${pick(COPY.viewAll, lang)} · ${filtered.length}`}
+                {showAll
+                  ? <ChevronUp className="w-4 h-4" strokeWidth={1.7} />
+                  : <ChevronDown className="w-4 h-4" strokeWidth={1.7} />}
+              </button>
             </div>
           )}
         </div>
