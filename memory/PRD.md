@@ -1,5 +1,23 @@
 # Xaluca Tours — PRD
 
+## Página /galeria — galería central de puntos destacados — Jun 2026 (latest)
+- **User ask**: nueva página `/galeria` con TODOS los puntos destacados, agrupados por zonas y en orden alfabético dentro de cada zona; cada POI clicable abre el mismo desplegable de 3 cards (Galería del lugar) que el Mapa del día, con el mismo título/descripción/imagen y las mismas funciones de edición (textos, imágenes, biblioteca), totalmente sincronizado con páginas de viaje + Mapa del día.
+- **Implementación**:
+  - `lib/poiZones.js` (NUEVO): `ZONES` (7+otros: norte, costa, imperiales, marrakech, ouarzazate, sahara, antiatlas, otros) trilingüe + `ZONE_OF` (map id/poiKey→zona, cubre los ~132 ids) + `zoneForPoi(id,lat,lng)` con fallback por coordenadas.
+  - `lib/dayLandmarkCatalog.js`: cada record ahora expone también `lat`, `lng`, `gallery` (formato crudo `{src,title,description}[]`) y `zone`. Aditivo (no rompe admin).
+  - `pages/GaleriaPage.jsx` (NUEVO): hero editable (slots `galeria.hero.*`), nav sticky por zonas, secciones por zona con grid de botones POI (alfabético) que despliegan `<LandmarkCarousel>`. `toCarouselLandmark(rec)` pasa los MISMOS identificadores que el Mapa del día (`slotBase=landmark.{id}` curados / `poiKey` derivados) → el carousel resuelve los MISMOS slots globales (`poi.{key}.gallery.{i}` / `landmark.{id}.gallery.{i}`) y el mismo CARD_COPY → sincronización bidireccional garantizada por construcción.
+  - Rutas: `routes.js` (`galeria`→ es:/galeria, en:/gallery, fr:/galerie), `routeComponents.js` (registro), `menu.js` (entrada en "Guías de viaje", icono `images`), `SideMenu.jsx` (icono Images).
+- **Verificado** (screenshots): 132 POIs, 7 zonas con nav, click abre carousel con 3 cards; en modo IMÁGENES las cards muestran slots `POI.AKCHOUR.GALLERY.0/1/2` con botón EDITAR + Biblioteca (idénticos a las páginas de viaje). Lint limpio.
+
+## /admin — eliminar leads (individual + masivo) y limpieza de pestañas — Jun 2026
+- Eliminadas de `/admin` las pestañas Sincronizar, Imágenes, Textos, Puntos destacados y Precios (solo quedan URLs y Leads).
+- **Eliminar lead individual**: endpoints `DELETE /api/contact-requests|trip-planner|program-downloads/{id}` (token admin; 401/200/404 verificados). UI: botón papelera por fila + diálogo de confirmación.
+- **Bulk delete**: checkbox por fila + "seleccionar todos" (indeterminado), barra de acciones masivas, diálogo de confirmación; borra vía `Promise.allSettled` sobre los DELETE existentes. Testids: `admin-leads-select-all`, `admin-lead-select-{id}`, `admin-leads-bulk-bar/delete/dialog/confirm/cancel`, `admin-lead-delete-{id}`/`-dialog`/`-confirm`/`-cancel`.
+
+## VideoSection — póster editable por el CMS — Jun 2026
+- El póster del bloque de vídeo (antes atributo `poster=` invisible al CMS) ahora se renderiza como `<EditableImage slot="video.{testid}.poster">` (capa base); el `<video>` se atenúa en modo edición (`opacity-0 pointer-events-none`). Aplica a todos los bloques de vídeo (Sur/Norte/Escapadas/Marruecos/Fin de Año). Verificado: overlay EDITAR + slot `VIDEO.SUR-VIDEO-KASBAHS.POSTER`.
+
+
 ## Botón "Descargar programa" (lead-gated) en páginas de programa — Jun 2026 (latest)
 - **User ask**: en cada página específica de viaje, botón «Descargar programa» que NO descarga directo: abre un modal con formulario obligatorio (Nombre, Apellidos, Email, Teléfono) + checkbox newsletter (opcional) + checkbox Política de Privacidad (obligatorio). El botón de envío solo se habilita con todos los campos válidos y la privacidad aceptada. Tras enviar, redirige automáticamente al enlace de descarga del programa. Enlace general por ahora: https://xalucatours.com/. Preparado para enlace por página configurable en el futuro.
 - **Backend** (`server.py`): modelos `ProgramDownloadCreate/Request` (validator que exige `privacy_accepted=true` → 422 si no), config `PROGRAM_DOWNLOAD_LINKS` (dict por route_id) + `DEFAULT_PROGRAM_DOWNLOAD_URL` = https://xalucatours.com/ y `resolve_program_download_url(route_id)`. Endpoints `POST /api/program-downloads` (guarda en `db.program_downloads`, devuelve `{...,download_url}`) y `GET /api/program-downloads`. Para asignar enlace propio a una página: añadir entrada a `PROGRAM_DOWNLOAD_LINKS` keyed por routeId.

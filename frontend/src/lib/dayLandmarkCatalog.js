@@ -25,6 +25,7 @@ import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { GAZETTEER } from "@/lib/dayPlaceGazetteer";
 import { buildPlaceGallery, ALIAS_PROFILE } from "@/lib/placeGalleries";
 import { CITY_PROFILES } from "@/lib/cityProfiles";
+import { zoneForPoi } from "@/lib/poiZones";
 
 const EMPTY = { es: "", en: "", fr: "" };
 
@@ -64,6 +65,10 @@ const buildCurated = () => {
         prefix: `landmark.${l.id}`,
         hasInfo: true,
         group: "Ruta del desierto · curado",
+        lat: l.lat,
+        lng: l.lng,
+        zone: zoneForPoi(l.id, l.lat, l.lng),
+        gallery: LANDMARK_GALLERIES[l.id] || [],
         cards: toCards(LANDMARK_GALLERIES[l.id], l.name, l.blurb),
       });
     });
@@ -82,6 +87,7 @@ const buildGazetteer = () => {
     const profile = entry.profileKey ? CITY_PROFILES[entry.profileKey] : null;
     const name = entry.name || (profile && profile.name) || EMPTY;
     const blurb = entry.blurb || (profile && profile.blurb) || EMPTY;
+    const gallery = buildPlaceGallery(entry);
     byKey.set(poiKey, {
       uid: `poi-${poiKey}`,
       id: poiKey,
@@ -91,7 +97,11 @@ const buildGazetteer = () => {
       prefix: `poi.${poiKey}`,
       hasInfo: false,
       group: "Itinerarios · automático",
-      cards: toCards(buildPlaceGallery(entry), name, blurb),
+      lat: entry.lat,
+      lng: entry.lng,
+      zone: zoneForPoi(poiKey, entry.lat, entry.lng),
+      gallery,
+      cards: toCards(gallery, name, blurb),
     });
   });
   // Tier-2/3 waypoint profiles not auto-detected in any day text but still
@@ -107,6 +117,10 @@ const buildGazetteer = () => {
       prefix: `poi.${key}`,
       hasInfo: false,
       group: "Itinerarios · automático",
+      lat: profile.lat,
+      lng: profile.lng,
+      zone: zoneForPoi(key, profile.lat, profile.lng),
+      gallery: profile.gallery || [],
       cards: toCards(profile.gallery, profile.name, profile.blurb),
     });
   });

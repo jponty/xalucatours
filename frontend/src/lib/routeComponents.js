@@ -110,6 +110,7 @@ import ContactPage from "@/pages/ContactPage";
 import CitaPreviaPage from "@/pages/CitaPreviaPage";
 import CatalogoPage from "@/pages/CatalogoPage";
 import JuegoPage from "@/pages/JuegoPage";
+import GaleriaPage from "@/pages/GaleriaPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -230,4 +231,5 @@ export const ROUTE_COMPONENTS = {
   contact:                       ContactPage,
   appointment:                   CitaPreviaPage,
   juego:                         JuegoPage,
+  galeria:                       GaleriaPage,
 };
