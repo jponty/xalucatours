@@ -134,7 +134,7 @@ const RouteImageGallery = ({ days, t }) => {
             {c.caption && (
               <figcaption className="absolute inset-x-0 bottom-0 z-[2] p-3 md:p-4 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent">
                 <EditableText
-                  slot={`${c.slot}.title`}
+                  slot={c.nameSlot}
                   defaults={c.caption}
                   as="h6"
                   multiline={false}

@@ -127,12 +127,20 @@ export const buildRouteGalleryCells = (days, lang = "es") => {
       if (seen.has(placeId)) return; // already shown earlier in the route
       seen.add(placeId);
       const gallery = Array.isArray(lm.gallery) ? lm.gallery : [];
+      // Single GLOBAL "place name" slot shared by every image of this place,
+      // so the overlay always shows the highlight's name (Marrakech, Aït Ben
+      // Haddou…) — never a per-card title or filename — and stays in sync
+      // across pages. Curated landmarks reuse the SAME `landmark.${id}.name`
+      // slot the Day-Map edits; gazetteer places use `poi.${poiKey}.name`.
+      const nameSlot = lm.slotBase ? `${lm.slotBase}.name` : `poi.${poiKey}.name`;
       gallery.forEach((card, i) => {
         cells.push({
           // Same GLOBAL slot the LandmarkCarousel uses → shared everywhere.
           slot: `${galleryBase}.${i}`,
           src: card.src,
-          caption: card.title || lm.name || null,
+          // The visible overlay text = the highlight/place name (one source).
+          caption: lm.name || null,
+          nameSlot,
         });
       });
     });
