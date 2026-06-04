@@ -97,12 +97,42 @@ const FitBoundsCtl = ({ bounds }) => {
    place carousel, so editing an image there is reflected here
    automatically (no new images, no duplicate records).
 ============================================================ */
+/* Responsive column count for the masonry gallery (matches Tailwind md/lg).
+   Used to distribute cells LEFT→RIGHT, row by row, so the visual reading order
+   follows the chronological itinerary instead of CSS column-major fill. */
+const useColumnCount = () => {
+  const get = () => {
+    if (typeof window === "undefined") return 4;
+    const w = window.innerWidth;
+    if (w >= 1024) return 4; // lg
+    if (w >= 768) return 3;  // md
+    return 2;                // base
+  };
+  const [cols, setCols] = useState(get);
+  useEffect(() => {
+    const onResize = () => setCols(get());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return cols;
+};
+
 const RouteImageGallery = ({ days, t }) => {
   const { lang } = useLanguage();
+  const colCount = useColumnCount();
   const cells = useMemo(
     () => buildRouteGalleryCells(days, lang),
     [days, lang],
   );
+
+  // Round-robin distribution: cell i → column (i % colCount). Reading the grid
+  // left→right, top→bottom therefore yields 0,1,2,3,4,… = itinerary order,
+  // while each column keeps its own variable-height stack (masonry look).
+  const columns = useMemo(() => {
+    const cols = Array.from({ length: colCount }, () => []);
+    cells.forEach((c, i) => cols[i % colCount].push({ c, i }));
+    return cols;
+  }, [cells, colCount]);
 
   if (cells.length === 0) return null;
 
@@ -111,38 +141,41 @@ const RouteImageGallery = ({ days, t }) => {
       <span className="overline inline-flex items-center gap-2 text-[#C16542]">
         <Images className="w-3 h-3" strokeWidth={1.8} />{t.gallery_label}
       </span>
-      {/* Pinterest-style masonry — variable image heights, itinerary route
-          order preserved (DOM order = route order). Mobile 2 cols · tablet 3
-          · desktop 4. Images AND titles reference the SAME global Galería del
-          lugar slots (poi.{poiKey}.gallery.{i} / .title) — no duplicate
-          records; edits in the place gallery reflect here automatically. */}
-      <div className="mt-6 columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4">
-        {cells.map((c, i) => (
-          <figure
-            key={`${c.slot}-${i}`}
-            data-testid={`route-gallery-tile-${i}`}
-            data-route-gallery-slot={c.slot}
-            className="relative mb-3 md:mb-4 break-inside-avoid overflow-hidden bg-[#1A1513] group"
-          >
-            <EditableImage
-              slot={c.slot}
-              fallback={c.src}
-              alt={pick(c.caption, lang)}
-              imgProps={{ loading: "lazy" }}
-              className="block w-full h-auto transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-            />
-            {c.caption && (
-              <figcaption className="absolute inset-x-0 bottom-0 z-[2] p-3 md:p-4 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent">
-                <EditableText
-                  slot={c.nameSlot}
-                  defaults={c.caption}
-                  as="h6"
-                  multiline={false}
-                  className="font-serif-x text-[#FDFBF7] text-[13px] md:text-[15px] leading-snug [text-shadow:_0_1px_6px_rgba(0,0,0,0.55)]"
+      {/* Pinterest-style masonry with CHRONOLOGICAL left→right order. Cells are
+          distributed round-robin across responsive columns (2 / 3 / 4) so the
+          reading order follows the itinerary. Images AND names reference the
+          SAME global Galería del lugar slots — edits reflect here automatically. */}
+      <div className="mt-6 flex gap-3 md:gap-4 items-start">
+        {columns.map((col, ci) => (
+          <div key={ci} className="flex-1 min-w-0 flex flex-col gap-3 md:gap-4">
+            {col.map(({ c, i }) => (
+              <figure
+                key={`${c.slot}-${i}`}
+                data-testid={`route-gallery-tile-${i}`}
+                data-route-gallery-slot={c.slot}
+                className="relative break-inside-avoid overflow-hidden bg-[#1A1513] group"
+              >
+                <EditableImage
+                  slot={c.slot}
+                  fallback={c.src}
+                  alt={pick(c.caption, lang)}
+                  imgProps={{ loading: "lazy" }}
+                  className="block w-full h-auto transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                 />
-              </figcaption>
-            )}
-          </figure>
+                {c.caption && (
+                  <figcaption className="absolute inset-x-0 bottom-0 z-[2] p-3 md:p-4 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/35 to-transparent">
+                    <EditableText
+                      slot={c.nameSlot}
+                      defaults={c.caption}
+                      as="h6"
+                      multiline={false}
+                      className="font-serif-x text-[#FDFBF7] text-[13px] md:text-[15px] leading-snug [text-shadow:_0_1px_6px_rgba(0,0,0,0.55)]"
+                    />
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
         ))}
       </div>
     </div>
