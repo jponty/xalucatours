@@ -18,7 +18,7 @@ import { getProgramTiers } from "@/lib/programPricing";
      className  extra classes
      testid     data-testid override
 ============================================================ */
-export const FromPrice = ({ tone = "light", size = "sm", routeId = null, className = "", testid }) => {
+export const FromPrice = ({ tone = "light", size = "sm", layout = "inline", routeId = null, className = "", testid }) => {
   const { lang } = useLanguage();
   const pricing = usePricing();
   const tiers = (routeId && getProgramTiers(routeId)) || pricing.tiers;
@@ -35,6 +35,24 @@ export const FromPrice = ({ tone = "light", size = "sm", routeId = null, classNa
       ? "text-current"
       : "text-[#FDFBF7]";
   const accentCls = tone === "dark" ? "text-[#C16542]" : "text-[#D4A373]";
+
+  // Stacked: "Desde €790" on one unbreakable line, "por persona" beneath it —
+  // avoids awkward wrapping inside narrow cards (e.g. the trip hero meta grid).
+  if (layout === "stacked") {
+    return (
+      <span
+        data-testid={testid || "from-price"}
+        className={`flex flex-col gap-0.5 ${toneCls} ${className}`}
+      >
+        <span className="flex items-baseline gap-1.5 whitespace-nowrap">
+          <span className="text-[10px] tracking-[0.18em] uppercase opacity-70">{fromLabel}</span>
+          <strong className={`font-serif-x text-xl md:text-2xl leading-none not-italic ${accentCls}`}>{fmtEuro(from)}</strong>
+        </span>
+        <span className="text-[10px] tracking-[0.14em] uppercase opacity-70">{perPerson}</span>
+      </span>
+    );
+  }
+
   const sizeCls = size === "md" ? "text-sm" : size === "xs" ? "text-[10px]" : "text-xs";
   const priceSize = size === "md" ? "text-lg" : size === "xs" ? "text-sm" : "text-base";
 

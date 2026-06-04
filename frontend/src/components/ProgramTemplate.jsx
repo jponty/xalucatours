@@ -1284,7 +1284,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                   <ArrowRight className="w-3 h-3 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" strokeWidth={1.7} />
                 </div>
                 <span className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug">
-                  <FromPrice tone="light" size="md" routeId={routeId} testid="program-hero-from-price" />
+                  <FromPrice tone="light" layout="stacked" routeId={routeId} testid="program-hero-from-price" />
                 </span>
               </a>
             </dl>
@@ -1514,6 +1514,48 @@ const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
   );
 };
 
+/* Sticky horizontal day timeline — sits right below the tabs nav and stays
+   visible while the user scrolls the trip page. Each day jumps to its section. */
+const DayTimeline = ({ days, lang, t }) => {
+  if (!Array.isArray(days) || days.length === 0) return null;
+  const jump = (e, id) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - 116; // clear sticky bars
+    window.scrollTo({ top: y, behavior: "smooth" });
+  };
+  return (
+    <div
+      data-testid="program-day-timeline"
+      className="sticky top-[50px] md:top-[58px] z-20 bg-[#1A1513]/95 backdrop-blur-md border-y border-[#FDFBF7]/10"
+    >
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="flex items-stretch gap-2 md:gap-2.5 overflow-x-auto py-2.5 md:py-3 no-scrollbar">
+          {days.map((d, i) => (
+            <a
+              key={`${d.id}-${i}`}
+              href={`#${d.id}`}
+              onClick={(e) => jump(e, d.id)}
+              data-testid={`day-timeline-item-${d.id}`}
+              title={`${t.day_label} ${i + 1} · ${pick(d.title, lang)}`}
+              className="group shrink-0 flex flex-col gap-0.5 px-3.5 py-2 border border-[#FDFBF7]/15 hover:border-[#D4A373] hover:bg-[#D4A373]/10 transition-colors min-w-[148px] max-w-[230px]"
+            >
+              <span className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#D4A373] whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: d.accent || "#D4A373" }} />
+                {t.day_label} {i + 1}
+              </span>
+              <span className="text-[11px] md:text-xs text-[#FDFBF7]/85 leading-snug truncate group-hover:text-[#FDFBF7]">
+                {pick(d.title, lang)}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Itinerary = ({ t, lang, days, hideDayGallery = false }) => (
   <section id="itinerary" data-testid="program-itinerary"
            className="relative bg-[#FDFBF7] pt-20 md:pt-28">
@@ -1672,6 +1714,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
+      <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <TripOverview days={program.days} />
       <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" routeId={routeId} />
