@@ -1,5 +1,14 @@
 # Xaluca Tours — PRD
 
+## /galeria — "Ver viajes que incluyen este lugar" (descubridor de itinerarios) — Jun 2026 (latest)
+- **User ask**: en /galeria, botón/enlace por punto destacado a los viajes que lo incluyen → convierte la galería en descubridor de itinerarios.
+- **Implementación**:
+  - `lib/programs/index.js` (NUEVO): registro auto-recolectado de TODOS los programas vía `require.context` (CRACO/webpack) → `ALL_PROGRAMS` (objetos con `routeId`+`days`, dedupe por routeId). Mantenimiento cero al añadir programas.
+  - `lib/poiTripIndex.js` (NUEVO): índice inverso `placeId → trips`. Recorre `ALL_PROGRAMS`, resuelve cada día con `resolveDayLandmarks` (MISMA lógica que el Mapa del día), y mapea a las fichas de `ALL_TRIPS` (solo viajes del catálogo público → enlaces válidos). `tripsForPoi(poiId)` memoizado. La clave = id desnudo (curado=landmark id / gazetteer=poiKey) = `rec.id` de /galeria → semántica exacta: "viajes cuyo Mapa del día muestra este lugar".
+  - `pages/GaleriaPage.jsx`: nuevo `<RelatedTrips>` bajo el carousel del POI abierto → cabecera "Ver viajes que incluyen este lugar · N" + chips `Link` a `pathFor(lang, routeId)` con título + noches. Se oculta si 0 viajes. Testids: `galeria-related-trips-{poiId}`, `galeria-trip-chip-{routeId}`.
+- **Verificado** (screenshot): Aït Ben Haddou → "VER VIAJES QUE INCLUYEN ESTE LUGAR · 7" con 7 chips enlazados (Fez→Marrakech, Marrakech→Fez, Tánger→Marrakech…) con noches. Sin errores require.context. Lint limpio.
+
+
 ## Página /galeria — galería central de puntos destacados — Jun 2026 (latest)
 - **User ask**: nueva página `/galeria` con TODOS los puntos destacados, agrupados por zonas y en orden alfabético dentro de cada zona; cada POI clicable abre el mismo desplegable de 3 cards (Galería del lugar) que el Mapa del día, con el mismo título/descripción/imagen y las mismas funciones de edición (textos, imágenes, biblioteca), totalmente sincronizado con páginas de viaje + Mapa del día.
 - **Implementación**:

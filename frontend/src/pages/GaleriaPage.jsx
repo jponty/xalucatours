@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { MapPin, Camera, Images, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { MapPin, Camera, Images, ChevronDown, Compass, ArrowUpRight, Moon } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { LANDMARK_CATALOG } from "@/lib/dayLandmarkCatalog";
 import { ZONES } from "@/lib/poiZones";
 import { LANDMARK_KINDS } from "@/lib/dayLandmarks";
+import { tripsForPoi } from "@/lib/poiTripIndex";
+import { pathFor } from "@/lib/routes";
 import { LandmarkCarousel } from "@/components/LandmarkCarousel";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
@@ -27,6 +30,9 @@ const T = {
     count_one: "lugar",
     count_many: "lugares",
     open: "Ver galería del lugar",
+    related: "Ver viajes que incluyen este lugar",
+    related_empty: "Próximamente en nuestros itinerarios",
+    nights: "noches",
   },
   en: {
     eyebrow: "Landmarks gallery",
@@ -37,6 +43,9 @@ const T = {
     count_one: "place",
     count_many: "places",
     open: "View place gallery",
+    related: "See trips that include this place",
+    related_empty: "Coming soon to our itineraries",
+    nights: "nights",
   },
   fr: {
     eyebrow: "Galerie des points d'intérêt",
@@ -47,6 +56,9 @@ const T = {
     count_one: "lieu",
     count_many: "lieux",
     open: "Voir la galerie du lieu",
+    related: "Voir les voyages incluant ce lieu",
+    related_empty: "Bientôt dans nos itinéraires",
+    nights: "nuits",
   },
 };
 
@@ -84,6 +96,49 @@ const toCarouselLandmark = (rec) => {
 };
 
 const kindColor = (kind) => (LANDMARK_KINDS[kind] && LANDMARK_KINDS[kind].color) || "#C16542";
+
+const RelatedTrips = ({ poiId, lang, t }) => {
+  const trips = useMemo(() => tripsForPoi(poiId), [poiId]);
+  if (trips.length === 0) return null;
+  const sorted = [...trips].sort(
+    (a, b) => a.nights - b.nights || pick(a.title, lang).localeCompare(pick(b.title, lang), "es")
+  );
+  return (
+    <div
+      data-testid={`galeria-related-trips-${poiId}`}
+      className="mt-5 pt-5 border-t border-[#2C2621]/12"
+    >
+      <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+        <Compass className="w-3.5 h-3.5" strokeWidth={1.8} />
+        {t.related} · {trips.length}
+      </span>
+      <div className="flex flex-wrap gap-2.5 mt-3">
+        {sorted.map((trip) => (
+          <Link
+            key={trip.routeId}
+            to={pathFor(lang, trip.routeId)}
+            data-testid={`galeria-trip-chip-${trip.routeId}`}
+            className="group inline-flex items-center gap-2 pl-3.5 pr-3 py-2 bg-[#FDFBF7] border border-[#2C2621]/15 hover:border-[#C16542] hover:bg-[#C16542]/[0.06] transition-colors"
+          >
+            <span className="font-serif-x text-[14px] text-[#2C2621] group-hover:text-[#C16542] transition-colors">
+              {pick(trip.title, lang)}
+            </span>
+            {trip.nights ? (
+              <span className="inline-flex items-center gap-1 text-[10px] tracking-[0.12em] uppercase text-[#5C5248]">
+                <Moon className="w-3 h-3" strokeWidth={1.7} />
+                {trip.nights} {t.nights}
+              </span>
+            ) : null}
+            <ArrowUpRight
+              className="w-3.5 h-3.5 text-[#C16542] opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all"
+              strokeWidth={2}
+            />
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const PoiButton = ({ rec, lang, active, onToggle }) => {
   const color = kindColor(rec.kind);
@@ -162,11 +217,14 @@ const ZoneSection = ({ zone, records, lang, t }) => {
         </div>
 
         {active && (
-          <LandmarkCarousel
-            landmark={toCarouselLandmark(active)}
-            accent={kindColor(active.kind)}
-            onClose={() => setActiveUid(null)}
-          />
+          <>
+            <LandmarkCarousel
+              landmark={toCarouselLandmark(active)}
+              accent={kindColor(active.kind)}
+              onClose={() => setActiveUid(null)}
+            />
+            <RelatedTrips poiId={active.id} lang={lang} t={t} />
+          </>
         )}
       </div>
     </section>
