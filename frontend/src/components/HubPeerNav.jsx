@@ -1,5 +1,7 @@
 import React from "react";
 import EditableImage from "@/components/EditableImage";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import monogramaX from "@/assets/monograma-x-crop.png";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -84,6 +86,16 @@ export default function HubPeerNav({ routeId }) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-transparent pointer-events-none" />
                   <span className="film-grain" />
+                  {/* Xaluca "X" monogram — bottom-right edge */}
+                  <img
+                    src={monogramaX}
+                    alt=""
+                    aria-hidden="true"
+                    data-testid={`hub-peer-monogram-${p.id}`}
+                    className="pointer-events-none select-none absolute right-0 bottom-0 h-[78%] w-auto object-contain opacity-55 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+                  />
+                  {/* Xaluca logo — top-right corner */}
+                  <XalucaLogoBadge testid={`hub-peer-logo-${p.id}`} />
                   <div
                     className="absolute top-4 left-4 inline-flex items-center gap-2 bg-[#FDFBF7]/95 px-3 py-1.5 text-[11px] tracking-[0.18em] uppercase font-semibold"
                     style={{ color: p.accent || "#C16542" }}
