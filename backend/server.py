@@ -1554,6 +1554,44 @@ async def file_usage(file_id: str):
     return {"file_id": file_id, "count": len(slots), "slots": slots}
 
 
+class UsageBatchBody(BaseModel):
+    ids: List[str] = Field(default_factory=list)
+
+
+@api_router.post("/files/usage-batch")
+async def files_usage_batch(body: UsageBatchBody):
+    """Returns usage info for many files in a SINGLE request.
+    The library picker calls this once for all visible thumbnails instead
+    of firing one request per image (which used to saturate the browser
+    connection pool and freeze search). Output: {usage: {file_id: {count, slots}}}."""
+    ids = [i for i in (body.ids or []) if i][:300]
+    if not ids:
+        return {"usage": {}}
+
+    files = await db.files.find({"id": {"$in": ids}}, {"_id": 0, "id": 1, "storage_path": 1}).to_list(len(ids))
+    id_to_path = {f["id"]: f.get("storage_path") for f in files if f.get("storage_path")}
+    if not id_to_path:
+        return {"usage": {fid: {"count": 0, "slots": []} for fid in ids}}
+
+    # One pass over all image slots; match each file by storage_path or URL suffix.
+    all_slots = await db.image_slots.find(
+        {"$or": [{"url": {"$exists": True}}, {"storage_path": {"$exists": True}}]},
+        {"_id": 1, "url": 1, "storage_path": 1, "source": 1, "updated_at": 1},
+    ).to_list(5000)
+
+    usage = {fid: {"count": 0, "slots": []} for fid in ids}
+    for fid, sp in id_to_path.items():
+        suffix = f"/{sp}"
+        matched = [
+            {"slot_id": s["_id"], "url": s.get("url"), "source": s.get("source"), "updated_at": s.get("updated_at")}
+            for s in all_slots
+            if s.get("storage_path") == sp or (s.get("url") or "").endswith(suffix)
+        ]
+        usage[fid] = {"count": len(matched), "slots": matched}
+    return {"usage": usage}
+
+
+
 @api_router.get("/files")
 async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, tag: Optional[str] = None):
     """Lists every previously-uploaded image (most recent first) for the
@@ -1631,7 +1669,10 @@ async def download_file(
     # ---- Fast path: original bytes, unchanged behaviour ----
     if not w and not fmt:
         try:
-            data, content_type = get_object(path)
+            # get_object uses blocking `requests`; offload to a thread so a
+            # burst of <img> requests can't block the event loop and freeze
+            # other API calls (e.g. the library search box).
+            data, content_type = await asyncio.to_thread(get_object, path)
         except Exception as exc:
             logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
             raise HTTPException(status_code=404, detail="File not found")
@@ -1676,7 +1717,7 @@ async def download_file(
 
     # ---- Fetch original + transform ----
     try:
-        data, content_type = get_object(path)
+        data, content_type = await asyncio.to_thread(get_object, path)
     except Exception as exc:
         logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
         raise HTTPException(status_code=404, detail="File not found")

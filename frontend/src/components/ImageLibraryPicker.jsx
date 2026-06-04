@@ -73,7 +73,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   /* ---- Load list ---- */
   useEffect(() => {
     if (!open) return;
-    let cancelled = false;
+    const controller = new AbortController();
     (async () => {
       setLoading(true);
       setError(null);
@@ -81,17 +81,18 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
         const params = new URLSearchParams({ limit: "120" });
         if (debounced) params.set("q", debounced);
         if (activeTag) params.set("tag", activeTag);
-        const res = await fetch(`${API}/api/files?${params.toString()}`);
+        const res = await fetch(`${API}/api/files?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        if (!cancelled) setItems(data.items || []);
+        setItems(data.items || []);
+        setLoading(false);
       } catch (err) {
-        if (!cancelled) setError(err.message || "No se pudo cargar la biblioteca.");
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (err.name === "AbortError") return; // superseded by a newer search
+        setError(err.message || "No se pudo cargar la biblioteca.");
+        setLoading(false);
       }
     })();
-    return () => { cancelled = true; };
+    return () => controller.abort();
   }, [open, debounced, activeTag, refreshTick]);
 
   /* ---- Load tag chips ---- */
@@ -103,36 +104,37 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
       .catch(() => setTags([]));
   }, [open, refreshTick]);
 
-  /* ---- Lazy-load usage counts for visible items ---- */
+  /* ---- Load usage counts for visible items in ONE batched request ----
+     (one POST for all ids instead of one GET per image, which used to
+     saturate the connection pool and freeze the search box). */
   useEffect(() => {
     if (!open || items.length === 0) return;
-    let cancelled = false;
     const idsToFetch = items
       .map((it) => it.id)
-      .filter((id) => id && !(id in usageById))
-      .slice(0, 30); // throttle initial bulk
+      .filter((id) => id && !(id in usageById));
     if (idsToFetch.length === 0) return;
-    Promise.all(idsToFetch.map(async (id) => {
+    let cancelled = false;
+    (async () => {
       try {
-        const res = await fetch(`${API}/api/files/${id}/usage`);
-        if (!res.ok) return [id, null];
+        const res = await fetch(`${API}/api/files/usage-batch`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: idsToFetch }),
+        });
+        if (!res.ok) return;
         const data = await res.json();
-        return [id, data];
-      } catch {
-        return [id, null];
-      }
-    })).then((pairs) => {
-      if (cancelled) return;
-      setUsageById((prev) => {
-        const next = { ...prev };
-        for (const [id, data] of pairs) {
-          next[id] = data || { count: 0, slots: [] };
-        }
-        return next;
-      });
-    });
+        const map = data.usage || {};
+        if (cancelled) return;
+        setUsageById((prev) => {
+          const next = { ...prev };
+          for (const id of idsToFetch) next[id] = map[id] || { count: 0, slots: [] };
+          return next;
+        });
+      } catch { /* non-critical */ }
+    })();
     return () => { cancelled = true; };
-  }, [open, items, usageById]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, items]);
 
   /* ---- Bulk upload (adds to the active tag group when one is filtered) ---- */
   const handleBulkUpload = useCallback(async (fileList) => {
