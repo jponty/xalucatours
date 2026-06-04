@@ -206,7 +206,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           {/* Map column */}
           <div className="lg:col-span-7">
-            <div className="relative h-[460px] md:h-[520px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
+            <div className="relative isolate h-[460px] md:h-[520px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
               <MapContainer
                 bounds={bounds}
                 boundsOptions={{ padding: [50, 50] }}
@@ -410,7 +410,7 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           <div className="lg:col-span-7">
-            <div className="relative h-[420px] md:h-[480px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
+            <div className="relative isolate h-[420px] md:h-[480px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
               <MapContainer
                 bounds={bounds}
                 boundsOptions={{ padding: [40, 40] }}
@@ -675,7 +675,7 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           <div className="lg:col-span-7">
-            <div className="relative h-[420px] md:h-[480px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
+            <div className="relative isolate h-[420px] md:h-[480px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7] shadow-sm">
               <MapContainer
                 bounds={bounds}
                 boundsOptions={{ padding: [40, 40] }}

@@ -453,6 +453,9 @@ body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5
 .leaflet-container {
     background: #F2EBE1;
     font-family: 'Outfit', sans-serif;
+    /* Contain Leaflet's high internal z-index so map panes/controls never
+       paint over the sticky tabs nav / day timeline when scrolling. */
+    isolation: isolate;
 }
 .xaluca-map-pin {
     background: transparent;
