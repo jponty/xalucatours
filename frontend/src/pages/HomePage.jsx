@@ -18,6 +18,7 @@ import PersonalConsultation, { CommunityCTA } from "@/components/PersonalConsult
 import ContactForm from "@/components/ContactForm";
 import Testimonials from "@/components/Testimonials";
 import HomeCategoryCarousel from "@/components/HomeCategoryCarousel";
+import PressMentions from "@/components/PressMentions";
 import {
   SOUTH_TRIPS,
   FULL_TRIPS,
@@ -174,6 +175,7 @@ export default function HomePage() {
       <StressFreeProcess />
       <WhatJourneysFeelLike />
       <Testimonials themes={["general"]} limit={3} tone="cream" testid="home-testimonials" />
+      <PressMentions />
       <MoroccoVideos />
       <MoroccoCircuits />
       <MapSection />
