@@ -1559,6 +1559,8 @@ const LeadsPanel = () => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [q, setQ] = useState("");
+  const [confirmDel, setConfirmDel] = useState(null); // lead row pending deletion
+  const [delBusy, setDelBusy] = useState(false);
 
   const cfg = LEAD_FORMS.find((f) => f.id === view);
   const rows = cache[view] || [];
@@ -1603,6 +1605,33 @@ const LeadsPanel = () => {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const leadLabel = (r) => {
+    if (cfg.id === "program-downloads") return `${r.first_name || ""} ${r.last_name || ""}`.trim() || r.email || r.id;
+    return r.full_name || r.email || r.id;
+  };
+
+  const doDelete = async () => {
+    if (!confirmDel) return;
+    setDelBusy(true);
+    setErr("");
+    try {
+      const token = localStorage.getItem("xaluca_admin_token");
+      const r = await fetch(`${API}/${cfg.endpoint}/${confirmDel.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      // Optimistically drop from the current cache
+      setCache((c) => ({ ...c, [view]: (c[view] || []).filter((x) => x.id !== confirmDel.id) }));
+      setConfirmDel(null);
+    } catch (e) {
+      setErr("No se pudo eliminar el lead. Inténtalo de nuevo.");
+    } finally {
+      setDelBusy(false);
+    }
+  };
+
 
   return (
     <div data-testid="admin-leads" className="p-4 md:p-6 text-white">
@@ -1673,6 +1702,7 @@ const LeadsPanel = () => {
               {cfg.columns.map((c) => (
                 <th key={c.header} className={`font-normal px-3 py-2.5 ${c.center ? "text-center" : "text-left"}`}>{c.header}</th>
               ))}
+              <th className="font-normal px-3 py-2.5 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -1713,11 +1743,22 @@ const LeadsPanel = () => {
                     <td key={c.header} className={cls} title={c.title ? c.title(r) : undefined}>{val}</td>
                   );
                 })}
+                <td className="px-3 py-2.5 text-center whitespace-nowrap">
+                  <button
+                    data-testid={`admin-lead-delete-${r.id}`}
+                    onClick={() => setConfirmDel(r)}
+                    title="Eliminar lead"
+                    aria-label="Eliminar lead"
+                    className="inline-flex items-center justify-center p-1.5 text-white/50 hover:text-[#E07856] hover:bg-[#E07856]/10 border border-transparent hover:border-[#E07856]/30 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" strokeWidth={1.8} />
+                  </button>
+                </td>
               </tr>
             ))}
             {!loading && filtered.length === 0 && (
               <tr>
-                <td colSpan={cfg.columns.length} className="px-3 py-10 text-center text-white/45">
+                <td colSpan={cfg.columns.length + 1} className="px-3 py-10 text-center text-white/45">
                   {rows.length === 0 ? cfg.empty : "Sin resultados para la búsqueda."}
                 </td>
               </tr>
@@ -1725,6 +1766,53 @@ const LeadsPanel = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Delete confirmation dialog */}
+      {confirmDel && (
+        <div
+          data-testid="admin-lead-delete-dialog"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => !delBusy && setConfirmDel(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-[#14110F] border border-white/15 shadow-2xl p-6"
+          >
+            <div className="flex items-start gap-3">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#E07856]/15 text-[#E07856] shrink-0">
+                <AlertTriangle className="w-5 h-5" strokeWidth={1.9} />
+              </span>
+              <div className="min-w-0">
+                <h3 className="font-serif-x text-xl text-white">Eliminar lead</h3>
+                <p className="text-sm text-white/65 mt-2 leading-relaxed">
+                  ¿Seguro que quieres eliminar el lead de{" "}
+                  <span className="text-white font-medium">{leadLabel(confirmDel)}</span>?
+                  Esta acción no se puede deshacer.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                data-testid="admin-lead-delete-cancel"
+                onClick={() => setConfirmDel(null)}
+                disabled={delBusy}
+                className="px-4 py-2 text-[11px] tracking-[0.22em] uppercase border border-white/15 text-white/75 hover:bg-white/5 disabled:opacity-40"
+              >
+                Cancelar
+              </button>
+              <button
+                data-testid="admin-lead-delete-confirm"
+                onClick={doDelete}
+                disabled={delBusy}
+                className="inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.22em] uppercase bg-[#B23A28] hover:bg-[#9c3122] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Trash2 className={`w-3.5 h-3.5 ${delBusy ? "animate-pulse" : ""}`} strokeWidth={1.9} />
+                {delBusy ? "Eliminando…" : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

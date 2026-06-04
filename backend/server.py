@@ -426,6 +426,33 @@ async def list_program_downloads(authorization: str = Header(default="")):
     return rows
 
 
+# ---------- Lead deletion (admin only) ----------
+async def _delete_lead(collection, lead_id: str, authorization: str):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    res = await collection.delete_one({"id": lead_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    return {"deleted": True, "id": lead_id}
+
+
+@api_router.delete("/contact-requests/{lead_id}")
+async def delete_contact_request(lead_id: str, authorization: str = Header(default="")):
+    return await _delete_lead(db.contact_requests, lead_id, authorization)
+
+
+@api_router.delete("/trip-planner/{lead_id}")
+async def delete_trip_planner(lead_id: str, authorization: str = Header(default="")):
+    return await _delete_lead(db.trip_planner_requests, lead_id, authorization)
+
+
+@api_router.delete("/program-downloads/{lead_id}")
+async def delete_program_download(lead_id: str, authorization: str = Header(default="")):
+    return await _delete_lead(db.program_downloads, lead_id, authorization)
+
+
+
 # ---------- Climate proxy (Open-Meteo) ----------
 # Lightweight in-process TTL cache; data only changes meaningfully day to day.
 _climate_cache = {"data": None, "ts": None}
