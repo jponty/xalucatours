@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useEditMode } from "@/contexts/EditModeContext";
+import { EditableImage } from "@/components/EditableImage";
 
 /* ----------------------------------------------------------------
    <VideoSection />
@@ -26,6 +28,7 @@ export default function VideoSection({
   autoPlay = true,
 }) {
   const { lang } = useLanguage();
+  const { editMode } = useEditMode();
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(autoPlay);
   const [muted, setMuted] = useState(true);
@@ -77,11 +80,22 @@ export default function VideoSection({
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-xl md:rounded-2xl shadow-2xl bg-[#2C2621] group">
+          {/* Editable poster layer — the still image of this section. Sits
+              behind the video so it shows before the video paints / if it
+              fails to load, and becomes fully visible + editable in Edit
+              Image mode (the video steps aside). Detected by the CMS like
+              every other <EditableImage>. */}
+          <EditableImage
+            slot={`video.${testid}.poster`}
+            fallback={poster}
+            alt={title ? pick(title, lang) : ""}
+            aspectRatio="16/9"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           <video
             ref={videoRef}
             data-testid={`${testid}-video`}
             src={src}
-            poster={poster}
             playsInline
             loop
             muted
@@ -89,7 +103,9 @@ export default function VideoSection({
             preload="metadata"
             onLoadedData={() => setLoaded(true)}
             onError={() => setLoaded(true)}
-            className="absolute inset-0 w-full h-full object-cover"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+              editMode ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
           />
 
           {/* Cinematic overlay */}
@@ -148,7 +164,7 @@ export default function VideoSection({
           </div>
 
           {/* Loading shimmer */}
-          {!loaded && (
+          {!loaded && !editMode && (
             <div className="absolute inset-0 bg-gradient-to-br from-[#2C2621] via-[#3A2E25] to-[#2C2621] animate-pulse pointer-events-none" />
           )}
         </div>
