@@ -312,12 +312,7 @@ export default function AdminPage() {
           <nav className="p-3 flex md:flex-col gap-1">
             {[
               { id: "urls",   label: "URLs",          icon: Globe },
-              { id: "images", label: `Images (${imageSlots.length})`, icon: ImageIcon },
-              { id: "texts",  label: `Texts (${textSlots.length})`,  icon: Type },
-              { id: "pois",   label: `Puntos destacados (${LANDMARK_CATALOG.length})`, icon: MapPin },
               { id: "leads",  label: "Leads",         icon: Inbox },
-              { id: "pricing", label: "Precios",       icon: Tag },
-              { id: "sync",   label: "Sincronizar",   icon: UploadCloud },
             ].map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -391,66 +386,6 @@ export default function AdminPage() {
             </div>
           )}
 
-          {tab === "images" && (
-            <div data-testid="admin-image-list" className="p-4 space-y-5">
-              {Object.entries(imageGroups).sort().map(([prefix, slots]) => (
-                <div key={prefix}>
-                  <h3 className="text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-2">{prefix} · {slots.length}</h3>
-                  <ul className="space-y-3">
-                    {slots.map((s) => (
-                      <ImageEditor key={s.slot_id} slot={s} onSave={saveImage} />
-                    ))}
-                  </ul>
-                </div>
-              ))}
-              {filteredImages.length === 0 && (
-                <p className="text-sm text-white/50">Sin imágenes guardadas todavía. Cualquier `EditableImage` editada en la web aparecerá aquí.</p>
-              )}
-            </div>
-          )}
-
-          {tab === "texts" && (
-            <div data-testid="admin-text-list" className="p-4 space-y-5">
-              {Object.entries(textGroups).sort().map(([prefix, slots]) => (
-                <div key={prefix}>
-                  <h3 className="text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-2">{prefix} · {slots.length}</h3>
-                  <ul className="space-y-3">
-                    {slots.map((s) => (
-                      <TextEditor key={s.slot_id || s.id} slot={s} onSave={saveText} />
-                    ))}
-                  </ul>
-                </div>
-              ))}
-              {filteredTexts.length === 0 && (
-                <p className="text-sm text-white/50">Sin textos guardados todavía. Cualquier `EditableText` editado en la web aparecerá aquí.</p>
-              )}
-            </div>
-          )}
-
-          {tab === "pricing" && (
-            <div data-testid="admin-pricing" className="p-4">
-              <PricingEditor onSaved={() => bumpPreview((k) => k + 1)} />
-            </div>
-          )}
-
-          {tab === "pois" && (
-            <div data-testid="admin-pois" className="p-4">
-              <PoiManager
-                query={query}
-                imageSlots={imageSlots}
-                textSlots={textSlots}
-                onSaveImage={saveImage}
-                onSaveText={saveText}
-                onChanged={fetchSlots}
-              />
-            </div>
-          )}
-
-          {tab === "sync" && (
-            <div data-testid="admin-sync" className="p-4">
-              <SyncPanel />
-            </div>
-          )}
         </section>
         )}
 
