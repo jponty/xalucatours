@@ -10,7 +10,7 @@
 ============================================================ */
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Moon, Compass, Gauge } from "lucide-react";
+import { ArrowUpRight, Moon, Compass, Gauge, Search, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
@@ -43,6 +43,15 @@ const COPY = {
   pace:     { es: "Ritmo",    en: "Pace",     fr: "Intensité" },
   details:  { es: "Ver itinerario", en: "View itinerary", fr: "Voir l'itinéraire" },
   nights:   { es: "noches",  en: "nights",   fr: "nuits" },
+  searchTitle: { es: "¿Dónde quieres viajar?",
+                 en: "Where do you want to travel?",
+                 fr: "Où voulez-vous voyager ?" },
+  searchPlaceholder: {
+    es: "Escribe un destino, ciudad o experiencia · Marrakech, Fez, Merzouga, Desierto, Atlas, Chefchaouen…",
+    en: "Type a destination, city or experience · Marrakech, Fez, Merzouga, Desert, Atlas, Chefchaouen…",
+    fr: "Saisissez une destination, ville ou expérience · Marrakech, Fès, Merzouga, Désert, Atlas, Chefchaouen…",
+  },
+  clear: { es: "Borrar", en: "Clear", fr: "Effacer" },
 };
 
 const PACE_LABEL = {
@@ -58,6 +67,60 @@ const REGION_LABEL = {
   escapadas: { es: "Escapadas cortas",   en: "Short escapes",    fr: "Escapades courtes" },
   aventura:  { es: "Aventura",           en: "Adventure",        fr: "Aventure" },
   eventos:   { es: "Eventos",            en: "Events",           fr: "Événements" },
+};
+
+/* ---------- Free-text search index ----------
+   Builds an accent-insensitive haystack per trip from ALL of its content
+   (route id, title, summary in 3 languages, region & pace labels) plus a
+   set of destination keywords per region, so a search for any city, region,
+   experience or point of interest surfaces the related itineraries — not
+   just title matches. */
+const normalize = (s) =>
+  (s || "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[·→↔]/g, " ");
+
+// Destination / POI keywords associated with each marketing region. These let
+// searches like "Merzouga", "Sahara", "ciudad azul" or "Volubilis" match the
+// right trips even when the short summary doesn't spell them out.
+const REGION_KEYWORDS = {
+  sur: "sur desierto sahara merzouga erg chebbi dunas duna atlas alto atlas tizi n tichka kasbah ouarzazate ait benhaddou skoura dades todra gargantas valle del draa zagora rosas nomadas bereber",
+  norte: "norte ciudades imperiales fez fes meknes mequinez rabat sale chefchaouen chaouen ciudad azul rif tetuan asilah volubilis moulay idriss tanger tetuan medina",
+  completo: "marruecos integral completo norte sur desierto fez marrakech tanger sahara atlas ciudades imperiales",
+  escapadas: "escapada corta escapadas fin de semana express marrakech fez agafay atlas desierto",
+  aventura: "aventura moto enduro motos 4x4 off road pistas draa sahara desierto",
+  eventos: "eventos fin de ano nochevieja celebracion fiesta desierto campamento estrellas",
+};
+
+const splitRouteId = (id) =>
+  (id || "")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/([A-Za-z])(\d)/g, "$1 $2");
+
+const tripHaystacks = new Map();
+const haystackFor = (trip) => {
+  if (tripHaystacks.has(trip.routeId)) return tripHaystacks.get(trip.routeId);
+  const parts = [
+    splitRouteId(trip.routeId),
+    trip.title?.es, trip.title?.en, trip.title?.fr,
+    trip.summary?.es, trip.summary?.en, trip.summary?.fr,
+    REGION_LABEL[trip.region]?.es, REGION_LABEL[trip.region]?.en, REGION_LABEL[trip.region]?.fr,
+    PACE_LABEL[trip.pace]?.es, PACE_LABEL[trip.pace]?.en, PACE_LABEL[trip.pace]?.fr,
+    REGION_KEYWORDS[trip.region],
+  ];
+  const hay = normalize(parts.filter(Boolean).join(" "));
+  tripHaystacks.set(trip.routeId, hay);
+  return hay;
+};
+
+const matchesQuery = (trip, query) => {
+  const tokens = normalize(query).split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return true;
+  const hay = haystackFor(trip);
+  return tokens.every((tok) => hay.includes(tok));
 };
 
 /* ---------- Filter chips ---------- */
@@ -160,6 +223,7 @@ const TripCard = ({ trip, lang }) => {
 /* ---------- Section ---------- */
 const HomeAllTripsCatalog = () => {
   const { lang } = useLanguage();
+  const [query, setQuery]       = useState("");
   const [region, setRegion]     = useState("all");
   const [duration, setDuration] = useState("any");
   const [pace, setPace]         = useState("any");
@@ -169,9 +233,10 @@ const HomeAllTripsCatalog = () => {
       if (region !== "all" && t.region !== region) return false;
       if (duration !== "any" && t.durationBucket !== duration) return false;
       if (pace !== "any" && t.pace !== pace) return false;
+      if (!matchesQuery(t, query)) return false;
       return true;
     });
-  }, [region, duration, pace]);
+  }, [region, duration, pace, query]);
 
   // Inject the i18n-resolved label into each option for ChipGroup
   const r = TRIP_REGIONS.map((o)   => ({ ...o, _renderedLabel: pick(o.label, lang) }));
@@ -196,6 +261,39 @@ const HomeAllTripsCatalog = () => {
             <p className="mt-4 text-[14px] md:text-[15px] text-[#5C5248] leading-relaxed max-w-2xl">
               {pick(COPY.subtitle, lang)}
             </p>
+          </div>
+
+          {/* Search by destination */}
+          <div className="mb-8" data-testid="all-trips-search">
+            <label
+              htmlFor="all-trips-search-input"
+              className="block font-serif text-2xl md:text-3xl text-[#2C2621] mb-4"
+            >
+              {pick(COPY.searchTitle, lang)}
+            </label>
+            <div className="relative max-w-3xl">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#C16542]" strokeWidth={1.7} />
+              <input
+                id="all-trips-search-input"
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={pick(COPY.searchPlaceholder, lang)}
+                data-testid="all-trips-search-input"
+                className="w-full bg-[#FFFFFF] border border-[#2C2621]/20 focus:border-[#C16542] pl-12 pr-11 py-4 text-[15px] text-[#2C2621] placeholder-[#5C5248]/60 outline-none transition-colors"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  data-testid="all-trips-search-clear"
+                  aria-label={pick(COPY.clear, lang)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5C5248] hover:text-[#C16542] transition-colors"
+                >
+                  <X className="w-5 h-5" strokeWidth={1.8} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Filters */}
