@@ -183,6 +183,7 @@ const VideoCard = ({ video, lang, onPlay }) => (
 
 const VideoDialog = ({ video, lang, onClose }) => {
   useEffect(() => {
+    if (!video) return undefined; // only lock scroll while a video is open
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
@@ -191,7 +192,7 @@ const VideoDialog = ({ video, lang, onClose }) => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [onClose]);
+  }, [video, onClose]);
 
   if (!video) return null;
 
