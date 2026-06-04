@@ -343,6 +343,9 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
       aria-label="Biblioteca de imágenes"
       className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1A1513]/85 backdrop-blur-sm p-4 md:p-8"
       onClick={(e) => { if (e.target === e.currentTarget) onClose?.(); }}
+      onMouseDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
     >
       <div className="relative w-full max-w-6xl max-h-[92vh] bg-[#FDFBF7] shadow-2xl flex flex-col">
         {/* Header */}

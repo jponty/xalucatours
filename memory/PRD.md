@@ -1,5 +1,12 @@
 # Xaluca Tours — PRD
 
+## Fix móvil — foco en barras de búsqueda de la Biblioteca de imágenes — Jun 2026 (latest)
+- **Bug**: en móvil (táctil), en las 4 pestañas del picker (Biblioteca, Pexels, Unsplash, Selección) no se podía enfocar la barra de búsqueda al tocarla → imposible buscar imágenes. Desktop OK.
+- **Causa raíz**: `ImageLibraryPicker` se renderiza como descendiente (DOM + árbol React) del editor `edit-modal-{slot}` de `EditableImage`, cuyo div raíz (`role="presentation"`) tiene `onPointerDown={stopAndPrevent}` y `onMouseDown={stopAndPrevent}` (llaman `preventDefault`). En táctil el foco se concede en `pointerdown`; el `preventDefault` lo bloqueaba. Los eventos sintéticos de React propagan por el árbol React (incluso a través de portales), por lo que los del picker burbujeaban hasta ese handler.
+- **Fix** (`components/ImageLibraryPicker.jsx`): la raíz del picker ahora hace `e.stopPropagation()` en `onPointerDown`/`onMouseDown`/`onTouchStart` (SIN `preventDefault`), aislándola del editor sin impedir el foco. Un solo cambio cubre las 4 pestañas (mismo contenedor raíz).
+- **Verificado** (viewport 390×844): tap en `image-library-search` → `activeElement=image-library-search`, escribe "kasbah", filtra a 3 resultados. (El "intercepts pointer events" de Playwright era falso positivo de la animación de entrada; el DOM real: input y cadena con `pointer-events:auto`, `elementFromPoint`=input).
+
+
 ## /galeria — alineación de fotos por defecto con las páginas de viaje — Jun 2026 (latest)
 - **User ask**: las cards de la "Galería del lugar" en /galeria deben usar como referencia las MISMAS fotos que ya existen en las páginas de cada viaje (no las que tenía /galeria), y mantener sincronización bidireccional.
 - **Causa raíz**: el Mapa del día (`buildLandmark` en `dayPlaceGazetteer.js`) usa, para los ~60 POIs nuevos, las fotos Pexels `EXTRA_POI_IMAGES[entry.id]` como galería por defecto; en cambio el catálogo de /galeria (`dayLandmarkCatalog.js` → `buildGazetteer`) usaba `buildPlaceGallery(entry)` → **defaults divergentes** (mismo slot, distinta imagen por defecto cuando no hay valor CMS guardado).
