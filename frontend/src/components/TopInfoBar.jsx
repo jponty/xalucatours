@@ -1,5 +1,5 @@
 import React from "react";
-import { Phone, Clock } from "lucide-react";
+import { Phone, Clock, Mail } from "lucide-react";
 import EditableText from "@/components/EditableText";
 
 const CALL_LABEL = { es: "Llámanos", en: "Call us", fr: "Appelez-nous" };
@@ -10,6 +10,8 @@ const HOURS = {
   en: "Monday to Friday, 10:00–20:00",
   fr: "Du lundi au vendredi, 10h–20h",
 };
+const EMAIL_LABEL = { es: "Escríbenos", en: "Email us", fr: "Écrivez-nous" };
+const EMAIL = { es: "xalucatours@xaluca.com", en: "xalucatours@xaluca.com", fr: "xalucatours@xaluca.com" };
 
 /**
  * Slim contact bar sitting above the main header, on every page.
@@ -45,6 +47,23 @@ export const TopInfoBar = () => {
           <span className="text-[#FDFBF7]/30">|</span>
           <EditableText slot="topbar.hours" defaults={HOURS} multiline={false} />
         </span>
+
+        {/* Divider */}
+        <span className="hidden sm:inline-block w-px h-3.5 bg-[#FDFBF7]/20" aria-hidden="true" />
+
+        {/* Email */}
+        <a
+          href="mailto:xalucatours@xaluca.com"
+          data-testid="top-info-email"
+          className="hidden sm:inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
+        >
+          <Mail className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.8} />
+          <span className="text-[#D4A373] uppercase tracking-[0.2em]">
+            <EditableText slot="topbar.email_label" defaults={EMAIL_LABEL} multiline={false} />
+          </span>
+          <span className="text-[#FDFBF7]/30">|</span>
+          <EditableText slot="topbar.email" defaults={EMAIL} multiline={false} />
+        </a>
       </div>
     </div>
   );
