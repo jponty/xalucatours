@@ -91,11 +91,16 @@ export const resolveDayLandmarks = (day, lang = "es") => {
 export const buildRouteGalleryCells = (days, lang = "es") => {
   if (!Array.isArray(days)) return [];
   const cells = [];
+  // Track POIs already shown so a place repeated across several days only
+  // contributes its photos ONCE — at its first appearance in itinerary order.
+  const seenPoi = new Set();
   days.forEach((day) => {
     const landmarks = resolveDayLandmarks(day, lang);
     landmarks.forEach((lm) => {
-      const gallery = Array.isArray(lm.gallery) ? lm.gallery : [];
       const poiKey = lm.poiKey || lm.id;
+      if (seenPoi.has(poiKey)) return; // already rendered earlier in the route
+      seenPoi.add(poiKey);
+      const gallery = Array.isArray(lm.gallery) ? lm.gallery : [];
       gallery.forEach((card, i) => {
         cells.push({
           // Same GLOBAL slot the LandmarkCarousel uses → shared everywhere.
