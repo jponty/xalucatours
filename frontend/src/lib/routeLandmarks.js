@@ -21,6 +21,8 @@
 import { resolveDayRoute } from "@/lib/dayRouteResolver";
 import { deriveDayPlaces } from "@/lib/dayPlaceGazetteer";
 import { CITY_PROFILES } from "@/lib/cityProfiles";
+import { DAY_LANDMARKS } from "@/lib/dayLandmarks";
+import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 
 /* Mirror of DayRouteMap.waypointToLandmark. */
 const waypointToLandmark = (w, idx, routeId) => {
@@ -45,6 +47,21 @@ const waypointToLandmark = (w, idx, routeId) => {
  */
 export const resolveDayLandmarks = (day, lang = "es") => {
   if (!day || !day.route_id) return [];
+
+  // Tier 0 — CURATED day landmarks (lib/dayLandmarks). These take priority in
+  // the Day-Map, so the route gallery must mirror them 1:1 (same points, same
+  // order, same `landmark.${id}.gallery` slots) — never omitting a curated POI.
+  const curated = DAY_LANDMARKS[day.route_id];
+  if (curated && curated.length) {
+    return curated.map((l) => ({
+      id: l.id,
+      poiKey: l.id,
+      slotBase: `landmark.${l.id}`,
+      kind: l.kind,
+      name: l.name,
+      gallery: LANDMARK_GALLERIES[l.id] || [],
+    }));
+  }
 
   // Tier 1 — named places in the day's own description.
   const landmarks = deriveDayPlaces(day, lang);
@@ -91,20 +108,29 @@ export const resolveDayLandmarks = (day, lang = "es") => {
 export const buildRouteGalleryCells = (days, lang = "es") => {
   if (!Array.isArray(days)) return [];
   const cells = [];
-  // Track POIs already shown so a place repeated across several days only
-  // contributes its photos ONCE — at its first appearance in itinerary order.
-  const seenPoi = new Set();
+  // Dedupe by the place's GLOBAL gallery base (the exact slot prefix the
+  // Galería del lugar uses): a highlight repeated across days contributes its
+  // photos & texts ONLY at its first appearance in itinerary order.
+  const seen = new Set();
   days.forEach((day) => {
     const landmarks = resolveDayLandmarks(day, lang);
     landmarks.forEach((lm) => {
       const poiKey = lm.poiKey || lm.id;
-      if (seenPoi.has(poiKey)) return; // already rendered earlier in the route
-      seenPoi.add(poiKey);
+      // Mirror LandmarkCarousel.galleryBase exactly so slots match 1:1:
+      //   curated landmark → `landmark.${id}.gallery`
+      //   gazetteer place  → `poi.${poiKey}.gallery`
+      const galleryBase = lm.slotBase ? `${lm.slotBase}.gallery` : `poi.${poiKey}.gallery`;
+      // Dedupe by the bare place id (without the landmark./poi. prefix) so the
+      // SAME place referenced on a curated day and a derived day collapses into
+      // a single appearance — guaranteeing each highlight shows up only once.
+      const placeId = galleryBase.replace(/^(landmark|poi)\./, "").replace(/\.gallery$/, "");
+      if (seen.has(placeId)) return; // already shown earlier in the route
+      seen.add(placeId);
       const gallery = Array.isArray(lm.gallery) ? lm.gallery : [];
       gallery.forEach((card, i) => {
         cells.push({
           // Same GLOBAL slot the LandmarkCarousel uses → shared everywhere.
-          slot: `poi.${poiKey}.gallery.${i}`,
+          slot: `${galleryBase}.${i}`,
           src: card.src,
           caption: card.title || lm.name || null,
         });
