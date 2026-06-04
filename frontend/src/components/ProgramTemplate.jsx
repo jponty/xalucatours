@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
-  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download,
+  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
@@ -22,9 +22,11 @@ import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
+import FromPrice from "@/components/FromPrice";
 import DownloadProgramModal from "@/components/DownloadProgramModal";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
+const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
@@ -1258,7 +1260,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
             <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
               <C name="hero.subtitle" defaults={metaAllLangs(program, variant, "subtitle")} />
             </p>
-            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-3xl">
+            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-3xl">
               {[
                 { id: "duration",   Icon: Clock,    label: <L k="eyebrow_duration" />,   value: <C name="hero.q.duration" defaults={program.duration} multiline={false} /> },
                 { id: "airports",   Icon: Plane,    label: <L k="eyebrow_airports" />,   value: <C name="hero.q.airports" defaults={metaAllLangs(program, variant, "airports")} multiline={false} /> },
@@ -1271,6 +1273,20 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                   <span className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug">{value}</span>
                 </div>
               ))}
+              {/* Price "from" — anchors to the full pricing table */}
+              <a
+                href="#pricing"
+                data-testid="program-hero-price"
+                className="group bg-[#1A1513]/80 hover:bg-[#C16542]/90 backdrop-blur-md p-5 flex flex-col gap-2 transition-colors"
+              >
+                <div className="inline-flex items-center justify-between gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:text-[#FDFBF7] transition-colors">
+                  <span className="inline-flex items-center gap-2"><Tag className="w-3 h-3" strokeWidth={1.6} />{pick(PRICE_LABEL, lang)}</span>
+                  <ArrowRight className="w-3 h-3 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" strokeWidth={1.7} />
+                </div>
+                <span className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug">
+                  <FromPrice tone="light" size="md" routeId={routeId} testid="program-hero-from-price" />
+                </span>
+              </a>
             </dl>
             <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
               <a href="#contact" data-testid="program-hero-cta-primary"
