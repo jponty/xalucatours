@@ -1,5 +1,13 @@
 # Xaluca Tours — PRD
 
+## /galeria — alineación de fotos por defecto con las páginas de viaje — Jun 2026 (latest)
+- **User ask**: las cards de la "Galería del lugar" en /galeria deben usar como referencia las MISMAS fotos que ya existen en las páginas de cada viaje (no las que tenía /galeria), y mantener sincronización bidireccional.
+- **Causa raíz**: el Mapa del día (`buildLandmark` en `dayPlaceGazetteer.js`) usa, para los ~60 POIs nuevos, las fotos Pexels `EXTRA_POI_IMAGES[entry.id]` como galería por defecto; en cambio el catálogo de /galeria (`dayLandmarkCatalog.js` → `buildGazetteer`) usaba `buildPlaceGallery(entry)` → **defaults divergentes** (mismo slot, distinta imagen por defecto cuando no hay valor CMS guardado).
+- **Fix**: `buildGazetteer` ahora replica EXACTAMENTE `buildLandmark` con `galleryForEntry(entry)` = `EXTRA_POI_IMAGES[entry.id]` (Pexels) si existe, si no `buildPlaceGallery(entry)`. Import añadido `EXTRA_POI_IMAGES`. Curados ya usaban `LANDMARK_GALLERIES[id]` (coincidían).
+- **Sincronización bidireccional**: ya era inherente vía slots globales compartidos (`poi.${poiKey}.gallery.${i}` / `landmark.${id}.gallery.${i}`) — un edit desde /galeria o desde una página de viaje escribe el mismo slot → reflejado en ambos. Tras el fix, los DEFAULTS también coinciden.
+- **Verificado**: Koutoubia card 0 en /galeria = `pexels-photo-16188292` (idéntico a `EXTRA_POI_IMAGES["koutoubia"][0]` que usa el Mapa del día); overlay slot `poi.koutoubia.gallery.0`. Lint limpio.
+
+
 ## /galeria — "Ver viajes que incluyen este lugar" (descubridor de itinerarios) — Jun 2026 (latest)
 - **User ask**: en /galeria, botón/enlace por punto destacado a los viajes que lo incluyen → convierte la galería en descubridor de itinerarios.
 - **Implementación**:

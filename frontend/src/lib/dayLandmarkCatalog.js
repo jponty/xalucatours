@@ -25,6 +25,7 @@ import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { GAZETTEER } from "@/lib/dayPlaceGazetteer";
 import { buildPlaceGallery, ALIAS_PROFILE } from "@/lib/placeGalleries";
 import { CITY_PROFILES } from "@/lib/cityProfiles";
+import { EXTRA_POI_IMAGES } from "@/lib/extraPoiImages";
 import { zoneForPoi } from "@/lib/poiZones";
 
 const EMPTY = { es: "", en: "", fr: "" };
@@ -79,6 +80,18 @@ const buildCurated = () => {
 /* ---- 2) Gazetteer places (every other itinerary, auto-detected) ---- */
 const poiKeyFor = (e) => e.profileKey || ALIAS_PROFILE[e.id] || e.id;
 
+/* Mirror dayPlaceGazetteer.buildLandmark EXACTLY so the default "Galería del
+   lugar" photos on /galeria are identical to the ones the trip-page Day Maps
+   render: Pexels images for the new POIs (keyed by the gazetteer id), else the
+   curated/profile/thematic gallery. The CMS slot is shared (`poi.${poiKey}`)
+   so any edit on either side stays in sync. */
+const galleryForEntry = (entry) => {
+  const pexels = EXTRA_POI_IMAGES[entry.id];
+  return pexels
+    ? pexels.map((src) => ({ src, title: entry.name, description: entry.blurb }))
+    : buildPlaceGallery(entry);
+};
+
 const buildGazetteer = () => {
   const byKey = new Map();
   GAZETTEER.forEach((entry) => {
@@ -87,7 +100,7 @@ const buildGazetteer = () => {
     const profile = entry.profileKey ? CITY_PROFILES[entry.profileKey] : null;
     const name = entry.name || (profile && profile.name) || EMPTY;
     const blurb = entry.blurb || (profile && profile.blurb) || EMPTY;
-    const gallery = buildPlaceGallery(entry);
+    const gallery = galleryForEntry(entry);
     byKey.set(poiKey, {
       uid: `poi-${poiKey}`,
       id: poiKey,
