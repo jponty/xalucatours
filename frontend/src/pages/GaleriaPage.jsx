@@ -299,10 +299,12 @@ export default function GaleriaPage() {
         </div>
       </section>
 
-      {/* Zone quick-nav */}
+      {/* Zone quick-nav — pins to the very top. The site header (z-40) auto-
+          hides on scroll-down, so this nav becomes the fixed region anchor as
+          you browse the zones, and tucks cleanly under the header on scroll-up. */}
       <nav
         data-testid="galeria-zone-nav"
-        className="sticky top-[88px] md:top-[96px] z-30 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#2C2621]/10"
+        className="sticky top-0 z-30 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#2C2621]/10 shadow-[0_8px_24px_-18px_rgba(26,21,19,0.4)]"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-3 flex items-center gap-3 overflow-x-auto no-scrollbar">
           <span className="text-[10px] tracking-[0.22em] uppercase text-[#5C5248] shrink-0 hidden md:inline">
