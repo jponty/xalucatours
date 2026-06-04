@@ -1561,6 +1561,8 @@ const LeadsPanel = () => {
   const [q, setQ] = useState("");
   const [confirmDel, setConfirmDel] = useState(null); // lead row pending deletion
   const [delBusy, setDelBusy] = useState(false);
+  const [selected, setSelected] = useState(new Set()); // ids selected for bulk ops
+  const [confirmBulk, setConfirmBulk] = useState(false);
 
   const cfg = LEAD_FORMS.find((f) => f.id === view);
   const rows = cache[view] || [];
@@ -1581,7 +1583,7 @@ const LeadsPanel = () => {
     }
   }, []);
 
-  useEffect(() => { setQ(""); load(view); }, [view, load]);
+  useEffect(() => { setQ(""); setSelected(new Set()); load(view); }, [view, load]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -1624,9 +1626,56 @@ const LeadsPanel = () => {
       if (!r.ok) throw new Error(String(r.status));
       // Optimistically drop from the current cache
       setCache((c) => ({ ...c, [view]: (c[view] || []).filter((x) => x.id !== confirmDel.id) }));
+      setSelected((s) => { const n = new Set(s); n.delete(confirmDel.id); return n; });
       setConfirmDel(null);
     } catch (e) {
       setErr("No se pudo eliminar el lead. Inténtalo de nuevo.");
+    } finally {
+      setDelBusy(false);
+    }
+  };
+
+  /* ---- Bulk selection helpers ---- */
+  const toggleOne = (id) =>
+    setSelected((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+
+  const filteredIds = useMemo(() => filtered.map((r) => r.id), [filtered]);
+  const allSelected = filteredIds.length > 0 && filteredIds.every((id) => selected.has(id));
+  const someSelected = filteredIds.some((id) => selected.has(id)) && !allSelected;
+
+  const toggleAll = () =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (allSelected) filteredIds.forEach((id) => n.delete(id));
+      else filteredIds.forEach((id) => n.add(id));
+      return n;
+    });
+
+  const selectedCount = filteredIds.filter((id) => selected.has(id)).length;
+
+  const doBulkDelete = async () => {
+    const ids = filteredIds.filter((id) => selected.has(id));
+    if (ids.length === 0) return;
+    setDelBusy(true);
+    setErr("");
+    try {
+      const token = localStorage.getItem("xaluca_admin_token");
+      const results = await Promise.allSettled(
+        ids.map((id) =>
+          fetch(`${API}/${cfg.endpoint}/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          }).then((r) => { if (!r.ok) throw new Error(String(r.status)); return id; })
+        )
+      );
+      const deleted = new Set(results.filter((x) => x.status === "fulfilled").map((x) => x.value));
+      const failed = results.filter((x) => x.status === "rejected").length;
+      setCache((c) => ({ ...c, [view]: (c[view] || []).filter((x) => !deleted.has(x.id)) }));
+      setSelected((s) => { const n = new Set(s); deleted.forEach((id) => n.delete(id)); return n; });
+      setConfirmBulk(false);
+      if (failed > 0) setErr(`${failed} de ${ids.length} leads no se pudieron eliminar.`);
+    } catch (e) {
+      setErr("No se pudieron eliminar los leads. Inténtalo de nuevo.");
     } finally {
       setDelBusy(false);
     }
@@ -1695,10 +1744,50 @@ const LeadsPanel = () => {
 
       {err && <p data-testid="admin-leads-error" className="text-sm text-[#E07856] mb-4">{err}</p>}
 
+      {/* Bulk action bar */}
+      {selectedCount > 0 && (
+        <div
+          data-testid="admin-leads-bulk-bar"
+          className="flex items-center justify-between gap-3 flex-wrap mb-4 px-4 py-3 bg-[#C16542]/15 border border-[#C16542]/40"
+        >
+          <span className="text-[11px] tracking-[0.18em] uppercase text-white/80">
+            {selectedCount} {selectedCount === 1 ? "lead seleccionado" : "leads seleccionados"}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              data-testid="admin-leads-bulk-clear"
+              onClick={() => setSelected(new Set())}
+              className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase border border-white/15 text-white/75 hover:bg-white/5"
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={1.8} /> Limpiar selección
+            </button>
+            <button
+              data-testid="admin-leads-bulk-delete"
+              onClick={() => setConfirmBulk(true)}
+              className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase bg-[#B23A28] hover:bg-[#9c3122] text-white"
+            >
+              <Trash2 className="w-3.5 h-3.5" strokeWidth={1.8} /> Eliminar seleccionados
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto border border-white/10">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-white/5 text-[10px] tracking-[0.18em] uppercase text-white/55">
+              <th className="font-normal px-3 py-2.5 w-10 text-center">
+                <input
+                  type="checkbox"
+                  data-testid="admin-leads-select-all"
+                  checked={allSelected}
+                  ref={(el) => { if (el) el.indeterminate = someSelected; }}
+                  onChange={toggleAll}
+                  disabled={filtered.length === 0}
+                  className="w-4 h-4 accent-[#C16542] cursor-pointer disabled:opacity-40"
+                  aria-label="Seleccionar todos"
+                />
+              </th>
               {cfg.columns.map((c) => (
                 <th key={c.header} className={`font-normal px-3 py-2.5 ${c.center ? "text-center" : "text-left"}`}>{c.header}</th>
               ))}
@@ -1707,7 +1796,17 @@ const LeadsPanel = () => {
           </thead>
           <tbody>
             {filtered.map((r) => (
-              <tr key={r.id} data-testid={`admin-lead-row-${r.id}`} className="border-t border-white/8 hover:bg-white/[0.03] align-top">
+              <tr key={r.id} data-testid={`admin-lead-row-${r.id}`} className={`border-t border-white/8 hover:bg-white/[0.03] align-top ${selected.has(r.id) ? "bg-[#C16542]/10" : ""}`}>
+                <td className="px-3 py-2.5 text-center">
+                  <input
+                    type="checkbox"
+                    data-testid={`admin-lead-select-${r.id}`}
+                    checked={selected.has(r.id)}
+                    onChange={() => toggleOne(r.id)}
+                    className="w-4 h-4 accent-[#C16542] cursor-pointer"
+                    aria-label="Seleccionar lead"
+                  />
+                </td>
                 {cfg.columns.map((c) => {
                   if (c.email) {
                     return (
@@ -1758,7 +1857,7 @@ const LeadsPanel = () => {
             ))}
             {!loading && filtered.length === 0 && (
               <tr>
-                <td colSpan={cfg.columns.length + 1} className="px-3 py-10 text-center text-white/45">
+                <td colSpan={cfg.columns.length + 2} className="px-3 py-10 text-center text-white/45">
                   {rows.length === 0 ? cfg.empty : "Sin resultados para la búsqueda."}
                 </td>
               </tr>
@@ -1808,6 +1907,53 @@ const LeadsPanel = () => {
               >
                 <Trash2 className={`w-3.5 h-3.5 ${delBusy ? "animate-pulse" : ""}`} strokeWidth={1.9} />
                 {delBusy ? "Eliminando…" : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk delete confirmation dialog */}
+      {confirmBulk && (
+        <div
+          data-testid="admin-leads-bulk-dialog"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => !delBusy && setConfirmBulk(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-[#14110F] border border-white/15 shadow-2xl p-6"
+          >
+            <div className="flex items-start gap-3">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#E07856]/15 text-[#E07856] shrink-0">
+                <AlertTriangle className="w-5 h-5" strokeWidth={1.9} />
+              </span>
+              <div className="min-w-0">
+                <h3 className="font-serif-x text-xl text-white">Eliminar {selectedCount} leads</h3>
+                <p className="text-sm text-white/65 mt-2 leading-relaxed">
+                  Vas a eliminar{" "}
+                  <span className="text-white font-medium">{selectedCount} {selectedCount === 1 ? "lead" : "leads"}</span>{" "}
+                  de forma permanente. Esta acción no se puede deshacer.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                data-testid="admin-leads-bulk-cancel"
+                onClick={() => setConfirmBulk(false)}
+                disabled={delBusy}
+                className="px-4 py-2 text-[11px] tracking-[0.22em] uppercase border border-white/15 text-white/75 hover:bg-white/5 disabled:opacity-40"
+              >
+                Cancelar
+              </button>
+              <button
+                data-testid="admin-leads-bulk-confirm"
+                onClick={doBulkDelete}
+                disabled={delBusy}
+                className="inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.22em] uppercase bg-[#B23A28] hover:bg-[#9c3122] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Trash2 className={`w-3.5 h-3.5 ${delBusy ? "animate-pulse" : ""}`} strokeWidth={1.9} />
+                {delBusy ? "Eliminando…" : `Eliminar ${selectedCount}`}
               </button>
             </div>
           </div>
