@@ -96,13 +96,13 @@ export default function HomePage() {
   return (
     <div data-testid="home-page">
       <HeroSlider />
-      <HomeAllTripsCatalog />
       <Marquee />
       <EmotionalIntro />
       <WhyXaluca />
       <FeaturedQuote />
       <TravelCategories />
       <OurTrips />
+      <HomeAllTripsCatalog initialLimit={8} />
       <AllTripsCarousel />
 
       {/* Category carousels — quick access to specific trip pages */}
