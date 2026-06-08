@@ -11,6 +11,25 @@
 
 const G_CDN = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample";
 
+/* ---------- / (Home — below "Nuestra historia") ---------- */
+export const HOME_VIDEOS = {
+  story: {
+    src: `${G_CDN}/Sintel.mp4`,
+    poster: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: { es: "Nuestra historia · Xaluca Tours", en: "Our story · Xaluca Tours", fr: "Notre histoire · Xaluca Tours" },
+    title: {
+      es: "Más de 30 años creando viajes por Marruecos.",
+      en: "Over 30 years crafting journeys across Morocco.",
+      fr: "Plus de 30 ans à créer des voyages au Maroc.",
+    },
+    caption: {
+      es: "Escucha cómo nació Xaluca: la pasión por el desierto, las kasbahs y la gente que convierte cada viaje en una historia.",
+      en: "Hear how Xaluca was born: a passion for the desert, the kasbahs and the people who turn every trip into a story.",
+      fr: "Écoutez comment Xaluca est née : la passion du désert, des kasbahs et des gens qui font de chaque voyage une histoire.",
+    },
+  },
+};
+
 /* ---------- /viajes/marruecos ---------- */
 export const MARRUECOS_VIDEOS = {
   intro: {

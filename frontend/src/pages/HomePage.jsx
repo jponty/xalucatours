@@ -19,6 +19,8 @@ import ContactForm from "@/components/ContactForm";
 import Testimonials from "@/components/Testimonials";
 import HomeCategoryCarousel from "@/components/HomeCategoryCarousel";
 import PressMentions from "@/components/PressMentions";
+import VideoSection from "@/components/VideoSection";
+import { HOME_VIDEOS } from "@/lib/sectionVideos";
 import {
   SOUTH_TRIPS,
   FULL_TRIPS,
@@ -98,6 +100,7 @@ export default function HomePage() {
       <HeroSlider />
       <Marquee />
       <EmotionalIntro />
+      <VideoSection {...HOME_VIDEOS.story} testid="home-video-story" />
       <WhyXaluca />
       <FeaturedQuote />
       <TravelCategories />
