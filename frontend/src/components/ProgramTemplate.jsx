@@ -24,6 +24,7 @@ import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 import FromPrice from "@/components/FromPrice";
 import DownloadProgramModal from "@/components/DownloadProgramModal";
+import VideoSection from "@/components/VideoSection";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
 const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
@@ -1714,6 +1715,21 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
+      <VideoSection
+        testid={`program-audio-${routeId || program.duration_key}`}
+        poster="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
+        eyebrow={{ es: "Escucha este viaje", en: "Listen to this journey", fr: "Écoutez ce voyage" }}
+        title={{
+          es: "Deja que te contemos la ruta.",
+          en: "Let us tell you the route.",
+          fr: "Laissez-nous vous raconter l'itinéraire.",
+        }}
+        caption={{
+          es: "Una narración para imaginar cada etapa antes de partir.",
+          en: "A narration to picture every stage before you set off.",
+          fr: "Une narration pour imaginer chaque étape avant le départ.",
+        }}
+      />
       <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <TripOverview days={program.days} />
