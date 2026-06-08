@@ -6,20 +6,29 @@ import { EditableImage } from "@/components/EditableImage";
 
 /* ----------------------------------------------------------------
    <VideoSection />
-   Inmersive, cinematic responsive video block. Used below the
+   Inmersive, cinematic responsive media block. Used below the
    main editorial sections to reinforce the visual narrative.
 
+   Supports two modes (identical visual design / UX):
+     • Video mode (default): plays a muted, looping background video.
+     • Audio mode: when `audioSrc` is provided, the section keeps the
+       editorial poster as background and the Play / Mute controls
+       drive an HTML5 <audio> narration instead. No autoplay, volume
+       on by default, mute/unmute available.
+
    Props:
-     src       string (mp4 url) — required
-     poster    string (image url) — fallback while video loads
+     src       string (mp4 url)
+     audioSrc  string (mp3 url) — enables audio mode when present
+     poster    string (image url) — fallback while video loads / audio bg
      eyebrow   trilingual {es,en,fr}
      title     trilingual {es,en,fr}
      caption   trilingual {es,en,fr} — short caption shown on hover/mobile
      testid    string
-     autoPlay  boolean (default true; muted autoplay is allowed by browsers)
+     autoPlay  boolean (video mode only; default true)
 ---------------------------------------------------------------- */
 export default function VideoSection({
   src,
+  audioSrc,
   poster,
   eyebrow,
   title,
@@ -29,62 +38,72 @@ export default function VideoSection({
 }) {
   const { lang } = useLanguage();
   const { editMode } = useEditMode();
+  const isAudio = Boolean(audioSrc);
   const videoRef = useRef(null);
-  const [playing, setPlaying] = useState(autoPlay);
-  const [muted, setMuted] = useState(true);
+  const audioRef = useRef(null);
+  const sectionRef = useRef(null);
+  // Audio mode never autoplays; video mode keeps previous behaviour.
+  const [playing, setPlaying] = useState(isAudio ? false : autoPlay);
+  // Audio: sound on by default. Video: muted by default (browser policy).
+  const [muted, setMuted] = useState(isAudio ? false : true);
   const [loaded, setLoaded] = useState(false);
 
   const togglePlay = useCallback(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      v.play().catch(() => {});
+    const m = isAudio ? audioRef.current : videoRef.current;
+    if (!m) return;
+    if (m.paused) {
+      m.play().catch(() => {});
       setPlaying(true);
     } else {
-      v.pause();
+      m.pause();
       setPlaying(false);
     }
-  }, []);
+  }, [isAudio]);
 
   const toggleMute = useCallback(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = !v.muted;
-    setMuted(v.muted);
-  }, []);
+    const m = isAudio ? audioRef.current : videoRef.current;
+    if (!m) return;
+    m.muted = !m.muted;
+    setMuted(m.muted);
+  }, [isAudio]);
 
-  // Pause when off-screen for performance
+  // Pause when off-screen for performance. Video autoplays back when
+  // visible; audio only pauses (manual playback only).
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
+    const el = isAudio ? audioRef.current : videoRef.current;
+    const target = isAudio ? sectionRef.current : videoRef.current;
+    if (!el || !target) return;
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) {
-          v.pause();
+          el.pause();
           setPlaying(false);
-        } else if (autoPlay) {
-          v.play().catch(() => {});
+        } else if (!isAudio && autoPlay) {
+          el.play().catch(() => {});
           setPlaying(true);
         }
       },
       { threshold: 0.25 }
     );
-    obs.observe(v);
+    obs.observe(target);
     return () => obs.disconnect();
-  }, [autoPlay]);
+  }, [autoPlay, isAudio]);
+
+  // Keep play/pause state in sync with native audio events
+  const onEnded = useCallback(() => setPlaying(false), []);
 
   return (
     <section
+      ref={sectionRef}
       data-testid={testid}
       className="relative bg-[#1A1513] py-12 md:py-16 lg:py-20"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-xl md:rounded-2xl shadow-2xl bg-[#2C2621] group">
-          {/* Editable poster layer — the still image of this section. Sits
-              behind the video so it shows before the video paints / if it
-              fails to load, and becomes fully visible + editable in Edit
-              Image mode (the video steps aside). Detected by the CMS like
-              every other <EditableImage>. */}
+          {/* Editable poster layer — the still image of this section. In
+              video mode it sits behind the video; in audio mode it is the
+              permanent cinematic background. Detected by the CMS like every
+              other <EditableImage>. */}
           <EditableImage
             slot={`video.${testid}.poster`}
             fallback={poster}
@@ -92,21 +111,37 @@ export default function VideoSection({
             aspectRatio="16/9"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <video
-            ref={videoRef}
-            data-testid={`${testid}-video`}
-            src={src}
-            playsInline
-            loop
-            muted
-            autoPlay={autoPlay}
-            preload="metadata"
-            onLoadedData={() => setLoaded(true)}
-            onError={() => setLoaded(true)}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-              editMode ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
-          />
+
+          {isAudio ? (
+            <audio
+              ref={audioRef}
+              data-testid={`${testid}-audio`}
+              src={audioSrc}
+              preload="metadata"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+              onEnded={onEnded}
+              onLoadedMetadata={() => setLoaded(true)}
+              onError={() => setLoaded(true)}
+              className="hidden"
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              data-testid={`${testid}-video`}
+              src={src}
+              playsInline
+              loop
+              muted
+              autoPlay={autoPlay}
+              preload="metadata"
+              onLoadedData={() => setLoaded(true)}
+              onError={() => setLoaded(true)}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                editMode ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
+            />
+          )}
 
           {/* Cinematic overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-[#1A1513]/30 pointer-events-none" />
@@ -163,8 +198,8 @@ export default function VideoSection({
             </div>
           </div>
 
-          {/* Loading shimmer */}
-          {!loaded && !editMode && (
+          {/* Loading shimmer (video mode only) */}
+          {!isAudio && !loaded && !editMode && (
             <div className="absolute inset-0 bg-gradient-to-br from-[#2C2621] via-[#3A2E25] to-[#2C2621] animate-pulse pointer-events-none" />
           )}
         </div>
