@@ -4,10 +4,10 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { EditableImage } from "@/components/EditableImage";
 import {
-  setNarration,
-  updateNarrationPlaying,
-  clearNarration,
+  subscribeNarration,
   getNarrationState,
+  toggleNarration,
+  toggleNarrationMuted,
 } from "@/lib/narrationStore";
 
 /* Shared placeholder narration. Every cinematic VideoSection currently plays
@@ -16,32 +16,17 @@ import {
 const DEFAULT_NARRATION_AUDIO =
   "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/ind8dgb7_ElevenLabs_Xaluca_Tours_Sur_de_Marruecos.mp3";
 
-/* Module-level reference to the audio element currently playing across ALL
-   VideoSection instances on the page. Ensures only one narration plays at a
-   time — starting a new one automatically pauses the previous. */
-let activeAudioEl = null;
-
 /* ----------------------------------------------------------------
    <VideoSection />
-   Inmersive, cinematic responsive media block. Used below the
-   main editorial sections to reinforce the visual narrative.
+   Inmersive, cinematic responsive media block.
 
    Supports two modes (identical visual design / UX):
      • Video mode (default): plays a muted, looping background video.
      • Audio mode: when `audioSrc` is provided, the section keeps the
        editorial poster as background and the Play / Mute controls
-       drive an HTML5 <audio> narration instead. No autoplay, volume
-       on by default, mute/unmute available.
-
-   Props:
-     src       string (mp4 url)
-     audioSrc  string (mp3 url) — enables audio mode when present
-     poster    string (image url) — fallback while video loads / audio bg
-     eyebrow   trilingual {es,en,fr}
-     title     trilingual {es,en,fr}
-     caption   trilingual {es,en,fr} — short caption shown on hover/mobile
-     testid    string
-     autoPlay  boolean (video mode only; default true)
+       drive a single GLOBAL narration (see lib/narrationStore). The
+       narration keeps playing in the background across page
+       navigation until the user stops it.
 ---------------------------------------------------------------- */
 export default function VideoSection({
   src,
@@ -57,64 +42,85 @@ export default function VideoSection({
   const { editMode } = useEditMode();
   const isAudio = Boolean(audioSrc);
   const videoRef = useRef(null);
-  const audioRef = useRef(null);
-  const sectionRef = useRef(null);
-  // Audio mode never autoplays; video mode keeps previous behaviour.
-  const [playing, setPlaying] = useState(isAudio ? false : autoPlay);
-  // Audio: sound on by default. Video: muted by default (browser policy).
-  const [muted, setMuted] = useState(isAudio ? false : true);
   const [loaded, setLoaded] = useState(false);
 
+  /* -------- Audio mode: reflect the global narration state -------- */
+  const [narration, setNarration] = useState(getNarrationState());
+  useEffect(() => {
+    if (!isAudio) return undefined;
+    return subscribeNarration(setNarration);
+  }, [isAudio]);
+
+  const isCurrent = isAudio && narration.src === audioSrc;
+  const audioPlaying = isCurrent && narration.playing;
+  const audioMuted = isCurrent && narration.muted;
+
+  const scrollSectionIntoView = useCallback(() => {
+    const sec = document.querySelector(`[data-testid="${testid}"]`);
+    if (!sec) return;
+    const r = sec.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const centeredVisible = r.top < vh * 0.5 && r.bottom > vh * 0.5;
+    if (!centeredVisible) sec.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [testid]);
+
+  /* -------- Video mode controls -------- */
+  const [videoPlaying, setVideoPlaying] = useState(autoPlay);
+  const [videoMuted, setVideoMuted] = useState(true);
+
   const togglePlay = useCallback(() => {
-    const m = isAudio ? audioRef.current : videoRef.current;
-    if (!m) return;
-    if (m.paused) {
-      m.play().catch(() => {});
-      setPlaying(true);
-    } else {
-      m.pause();
-      setPlaying(false);
+    if (isAudio) {
+      const willStart = !audioPlaying;
+      toggleNarration(audioSrc, {
+        title: title ? pick(title, lang) : "",
+        eyebrow: eyebrow ? pick(eyebrow, lang) : "",
+        sectionTestId: testid,
+      });
+      if (willStart) scrollSectionIntoView();
+      return;
     }
-  }, [isAudio]);
-
-  const toggleMute = useCallback(() => {
-    const m = isAudio ? audioRef.current : videoRef.current;
-    if (!m) return;
-    m.muted = !m.muted;
-    setMuted(m.muted);
-  }, [isAudio]);
-
-  // Audio mode: playback must continue while the user stays on the page
-  // (scrolling / switching sections must NOT pause or restart it). It is
-  // only stopped when the component unmounts (i.e. the user navigates away
-  // to another page) — handled by the cleanup below.
-  useEffect(() => {
-    if (!isAudio) return;
-    const el = audioRef.current;
-    return () => {
-      if (el) {
-        if (activeAudioEl === el) activeAudioEl = null;
-        clearNarration(el);
-        el.pause();
-        el.currentTime = 0;
-      }
-    };
-  }, [isAudio]);
-
-  // Video mode: pause when off-screen for performance; autoplay back when
-  // visible.
-  useEffect(() => {
-    if (isAudio) return;
     const v = videoRef.current;
     if (!v) return;
+    if (v.paused) {
+      v.play().catch(() => {});
+      setVideoPlaying(true);
+    } else {
+      v.pause();
+      setVideoPlaying(false);
+    }
+  }, [isAudio, audioPlaying, audioSrc, title, eyebrow, lang, testid, scrollSectionIntoView]);
+
+  const toggleMute = useCallback(() => {
+    if (isAudio) {
+      if (isCurrent) toggleNarrationMuted();
+      else
+        // not the active narration yet — start it (unmuted)
+        toggleNarration(audioSrc, {
+          title: title ? pick(title, lang) : "",
+          eyebrow: eyebrow ? pick(eyebrow, lang) : "",
+          sectionTestId: testid,
+        });
+      return;
+    }
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setVideoMuted(v.muted);
+  }, [isAudio, isCurrent, audioSrc, title, eyebrow, lang, testid]);
+
+  // Video mode: pause when off-screen for performance; autoplay back when visible.
+  useEffect(() => {
+    if (isAudio) return undefined;
+    const v = videoRef.current;
+    if (!v) return undefined;
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) {
           v.pause();
-          setPlaying(false);
+          setVideoPlaying(false);
         } else if (autoPlay) {
           v.play().catch(() => {});
-          setPlaying(true);
+          setVideoPlaying(true);
         }
       },
       { threshold: 0.25 }
@@ -123,27 +129,11 @@ export default function VideoSection({
     return () => obs.disconnect();
   }, [autoPlay, isAudio]);
 
-  // Keep play/pause state in sync with native audio events
-  const onEnded = useCallback(() => {
-    if (activeAudioEl === audioRef.current) activeAudioEl = null;
-    clearNarration(audioRef.current);
-    setPlaying(false);
-  }, []);
-
-  // Gently bring the section into view when narration starts (only if it is
-  // not already comfortably visible) so the user knows what's playing.
-  const scrollSectionIntoView = useCallback((el) => {
-    const sec = el && el.closest("section");
-    if (!sec) return;
-    const r = sec.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const centeredVisible = r.top < vh * 0.5 && r.bottom > vh * 0.5;
-    if (!centeredVisible) sec.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
+  const playing = isAudio ? audioPlaying : videoPlaying;
+  const muted = isAudio ? audioMuted : videoMuted;
 
   return (
     <section
-      ref={sectionRef}
       data-testid={testid}
       className="relative bg-[#1A1513] py-12 md:py-16 lg:py-20"
     >
@@ -151,8 +141,7 @@ export default function VideoSection({
         <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-xl md:rounded-2xl shadow-2xl bg-[#2C2621] group">
           {/* Editable poster layer — the still image of this section. In
               video mode it sits behind the video; in audio mode it is the
-              permanent cinematic background. Detected by the CMS like every
-              other <EditableImage>. */}
+              permanent cinematic background. */}
           <EditableImage
             slot={`video.${testid}.poster`}
             fallback={poster}
@@ -161,37 +150,7 @@ export default function VideoSection({
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {isAudio ? (
-            <audio
-              ref={audioRef}
-              data-testid={`${testid}-audio`}
-              src={audioSrc}
-              preload="metadata"
-              onPlay={(e) => {
-                const el = e.currentTarget;
-                if (activeAudioEl && activeAudioEl !== el) {
-                  activeAudioEl.pause();
-                }
-                activeAudioEl = el;
-                setNarration(el, {
-                  title: title ? pick(title, lang) : "",
-                  eyebrow: eyebrow ? pick(eyebrow, lang) : "",
-                });
-                scrollSectionIntoView(el);
-                setPlaying(true);
-              }}
-              onPause={(e) => {
-                const el = e.currentTarget;
-                if (activeAudioEl === el) activeAudioEl = null;
-                if (getNarrationState().el === el) updateNarrationPlaying(false);
-                setPlaying(false);
-              }}
-              onEnded={onEnded}
-              onLoadedMetadata={() => setLoaded(true)}
-              onError={() => setLoaded(true)}
-              className="hidden"
-            />
-          ) : (
+          {!isAudio && (
             <video
               ref={videoRef}
               data-testid={`${testid}-video`}

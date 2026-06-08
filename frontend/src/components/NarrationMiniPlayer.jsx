@@ -4,49 +4,34 @@ import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import {
   subscribeNarration,
   getNarrationState,
-  clearNarration,
+  toggleCurrentNarration,
+  stopNarration,
 } from "@/lib/narrationStore";
 
 /* ----------------------------------------------------------------
    <NarrationMiniPlayer />
-   Floating "Ahora suena…" pill. Appears whenever a VideoSection
-   narration is active and lets the user play / pause and jump back
-   to the section from anywhere on the page. Mounted once globally
-   in <Layout/>.
+   Floating "Ahora suena…" pill. Appears whenever a narration is
+   active and lets the user play / pause, jump to its section and
+   stop it — from anywhere on the site. Mounted once globally in
+   <Layout/>, so it (and the audio) survive page navigation.
 ---------------------------------------------------------------- */
 export default function NarrationMiniPlayer() {
   const [snap, setSnap] = useState(getNarrationState());
 
   useEffect(() => subscribeNarration(setSnap), []);
 
-  const { el, title, eyebrow, playing } = snap;
-  if (!el) return null;
+  const { src, title, eyebrow, playing, sectionTestId } = snap;
+  if (!src) return null;
 
-  const toggle = () => {
-    const node = getNarrationState().el;
-    if (!node) return;
-    if (node.paused) node.play().catch(() => {});
-    else node.pause();
-  };
+  const toggle = () => toggleCurrentNarration();
 
   const goToSection = () => {
-    const node = getNarrationState().el;
-    const sec = node && node.closest("section");
+    if (!sectionTestId) return;
+    const sec = document.querySelector(`[data-testid="${sectionTestId}"]`);
     if (sec) sec.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const close = () => {
-    const node = getNarrationState().el;
-    if (node) {
-      try {
-        node.pause();
-        node.currentTime = 0;
-      } catch {
-        /* element may already be detached */
-      }
-    }
-    clearNarration(node);
-  };
+  const close = () => stopNarration();
 
   return (
     <div
