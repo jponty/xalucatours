@@ -7,6 +7,7 @@ import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import xMonogram from "@/assets/monograma-x-white.png";
 
 /* ============================================================
    AllTripsCarousel — quick-access rail with every concrete tour
@@ -236,10 +237,19 @@ export default function AllTripsCarousel() {
                   <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/80 mb-2 text-on-image">
                     {trip.nights}
                   </span>
-                  <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight">
+                  <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight pr-12">
                     {pick(trip.title, lang)}
                   </h3>
                 </div>
+
+                {/* Xaluca "X" monogram — bottom-right of each image */}
+                <img
+                  src={xMonogram}
+                  alt=""
+                  aria-hidden="true"
+                  data-testid={`all-trips-monogram-${trip.id}`}
+                  className="pointer-events-none select-none absolute bottom-3 right-3 w-9 h-9 md:w-10 md:h-10 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] z-[3]"
+                />
               </div>
 
               <div className="px-5 py-5">
