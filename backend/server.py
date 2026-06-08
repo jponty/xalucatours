@@ -1369,7 +1369,7 @@ def _format_location(loc: Optional[Dict]) -> Optional[Dict]:
     return out
 
 
-async def _unsplash_location(photo_id: str) -> Optional[Dict]:
+async def _unsplash_location(photo_id: str, allow_fetch: bool = True) -> Optional[Dict]:
     if not photo_id:
         return None
     # 1) hot in-memory cache
@@ -1382,7 +1382,11 @@ async def _unsplash_location(photo_id: str) -> Optional[Dict]:
         loc = doc.get("location")
         _unsplash_loc_cache[photo_id] = loc
         return loc
-    # 3) fetch from Unsplash (single-photo endpoint carries location)
+    # 3) fetch from Unsplash (single-photo endpoint carries location).
+    #    Skipped when allow_fetch is False so callers can serve cache-only and
+    #    protect the 50 req/hour Demo-key budget.
+    if not allow_fetch:
+        return None
     try:
         detail = await _unsplash_get(f"/photos/{photo_id}")
     except HTTPException:
@@ -1401,22 +1405,43 @@ async def _unsplash_location(photo_id: str) -> Optional[Dict]:
     return result
 
 
-async def _attach_locations(summaries: List[Dict]) -> None:
-    """Fetch & attach location to each summary that doesn't already have one,
-    with bounded concurrency to respect Unsplash rate limits."""
-    sem = asyncio.Semaphore(8)
+# Max NEW single-photo location lookups per search/featured request. Cached
+# locations are always attached for free; only this many uncached photos pay an
+# Unsplash API call, keeping us well under the Demo key's 50 req/hour limit.
+UNSPLASH_LOC_MAX_FETCHES = 6
 
-    async def fill(s: Dict):
-        if s.get("location"):
-            return
-        async with sem:
-            loc = await _unsplash_location(s.get("id"))
+
+async def _attach_locations(summaries: List[Dict], max_fetches: int = UNSPLASH_LOC_MAX_FETCHES) -> None:
+    """Attach a display-ready location to each photo.
+
+    Pass 1 (free): serve everything already cached in memory or Mongo.
+    Pass 2 (budgeted): hit the Unsplash single-photo endpoint for at most
+    `max_fetches` of the still-missing photos, so a single search can never
+    exhaust the hourly rate limit. The rest simply render without a caption
+    until their location lands in the cache on a later request."""
+    # Pass 1 — cache-only, no API calls.
+    for s in summaries:
+        if s.get("location") or not s.get("id"):
+            continue
+        loc = await _unsplash_location(s["id"], allow_fetch=False)
         if loc:
             s["location"] = loc
 
-    targets = [s for s in summaries if not s.get("location")]
-    if targets:
-        await asyncio.gather(*[fill(s) for s in targets])
+    # Pass 2 — bounded API fetches for the first few still without a location.
+    remaining = [s for s in summaries if not s.get("location") and s.get("id")]
+    budget = remaining[: max(0, max_fetches)]
+    if not budget:
+        return
+    sem = asyncio.Semaphore(4)
+
+    async def fill(s: Dict):
+        async with sem:
+            loc = await _unsplash_location(s["id"], allow_fetch=True)
+        if loc:
+            s["location"] = loc
+
+    await asyncio.gather(*[fill(s) for s in budget])
+
 
 
 @api_router.get("/unsplash/search")
