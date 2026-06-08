@@ -26,6 +26,8 @@ import Testimonials from "@/components/Testimonials";
 import { SUR_GALLERIES } from "@/lib/sectionGalleries";
 import VideoSection from "@/components/VideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
+import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
+import ImageBrandBadges from "@/components/ImageBrandBadges";
 
 /* ----------------------------------------------------------------
    Sur de Marruecos — 3 immersive videos paired to the editorial
@@ -260,6 +262,7 @@ export default function SurPage() {
   ];
 
   return (
+    <BrandedImagesProvider>
     <div data-testid="sur-page">
       <JourneyHero
         image="https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85"
@@ -411,6 +414,7 @@ export default function SurPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                 <span className="film-grain" />
+                <ImageBrandBadges testid={`sur-more-${card.target}`} />
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
                   <p className="text-[10px] tracking-[0.3em] uppercase text-[#E8C5A3] mb-3">{card.eyebrow[lang]}</p>
                   <h3 className="font-serif-x text-xl md:text-2xl text-white leading-snug mb-4">{card.title[lang]}</h3>
@@ -456,5 +460,6 @@ export default function SurPage() {
 
       <ContactForm />
     </div>
+    </BrandedImagesProvider>
   );
 }

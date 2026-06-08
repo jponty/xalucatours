@@ -19,6 +19,7 @@ import { ESCAPADAS_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { ESCAPADAS_GALLERIES } from "@/lib/sectionGalleries";
 import ToursRegionMap from "@/components/ToursRegionMap";
+import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
 
 /* ============================================================
    Trilingual copy for /viajes/escapadas
@@ -188,6 +189,7 @@ export default function EscapadasPage() {
   ];
 
   return (
+    <BrandedImagesProvider>
     <div data-testid="escapadas-page">
       <JourneyHero
         image="https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2400&q=85"
@@ -280,5 +282,6 @@ export default function EscapadasPage() {
 
       <ContactForm />
     </div>
+    </BrandedImagesProvider>
   );
 }

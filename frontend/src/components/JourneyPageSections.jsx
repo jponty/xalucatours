@@ -10,6 +10,7 @@ import { CONTACT } from "@/lib/data";
 import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
 import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
+import ImageBrandBadges from "@/components/ImageBrandBadges";
 import { useSlotId } from "@/components/slotScope";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
@@ -234,6 +235,8 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                 <Clock className="w-3 h-3" strokeWidth={1.6} />
                 {pick(itinerary.duration, lang)}
               </div>
+
+              <ImageBrandBadges testid={`itinerary-${itinerary.id}`} />
             </div>
           </div>
 
@@ -395,6 +398,8 @@ export const EditorialBlock = ({ block, lang }) => {
         <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/55 to-transparent" />
         <span className="film-grain opacity-40" />
 
+        <ImageBrandBadges testid={`editorial-${block.id}`} />
+
         <div className="relative h-full max-w-5xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-12 md:pb-16">
           <span className="overline text-[#D4A373] drop-shadow-[0_1px_8px_rgba(26,21,19,0.65)]">
             {pick(block.eyebrow, lang)}
@@ -505,6 +510,8 @@ export const ItinerariesOverview = ({ itineraries, t, lang }) => (
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/10 pointer-events-none" />
             <span className="film-grain" />
+
+            <ImageBrandBadges testid={`overview-${it.id}`} />
 
             <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
               <span
@@ -620,6 +627,7 @@ export const CommunityCta = ({ t, lang, testid = "community-cta", image }) => (
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/85 via-[#1A1513]/75 to-[#1A1513]/95 pointer-events-none" />
+        <ImageBrandBadges testid={testid} />
       </>
     )}
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
@@ -729,6 +737,7 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                       <span className="film-grain" />
+                      <ImageBrandBadges testid={`hub-${hub.id}-${p.id}`} />
                       <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
                         <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
                           {getLabel(k)}
@@ -795,6 +804,8 @@ export const CatalogTeaser = ({ t, lang, testid = "catalog-teaser", image }) => 
     <div className="absolute inset-0 bg-gradient-to-r from-[#1A1513]/95 via-[#1A1513]/60 to-[#1A1513]/30 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-30" aria-hidden="true" />
     <span className="film-grain" />
+
+    <ImageBrandBadges testid={testid} />
 
     <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center">
       <div className="max-w-2xl text-[#FDFBF7]">

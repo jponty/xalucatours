@@ -21,6 +21,7 @@ import { MARRUECOS_VIDEOS } from "@/lib/sectionVideos";
 import Testimonials from "@/components/Testimonials";
 import { MARRUECOS_GALLERIES } from "@/lib/sectionGalleries";
 import ToursRegionMap from "@/components/ToursRegionMap";
+import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
 
 /* ============================================================
    Trilingual copy for the Marruecos gateway
@@ -256,6 +257,7 @@ export default function MarruecosPage() {
   // The ItineraryBlock will render variants and related hubs as clickable cards.
 
   return (
+    <BrandedImagesProvider>
     <div data-testid="marruecos-page">
       <JourneyHero
         image="https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85"
@@ -362,5 +364,6 @@ export default function MarruecosPage() {
 
       <ContactForm />
     </div>
+    </BrandedImagesProvider>
   );
 }
