@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Play, Pause, X, AudioLines } from "lucide-react";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import {
   subscribeNarration,
   getNarrationState,
@@ -52,7 +53,15 @@ export default function NarrationMiniPlayer() {
       data-testid="narration-mini-player"
       className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-md"
     >
-      <div className="flex items-center gap-3 rounded-full bg-[#1A1513]/95 backdrop-blur-md border border-[#D4A373]/30 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)] pl-2.5 pr-2 py-2">
+      <div className="flex items-center gap-3 rounded-full bg-[#1A1513]/95 backdrop-blur-md border border-[#D4A373]/30 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)] pl-3 pr-2 py-2">
+        {/* Xaluca brand logo */}
+        <img
+          src={grupXalucaLogo}
+          alt="Xaluca"
+          data-testid="narration-mini-logo"
+          className="shrink-0 w-8 h-8 md:w-9 md:h-9 object-contain select-none"
+        />
+
         {/* Play / Pause */}
         <button
           type="button"
