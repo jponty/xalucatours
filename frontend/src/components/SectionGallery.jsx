@@ -3,7 +3,7 @@ import EditableImage from "@/components/EditableImage";
 import { Camera } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
-import xMonogram from "@/assets/monograma-x-crop.png";
+import xMonogram from "@/assets/monograma-x-badge.png";
 
 /* ============================================================
    SectionGallery — Editorial mosaic gallery used inside the
@@ -112,7 +112,7 @@ export default function SectionGallery({
                 alt=""
                 aria-hidden="true"
                 data-testid={`${testid}-monogram-${i}`}
-                className="pointer-events-none select-none absolute bottom-4 right-4 w-9 h-9 md:w-10 md:h-10 object-contain opacity-80 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] z-[3]"
+                className="pointer-events-none select-none absolute bottom-3 right-3 w-12 h-12 md:w-14 md:h-14 object-contain opacity-85 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] z-[3]"
               />
 
               <span
