@@ -143,7 +143,7 @@ export default function CategoryImageCarousel({
               alt=""
               aria-hidden="true"
               data-testid={`cat-carousel-monogram-${slug}`}
-              className="pointer-events-none select-none absolute right-0 bottom-1/2 translate-y-1/2 w-9 h-9 md:w-10 md:h-10 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] z-[51]"
+              className="pointer-events-none select-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 object-contain opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] z-[51]"
             />
             {list.map((_, i) => (
               <button
