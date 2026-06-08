@@ -3,6 +3,12 @@ import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { EditableImage } from "@/components/EditableImage";
+import {
+  setNarration,
+  updateNarrationPlaying,
+  clearNarration,
+  getNarrationState,
+} from "@/lib/narrationStore";
 
 /* Shared placeholder narration. Every cinematic VideoSection currently plays
    this same audio until page-specific narrations are provided (the caller can
@@ -88,6 +94,7 @@ export default function VideoSection({
     return () => {
       if (el) {
         if (activeAudioEl === el) activeAudioEl = null;
+        clearNarration(el);
         el.pause();
         el.currentTime = 0;
       }
@@ -119,7 +126,19 @@ export default function VideoSection({
   // Keep play/pause state in sync with native audio events
   const onEnded = useCallback(() => {
     if (activeAudioEl === audioRef.current) activeAudioEl = null;
+    clearNarration(audioRef.current);
     setPlaying(false);
+  }, []);
+
+  // Gently bring the section into view when narration starts (only if it is
+  // not already comfortably visible) so the user knows what's playing.
+  const scrollSectionIntoView = useCallback((el) => {
+    const sec = el && el.closest("section");
+    if (!sec) return;
+    const r = sec.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const centeredVisible = r.top < vh * 0.5 && r.bottom > vh * 0.5;
+    if (!centeredVisible) sec.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
   return (
@@ -154,10 +173,17 @@ export default function VideoSection({
                   activeAudioEl.pause();
                 }
                 activeAudioEl = el;
+                setNarration(el, {
+                  title: title ? pick(title, lang) : "",
+                  eyebrow: eyebrow ? pick(eyebrow, lang) : "",
+                });
+                scrollSectionIntoView(el);
                 setPlaying(true);
               }}
               onPause={(e) => {
-                if (activeAudioEl === e.currentTarget) activeAudioEl = null;
+                const el = e.currentTarget;
+                if (activeAudioEl === el) activeAudioEl = null;
+                if (getNarrationState().el === el) updateNarrationPlaying(false);
                 setPlaying(false);
               }}
               onEnded={onEnded}
