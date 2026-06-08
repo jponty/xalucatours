@@ -67,25 +67,40 @@ export default function VideoSection({
     setMuted(m.muted);
   }, [isAudio]);
 
-  // Pause when off-screen for performance. Video autoplays back when
-  // visible; audio only pauses (manual playback only).
+  // Audio mode: playback must continue while the user stays on the page
+  // (scrolling / switching sections must NOT pause or restart it). It is
+  // only stopped when the component unmounts (i.e. the user navigates away
+  // to another page) — handled by the cleanup below.
   useEffect(() => {
-    const el = isAudio ? audioRef.current : videoRef.current;
-    const target = isAudio ? sectionRef.current : videoRef.current;
-    if (!el || !target) return;
+    if (!isAudio) return;
+    const el = audioRef.current;
+    return () => {
+      if (el) {
+        el.pause();
+        el.currentTime = 0;
+      }
+    };
+  }, [isAudio]);
+
+  // Video mode: pause when off-screen for performance; autoplay back when
+  // visible.
+  useEffect(() => {
+    if (isAudio) return;
+    const v = videoRef.current;
+    if (!v) return;
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) {
-          el.pause();
+          v.pause();
           setPlaying(false);
-        } else if (!isAudio && autoPlay) {
-          el.play().catch(() => {});
+        } else if (autoPlay) {
+          v.play().catch(() => {});
           setPlaying(true);
         }
       },
       { threshold: 0.25 }
     );
-    obs.observe(target);
+    obs.observe(v);
     return () => obs.disconnect();
   }, [autoPlay, isAudio]);
 
