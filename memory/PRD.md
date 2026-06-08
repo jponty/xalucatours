@@ -1,5 +1,13 @@
 # Xaluca Tours — PRD
 
+## Estrategia de optimización de imágenes — Jun 2026 (latest)
+- **Auditoría**: el pipeline ya era muy sólido →
+  - Backend: subidas redimensionadas (MAX_IMAGE_WIDTH) + convertidas a WebP; GET `/api/files/{path}` sirve variantes por petición (`?w=`, `?fmt=auto`) con caché de variantes en disco y `Cache-Control: public, max-age=31536000, immutable`.
+  - Frontend `SmartImage` (EditableImage) + `lib/imageUrl.js`: `srcSet` (320–1920) + `sizes` responsivos, formatos modernos (Unsplash `auto=format`, Pexels `auto=compress&cs=tinysrgb`, storage `fmt=auto`), `loading="lazy"` nativo, `priority`→`eager`+`fetchpriority=high` para LCP, skeleton anti-CLS con `aspect-ratio`, helper `prefetchImage`.
+- **Mejora aplicada** (único hueco real): `public/index.html` ahora hace **`preconnect` + `dns-prefetch`** a los CDN de imágenes/medios — `images.unsplash.com`, `images.pexels.com`, `img.youtube.com`, `i.ytimg.com`, `www.youtube.com` — evitando el coste DNS+TLS (~100–300 ms) en la primera imagen de cada host. Verificado en el HTML servido (6 preconnect, 5 dns-prefetch) y render OK.
+- **Nota (pre-existente, fuera de alcance)**: el vídeo de fondo del hero de la home muestra "Video unavailable" (ID de YouTube no disponible/privado) — conviene revisar el ID del vídeo del hero.
+
+
 ## Fix móvil — foco en barras de búsqueda de la Biblioteca de imágenes — Jun 2026 (latest)
 - **Bug**: en móvil (táctil), en las 4 pestañas del picker (Biblioteca, Pexels, Unsplash, Selección) no se podía enfocar la barra de búsqueda al tocarla → imposible buscar imágenes. Desktop OK.
 - **Causa raíz**: `ImageLibraryPicker` se renderiza como descendiente (DOM + árbol React) del editor `edit-modal-{slot}` de `EditableImage`, cuyo div raíz (`role="presentation"`) tiene `onPointerDown={stopAndPrevent}` y `onMouseDown={stopAndPrevent}` (llaman `preventDefault`). En táctil el foco se concede en `pointerdown`; el `preventDefault` lo bloqueaba. Los eventos sintéticos de React propagan por el árbol React (incluso a través de portales), por lo que los del picker burbujeaban hasta ese handler.
