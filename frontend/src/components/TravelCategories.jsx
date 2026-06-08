@@ -6,6 +6,7 @@ import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
 import { pathFor } from "@/lib/routes";
 import CategoryImageCarousel from "@/components/CategoryImageCarousel";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
 
 const BADGE_KEY = {
@@ -71,7 +72,7 @@ export const TravelCategories = () => {
                   </span>
 
                   {/* Badges */}
-                  {c.badges?.length > 0 && (
+                  {c.badges?.length > 0 ? (
                     <div className="absolute top-6 right-6 flex flex-wrap gap-2 justify-end max-w-[60%]">
                       {c.badges.map((b) => (
                         <span
@@ -84,6 +85,12 @@ export const TravelCategories = () => {
                         </span>
                       ))}
                     </div>
+                  ) : (
+                    /* No top-right label → show the Xaluca brand logo there. */
+                    <XalucaLogoBadge
+                      className="top-6 right-6 w-11 h-11 md:w-12 md:h-12"
+                      testid={`category-logo-${c.slug}`}
+                    />
                   )}
 
                   {/* Region pill bottom */}

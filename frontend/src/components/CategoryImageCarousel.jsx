@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import EditableImage from "@/components/EditableImage";
 import { useEditMode } from "@/contexts/EditModeContext";
-import xMonogram from "@/assets/monograma-x-white.png";
 
 /* ============================================================
    CategoryImageCarousel
@@ -132,19 +131,11 @@ export default function CategoryImageCarousel({
             <ChevronRight className="w-5 h-5" strokeWidth={1.6} />
           </button>
 
-          {/* Dots — square navigation indicators, with the Xaluca "X"
-              monogram superimposed over them as a brand mark. */}
+          {/* Dots — square navigation indicators */}
           <div
             data-testid={`cat-carousel-dots-${slug}`}
             className="absolute bottom-5 right-6 z-[50] inline-flex items-center gap-1.5"
           >
-            <img
-              src={xMonogram}
-              alt=""
-              aria-hidden="true"
-              data-testid={`cat-carousel-monogram-${slug}`}
-              className="pointer-events-none select-none absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-9 h-9 md:w-10 md:h-10 object-contain opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] z-[51]"
-            />
             {list.map((_, i) => (
               <button
                 key={i}
