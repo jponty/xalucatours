@@ -158,7 +158,7 @@ class TripPlannerCreate(BaseModel):
 # its own brochure URL in the future by adding an entry to PROGRAM_DOWNLOAD_LINKS
 # (keyed by the frontend routeId) — the endpoint resolves per-route first,
 # then falls back to the default.
-DEFAULT_PROGRAM_DOWNLOAD_URL = "https://xalucatours.com/"
+DEFAULT_PROGRAM_DOWNLOAD_URL = os.environ.get("DEFAULT_PROGRAM_DOWNLOAD_URL", "https://xalucatours.com/")
 PROGRAM_DOWNLOAD_LINKS: Dict[str, str] = {}
 
 
