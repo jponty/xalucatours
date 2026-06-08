@@ -10,6 +10,11 @@ import { EditableImage } from "@/components/EditableImage";
 const DEFAULT_NARRATION_AUDIO =
   "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/ind8dgb7_ElevenLabs_Xaluca_Tours_Sur_de_Marruecos.mp3";
 
+/* Module-level reference to the audio element currently playing across ALL
+   VideoSection instances on the page. Ensures only one narration plays at a
+   time — starting a new one automatically pauses the previous. */
+let activeAudioEl = null;
+
 /* ----------------------------------------------------------------
    <VideoSection />
    Inmersive, cinematic responsive media block. Used below the
@@ -82,6 +87,7 @@ export default function VideoSection({
     const el = audioRef.current;
     return () => {
       if (el) {
+        if (activeAudioEl === el) activeAudioEl = null;
         el.pause();
         el.currentTime = 0;
       }
@@ -111,7 +117,10 @@ export default function VideoSection({
   }, [autoPlay, isAudio]);
 
   // Keep play/pause state in sync with native audio events
-  const onEnded = useCallback(() => setPlaying(false), []);
+  const onEnded = useCallback(() => {
+    if (activeAudioEl === audioRef.current) activeAudioEl = null;
+    setPlaying(false);
+  }, []);
 
   return (
     <section
@@ -139,8 +148,18 @@ export default function VideoSection({
               data-testid={`${testid}-audio`}
               src={audioSrc}
               preload="metadata"
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
+              onPlay={(e) => {
+                const el = e.currentTarget;
+                if (activeAudioEl && activeAudioEl !== el) {
+                  activeAudioEl.pause();
+                }
+                activeAudioEl = el;
+                setPlaying(true);
+              }}
+              onPause={(e) => {
+                if (activeAudioEl === e.currentTarget) activeAudioEl = null;
+                setPlaying(false);
+              }}
               onEnded={onEnded}
               onLoadedMetadata={() => setLoaded(true)}
               onError={() => setLoaded(true)}
