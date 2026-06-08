@@ -3,7 +3,6 @@ import EditableImage from "@/components/EditableImage";
 import { Camera } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
-import xMonogram from "@/assets/monograma-x-badge.png";
 
 /* ============================================================
    SectionGallery — Editorial mosaic gallery used inside the
@@ -106,21 +105,12 @@ export default function SectionGallery({
                 testid={`${testid}-logo-${i}`}
               />
 
-              {/* Brand: "X" monogram watermark (bottom-right) */}
-              <img
-                src={xMonogram}
-                alt=""
-                aria-hidden="true"
-                data-testid={`${testid}-monogram-${i}`}
-                className="pointer-events-none select-none absolute bottom-3 right-3 w-12 h-12 md:w-14 md:h-14 object-contain opacity-85 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] z-[3]"
-              />
-
               <span
                 className="absolute top-4 left-4 inline-block w-1.5 h-1.5 pointer-events-none"
                 style={{ background: accent }}
                 aria-hidden="true"
               />
-              <span className="absolute left-5 right-16 bottom-5 text-left pointer-events-none">
+              <span className="absolute left-5 right-5 bottom-5 text-left pointer-events-none">
                 <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/70">
                   {String(i + 1).padStart(2, "0")}
                 </span>
