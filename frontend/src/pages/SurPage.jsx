@@ -35,7 +35,6 @@ import ToursRegionMap from "@/components/ToursRegionMap";
 const SUR_VIDEOS = {
   kasbahs: {
     src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    audioSrc: "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/ind8dgb7_ElevenLabs_Xaluca_Tours_Sur_de_Marruecos.mp3",
     poster: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "La ruta de las mil kasbahs", en: "The thousand-kasbahs route", fr: "La route des mille kasbahs" },
     title: {

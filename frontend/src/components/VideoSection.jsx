@@ -4,6 +4,12 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { EditableImage } from "@/components/EditableImage";
 
+/* Shared placeholder narration. Every cinematic VideoSection currently plays
+   this same audio until page-specific narrations are provided (the caller can
+   override it per section via the `audioSrc` prop). */
+const DEFAULT_NARRATION_AUDIO =
+  "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/ind8dgb7_ElevenLabs_Xaluca_Tours_Sur_de_Marruecos.mp3";
+
 /* ----------------------------------------------------------------
    <VideoSection />
    Inmersive, cinematic responsive media block. Used below the
@@ -28,7 +34,7 @@ import { EditableImage } from "@/components/EditableImage";
 ---------------------------------------------------------------- */
 export default function VideoSection({
   src,
-  audioSrc,
+  audioSrc = DEFAULT_NARRATION_AUDIO,
   poster,
   eyebrow,
   title,
