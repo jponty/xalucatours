@@ -663,7 +663,7 @@ async def slot_usage(slot_id: str):
 @api_router.get("/slots")
 async def list_image_slots():
     """List every image slot ever set — used by the /admin dashboard."""
-    cursor = db.image_slots.find({}, {"updated_at": 0})
+    cursor = db.image_slots.find({}, {"updated_at": 0}).limit(10000)
     items = []
     async for d in cursor:
         items.append({
@@ -1877,7 +1877,7 @@ async def list_text_slots():
     """Return every saved text slot as a dict {slot_id: values}. Used by
     the frontend to hydrate copy without one request per slot on first
     render."""
-    cursor = db.text_slots.find({}, {"updated_at": 0})
+    cursor = db.text_slots.find({}, {"updated_at": 0}).limit(10000)
     items: Dict[str, Dict[str, Optional[str]]] = {}
     async for doc in cursor:
         slot_id = doc.get("_id")
