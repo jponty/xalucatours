@@ -239,6 +239,14 @@ export default function PlannerForm() {
         accommodation: form.accommodation,
         regions: form.regions,
         selected_trips: form.selectedTrips,
+        selected_trips_detail: form.selectedTrips.map((id) => {
+          const t = ALL_TRIPS.find((x) => x.routeId === id);
+          return {
+            id,
+            title: t ? pick(t.title, lang) : id,
+            url: `${window.location.origin}${pathFor(lang, id)}`,
+          };
+        }),
         activities: form.activities,
         notes: form.notes.trim() || null,
         language: lang,

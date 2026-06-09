@@ -112,6 +112,13 @@ class ContactRequestCreate(BaseModel):
 
 
 # ---------- Trip Planner ----------
+class TripRef(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = ""
+    title: str = ""
+    url: Optional[str] = None
+
+
 class TripPlannerRequest(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -129,6 +136,7 @@ class TripPlannerRequest(BaseModel):
     accommodation: str = "superior"     # "basic" | "superior" | "premium"
     regions: List[str] = Field(default_factory=list)
     selected_trips: List[str] = Field(default_factory=list)
+    selected_trips_detail: List[TripRef] = Field(default_factory=list)
     activities: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
     language: Optional[str] = "es"
@@ -148,6 +156,7 @@ class TripPlannerCreate(BaseModel):
     accommodation: str = Field(default="superior", pattern="^(basic|superior|premium)$")
     regions: List[str] = Field(default_factory=list, max_length=20)
     selected_trips: List[str] = Field(default_factory=list, max_length=50)
+    selected_trips_detail: List[TripRef] = Field(default_factory=list, max_length=50)
     activities: List[str] = Field(default_factory=list, max_length=20)
     notes: Optional[str] = Field(default=None, max_length=4000)
     language: Optional[str] = "es"
@@ -358,6 +367,38 @@ LEADS_NOTIFY_EMAILS = [e.strip() for e in os.environ.get("LEADS_NOTIFY_EMAILS", 
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
+# --- Inline brand logo embedded in every outgoing email (Content-ID) ---
+_EMAIL_LOGO_CID = "xalucalogo"
+_EMAIL_LOGO_B64 = ""
+try:
+    _logo_path = ROOT_DIR / "assets" / "email-logo.png"
+    if _logo_path.exists():
+        _EMAIL_LOGO_B64 = _base64.b64encode(_logo_path.read_bytes()).decode("ascii")
+except Exception as _logo_exc:  # noqa: BLE001
+    logger.warning("Could not load email logo: %s", _logo_exc)
+
+
+def _email_attachments() -> list:
+    """Inline logo attachment for Resend (referenced via cid:xalucalogo)."""
+    if not _EMAIL_LOGO_B64:
+        return []
+    return [{
+        "filename": "xaluca-logo.png",
+        "content": _EMAIL_LOGO_B64,
+        "content_type": "image/png",
+        "content_id": _EMAIL_LOGO_CID,
+    }]
+
+
+def _email_logo_img(height: int = 44) -> str:
+    """<img> tag pointing at the inline logo, or '' when unavailable."""
+    if not _EMAIL_LOGO_B64:
+        return ""
+    return (
+        f'<img src="cid:{_EMAIL_LOGO_CID}" width="{height}" height="{height}" alt="Xaluca Tours" '
+        f'style="display:block;height:{height}px;width:{height}px;margin-bottom:14px">'
+    )
+
 
 def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
     """Build a simple, email-client-safe HTML (inline CSS, table layout)."""
@@ -379,6 +420,7 @@ def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
         '<tr><td style="background:#1A1513;padding:24px 28px">'
+        f'{_email_logo_img(40)}'
         '<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">Xaluca Tours · Nuevo lead</div>'
         f'<div style="color:#FDFBF7;font-size:22px;margin-top:6px">{title}</div>'
         f'<div style="color:#FDFBF7;opacity:.7;font-size:13px;margin-top:4px">{subtitle}</div>'
@@ -402,6 +444,9 @@ def send_lead_notification(subject: str, html: str, reply_to: Optional[str] = No
             "subject": subject,
             "html": html,
         }
+        attachments = _email_attachments()
+        if attachments:
+            params["attachments"] = attachments
         if reply_to:
             params["reply_to"] = reply_to
         resend.Emails.send(params)
@@ -466,6 +511,7 @@ def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
         '<tr><td style="background:#1A1513;padding:28px 30px">'
+        f'{_email_logo_img(48)}'
         f'<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">{c["eyebrow"]}</div>'
         f'<div style="color:#FDFBF7;font-size:24px;margin-top:8px;font-weight:600">{c["title"]}</div>'
         '</td></tr>'
@@ -485,6 +531,9 @@ def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None
             "subject": c["subject"],
             "html": html,
         }
+        attachments = _email_attachments()
+        if attachments:
+            params["attachments"] = attachments
         if LEADS_NOTIFY_EMAILS:
             params["reply_to"] = LEADS_NOTIFY_EMAILS[0]
         resend.Emails.send(params)
@@ -544,7 +593,15 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
     activities = [a.strip()[:60] for a in (payload.activities or []) if a and a.strip()]
     regions = [r.strip()[:40] for r in (payload.regions or []) if r and r.strip()]
     selected_trips = [s.strip()[:80] for s in (payload.selected_trips or []) if s and s.strip()]
-    obj = TripPlannerRequest(**{**payload.model_dump(), "activities": activities, "regions": regions, "selected_trips": selected_trips})
+    # Sanitize trip detail (title + link) — fall back to plain ids if absent.
+    selected_trips_detail = []
+    for t in (payload.selected_trips_detail or []):
+        title = (t.title or "").strip()[:120]
+        tid = (t.id or "").strip()[:80]
+        url = (t.url or "").strip()[:500] if t.url else None
+        if title or tid:
+            selected_trips_detail.append(TripRef(id=tid, title=title or tid, url=url))
+    obj = TripPlannerRequest(**{**payload.model_dump(), "activities": activities, "regions": regions, "selected_trips": selected_trips, "selected_trips_detail": [d.model_dump() for d in selected_trips_detail]})
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.trip_planner_requests.insert_one(doc)
@@ -554,6 +611,15 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
         dates = f"Flexible · {obj.flexible_month}" if obj.flexible_month else "Flexible"
     else:
         dates = " → ".join([d for d in (obj.start_date, obj.end_date) if d])
+    # Build linked trip titles for the email (falls back to raw ids).
+    if selected_trips_detail:
+        trips_value = " · ".join(
+            (f'<a href="{t.url}" style="color:#C16542;text-decoration:none;border-bottom:1px solid #D4A373">{t.title}</a>'
+             if t.url else t.title)
+            for t in selected_trips_detail
+        )
+    else:
+        trips_value = ", ".join(selected_trips)
     html = _lead_email_html(
         "Planifica tu viaje",
         f"{obj.full_name} · {obj.email}",
@@ -566,7 +632,7 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
             ("Niños", obj.travellers_children),
             ("Alojamiento", obj.accommodation),
             ("Regiones", regions),
-            ("Viajes de interés", selected_trips),
+            ("Viajes de interés", trips_value),
             ("Actividades", activities),
             ("Notas", obj.notes),
             ("Idioma", obj.language),
