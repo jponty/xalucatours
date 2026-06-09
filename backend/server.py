@@ -1990,11 +1990,42 @@ async def translate_text(body: TranslateBody):
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "").strip()
 PLACES_LEGACY_BASE = "https://maps.googleapis.com/maps/api/place"
 
+# Types that qualify a place as a "landmark" (kept) vs. clearly non-landmark
+# venues (hotels, restaurants, shops…) which are filtered out so the search
+# only surfaces sightseeing places.
+LANDMARK_TYPES = {
+    "tourist_attraction", "landmark", "historical_landmark", "point_of_interest",
+    "natural_feature", "place_of_worship", "mosque", "church", "hindu_temple",
+    "synagogue", "museum", "art_gallery", "park", "national_park", "monument",
+    "castle", "city_hall", "stadium", "amusement_park", "zoo", "aquarium",
+}
+NON_LANDMARK_TYPES = {
+    "lodging", "hotel", "restaurant", "food", "cafe", "bar", "meal_takeaway",
+    "meal_delivery", "store", "shopping_mall", "supermarket", "grocery_or_supermarket",
+    "clothing_store", "home_goods_store", "furniture_store", "real_estate_agency",
+    "travel_agency", "car_rental", "car_repair", "car_dealer", "gas_station",
+    "atm", "bank", "finance", "pharmacy", "hospital", "doctor", "dentist",
+    "school", "university", "gym", "beauty_salon", "spa", "night_club",
+    "laundry", "lawyer", "insurance_agency", "moving_company", "plumber",
+}
+
+
+def _is_landmark(types: list) -> bool:
+    """A place is a landmark when it carries at least one landmark type and is
+    not primarily a hotel / restaurant / shop / service."""
+    tset = set(types or [])
+    if tset & NON_LANDMARK_TYPES:
+        return False
+    return bool(tset & LANDMARK_TYPES)
+
 
 @api_router.get("/places/search")
 async def places_search(q: str, limit: int = 12, lang: str = "es"):
-    """Text-search places in Morocco and return their photos as
-    backend-proxied image URLs (CMS-friendly shape)."""
+    """Text-search landmark places in Morocco and return their photos as
+    backend-proxied image URLs (CMS-friendly shape). Only places classified as
+    landmarks (tourist attractions, monuments, natural features, places of
+    worship, museums, parks…) are returned — hotels, restaurants and shops are
+    filtered out."""
     if not GOOGLE_PLACES_API_KEY:
         raise HTTPException(status_code=503, detail="Google Places API key not configured.")
     query = (q or "").strip()
@@ -2002,7 +2033,7 @@ async def places_search(q: str, limit: int = 12, lang: str = "es"):
         raise HTTPException(status_code=400, detail="Empty query.")
     limit = max(1, min(limit, 20))
     params = {
-        "query": f"{query} Morocco",
+        "query": f"{query} landmarks Morocco",
         "region": "ma",
         "language": lang if lang in ("es", "en", "fr") else "es",
         "key": GOOGLE_PLACES_API_KEY,
@@ -2019,7 +2050,10 @@ async def places_search(q: str, limit: int = 12, lang: str = "es"):
     if status not in ("OK", "ZERO_RESULTS"):
         raise HTTPException(status_code=502, detail=f"Places error: {status} {data.get('error_message','')}")
     results = []
-    for p in (data.get("results") or [])[:limit]:
+    for p in (data.get("results") or []):
+        # Only keep landmark-classified places that actually have a photo.
+        if not _is_landmark(p.get("types")):
+            continue
         photos = []
         for ph in (p.get("photos") or [])[:10]:
             ref = ph.get("photo_reference")
@@ -2032,6 +2066,8 @@ async def places_search(q: str, limit: int = 12, lang: str = "es"):
                 "height": ph.get("height", 0),
                 "attribution": " ".join(ph.get("html_attributions") or [])[:200],
             })
+        if not photos:
+            continue
         results.append({
             "id": p.get("place_id"),
             "name": p.get("name", ""),
@@ -2041,6 +2077,8 @@ async def places_search(q: str, limit: int = 12, lang: str = "es"):
             "rating": p.get("rating"),
             "photos": photos,
         })
+        if len(results) >= limit:
+            break
     return {"query": query, "count": len(results), "places": results}
 
 

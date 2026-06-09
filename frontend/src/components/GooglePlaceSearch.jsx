@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { Search, MapPin, Loader2, X, ImageOff, Sparkles } from "lucide-react";
+import { Search, MapPin, Loader2, X, ImageOff, Sparkles, Check } from "lucide-react";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -18,6 +18,9 @@ const T = {
     error: "No se pudo completar la búsqueda. Inténtalo de nuevo.",
     results: "Resultados",
     photosOf: "Fotografías de",
+    landmarks: "Lugares emblemáticos",
+    choose: "Elige un lugar para ver todas sus fotografías",
+    landmarksCount: "lugares",
     close: "Cerrar",
   },
   en: {
@@ -34,6 +37,9 @@ const T = {
     error: "The search could not be completed. Please try again.",
     results: "Results",
     photosOf: "Photographs of",
+    landmarks: "Landmarks",
+    choose: "Pick a place to see all its photographs",
+    landmarksCount: "places",
     close: "Close",
   },
   fr: {
@@ -50,6 +56,9 @@ const T = {
     error: "La recherche n'a pas pu aboutir. Réessayez.",
     results: "Résultats",
     photosOf: "Photographies de",
+    landmarks: "Sites emblématiques",
+    choose: "Choisissez un lieu pour voir toutes ses photographies",
+    landmarksCount: "lieux",
     close: "Fermer",
   },
 };
@@ -267,30 +276,60 @@ export default function GooglePlaceSearch({ lang = "es" }) {
 
           {places.length > 0 && (
             <div data-testid="place-search-results">
-              {/* Place tabs (when several matches) */}
-              {places.length > 1 && (
-                <div className="flex flex-wrap gap-2 mb-7">
-                  {places.map((p, i) => (
-                    <button
-                      key={p.id || i}
-                      type="button"
-                      onClick={() => setActiveIdx(i)}
-                      data-testid={`place-result-tab-${i}`}
-                      className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] transition-colors border ${
-                        i === activeIdx
-                          ? "bg-[#FDFBF7] text-[#1A1513] border-[#FDFBF7]"
-                          : "text-[#FDFBF7]/70 border-[#FDFBF7]/20 hover:border-[#FDFBF7]/60"
-                      }`}
-                    >
-                      <MapPin className="w-3.5 h-3.5" strokeWidth={1.7} />
-                      {p.name}
-                    </button>
-                  ))}
+              {/* Landmark gallery — browse & select from several results */}
+              <div className="flex items-end justify-between gap-4 flex-wrap mb-6">
+                <div>
+                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
+                    {t.landmarks}
+                  </span>
+                  <h3 className="font-serif-x text-2xl md:text-3xl text-[#FDFBF7] mt-1.5">
+                    {t.choose}
+                  </h3>
                 </div>
-              )}
+                <span className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/40">
+                  {String(places.length).padStart(2, "0")} {t.landmarksCount}
+                </span>
+              </div>
 
+              <div className="grid grid-cols-12 gap-3 md:gap-4">
+                {places.map((p, i) => (
+                  <button
+                    type="button"
+                    key={p.id || i}
+                    onClick={() => setActiveIdx(i)}
+                    data-testid={`place-landmark-${i}`}
+                    aria-pressed={i === activeIdx}
+                    className={`group relative overflow-hidden bg-[#2C2621] col-span-6 sm:col-span-4 lg:col-span-3 aspect-[4/5] transition-all ${
+                      i === activeIdx
+                        ? "ring-2 ring-[#D4A373] ring-offset-2 ring-offset-[#161616]"
+                        : ""
+                    }`}
+                  >
+                    <img
+                      src={photoUrl(p.photos[0].thumb_url)}
+                      alt={p.name}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/90 via-[#1A1513]/15 to-transparent pointer-events-none" />
+                    <span className="absolute inset-x-0 bottom-0 p-3.5 text-left pointer-events-none">
+                      <span className="flex items-center gap-1.5 text-[#FDFBF7] font-serif-x text-[14px] md:text-[15px] leading-tight">
+                        <MapPin className="w-3.5 h-3.5 shrink-0 text-[#D4A373]" strokeWidth={1.8} />
+                        <span className="line-clamp-2">{p.name}</span>
+                      </span>
+                    </span>
+                    {i === activeIdx && (
+                      <span className="absolute top-2.5 right-2.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#D4A373] text-[#1A1513]">
+                        <Check className="w-3.5 h-3.5" strokeWidth={2.4} />
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Selected landmark — full photo gallery */}
               {active && (
-                <>
+                <div className="mt-12 pt-10 border-t border-[#FDFBF7]/10">
                   <div className="flex items-end justify-between gap-4 flex-wrap mb-6">
                     <div>
                       <span className="block text-[10px] tracking-[0.3em] uppercase text-[#D4A373]">
@@ -331,7 +370,7 @@ export default function GooglePlaceSearch({ lang = "es" }) {
                       </button>
                     ))}
                   </div>
-                </>
+                </div>
               )}
             </div>
           )}
