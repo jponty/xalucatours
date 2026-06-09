@@ -67,6 +67,12 @@ export const MENU_TREE = [
     ],
   },
   {
+    id: "precios",
+    routeId: "precios",
+    label: { es: "Precios", en: "Pricing", fr: "Tarifs" },
+    icon: "tag",
+  },
+  {
     id: "galeria",
     routeId: "galeria",
     label: { es: "Galería", en: "Gallery", fr: "Galerie" },
