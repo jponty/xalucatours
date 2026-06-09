@@ -298,7 +298,6 @@ export default function PexelsImageSearch({ lang = "es" }) {
                         {t.photoBy} {ph.photographer}
                       </span>
                     )}
-                    <span className="absolute top-3 left-3 inline-block w-1.5 h-1.5 bg-[#D4A373]" />
                   </button>
                 ))}
               </div>

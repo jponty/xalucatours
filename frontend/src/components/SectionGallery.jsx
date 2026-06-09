@@ -115,11 +115,6 @@ export default function SectionGallery({
                 className="pointer-events-none select-none absolute bottom-3 right-3 w-10 h-10 md:w-12 md:h-12 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)] z-[3]"
               />
 
-              <span
-                className="absolute top-4 left-4 inline-block w-1.5 h-1.5 pointer-events-none"
-                style={{ background: accent }}
-                aria-hidden="true"
-              />
               <span className="absolute left-5 right-16 bottom-5 text-left pointer-events-none">
                 <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/70">
                   {String(i + 1).padStart(2, "0")}
