@@ -370,24 +370,37 @@ if RESEND_API_KEY:
 # --- Inline brand logo embedded in every outgoing email (Content-ID) ---
 _EMAIL_LOGO_CID = "xalucalogo"
 _EMAIL_LOGO_B64 = ""
+_EMAIL_MONOGRAM_CID = "xalucax"
+_EMAIL_MONOGRAM_B64 = ""
 try:
     _logo_path = ROOT_DIR / "assets" / "email-logo.png"
     if _logo_path.exists():
         _EMAIL_LOGO_B64 = _base64.b64encode(_logo_path.read_bytes()).decode("ascii")
+    _mono_path = ROOT_DIR / "assets" / "email-monogram.png"
+    if _mono_path.exists():
+        _EMAIL_MONOGRAM_B64 = _base64.b64encode(_mono_path.read_bytes()).decode("ascii")
 except Exception as _logo_exc:  # noqa: BLE001
-    logger.warning("Could not load email logo: %s", _logo_exc)
+    logger.warning("Could not load email brand assets: %s", _logo_exc)
 
 
 def _email_attachments() -> list:
-    """Inline logo attachment for Resend (referenced via cid:xalucalogo)."""
-    if not _EMAIL_LOGO_B64:
-        return []
-    return [{
-        "filename": "xaluca-logo.png",
-        "content": _EMAIL_LOGO_B64,
-        "content_type": "image/png",
-        "content_id": _EMAIL_LOGO_CID,
-    }]
+    """Inline brand assets for Resend (logo + 'X' monogram, referenced via cid)."""
+    out = []
+    if _EMAIL_LOGO_B64:
+        out.append({
+            "filename": "xaluca-logo.png",
+            "content": _EMAIL_LOGO_B64,
+            "content_type": "image/png",
+            "content_id": _EMAIL_LOGO_CID,
+        })
+    if _EMAIL_MONOGRAM_B64:
+        out.append({
+            "filename": "xaluca-monogram.png",
+            "content": _EMAIL_MONOGRAM_B64,
+            "content_type": "image/png",
+            "content_id": _EMAIL_MONOGRAM_CID,
+        })
+    return out
 
 
 def _email_logo_img(height: int = 44) -> str:
@@ -397,6 +410,32 @@ def _email_logo_img(height: int = 44) -> str:
     return (
         f'<img src="cid:{_EMAIL_LOGO_CID}" width="{height}" height="{height}" alt="Xaluca Tours" '
         f'style="display:block;height:{height}px;width:{height}px;margin-bottom:14px">'
+    )
+
+
+def _email_monogram_img(size: int = 132) -> str:
+    """Large 'X' monogram <img> for the email banner — mirrors the website
+    overlay style (white monogram, soft shadow). '' when unavailable."""
+    if not _EMAIL_MONOGRAM_B64:
+        return ""
+    return (
+        f'<img src="cid:{_EMAIL_MONOGRAM_CID}" width="{size}" height="{size}" alt="" '
+        f'style="display:block;height:{size}px;width:{size}px;object-fit:contain;'
+        f'filter:drop-shadow(0 2px 6px rgba(0,0,0,0.55))">'
+    )
+
+
+def _email_banner(inner_html: str, padding: str = "24px 28px") -> str:
+    """Dark Xaluca banner with the large 'X' monogram anchored bottom-right,
+    matching the website's image-overlay branding."""
+    mono = _email_monogram_img(132)
+    return (
+        '<tr><td style="background:#1A1513;padding:0">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
+        f'<td style="padding:{padding};vertical-align:top">{inner_html}</td>'
+        f'<td width="150" style="padding:0 22px 0 0;vertical-align:bottom;text-align:right">{mono}</td>'
+        '</tr></table>'
+        '</td></tr>'
     )
 
 
@@ -419,13 +458,13 @@ def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
     return (
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
-        '<tr><td style="background:#1A1513;padding:24px 28px">'
-        f'{_email_logo_img(40)}'
-        '<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">Xaluca Tours · Nuevo lead</div>'
-        f'<div style="color:#FDFBF7;font-size:22px;margin-top:6px">{title}</div>'
-        f'<div style="color:#FDFBF7;opacity:.7;font-size:13px;margin-top:4px">{subtitle}</div>'
-        '</td></tr>'
-        f'<tr><td style="padding:8px 12px"><table role="presentation" width="100%">{body_rows}</table></td></tr>'
+        + _email_banner(
+            f'{_email_logo_img(40)}'
+            '<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">Xaluca Tours · Nuevo lead</div>'
+            f'<div style="color:#FDFBF7;font-size:22px;margin-top:6px">{title}</div>'
+            f'<div style="color:#FDFBF7;opacity:.7;font-size:13px;margin-top:4px">{subtitle}</div>'
+        )
+        + f'<tr><td style="padding:8px 12px"><table role="presentation" width="100%">{body_rows}</table></td></tr>'
         '<tr><td style="padding:16px 28px;background:#faf6ef;color:#8a7d6e;font-size:12px">'
         'Responde directamente a este correo para contactar con el cliente.</td></tr>'
         '</table></div>'
@@ -510,12 +549,13 @@ def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None
     html = (
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
-        '<tr><td style="background:#1A1513;padding:28px 30px">'
-        f'{_email_logo_img(48)}'
-        f'<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">{c["eyebrow"]}</div>'
-        f'<div style="color:#FDFBF7;font-size:24px;margin-top:8px;font-weight:600">{c["title"]}</div>'
-        '</td></tr>'
-        '<tr><td style="padding:30px">'
+        + _email_banner(
+            f'{_email_logo_img(48)}'
+            f'<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">{c["eyebrow"]}</div>'
+            f'<div style="color:#FDFBF7;font-size:24px;margin-top:8px;font-weight:600">{c["title"]}</div>',
+            padding="28px 30px",
+        )
+        + '<tr><td style="padding:30px">'
         f'<p style="color:#2C2621;font-size:16px;margin:0 0 16px">{c["greeting"].format(name=safe_name)}</p>'
         f'<p style="color:#5C5248;font-size:15px;line-height:1.7;margin:0 0 24px">{c["body"]}</p>'
         f'<p style="color:#2C2621;font-size:15px;margin:0">{c["closing"]}</p>'
