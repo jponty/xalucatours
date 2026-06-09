@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Check, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { Check, ArrowRight, ShieldCheck, Sparkles, Search, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
@@ -8,7 +8,7 @@ import { getProgramTiers } from "@/lib/programPricing";
 import { getFromPrice, mergePricing, fmtEuro, DEFAULT_PRICING } from "@/lib/pricing";
 import EditableText from "@/components/EditableText";
 import { PRICING_PACKAGES } from "@/lib/preciosData";
-import { ALL_TRIPS, TRIP_REGIONS, TRIP_PACES } from "@/lib/allTripsCatalog";
+import { ALL_TRIPS, TRIP_REGIONS, TRIP_PACES, TRIP_DURATIONS } from "@/lib/allTripsCatalog";
 
 const L = DEFAULT_PRICING.labels;
 const SEASONS = DEFAULT_PRICING.seasons;
@@ -77,14 +77,66 @@ const TripPriceCard = ({ trip, lang, pricing }) => {
   );
 };
 
-/* Directory section: every trip grouped by marketing region. */
+/* A small pill-style filter group. */
+const FilterGroup = ({ label, options, value, onChange, lang, testid }) => (
+  <div data-testid={testid}>
+    <span className="block text-[10px] tracking-[0.2em] uppercase text-[#A07042] mb-2.5">{label}</span>
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => {
+        const active = value === opt.id;
+        return (
+          <button
+            key={opt.id}
+            type="button"
+            data-testid={`${testid}-${opt.id}`}
+            onClick={() => onChange(opt.id)}
+            className={`px-3.5 py-1.5 text-[11px] tracking-[0.12em] uppercase border transition-colors duration-200 ${
+              active
+                ? "bg-[#1A1513] border-[#1A1513] text-[#FDFBF7]"
+                : "bg-transparent border-[#2C2621]/20 text-[#5C5248] hover:border-[#D4A373] hover:text-[#1A1513]"
+            }`}
+          >
+            {pick(opt.label, lang)}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
+/* Directory section: every trip grouped by marketing region, with
+   search + region/duration/pace filters. */
 const TripDirectory = ({ lang, pricing }) => {
-  const groups = TRIP_REGIONS.filter((r) => r.id !== "all")
-    .map((region) => ({
-      region,
-      trips: ALL_TRIPS.filter((t) => t.region === region.id),
-    }))
-    .filter((g) => g.trips.length > 0);
+  const [region, setRegion] = useState("all");
+  const [duration, setDuration] = useState("any");
+  const [pace, setPace] = useState("any");
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ALL_TRIPS.filter((t) => {
+      if (region !== "all" && t.region !== region) return false;
+      if (duration !== "any" && t.durationBucket !== duration) return false;
+      if (pace !== "any" && t.pace !== pace) return false;
+      if (q) {
+        const title = (pick(t.title, lang) || "").toLowerCase();
+        const summary = (pick(t.summary, lang) || "").toLowerCase();
+        if (!title.includes(q) && !summary.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [region, duration, pace, query, lang]);
+
+  const groups = useMemo(
+    () =>
+      TRIP_REGIONS.filter((r) => r.id !== "all")
+        .map((reg) => ({ region: reg, trips: filtered.filter((t) => t.region === reg.id) }))
+        .filter((g) => g.trips.length > 0),
+    [filtered]
+  );
+
+  const hasFilters = region !== "all" || duration !== "any" || pace !== "any" || query.trim() !== "";
+  const clearAll = () => { setRegion("all"); setDuration("any"); setPace("any"); setQuery(""); };
 
   return (
     <section className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16" data-testid="precios-directory">
@@ -104,34 +156,83 @@ const TripDirectory = ({ lang, pricing }) => {
           as="p"
           slot="precios.directory.subtitle"
           defaults={{
-            es: "Precio por persona según el número de viajeros y la temporada. Pulsa cualquier viaje para ver su itinerario completo.",
-            en: "Price per person based on group size and season. Click any trip to see its full itinerary.",
-            fr: "Prix par personne selon le nombre de voyageurs et la saison. Cliquez sur un voyage pour voir l'itinéraire complet.",
+            es: "Precio por persona según el número de viajeros y la temporada. Filtra por zona, duración o ritmo, y pulsa cualquier viaje para ver su itinerario completo.",
+            en: "Price per person based on group size and season. Filter by area, duration or pace, and click any trip to see its full itinerary.",
+            fr: "Prix par personne selon le nombre de voyageurs et la saison. Filtrez par zone, durée ou intensité, et cliquez sur un voyage pour voir l'itinéraire complet.",
           }}
           className="mt-5 text-base md:text-lg text-[#5C5248] leading-relaxed block"
         />
       </div>
 
-      <div className="mt-12 space-y-14">
-        {groups.map(({ region, trips }) => (
-          <div key={region.id} data-testid={`precios-group-${region.id}`}>
-            <div className="flex items-center gap-4 mb-6">
-              <h3 className="font-serif-x text-2xl md:text-3xl tracking-tight text-[#1A1513]">
-                {pick(region.label, lang)}
-              </h3>
-              <span className="flex-1 h-px bg-gradient-to-r from-[#D4A373]/50 to-transparent" />
-              <span className="text-[11px] tracking-[0.2em] uppercase text-[#A07042]">
-                {trips.length} {pick({ es: "viajes", en: "trips", fr: "voyages" }, lang)}
-              </span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {trips.map((trip) => (
-                <TripPriceCard key={trip.routeId} trip={trip} lang={lang} pricing={pricing} />
-              ))}
-            </div>
-          </div>
-        ))}
+      {/* Search + filters */}
+      <div className="mt-10 bg-white border border-[#2C2621]/12 p-6 md:p-8" data-testid="precios-filters">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A07042]" strokeWidth={1.7} />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            data-testid="precios-search-input"
+            placeholder={pick({ es: "Buscar viaje, ciudad, región…", en: "Search trip, city, region…", fr: "Rechercher un voyage, une ville…" }, lang)}
+            className="w-full bg-[#FDFBF7] border border-[#2C2621]/15 focus:border-[#D4A373] outline-none pl-10 pr-4 py-3 text-sm text-[#1A1513] placeholder:text-[#A0968A] transition-colors"
+          />
+        </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-3">
+          <FilterGroup label={pick({ es: "Zona", en: "Area", fr: "Zone" }, lang)} options={TRIP_REGIONS} value={region} onChange={setRegion} lang={lang} testid="precios-filter-region" />
+          <FilterGroup label={pick({ es: "Duración", en: "Duration", fr: "Durée" }, lang)} options={TRIP_DURATIONS} value={duration} onChange={setDuration} lang={lang} testid="precios-filter-duration" />
+          <FilterGroup label={pick({ es: "Ritmo", en: "Pace", fr: "Intensité" }, lang)} options={TRIP_PACES} value={pace} onChange={setPace} lang={lang} testid="precios-filter-pace" />
+        </div>
+
+        <div className="mt-6 flex items-center justify-between gap-4 border-t border-[#2C2621]/10 pt-5">
+          <span className="text-xs text-[#7A6E62]" data-testid="precios-results-count">
+            {filtered.length} {pick({ es: "viajes encontrados", en: "trips found", fr: "voyages trouvés" }, lang)}
+          </span>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearAll}
+              data-testid="precios-clear-filters"
+              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors"
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={2} />
+              {pick({ es: "Limpiar filtros", en: "Clear filters", fr: "Effacer les filtres" }, lang)}
+            </button>
+          )}
+        </div>
       </div>
+
+      {groups.length === 0 ? (
+        <div className="mt-12 text-center py-16 border border-dashed border-[#2C2621]/20" data-testid="precios-no-results">
+          <p className="font-serif-x text-2xl text-[#1A1513]">
+            {pick({ es: "Ningún viaje coincide con tu búsqueda", en: "No trips match your search", fr: "Aucun voyage ne correspond" }, lang)}
+          </p>
+          <button type="button" onClick={clearAll} className="mt-4 text-[11px] tracking-[0.14em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors">
+            {pick({ es: "Ver todos los viajes", en: "See all trips", fr: "Voir tous les voyages" }, lang)}
+          </button>
+        </div>
+      ) : (
+        <div className="mt-12 space-y-14">
+          {groups.map(({ region: reg, trips }) => (
+            <div key={reg.id} data-testid={`precios-group-${reg.id}`}>
+              <div className="flex items-center gap-4 mb-6">
+                <h3 className="font-serif-x text-2xl md:text-3xl tracking-tight text-[#1A1513]">
+                  {pick(reg.label, lang)}
+                </h3>
+                <span className="flex-1 h-px bg-gradient-to-r from-[#D4A373]/50 to-transparent" />
+                <span className="text-[11px] tracking-[0.2em] uppercase text-[#A07042]">
+                  {trips.length} {pick({ es: "viajes", en: "trips", fr: "voyages" }, lang)}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {trips.map((trip) => (
+                  <TripPriceCard key={trip.routeId} trip={trip} lang={lang} pricing={pricing} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <p className="mt-12 text-xs text-[#7A6E62] leading-relaxed max-w-3xl">
         {pick(DEFAULT_PRICING.note, lang)}
