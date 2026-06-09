@@ -502,15 +502,16 @@ body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5
     background-repeat: no-repeat;
     animation: cms-shimmer 1.6s ease-in-out infinite;
 }
-/* Final image starts hidden + softly blurred, then resolves sharp. */
+/* Final image keeps the warm skeleton visible underneath while its bitmap
+   loads (no black flash), then softly sharpens in once decoded. We do NOT
+   drop opacity to 0 — that would hide the skeleton background and reveal the
+   dark container behind the still-loading <img>. */
 .cms-img-fade {
-    opacity: 0;
-    filter: blur(12px);
-    transform: scale(1.015);
-    transition: opacity 600ms ease, filter 700ms ease, transform 700ms ease;
+    filter: blur(10px);
+    transform: scale(1.012);
+    transition: filter 600ms ease, transform 600ms ease;
 }
 .cms-img-fade.is-loaded {
-    opacity: 1;
     filter: blur(0);
     transform: scale(1);
     animation: none;
@@ -518,7 +519,7 @@ body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5
 }
 @media (prefers-reduced-motion: reduce) {
     .cms-skeleton { animation: none; }
-    .cms-img-fade { transition: opacity 200ms ease; filter: none; transform: none; }
+    .cms-img-fade { transition: filter 200ms ease; filter: none; transform: none; }
 }
 
 
