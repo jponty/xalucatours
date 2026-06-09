@@ -409,6 +409,89 @@ def send_lead_notification(subject: str, html: str, reply_to: Optional[str] = No
         logger.error("Lead notification email failed: %s", exc)
 
 
+# --- Client confirmation (auto-reply to the lead) ---
+_CONFIRM_COPY = {
+    "es": {
+        "subject": "Hemos recibido tu solicitud · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Confirmación",
+        "title": "¡Gracias por tu solicitud!",
+        "greeting": "Hola {name},",
+        "body": (
+            "Hemos recibido tu solicitud correctamente. Nuestro equipo de viajes "
+            "la está revisando y te contactará en un plazo de <strong>24-48 horas</strong> "
+            "para ayudarte a diseñar tu viaje a medida por Marruecos."
+        ),
+        "closing": "Un cordial saludo,",
+        "team": "El equipo de Xaluca Tours",
+        "footer": "Especialistas en viajes a medida por Marruecos.",
+    },
+    "en": {
+        "subject": "We've received your request · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Confirmation",
+        "title": "Thank you for your request!",
+        "greeting": "Hi {name},",
+        "body": (
+            "We've successfully received your request. Our travel team is reviewing it "
+            "and will get back to you within <strong>24-48 hours</strong> to help you "
+            "design your tailor-made journey through Morocco."
+        ),
+        "closing": "Warm regards,",
+        "team": "The Xaluca Tours team",
+        "footer": "Specialists in tailor-made journeys through Morocco.",
+    },
+    "fr": {
+        "subject": "Nous avons bien reçu votre demande · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Confirmation",
+        "title": "Merci pour votre demande !",
+        "greeting": "Bonjour {name},",
+        "body": (
+            "Nous avons bien reçu votre demande. Notre équipe de voyage l'examine "
+            "et vous recontactera sous <strong>24-48 heures</strong> pour vous aider "
+            "à concevoir votre voyage sur mesure au Maroc."
+        ),
+        "closing": "Cordialement,",
+        "team": "L'équipe Xaluca Tours",
+        "footer": "Spécialistes du voyage sur mesure au Maroc.",
+    },
+}
+
+
+def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None:
+    """Send a branded auto-confirmation to the lead. Never raises."""
+    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and to_email):
+        return
+    c = _CONFIRM_COPY.get(lang if lang in _CONFIRM_COPY else "es")
+    safe_name = (name or "").strip() or {"es": "viajero/a", "en": "traveller", "fr": "voyageur"}[lang if lang in _CONFIRM_COPY else "es"]
+    html = (
+        '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
+        '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
+        '<tr><td style="background:#1A1513;padding:28px 30px">'
+        f'<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">{c["eyebrow"]}</div>'
+        f'<div style="color:#FDFBF7;font-size:24px;margin-top:8px;font-weight:600">{c["title"]}</div>'
+        '</td></tr>'
+        '<tr><td style="padding:30px">'
+        f'<p style="color:#2C2621;font-size:16px;margin:0 0 16px">{c["greeting"].format(name=safe_name)}</p>'
+        f'<p style="color:#5C5248;font-size:15px;line-height:1.7;margin:0 0 24px">{c["body"]}</p>'
+        f'<p style="color:#2C2621;font-size:15px;margin:0">{c["closing"]}</p>'
+        f'<p style="color:#2C2621;font-size:15px;margin:4px 0 0;font-weight:600">{c["team"]}</p>'
+        '</td></tr>'
+        f'<tr><td style="padding:18px 30px;background:#faf6ef;color:#8a7d6e;font-size:12px;text-align:center">{c["footer"]}</td></tr>'
+        '</table></div>'
+    )
+    try:
+        params = {
+            "from": LEADS_FROM_EMAIL,
+            "to": [to_email],
+            "subject": c["subject"],
+            "html": html,
+        }
+        if LEADS_NOTIFY_EMAILS:
+            params["reply_to"] = LEADS_NOTIFY_EMAILS[0]
+        resend.Emails.send(params)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("Client confirmation email failed: %s", exc)
+
+
 @api_router.post("/contact-requests", response_model=ContactRequest)
 async def create_contact_request(payload: ContactRequestCreate, background_tasks: BackgroundTasks):
     obj = ContactRequest(**payload.model_dump())
@@ -436,6 +519,7 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
         html,
         obj.email,
     )
+    background_tasks.add_task(send_client_confirmation, obj.email, obj.full_name, obj.language)
     return obj
 
 
@@ -494,6 +578,7 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
         html,
         obj.email,
     )
+    background_tasks.add_task(send_client_confirmation, obj.email, obj.full_name, obj.language)
     return obj
 
 
@@ -536,6 +621,9 @@ async def create_program_download(payload: ProgramDownloadCreate, background_tas
         f"Nueva descarga de programa · {obj.first_name} {obj.last_name}",
         html,
         obj.email,
+    )
+    background_tasks.add_task(
+        send_client_confirmation, obj.email, f"{obj.first_name} {obj.last_name}".strip(), obj.language
     )
     return obj
 
