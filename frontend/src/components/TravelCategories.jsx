@@ -4,6 +4,7 @@ import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
+import { SOUTH_TRIPS, FULL_TRIPS, SHORT_TRIPS, NORTH_TRIPS } from "@/lib/homeCarousels";
 import { pathFor } from "@/lib/routes";
 import CategoryImageCarousel from "@/components/CategoryImageCarousel";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
@@ -14,6 +15,16 @@ const BADGE_KEY = {
   last:     "badge_last",
   seasonal: "badge_seasonal",
 };
+
+/* Specific trip pages associated with each travel style. */
+const OPTIONS_BY_SLUG = {
+  "magic-south":     SOUTH_TRIPS,
+  "north-to-south":  FULL_TRIPS,
+  "short-escapes":   SHORT_TRIPS,
+  "northern-morocco": NORTH_TRIPS,
+};
+
+const OPTIONS_LABEL = { es: "Opciones de viaje", en: "Trip options", fr: "Options de voyage" };
 
 export const TravelCategories = () => {
   const { t, lang } = useLanguage();
@@ -108,6 +119,32 @@ export const TravelCategories = () => {
                     className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-3 tracking-tight text-[#2C2621] block" />
                   <EditableText as="p" slot={`home.cat.${c.slug}.summary`} defaults={c.summary}
                     className="mt-5 text-base text-[#5C5248] leading-relaxed block" />
+
+                  {/* Opciones de viaje — specific trip pages for this style */}
+                  {OPTIONS_BY_SLUG[c.slug]?.length > 0 && (
+                    <div className="mt-7" data-testid={`category-options-${c.slug}`}>
+                      <span className="block text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
+                        {pick(OPTIONS_LABEL, lang)}
+                      </span>
+                      <ul className="mt-3 border-t border-[#2C2621]/10 divide-y divide-[#2C2621]/10">
+                        {OPTIONS_BY_SLUG[c.slug].map((trip) => (
+                          <li key={trip.id}>
+                            <Link
+                              to={pathFor(lang, trip.routeId)}
+                              data-testid={`category-option-${c.slug}-${trip.routeId}`}
+                              className="group/opt flex items-start gap-2.5 py-2.5 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
+                            >
+                              <ArrowRight
+                                className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C16542] transition-transform duration-300 group-hover/opt:translate-x-1"
+                                strokeWidth={1.6}
+                              />
+                              <span className="leading-snug">{pick(trip.title, lang)}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* Group departure schedule (only on group-departures card) */}
                   {c.departures && (
