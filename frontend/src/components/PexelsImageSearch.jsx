@@ -75,6 +75,11 @@ const SPANS = [
 
 const PER_PAGE = 24;
 
+// Drop low-resolution photos so the gallery never shows pixelated/blurry images.
+const MIN_W = 1200;
+const MIN_H = 800;
+const isHighQuality = (p) => (p.width || 0) >= MIN_W && (p.height || 0) >= MIN_H;
+
 export default function PexelsImageSearch({ lang = "es" }) {
   const t = T[lang] || T.es;
   const [query, setQuery] = useState("");
@@ -112,10 +117,11 @@ export default function PexelsImageSearch({ lang = "es" }) {
       setActiveTerm(q);
       try {
         const data = await fetchPage(q, 1);
-        setPhotos(data.photos || []);
+        const hq = (data.photos || []).filter(isHighQuality);
+        setPhotos(hq);
         setPage(1);
         setHasMore(Boolean(data.next_page));
-        setTotal(data.total_results || (data.photos || []).length);
+        setTotal(data.total_results || hq.length);
       } catch (e) {
         setError(true);
         setPhotos([]);
@@ -133,7 +139,11 @@ export default function PexelsImageSearch({ lang = "es" }) {
     try {
       const next = page + 1;
       const data = await fetchPage(activeTerm, next);
-      setPhotos((prev) => [...prev, ...(data.photos || [])]);
+      const hq = (data.photos || []).filter(isHighQuality);
+      setPhotos((prev) => {
+        const seen = new Set(prev.map((p) => p.id));
+        return [...prev, ...hq.filter((p) => !seen.has(p.id))];
+      });
       setPage(next);
       setHasMore(Boolean(data.next_page));
     } catch (e) {
@@ -277,7 +287,7 @@ export default function PexelsImageSearch({ lang = "es" }) {
                     style={ph.avg_color ? { backgroundColor: ph.avg_color } : undefined}
                   >
                     <img
-                      src={ph.thumb_url}
+                      src={ph.preview_url || ph.grid_url || ph.thumb_url}
                       alt={ph.alt || activeTerm}
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
