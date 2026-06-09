@@ -1,5 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
+import resend
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -347,12 +348,94 @@ async def cms_import(payload: CmsImportPayload, authorization: str = Header(defa
     return {"ok": True, "imported": result}
 
 
+# ============================================================
+#  LEAD EMAIL NOTIFICATIONS (Resend)
+#  Fire-and-forget: a failed email must never break lead creation.
+# ============================================================
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
+LEADS_FROM_EMAIL = os.environ.get("LEADS_FROM_EMAIL", "").strip()
+LEADS_NOTIFY_EMAILS = [e.strip() for e in os.environ.get("LEADS_NOTIFY_EMAILS", "").split(",") if e.strip()]
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
+
+
+def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
+    """Build a simple, email-client-safe HTML (inline CSS, table layout)."""
+    body_rows = ""
+    for label, value in rows:
+        if value is None or value == "" or value == []:
+            continue
+        if isinstance(value, list):
+            value = ", ".join(str(v) for v in value)
+        value = str(value).replace("\n", "<br>")
+        body_rows += (
+            '<tr>'
+            f'<td style="padding:10px 16px;border-bottom:1px solid #eee;color:#8a7d6e;'
+            f'font-size:12px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;vertical-align:top">{label}</td>'
+            f'<td style="padding:10px 16px;border-bottom:1px solid #eee;color:#2C2621;font-size:15px">{value}</td>'
+            '</tr>'
+        )
+    return (
+        '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
+        '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
+        '<tr><td style="background:#1A1513;padding:24px 28px">'
+        '<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">Xaluca Tours · Nuevo lead</div>'
+        f'<div style="color:#FDFBF7;font-size:22px;margin-top:6px">{title}</div>'
+        f'<div style="color:#FDFBF7;opacity:.7;font-size:13px;margin-top:4px">{subtitle}</div>'
+        '</td></tr>'
+        f'<tr><td style="padding:8px 12px"><table role="presentation" width="100%">{body_rows}</table></td></tr>'
+        '<tr><td style="padding:16px 28px;background:#faf6ef;color:#8a7d6e;font-size:12px">'
+        'Responde directamente a este correo para contactar con el cliente.</td></tr>'
+        '</table></div>'
+    )
+
+
+def send_lead_notification(subject: str, html: str, reply_to: Optional[str] = None) -> None:
+    """Send a lead notification email. Never raises (logs on failure)."""
+    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and LEADS_NOTIFY_EMAILS):
+        logger.warning("Resend not fully configured; skipping lead notification.")
+        return
+    try:
+        params = {
+            "from": LEADS_FROM_EMAIL,
+            "to": LEADS_NOTIFY_EMAILS,
+            "subject": subject,
+            "html": html,
+        }
+        if reply_to:
+            params["reply_to"] = reply_to
+        resend.Emails.send(params)
+    except Exception as exc:  # noqa: BLE001 — must never break lead creation
+        logger.error("Lead notification email failed: %s", exc)
+
+
 @api_router.post("/contact-requests", response_model=ContactRequest)
-async def create_contact_request(payload: ContactRequestCreate):
+async def create_contact_request(payload: ContactRequestCreate, background_tasks: BackgroundTasks):
     obj = ContactRequest(**payload.model_dump())
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.contact_requests.insert_one(doc)
+    html = _lead_email_html(
+        "Solicitud de contacto",
+        f"{obj.full_name} · {obj.email}",
+        [
+            ("Nombre", obj.full_name),
+            ("Email", obj.email),
+            ("Teléfono", obj.phone),
+            ("Fechas", obj.travel_dates),
+            ("Viajeros", obj.party_size),
+            ("Interés", obj.journey_interest),
+            ("Mensaje", obj.message),
+            ("Página origen", obj.source_label or obj.source_path),
+            ("Idioma", obj.language),
+        ],
+    )
+    background_tasks.add_task(
+        send_lead_notification,
+        f"Nuevo contacto · {obj.full_name}",
+        html,
+        obj.email,
+    )
     return obj
 
 
@@ -372,7 +455,7 @@ async def list_contact_requests(authorization: str = Header(default="")):
 
 
 @api_router.post("/trip-planner", response_model=TripPlannerRequest)
-async def create_trip_planner(payload: TripPlannerCreate):
+async def create_trip_planner(payload: TripPlannerCreate, background_tasks: BackgroundTasks):
     # Sanitize activity list (strip + cap length per item)
     activities = [a.strip()[:60] for a in (payload.activities or []) if a and a.strip()]
     regions = [r.strip()[:40] for r in (payload.regions or []) if r and r.strip()]
@@ -381,6 +464,36 @@ async def create_trip_planner(payload: TripPlannerCreate):
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.trip_planner_requests.insert_one(doc)
+    if obj.date_mode == "exact":
+        dates = obj.start_date
+    elif obj.date_mode == "flexible":
+        dates = f"Flexible · {obj.flexible_month}" if obj.flexible_month else "Flexible"
+    else:
+        dates = " → ".join([d for d in (obj.start_date, obj.end_date) if d])
+    html = _lead_email_html(
+        "Planifica tu viaje",
+        f"{obj.full_name} · {obj.email}",
+        [
+            ("Nombre", obj.full_name),
+            ("Email", obj.email),
+            ("Teléfono", obj.phone),
+            ("Fechas", dates),
+            ("Adultos", obj.travellers_adults),
+            ("Niños", obj.travellers_children),
+            ("Alojamiento", obj.accommodation),
+            ("Regiones", regions),
+            ("Viajes de interés", selected_trips),
+            ("Actividades", activities),
+            ("Notas", obj.notes),
+            ("Idioma", obj.language),
+        ],
+    )
+    background_tasks.add_task(
+        send_lead_notification,
+        f"Nueva planificación · {obj.full_name}",
+        html,
+        obj.email,
+    )
     return obj
 
 
@@ -400,12 +513,30 @@ async def list_trip_planner(authorization: str = Header(default="")):
 
 
 @api_router.post("/program-downloads", response_model=ProgramDownloadRequest)
-async def create_program_download(payload: ProgramDownloadCreate):
+async def create_program_download(payload: ProgramDownloadCreate, background_tasks: BackgroundTasks):
     url = resolve_program_download_url(payload.route_id)
     obj = ProgramDownloadRequest(**payload.model_dump(), download_url=url)
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.program_downloads.insert_one(doc)
+    html = _lead_email_html(
+        "Descarga de programa",
+        f"{obj.first_name} {obj.last_name} · {obj.email}",
+        [
+            ("Nombre", f"{obj.first_name} {obj.last_name}"),
+            ("Email", obj.email),
+            ("Teléfono", obj.phone),
+            ("Programa", obj.program_title or obj.route_id),
+            ("Newsletter", "Sí" if obj.newsletter else "No"),
+            ("Idioma", obj.language),
+        ],
+    )
+    background_tasks.add_task(
+        send_lead_notification,
+        f"Nueva descarga de programa · {obj.first_name} {obj.last_name}",
+        html,
+        obj.email,
+    )
     return obj
 
 
