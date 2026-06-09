@@ -12,6 +12,7 @@ import { SHARED_DETAILS } from "@/lib/programData";
 import { DayRouteMap } from "@/components/DayRouteMap";
 import { DayGallery } from "@/components/DayGallery";
 import { TripOverview } from "@/components/TripOverview";
+import ProgramFlipbook from "@/components/ProgramFlipbook";
 import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
@@ -1681,7 +1682,7 @@ const ContactBand = ({ t, lang }) => (
 /* ============================================================
    Default export — universal Program page template
 ============================================================ */
-export default function ProgramTemplate({ program, variant = "da" }) {
+export default function ProgramTemplate({ program, variant = "da", flipbookSrc }) {
   const { lang } = useLanguage();
   const location = useLocation();
   const { routeId } = resolvePath(location.pathname);
@@ -1732,6 +1733,7 @@ export default function ProgramTemplate({ program, variant = "da" }) {
       />
       <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
+      <ProgramFlipbook src={flipbookSrc} />
       <TripOverview days={program.days} />
       <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />
