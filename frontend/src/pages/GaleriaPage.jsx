@@ -300,9 +300,6 @@ export default function GaleriaPage() {
         </div>
       </section>
 
-      {/* Image search — find images of any place in Morocco (Pexels) */}
-      <PexelsImageSearch lang={lang} />
-
       {/* Zone quick-nav — pins to the very top. The site header (z-40) auto-
           hides on scroll-down, so this nav becomes the fixed region anchor as
           you browse the zones, and tucks cleanly under the header on scroll-up. */}
@@ -336,6 +333,9 @@ export default function GaleriaPage() {
           ))}
         </div>
       </div>
+
+      {/* Image search — find images of any place in Morocco (Pexels) */}
+      <PexelsImageSearch lang={lang} />
     </main>
   );
 }
