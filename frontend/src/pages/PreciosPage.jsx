@@ -8,8 +8,137 @@ import { getProgramTiers } from "@/lib/programPricing";
 import { getFromPrice, mergePricing, fmtEuro, DEFAULT_PRICING } from "@/lib/pricing";
 import EditableText from "@/components/EditableText";
 import { PRICING_PACKAGES } from "@/lib/preciosData";
+import { ALL_TRIPS, TRIP_REGIONS, TRIP_PACES } from "@/lib/allTripsCatalog";
 
 const L = DEFAULT_PRICING.labels;
+const SEASONS = DEFAULT_PRICING.seasons;
+
+/* A single trip row: name (links to its itinerary), meta tags, "from"
+   price and a compact per-person price matrix by group size. */
+const TripPriceCard = ({ trip, lang, pricing }) => {
+  const prog = getProgramTiers(trip.routeId);
+  const merged = prog ? mergePricing(prog) : pricing;
+  const tiers = prog || pricing.tiers || DEFAULT_PRICING.tiers;
+  const from = getFromPrice(merged);
+  const region = TRIP_REGIONS.find((r) => r.id === trip.region);
+  const pace = TRIP_PACES.find((p) => p.id === trip.pace);
+
+  return (
+    <article
+      data-testid={`price-trip-${trip.routeId}`}
+      className="group flex flex-col bg-white border border-[#2C2621]/12 hover:border-[#D4A373] transition-colors duration-300"
+    >
+      <div className="p-5 md:p-6 border-b border-[#2C2621]/10">
+        <Link
+          to={pathFor(lang, trip.routeId)}
+          data-testid={`price-trip-link-${trip.routeId}`}
+          className="font-serif-x text-xl md:text-2xl leading-tight tracking-tight text-[#1A1513] hover:text-[#C16542] transition-colors inline-flex items-start gap-1.5"
+        >
+          {pick(trip.title, lang)}
+          <ArrowRight className="w-4 h-4 mt-1.5 shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-[#C16542]" strokeWidth={1.7} />
+        </Link>
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.16em] uppercase text-[#A07042]">
+          {region && <span>{pick(region.label, lang)}</span>}
+          {pace && <><span className="text-[#D4A373]">·</span><span>{pick(pace.label, lang)}</span></>}
+          <span className="text-[#D4A373]">·</span>
+          <span>{trip.nights} {pick({ es: "noches", en: "nights", fr: "nuits" }, lang)}</span>
+        </div>
+        <div className="mt-3 flex items-baseline gap-2" data-testid={`price-trip-from-${trip.routeId}`}>
+          <span className="text-[10px] tracking-[0.16em] uppercase text-[#7A6E62]">{pick(L.from, lang)}</span>
+          <span className="font-serif-x text-2xl text-[#1A1513] leading-none">{from ? fmtEuro(from) : "—"}</span>
+          <span className="text-xs text-[#7A6E62]">/ {pick(L.perPerson, lang)}</span>
+        </div>
+      </div>
+
+      {/* Per-person matrix by group size */}
+      <div className="px-5 md:px-6 py-4 flex-1">
+        <table className="w-full text-sm" data-testid={`price-trip-table-${trip.routeId}`}>
+          <thead>
+            <tr className="text-[10px] tracking-[0.16em] uppercase text-[#A07042]">
+              <th className="text-left font-normal pb-2">{pick(L.travellers, lang)}</th>
+              <th className="text-right font-normal pb-2">{pick(SEASONS.low.label, lang)}</th>
+              <th className="text-right font-normal pb-2">{pick(SEASONS.high.label, lang)}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#2C2621]/8">
+            {tiers.map((t) => (
+              <tr key={t.people} className="text-[#2C2621]">
+                <td className="py-2 text-[#5C5248]">
+                  {t.people} {pick(L.people, lang)}
+                </td>
+                <td className="py-2 text-right tabular-nums">{t.low ? fmtEuro(t.low) : "—"}</td>
+                <td className="py-2 text-right tabular-nums font-medium">{t.high ? fmtEuro(t.high) : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </article>
+  );
+};
+
+/* Directory section: every trip grouped by marketing region. */
+const TripDirectory = ({ lang, pricing }) => {
+  const groups = TRIP_REGIONS.filter((r) => r.id !== "all")
+    .map((region) => ({
+      region,
+      trips: ALL_TRIPS.filter((t) => t.region === region.id),
+    }))
+    .filter((g) => g.trips.length > 0);
+
+  return (
+    <section className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16" data-testid="precios-directory">
+      <div className="max-w-3xl">
+        <span className="inline-flex items-center gap-3 text-[11px] tracking-[0.35em] uppercase text-[#A07042]">
+          <span className="w-8 h-px bg-[#D4A373]" />
+          <EditableText slot="precios.directory.eyebrow" defaults={{ es: "Tarifas detalladas", en: "Detailed rates", fr: "Tarifs détaillés" }} multiline={false} />
+        </span>
+        <EditableText
+          as="h2"
+          slot="precios.directory.title"
+          defaults={{ es: "Todos nuestros viajes y sus precios", en: "All our trips and their prices", fr: "Tous nos voyages et leurs tarifs" }}
+          multiline={false}
+          className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.06] tracking-tight text-[#1A1513] mt-5 block"
+        />
+        <EditableText
+          as="p"
+          slot="precios.directory.subtitle"
+          defaults={{
+            es: "Precio por persona según el número de viajeros y la temporada. Pulsa cualquier viaje para ver su itinerario completo.",
+            en: "Price per person based on group size and season. Click any trip to see its full itinerary.",
+            fr: "Prix par personne selon le nombre de voyageurs et la saison. Cliquez sur un voyage pour voir l'itinéraire complet.",
+          }}
+          className="mt-5 text-base md:text-lg text-[#5C5248] leading-relaxed block"
+        />
+      </div>
+
+      <div className="mt-12 space-y-14">
+        {groups.map(({ region, trips }) => (
+          <div key={region.id} data-testid={`precios-group-${region.id}`}>
+            <div className="flex items-center gap-4 mb-6">
+              <h3 className="font-serif-x text-2xl md:text-3xl tracking-tight text-[#1A1513]">
+                {pick(region.label, lang)}
+              </h3>
+              <span className="flex-1 h-px bg-gradient-to-r from-[#D4A373]/50 to-transparent" />
+              <span className="text-[11px] tracking-[0.2em] uppercase text-[#A07042]">
+                {trips.length} {pick({ es: "viajes", en: "trips", fr: "voyages" }, lang)}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {trips.map((trip) => (
+                <TripPriceCard key={trip.routeId} trip={trip} lang={lang} pricing={pricing} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-12 text-xs text-[#7A6E62] leading-relaxed max-w-3xl">
+        {pick(DEFAULT_PRICING.note, lang)}
+      </p>
+    </section>
+  );
+};
 
 const PackageCard = ({ pkg, price, lang }) => {
   const slug = pkg.slug;
@@ -154,6 +283,9 @@ export default function PreciosPage() {
           ))}
         </div>
       </section>
+
+      {/* Exhaustive directory — every trip grouped by region with price matrix */}
+      <TripDirectory lang={lang} pricing={pricing} />
 
       {/* Reassurance / trust note */}
       <section className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
