@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { Search, Loader2, X, ImageOff, Sparkles, ExternalLink } from "lucide-react";
+import { Search, Loader2, X, ImageOff, Sparkles, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -64,15 +64,6 @@ const SUGGESTIONS = [
   "Sahara",
 ];
 
-const SPANS = [
-  "col-span-12 sm:col-span-6 lg:col-span-5 row-span-2 aspect-[4/3] sm:aspect-auto sm:min-h-[360px]",
-  "col-span-6 lg:col-span-4 aspect-[4/3]",
-  "col-span-6 lg:col-span-3 aspect-[4/3]",
-  "col-span-6 lg:col-span-4 aspect-[4/3]",
-  "col-span-6 lg:col-span-5 aspect-[4/3]",
-  "col-span-12 lg:col-span-3 aspect-[4/3] lg:aspect-[3/4]",
-];
-
 const PER_PAGE = 24;
 
 // Drop low-resolution photos so the gallery never shows pixelated/blurry images.
@@ -94,6 +85,13 @@ export default function PexelsImageSearch({ lang = "es" }) {
   const [total, setTotal] = useState(0);
   const [lightbox, setLightbox] = useState(null);
   const inputRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  const scrollByCards = useCallback((dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * Math.round(el.clientWidth * 0.85), behavior: "smooth" });
+  }, []);
 
   const fetchPage = useCallback(
     async (term, pageNum) => {
@@ -276,52 +274,76 @@ export default function PexelsImageSearch({ lang = "es" }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-3 md:gap-4">
-                {photos.map((ph, i) => (
-                  <button
-                    type="button"
-                    key={`${ph.id}-${i}`}
-                    onClick={() => setLightbox(ph)}
-                    data-testid={`image-photo-${i}`}
-                    className={`group relative overflow-hidden bg-[#2C2621] ${SPANS[i % SPANS.length]}`}
-                    style={ph.avg_color ? { backgroundColor: ph.avg_color } : undefined}
-                  >
-                    <img
-                      src={ph.preview_url || ph.grid_url || ph.thumb_url}
-                      alt={ph.alt || activeTerm}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
-                    />
-                    <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {ph.photographer && (
-                      <span className="absolute left-3 bottom-3 right-3 text-[10px] tracking-[0.06em] text-[#FDFBF7]/90 opacity-0 group-hover:opacity-100 transition-opacity truncate">
-                        {t.photoBy} {ph.photographer}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
+              {/* Horizontal carousel — uniform cards, side by side */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => scrollByCards(-1)}
+                  aria-label="Anterior"
+                  data-testid="image-carousel-prev"
+                  className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-[#FDFBF7] text-[#1A1513] hover:bg-[#D4A373] shadow-lg transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" strokeWidth={1.8} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollByCards(1)}
+                  aria-label="Siguiente"
+                  data-testid="image-carousel-next"
+                  className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-[#FDFBF7] text-[#1A1513] hover:bg-[#D4A373] shadow-lg transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" strokeWidth={1.8} />
+                </button>
 
-              {hasMore && (
-                <div className="mt-10 flex justify-center">
-                  <button
-                    type="button"
-                    onClick={loadMore}
-                    disabled={loadingMore}
-                    data-testid="image-load-more"
-                    className="inline-flex items-center gap-2 border border-[#FDFBF7]/25 hover:border-[#D4A373] text-[#FDFBF7] hover:text-[#D4A373] px-7 py-3.5 text-[11px] tracking-[0.28em] uppercase transition-colors disabled:opacity-50"
-                  >
-                    {loadingMore ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
-                        {t.searching}
-                      </>
-                    ) : (
-                      t.loadMore
-                    )}
-                  </button>
+                <div
+                  ref={scrollRef}
+                  data-testid="image-carousel"
+                  className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2"
+                >
+                  {photos.map((ph, i) => (
+                    <button
+                      type="button"
+                      key={`${ph.id}-${i}`}
+                      onClick={() => setLightbox(ph)}
+                      data-testid={`image-photo-${i}`}
+                      className="group relative overflow-hidden bg-[#2C2621] shrink-0 snap-start w-[260px] sm:w-[300px] md:w-[340px] aspect-[4/3]"
+                      style={ph.avg_color ? { backgroundColor: ph.avg_color } : undefined}
+                    >
+                      <img
+                        src={ph.preview_url || ph.grid_url || ph.thumb_url}
+                        alt={ph.alt || activeTerm}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
+                      />
+                      <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {ph.photographer && (
+                        <span className="absolute left-3 bottom-3 right-3 text-[10px] tracking-[0.06em] text-[#FDFBF7]/90 opacity-0 group-hover:opacity-100 transition-opacity truncate">
+                          {t.photoBy} {ph.photographer}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+
+                  {hasMore && (
+                    <button
+                      type="button"
+                      onClick={loadMore}
+                      disabled={loadingMore}
+                      data-testid="image-load-more"
+                      className="group relative shrink-0 snap-start w-[180px] aspect-[4/3] border border-[#FDFBF7]/25 hover:border-[#D4A373] text-[#FDFBF7] hover:text-[#D4A373] flex flex-col items-center justify-center gap-2 text-[10px] tracking-[0.26em] uppercase transition-colors disabled:opacity-50"
+                    >
+                      {loadingMore ? (
+                        <Loader2 className="w-5 h-5 animate-spin" strokeWidth={2} />
+                      ) : (
+                        <>
+                          <ChevronRight className="w-6 h-6" strokeWidth={1.6} />
+                          {t.loadMore}
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>
