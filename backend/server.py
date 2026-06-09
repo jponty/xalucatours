@@ -413,29 +413,102 @@ def _email_logo_img(height: int = 44) -> str:
     )
 
 
-def _email_monogram_img(size: int = 132) -> str:
-    """Large 'X' monogram <img> for the email banner — mirrors the website
-    overlay style (white monogram, soft shadow). '' when unavailable."""
+def _email_monogram_img(height: int = 140) -> str:
+    """Large 'X' monogram crop for the email banner — mirrors the exact style
+    used on the trip images (asset `monograma-x-crop.png`, anchored flush to
+    the bottom-right edge, ~55% opacity baked in)."""
     if not _EMAIL_MONOGRAM_B64:
         return ""
+    width = round(height * 0.347)  # native crop aspect ratio (125x360)
     return (
-        f'<img src="cid:{_EMAIL_MONOGRAM_CID}" width="{size}" height="{size}" alt="" '
-        f'style="display:block;height:{size}px;width:{size}px;object-fit:contain;'
-        f'filter:drop-shadow(0 2px 6px rgba(0,0,0,0.55))">'
+        f'<img src="cid:{_EMAIL_MONOGRAM_CID}" width="{width}" height="{height}" alt="" '
+        f'style="display:block;height:{height}px;width:{width}px;object-fit:contain;'
+        f'filter:drop-shadow(0 2px 12px rgba(0,0,0,0.5))">'
     )
 
 
 def _email_banner(inner_html: str, padding: str = "24px 28px") -> str:
-    """Dark Xaluca banner with the large 'X' monogram anchored bottom-right,
-    matching the website's image-overlay branding."""
-    mono = _email_monogram_img(132)
+    """Dark Xaluca banner with the 'X' monogram crop bleeding off the
+    bottom-right corner — the exact corporate branding used on trip images."""
+    mono = _email_monogram_img(140)
     return (
         '<tr><td style="background:#1A1513;padding:0">'
         '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
         f'<td style="padding:{padding};vertical-align:top">{inner_html}</td>'
-        f'<td width="150" style="padding:0 22px 0 0;vertical-align:bottom;text-align:right">{mono}</td>'
+        f'<td width="56" style="padding:0;vertical-align:bottom;text-align:right;font-size:0;line-height:0">{mono}</td>'
         '</tr></table>'
         '</td></tr>'
+    )
+
+
+# --- Trip gazetteer: routeId -> {title:{es,en,fr}, path:{es,en,fr}} ---
+# Guarantees the lead emails never show raw internal trip ids, even when the
+# frontend payload omits the resolved detail. Regenerate with build_trip_gazetteer.py.
+PUBLIC_SITE_URL = os.environ.get("PUBLIC_SITE_URL", "").strip().rstrip("/")
+_TRIP_GAZETTEER: Dict[str, dict] = {}
+try:
+    _gaz_path = ROOT_DIR / "trip_gazetteer.json"
+    if _gaz_path.exists():
+        _TRIP_GAZETTEER = _json.loads(_gaz_path.read_text(encoding="utf-8"))
+except Exception as _gaz_exc:  # noqa: BLE001
+    logger.warning("Could not load trip gazetteer: %s", _gaz_exc)
+
+
+def _resolve_trip_title(route_id: str, lang: str) -> str:
+    entry = _TRIP_GAZETTEER.get(route_id)
+    if entry:
+        t = entry.get("title") or {}
+        return t.get(lang) or t.get("es") or route_id
+    return route_id
+
+
+def _trip_path_for(route_id: str, lang: str) -> Optional[str]:
+    entry = _TRIP_GAZETTEER.get(route_id)
+    if not entry:
+        return None
+    paths = entry.get("path") or {}
+    safe = lang if lang in ("es", "en", "fr") else "es"
+    slug = paths.get(safe) or paths.get("es") or ""
+    if not slug:
+        return None
+    return f"/{slug}" if safe == "es" else f"/{safe}/{slug}"
+
+
+def _looks_like_trip_id(value: str) -> bool:
+    return bool(value) and bool(re.match(r"^tour[A-Z]", value))
+
+
+def _build_trips_email_value(detail: list, ids: list, lang: str) -> str:
+    """Vertical HTML list of selected trips as linked titles. Never emits raw
+    internal ids — unknown/missing titles are resolved via the gazetteer."""
+    items: List[tuple] = []  # (title, url)
+    if detail:
+        for t in detail:
+            rid = (getattr(t, "id", "") or "").strip()
+            title = (getattr(t, "title", "") or "").strip()
+            url = (getattr(t, "url", "") or "").strip()
+            if not title or _looks_like_trip_id(title):
+                title = _resolve_trip_title(rid or title, lang)
+            if not url and rid:
+                p = _trip_path_for(rid, lang)
+                if p and PUBLIC_SITE_URL:
+                    url = f"{PUBLIC_SITE_URL}{p}"
+            items.append((title, url))
+    else:
+        for rid in ids:
+            title = _resolve_trip_title(rid, lang)
+            p = _trip_path_for(rid, lang)
+            url = f"{PUBLIC_SITE_URL}{p}" if (p and PUBLIC_SITE_URL) else ""
+            items.append((title, url))
+    items = [(ti, u) for ti, u in items if ti]
+    if not items:
+        return ""
+    return "".join(
+        '<div style="padding:3px 0;line-height:1.5">'
+        + (f'<a href="{u}" style="color:#C16542;text-decoration:none;border-bottom:1px solid #D4A373">{ti}</a>'
+           if u else ti)
+        + '</div>'
+        for ti, u in items
     )
 
 
@@ -651,15 +724,9 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
         dates = f"Flexible · {obj.flexible_month}" if obj.flexible_month else "Flexible"
     else:
         dates = " → ".join([d for d in (obj.start_date, obj.end_date) if d])
-    # Build linked trip titles for the email (falls back to raw ids).
-    if selected_trips_detail:
-        trips_value = " · ".join(
-            (f'<a href="{t.url}" style="color:#C16542;text-decoration:none;border-bottom:1px solid #D4A373">{t.title}</a>'
-             if t.url else t.title)
-            for t in selected_trips_detail
-        )
-    else:
-        trips_value = ", ".join(selected_trips)
+    # Build the linked trip titles (vertical list). Always resolves to real
+    # titles via the gazetteer — internal ids are never shown in the email.
+    trips_value = _build_trips_email_value(selected_trips_detail, selected_trips, obj.language)
     html = _lead_email_html(
         "Planifica tu viaje",
         f"{obj.full_name} · {obj.email}",

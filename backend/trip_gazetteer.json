@@ -1,0 +1,482 @@
+{
+  "tourAtlasDesierto45": {
+    "title": {
+      "es": "Atlas → Desierto · 4 noches",
+      "en": "Atlas → Desert · 4 nights",
+      "fr": "Atlas → Désert · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/atlas_desierto/programa_4n_5d",
+      "en": "tours/atlas-desert/program-4n-5d",
+      "fr": "voyages/atlas-desert/programme-4n-5j"
+    }
+  },
+  "tourAtlasDesierto56": {
+    "title": {
+      "es": "Atlas → Desierto · 5 noches",
+      "en": "Atlas → Desert · 5 nights",
+      "fr": "Atlas → Désert · 5 nuits"
+    },
+    "path": {
+      "es": "viajes/atlas_desierto/programa_5n_6d",
+      "en": "tours/atlas-desert/program-5n-6d",
+      "fr": "voyages/atlas-desert/programme-5n-6j"
+    }
+  },
+  "tourAtlasDesierto67": {
+    "title": {
+      "es": "Atlas → Desierto · 6 noches",
+      "en": "Atlas → Desert · 6 nights",
+      "fr": "Atlas → Désert · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/atlas_desierto/programa_6n_7d",
+      "en": "tours/atlas-desert/program-6n-7d",
+      "fr": "voyages/atlas-desert/programme-6n-7j"
+    }
+  },
+  "tourDesiertoAtlas45": {
+    "title": {
+      "es": "Desierto → Atlas · 4 noches",
+      "en": "Desert → Atlas · 4 nights",
+      "fr": "Désert → Atlas · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/desierto_atlas/programa_4n_5d",
+      "en": "tours/desert-atlas/program-4n-5d",
+      "fr": "voyages/desert-atlas/programme-4n-5j"
+    }
+  },
+  "tourDesiertoAtlas67": {
+    "title": {
+      "es": "Desierto → Atlas · 6 noches",
+      "en": "Desert → Atlas · 6 nights",
+      "fr": "Désert → Atlas · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/desierto_atlas/programa_6n_7d",
+      "en": "tours/desert-atlas/program-6n-7d",
+      "fr": "voyages/desert-atlas/programme-6n-7j"
+    }
+  },
+  "tourMarrakechErg45": {
+    "title": {
+      "es": "Marrakech → Erg Chebbi · 4 noches",
+      "en": "Marrakech → Erg Chebbi · 4 nights",
+      "fr": "Marrakech → Erg Chebbi · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi/programa_4n_5d",
+      "en": "tours/marrakech-ergchebbi/program-4n-5d",
+      "fr": "voyages/marrakech-ergchebbi/programme-4n-5j"
+    }
+  },
+  "tourMarrakechErg56": {
+    "title": {
+      "es": "Marrakech → Erg Chebbi · 5 noches",
+      "en": "Marrakech → Erg Chebbi · 5 nights",
+      "fr": "Marrakech → Erg Chebbi · 5 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi/programa_5n_6d",
+      "en": "tours/marrakech-ergchebbi/program-5n-6d",
+      "fr": "voyages/marrakech-ergchebbi/programme-5n-6j"
+    }
+  },
+  "tourMarrakechErg67": {
+    "title": {
+      "es": "Marrakech → Erg Chebbi · 6 noches",
+      "en": "Marrakech → Erg Chebbi · 6 nights",
+      "fr": "Marrakech → Erg Chebbi · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi/programa_6n_7d",
+      "en": "tours/marrakech-ergchebbi/program-6n-7d",
+      "fr": "voyages/marrakech-ergchebbi/programme-6n-7j"
+    }
+  },
+  "tourMarrakechLoop34": {
+    "title": {
+      "es": "Loop Marrakech · 3 noches",
+      "en": "Marrakech Loop · 3 nights",
+      "fr": "Boucle Marrakech · 3 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi_marrakech/programa_3n_4d",
+      "en": "tours/marrakech-ergchebbi-marrakech/program-3n-4d",
+      "fr": "voyages/marrakech-ergchebbi-marrakech/programme-3n-4j"
+    }
+  },
+  "tourMarrakechLoop45": {
+    "title": {
+      "es": "Loop Marrakech · 4 noches",
+      "en": "Marrakech Loop · 4 nights",
+      "fr": "Boucle Marrakech · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi_marrakech/programa_4n_5d",
+      "en": "tours/marrakech-ergchebbi-marrakech/program-4n-5d",
+      "fr": "voyages/marrakech-ergchebbi-marrakech/programme-4n-5j"
+    }
+  },
+  "tourMarrakechLoop56": {
+    "title": {
+      "es": "Loop Marrakech · 5 noches",
+      "en": "Marrakech Loop · 5 nights",
+      "fr": "Boucle Marrakech · 5 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi_marrakech/programa_5n_6d",
+      "en": "tours/marrakech-ergchebbi-marrakech/program-5n-6d",
+      "fr": "voyages/marrakech-ergchebbi-marrakech/programme-5n-6j"
+    }
+  },
+  "tourMarrakechLoop67": {
+    "title": {
+      "es": "Loop Marrakech · 6 noches",
+      "en": "Marrakech Loop · 6 nights",
+      "fr": "Boucle Marrakech · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_ergchebbi_marrakech/programa_6n_7d",
+      "en": "tours/marrakech-ergchebbi-marrakech/program-6n-7d",
+      "fr": "voyages/marrakech-ergchebbi-marrakech/programme-6n-7j"
+    }
+  },
+  "tourMarrakechEss45": {
+    "title": {
+      "es": "Marrakech & Essaouira · 4 noches",
+      "en": "Marrakech & Essaouira · 4 nights",
+      "fr": "Marrakech & Essaouira · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_essaouira/programa_4n_5d",
+      "en": "tours/marrakech-essaouira/program-4n-5d",
+      "fr": "voyages/marrakech-essaouira/programme-4n-5j"
+    }
+  },
+  "tourMarrakechEss67": {
+    "title": {
+      "es": "Marrakech & Essaouira · 6 noches",
+      "en": "Marrakech & Essaouira · 6 nights",
+      "fr": "Marrakech & Essaouira · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/marrakech_essaouira/programa_6n_7d",
+      "en": "tours/marrakech-essaouira/program-6n-7d",
+      "fr": "voyages/marrakech-essaouira/programme-6n-7j"
+    }
+  },
+  "tourFezRak67": {
+    "title": {
+      "es": "Fez → Marrakech · 6 noches",
+      "en": "Fez → Marrakech · 6 nights",
+      "fr": "Fès → Marrakech · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/fez_marrakech/programa_6n_7d",
+      "en": "tours/grand-south/fez-marrakech/program-6n-7d",
+      "fr": "voyages/grand-sud/fes-marrakech/programme-6n-7j"
+    }
+  },
+  "tourFezRak78": {
+    "title": {
+      "es": "Fez → Marrakech · 7 noches",
+      "en": "Fez → Marrakech · 7 nights",
+      "fr": "Fès → Marrakech · 7 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/fez_marrakech/programa_7n_8d",
+      "en": "tours/grand-south/fez-marrakech/program-7n-8d",
+      "fr": "voyages/grand-sud/fes-marrakech/programme-7n-8j"
+    }
+  },
+  "tourMarrakechFez67": {
+    "title": {
+      "es": "Marrakech → Fez · 6 noches",
+      "en": "Marrakech → Fez · 6 nights",
+      "fr": "Marrakech → Fès · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/marrakech_fez/programa_6n_7d",
+      "en": "tours/grand-south/marrakech-fez/program-6n-7d",
+      "fr": "voyages/grand-sud/marrakech-fes/programme-6n-7j"
+    }
+  },
+  "tourMarrakechFez89": {
+    "title": {
+      "es": "Marrakech → Fez · 8 noches",
+      "en": "Marrakech → Fez · 8 nights",
+      "fr": "Marrakech → Fès · 8 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/marrakech_fez/programa_8n_9d",
+      "en": "tours/grand-south/marrakech-fez/program-8n-9d",
+      "fr": "voyages/grand-sud/marrakech-fes/programme-8n-9j"
+    }
+  },
+  "tourMarrakechFez910": {
+    "title": {
+      "es": "Marrakech → Fez · 9 noches",
+      "en": "Marrakech → Fez · 9 nights",
+      "fr": "Marrakech → Fès · 9 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/marrakech_fez/programa_9n_10d",
+      "en": "tours/grand-south/marrakech-fez/program-9n-10d",
+      "fr": "voyages/grand-sud/marrakech-fes/programme-9n-10j"
+    }
+  },
+  "tourTangerRak89": {
+    "title": {
+      "es": "Tánger → Marrakech · 8 noches",
+      "en": "Tangier → Marrakech · 8 nights",
+      "fr": "Tanger → Marrakech · 8 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/tanger-rak/programa_8n_9d",
+      "en": "tours/grand-south/tangier-marrakech/program-8n-9d",
+      "fr": "voyages/grand-sud/tanger-marrakech/programme-8n-9j"
+    }
+  },
+  "tourTangerRak910": {
+    "title": {
+      "es": "Tánger → Marrakech · 9 noches",
+      "en": "Tangier → Marrakech · 9 nights",
+      "fr": "Tanger → Marrakech · 9 nuits"
+    },
+    "path": {
+      "es": "viajes/gransur/tanger-rak/programa_9n_10d",
+      "en": "tours/grand-south/tangier-marrakech/program-9n-10d",
+      "fr": "voyages/grand-sud/tanger-marrakech/programme-9n-10j"
+    }
+  },
+  "tourCiudadesImperiales45": {
+    "title": {
+      "es": "Ciudades imperiales · 4 noches",
+      "en": "Imperial cities · 4 nights",
+      "fr": "Cités impériales · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/ciudades_imperiales/programa_4n_5d",
+      "en": "tours/northern/imperial-cities/program-4n-5d",
+      "fr": "voyages/nord/cites-imperiales/programme-4n-5j"
+    }
+  },
+  "tourCiudadesImperiales67": {
+    "title": {
+      "es": "Ciudades imperiales · 6 noches",
+      "en": "Imperial cities · 6 nights",
+      "fr": "Cités impériales · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/ciudades_imperiales/programa_6n_7d",
+      "en": "tours/northern/imperial-cities/program-6n-7d",
+      "fr": "voyages/nord/cites-imperiales/programme-6n-7j"
+    }
+  },
+  "tourCiudadesImperialesRif67": {
+    "title": {
+      "es": "Ciudades imperiales + Rif · 6 noches",
+      "en": "Imperial cities + Rif · 6 nights",
+      "fr": "Cités impériales + Rif · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/ciudadesimperiales_rif/programa_6n_7d",
+      "en": "tours/northern/imperial-cities-rif/program-6n-7d",
+      "fr": "voyages/nord/cites-imperiales-rif/programme-6n-7j"
+    }
+  },
+  "tourCiudadesImperialesRif78": {
+    "title": {
+      "es": "Ciudades imperiales + Rif · 7 noches",
+      "en": "Imperial cities + Rif · 7 nights",
+      "fr": "Cités impériales + Rif · 7 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/ciudadesimperiales_rif/programa_7n_8d",
+      "en": "tours/northern/imperial-cities-rif/program-7n-8d",
+      "fr": "voyages/nord/cites-imperiales-rif/programme-7n-8j"
+    }
+  },
+  "tourTangerFez45": {
+    "title": {
+      "es": "Tánger → Fez · 4 noches",
+      "en": "Tangier → Fez · 4 nights",
+      "fr": "Tanger → Fès · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/tanger_fez/programa_4n_5d",
+      "en": "tours/northern/tangier-fez/program-4n-5d",
+      "fr": "voyages/nord/tanger-fes/programme-4n-5j"
+    }
+  },
+  "tourTangerFez56": {
+    "title": {
+      "es": "Tánger → Fez · 5 noches",
+      "en": "Tangier → Fez · 5 nights",
+      "fr": "Tanger → Fès · 5 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/tanger_fez/programa_5n_6d",
+      "en": "tours/northern/tangier-fez/program-5n-6d",
+      "fr": "voyages/nord/tanger-fes/programme-5n-6j"
+    }
+  },
+  "tourFezTanger56": {
+    "title": {
+      "es": "Fez → Tánger · 5 noches",
+      "en": "Fez → Tangier · 5 nights",
+      "fr": "Fès → Tanger · 5 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/fez_tanger/programa_5n_6d",
+      "en": "tours/northern/fez-tangier/program-5n-6d",
+      "fr": "voyages/nord/fes-tanger/programme-5n-6j"
+    }
+  },
+  "tourFezTanger67": {
+    "title": {
+      "es": "Fez → Tánger · 6 noches",
+      "en": "Fez → Tangier · 6 nights",
+      "fr": "Fès → Tanger · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/norte/fez_tanger/programa_6n_7d",
+      "en": "tours/northern/fez-tangier/program-6n-7d",
+      "fr": "voyages/nord/fes-tanger/programme-6n-7j"
+    }
+  },
+  "tourEscapadaMarrakech23": {
+    "title": {
+      "es": "Marrakech · 2 noches",
+      "en": "Marrakech · 2 nights",
+      "fr": "Marrakech · 2 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/marrakech/programa_2n_3d",
+      "en": "tours/short-escapes/marrakech/program-2n-3d",
+      "fr": "voyages/escapades-courtes/marrakech/programme-2n-3j"
+    }
+  },
+  "tourEscapadaRakAgafay34": {
+    "title": {
+      "es": "Marrakech + Agafay · 3 noches",
+      "en": "Marrakech + Agafay · 3 nights",
+      "fr": "Marrakech + Agafay · 3 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/marrakech_agafay/programa_3n_4d",
+      "en": "tours/short-escapes/marrakech-agafay/program-3n-4d",
+      "fr": "voyages/escapades-courtes/marrakech-agafay/programme-3n-4j"
+    }
+  },
+  "tourEscapadaRakErgRak23": {
+    "title": {
+      "es": "Loop Marrakech · 2 noches",
+      "en": "Marrakech Loop · 2 nights",
+      "fr": "Boucle Marrakech · 2 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/rak_erg_rak/programa_2n_3d",
+      "en": "tours/short-escapes/marrakech-erg-marrakech/program-2n-3d",
+      "fr": "voyages/escapades-courtes/marrakech-erg-marrakech/programme-2n-3j"
+    }
+  },
+  "tourEscapadaRakErgRak34": {
+    "title": {
+      "es": "Loop Marrakech · 3 noches",
+      "en": "Marrakech Loop · 3 nights",
+      "fr": "Boucle Marrakech · 3 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/rak_erg_rak/programa_3n_4d",
+      "en": "tours/short-escapes/marrakech-erg-marrakech/program-3n-4d",
+      "fr": "voyages/escapades-courtes/marrakech-erg-marrakech/programme-3n-4j"
+    }
+  },
+  "tourEscapadaFez23": {
+    "title": {
+      "es": "Fez · 2 noches",
+      "en": "Fez · 2 nights",
+      "fr": "Fès · 2 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/fez/programa_2n_3d",
+      "en": "tours/short-escapes/fez/program-2n-3d",
+      "fr": "voyages/escapades-courtes/fes/programme-2n-3j"
+    }
+  },
+  "tourEscapadaFez34": {
+    "title": {
+      "es": "Fez · 3 noches",
+      "en": "Fez · 3 nights",
+      "fr": "Fès · 3 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/fez/programa_3n_4d",
+      "en": "tours/short-escapes/fez/program-3n-4d",
+      "fr": "voyages/escapades-courtes/fes/programme-3n-4j"
+    }
+  },
+  "tourEscapadaAtlas34": {
+    "title": {
+      "es": "Alto Atlas · 3 noches",
+      "en": "High Atlas · 3 nights",
+      "fr": "Haut Atlas · 3 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/atlas/programa_3n_4d",
+      "en": "tours/short-escapes/high-atlas/program-3n-4d",
+      "fr": "voyages/escapades-courtes/haut-atlas/programme-3n-4j"
+    }
+  },
+  "tourEscapadaDesierto34": {
+    "title": {
+      "es": "Desierto express · 3 noches",
+      "en": "Desert express · 3 nights",
+      "fr": "Désert express · 3 nuits"
+    },
+    "path": {
+      "es": "viajes/escapadas/desierto/programa_3n_4d",
+      "en": "tours/short-escapes/desert/program-3n-4d",
+      "fr": "voyages/escapades-courtes/desert/programme-3n-4j"
+    }
+  },
+  "tourEnduroAventura45": {
+    "title": {
+      "es": "Enduro Sahara · 4 noches",
+      "en": "Sahara enduro · 4 nights",
+      "fr": "Enduro Sahara · 4 nuits"
+    },
+    "path": {
+      "es": "viajes/aventura/enduro/programa_4n_5d",
+      "en": "tours/adventure/enduro/program-4n-5d",
+      "fr": "voyages/aventure/enduro/programme-4n-5j"
+    }
+  },
+  "tourEnduroAventura67": {
+    "title": {
+      "es": "Enduro Sahara · 6 noches",
+      "en": "Sahara enduro · 6 nights",
+      "fr": "Enduro Sahara · 6 nuits"
+    },
+    "path": {
+      "es": "viajes/aventura/enduro/programa_6n_7d",
+      "en": "tours/adventure/enduro/program-6n-7d",
+      "fr": "voyages/aventure/enduro/programme-6n-7j"
+    }
+  },
+  "tourFinDeAno2025": {
+    "title": {
+      "es": "Fin de año 2026 en el desierto",
+      "en": "New Year's Eve 2026 in the desert",
+      "fr": "Réveillon 2026 dans le désert"
+    },
+    "path": {
+      "es": "findeano2025",
+      "en": "newyear2025",
+      "fr": "nouvelan2025"
+    }
+  }
+}
