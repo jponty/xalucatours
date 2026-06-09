@@ -10,6 +10,7 @@ import { pathFor } from "@/lib/routes";
 import { LandmarkCarousel } from "@/components/LandmarkCarousel";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import GooglePlaceSearch from "@/components/GooglePlaceSearch";
 
 /* ------------------------------------------------------------
    /galeria — central gallery of every "punto destacado".
@@ -298,6 +299,9 @@ export default function GaleriaPage() {
           </p>
         </div>
       </section>
+
+      {/* Google Places search — find images of any place in Morocco */}
+      <GooglePlaceSearch lang={lang} />
 
       {/* Zone quick-nav — pins to the very top. The site header (z-40) auto-
           hides on scroll-down, so this nav becomes the fixed region anchor as

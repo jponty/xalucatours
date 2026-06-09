@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -15,6 +16,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from typing import List, Optional, Dict
 import uuid
+from urllib.parse import quote
 from datetime import datetime, timezone, timedelta
 
 from storage import init_storage, put_object, get_object
@@ -1973,6 +1975,148 @@ async def translate_text(body: TranslateBody):
     except Exception as e:
         logger.error(f"translate parse failed: {e} | raw={resp[:200]}")
     return {"translations": out}
+
+
+# ============================================================
+#  GOOGLE PLACES API  (proxy — key stays server-side)
+#  ------------------------------------------------------------
+#  /api/places/search?q=...   -> Places API (New) Text Search,
+#                                biased/restricted to Morocco.
+#  /api/places/photo?name=... -> resolves a place photo to its
+#                                final image URL (redirect), so
+#                                the API key never reaches the
+#                                browser.
+# ============================================================
+GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "").strip()
+PLACES_LEGACY_BASE = "https://maps.googleapis.com/maps/api/place"
+
+
+@api_router.get("/places/search")
+async def places_search(q: str, limit: int = 12, lang: str = "es"):
+    """Text-search places in Morocco and return their photos as
+    backend-proxied image URLs (CMS-friendly shape)."""
+    if not GOOGLE_PLACES_API_KEY:
+        raise HTTPException(status_code=503, detail="Google Places API key not configured.")
+    query = (q or "").strip()
+    if not query:
+        raise HTTPException(status_code=400, detail="Empty query.")
+    limit = max(1, min(limit, 20))
+    params = {
+        "query": f"{query} Morocco",
+        "region": "ma",
+        "language": lang if lang in ("es", "en", "fr") else "es",
+        "key": GOOGLE_PLACES_API_KEY,
+    }
+    async with httpx.AsyncClient(timeout=httpx.Timeout(15.0, connect=5.0)) as cx:
+        try:
+            r = await cx.get(f"{PLACES_LEGACY_BASE}/textsearch/json", params=params)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Places request failed: {exc}")
+    if r.status_code >= 400:
+        raise HTTPException(status_code=502, detail=f"Places error {r.status_code}: {r.text[:200]}")
+    data = r.json()
+    status = data.get("status")
+    if status not in ("OK", "ZERO_RESULTS"):
+        raise HTTPException(status_code=502, detail=f"Places error: {status} {data.get('error_message','')}")
+    results = []
+    for p in (data.get("results") or [])[:limit]:
+        photos = []
+        for ph in (p.get("photos") or [])[:10]:
+            ref = ph.get("photo_reference")
+            if not ref:
+                continue
+            photos.append({
+                "thumb_url": f"/api/places/photo?ref={quote(ref, safe='')}&maxwidth=600",
+                "preview_url": f"/api/places/photo?ref={quote(ref, safe='')}&maxwidth=1400",
+                "width": ph.get("width", 0),
+                "height": ph.get("height", 0),
+                "attribution": " ".join(ph.get("html_attributions") or [])[:200],
+            })
+        results.append({
+            "id": p.get("place_id"),
+            "name": p.get("name", ""),
+            "address": p.get("formatted_address", ""),
+            "location": (p.get("geometry") or {}).get("location"),
+            "types": p.get("types", []),
+            "rating": p.get("rating"),
+            "photos": photos,
+        })
+    return {"query": query, "count": len(results), "places": results}
+
+
+@api_router.get("/places/details")
+async def places_details(place_id: str, lang: str = "es"):
+    """Fetch up to 10 photos for a specific place (Place Details), returned as
+    backend-proxied image URLs."""
+    if not GOOGLE_PLACES_API_KEY:
+        raise HTTPException(status_code=503, detail="Google Places API key not configured.")
+    if not place_id:
+        raise HTTPException(status_code=400, detail="Missing place_id.")
+    params = {
+        "place_id": place_id,
+        "fields": "name,formatted_address,photos,geometry",
+        "language": lang if lang in ("es", "en", "fr") else "es",
+        "key": GOOGLE_PLACES_API_KEY,
+    }
+    async with httpx.AsyncClient(timeout=httpx.Timeout(15.0, connect=5.0)) as cx:
+        try:
+            r = await cx.get(f"{PLACES_LEGACY_BASE}/details/json", params=params)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Place details failed: {exc}")
+    if r.status_code >= 400:
+        raise HTTPException(status_code=502, detail=f"Place details error {r.status_code}")
+    data = r.json()
+    if data.get("status") not in ("OK", "ZERO_RESULTS"):
+        raise HTTPException(status_code=502, detail=f"Place details: {data.get('status')}")
+    result = data.get("result") or {}
+    photos = []
+    for ph in (result.get("photos") or [])[:10]:
+        ref = ph.get("photo_reference")
+        if not ref:
+            continue
+        photos.append({
+            "thumb_url": f"/api/places/photo?ref={quote(ref, safe='')}&maxwidth=600",
+            "preview_url": f"/api/places/photo?ref={quote(ref, safe='')}&maxwidth=1400",
+            "width": ph.get("width", 0),
+            "height": ph.get("height", 0),
+            "attribution": " ".join(ph.get("html_attributions") or [])[:200],
+        })
+    return {
+        "id": place_id,
+        "name": result.get("name", ""),
+        "address": result.get("formatted_address", ""),
+        "location": (result.get("geometry") or {}).get("location"),
+        "photos": photos,
+    }
+
+
+@api_router.get("/places/photo")
+async def places_photo(ref: str, maxwidth: int = 1200):
+    """Resolve a Places photo_reference to its final image URL and redirect,
+    keeping the API key on the server."""
+    if not GOOGLE_PLACES_API_KEY:
+        raise HTTPException(status_code=503, detail="Google Places API key not configured.")
+    if not ref:
+        raise HTTPException(status_code=400, detail="Missing photo reference.")
+    maxwidth = max(100, min(maxwidth, 1600))
+    params = {
+        "key": GOOGLE_PLACES_API_KEY,
+        "maxwidth": maxwidth,
+        "photo_reference": ref,
+    }
+    # The legacy photo endpoint replies with a 302 redirect to the real image.
+    async with httpx.AsyncClient(timeout=httpx.Timeout(15.0, connect=5.0), follow_redirects=False) as cx:
+        try:
+            r = await cx.get(f"{PLACES_LEGACY_BASE}/photo", params=params)
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Photo request failed: {exc}")
+    location = r.headers.get("location")
+    if r.status_code in (301, 302, 303, 307, 308) and location:
+        return RedirectResponse(url=location, status_code=302)
+    if r.status_code == 200 and r.content:
+        return Response(content=r.content, media_type=r.headers.get("content-type", "image/jpeg"))
+    raise HTTPException(status_code=502, detail=f"Photo error {r.status_code}")
+
 
 
 
