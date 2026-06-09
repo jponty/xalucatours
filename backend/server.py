@@ -253,7 +253,7 @@ async def get_notify_emails(authorization: str = Header(default="")):
     return {"emails": list(NOTIFY_EMAILS)}
 
 
-@api_router.put("/admin/notify-emails")
+@api_router.post("/admin/notify-emails")
 async def update_notify_emails(payload: NotifyEmailsPayload, authorization: str = Header(default="")):
     """Replace the lead-notification recipient list (validated + de-duplicated)."""
     token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""

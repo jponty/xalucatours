@@ -1585,7 +1585,7 @@ const NotifyPanel = () => {
     setBusy(true); setErr(""); setMsg("");
     try {
       const r = await fetch(`${API}/admin/notify-emails`, {
-        method: "PUT",
+        method: "POST",
         headers: { "Content-Type": "application/json", ...tokenHeader() },
         body: JSON.stringify({ emails: next }),
       });
