@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header, BackgroundTasks
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header, BackgroundTasks, Request
 from fastapi.staticfiles import StaticFiles
 import resend
 from dotenv import load_dotenv
@@ -478,9 +478,18 @@ def _looks_like_trip_id(value: str) -> bool:
     return bool(value) and bool(re.match(r"^tour[A-Z]", value))
 
 
-def _build_trips_email_value(detail: list, ids: list, lang: str) -> str:
+def _build_trips_email_value(detail: list, ids: list, lang: str, base_url: str = "") -> str:
     """Vertical HTML list of selected trips as linked titles. Never emits raw
-    internal ids — unknown/missing titles are resolved via the gazetteer."""
+    internal ids — titles are resolved via the gazetteer and every entry is
+    linked to its exact page (built from `base_url` + the route slug)."""
+    base = (base_url or PUBLIC_SITE_URL or "").rstrip("/")
+
+    def _link_for(rid: str, given_url: str) -> str:
+        if given_url:
+            return given_url
+        p = _trip_path_for(rid, lang) if rid else None
+        return f"{base}{p}" if (p and base) else ""
+
     items: List[tuple] = []  # (title, url)
     if detail:
         for t in detail:
@@ -489,17 +498,10 @@ def _build_trips_email_value(detail: list, ids: list, lang: str) -> str:
             url = (getattr(t, "url", "") or "").strip()
             if not title or _looks_like_trip_id(title):
                 title = _resolve_trip_title(rid or title, lang)
-            if not url and rid:
-                p = _trip_path_for(rid, lang)
-                if p and PUBLIC_SITE_URL:
-                    url = f"{PUBLIC_SITE_URL}{p}"
-            items.append((title, url))
+            items.append((title, _link_for(rid, url)))
     else:
         for rid in ids:
-            title = _resolve_trip_title(rid, lang)
-            p = _trip_path_for(rid, lang)
-            url = f"{PUBLIC_SITE_URL}{p}" if (p and PUBLIC_SITE_URL) else ""
-            items.append((title, url))
+            items.append((_resolve_trip_title(rid, lang), _link_for(rid, "")))
     items = [(ti, u) for ti, u in items if ti]
     if not items:
         return ""
@@ -701,7 +703,17 @@ async def list_contact_requests(authorization: str = Header(default="")):
 
 
 @api_router.post("/trip-planner", response_model=TripPlannerRequest)
-async def create_trip_planner(payload: TripPlannerCreate, background_tasks: BackgroundTasks):
+async def create_trip_planner(payload: TripPlannerCreate, background_tasks: BackgroundTasks, request: Request):
+    # Resolve the site origin from the request so trip links in the email point
+    # to the exact domain the form was submitted from (preview or production).
+    origin = (request.headers.get("origin") or "").strip().rstrip("/")
+    if not origin:
+        ref = (request.headers.get("referer") or "").strip()
+        if ref:
+            from urllib.parse import urlparse
+            p = urlparse(ref)
+            if p.scheme and p.netloc:
+                origin = f"{p.scheme}://{p.netloc}"
     # Sanitize activity list (strip + cap length per item)
     activities = [a.strip()[:60] for a in (payload.activities or []) if a and a.strip()]
     regions = [r.strip()[:40] for r in (payload.regions or []) if r and r.strip()]
@@ -726,7 +738,7 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
         dates = " → ".join([d for d in (obj.start_date, obj.end_date) if d])
     # Build the linked trip titles (vertical list). Always resolves to real
     # titles via the gazetteer — internal ids are never shown in the email.
-    trips_value = _build_trips_email_value(selected_trips_detail, selected_trips, obj.language)
+    trips_value = _build_trips_email_value(selected_trips_detail, selected_trips, obj.language, origin)
     html = _lead_email_html(
         "Planifica tu viaje",
         f"{obj.full_name} · {obj.email}",
