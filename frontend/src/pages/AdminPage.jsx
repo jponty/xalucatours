@@ -3,7 +3,7 @@ import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
-  MapPin, Languages, Inbox,
+  MapPin, Languages, Inbox, Mail,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
@@ -313,6 +313,7 @@ export default function AdminPage() {
             {[
               { id: "urls",   label: "URLs",          icon: Globe },
               { id: "leads",  label: "Leads",         icon: Inbox },
+              { id: "notify", label: "Notificaciones", icon: Mail },
             ].map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -350,7 +351,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Middle: lists */}
-        {tab !== "leads" && (
+        {tab === "urls" && (
         <section className="col-span-12 md:col-span-4 lg:col-span-4 border-r border-white/10 overflow-y-auto max-h-[calc(100vh-56px)]">
           {tab === "urls" && (
             <div data-testid="admin-url-list" className="p-4 space-y-4">
@@ -390,7 +391,7 @@ export default function AdminPage() {
         )}
 
         {/* Right: live preview */}
-        {tab !== "leads" ? (
+        {tab === "urls" ? (
         <section className="col-span-12 md:col-span-5 lg:col-span-6 bg-[#0F0D0B] flex flex-col">
           <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-white/60">
@@ -446,9 +447,13 @@ export default function AdminPage() {
             </div>
           </div>
         </section>
-        ) : (
+        ) : tab === "leads" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <LeadsPanel />
+          </section>
+        ) : (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
+            <NotifyPanel />
           </section>
         )}
       </div>
@@ -1552,6 +1557,124 @@ const LEAD_FORMS = [
     ],
   },
 ];
+
+const NotifyPanel = () => {
+  const [emails, setEmails] = useState(null); // null = loading
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [msg, setMsg] = useState("");
+  const tokenHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("xaluca_admin_token")}` });
+  const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+  const load = useCallback(async () => {
+    setErr("");
+    try {
+      const r = await fetch(`${API}/admin/notify-emails`, { headers: tokenHeader() });
+      if (!r.ok) throw new Error(String(r.status));
+      const j = await r.json();
+      setEmails(j.emails || []);
+    } catch {
+      setErr("No se pudo cargar la lista de destinatarios.");
+      setEmails([]);
+    }
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const save = async (next) => {
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      const r = await fetch(`${API}/admin/notify-emails`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...tokenHeader() },
+        body: JSON.stringify({ emails: next }),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      const j = await r.json();
+      setEmails(j.emails || []);
+      setMsg("Cambios guardados.");
+      setTimeout(() => setMsg(""), 3000);
+    } catch {
+      setErr("No se pudieron guardar los cambios.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const add = () => {
+    const e = draft.trim();
+    if (!e) return;
+    if (!EMAIL_RE.test(e)) { setErr("Introduce un email válido."); return; }
+    if ((emails || []).some((x) => x.toLowerCase() === e.toLowerCase())) { setErr("Ese email ya está en la lista."); return; }
+    setDraft("");
+    save([...(emails || []), e]);
+  };
+  const remove = (e) => save((emails || []).filter((x) => x !== e));
+
+  return (
+    <div data-testid="admin-notify-panel" className="p-6 md:p-10 max-w-2xl mx-auto">
+      <div className="flex items-center gap-3 text-[#D4A373]">
+        <Mail className="w-5 h-5" strokeWidth={1.7} />
+        <h2 className="text-base tracking-[0.18em] uppercase font-semibold text-white">Avisos de leads · Destinatarios</h2>
+      </div>
+      <p className="mt-3 text-sm text-white/60 leading-relaxed">
+        Estos correos reciben un aviso cada vez que un cliente envía un formulario
+        (contacto, planificador o descarga de programa). Los cambios se aplican al instante.
+      </p>
+
+      {/* Add form */}
+      <div className="mt-7 flex gap-2">
+        <input
+          type="email"
+          value={draft}
+          data-testid="notify-email-input"
+          onChange={(e) => { setDraft(e.target.value); setErr(""); }}
+          onKeyDown={(e) => { if (e.key === "Enter") add(); }}
+          placeholder="nombre@xaluca.com"
+          className="flex-1 bg-white/5 border border-white/15 px-3 py-2.5 text-sm text-white/90 outline-none focus:border-[#D4A373]"
+        />
+        <button
+          onClick={add}
+          disabled={busy || !draft.trim()}
+          data-testid="notify-add-btn"
+          className={`inline-flex items-center gap-2 px-4 py-2.5 text-[11px] tracking-[0.22em] uppercase transition-colors ${
+            busy || !draft.trim() ? "bg-white/5 text-white/30 cursor-not-allowed" : "bg-[#C16542] hover:bg-[#A8533A] text-white"
+          }`}
+        >
+          <Plus className="w-3.5 h-3.5" strokeWidth={2} /> Añadir
+        </button>
+      </div>
+
+      {err && <p data-testid="notify-error" className="mt-3 text-xs text-[#E08A6A]">{err}</p>}
+      {msg && <p data-testid="notify-msg" className="mt-3 text-xs text-[#7FB48F]">{msg}</p>}
+
+      {/* List */}
+      <ul className="mt-6 divide-y divide-white/10 border border-white/10">
+        {emails === null && <li className="px-4 py-3 text-sm text-white/40">Cargando…</li>}
+        {emails && emails.length === 0 && (
+          <li className="px-4 py-3 text-sm text-white/40">No hay destinatarios. Añade al menos uno para recibir avisos.</li>
+        )}
+        {(emails || []).map((e) => (
+          <li key={e} data-testid={`notify-row-${e}`} className="flex items-center justify-between gap-3 px-4 py-3 bg-white/[0.03]">
+            <span className="inline-flex items-center gap-2.5 text-sm text-white/90 min-w-0">
+              <Mail className="w-3.5 h-3.5 text-[#D4A373] shrink-0" strokeWidth={1.6} />
+              <span className="truncate">{e}</span>
+            </span>
+            <button
+              onClick={() => remove(e)}
+              disabled={busy}
+              data-testid={`notify-remove-${e}`}
+              title="Quitar destinatario"
+              className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-white/50 hover:text-[#E08A6A] disabled:opacity-40 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" strokeWidth={1.7} /> Quitar
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 const LeadsPanel = () => {
   const [view, setView] = useState("program-downloads");

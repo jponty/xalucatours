@@ -239,6 +239,36 @@ async def admin_verify(authorization: str = Header(default="")):
     return {"ok": True}
 
 
+# ---------- Lead-notification recipients (admin-editable) ----------
+class NotifyEmailsPayload(BaseModel):
+    emails: List[str] = Field(default_factory=list, max_length=50)
+
+
+@api_router.get("/admin/notify-emails")
+async def get_notify_emails(authorization: str = Header(default="")):
+    """Return the current lead-notification recipient list."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    return {"emails": list(NOTIFY_EMAILS)}
+
+
+@api_router.put("/admin/notify-emails")
+async def update_notify_emails(payload: NotifyEmailsPayload, authorization: str = Header(default="")):
+    """Replace the lead-notification recipient list (validated + de-duplicated)."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    cleaned = _clean_emails(payload.emails)
+    await db.app_settings.update_one(
+        {"key": NOTIFY_SETTINGS_KEY},
+        {"$set": {"key": NOTIFY_SETTINGS_KEY, "emails": cleaned}},
+        upsert=True,
+    )
+    NOTIFY_EMAILS[:] = cleaned
+    return {"emails": cleaned}
+
+
 # ---------- Global pricing (centralised, admin-editable) ----------
 # Stored as a single document {_id:"pricing"} in collection `config`.
 # Only the PRICE NUMBERS are overridden here; labels/season defs live
@@ -364,6 +394,41 @@ async def cms_import(payload: CmsImportPayload, authorization: str = Header(defa
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 LEADS_FROM_EMAIL = os.environ.get("LEADS_FROM_EMAIL", "").strip()
 LEADS_NOTIFY_EMAILS = [e.strip() for e in os.environ.get("LEADS_NOTIFY_EMAILS", "").split(",") if e.strip()]
+# Live, DB-backed recipient list (seeded from env). Mutated in place so the
+# fire-and-forget send_* functions always read the latest recipients.
+NOTIFY_EMAILS = list(LEADS_NOTIFY_EMAILS)
+NOTIFY_SETTINGS_KEY = "notify_emails"
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def _clean_emails(raw_list) -> List[str]:
+    """Validate, trim and de-duplicate (case-insensitive) a list of emails."""
+    out, seen = [], set()
+    for e in (raw_list or []):
+        e = (e or "").strip()
+        key = e.lower()
+        if e and _EMAIL_RE.match(e) and key not in seen:
+            seen.add(key)
+            out.append(e)
+    return out
+
+
+async def load_notify_emails() -> None:
+    """Hydrate NOTIFY_EMAILS from app_settings (seed with env list on first run)."""
+    try:
+        doc = await db.app_settings.find_one({"key": NOTIFY_SETTINGS_KEY})
+        if doc and isinstance(doc.get("emails"), list):
+            NOTIFY_EMAILS[:] = [e for e in doc["emails"] if e]
+        else:
+            await db.app_settings.update_one(
+                {"key": NOTIFY_SETTINGS_KEY},
+                {"$set": {"key": NOTIFY_SETTINGS_KEY, "emails": NOTIFY_EMAILS}},
+                upsert=True,
+            )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not load notify emails: %s", exc)
+
+
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
@@ -548,13 +613,13 @@ def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
 
 def send_lead_notification(subject: str, html: str, reply_to: Optional[str] = None) -> None:
     """Send a lead notification email. Never raises (logs on failure)."""
-    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and LEADS_NOTIFY_EMAILS):
+    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and NOTIFY_EMAILS):
         logger.warning("Resend not fully configured; skipping lead notification.")
         return
     try:
         params = {
             "from": LEADS_FROM_EMAIL,
-            "to": LEADS_NOTIFY_EMAILS,
+            "to": list(NOTIFY_EMAILS),
             "subject": subject,
             "html": html,
         }
@@ -649,8 +714,8 @@ def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None
         attachments = _email_attachments()
         if attachments:
             params["attachments"] = attachments
-        if LEADS_NOTIFY_EMAILS:
-            params["reply_to"] = LEADS_NOTIFY_EMAILS[0]
+        if NOTIFY_EMAILS:
+            params["reply_to"] = NOTIFY_EMAILS[0]
         resend.Emails.send(params)
     except Exception as exc:  # noqa: BLE001
         logger.error("Client confirmation email failed: %s", exc)
@@ -2433,3 +2498,5 @@ async def startup_storage():
         await db.files.create_index("sha256")
     except Exception as exc:
         logger.error("files.sha256 index creation failed: %s", exc)
+    # Hydrate the editable lead-notification recipient list.
+    await load_notify_emails()
