@@ -1733,7 +1733,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
       />
       <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
-      <ProgramFlipbook src={flipbookSrc} />
+      <ProgramFlipbook src={flipbookSrc} routeId={routeId} />
       <TripOverview days={program.days} />
       <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />

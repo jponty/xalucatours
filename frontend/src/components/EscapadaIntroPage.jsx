@@ -6,6 +6,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import ContactForm from "@/components/ContactForm";
+import ProgramFlipbook from "@/components/ProgramFlipbook";
 
 /* ============================================================
    EscapadaIntroPage — single-section editorial intro for each
@@ -267,6 +268,7 @@ export default function EscapadaIntroPage({ data, accent }) {
       <Hero data={data.hero} lang={lang} t={t} routeId={data.routeId} />
       <Description paragraphs={paragraphs} t={t} />
       <Gallery items={data.gallery} lang={lang} t={t} accent={accent} routeId={data.routeId} />
+      <ProgramFlipbook routeId={data.routeId} />
       <ContactBand lang={lang} t={t} accent={accent} />
       <ContactForm />
     </div>

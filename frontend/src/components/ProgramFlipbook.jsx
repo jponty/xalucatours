@@ -1,15 +1,18 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { resolvePath } from "@/lib/routes";
+import { publuuSrcFor } from "@/lib/publuuCatalogues";
 
 /* ----------------------------------------------------------------
-   <ProgramFlipbook src="..." />
-   Branded "Folleto interactivo" section embedding a Publuu flipbook.
-   Rendered inside <ProgramTemplate/> (before the TripOverview section)
-   only for programs that pass a `flipbookSrc`. Responsive 4:3 embed.
+   <ProgramFlipbook routeId="..." />  (or src="...")
+   Branded "Folleto interactivo" section embedding the Publuu flipbook
+   for the current trip page. Resolves the catalogue id by routeId
+   (lib/publuuCatalogues.js); renders nothing when there is no id.
 
    Dark-Academia treatment: layered espresso gradient + deep green
    undertone + subtle Moroccan zellige (8-point star) pattern + grain
-   + inner vignette — for depth without hurting legibility.
+   + inner vignette — depth without hurting legibility.
 ---------------------------------------------------------------- */
 const COPY = {
   eyebrow: { es: "Folleto interactivo", en: "Interactive brochure", fr: "Brochure interactive" },
@@ -36,9 +39,13 @@ const ARABIC_PATTERN = encodeURIComponent(
   "fill='none' stroke='#D4A373' stroke-width='1.1'/></svg>"
 );
 
-export const ProgramFlipbook = ({ src }) => {
+export const ProgramFlipbook = ({ src, routeId }) => {
   const { lang } = useLanguage();
-  if (!src) return null;
+  const location = useLocation();
+  const rid = routeId || resolvePath(location.pathname).routeId;
+  const finalSrc = src || publuuSrcFor(rid);
+  if (!finalSrc) return null;
+
   return (
     <section
       data-testid="program-flipbook-section"
@@ -105,7 +112,7 @@ export const ProgramFlipbook = ({ src }) => {
           style={{ aspectRatio: "4 / 3" }}
         >
           <iframe
-            src={src}
+            src={finalSrc}
             title={pick(COPY.title, lang)}
             data-testid="program-flipbook-iframe"
             loading="lazy"
