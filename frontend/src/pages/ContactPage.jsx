@@ -100,6 +100,7 @@ const COPY = {
                en: "We're here to help in whatever way suits you best. Our system combines the instant support of a virtual assistant with the personal attention of our team whenever needed.",
                fr: "Nous sommes là pour vous aider de la manière qui vous convient le mieux. Notre système combine l'assistance immédiate d'un assistant virtuel et l'attention personnalisée de notre équipe lorsque c'est nécessaire." },
     chatCta: { es: "Abrir el chat de asistencia", en: "Open the support chat", fr: "Ouvrir le chat d'assistance" },
+    pageCta: { es: "Abrir la página de asistencia", en: "Open the support page", fr: "Ouvrir la page d'assistance" },
     items: [
       { icon: MessageCircle, title: { es: "Chat de asistencia", en: "Support chat", fr: "Chat d'assistance" },
         body: { es: "Obtén ayuda inmediata a través del chat disponible en esta página.",
@@ -384,23 +385,36 @@ const ContactPage = () => {
               <E name="support.body" defaults={COPY.support.body} as="p"
                  className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
 
-              <button
-                type="button"
-                data-testid="support-open-chat"
-                onClick={() => {
-                  try {
-                    if (window.chatbase && typeof window.chatbase.open === "function") {
-                      window.chatbase.open();
-                      return;
-                    }
-                  } catch (e) { /* fall through */ }
-                  window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-                }}
-                className="mt-8 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
-                <E name="support.chatCta" defaults={COPY.support.chatCta} multiline={false} />
-              </button>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  data-testid="support-open-chat"
+                  onClick={() => {
+                    try {
+                      if (window.chatbase && typeof window.chatbase.open === "function") {
+                        window.chatbase.open();
+                        return;
+                      }
+                    } catch (e) { /* fall through */ }
+                    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+                  }}
+                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  <E name="support.chatCta" defaults={COPY.support.chatCta} multiline={false} />
+                </button>
+
+                <a
+                  href="https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="support-open-page"
+                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                >
+                  <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  <E name="support.pageCta" defaults={COPY.support.pageCta} multiline={false} />
+                </a>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-7">
