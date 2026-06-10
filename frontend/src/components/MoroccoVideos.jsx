@@ -11,97 +11,217 @@ import XalucaLogoBadge from "@/components/XalucaLogoBadge";
    streams the YouTube piece. Posters use the official YouTube
    thumbnail and remain editable via the CMS (slot home.video.{id}).
 ============================================================ */
-const yt = (id) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+const yt = (id) => `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
 
 const VIDEOS = [
   {
-    id: "94sDICGmLcU",
+    id: "WGoSnw5Y3nE",
     accent: "#C16542",
-    eyebrow: { es: "Gran Sur · Sáhara", en: "Great South · Sahara", fr: "Grand Sud · Sahara" },
+    eyebrow: { es: "Marrakech", en: "Marrakesh", fr: "Marrakech" },
     title: {
-      es: "Valle del Drâa, Telouet y Merzouga: anticipo del Sáhara",
-      en: "Drâa Valley, Telouet, Merzouga: a foretaste of the Sahara",
-      fr: "Vallée du Drâa, Telouet, Merzouga : un avant-goût du Sahara",
+      es: "Marrakech, la escapada definitiva",
+      en: "Marrakesh, the ultimate getaway",
+      fr: "Marrakech, l'escapade ultime",
     },
     desc: {
-      es: "Un anticipo del Sáhara: el valle del Drâa despliega un paisaje árido salpicado de palmerales. Esta región rebosa tesoros históricos como la majestuosa kasbah de Telouet, que perteneció al antiguo pachá de Marrakech, o el ksar de Ait Ben Haddou, hoy Patrimonio de la Humanidad por la UNESCO. El Gran Sur es también Ouarzazate, sus estudios de cine, su central solar Noor —la mayor de África— y, por supuesto, el impresionante lago de la presa Mansour Eddahbi. Más al este, Merzouga es célebre por sus extensiones de dunas que se recorren a lomos de dromedario. ¡Asombroso!",
-      en: "A foretaste of the Sahara: the Drâa Valley offers an arid landscape punctuated by palm groves. This Moroccan region is overflowing with historical treasures such as the majestic Telouet Kasbah, which belonged to the former pasha of Marrakesh, or the Ksar of Ait Ben Haddou, now a UNESCO World Heritage Site. The Great South is also Ouarzazate, its film studios, its solar power plant Noor, the largest in Africa, and of course the impressive lake of the Mansour Eddahbi dam. Further east, Merzouga is known for its expanses of sand dunes where you can hike on camel back. Stupendous!",
-      fr: "Un avant-goût du Sahara : la vallée du Drâa déroule un paysage aride ponctué de palmeraies. Cette région regorge de trésors historiques comme la majestueuse kasbah de Telouet, qui appartenait à l'ancien pacha de Marrakech, ou le ksar d'Aït Ben Haddou, aujourd'hui classé au patrimoine mondial de l'UNESCO. Le Grand Sud, c'est aussi Ouarzazate, ses studios de cinéma, sa centrale solaire Noor — la plus grande d'Afrique — et bien sûr l'impressionnant lac du barrage Mansour Eddahbi. Plus à l'est, Merzouga est connue pour ses étendues de dunes que l'on parcourt à dos de dromadaire. Époustouflant !",
+      es: "La escapada por excelencia: la plaza Jemaa el-Fna, riads de ensueño, el Jardín Majorelle y el bullicio eterno de la medina roja.",
+      en: "The ultimate getaway: Jemaa el-Fnaa square, dreamlike riads, the Majorelle Garden and the eternal bustle of the red medina.",
+      fr: "L'escapade par excellence : la place Jemaa el-Fna, des riads de rêve, le Jardin Majorelle et l'effervescence de la médina rouge.",
     },
   },
   {
-    id: "A67Q_6DxZ9E",
+    id: "ErBC2qPK68w",
     accent: "#D97742",
-    eyebrow: { es: "Alto Atlas", en: "High Atlas", fr: "Haut Atlas" },
+    eyebrow: { es: "Merzouga · Sáhara", en: "Merzouga · Sahara", fr: "Merzouga · Sahara" },
     title: {
-      es: "El Alto Atlas: Marrakech, Ouzoud, Safi y Essaouira",
-      en: "The High Atlas: Marrakesh, Ouzoud, Safi & Essaouira",
-      fr: "Le Haut Atlas : Marrakech, Ouzoud, Safi et Essaouira",
+      es: "Merzouga: dromedarios, vivac y mucho más",
+      en: "The ultimate trip to Merzouga: camels, camping & more",
+      fr: "Merzouga : dromadaires, bivouac et bien plus",
     },
     desc: {
-      es: "Vista desde el cielo, ¡Marrakech es un hervidero! Es también el destino más visitado de Marruecos, y con razón: enamora a todos con sus encantadores riads y sus campos de golf. Pero es además una ciudad histórica, con la plaza Jemaa el-Fna, el Jardín Majorelle y la Menara. La región de Marrakech es igualmente espectacular, con las montañas del Atlas cercanas y las cascadas de Ouzoud, probablemente las más famosas del norte de África. En la costa, Safi —conocida por su barrio de alfareros— o la ventosa Essaouira seducen a quienes buscan aire fresco.",
-      en: "As seen from above, Marrakesh is a hive of activity! It is also the most visited destination in Morocco. And for good reason: it appeals to everyone with its many charming riads and its golf courses. But it is also a historical city with the Jemaa el-Fnaa square, the Majorelle Garden and the Menara. The Marrakesh region is also spectacular with the nearby Atlas Mountains and the Ouzoud waterfalls, probably the most famous in North Africa! On the coast, Safi known for its village of potters or even the windy Essaouira entice tourists in search of fresh air.",
-      fr: "Vue du ciel, Marrakech est une véritable ruche ! C'est aussi la destination la plus visitée du Maroc. Et pour cause : elle séduit tout le monde avec ses riads de charme et ses parcours de golf. Mais c'est aussi une ville historique avec la place Jemaa el-Fna, le Jardin Majorelle et la Ménara. La région de Marrakech est tout aussi spectaculaire avec l'Atlas tout proche et les cascades d'Ouzoud, sans doute les plus célèbres d'Afrique du Nord ! Sur la côte, Safi, connue pour son village de potiers, ou encore la venteuse Essaouira attirent les amateurs d'air frais.",
+      es: "Dromedarios, vivac y noches estrelladas: la experiencia definitiva en las dunas doradas del Erg Chebbi.",
+      en: "Camels, camping and starry nights: the ultimate experience in the golden dunes of Erg Chebbi.",
+      fr: "Dromadaires, bivouac et nuits étoilées : l'expérience ultime dans les dunes dorées de l'Erg Chebbi.",
     },
   },
   {
-    id: "0kxeDjvKJqQ",
+    id: "4CQ0irysD8s",
     accent: "#5A7F9C",
+    eyebrow: { es: "Chefchaouen · Rif", en: "Chefchaouen · Rif", fr: "Chefchaouen · Rif" },
+    title: {
+      es: "Chefchaouen: vistas aéreas y calles azules",
+      en: "Chefchaouen: aerial views and the blue streets",
+      fr: "Chefchaouen : vues aériennes et ruelles bleues",
+    },
+    desc: {
+      es: "Vistas aéreas y callejones índigo: piérdete por las calles azules de la joya del Rif, la inconfundible ciudad azul.",
+      en: "Aerial views and indigo alleys: get lost in the blue streets of the Rif's jewel, the unmistakable blue city.",
+      fr: "Vues aériennes et ruelles indigo : perdez-vous dans les rues bleues du joyau du Rif, l'incomparable ville bleue.",
+    },
+  },
+  {
+    id: "kYxBn98X3Ig",
+    accent: "#A07042",
+    eyebrow: { es: "Fez · Ciudad Imperial", en: "Fez · Imperial City", fr: "Fès · Ville impériale" },
+    title: {
+      es: "Fez: un viaje por la historia y la tradición",
+      en: "Fez: a journey through history and tradition",
+      fr: "Fès : un voyage à travers l'histoire et la tradition",
+    },
+    desc: {
+      es: "Un viaje por la historia y la tradición: la medina medieval más viva del mundo, sus zocos, sus curtidurías y la universidad más antigua.",
+      en: "A journey through history and tradition: the world's liveliest medieval medina, its souks, tanneries and the oldest university.",
+      fr: "Un voyage à travers l'histoire et la tradition : la médina médiévale la plus vivante du monde, ses souks et ses tanneries.",
+    },
+  },
+  {
+    id: "si2uNbjU1jA",
+    accent: "#3A4A5F",
+    eyebrow: { es: "Casablanca · Costa Atlántica", en: "Casablanca · Atlantic Coast", fr: "Casablanca · Côte Atlantique" },
+    title: {
+      es: "Casablanca y sus alrededores: lugares imprescindibles",
+      en: "Discover Casablanca & its surroundings: must-see spots",
+      fr: "Casablanca et ses environs : les lieux incontournables",
+    },
+    desc: {
+      es: "La capital económica deslumbra con su patrimonio Art Déco y la monumental Mezquita Hassan II, cuyo minarete se asoma al Atlántico.",
+      en: "The economic capital dazzles with its Art Deco heritage and the monumental Hassan II Mosque, its minaret rising over the Atlantic.",
+      fr: "La capitale économique éblouit par son patrimoine Art déco et la monumentale mosquée Hassan II, dont le minaret surplombe l'Atlantique.",
+    },
+  },
+  {
+    id: "WrDlEphvlR8",
+    accent: "#C98A5E",
+    eyebrow: { es: "Rabat · Capital", en: "Rabat · Capital", fr: "Rabat · Capitale" },
+    title: {
+      es: "Rabat: sumérgete en la cultura y el patrimonio de Marruecos",
+      en: "Rabat: dive into Morocco's vibrant culture and heritage",
+      fr: "Rabat : plongez dans la culture et le patrimoine du Maroc",
+    },
+    desc: {
+      es: "Sumérgete en la cultura de la capital del Reino: la Kasbah de los Oudayas, la Torre Hassan y jardines junto al río Bouregreg.",
+      en: "Dive into the culture of the Kingdom's capital: the Kasbah of the Udayas, the Hassan Tower and gardens along the Bouregreg.",
+      fr: "Plongez dans la culture de la capitale : la Kasbah des Oudayas, la Tour Hassan et les jardins au bord du Bouregreg.",
+    },
+  },
+  {
+    id: "OGjn7ON-60c",
+    accent: "#5A7F9C",
+    eyebrow: { es: "Tánger · Estrecho", en: "Tangier · Strait", fr: "Tanger · Détroit" },
+    title: {
+      es: "Tánger, el destino definitivo para viajar entre amigos",
+      en: "Tangier, the ultimate friends' travel destination",
+      fr: "Tanger, la destination ultime pour voyager entre amis",
+    },
+    desc: {
+      es: "El destino definitivo entre amigos: la mítica kasbah, su corniche y un cruce único entre el Mediterráneo y el Atlántico.",
+      en: "The ultimate friends' destination: the mythical kasbah, its corniche and a unique crossroads between Mediterranean and Atlantic.",
+      fr: "La destination ultime entre amis : la kasbah mythique, sa corniche et un carrefour unique entre Méditerranée et Atlantique.",
+    },
+  },
+  {
+    id: "joRZxY4gcyQ",
+    accent: "#3A4A5F",
+    eyebrow: { es: "Essaouira · Atlántico", en: "Essaouira · Atlantic", fr: "Essaouira · Atlantique" },
+    title: {
+      es: "Esto es Essaouira: aventura, cultura y mucho más",
+      en: "This is Essaouira: adventure, culture and more",
+      fr: "Voici Essaouira : aventure, culture et bien plus",
+    },
+    desc: {
+      es: "Aventura, cultura y mar: la ciudad del viento seduce con sus murallas portuguesas, su puerto azul y sus playas atlánticas.",
+      en: "Adventure, culture and sea: the windy city charms with its Portuguese ramparts, blue port and Atlantic beaches.",
+      fr: "Aventure, culture et mer : la cité du vent séduit par ses remparts portugais, son port bleu et ses plages atlantiques.",
+    },
+  },
+  {
+    id: "Jqds5jTCVN0",
+    accent: "#D4A373",
+    eyebrow: { es: "Tetuán · Norte", en: "Tetouan · North", fr: "Tétouan · Nord" },
+    title: {
+      es: "Tetuán: tu próximo destino soñado",
+      en: "Tetouan: your next dream destination",
+      fr: "Tétouan : votre prochaine destination de rêve",
+    },
+    desc: {
+      es: "Tu próximo destino soñado: la 'paloma blanca' del norte despliega una medina Patrimonio de la Humanidad de raíces andalusíes.",
+      en: "Your next dream destination: the northern 'white dove' unfolds a UNESCO-listed medina of Andalusian roots.",
+      fr: "Votre prochaine destination de rêve : la « colombe blanche » du nord déploie une médina andalouse classée à l'UNESCO.",
+    },
+  },
+  {
+    id: "VDZXbZYhTwc",
+    accent: "#C16542",
     eyebrow: { es: "Norte y Rif", en: "North & Rif", fr: "Nord et Rif" },
     title: {
-      es: "Tánger, Chefchaouen y Asilah: los esplendores del norte",
-      en: "Tangier, Chefchaouen, Asilah: the splendors of the North",
-      fr: "Tanger, Chefchaouen, Asilah : les splendeurs du Nord",
+      es: "Descubre por qué el norte de Marruecos rebosa aventura",
+      en: "See why the north of Morocco is filled with adventure",
+      fr: "Découvrez pourquoi le nord du Maroc regorge d'aventure",
     },
     desc: {
-      es: "¡Sube a lo más alto para descubrir Marruecos y sus magníficos paisajes! El viaje comienza en la mítica kasbah de Tánger, su corniche, su marina y su puerto internacional Tánger Med, que convierten esta ciudad del norte en un cruce único entre tradición y modernidad. En los alrededores, amplias playas de arena y calas salvajes bordean el Mediterráneo. Camino de la ciudad azul de Chefchaouen, las montañas del Rif ofrecen numerosas rutas de senderismo desde las que admirar las cascadas de Akchour y el «Puente de Dios», una atracción natural. La pequeña y acogedora Asilah, en la costa atlántica, acoge el festival internacional de murales. ¡Aviso para aficionados!",
-      en: "Climb to the top to discover Morocco and its magnificent landscapes! The journey begins with the mythical Tangier Kasbah, its cornice, its marina and its international port, Tangier Med, which make this northern city a unique junction between tradition and modernity. In the surrounding areas, vast sandy beaches and wild coves line the Mediterranean. On the road to the blue city of Chefchaouen, the Rif mountains offer many hiking trails from which you can admire the Akchour waterfalls and \"the Bridge of God\", a natural tourist attraction. The small friendly town of Asilah, on the Atlantic side, hosts the international festival of murals. Notice to amateurs!",
-      fr: "Grimpez tout en haut pour découvrir le Maroc et ses magnifiques paysages ! Le voyage commence par la mythique kasbah de Tanger, sa corniche, sa marina et son port international Tanger Med, qui font de cette ville du nord un trait d'union unique entre tradition et modernité. Aux alentours, de vastes plages de sable et des criques sauvages bordent la Méditerranée. Sur la route de la ville bleue de Chefchaouen, les montagnes du Rif offrent de nombreux sentiers de randonnée d'où l'on admire les cascades d'Akchour et le « Pont de Dieu », une attraction naturelle. La petite ville chaleureuse d'Asilah, côté Atlantique, accueille le festival international des fresques murales. Avis aux amateurs !",
+      es: "Descubre por qué el norte de Marruecos rebosa aventura: montañas del Rif, cascadas escondidas y senderos junto al mar.",
+      en: "See why northern Morocco is filled with adventure: the Rif mountains, hidden waterfalls and trails by the sea.",
+      fr: "Découvrez pourquoi le nord du Maroc regorge d'aventure : les montagnes du Rif, des cascades cachées et des sentiers en bord de mer.",
     },
   },
   {
-    id: "q_wJA1qJErI",
-    accent: "#C98A5E",
-    eyebrow: { es: "Sáhara Atlántico", en: "Atlantic Sahara", fr: "Sahara atlantique" },
+    id: "Jgowl-UAJ0Q",
+    accent: "#D97742",
+    eyebrow: { es: "Ifrane · Atlas Medio", en: "Ifrane · Middle Atlas", fr: "Ifrane · Moyen Atlas" },
     title: {
-      es: "Laayoune y Dajla: un paraíso en el fin del mundo",
-      en: "Laayoune, Dakhla: a paradise at the end of the world",
-      fr: "Laâyoune, Dakhla : un paradis au bout du monde",
+      es: "Ifrane: el idílico pueblo entre bosques y montañas",
+      en: "Ifrane: the idyllic town surrounded by forests and mountains",
+      fr: "Ifrane : le village idyllique entre forêts et montagnes",
     },
     desc: {
-      es: "Una tierra preservada. Un cambio de escenario garantizado. El Sáhara tiene todas las razones para fascinar: el Parque Nacional de Khnifiss, con su sima de Akhfenir y su laguna de Nayla entre marismas recortadas, es de postal. Desde la imponente plaza El Mechouar, en el corazón de Laayoune, verás grandes dunas que cruzan uno de los mayores uadis del sur de Marruecos, la Saquia el Hamra. Para los amantes de la adrenalina, Dajla se ha convertido en un spot mundialmente conocido para el surf y el windsurf. Un fin del mundo que invita a desconectar y relajarse.",
-      en: "A preserved land. A change of scenery guaranteed. The Sahara has all the reasons to fascinate: the National Park of Khnifiss, with its abyss of Akhfenir and its lagoon of Nayla to the jagged swamps, is postcard perfect! From the imposing El Mechouar Square in the heart of the city of Laayoune, you will see large sand dunes that cross one of the largest wadis in southern Morocco, the Sakia Hamra. For thrill-seekers, Dakhla has become a world-renowned spot for surfing and windsurfing. An end of the world that invites you to disconnect and relax.",
-      fr: "Une terre préservée. Un dépaysement garanti. Le Sahara a toutes les raisons de fasciner : le Parc national de Khnifiss, avec son gouffre d'Akhfenir et sa lagune de Naïla aux marais découpés, est une carte postale ! Depuis l'imposante place El Mechouar, au cœur de la ville de Laâyoune, vous verrez de grandes dunes qui traversent l'un des plus grands oueds du sud du Maroc, la Saquia el Hamra. Pour les amateurs de sensations fortes, Dakhla est devenue un spot de renommée mondiale pour le surf et la planche à voile. Un bout du monde qui invite à déconnecter et à se détendre.",
+      es: "La 'pequeña Suiza' de Marruecos: un pueblo idílico de tejados puntiagudos rodeado de bosques de cedros y macacos.",
+      en: "Morocco's 'little Switzerland': an idyllic town of pointed roofs surrounded by cedar forests and Barbary macaques.",
+      fr: "La « petite Suisse » du Maroc : un village idyllique aux toits pointus entouré de forêts de cèdres et de magots.",
     },
   },
   {
-    id: "yQ1C0o8nVYI",
-    accent: "#3A4A5F",
-    eyebrow: { es: "Costa Atlántica", en: "Atlantic Coast", fr: "Côte Atlantique" },
-    title: {
-      es: "El Jadida y Casablanca: descubre la costa atlántica",
-      en: "El Jadida, Casablanca: discover the Atlantic coast",
-      fr: "El Jadida, Casablanca : la côte atlantique du Maroc",
-    },
-    desc: {
-      es: "Rumbo a la costa atlántica de Marruecos. Empezamos por la laguna de Moulay Bousselham, donde se observa una fauna excepcional de flamencos rosados. Más al sur, la ciudad de Salé y su mezquita Al Aadam —la tercera mayor de Marruecos— mira frente a la capital del Reino, Rabat, y su Kasbah de los Oudayas, que ofrece una vista impresionante del río Bouregreg. Pero la costa atlántica alberga también varios balnearios: Harhoura, Skhirat o Bouznika, donde los aficionados a los deportes acuáticos practican paddle y surf. Casablanca, capital económica, sorprende por su extraordinario patrimonio Art Déco y por la Mezquita Hassan II, cuyo minarete de 200 metros se asoma al mar. Otro imprescindible: El Jadida, ciudad portuaria flanqueada por magníficas murallas portuguesas. Mención especial para la antigua cisterna que, con sus seis naves y bóvedas cruzadas, inspiró a Orson Welles, que rodó allí Otelo.",
-      en: "Headland on Morocco's Atlantic Coast. Let's start with the lagoon of Moulay Bousselham, where we can observe an exceptional fauna of pink flamingos. Further south, the city of Salé and its Al Aadam mosque, Morocco's third largest mosque, faces the capital of the Kingdom, Rabat and its Kasbah des Oudayas which offers a breathtaking view of the Bouregreg River. But the Atlantic Coast is also home to several seaside resorts: Harhoura, Skhirat or Bouznika where water sports enthusiasts practice paddle and surf. Casablanca, the economic capital of Morocco, is astonishing for its extraordinary Art Deco heritage and for the Hassan 2 Mosque whose 200-meter high minaret overlooks the water. Another must-see destination: El Jadida, the port city flanked by magnificent ramparts built by the Portuguese. Special mention for the old cistern which, with its six naves and crossed vaults, inspired Orson Welles who filmed Othello there.",
-      fr: "Cap sur la côte atlantique du Maroc. Commençons par la lagune de Moulay Bousselham, où l'on observe une faune exceptionnelle de flamants roses. Plus au sud, la ville de Salé et sa mosquée Al Aadam, troisième plus grande du Maroc, fait face à la capitale du Royaume, Rabat, et sa Kasbah des Oudayas qui offre une vue imprenable sur le Bouregreg. Mais la côte atlantique abrite aussi plusieurs stations balnéaires : Harhoura, Skhirat ou Bouznika où les amateurs de sports nautiques pratiquent le paddle et le surf. Casablanca, capitale économique du Maroc, étonne par son extraordinaire patrimoine Art déco et par la mosquée Hassan II dont le minaret de 200 mètres surplombe l'eau. Autre incontournable : El Jadida, cité portuaire flanquée de magnifiques remparts construits par les Portugais. Mention spéciale pour l'ancienne citerne qui, avec ses six nefs et ses voûtes croisées, inspira Orson Welles qui y tourna Othello.",
-    },
-  },
-  {
-    id: "cgrKiEGsZdw",
+    id: "Nea2OFEUkSY",
     accent: "#A07042",
-    eyebrow: { es: "Ciudades Imperiales", en: "Imperial Cities", fr: "Villes impériales" },
+    eyebrow: { es: "Alto Atlas", en: "High Atlas", fr: "Haut Atlas" },
     title: {
-      es: "Fez, Mequinez, Moulay Idriss y Volubilis: historia concentrada",
-      en: "Fez, Meknes, Moulay Idriss, Volubilis: a concentration of history",
-      fr: "Fès, Meknès, Moulay Idriss, Volubilis : une concentration d'histoire",
+      es: "La gran escapada al aire libre por las montañas del Atlas",
+      en: "The ultimate outdoorsy trip in the Atlas Mountains",
+      fr: "La grande échappée en plein air dans les montagnes de l'Atlas",
     },
     desc: {
-      es: "¿Sabías que en Marruecos se esquía? Ifrane, con sus tejados puntiagudos, está considerada «la pequeña Suiza de Marruecos». En verano, sus bosques centenarios de cedros y sus macacos hacen las delicias de los visitantes. Pero la región es conocida sobre todo por sus ciudades imperiales: Fez y su medina medieval; Mequinez y su puerta Bab El Mansour, una de las más monumentales de Marruecos. A pocos kilómetros, la ciudad de Moulay Idriss Zerhoun destaca por el imponente mausoleo de Moulay Idriss I, fundador de la ciudad y de Fez. No lejos de allí, la ciudad de Volubilis y sus ruinas romanas son un tesoro arqueológico que descubrir sin dudarlo.",
-      en: "Did you know that we ski in Morocco? Ifrane, with its pointed roofs, is considered \"the little Switzerland of Morocco\". In summer, its hundred-year-old cedar forests and magots (Barbary apes) are a delight for tourists. But the region is best known for its imperial cities: Fez and its medieval Medina; Meknes and its Bab El Mansour gate, one of the most monumental in Morocco. A few kilometers away, the city of Moulay Idriss Zerhoun stands out thanks to the imposing mausoleum of Moulay Idriss I, founder of the city and of Fez. Not far from there, the city of Volubilis and its Roman ruins is an archaeological treasure to be discovered without hesitation.",
-      fr: "Saviez-vous que l'on skie au Maroc ? Ifrane, avec ses toits pointus, est considérée comme « la petite Suisse du Maroc ». En été, ses forêts de cèdres centenaires et ses magots (macaques de Barbarie) font le bonheur des touristes. Mais la région est surtout connue pour ses villes impériales : Fès et sa médina médiévale ; Meknès et sa porte Bab El Mansour, l'une des plus monumentales du Maroc. À quelques kilomètres, la ville de Moulay Idriss Zerhoun se distingue grâce à l'imposant mausolée de Moulay Idriss Ier, fondateur de la ville et de Fès. Non loin de là, la ville de Volubilis et ses ruines romaines est un trésor archéologique à découvrir sans hésiter.",
+      es: "La gran escapada al aire libre por las montañas del Atlas: aldeas bereberes, valles verdes y cumbres nevadas.",
+      en: "The ultimate outdoorsy trip across the Atlas Mountains: Berber villages, green valleys and snow-capped peaks.",
+      fr: "La grande échappée en plein air dans les montagnes de l'Atlas : villages berbères, vallées verdoyantes et sommets enneigés.",
+    },
+  },
+  {
+    id: "OfNCALW5pm4",
+    accent: "#C98A5E",
+    eyebrow: { es: "Aït Ben Haddou", en: "Aït Ben Haddou", fr: "Aït Ben Haddou" },
+    title: {
+      es: "Explora Aït Ben Haddou a caballo",
+      en: "Explore Aït Ben Haddou on horseback",
+      fr: "Explorez Aït Ben Haddou à cheval",
+    },
+    desc: {
+      es: "Explora a caballo el ksar de Aït Ben Haddou, ciudadela de adobe Patrimonio de la Humanidad y plató de cine legendario.",
+      en: "Explore on horseback the ksar of Aït Ben Haddou, a UNESCO adobe citadel and legendary film set.",
+      fr: "Explorez à cheval le ksar d'Aït Ben Haddou, citadelle d'adobe classée à l'UNESCO et plateau de cinéma légendaire.",
+    },
+  },
+  {
+    id: "G7RTB1fXGOs",
+    accent: "#3A4A5F",
+    eyebrow: { es: "Gargantas del Dadès", en: "Dadès Gorges", fr: "Gorges du Dadès" },
+    title: {
+      es: "Recorre las sinuosas carreteras de las gargantas del Dadès",
+      en: "Drive down the winding roads of Dadès Gorges",
+      fr: "Parcourez les routes sinueuses des gorges du Dadès",
+    },
+    desc: {
+      es: "Recorre las sinuosas carreteras de las gargantas del Dadès, entre formaciones rocosas y kasbahs suspendidas sobre el valle.",
+      en: "Drive the winding roads of the Dadès Gorges, between rock formations and kasbahs suspended over the valley.",
+      fr: "Parcourez les routes sinueuses des gorges du Dadès, entre formations rocheuses et kasbahs suspendues au-dessus de la vallée.",
     },
   },
 ];
@@ -123,6 +243,11 @@ const COPY = {
   next: { es: "Siguiente", en: "Next", fr: "Suivant" },
   watch: { es: "Ver en YouTube", en: "Watch on YouTube", fr: "Voir sur YouTube" },
   close: { es: "Cerrar", en: "Close", fr: "Fermer" },
+  attribution: {
+    es: "Creado por Visit Morocco Originals",
+    en: "Created by Visit Morocco Originals",
+    fr: "Créé par Visit Morocco Originals",
+  },
 };
 
 const pickL = (obj, lang) => (obj && (obj[lang] || obj.es)) || "";
@@ -291,6 +416,8 @@ export default function MoroccoVideos() {
           <div className="lg:col-span-5">
             <EditableText as="p" slot="home.videos.body" defaults={COPY.body}
               className="text-base md:text-lg text-[#FDFBF7]/70 leading-relaxed block" />
+            <EditableText as="p" slot="home.videos.attribution" defaults={COPY.attribution}
+              className="mt-4 text-[11px] tracking-[0.28em] uppercase text-[#D4A373] block" />
             <div className="mt-8 flex items-center gap-3">
               <button
                 type="button"
