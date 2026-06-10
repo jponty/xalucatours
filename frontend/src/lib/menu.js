@@ -79,6 +79,12 @@ export const MENU_TREE = [
     icon: "star",
   },
   {
+    id: "vuelos",
+    routeId: "vuelos",
+    label: { es: "Vuelos", en: "Flights", fr: "Vols" },
+    icon: "plane",
+  },
+  {
     id: "galeria",
     routeId: "galeria",
     label: { es: "Galería", en: "Gallery", fr: "Galerie" },
