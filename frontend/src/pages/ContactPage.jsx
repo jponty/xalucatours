@@ -115,9 +115,9 @@ const COPY = {
                 en: "Our system combines automatic responses with human agent oversight to deliver more efficient and personalized support.",
                 fr: "Notre système combine des réponses automatiques et la supervision d'agents humains pour offrir une assistance plus efficace et personnalisée." } },
       { icon: Briefcase, title: { es: "Departamento de viajes", en: "Travel department", fr: "Service voyages" },
-        body: { es: "Si tu consulta no queda resuelta, podrás solicitar la revisión por parte de una persona. Nuestro equipo analizará todas las conversaciones y, cuando sea necesario, un miembro del departamento de viajes se pondrá en contacto contigo directamente.",
-                en: "If your query isn't resolved, you can request a human review. Our team analyzes every conversation and, when needed, a member of the travel department will reach out to you directly.",
-                fr: "Si votre demande n'est pas résolue, vous pourrez demander une révision par une personne. Notre équipe analyse toutes les conversations et, si nécessaire, un membre du service voyages vous contactera directement." } },
+        body: { es: "Si necesitas atención personalizada, nuestro equipo está siempre disponible para ayudarte. Todas las conversaciones son revisadas y supervisadas por nuestro equipo de viajes para garantizar que recibas la mejor asistencia posible. Además del chat, podrás contar con atención directa por teléfono, correo electrónico o contacto personalizado siempre que lo necesites.",
+                en: "If you need personalized attention, our team is always available to help you. All conversations are reviewed and supervised by our travel team to ensure you receive the best possible assistance. Beyond the chat, you can count on direct support by phone, email or personalized contact whenever you need it.",
+                fr: "Si vous avez besoin d'une attention personnalisée, notre équipe est toujours disponible pour vous aider. Toutes les conversations sont vérifiées et supervisées par notre équipe voyages afin de vous garantir la meilleure assistance possible. Au-delà du chat, vous pourrez compter sur une assistance directe par téléphone, e-mail ou contact personnalisé chaque fois que vous en aurez besoin." } },
     ],
   },
   reasons: {
