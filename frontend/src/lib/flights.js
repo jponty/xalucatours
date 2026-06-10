@@ -136,6 +136,16 @@ export const MOROCCO_DESTINATIONS = [
       fr: "Paradis du Sahara atlantique, spot mondial de kitesurf entre lagune turquoise et dunes infinies.",
     },
   },
+  {
+    id: "esu", code: "ESU",
+    city: { es: "Essaouira", en: "Essaouira", fr: "Essaouira" },
+    airport: { es: "Aeropuerto de Essaouira-Mogador", en: "Essaouira–Mogador Airport", fr: "Aéroport d'Essaouira-Mogador" },
+    desc: {
+      es: "La ciudad del viento en el Atlántico: murallas portuguesas, puerto azul, playas y mercados de pescado.",
+      en: "The windy city on the Atlantic: Portuguese ramparts, a blue port, beaches and fish markets.",
+      fr: "La cité du vent sur l'Atlantique : remparts portugais, port bleu, plages et marchés de poisson.",
+    },
+  },
 ];
 
 export const SPAIN_ORIGINS = [
