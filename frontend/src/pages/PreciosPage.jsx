@@ -17,7 +17,7 @@ const SEASONS = DEFAULT_PRICING.seasons;
 /* A single trip row: name (links to its itinerary), meta tags, "from"
    price and a compact per-person price matrix by group size. */
 const TripPriceCard = ({ trip, lang, pricing }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const prog = getProgramTiers(trip.routeId);
   const merged = prog ? mergePricing(prog) : pricing;
   const tiers = prog || pricing.tiers || DEFAULT_PRICING.tiers;
