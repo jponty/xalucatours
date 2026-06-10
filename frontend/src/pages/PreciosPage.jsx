@@ -43,6 +43,14 @@ const TripPriceCard = ({ trip, lang, pricing }) => {
           <span className="text-[#D4A373]">·</span>
           <span>{trip.nights} {pick({ es: "noches", en: "nights", fr: "nuits" }, lang)}</span>
         </div>
+        {trip.summary && (
+          <p
+            data-testid={`price-trip-desc-${trip.routeId}`}
+            className="mt-3 text-sm text-[#5C5248] leading-relaxed"
+          >
+            {pick(trip.summary, lang)}
+          </p>
+        )}
         <div className="mt-3 flex items-baseline gap-2" data-testid={`price-trip-from-${trip.routeId}`}>
           <span className="text-[10px] tracking-[0.16em] uppercase text-[#7A6E62]">{pick(L.from, lang)}</span>
           <span className="font-serif-x text-2xl text-[#1A1513] leading-none">{from ? fmtEuro(from) : "—"}</span>
