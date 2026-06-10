@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ArrowRight, CalendarClock } from "lucide-react";
+import { Menu, ArrowRight, CalendarClock, MessageCircle } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import TopInfoBar from "./TopInfoBar";
@@ -89,6 +89,18 @@ export const Header = () => {
           <BrandMark />
 
           <div className="flex items-center gap-2 md:gap-3">
+            <a
+              href="https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="header-chat-button"
+              aria-label="Chat"
+              title="Chat"
+              className="inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+            >
+              <MessageCircle className="w-4 h-4 md:w-[18px] md:h-[18px]" strokeWidth={1.6} />
+            </a>
+
             <Link
               to={pathFor(lang, "appointment")}
               data-testid="header-appointment-button"
