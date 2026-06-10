@@ -618,7 +618,7 @@ const ContactPage = () => {
               <div className="min-h-[340px] lg:min-h-full border border-[#2C2621]/12 overflow-hidden" data-testid="contact-map">
                 <iframe
                   title="Xaluca Tours — Calle Latorre 52, Sabadell"
-                  src="https://www.google.com/maps?q=Calle%20Latorre%2052%2C%2008201%20Sabadell%2C%20Barcelona%2C%20Espa%C3%B1a&output=embed"
+                  src="https://www.google.com/maps?q=Calle%20Latorre%2052%2C%2008201%20Sabadell%2C%20Barcelona%2C%20Espa%C3%B1a&t=k&z=18&output=embed"
                   className="w-full h-full min-h-[340px]"
                   style={{ border: 0 }}
                   loading="lazy"
