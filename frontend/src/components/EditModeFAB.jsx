@@ -15,7 +15,7 @@ export const EditModeFAB = () => {
   return (
     <>
       <div
-        className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-2.5 print:hidden"
+        className="fixed bottom-6 left-6 z-[60] flex flex-col items-start gap-2.5 print:hidden"
         data-testid="edit-mode-fab"
       >
         {/* Library shortcut — only while image edit mode is on */}
