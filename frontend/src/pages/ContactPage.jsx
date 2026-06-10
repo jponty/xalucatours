@@ -16,12 +16,14 @@
    we don't double-mount iframes that hammer the Calendly API.
 ============================================================ */
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
-  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy,
+  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
@@ -89,9 +91,24 @@ const COPY = {
                    en: "Call us and plan your next Moroccan adventure. A specialist will answer all your questions.",
                    fr: "Appelez-nous et planifiez votre prochaine aventure marocaine. Un spécialiste répondra à toutes vos questions." },
     formTitle:   { es: "Por formulario", en: "By form", fr: "Par formulaire" },
-    formBody:    { es: "Rellena el siguiente formulario y nos pondremos en contacto contigo para empezar a organizar tu próxima aventura por Marruecos.",
-                   en: "Fill out the form below and we'll get back to you to start planning your next Moroccan adventure.",
-                   fr: "Remplissez le formulaire ci-dessous et nous reviendrons vers vous pour commencer à organiser votre prochaine aventure marocaine." },
+    formBody:    { es: "Rellena el formulario de contacto para recibir asistencia personalizada y comenzar a organizar tu próxima aventura por Marruecos.",
+                   en: "Fill out the contact form to receive personalized assistance and start planning your next Moroccan adventure.",
+                   fr: "Remplissez le formulaire de contact pour recevoir une assistance personnalisée et commencer à organiser votre prochaine aventure marocaine." },
+    apptTitle:   { es: "Cita previa", en: "Book an appointment", fr: "Rendez-vous" },
+    apptBody:    { es: "Reserva una cita con nuestro equipo y planifica tu viaje de forma personalizada, por teléfono o en nuestras oficinas.",
+                   en: "Book an appointment with our team and plan your trip in a personalized way, by phone or at our offices.",
+                   fr: "Réservez un rendez-vous avec notre équipe et planifiez votre voyage de façon personnalisée, par téléphone ou dans nos bureaux." },
+    apptCta:     { es: "Reservar cita", en: "Book appointment", fr: "Réserver" },
+    chatTitle:   { es: "Chat", en: "Chat", fr: "Chat" },
+    chatBody:    { es: "Contacta mediante el chat de asistencia y recibe ayuda inmediata para resolver tus dudas al instante.",
+                   en: "Reach out via the support chat and get instant help to resolve your questions right away.",
+                   fr: "Contactez-nous via le chat d'assistance et recevez une aide immédiate pour répondre à vos questions." },
+    chatCta:     { es: "Abrir el chat", en: "Open the chat", fr: "Ouvrir le chat" },
+    helpTitle:   { es: "Página de asistencia", en: "Help center", fr: "Centre d'aide" },
+    helpBody:    { es: "Accede al centro de ayuda y consulta preguntas frecuentes, información útil y los distintos canales de soporte disponibles.",
+                   en: "Access the help center to browse FAQs, useful information and the different support channels available.",
+                   fr: "Accédez au centre d'aide pour consulter la FAQ, des informations utiles et les différents canaux de support disponibles." },
+    helpCta:     { es: "Centro de ayuda", en: "Help center", fr: "Centre d'aide" },
   },
   support: {
     eyebrow: { es: "Asistencia", en: "Support", fr: "Assistance" },
@@ -248,7 +265,7 @@ const ContactPage = () => {
                  className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {/* Phone card */}
               <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
                 <Phone className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
@@ -266,9 +283,9 @@ const ContactPage = () => {
                 </a>
               </div>
 
-              {/* Email card */}
+              {/* Form card */}
               <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
-                <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <Mail className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
                 <E name="contact.formTitle" defaults={COPY.contact.formTitle} multiline={false} as="h3"
                    className="font-serif text-2xl text-[#2C2621] mb-3" />
                 <E name="contact.formBody" defaults={COPY.contact.formBody} as="p"
@@ -281,6 +298,68 @@ const ContactPage = () => {
                   <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="contact.goForm" multiline={false}
                      defaults={{ es: "Ir al formulario", en: "Go to form", fr: "Aller au formulaire" }} />
+                </a>
+              </div>
+
+              {/* Appointment card */}
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <CalendarClock className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <E name="contact.apptTitle" defaults={COPY.contact.apptTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.apptBody" defaults={COPY.contact.apptBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
+                <Link
+                  to={pathFor(lang, "appointment")}
+                  data-testid="contact-appt-link"
+                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                >
+                  <Calendar className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  <E name="contact.apptCta" defaults={COPY.contact.apptCta} multiline={false} />
+                </Link>
+              </div>
+
+              {/* Chat card */}
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <E name="contact.chatTitle" defaults={COPY.contact.chatTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.chatBody" defaults={COPY.contact.chatBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
+                <button
+                  type="button"
+                  data-testid="contact-chat-button"
+                  onClick={() => {
+                    try {
+                      if (window.chatbase && typeof window.chatbase.open === "function") {
+                        window.chatbase.open();
+                        return;
+                      }
+                    } catch (e) { /* fall through */ }
+                    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+                  }}
+                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  <E name="contact.chatCta" defaults={COPY.contact.chatCta} multiline={false} />
+                </button>
+              </div>
+
+              {/* Help center card */}
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <LifeBuoy className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <E name="contact.helpTitle" defaults={COPY.contact.helpTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.helpBody" defaults={COPY.contact.helpBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
+                <a
+                  href="https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="contact-help-link"
+                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                >
+                  <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  <E name="contact.helpCta" defaults={COPY.contact.helpCta} multiline={false} />
                 </a>
               </div>
             </div>
