@@ -11,6 +11,7 @@ export const ROUTES = {
   appointment:        { es: "citaprevia",                en: "book-appointment",         fr: "prendre-rendez-vous" },
   planTrip:           { es: "planifica-tu-viaje",        en: "plan-your-trip",           fr: "planifiez-votre-voyage" },
   precios:            { es: "precios",                    en: "pricing",                  fr: "tarifs" },
+  opiniones:          { es: "opiniones",                  en: "reviews",                  fr: "avis" },
 
   // Catalogue cluster
   toursLanding:       { es: "viajes",                    en: "tours",                    fr: "voyages" },

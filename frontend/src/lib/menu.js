@@ -73,6 +73,12 @@ export const MENU_TREE = [
     icon: "tag",
   },
   {
+    id: "opiniones",
+    routeId: "opiniones",
+    label: { es: "Opiniones", en: "Reviews", fr: "Avis" },
+    icon: "star",
+  },
+  {
     id: "galeria",
     routeId: "galeria",
     label: { es: "Galería", en: "Gallery", fr: "Galerie" },

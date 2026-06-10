@@ -112,6 +112,7 @@ import CatalogoPage from "@/pages/CatalogoPage";
 import JuegoPage from "@/pages/JuegoPage";
 import GaleriaPage from "@/pages/GaleriaPage";
 import PreciosPage from "@/pages/PreciosPage";
+import OpinionesPage from "@/pages/OpinionesPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -234,4 +235,5 @@ export const ROUTE_COMPONENTS = {
   juego:                         JuegoPage,
   galeria:                       GaleriaPage,
   precios:                       PreciosPage,
+  opiniones:                     OpinionesPage,
 };
