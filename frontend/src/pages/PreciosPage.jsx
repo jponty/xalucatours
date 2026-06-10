@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Check, ArrowRight, ShieldCheck, Sparkles, Search, X } from "lucide-react";
+import { Check, ArrowRight, ShieldCheck, Sparkles, Search, X, ChevronDown } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
 import { getProgramTiers } from "@/lib/programPricing";
 import { getFromPrice, mergePricing, fmtEuro, DEFAULT_PRICING } from "@/lib/pricing";
+import { getTripDescription } from "@/lib/tripDescriptions";
 import EditableText from "@/components/EditableText";
 import { PRICING_PACKAGES } from "@/lib/preciosData";
 import { ALL_TRIPS, TRIP_REGIONS, TRIP_PACES, TRIP_DURATIONS } from "@/lib/allTripsCatalog";
@@ -16,12 +17,14 @@ const SEASONS = DEFAULT_PRICING.seasons;
 /* A single trip row: name (links to its itinerary), meta tags, "from"
    price and a compact per-person price matrix by group size. */
 const TripPriceCard = ({ trip, lang, pricing }) => {
+  const [open, setOpen] = useState(false);
   const prog = getProgramTiers(trip.routeId);
   const merged = prog ? mergePricing(prog) : pricing;
   const tiers = prog || pricing.tiers || DEFAULT_PRICING.tiers;
   const from = getFromPrice(merged);
   const region = TRIP_REGIONS.find((r) => r.id === trip.region);
   const pace = TRIP_PACES.find((p) => p.id === trip.pace);
+  const longDesc = getTripDescription(trip.routeId);
 
   return (
     <article
@@ -50,6 +53,33 @@ const TripPriceCard = ({ trip, lang, pricing }) => {
           >
             {pick(trip.summary, lang)}
           </p>
+        )}
+        {longDesc && (
+          <div className="mt-3">
+            <button
+              type="button"
+              data-testid={`price-trip-toggle-${trip.routeId}`}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.18em] uppercase text-[#A07042] hover:text-[#1A1513] transition-colors"
+            >
+              {open
+                ? pick({ es: "Ocultar descripción", en: "Hide description", fr: "Masquer la description" }, lang)
+                : pick({ es: "Ver descripción del viaje", en: "View trip description", fr: "Voir la description du voyage" }, lang)}
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+                strokeWidth={1.8}
+              />
+            </button>
+            {open && (
+              <p
+                data-testid={`price-trip-longdesc-${trip.routeId}`}
+                className="mt-2.5 text-sm text-[#5C5248] leading-relaxed border-l-2 border-[#D4A373] pl-3"
+              >
+                {pick(longDesc, lang)}
+              </p>
+            )}
+          </div>
         )}
         <div className="mt-3 flex items-baseline gap-2" data-testid={`price-trip-from-${trip.routeId}`}>
           <span className="text-[10px] tracking-[0.16em] uppercase text-[#7A6E62]">{pick(L.from, lang)}</span>
