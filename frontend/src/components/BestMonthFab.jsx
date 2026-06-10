@@ -199,18 +199,18 @@ export default function BestMonthFab() {
 
   return (
     <>
-      {/* Floating pill button */}
+      {/* Floating pill button — fixed terracotta, no colour change on any state */}
       <button
         type="button"
         onClick={() => setOpen(true)}
         data-testid="best-month-fab"
         aria-expanded={open}
         aria-controls="best-month-panel"
-        className="fixed bottom-24 right-6 z-30 inline-flex items-center gap-2.5 bg-[#1A1513]/92 backdrop-blur-md text-[#FDFBF7] pl-3 pr-4 py-2.5 border border-[#FDFBF7]/15 hover:bg-[#C16542] hover:border-[#C16542] transition-colors shadow-[0_10px_30px_-15px_rgba(26,21,19,0.6)] group"
+        className="fixed bottom-24 right-6 z-30 inline-flex items-center gap-2.5 bg-[#C16542] text-[#FDFBF7] pl-3 pr-4 py-2.5 border border-[#C16542] shadow-[0_10px_30px_-15px_rgba(26,21,19,0.6)] outline-none focus:outline-none focus-visible:outline-none"
       >
         <span
           className="w-7 h-7 -ml-1 flex items-center justify-center rounded-full"
-          style={{ backgroundColor: region.accent }}
+          style={{ backgroundColor: "#A35133" }}
         >
           <Sunrise className="w-3.5 h-3.5" strokeWidth={1.7} />
         </span>
