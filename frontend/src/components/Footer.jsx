@@ -1,13 +1,27 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ArrowRight, Mail, Phone, MapPin, Clock, Globe } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { BerberZigzagDivider } from "./BerberDivider";
-import { pathFor } from "@/lib/routes";
+import { pathFor, rewriteForLang, SUPPORTED_LANGS } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 
+const FOOTER_LANGS = [
+  { code: "es", label: "ES" },
+  { code: "en", label: "EN" },
+  { code: "fr", label: "FR" },
+];
+
 export const Footer = () => {
-  const { t, lang } = useLanguage();
+  const { t, lang, setLang } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const onChangeLang = (newLang) => {
+    if (!SUPPORTED_LANGS.includes(newLang) || newLang === lang) return;
+    navigate(rewriteForLang(location.pathname, newLang) + (location.hash || ""));
+    setLang(newLang);
+  };
 
   const exploreLinks = [
     { routeId: "tourAll",       k: "menu_all" },
@@ -97,8 +111,34 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-[#FDFBF7]/15 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-[#FDFBF7]/15 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <p className="text-xs text-[#FDFBF7]/55">{t("footer_rights")}</p>
+
+          {/* Language selector — integrated in the footer */}
+          <div
+            data-testid="footer-language-switcher"
+            className="inline-flex items-center gap-2"
+          >
+            <Globe className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.6} aria-hidden="true" />
+            {FOOTER_LANGS.map((l, i) => (
+              <React.Fragment key={l.code}>
+                {i > 0 && <span className="w-px h-3 bg-[#FDFBF7]/20" />}
+                <button
+                  onClick={() => onChangeLang(l.code)}
+                  data-testid={`footer-lang-button-${l.code}`}
+                  aria-pressed={lang === l.code}
+                  className={`px-1.5 py-1 text-[11px] tracking-[0.25em] transition-colors ${
+                    lang === l.code
+                      ? "text-[#D4A373] border-b border-[#D4A373]"
+                      : "text-[#FDFBF7]/60 hover:text-[#FDFBF7]"
+                  }`}
+                >
+                  {l.label}
+                </button>
+              </React.Fragment>
+            ))}
+          </div>
+
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/40">
             {t("contact_24_7")}
           </p>

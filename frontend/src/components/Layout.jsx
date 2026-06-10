@@ -2,7 +2,6 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
-import FloatingLanguageSwitcher from "./FloatingLanguageSwitcher";
 import BestMonthFab from "./BestMonthFab";
 import NarrationMiniPlayer from "./NarrationMiniPlayer";
 import { Toaster } from "@/components/ui/sonner";
@@ -14,7 +13,6 @@ export const Layout = ({ children }) => {
       <Breadcrumbs />
       <main>{children}</main>
       <Footer />
-      <FloatingLanguageSwitcher />
       <BestMonthFab />
       <NarrationMiniPlayer />
       <Toaster position="bottom-right" />
