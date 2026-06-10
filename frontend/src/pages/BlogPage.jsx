@@ -24,9 +24,9 @@ const COPY = {
       fr: "Récits, itinéraires et conseils du sud du Maroc.",
     },
     subtitle: {
-      es: "Lo que aprendemos en el camino — desierto, kasbahs, eventos deportivos y cultura bereber — contado por las personas que llevan 25 años recorriéndolo.",
-      en: "What we learn on the road — desert, kasbahs, sporting events and Berber culture — told by people who've travelled it for 25 years.",
-      fr: "Ce que nous apprenons en chemin — désert, kasbahs, événements sportifs et culture berbère — raconté par ceux qui le parcourent depuis 25 ans.",
+      es: "Lo que aprendemos en el camino — desierto, kasbahs, eventos deportivos y cultura bereber — contado por las personas que llevan más de 30 años recorriéndolo.",
+      en: "What we learn on the road — desert, kasbahs, sporting events and Berber culture — told by people who've travelled it for over 30 years.",
+      fr: "Ce que nous apprenons en chemin — désert, kasbahs, événements sportifs et culture berbère — raconté par ceux qui le parcourent depuis plus de 30 ans.",
     },
   },
   readingTime: { es: "min de lectura", en: "min read", fr: "min de lecture" },

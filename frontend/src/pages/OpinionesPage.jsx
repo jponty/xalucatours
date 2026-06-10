@@ -49,7 +49,7 @@ const STATS = [
     label: { es: "Valoración media", en: "Average rating", fr: "Note moyenne" } },
   { value: { es: "100 %", en: "100%", fr: "100 %" },
     label: { es: "Viajes diseñados a medida", en: "Fully tailor-made trips", fr: "Voyages sur mesure" } },
-  { value: { es: "+15 años", en: "15+ years", fr: "+15 ans" },
+  { value: { es: "+30 años", en: "30+ years", fr: "+30 ans" },
     label: { es: "Creando viajes por Marruecos", en: "Crafting Moroccan journeys", fr: "À créer des voyages au Maroc" } },
 ];
 
@@ -121,9 +121,9 @@ export default function OpinionesPage() {
         </div>
       </section>
 
-      {/* Wall of Love */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 py-14 md:py-20" data-testid="opiniones-wall">
-        <div className="flex items-center gap-4 mb-10">
+      {/* Wall of Love — full width */}
+      <section className="w-full py-14 md:py-20" data-testid="opiniones-wall">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center gap-4 mb-10">
           <Heart className="w-5 h-5 text-[#C16542]" strokeWidth={1.7} />
           <EditableText
             as="h2"
@@ -134,7 +134,9 @@ export default function OpinionesPage() {
           />
           <span className="flex-1 h-px bg-gradient-to-r from-[#D4A373]/50 to-transparent" />
         </div>
-        <WallOfLove />
+        <div className="w-full px-4 sm:px-6 md:px-10">
+          <WallOfLove />
+        </div>
       </section>
 
       {/* CTA */}
