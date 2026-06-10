@@ -19,55 +19,132 @@ const DEVICES = [
   { id: "mobile",  icon: Smartphone, label: "Mobile",  w: "390px", h: "844px" },
 ];
 
-/* Functional categories for the /admin URL list. Routes are grouped by
-   the site's functional areas instead of a flat list. */
-const URL_CATEGORY_ORDER = [
-  "Páginas principales",
-  "Planificación y contacto",
-  "Catálogo de viajes",
-  "Inspiración y contenido",
-  "Tours · Sur y Desierto",
-  "Tours · Marruecos completo",
-  "Tours · Norte",
-  "Tours · Escapadas cortas",
-  "Tours · Aventura",
-  "Tours · Eventos",
-  "Otras",
+/* ============================================================
+   /admin URL taxonomy — full Xaluca Tours architecture grouped
+   by business areas, navigation and travel regions. Region
+   groups contain routes, and each route lists its programs
+   grouped by duration. Single source: lib/routes ROUTES keys.
+============================================================ */
+const URL_TAXONOMY = [
+  {
+    group: "General",
+    links: [
+      ["Home", "home"],
+      ["Marruecos", "morocco"],
+      ["Qué ver en Marruecos", "whatToSee"],
+      ["Cuándo viajar", "whenToTravel"],
+      ["Galería", "galeria"],
+      ["Blog", "blog"],
+      ["Catálogo", "catalog"],
+      ["Viajes (landing)", "toursLanding"],
+    ],
+  },
+  {
+    group: "Planificación del viaje",
+    links: [
+      ["Planifica tu viaje", "planTrip"],
+      ["Cita previa", "appointment"],
+      ["Precios", "precios"],
+      ["Vuelos", "vuelos"],
+      ["Próximas salidas", "upcomingDepartures"],
+      ["Viajes a medida", "tourBespoke"],
+    ],
+  },
+  {
+    group: "Empresa",
+    links: [
+      ["Equipo", "about"],
+      ["Qué hacemos", "whatWeDo"],
+      ["Incentivos y eventos", "events"],
+      ["Opiniones", "opiniones"],
+      ["Contacto", "contact"],
+    ],
+  },
+  {
+    group: "Viajes · Sur de Marruecos",
+    region: true,
+    routes: [
+      { label: "Landing Sur de Marruecos", keys: ["tourSouth"] },
+      { label: "Atlas → Desierto", keys: ["tourAtlasDesiertoHub", "tourAtlasDesierto45", "tourAtlasDesierto56", "tourAtlasDesierto67"] },
+      { label: "Desierto → Atlas", keys: ["tourDesiertoAtlasHub", "tourDesiertoAtlas45", "tourDesiertoAtlas56", "tourDesiertoAtlas67"] },
+      { label: "Marrakech → Erg Chebbi", keys: ["tourMarrakechErgHub", "tourMarrakechErg45", "tourMarrakechErg56", "tourMarrakechErg67", "tourMarrakechErg78"] },
+      { label: "Erg Chebbi → Marrakech", keys: ["tourErgChebbiMarrakechHub", "tourErgMarrakech45", "tourErgMarrakech56", "tourErgMarrakech67", "tourErgMarrakech78"] },
+      { label: "Marrakech → Erg Chebbi → Marrakech", keys: ["tourMarrakechLoopHub", "tourMarrakechLoop23", "tourMarrakechLoop34", "tourMarrakechLoop45", "tourMarrakechLoop56", "tourMarrakechLoop67", "tourMarrakechLoop78"] },
+      { label: "Marrakech → Essaouira", keys: ["tourMarrakechEssHub", "tourMarrakechEss45", "tourMarrakechEss67"] },
+      { label: "Errachidia → Atlas → Fez", keys: ["tourErrAtlasFezHub", "tourErrAtlasFez56"] },
+      { label: "Fez → Atlas → Errachidia", keys: ["tourFezAtlasErr56"] },
+    ],
+  },
+  {
+    group: "Viajes · Gran Sur",
+    region: true,
+    routes: [
+      { label: "Landing Gran Sur", keys: ["tourGransurFezRak", "tourGransurRakFezHub", "tourAtlasDesiertoFezHub", "tourGransurFezSidiali", "tourGransurOuarzaFez", "tourGransurTangerRak"] },
+      { label: "Marrakech → Fez", keys: ["tourMarrakechFez67", "tourMarrakechFez78", "tourMarrakechFez89", "tourMarrakechFez910"] },
+      { label: "Fez → Marrakech", keys: ["tourFezRak67", "tourFezRak78", "tourFezRak89", "tourFezRak910"] },
+      { label: "Marrakech → Sidi Ali → Fez", keys: ["tourMarrakechSidialiFez78", "tourMarrakechSidialiFez89", "tourMarrakechSidialiFez910"] },
+      { label: "Fez → Sidi Ali → Marrakech", keys: ["tourFezSidialiRak78", "tourFezSidialiRak89", "tourFezSidialiRak910"] },
+      { label: "Fez → Sidi Ali → Ouarzazate", keys: ["tourFezSidialiOzz56", "tourFezSidialiOzz67", "tourFezSidialiOzz78"] },
+      { label: "Ouarzazate → Sidi Ali → Fez", keys: ["tourOzzSidialiFez56", "tourOzzSidialiFez67", "tourOzzSidialiFez78"] },
+      { label: "Tánger → Marrakech", keys: ["tourTangerRak89", "tourTangerRak910"] },
+      { label: "Fin de Año", keys: ["tourFinDeAno2025"] },
+      { label: "Marruecos Completo", keys: ["tourFull"] },
+    ],
+  },
+  {
+    group: "Viajes · Escapadas",
+    region: true,
+    routes: [
+      { label: "Landing Escapadas", keys: ["tourShort"] },
+      { label: "Desierto", keys: ["tourEscapadaDesierto34"] },
+      { label: "Atlas", keys: ["tourEscapadaAtlas34"] },
+      { label: "Fez", keys: ["tourEscapadaFez", "tourEscapadaFez23", "tourEscapadaFez34"] },
+      { label: "Fez + Sidi Ali", keys: ["tourEscapadaFezSidiali34", "tourEscapadaFezSidiali45"] },
+      { label: "Marrakech", keys: ["tourEscapadaMarrakech", "tourEscapadaMarrakech23"] },
+      { label: "Marrakech + Agafay", keys: ["tourEscapadaRakAgafay34"] },
+      { label: "Marrakech → Erg Chebbi → Marrakech", keys: ["tourEscapadaRakErgRakHub", "tourEscapadaRakErgRak23", "tourEscapadaRakErgRak34", "tourEscapadaRakErgRak45"] },
+      { label: "Tánger", keys: ["tourEscapadaTanger"] },
+    ],
+  },
+  {
+    group: "Viajes · Norte de Marruecos",
+    region: true,
+    routes: [
+      { label: "Landing Norte de Marruecos", keys: ["tourNorth"] },
+      { label: "Ciudades Imperiales", keys: ["tourNorteCiudadesImperiales", "tourCiudadesImperiales45", "tourCiudadesImperiales67"] },
+      { label: "Ciudades Imperiales + Rif", keys: ["tourCiudadesImperialesRif67", "tourCiudadesImperialesRif78"] },
+      { label: "Tánger → Fez", keys: ["tourNorteTangerFez", "tourTangerFez45", "tourTangerFez56"] },
+      { label: "Fez → Tánger", keys: ["tourFezTanger56", "tourFezTanger67"] },
+    ],
+  },
+  {
+    group: "Viajes · Aventura",
+    region: true,
+    routes: [
+      { label: "Landing Aventura", keys: ["tourAdventure"] },
+      { label: "Enduro", keys: ["tourAventuraEnduroHub", "tourEnduroAventura45", "tourEnduroAventura67"] },
+    ],
+  },
+  {
+    group: "Herramientas y páginas especiales",
+    links: [
+      ["Juego", "juego"],
+      ["Próximas salidas", "upcomingDepartures"],
+      ["Próximas salidas (tours)", "tourUpcoming"],
+      ["Fin de Año", "tourFinDeAno2025"],
+      ["Viajes a medida", "tourBespoke"],
+    ],
+  },
 ];
 
-const CORE_ROUTE_CATEGORY = {
-  home: "Páginas principales",
-  about: "Páginas principales",
-  whatWeDo: "Páginas principales",
-  whatToSee: "Páginas principales",
-  morocco: "Páginas principales",
-  planTrip: "Planificación y contacto",
-  appointment: "Planificación y contacto",
-  contact: "Planificación y contacto",
-  precios: "Planificación y contacto",
-  toursLanding: "Catálogo de viajes",
-  catalog: "Catálogo de viajes",
-  tourBespoke: "Catálogo de viajes",
-  upcomingDepartures: "Catálogo de viajes",
-  blog: "Inspiración y contenido",
-  galeria: "Inspiración y contenido",
-  opiniones: "Inspiración y contenido",
-  events: "Inspiración y contenido",
-  whenToTravel: "Inspiración y contenido",
-  juego: "Inspiración y contenido",
-  vuelos: "Inspiración y contenido",
-};
-
-const categoryForRoute = (key) => {
-  if (CORE_ROUTE_CATEGORY[key]) return CORE_ROUTE_CATEGORY[key];
-  if (!key.startsWith("tour")) return "Otras";
-  // Tour routes — classified by functional zone (order matters).
-  if (key.startsWith("tourEscapada") || key === "tourShort") return "Tours · Escapadas cortas";
-  if (/Norte|CiudadesImperiales|TangerFez|FezTanger/.test(key) || key === "tourNorth") return "Tours · Norte";
-  if (/Aventura|Enduro/.test(key) || key === "tourAdventure") return "Tours · Aventura";
-  if (key === "tourFinDeAno2025" || key === "tourUpcoming") return "Tours · Eventos";
-  if (/Fez|Gransur|TangerRak|RakFez/.test(key) || key === "tourFull") return "Tours · Marruecos completo";
-  return "Tours · Sur y Desierto";
+/* Duration badge from a route key suffix (e.g. 45 → 4N / 5D, 910 → 9N / 10D).
+   Keys without a numeric suffix are landing pages / overviews. */
+const durationBadge = (key) => {
+  const m = key.match(/(\d+)$/);
+  if (!m) return key.toLowerCase().includes("hub") ? "Resumen" : "Landing";
+  const d = m[1];
+  if (d.length >= 3) return `${d.slice(0, 1)}N / ${d.slice(1)}D`;
+  return `${d[0]}N / ${d[1]}D`;
 };
 
 
@@ -161,23 +238,42 @@ export default function AdminPage() {
 
   // ---- URLs grouped by namespace prefix (route key)
   const allRoutes = useMemo(() => Object.keys(ROUTES), []);
-  const filteredRoutes = useMemo(
-    () => allRoutes.filter((r) => r.toLowerCase().includes(query.toLowerCase())),
-    [allRoutes, query]
-  );
-  const routeGroups = useMemo(() => {
-    const buckets = {};
-    filteredRoutes.forEach((r) => {
-      const cat = categoryForRoute(r);
-      (buckets[cat] ||= []).push(r);
+
+  const taxonomyView = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const used = new Set();
+    const leafMatch = (key, label) =>
+      !q ||
+      key.toLowerCase().includes(q) ||
+      (label || "").toLowerCase().includes(q) ||
+      pathFor(previewLang, key).toLowerCase().includes(q);
+
+    const groups = [];
+    URL_TAXONOMY.forEach((g) => {
+      if (g.links) {
+        const links = g.links.filter(([, key]) => ROUTES[key]);
+        links.forEach(([, key]) => used.add(key));
+        const visible = links.filter(([label, key]) => leafMatch(key, label));
+        if (visible.length) groups.push({ type: "links", group: g.group, links: visible });
+      } else if (g.routes) {
+        const routes = g.routes
+          .map((rt) => {
+            const keys = rt.keys.filter((k) => ROUTES[k]);
+            keys.forEach((k) => used.add(k));
+            return { label: rt.label, keys: keys.filter((k) => leafMatch(k, rt.label)) };
+          })
+          .filter((rt) => rt.keys.length);
+        if (routes.length) groups.push({ type: "region", group: g.group, routes });
+      }
     });
-    // Return an ordered object following URL_CATEGORY_ORDER, skipping empties.
-    const ordered = {};
-    URL_CATEGORY_ORDER.forEach((cat) => {
-      if (buckets[cat]?.length) ordered[cat] = buckets[cat];
-    });
-    return ordered;
-  }, [filteredRoutes]);
+
+    // Catch-all: any ROUTES key not placed in the taxonomy above.
+    const leftovers = allRoutes.filter((k) => !used.has(k) && leafMatch(k, k));
+    if (leftovers.length) {
+      groups.push({ type: "links", group: "Otras / sin clasificar", links: leftovers.map((k) => [k, k]) });
+    }
+    return groups;
+  }, [query, previewLang, allRoutes]);
 
   // ---- Image / text slot grouping by id prefix (e.g. "home.cat.magic-south.image-0")
   const groupSlots = (slots) => {
@@ -412,35 +508,81 @@ export default function AdminPage() {
         <section className="col-span-12 md:col-span-4 lg:col-span-4 border-r border-white/10 overflow-y-auto max-h-[calc(100vh-56px)]">
           {tab === "urls" && (
             <div data-testid="admin-url-list" className="p-4 space-y-4">
-              {Object.entries(routeGroups).map(([group, routes]) => (
-                <div key={group}>
-                  <button
-                    onClick={() => setCollapsed((c) => ({ ...c, [group]: !c[group] }))}
-                    className="w-full flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-2"
-                  >
-                    {collapsed[group] ? <ChevronRight className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                    {group} · {routes.length}
-                  </button>
-                  {!collapsed[group] && (
-                    <ul className="space-y-0.5">
-                      {routes.map((r) => (
-                        <li key={r}>
-                          <button
-                            data-testid={`admin-route-${r}`}
-                            onClick={() => setRoute(r)}
-                            className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between ${
-                              selectedRoute === r ? "bg-[#C16542]/20 text-white" : "text-white/70 hover:bg-white/5"
-                            }`}
-                          >
-                            <span className="truncate">{r}</span>
-                            <span className="text-[10px] text-white/40 ml-2 truncate">{pathFor(previewLang, r)}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
+              {taxonomyView.map((g) => {
+                const collapsedG = collapsed[g.group];
+                const count = g.type === "links" ? g.links.length : g.routes.reduce((n, r) => n + r.keys.length, 0);
+                return (
+                  <div key={g.group}>
+                    <button
+                      onClick={() => setCollapsed((c) => ({ ...c, [g.group]: !c[g.group] }))}
+                      className="w-full flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#D4A373] mb-2"
+                    >
+                      {collapsedG ? <ChevronRight className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                      {g.group} · {count}
+                    </button>
+
+                    {!collapsedG && g.type === "links" && (
+                      <ul className="space-y-0.5">
+                        {g.links.map(([label, r]) => (
+                          <li key={r + label}>
+                            <button
+                              data-testid={`admin-route-${r}`}
+                              onClick={() => setRoute(r)}
+                              className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between ${
+                                selectedRoute === r ? "bg-[#C16542]/20 text-white" : "text-white/70 hover:bg-white/5"
+                              }`}
+                            >
+                              <span className="truncate">{label}</span>
+                              <span className="text-[10px] text-white/40 ml-2 truncate">{pathFor(previewLang, r)}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {!collapsedG && g.type === "region" && (
+                      <div className="space-y-1.5 pl-1.5 border-l border-white/10">
+                        {g.routes.map((rt) => {
+                          const subKey = `${g.group}::${rt.label}`;
+                          const subCollapsed = collapsed[subKey];
+                          return (
+                            <div key={subKey}>
+                              <button
+                                onClick={() => setCollapsed((c) => ({ ...c, [subKey]: !c[subKey] }))}
+                                className="w-full flex items-center gap-1.5 text-[11px] text-white/80 hover:text-white py-1"
+                              >
+                                {subCollapsed ? <ChevronRight className="w-3 h-3 shrink-0" /> : <ChevronDown className="w-3 h-3 shrink-0" />}
+                                <span className="truncate text-left">{rt.label}</span>
+                                <span className="text-[9px] text-white/30 ml-auto">{rt.keys.length}</span>
+                              </button>
+                              {!subCollapsed && (
+                                <ul className="space-y-0.5 pl-4">
+                                  {rt.keys.map((r) => (
+                                    <li key={r}>
+                                      <button
+                                        data-testid={`admin-route-${r}`}
+                                        onClick={() => setRoute(r)}
+                                        className={`w-full text-left px-2.5 py-1.5 text-xs flex items-center gap-2 ${
+                                          selectedRoute === r ? "bg-[#C16542]/20 text-white" : "text-white/65 hover:bg-white/5"
+                                        }`}
+                                      >
+                                        <span className="shrink-0 inline-block min-w-[58px] text-[9px] tracking-wide px-1.5 py-0.5 bg-white/10 text-[#D4A373] text-center rounded-sm">
+                                          {durationBadge(r)}
+                                        </span>
+                                        <span className="text-[10px] text-white/40 truncate">{pathFor(previewLang, r)}</span>
+                                      </button>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
