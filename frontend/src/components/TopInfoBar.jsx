@@ -1,6 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Phone, Clock, Mail } from "lucide-react";
 import EditableText from "@/components/EditableText";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 
 const CALL_LABEL = { es: "Llámanos", en: "Call us", fr: "Appelez-nous" };
 const PHONE = { es: "+34 937 268 366", en: "+34 937 268 366", fr: "+34 937 268 366" };
@@ -18,6 +21,7 @@ const EMAIL = { es: "xalucatours@xaluca.com", en: "xalucatours@xaluca.com", fr: 
  * Dark espresso strip to stay clearly differentiated from the cream menu.
  */
 export const TopInfoBar = () => {
+  const { lang } = useLanguage();
   return (
     <div className="bg-[#2C2621] text-[#FDFBF7]/90 border-b border-black/20" data-testid="top-info-bar">
       <div className="max-w-7xl mx-auto px-5 md:px-12 h-8 md:h-9 flex items-center justify-center md:justify-end gap-4 md:gap-7 text-[10px] md:text-[11px] tracking-[0.1em]">
@@ -51,9 +55,9 @@ export const TopInfoBar = () => {
         {/* Divider */}
         <span className="hidden sm:inline-block w-px h-3.5 bg-[#FDFBF7]/20" aria-hidden="true" />
 
-        {/* Email */}
-        <a
-          href="mailto:xalucatours@xaluca.com"
+        {/* Email → links to the Contact page (no mailto) */}
+        <Link
+          to={pathFor(lang, "contact")}
           data-testid="top-info-email"
           className="hidden sm:inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
         >
@@ -63,7 +67,7 @@ export const TopInfoBar = () => {
           </span>
           <span className="text-[#FDFBF7]/30">|</span>
           <EditableText slot="topbar.email" defaults={EMAIL} multiline={false} />
-        </a>
+        </Link>
       </div>
     </div>
   );
