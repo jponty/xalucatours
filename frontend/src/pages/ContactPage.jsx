@@ -20,9 +20,9 @@ import { Link } from "react-router-dom";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
-  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock,
+  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock, Car, Bus,
 } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
@@ -592,6 +592,104 @@ const ContactPage = () => {
         <div id="contact-form" data-testid="contact-form-section">
           <FormTabs defaultTab="detailed" />
         </div>
+
+        {/* ============== HOW TO REACH US — map + location ============== */}
+        <section data-testid="contact-location" className="py-20 md:py-28 border-t border-[#2C2621]/10">
+          <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <div className="max-w-2xl mb-12">
+              <span className="inline-flex items-center gap-3 text-[#C16542] mb-4">
+                <MapPin className="w-3.5 h-3.5" strokeWidth={1.7} />
+                <E name="location.eyebrow" defaults={{ es: "Visítanos", en: "Visit us", fr: "Visitez-nous" }} multiline={false} as="span"
+                   className="text-[11px] tracking-[0.4em] uppercase" />
+              </span>
+              <E name="location.title" defaults={{ es: "Cómo llegar a nuestras oficinas", en: "How to reach our offices", fr: "Comment rejoindre nos bureaux" }} multiline={false} as="h2"
+                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
+              <E name="location.intro"
+                 defaults={{
+                   es: "Si lo prefieres, puedes visitarnos en persona. Te recibiremos en nuestras oficinas de Sabadell para ofrecerte asesoramiento personalizado y planificar contigo, con calma, tu próximo viaje a Marruecos.",
+                   en: "If you prefer, you can visit us in person. We'll welcome you at our Sabadell offices for personalized advice and to plan your next trip to Morocco together, at your own pace.",
+                   fr: "Si vous préférez, vous pouvez nous rendre visite en personne. Nous vous accueillerons dans nos bureaux de Sabadell pour vous conseiller et planifier ensemble, en toute tranquillité, votre prochain voyage au Maroc.",
+                 }} as="p"
+                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
+              {/* Interactive map */}
+              <div className="min-h-[340px] lg:min-h-full border border-[#2C2621]/12 overflow-hidden" data-testid="contact-map">
+                <iframe
+                  title="Xaluca Tours — Calle Latorre 52, Sabadell"
+                  src="https://www.google.com/maps?q=Calle%20Latorre%2052%2C%2008201%20Sabadell%2C%20Barcelona%2C%20Espa%C3%B1a&output=embed"
+                  className="w-full h-full min-h-[340px]"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+
+              {/* Location info */}
+              <div className="flex flex-col">
+                <div className="border border-[#2C2621]/12 p-7 md:p-9">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-[#C16542] mt-1 shrink-0" strokeWidth={1.7} />
+                    <div>
+                      <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-2">
+                        {pick({ es: "Dirección", en: "Address", fr: "Adresse" }, lang)}
+                      </span>
+                      <address className="not-italic text-[15px] text-[#2C2621] leading-relaxed" data-testid="contact-address">
+                        <strong className="font-medium">Xaluca Tours</strong><br />
+                        Calle Latorre, 52<br />
+                        08201 Sabadell<br />
+                        Barcelona, {pick({ es: "España", en: "Spain", fr: "Espagne" }, lang)}
+                      </address>
+                    </div>
+                  </div>
+
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Calle+Latorre+52+08201+Sabadell+Barcelona+Espa%C3%B1a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="contact-google-maps"
+                    className="mt-6 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors w-fit"
+                  >
+                    <MapPin className="w-3.5 h-3.5" strokeWidth={1.7} />
+                    <E name="location.cta" defaults={{ es: "Abrir en Google Maps", en: "Open in Google Maps", fr: "Ouvrir dans Google Maps" }} multiline={false} />
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+                  {/* By car */}
+                  <div className="border border-[#2C2621]/12 p-6" data-testid="contact-by-car">
+                    <Car className="w-6 h-6 text-[#C16542] mb-4" strokeWidth={1.5} />
+                    <E name="location.car.title" defaults={{ es: "En coche", en: "By car", fr: "En voiture" }} multiline={false} as="h3"
+                       className="font-serif text-xl text-[#2C2621] mb-2" />
+                    <E name="location.car.body"
+                       defaults={{
+                         es: "A pocos minutos de la C-58 y la AP-7. Encontrarás aparcamiento público en las calles cercanas y en parkings del centro de Sabadell.",
+                         en: "A few minutes from the C-58 and AP-7 motorways. Public parking is available on nearby streets and in car parks in central Sabadell.",
+                         fr: "À quelques minutes des autoroutes C-58 et AP-7. Stationnement public dans les rues voisines et dans les parkings du centre de Sabadell.",
+                       }} as="p"
+                       className="text-[13px] text-[#5C5248] leading-relaxed" />
+                  </div>
+
+                  {/* Public transport */}
+                  <div className="border border-[#2C2621]/12 p-6" data-testid="contact-by-transit">
+                    <Bus className="w-6 h-6 text-[#C16542] mb-4" strokeWidth={1.5} />
+                    <E name="location.transit.title" defaults={{ es: "En transporte público", en: "By public transport", fr: "En transports en commun" }} multiline={false} as="h3"
+                       className="font-serif text-xl text-[#2C2621] mb-2" />
+                    <E name="location.transit.body"
+                       defaults={{
+                         es: "Bien conectado con los FGC y Renfe desde Barcelona (estaciones de Sabadell), además de varias líneas de autobús urbano con parada en las inmediaciones.",
+                         en: "Well connected by FGC and Renfe trains from Barcelona (Sabadell stations), plus several city bus lines stopping nearby.",
+                         fr: "Bien desservi par les trains FGC et Renfe depuis Barcelone (gares de Sabadell), ainsi que plusieurs lignes de bus urbain à proximité.",
+                       }} as="p"
+                       className="text-[13px] text-[#5C5248] leading-relaxed" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
       </main>
     </SlotScope>
