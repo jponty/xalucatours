@@ -9,7 +9,7 @@ import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 
 export const PersonalConsultation = () => {
-  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
+  const { t, lang } = useLanguage(); // eslint-disable-line no-unused-vars
 
   return (
     <section
@@ -63,8 +63,8 @@ export const PersonalConsultation = () => {
                   multiline={false}
                 />
               </a>
-              <a
-                href="#contact"
+              <Link
+                to={pathFor(lang, "contact")}
                 data-testid="consult-cta-visit"
                 className="inline-flex items-center gap-3 border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
               >
@@ -74,7 +74,7 @@ export const PersonalConsultation = () => {
                   defaults={translations.cta_schedule_visit}
                   multiline={false}
                 />
-              </a>
+              </Link>
             </div>
 
             <div className="mt-10 pt-8 border-t border-[#2C2621]/10 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -166,8 +166,8 @@ export const CommunityCTA = () => {
             />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
           </Link>
-          <a
-            href="#contact"
+          <Link
+            to={pathFor(lang, "contact")}
             data-testid="community-cta-specialist"
             className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
@@ -177,7 +177,7 @@ export const CommunityCTA = () => {
               multiline={false}
             />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

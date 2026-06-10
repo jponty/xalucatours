@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@/App.css";
 import {
   BrowserRouter,
@@ -24,6 +24,13 @@ import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
 const LocalizedRouter = () => {
   const location = useLocation();
   const { lang, routeId } = resolvePath(location.pathname);
+
+  // On route change, land at the top of the page unless the URL targets a
+  // specific in-page anchor (#hash). Guarantees /contacto (and others) open
+  // from the start rather than a previously scrolled position.
+  useEffect(() => {
+    if (!location.hash) window.scrollTo(0, 0);
+  }, [location.pathname, location.hash]);
 
   // Blog post: dynamic slug under /blog/:slug · /en/blog/:slug · /fr/blog/:slug
   // (resolvePath only matches exact slugs; we handle the post route manually.)

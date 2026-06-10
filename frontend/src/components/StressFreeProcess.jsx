@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, MessagesSquare, Map, Plane } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
 
@@ -11,7 +13,7 @@ const STEPS = [
 ];
 
 export const StressFreeProcess = () => {
-  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
+  const { t, lang } = useLanguage(); // eslint-disable-line no-unused-vars
 
   return (
     <section
@@ -80,8 +82,8 @@ export const StressFreeProcess = () => {
         </div>
 
         <div className="mt-14 md:mt-16 flex flex-wrap items-center gap-4">
-          <a
-            href="#contact"
+          <Link
+            to={pathFor(lang, "contact")}
             data-testid="process-cta-start"
             className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
@@ -91,9 +93,9 @@ export const StressFreeProcess = () => {
               multiline={false}
             />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <Link
+            to={pathFor(lang, "contact")}
             data-testid="process-cta-proposal"
             className="inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
@@ -103,7 +105,7 @@ export const StressFreeProcess = () => {
               multiline={false}
             />
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

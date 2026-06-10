@@ -640,7 +640,7 @@ const Asesoramiento = ({ t, lang }) => {
 /* ============================================================
    8 — Contact intro
 ============================================================ */
-const ContactIntro = ({ t }) => (
+const ContactIntro = ({ t, lang }) => (
   <section data-testid="viajes-contact-intro" className="relative bg-[#FDFBF7] py-24 md:py-32 overflow-hidden">
     <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
@@ -651,10 +651,10 @@ const ContactIntro = ({ t }) => (
           </h2>
           <p className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed max-w-2xl">{t.body}</p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a href="#contact" data-testid="viajes-contact-cta-form"
+            <Link to={pathFor(lang, "contact")} data-testid="viajes-contact-cta-form"
                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
               {t.cta_form}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-            </a>
+            </Link>
             <a href={`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`} target="_blank" rel="noreferrer"
                data-testid="viajes-contact-cta-wa"
                className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
@@ -1011,7 +1011,7 @@ export default function ToursLandingPage() {
       <ProximasSalidas t={t.proximas} lang={lang} />
       <Asesoramiento t={t.asesoramiento} lang={lang} />
       <CatalogoCTA lang={lang} />
-      <ContactIntro t={t.contact} />
+      <ContactIntro t={t.contact} lang={lang} />
       <ContactForm />
     </div>
   );

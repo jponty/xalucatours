@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { translations } from "@/lib/i18n";
 import { CIRCUITS } from "@/lib/data";
 import EditableImage from "@/components/EditableImage";
@@ -131,14 +133,14 @@ export const MoroccoCircuits = () => {
               {pick(current.blurb, lang)}
             </p>
             <div className="mt-auto pt-8">
-              <a
-                href="#contact"
+              <Link
+                to={pathFor(lang, "contact")}
                 data-testid={`circuit-cta-${active}`}
                 className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase transition-colors"
               >
                 {t("cta_discover_routes")}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

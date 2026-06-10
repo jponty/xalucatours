@@ -177,14 +177,14 @@ export const TravelCategories = () => {
                       <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                     </Link>
                   ) : (
-                    <a
-                      href="#contact"
+                    <Link
+                      to={pathFor(lang, "contact")}
                       data-testid={`category-cta-${c.slug}`}
                       className="mt-8 inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
                     >
                       {t("cta_discover_routes")}
                       <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
-                    </a>
+                    </Link>
                   )}
                 </div>
               </article>

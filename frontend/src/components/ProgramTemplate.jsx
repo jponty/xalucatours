@@ -1291,10 +1291,10 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
               </a>
             </dl>
             <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
-              <a href="#contact" data-testid="program-hero-cta-primary"
+              <Link to={pathFor(lang, "contact")} data-testid="program-hero-cta-primary"
                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
                 <L k="cta_primary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-              </a>
+              </Link>
               <a href="#itinerary" data-testid="program-hero-cta-secondary"
                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
                 <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -1735,7 +1735,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
       <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <ProgramFlipbook src={flipbookSrc} routeId={routeId} />
       <TripOverview days={program.days} />
-      <PricingSection id="pricing" testid="program-pricing" ctaHref="#contact" routeId={routeId} />
+      <PricingSection id="pricing" testid="program-pricing" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />
       <HubPeerNav routeId={routeId} />
       <ContactBand t={t} lang={lang} />

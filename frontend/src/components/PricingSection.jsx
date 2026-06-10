@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, Users, Car, CalendarDays } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
 import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
 import { getProgramTiers } from "@/lib/programPricing";
@@ -16,9 +18,9 @@ import { getProgramTiers } from "@/lib/programPricing";
    Props:
      id      section anchor id (default "pricing")
      testid  root data-testid (default "pricing-section")
-     ctaHref where the CTA points (default "#contact")
+     The CTA always links to the Contact page (/contacto).
 ============================================================ */
-export const PricingSection = ({ id = "pricing", testid = "pricing-section", ctaHref = "#contact", routeId = null }) => {
+export const PricingSection = ({ id = "pricing", testid = "pricing-section", routeId = null }) => {
   const { lang } = useLanguage();
   const pricing = usePricing();
   const L = pricing.labels;
@@ -151,14 +153,14 @@ export const PricingSection = ({ id = "pricing", testid = "pricing-section", cta
               </p>
             </div>
           )}
-          <a
-            href={ctaHref}
+          <Link
+            to={pathFor(lang, "contact")}
             data-testid="pricing-cta"
             className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
             {p(L.cta)}
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
