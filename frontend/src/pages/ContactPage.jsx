@@ -19,6 +19,7 @@ import React, { useEffect, useState } from "react";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
+  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
@@ -91,6 +92,32 @@ const COPY = {
     formBody:    { es: "Rellena el siguiente formulario y nos pondremos en contacto contigo para empezar a organizar tu próxima aventura por Marruecos.",
                    en: "Fill out the form below and we'll get back to you to start planning your next Moroccan adventure.",
                    fr: "Remplissez le formulaire ci-dessous et nous reviendrons vers vous pour commencer à organiser votre prochaine aventure marocaine." },
+  },
+  support: {
+    eyebrow: { es: "Asistencia", en: "Support", fr: "Assistance" },
+    title:   { es: "¿Necesitas ayuda?", en: "Need help?", fr: "Besoin d'aide ?" },
+    body:    { es: "Estamos aquí para ayudarte de la forma que te resulte más cómoda. Nuestro sistema combina la asistencia inmediata de un asistente virtual con la atención personalizada de nuestro equipo cuando sea necesario.",
+               en: "We're here to help in whatever way suits you best. Our system combines the instant support of a virtual assistant with the personal attention of our team whenever needed.",
+               fr: "Nous sommes là pour vous aider de la manière qui vous convient le mieux. Notre système combine l'assistance immédiate d'un assistant virtuel et l'attention personnalisée de notre équipe lorsque c'est nécessaire." },
+    chatCta: { es: "Abrir el chat de asistencia", en: "Open the support chat", fr: "Ouvrir le chat d'assistance" },
+    items: [
+      { icon: MessageCircle, title: { es: "Chat de asistencia", en: "Support chat", fr: "Chat d'assistance" },
+        body: { es: "Obtén ayuda inmediata a través del chat disponible en esta página.",
+                en: "Get instant help through the chat available on this page.",
+                fr: "Obtenez une aide immédiate via le chat disponible sur cette page." } },
+      { icon: BookOpen, title: { es: "Conversaciones guiadas", en: "Guided conversations", fr: "Conversations guidées" },
+        body: { es: "Resuelve dudas frecuentes mediante conversaciones guiadas conectadas a nuestra base de conocimientos y documentación.",
+                en: "Resolve common questions through guided conversations connected to our knowledge base and documentation.",
+                fr: "Résolvez les questions fréquentes grâce à des conversations guidées connectées à notre base de connaissances et à notre documentation." } },
+      { icon: Bot, title: { es: "Asistente virtual y agentes humanos", en: "Virtual assistant & human agents", fr: "Assistant virtuel et agents humains" },
+        body: { es: "Nuestro sistema combina respuestas automáticas con la supervisión de agentes humanos para ofrecer una atención más eficiente y personalizada.",
+                en: "Our system combines automatic responses with human agent oversight to deliver more efficient and personalized support.",
+                fr: "Notre système combine des réponses automatiques et la supervision d'agents humains pour offrir une assistance plus efficace et personnalisée." } },
+      { icon: Briefcase, title: { es: "Departamento de viajes", en: "Travel department", fr: "Service voyages" },
+        body: { es: "Si tu consulta no queda resuelta, podrás solicitar la revisión por parte de una persona. Nuestro equipo analizará todas las conversaciones y, cuando sea necesario, un miembro del departamento de viajes se pondrá en contacto contigo directamente.",
+                en: "If your query isn't resolved, you can request a human review. Our team analyzes every conversation and, when needed, a member of the travel department will reach out to you directly.",
+                fr: "Si votre demande n'est pas résolue, vous pourrez demander une révision par une personne. Notre équipe analyse toutes les conversations et, si nécessaire, un membre du service voyages vous contactera directement." } },
+    ],
   },
   reasons: {
     eyebrow: { es: "Por qué elegirnos", en: "Why choose us",   fr: "Pourquoi nous choisir" },
@@ -339,6 +366,57 @@ const ContactPage = () => {
                      defaults={{ es: "Ir al formulario", en: "Go to form", fr: "Aller au formulaire" }} />
                 </a>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============== SUPPORT OPTIONS — ¿Necesitas ayuda? ============== */}
+        <section data-testid="contact-support" className="py-20 md:py-28 border-b border-[#2C2621]/10">
+          <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <div className="max-w-2xl mb-12">
+              <span className="inline-flex items-center gap-3 text-[#C16542] mb-4">
+                <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
+                <E name="support.eyebrow" defaults={COPY.support.eyebrow} multiline={false} as="span"
+                   className="text-[11px] tracking-[0.4em] uppercase" />
+              </span>
+              <E name="support.title" defaults={COPY.support.title} multiline={false} as="h2"
+                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
+              <E name="support.body" defaults={COPY.support.body} as="p"
+                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
+
+              <button
+                type="button"
+                data-testid="support-open-chat"
+                onClick={() => {
+                  try {
+                    if (window.chatbase && typeof window.chatbase.open === "function") {
+                      window.chatbase.open();
+                      return;
+                    }
+                  } catch (e) { /* fall through */ }
+                  window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+                }}
+                className="mt-8 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              >
+                <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
+                <E name="support.chatCta" defaults={COPY.support.chatCta} multiline={false} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-7">
+              {COPY.support.items.map((s, i) => (
+                <div
+                  key={s.title.es}
+                  data-testid={`contact-support-${i + 1}`}
+                  className="border border-[#2C2621]/12 p-7 md:p-8 hover:border-[#C16542]/50 hover:shadow-[0_18px_40px_-22px_rgba(44,38,33,0.35)] transition-all duration-300 flex flex-col"
+                >
+                  <s.icon className="w-7 h-7 text-[#C16542] mb-5" strokeWidth={1.5} />
+                  <E name={`support.items.${i}.title`} defaults={s.title} multiline={false} as="h3"
+                     className="font-serif text-xl md:text-2xl text-[#2C2621] leading-tight mb-3" />
+                  <E name={`support.items.${i}.body`} defaults={s.body} as="p"
+                     className="text-[14px] text-[#5C5248] leading-relaxed" />
+                </div>
+              ))}
             </div>
           </div>
         </section>
