@@ -27,6 +27,7 @@ export const TRAVEL_CATEGORIES = [
       es: "Rutas que combinan el Sáhara, el Alto Atlas, oasis ocultos y aldeas tradicionales llenas de historia y cultura.",
     },
     badges: ["popular"],
+    category: { en: "Southern Morocco", fr: "Sud du Maroc", es: "Sur de Marruecos" },
     region: { en: "Sahara · Atlas · Drâa", fr: "Sahara · Atlas · Drâa", es: "Sáhara · Atlas · Drâa" },
   },
   {
@@ -52,6 +53,7 @@ export const TRAVEL_CATEGORIES = [
       es: "Ciudades imperiales, costas atlánticas, desiertos infinitos y aldeas de montaña remotas — el recorrido completo del país.",
     },
     badges: [],
+    category: { en: "All of Morocco", fr: "Le Maroc au complet", es: "Marruecos al Completo" },
     region: { en: "Tangier → Sahara", fr: "Tanger → Sahara", es: "Tánger → Sáhara" },
   },
   {
@@ -77,6 +79,7 @@ export const TRAVEL_CATEGORIES = [
       es: "Para viajeros con poco tiempo que igualmente quieren la magia de Marruecos — itinerarios cortos diseñados con esmero.",
     },
     badges: ["popular"],
+    category: { en: "Short Escapes", fr: "Escapades courtes", es: "Escapadas Cortas" },
     region: { en: "Marrakech · Riads · Desert", fr: "Marrakech · Riads · Désert", es: "Marrakech · Riads · Desierto" },
   },
   {
@@ -102,6 +105,7 @@ export const TRAVEL_CATEGORIES = [
       es: "Pueblos pintados de azul, medinas antiguas, mosaicos romanos, aldeas de montaña y ciudades llenas de historia — una fascinante mezcla de texturas, aromas y culturas que muestran el lado más auténtico y cultural de Marruecos.",
     },
     badges: [],
+    category: { en: "Northern Morocco", fr: "Maroc du Nord", es: "Norte de Marruecos" },
     region: { en: "Chefchaouen · Fez · Atlantic", fr: "Chefchaouen · Fès · Atlantique", es: "Chefchaouen · Fez · Atlántico" },
   },
   {
@@ -127,6 +131,7 @@ export const TRAVEL_CATEGORIES = [
       es: "Salidas organizadas alrededor de temporadas y eventos especiales — Semana Santa, verano, Año Nuevo y puentes." ,
     },
     badges: ["seasonal", "last"],
+    category: { en: "Group Departures", fr: "Départs en groupe", es: "Salidas en Grupo" },
     region: { en: "Curated dates · Limited spots", fr: "Dates choisies · Places limitées", es: "Fechas elegidas · Plazas limitadas" },
     departures: [
       { label: { en: "Easter 2026",  fr: "Pâques 2026",      es: "Semana Santa 2026" }, dates: "28 Mar — 04 Apr", spots: 4 },

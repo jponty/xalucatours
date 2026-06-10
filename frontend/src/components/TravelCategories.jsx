@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Calendar } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
@@ -104,10 +104,13 @@ export const TravelCategories = () => {
                     />
                   )}
 
-                  {/* Region pill bottom */}
-                  <span className="absolute bottom-5 left-6 inline-flex items-center gap-2 bg-[#1A1513]/55 backdrop-blur-md text-[#FDFBF7] px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase border border-[#FDFBF7]/20">
-                    <MapPin className="w-3 h-3" strokeWidth={1.6} />
-                    {pick(c.region, lang)}
+                  {/* Travel-style category pill (bottom) */}
+                  <span className="absolute bottom-5 left-6 inline-flex items-center gap-2 bg-[#1A1513]/55 backdrop-blur-md text-[#FDFBF7] px-3.5 py-1.5 text-[10px] tracking-[0.25em] uppercase border border-[#FDFBF7]/20">
+                    <EditableText
+                      slot={`home.cat.${c.slug}.category`}
+                      defaults={c.category || c.region}
+                      multiline={false}
+                    />
                   </span>
                 </ImageWrapper>
 
