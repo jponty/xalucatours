@@ -236,6 +236,57 @@ const ContactPage = () => {
           </div>
         </section>
 
+        {/* ============== DIRECT CONTACT — phone + email cards ============== */}
+        <section data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
+          <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <div className="max-w-2xl mb-12">
+              <E name="contact.eyebrow" defaults={COPY.contact.eyebrow} multiline={false} as="span"
+                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
+              <E name="contact.title" defaults={COPY.contact.title} multiline={false} as="h2"
+                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
+              <E name="contact.body" defaults={COPY.contact.body} as="p"
+                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {/* Phone card */}
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <Phone className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <E name="contact.phoneTitle" defaults={COPY.contact.phoneTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.phoneBody" defaults={COPY.contact.phoneBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
+                <a
+                  href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
+                  data-testid="contact-phone-link"
+                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                >
+                  <Phone className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  {CONTACT.phone || "+34 937 268 366"}
+                </a>
+              </div>
+
+              {/* Email card */}
+              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
+                <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
+                <E name="contact.formTitle" defaults={COPY.contact.formTitle} multiline={false} as="h3"
+                   className="font-serif text-2xl text-[#2C2621] mb-3" />
+                <E name="contact.formBody" defaults={COPY.contact.formBody} as="p"
+                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
+                <a
+                  href="#contact-form"
+                  data-testid="contact-form-anchor"
+                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                >
+                  <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  <E name="contact.goForm" multiline={false}
+                     defaults={{ es: "Ir al formulario", en: "Go to form", fr: "Aller au formulaire" }} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ============== 3 STEPS ============== */}
         <section data-testid="contact-steps" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -316,57 +367,6 @@ const ContactPage = () => {
               {tab === "phone"
                 ? <CalendlyEmbed url={CALENDLY_PHONE}  testid="contact-calendly-phone"  />
                 : <CalendlyEmbed url={CALENDLY_OFFICE} testid="contact-calendly-office" />}
-            </div>
-          </div>
-        </section>
-
-        {/* ============== DIRECT CONTACT — phone + email cards ============== */}
-        <section data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="max-w-2xl mb-12">
-              <E name="contact.eyebrow" defaults={COPY.contact.eyebrow} multiline={false} as="span"
-                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
-              <E name="contact.title" defaults={COPY.contact.title} multiline={false} as="h2"
-                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
-              <E name="contact.body" defaults={COPY.contact.body} as="p"
-                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {/* Phone card */}
-              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
-                <Phone className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
-                <E name="contact.phoneTitle" defaults={COPY.contact.phoneTitle} multiline={false} as="h3"
-                   className="font-serif text-2xl text-[#2C2621] mb-3" />
-                <E name="contact.phoneBody" defaults={COPY.contact.phoneBody} as="p"
-                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
-                <a
-                  href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
-                  data-testid="contact-phone-link"
-                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
-                >
-                  <Phone className="w-3.5 h-3.5" strokeWidth={1.7} />
-                  {CONTACT.phone || "+34 937 268 366"}
-                </a>
-              </div>
-
-              {/* Email card */}
-              <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
-                <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
-                <E name="contact.formTitle" defaults={COPY.contact.formTitle} multiline={false} as="h3"
-                   className="font-serif text-2xl text-[#2C2621] mb-3" />
-                <E name="contact.formBody" defaults={COPY.contact.formBody} as="p"
-                   className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
-                <a
-                  href="#contact-form"
-                  data-testid="contact-form-anchor"
-                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
-                >
-                  <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
-                  <E name="contact.goForm" multiline={false}
-                     defaults={{ es: "Ir al formulario", en: "Go to form", fr: "Aller au formulaire" }} />
-                </a>
-              </div>
             </div>
           </div>
         </section>
