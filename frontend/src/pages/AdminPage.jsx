@@ -19,6 +19,58 @@ const DEVICES = [
   { id: "mobile",  icon: Smartphone, label: "Mobile",  w: "390px", h: "844px" },
 ];
 
+/* Functional categories for the /admin URL list. Routes are grouped by
+   the site's functional areas instead of a flat list. */
+const URL_CATEGORY_ORDER = [
+  "Páginas principales",
+  "Planificación y contacto",
+  "Catálogo de viajes",
+  "Inspiración y contenido",
+  "Tours · Sur y Desierto",
+  "Tours · Marruecos completo",
+  "Tours · Norte",
+  "Tours · Escapadas cortas",
+  "Tours · Aventura",
+  "Tours · Eventos",
+  "Otras",
+];
+
+const CORE_ROUTE_CATEGORY = {
+  home: "Páginas principales",
+  about: "Páginas principales",
+  whatWeDo: "Páginas principales",
+  whatToSee: "Páginas principales",
+  morocco: "Páginas principales",
+  planTrip: "Planificación y contacto",
+  appointment: "Planificación y contacto",
+  contact: "Planificación y contacto",
+  precios: "Planificación y contacto",
+  toursLanding: "Catálogo de viajes",
+  catalog: "Catálogo de viajes",
+  tourBespoke: "Catálogo de viajes",
+  upcomingDepartures: "Catálogo de viajes",
+  blog: "Inspiración y contenido",
+  galeria: "Inspiración y contenido",
+  opiniones: "Inspiración y contenido",
+  events: "Inspiración y contenido",
+  whenToTravel: "Inspiración y contenido",
+  juego: "Inspiración y contenido",
+  vuelos: "Inspiración y contenido",
+};
+
+const categoryForRoute = (key) => {
+  if (CORE_ROUTE_CATEGORY[key]) return CORE_ROUTE_CATEGORY[key];
+  if (!key.startsWith("tour")) return "Otras";
+  // Tour routes — classified by functional zone (order matters).
+  if (key.startsWith("tourEscapada") || key === "tourShort") return "Tours · Escapadas cortas";
+  if (/Norte|CiudadesImperiales|TangerFez|FezTanger/.test(key) || key === "tourNorth") return "Tours · Norte";
+  if (/Aventura|Enduro/.test(key) || key === "tourAdventure") return "Tours · Aventura";
+  if (key === "tourFinDeAno2025" || key === "tourUpcoming") return "Tours · Eventos";
+  if (/Fez|Gransur|TangerRak|RakFez/.test(key) || key === "tourFull") return "Tours · Marruecos completo";
+  return "Tours · Sur y Desierto";
+};
+
+
 /* ============================================================
    /admin · centralised content dashboard
    ----------------------------------------------------------
@@ -114,12 +166,17 @@ export default function AdminPage() {
     [allRoutes, query]
   );
   const routeGroups = useMemo(() => {
-    const groups = {};
+    const buckets = {};
     filteredRoutes.forEach((r) => {
-      const key = r.startsWith("tour") ? "tours" : r.startsWith("legal") ? "legal" : "core";
-      (groups[key] ||= []).push(r);
+      const cat = categoryForRoute(r);
+      (buckets[cat] ||= []).push(r);
     });
-    return groups;
+    // Return an ordered object following URL_CATEGORY_ORDER, skipping empties.
+    const ordered = {};
+    URL_CATEGORY_ORDER.forEach((cat) => {
+      if (buckets[cat]?.length) ordered[cat] = buckets[cat];
+    });
+    return ordered;
   }, [filteredRoutes]);
 
   // ---- Image / text slot grouping by id prefix (e.g. "home.cat.magic-south.image-0")
