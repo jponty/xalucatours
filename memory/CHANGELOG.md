@@ -430,3 +430,8 @@
 - **Verificado** (Playwright, 2 itinerarios):
   - Desierto día 1 `ad-ouarzazate-dades` → Ouarzazate · Boumalne Dades · Alto Atlas · Hotel Xaluca Dades (coincide exactamente con el ejemplo del usuario; sin Casablanca/aeropuertos/Skoura/Patas de Mono/Gargantas).
   - Norte día 1 `trk89-tanger-chefchaouen` → Tánger · Cabo Espartel · Grutas de Hércules · Chefchaouen · Rif. Días 2-5 correctos. Lint OK.
+
+## 2026-06-11 — Precios Gran Sur actualizados
+- Añadidas 8 matrices de precio en lib/programPricing.js para rutas Gran Sur (Marrakech/Fez/Sidi Ali), 2/3/4 pax, temporada baja/alta.
+- routeIds: tourMarrakechFez67, tourFezRak67, tourFezRak78, tourFezRak89, tourFezRak910, tourFezSidialiRak78, tourFezSidialiRak89, tourFezSidialiRak910.
+- Verificado: las 8 URLs existen y renderizan correctamente (screenshot tabla /viajes/gransur/marrakech_fez/programa_6n_7d).

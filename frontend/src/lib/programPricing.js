@@ -48,6 +48,52 @@ export const PROGRAM_PRICING = {
     { people: 3, low: 1215, high: 1295 },
     { people: 4, low: 1105, high: 1170 },
   ],
+
+  // ── Gran Sur · Marrakech → Fez ──
+  tourMarrakechFez67: [
+    { people: 2, low: 1485, high: 1700 },
+    { people: 3, low: 1250, high: 1400 },
+    { people: 4, low: 1135, high: 1250 },
+  ],
+
+  // ── Gran Sur · Fez → Marrakech ──
+  tourFezRak67: [
+    { people: 2, low: 1485, high: 1700 },
+    { people: 3, low: 1250, high: 1400 },
+    { people: 4, low: 1135, high: 1250 },
+  ],
+  tourFezRak78: [
+    { people: 2, low: 1600, high: 1815 },
+    { people: 3, low: 1370, high: 1515 },
+    { people: 4, low: 1250, high: 1370 },
+  ],
+  tourFezRak89: [
+    { people: 2, low: 1815, high: 2050 },
+    { people: 3, low: 1550, high: 1715 },
+    { people: 4, low: 1415, high: 1545 },
+  ],
+  tourFezRak910: [
+    { people: 2, low: 1990, high: 2235 },
+    { people: 3, low: 1690, high: 1865 },
+    { people: 4, low: 1540, high: 1675 },
+  ],
+
+  // ── Gran Sur · Fez → Sidi Ali → Marrakech ──
+  tourFezSidialiRak78: [
+    { people: 2, low: 1770, high: 2000 },
+    { people: 3, low: 1505, high: 1660 },
+    { people: 4, low: 1370, high: 1495 },
+  ],
+  tourFezSidialiRak89: [
+    { people: 2, low: 1895, high: 2120 },
+    { people: 3, low: 1625, high: 1785 },
+    { people: 4, low: 1495, high: 1615 },
+  ],
+  tourFezSidialiRak910: [
+    { people: 2, low: 2105, high: 2350 },
+    { people: 3, low: 1805, high: 1975 },
+    { people: 4, low: 1655, high: 1790 },
+  ],
 };
 
 /* Returns the per-program tier array for a routeId, or null if the route
