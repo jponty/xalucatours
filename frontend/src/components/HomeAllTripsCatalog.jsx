@@ -14,6 +14,7 @@ import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp }
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
@@ -217,6 +218,8 @@ const TripCard = ({ trip, lang }) => {
             </span>
           </div>
         </div>
+        {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
+        <CardHighlightsMarquee routeId={trip.routeId} testid={`home-all-trips-highlights-${trip.routeId}`} />
       </Link>
     </SlotScope>
   );

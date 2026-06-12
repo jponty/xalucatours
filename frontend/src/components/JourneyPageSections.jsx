@@ -11,6 +11,7 @@ import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
 import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ImageBrandBadges from "@/components/ImageBrandBadges";
+import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import { useSlotId } from "@/components/slotScope";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
@@ -738,7 +739,7 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                       <span className="film-grain" />
                       <ImageBrandBadges testid={`hub-${hub.id}-${p.id}`} />
-                      <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end text-[#FDFBF7]">
+                      <div className="absolute inset-0 p-6 md:p-7 pb-14 md:pb-16 flex flex-col justify-end text-[#FDFBF7]">
                         <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
                           {getLabel(k)}
                         </span>
@@ -765,6 +766,8 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                         className="group relative block overflow-hidden h-[420px]"
                       >
                         {inner}
+                        {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
+                        <CardHighlightsMarquee routeId={p.link} variant="overlay" testid={`hub-preview-highlights-${p.id}`} />
                       </Link>
                     );
                   }

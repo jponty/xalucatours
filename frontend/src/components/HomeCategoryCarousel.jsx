@@ -6,6 +6,7 @@ import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
 
 /* ============================================================
@@ -151,6 +152,9 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
           </span>
         </div>
       </div>
+
+      {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
+      <CardHighlightsMarquee routeId={trip.routeId} testid={`home-trip-highlights-${trip.id}`} />
     </Link>
   );
 };

@@ -435,3 +435,10 @@
 - Añadidas 8 matrices de precio en lib/programPricing.js para rutas Gran Sur (Marrakech/Fez/Sidi Ali), 2/3/4 pax, temporada baja/alta.
 - routeIds: tourMarrakechFez67, tourFezRak67, tourFezRak78, tourFezRak89, tourFezRak910, tourFezSidialiRak78, tourFezSidialiRak89, tourFezSidialiRak910.
 - Verificado: las 8 URLs existen y renderizan correctamente (screenshot tabla /viajes/gransur/marrakech_fez/programa_6n_7d).
+
+## 2026-06-12 — Franja animada de "Lugares destacados" en cards de viaje
+- Nuevo componente CardHighlightsMarquee: franja oscura con scroll horizontal continuo (mismo estilo que el marquee del Home) anclada al borde inferior de cada card, mostrando los lugares destacados del viaje.
+- Fuente única de datos: lib/tripPrograms.js (registro routeId -> {program, variant}) + lib/tripHighlights.js leen los MISMOS highlights que la pagina de detalle via metaAllLangs, garantizando coherencia 1:1.
+- Refactor: VARIANT_COPY + metaAllLangs extraidos de ProgramTemplate.jsx a lib/programMeta.js (data pura) para evitar dependencia circular.
+- Integrado en: HomeCategoryCarousel (carruseles), HomeAllTripsCatalog (grid "Todos los viajes") y JourneyPageSections HubOptionsPreview (cards overlay de hubs, variant="overlay").
+- Verificado en preview: 3 tipos de card renderizan la franja; paginas de detalle intactas.
