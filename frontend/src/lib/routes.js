@@ -13,6 +13,7 @@ export const ROUTES = {
   precios:            { es: "precios",                    en: "pricing",                  fr: "tarifs" },
   opiniones:          { es: "opiniones",                  en: "reviews",                  fr: "avis" },
   vuelos:             { es: "vuelos",                     en: "flights",                  fr: "vols" },
+  asistente:          { es: "asistente",                  en: "assistant",                fr: "assistant" },
 
   // Catalogue cluster
   toursLanding:       { es: "viajes",                    en: "tours",                    fr: "voyages" },

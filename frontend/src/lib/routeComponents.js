@@ -114,6 +114,7 @@ import GaleriaPage from "@/pages/GaleriaPage";
 import PreciosPage from "@/pages/PreciosPage";
 import OpinionesPage from "@/pages/OpinionesPage";
 import VuelosPage from "@/pages/VuelosPage";
+import AsistentePage from "@/pages/AsistentePage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -238,4 +239,5 @@ export const ROUTE_COMPONENTS = {
   precios:                       PreciosPage,
   opiniones:                     OpinionesPage,
   vuelos:                        VuelosPage,
+  asistente:                     AsistentePage,
 };

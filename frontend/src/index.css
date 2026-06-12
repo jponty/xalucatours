@@ -173,6 +173,26 @@
     .fade-up { opacity: 1; transform: none; }
 }
 
+/* ElevenLabs ConvAI widget — floating, centered horizontally at the
+   bottom of the page. Only rendered on /asistente (AsistentePage), so
+   this rule has no effect elsewhere. */
+elevenlabs-convai {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    right: auto;
+    transform: translateX(-50%);
+    z-index: 2147483000;
+}
+
+/* Hide the global Chatbase widget on the /asistente page only
+   (AsistentePage toggles `body.asistente-page`). */
+body.asistente-page #chatbase-bubble-button,
+body.asistente-page #chatbase-bubble-window,
+body.asistente-page #chatbase-message-bubbles {
+    display: none !important;
+}
+
 /* Landmark carousel — entrance animation + custom scroll track */
 .landmark-carousel-enter {
     animation: landmark-carousel-enter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
