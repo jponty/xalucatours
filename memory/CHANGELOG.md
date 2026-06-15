@@ -458,3 +458,10 @@
 - Registro HUBS_BY_ID + hubProgramRouteIds en itineraryHubs.js.
 - Datos: hubId anadido a SUR_ITINERARIES(4) y NORTE_ITINERARIES(2); routeIds a escapadas fez/marrakech.
 - Verificado: Sur(810/815/990/665), Norte(760/725), Marruecos(1135/1370/1060/1535), Escapadas(625/525/270/310/515), hub fez-rak(1135/1250/1415/1540), regiones(985/725/1135) -- todo coincide con trip pages y /precios.
+
+## 2026-06-15 — Tooltip de desglose en el precio "Desde"
+- <FromPrice> ahora muestra un icono info y, al hover, un tooltip (shadcn/Radix, portal -> no se recorta en cards overflow-hidden) con el desglose por nº de personas (2/3/4) y temporada baja/alta.
+- Trilingue (es/en/fr). En viajes de precio unico (baja=alta) muestra solo el precio por pax, sin nota de temporada.
+- Funciona en layout inline (cards) y stacked (hero de la pagina de viaje).
+- El desglose usa el tier set que genera el precio "Desde" (coherente con tabla y /precios).
+- Verificado: hub fez-rak 6n7d (2:1485/1700, 3:1250/1400, 4:1135/1250 + nota) y Essaouira (790/710/665 sin nota).
