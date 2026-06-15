@@ -465,3 +465,9 @@
 - Funciona en layout inline (cards) y stacked (hero de la pagina de viaje).
 - El desglose usa el tier set que genera el precio "Desde" (coherente con tabla y /precios).
 - Verificado: hub fez-rak 6n7d (2:1485/1700, 3:1250/1400, 4:1135/1250 + nota) y Essaouira (790/710/665 sin nota).
+
+## 2026-06-15 — Desglose de precio accesible en movil (tap)
+- <FromPrice> migrado de Tooltip (solo hover) a Popover controlado (Radix, portal).
+- Abre con hover en desktop Y con tap en movil; el tap sobre el precio NO navega a la pagina del viaje (preventDefault + stopPropagation).
+- Cierra al tocar fuera (movil) y al salir el raton (desktop). role=button + aria-label para accesibilidad.
+- Verificado: hub fez-rak desktop hover (7n8d 1600/1815...) y movil tap (6n7d, navigated=False, desglose visible).

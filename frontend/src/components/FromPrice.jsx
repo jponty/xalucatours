@@ -4,7 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { usePricing } from "@/lib/pricingStore";
 import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
 import { getProgramTiers } from "@/lib/programPricing";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 const BREAKDOWN_COPY = {
   es: { title: "Precio por persona", person: "persona", people: "personas", low: "Baja", high: "Alta", note: "El precio «Desde» corresponde a la temporada baja." },
@@ -29,6 +29,7 @@ const BREAKDOWN_COPY = {
 export const FromPrice = ({ tone = "light", size = "sm", layout = "inline", routeId = null, routeIds = null, className = "", testid }) => {
   const { lang } = useLanguage();
   const pricing = usePricing();
+  const [open, setOpen] = React.useState(false);
   // Build the list of candidate routes (single `routeId` and/or a `routeIds`
   // array for collection cards). The "from" is the lowest real per-program
   // tariff across them, so cards mirror the trip page and /precios exactly.
@@ -88,56 +89,66 @@ export const FromPrice = ({ tone = "light", size = "sm", layout = "inline", rout
     return <span data-testid={testid || "from-price"}>{priceNode}</span>;
   }
 
-  // ── Tooltip with the per-person breakdown ───────────────────────────────
+  // ── Breakdown popover ───────────────────────────────────────────────────
+  // A Popover (portal, so it isn't clipped by overflow-hidden cards) that
+  // opens on hover (desktop) AND on tap (mobile), while never triggering the
+  // parent card's navigation.
   return (
-    <TooltipProvider delayDuration={120}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span
-            data-testid={testid || "from-price"}
-            className="inline-flex cursor-help"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          >
-            {priceNode}
-          </span>
-        </TooltipTrigger>
-        <TooltipContent
-          side="top"
-          className="bg-[#2C2621] text-[#FDFBF7] border border-[#FDFBF7]/15 px-4 py-3 shadow-2xl"
-          data-testid={`${testid || "from-price"}-breakdown`}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <span
+          data-testid={testid || "from-price"}
+          role="button"
+          tabIndex={0}
+          aria-label={L.title}
+          className="inline-flex cursor-pointer"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
         >
-          <div className="min-w-[170px] text-left">
-            <p className="text-[10px] tracking-[0.22em] uppercase text-[#D4A373] mb-2.5">{L.title}</p>
-            <ul className="space-y-1.5">
-              {breakdownTiers.map((t) => (
-                <li key={t.people} className="flex items-center justify-between gap-5 text-[12px] leading-none">
-                  <span className="text-[#FDFBF7]/65 whitespace-nowrap">
-                    {t.people} {t.people === 1 ? L.person : L.people}
-                  </span>
-                  {t.low === t.high ? (
-                    <strong className="font-serif-x text-sm text-[#FDFBF7] not-italic">{fmtEuro(t.low)}</strong>
-                  ) : (
-                    <span className="flex items-baseline gap-2.5 whitespace-nowrap">
-                      <span className="text-[#FDFBF7]">
-                        <strong className="font-serif-x text-sm not-italic">{fmtEuro(t.low)}</strong>
-                        <span className="ml-1 text-[8px] uppercase tracking-[0.12em] text-[#D4A373]">{L.low}</span>
-                      </span>
-                      <span className="text-[#FDFBF7]/55">
-                        <strong className="font-serif-x text-sm not-italic">{fmtEuro(t.high)}</strong>
-                        <span className="ml-1 text-[8px] uppercase tracking-[0.12em] text-[#FDFBF7]/40">{L.high}</span>
-                      </span>
+          {priceNode}
+        </span>
+      </PopoverTrigger>
+      <PopoverContent
+        side="top"
+        align="start"
+        sideOffset={8}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        className="w-auto bg-[#2C2621] text-[#FDFBF7] border border-[#FDFBF7]/15 px-4 py-3 shadow-2xl rounded-md"
+        data-testid={`${testid || "from-price"}-breakdown`}
+      >
+        <div className="min-w-[170px] text-left">
+          <p className="text-[10px] tracking-[0.22em] uppercase text-[#D4A373] mb-2.5">{L.title}</p>
+          <ul className="space-y-1.5">
+            {breakdownTiers.map((t) => (
+              <li key={t.people} className="flex items-center justify-between gap-5 text-[12px] leading-none">
+                <span className="text-[#FDFBF7]/65 whitespace-nowrap">
+                  {t.people} {t.people === 1 ? L.person : L.people}
+                </span>
+                {t.low === t.high ? (
+                  <strong className="font-serif-x text-sm text-[#FDFBF7] not-italic">{fmtEuro(t.low)}</strong>
+                ) : (
+                  <span className="flex items-baseline gap-2.5 whitespace-nowrap">
+                    <span className="text-[#FDFBF7]">
+                      <strong className="font-serif-x text-sm not-italic">{fmtEuro(t.low)}</strong>
+                      <span className="ml-1 text-[8px] uppercase tracking-[0.12em] text-[#D4A373]">{L.low}</span>
                     </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-            {hasSeasons && (
-              <p className="mt-2.5 pt-2.5 border-t border-[#FDFBF7]/10 text-[10px] leading-snug text-[#FDFBF7]/50">{L.note}</p>
-            )}
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+                    <span className="text-[#FDFBF7]/55">
+                      <strong className="font-serif-x text-sm not-italic">{fmtEuro(t.high)}</strong>
+                      <span className="ml-1 text-[8px] uppercase tracking-[0.12em] text-[#FDFBF7]/40">{L.high}</span>
+                    </span>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          {hasSeasons && (
+            <p className="mt-2.5 pt-2.5 border-t border-[#FDFBF7]/10 text-[10px] leading-snug text-[#FDFBF7]/50">{L.note}</p>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
