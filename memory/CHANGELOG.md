@@ -442,3 +442,9 @@
 - Refactor: VARIANT_COPY + metaAllLangs extraidos de ProgramTemplate.jsx a lib/programMeta.js (data pura) para evitar dependencia circular.
 - Integrado en: HomeCategoryCarousel (carruseles), HomeAllTripsCatalog (grid "Todos los viajes") y JourneyPageSections HubOptionsPreview (cards overlay de hubs, variant="overlay").
 - Verificado en preview: 3 tipos de card renderizan la franja; paginas de detalle intactas.
+
+## 2026-06-15 — Actualización masiva de precios (programPricing.js)
+- Reescrito PROGRAM_PRICING con matrices 2/3/4 pax (baja/alta) para ~55 rutas: Gran Sur (Marrakech-Fez, Fez-Marrakech, Sidi Ali ambas direcciones, Tanger-Rak, Ozz-Sidiali-Fez ambas), Marrakech-Essaouira, Marrakech-ErgChebbi (loop e ida), Atlas-Desierto/Desierto-Atlas, Errachidia-Atlas-Fez ambas, Norte (Tanger-Fez, Fez-Tanger, Ciudades Imperiales y +Rif) y todas las Escapadas.
+- Rutas precio-unico (sin temporada) introducidas con baja=alta: Essaouira, Escapadas Fez, Escapadas Marrakech/Agafay.
+- Verificado en preview: TangerRak89, Essaouira45, CiudadesImperiales45 y EscapadaFez23 renderizan las tarifas correctas.
+- NOTA: /viajes/escapadas/tanger (tourEscapadaTanger) es pagina intro sin tabla de precios; el dato se guarda pero no hay tabla en esa pagina.

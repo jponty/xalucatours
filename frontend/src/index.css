@@ -173,18 +173,6 @@
     .fade-up { opacity: 1; transform: none; }
 }
 
-/* ElevenLabs ConvAI widget — floating, centered horizontally at the
-   bottom of the page. Only rendered on /asistente (AsistentePage), so
-   this rule has no effect elsewhere. */
-elevenlabs-convai {
-    position: fixed;
-    left: 50%;
-    bottom: 28px;
-    right: auto;
-    transform: translateX(-50%);
-    z-index: 2147483000;
-}
-
 /* Hide the global Chatbase widget on the /asistente page only
    (AsistentePage toggles `body.asistente-page`). */
 body.asistente-page #chatbase-bubble-button,
