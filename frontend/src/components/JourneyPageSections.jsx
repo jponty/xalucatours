@@ -13,8 +13,23 @@ import FromPrice from "@/components/FromPrice";
 import ImageBrandBadges from "@/components/ImageBrandBadges";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import { useSlotId } from "@/components/slotScope";
+import { hubProgramRouteIds } from "@/lib/itineraryHubs";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
+
+// Collect every deep-linkable routeId for an itinerary so <FromPrice> shows
+// that itinerary's real lowest tariff, consistent with the trip detail page
+// and the /precios catalogue. Resolves, in order: an explicit `routeIds`
+// array, its own `link` + programme `variants`, or the bookable programmes of
+// its paired hub (`hubId`).
+export const itineraryRouteIds = (it) => {
+  if (!it) return [];
+  const explicit = Array.isArray(it.routeIds) ? it.routeIds : [];
+  const own = [it.link, ...((Array.isArray(it.variants) ? it.variants : []).map((v) => v.link))];
+  const fromHub = it.hubId ? hubProgramRouteIds(it.hubId) : [];
+  return [...explicit, ...own, ...fromHub].filter(Boolean);
+};
+
 
 /* ============================================================
    JourneyHero — full-bleed cinematic hero used by both gateways.
@@ -278,7 +293,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
             </div>
 
             <div className="mt-8">
-              <FromPrice tone="dark" size="md" testid={`itinerary-from-${itinerary.id}`} />
+              <FromPrice tone="dark" size="md" routeIds={itineraryRouteIds(itinerary)} testid={`itinerary-from-${itinerary.id}`} />
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -525,7 +540,7 @@ export const ItinerariesOverview = ({ itineraries, t, lang }) => (
                 {pick(it.title, lang)}
               </h3>
               <div className="mt-3">
-                <FromPrice tone="light" size="sm" testid={`overview-from-${it.id}`} />
+                <FromPrice tone="light" size="sm" routeIds={itineraryRouteIds(it)} testid={`overview-from-${it.id}`} />
               </div>
               <span className="mt-4 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
                 {t.cta}

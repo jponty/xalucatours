@@ -1262,3 +1262,27 @@ export const HUB_AVENTURA_ENDURO = {
     },
   ],
 };
+
+/* ============================================================
+   Hub registry + helper
+   ------------------------------------------------------------
+   Lets editorial gateway sections (Sur/Norte/Marruecos) resolve a
+   hub's bookable programmes by id, so their "Desde €…" price equals
+   the lowest real tariff of that hub — consistent with the hub page,
+   the trip detail page and /precios.
+============================================================ */
+export const HUBS_BY_ID = [
+  HUB_ATLAS_DESIERTO, HUB_DESIERTO_ATLAS, HUB_MARRAKECH_ERG, HUB_ERGCHEBBI_MARRAKECH,
+  HUB_MARRAKECH_LOOP, HUB_MARRAKECH_ESSAOUIRA, HUB_ERRACHIDIA_ATLAS_FEZ, HUB_GRANSUR_FEZ_RAK,
+  HUB_GRANSUR_FEZ_SIDIALI_RAK, HUB_GRANSUR_OUARZA_FEZ, HUB_GRANSUR_TANGER_RAK,
+  HUB_NORTE_CIUDADES_IMPERIALES, HUB_NORTE_TANGER_FEZ, HUB_GRANSUR_RAK_FEZ,
+  HUB_ATLAS_DESIERTO_FEZ, HUB_ESCAPADA_RAK_ERG_RAK, HUB_AVENTURA_ENDURO,
+].reduce((acc, hub) => {
+  if (hub && hub.id) acc[hub.id] = hub;
+  return acc;
+}, {});
+
+export const hubProgramRouteIds = (hubId) =>
+  ((HUBS_BY_ID[hubId] && HUBS_BY_ID[hubId].programs) || [])
+    .map((p) => p.link)
+    .filter(Boolean);

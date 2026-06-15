@@ -204,7 +204,7 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                         <L k="cta_card" /><ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                       </span>
                       <div className="mt-4 pt-4 border-t border-[#FDFBF7]/15">
-                        <FromPrice tone="light" size="sm" testid={`hub-program-from-${p.id}`} />
+                        <FromPrice tone="light" size="sm" routeId={p.link} testid={`hub-program-from-${p.id}`} />
                       </div>
                     </div>
                   </Link>

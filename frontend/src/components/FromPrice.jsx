@@ -18,11 +18,18 @@ import { getProgramTiers } from "@/lib/programPricing";
      className  extra classes
      testid     data-testid override
 ============================================================ */
-export const FromPrice = ({ tone = "light", size = "sm", layout = "inline", routeId = null, className = "", testid }) => {
+export const FromPrice = ({ tone = "light", size = "sm", layout = "inline", routeId = null, routeIds = null, className = "", testid }) => {
   const { lang } = useLanguage();
   const pricing = usePricing();
-  const tiers = (routeId && getProgramTiers(routeId)) || pricing.tiers;
-  const from = getFromPrice({ tiers });
+  // Build the list of candidate routes (single `routeId` and/or a `routeIds`
+  // array for collection cards). The "from" is the lowest real per-program
+  // tariff across them, so cards mirror the trip page and /precios exactly.
+  const candidates = [routeId, ...(Array.isArray(routeIds) ? routeIds : [])].filter(Boolean);
+  const tierSets = candidates.map((id) => getProgramTiers(id)).filter(Boolean);
+  const froms = tierSets.length
+    ? tierSets.map((tiers) => getFromPrice({ tiers })).filter((n) => typeof n === "number")
+    : [getFromPrice({ tiers: pricing.tiers })].filter((n) => typeof n === "number");
+  const from = froms.length ? Math.min(...froms) : null;
   if (!from) return null;
 
   const fromLabel = pickLang(pricing.labels.from, lang);

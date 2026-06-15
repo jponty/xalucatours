@@ -6,6 +6,7 @@ export const SUR_ITINERARIES = [
   {
     id: "ouarzazate-erg-chebbi",
     slug: "ouarzazate-erg-chebbi",
+    hubId: "atlas-desierto",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
       es: "Ouarzazate · Cordillera Alto Atlas · Dunas Erg Chebbi · Errachidia",
@@ -50,6 +51,7 @@ export const SUR_ITINERARIES = [
   {
     id: "marrakech-erg-chebbi-errachidia",
     slug: "marrakech-erg-chebbi-errachidia",
+    hubId: "marrakech-erg",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
       es: "Marrakech · Cordillera Alto Atlas · Dunas Erg Chebbi · Errachidia",
@@ -97,6 +99,7 @@ export const SUR_ITINERARIES = [
   {
     id: "marrakech-erg-chebbi-marrakech",
     slug: "marrakech-erg-chebbi-marrakech",
+    hubId: "marrakech-loop",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
       es: "Marrakech · Cordillera Alto Atlas · Dunas Erg Chebbi · Marrakech",
@@ -139,6 +142,7 @@ export const SUR_ITINERARIES = [
   {
     id: "marrakech-essaouira",
     slug: "marrakech-essaouira",
+    hubId: "marrakech-essaouira",
     eyebrow: { es: "Viajes por el Sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title: {
       es: "Marrakech · Essaouira",

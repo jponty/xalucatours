@@ -16,8 +16,15 @@ import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ToursVideoSection from "@/components/ToursVideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
+import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users };
+
+// Region card "from" price = the lowest real tariff among that region's trips,
+// so it stays consistent with the trip pages and /precios.
+const REGION_TRIPS = { south: SOUTH_TRIPS, north: NORTH_TRIPS, all: FULL_TRIPS };
+const regionRouteIds = (regionId) =>
+  (REGION_TRIPS[regionId] || []).map((t) => t.routeId).filter(Boolean);
 
 /* ============================================================
    1 — Hero
@@ -222,7 +229,7 @@ const RegionsSection = ({ t, lang }) => (
                 {pick(r.body, lang)}
               </p>
               <div className="mt-4">
-                <FromPrice tone="light" size="sm" testid={`region-from-${r.id}`} />
+                <FromPrice tone="light" size="sm" routeIds={regionRouteIds(r.id)} testid={`region-from-${r.id}`} />
               </div>
               <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
                 {t.cta}

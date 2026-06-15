@@ -448,3 +448,13 @@
 - Rutas precio-unico (sin temporada) introducidas con baja=alta: Essaouira, Escapadas Fez, Escapadas Marrakech/Agafay.
 - Verificado en preview: TangerRak89, Essaouira45, CiudadesImperiales45 y EscapadaFez23 renderizan las tarifas correctas.
 - NOTA: /viajes/escapadas/tanger (tourEscapadaTanger) es pagina intro sin tabla de precios; el dato se guarda pero no hay tabla en esa pagina.
+
+## 2026-06-15 — Precios "Desde" consistentes en todas las cards con overlay
+- <FromPrice> extendido con prop routeIds[] -> calcula el minimo real entre varias rutas.
+- ItineraryHubPage (hub-program cards): routeId={p.link} -> precio real por viaje.
+- ToursLandingPage (region cards Sur/Norte/Completo): routeIds del minimo de SOUTH/NORTH/FULL_TRIPS.
+- HomeAllTripsCatalog: anadido routeId a FromPrice.
+- JourneyPageSections overview + itinerary: helper itineraryRouteIds resuelve routeIds[] > link/variants > hubId.
+- Registro HUBS_BY_ID + hubProgramRouteIds en itineraryHubs.js.
+- Datos: hubId anadido a SUR_ITINERARIES(4) y NORTE_ITINERARIES(2); routeIds a escapadas fez/marrakech.
+- Verificado: Sur(810/815/990/665), Norte(760/725), Marruecos(1135/1370/1060/1535), Escapadas(625/525/270/310/515), hub fez-rak(1135/1250/1415/1540), regiones(985/725/1135) -- todo coincide con trip pages y /precios.
