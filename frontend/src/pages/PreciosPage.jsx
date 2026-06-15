@@ -5,7 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
 import { getProgramTiers } from "@/lib/programPricing";
-import { getFromPrice, mergePricing, fmtEuro, DEFAULT_PRICING } from "@/lib/pricing";
+import { getFromPrice, fmtEuro, DEFAULT_PRICING } from "@/lib/pricing";
 import { getTripDescription } from "@/lib/tripDescriptions";
 import EditableText from "@/components/EditableText";
 import { PRICING_PACKAGES } from "@/lib/preciosData";
@@ -19,9 +19,11 @@ const SEASONS = DEFAULT_PRICING.seasons;
 const TripPriceCard = ({ trip, lang, pricing }) => {
   const [open, setOpen] = useState(true);
   const prog = getProgramTiers(trip.routeId);
-  const merged = prog ? mergePricing(prog) : pricing;
   const tiers = prog || pricing.tiers || DEFAULT_PRICING.tiers;
-  const from = getFromPrice(merged);
+  // "From" = lowest price across the SAME tiers shown in the table, so the
+  // headline price always matches this program's real starting price (and
+  // the trip page's <FromPrice>, which uses the identical calculation).
+  const from = getFromPrice({ tiers });
   const region = TRIP_REGIONS.find((r) => r.id === trip.region);
   const pace = TRIP_PACES.find((p) => p.id === trip.pace);
   const longDesc = getTripDescription(trip.routeId);
@@ -376,7 +378,11 @@ export default function PreciosPage() {
     let min = Infinity;
     (trips || []).forEach((tr) => {
       const prog = getProgramTiers(tr.routeId);
-      const f = getFromPrice(prog ? mergePricing(prog) : pricing);
+      // Skip hub/landing routes that carry no specific tariff, so the
+      // package "from" reflects only real, priced programs (and never the
+      // global placeholder price).
+      if (!prog) return;
+      const f = getFromPrice({ tiers: prog });
       if (f) min = Math.min(min, f);
     });
     return Number.isFinite(min) ? min : getFromPrice(pricing);

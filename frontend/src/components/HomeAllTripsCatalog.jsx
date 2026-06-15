@@ -209,7 +209,7 @@ const TripCard = ({ trip, lang }) => {
             {pick(trip.summary, lang)}
           </p>
           <div className="mt-5">
-            <FromPrice tone="dark" size="md" testid={`home-all-trips-from-${trip.routeId}`} />
+            <FromPrice tone="dark" size="md" routeId={trip.routeId} testid={`home-all-trips-from-${trip.routeId}`} />
           </div>
           <div className="mt-5 pt-4 border-t border-[#2C2621]/10">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
