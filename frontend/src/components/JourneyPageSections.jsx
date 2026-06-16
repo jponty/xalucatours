@@ -19,16 +19,8 @@ const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 
-// Open the Chatbase virtual assistant without leaving the page.
-const openChatbaseAssistant = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  if (window.chatbase && typeof window.chatbase.open === "function") {
-    window.chatbase.open();
-  } else {
-    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-  }
-};
+// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
 // Collect every deep-linkable routeId for an itinerary so <FromPrice> shows
 // that itinerary's real lowest tariff, consistent with the trip detail page

@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { openChatbaseAssistant, CHATBASE_HELP_URL } from "@/lib/chatbase";
 import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
@@ -328,15 +329,7 @@ const ContactPage = () => {
                 <button
                   type="button"
                   data-testid="contact-chat-button"
-                  onClick={() => {
-                    try {
-                      if (window.chatbase && typeof window.chatbase.open === "function") {
-                        window.chatbase.open();
-                        return;
-                      }
-                    } catch (e) { /* fall through */ }
-                    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-                  }}
+                  onClick={openChatbaseAssistant}
                   className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -352,7 +345,7 @@ const ContactPage = () => {
                 <E name="contact.helpBody" defaults={COPY.contact.helpBody} as="p"
                    className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
                 <a
-                  href="https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help"
+                  href={CHATBASE_HELP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-testid="contact-help-link"
@@ -468,15 +461,7 @@ const ContactPage = () => {
                 <button
                   type="button"
                   data-testid="support-open-chat"
-                  onClick={() => {
-                    try {
-                      if (window.chatbase && typeof window.chatbase.open === "function") {
-                        window.chatbase.open();
-                        return;
-                      }
-                    } catch (e) { /* fall through */ }
-                    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-                  }}
+                  onClick={openChatbaseAssistant}
                   className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -484,7 +469,7 @@ const ContactPage = () => {
                 </button>
 
                 <a
-                  href="https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help"
+                  href={CHATBASE_HELP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-testid="support-open-page"

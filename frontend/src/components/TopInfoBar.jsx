@@ -4,6 +4,7 @@ import { Phone, Clock, Mail, MessageCircle } from "lucide-react";
 import EditableText from "@/components/EditableText";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const CALL_LABEL = { es: "Llámanos", en: "Call us", fr: "Appelez-nous" };
 const PHONE = { es: "+34 937 268 366", en: "+34 937 268 366", fr: "+34 937 268 366" };
@@ -24,14 +25,8 @@ const EMAIL = { es: "xalucatours@xaluca.com", en: "xalucatours@xaluca.com", fr: 
 export const TopInfoBar = () => {
   const { lang } = useLanguage();
 
-  // Open the Chatbase virtual assistant (same behaviour as the Contact page).
-  const openAssistant = () => {
-    if (window.chatbase && typeof window.chatbase.open === "function") {
-      window.chatbase.open();
-    } else {
-      window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-    }
-  };
+  // Open the Chatbase virtual assistant (centralised in lib/chatbase).
+  const openAssistant = openChatbaseAssistant;
 
   return (
     <div className="bg-[#2C2621] text-[#FDFBF7]/90 border-b border-black/20" data-testid="top-info-bar">

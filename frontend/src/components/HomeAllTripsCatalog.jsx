@@ -29,16 +29,8 @@ import {
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 
-// Open the Chatbase virtual assistant without leaving the page.
-const openChatbaseAssistant = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  if (window.chatbase && typeof window.chatbase.open === "function") {
-    window.chatbase.open();
-  } else {
-    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-  }
-};
+// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const COPY = {
   eyebrow: { es: "Todos los viajes", en: "Every trip we run", fr: "Tous nos voyages" },

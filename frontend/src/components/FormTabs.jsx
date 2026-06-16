@@ -39,14 +39,8 @@ const ASSISTANT_PANEL = {
   },
 };
 
-// Open the Chatbase virtual assistant without leaving the page.
-const openChatbaseAssistant = () => {
-  if (window.chatbase && typeof window.chatbase.open === "function") {
-    window.chatbase.open();
-  } else {
-    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-  }
-};
+// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
 /* Inline-CMS text helper, page-namespaced under the `formtabs` scope. */
 const FT = ({ k, defaults, as = "span", className, multiline = false }) => {

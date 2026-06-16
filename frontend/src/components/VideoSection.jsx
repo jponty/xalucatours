@@ -10,14 +10,8 @@ import {
   toggleNarrationMuted,
 } from "@/lib/narrationStore";
 
-// Open the Chatbase virtual assistant without leaving the page.
-const openChatbaseAssistant = () => {
-  if (window.chatbase && typeof window.chatbase.open === "function") {
-    window.chatbase.open();
-  } else {
-    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-  }
-};
+// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
 /* Shared placeholder narration. Every cinematic VideoSection currently plays
    this same audio until page-specific narrations are provided (the caller can

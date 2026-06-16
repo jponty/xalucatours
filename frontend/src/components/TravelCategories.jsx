@@ -6,6 +6,7 @@ import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
 import { SOUTH_TRIPS, FULL_TRIPS, SHORT_TRIPS, NORTH_TRIPS } from "@/lib/homeCarousels";
 import { pathFor } from "@/lib/routes";
+import { openChatbaseAssistant } from "@/lib/chatbase";
 import CategoryImageCarousel from "@/components/CategoryImageCarousel";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
@@ -182,15 +183,7 @@ export const TravelCategories = () => {
                     <button
                       type="button"
                       data-testid={`category-assistant-${c.slug}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (window.chatbase && typeof window.chatbase.open === "function") {
-                          window.chatbase.open();
-                        } else {
-                          window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-                        }
-                      }}
+                      onClick={openChatbaseAssistant}
                       aria-label="Asistente Virtual"
                       title="Asistente Virtual"
                       className="inline-flex items-center justify-center border border-[#2C2621]/20 w-[50px] h-[50px] text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"

@@ -26,15 +26,8 @@ const HERO_VIDEO_POSTER =
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 
-// Open the Chatbase virtual assistant (same behaviour as the top bar, hero of
-// trip pages and the Contact page).
-const openChatbaseAssistant = () => {
-  if (window.chatbase && typeof window.chatbase.open === "function") {
-    window.chatbase.open();
-  } else {
-    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-  }
-};
+// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const HERO_PLACE = {
   en: "Morocco · From north to south",

@@ -30,14 +30,9 @@ const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr:
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 const CONTACT_LABEL = { es: "Contactar", en: "Contact us", fr: "Contacter" };
 
-// Open the Chatbase virtual assistant (same behaviour as the top bar & Contact page).
-const openChatbaseAssistant = () => {
-  if (window.chatbase && typeof window.chatbase.open === "function") {
-    window.chatbase.open();
-  } else {
-    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
-  }
-};
+// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+import { openChatbaseAssistant } from "@/lib/chatbase";
+
 const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
