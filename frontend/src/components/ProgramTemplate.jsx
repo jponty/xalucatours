@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
@@ -17,6 +17,7 @@ import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
 import TripPostcards from "@/components/TripPostcards";
+import { deriveTripRoute } from "@/lib/deriveTripRoute";
 import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
@@ -642,6 +643,15 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
   }, [vt.title, program.duration, lang]);
 
   const navOverview = { es: "Resumen", en: "Overview", fr: "Résumé" };
+
+  // Full-journey overview route: use the curated `route` when present,
+  // otherwise derive one per-day from this program's own itinerary so
+  // every trip page shows its own correct map.
+  const tripRoute = useMemo(
+    () => (program.route && program.route.length >= 2 ? program.route : deriveTripRoute(program)),
+    [program]
+  );
+
   const navItems = [
     { id: "description", label: t.nav_description },
     { id: "quick",       label: t.nav_quick },
@@ -656,7 +666,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
     <div data-testid={`program-page-${program.duration_key}`}>
       <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
       <StickyNav items={navItems} testid="program-nav" />
-      {program.route && <TripRouteMap route={program.route} days={program.days} />}
+      {tripRoute && tripRoute.length >= 2 && <TripRouteMap route={tripRoute} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <VideoSection
