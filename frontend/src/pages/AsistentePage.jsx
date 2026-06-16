@@ -88,6 +88,9 @@ export default function AsistentePage() {
         </div>
       </section>
 
+      {/* Smooth gradient transition from the dark hero into the light FAQ */}
+      <div className="h-24 md:h-32 bg-gradient-to-b from-[#1A1513] to-[#F2EBE1]" aria-hidden="true" />
+
       {/* Frequently asked questions about tailor-made Morocco trips */}
       <TravelFaq />
 

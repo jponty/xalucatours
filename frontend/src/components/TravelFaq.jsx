@@ -154,18 +154,21 @@ export default function TravelFaq() {
   return (
     <section
       data-testid="asistente-faq"
-      className="relative border-t border-[#FDFBF7]/10 bg-[#1A1513] py-20 md:py-28"
+      className="relative bg-gradient-to-b from-[#F2EBE1] to-[#FDFBF7] py-20 md:py-28"
     >
+      {/* Subtle berber texture on the light surface */}
+      <div className="absolute inset-0 berber-bg-cross opacity-[0.5] pointer-events-none" aria-hidden="true" />
+
       <div className="relative max-w-3xl mx-auto px-6 md:px-12">
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2.5 text-[11px] tracking-[0.35em] uppercase text-[#D4A373]">
+          <span className="inline-flex items-center gap-2.5 text-[11px] tracking-[0.35em] uppercase text-[#C16542] font-semibold">
             <HelpCircle className="w-3.5 h-3.5" strokeWidth={1.6} />
             {pick(COPY.eyebrow, lang)}
           </span>
-          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight mt-5 text-[#FDFBF7]">
+          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight mt-5 text-[#1A1513]">
             {pick(COPY.title, lang)}
           </h2>
-          <p className="mt-5 text-base text-[#FDFBF7]/70 leading-relaxed">
+          <p className="mt-5 text-base text-[#1A1513]/65 leading-relaxed">
             {pick(COPY.subtitle, lang)}
           </p>
         </div>
@@ -176,27 +179,28 @@ export default function TravelFaq() {
               key={i}
               value={`faq-${i}`}
               data-testid={`faq-item-${i}`}
-              className="border-[#FDFBF7]/12"
+              className="border-[#1A1513]/10"
             >
-              <AccordionTrigger className="text-[#FDFBF7] hover:no-underline text-[15px] md:text-base font-medium py-5 [&>svg]:text-[#D4A373]">
+              <AccordionTrigger className="text-[#1A1513] hover:no-underline text-[15px] md:text-base font-medium py-5 [&>svg]:text-[#C16542]">
                 {pick(f.q, lang)}
               </AccordionTrigger>
-              <AccordionContent className="text-[#FDFBF7]/70 text-[14px] leading-relaxed pr-6">
+              <AccordionContent className="text-[#1A1513]/70 text-[14px] leading-relaxed pr-6">
                 {pick(f.a, lang)}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
-        {/* Still have questions → assistant / planner */}
-        <div className="mt-14 border border-[#FDFBF7]/12 bg-[#FDFBF7]/[0.04] p-7 md:p-9 text-center">
-          <p className="font-serif-x text-xl md:text-2xl text-[#FDFBF7]">{pick(COPY.stillQuestions, lang)}</p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        {/* Still have questions → assistant / planner (accent band) */}
+        <div className="mt-14 relative overflow-hidden bg-gradient-to-br from-[#C16542] to-[#A35133] p-8 md:p-10 text-center shadow-[0_24px_60px_-24px_rgba(163,81,51,0.6)]">
+          <div className="absolute inset-0 berber-bg-cross opacity-[0.6] pointer-events-none" aria-hidden="true" />
+          <p className="relative font-serif-x text-xl md:text-2xl text-[#FDFBF7]">{pick(COPY.stillQuestions, lang)}</p>
+          <div className="relative mt-6 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
               onClick={openChatbaseAssistant}
               data-testid="faq-cta-assistant"
-              className="inline-flex items-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="inline-flex items-center gap-2.5 bg-[#FDFBF7] hover:bg-white text-[#1A1513] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <Headset className="w-4 h-4" strokeWidth={1.7} />
               {pick(COPY.ctaAssistant, lang)}
@@ -204,7 +208,7 @@ export default function TravelFaq() {
             <Link
               to={pathFor(lang, "planTrip")}
               data-testid="faq-cta-plan"
-              className="inline-flex items-center gap-2.5 border border-[#FDFBF7]/30 hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="inline-flex items-center gap-2.5 border border-[#FDFBF7]/50 hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               {pick(COPY.ctaPlan, lang)}
               <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
