@@ -1295,6 +1295,139 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     return {"slot_id": slot_id, **doc}
 
 
+# ============================================================
+#   Day galleries — dynamic, ordered per-day image lists for the
+#   itinerary pages. The CMS "Travel Image Library" manages these;
+#   the public <DayImageGallery> reads them (falling back to the
+#   legacy fixed slots when a day has no gallery doc yet).
+#
+#   key  =  "<page-namespace>.day.<dayId>"  (same base the frontend
+#           builds via useSlotId).
+#   doc  =  { _id: key, images: [{url, alt}], updated_at }
+#   images[0] is the featured / main image.
+# ============================================================
+class DayGalleryImage(BaseModel):
+    url: str = Field(..., max_length=2000)
+    alt: Optional[str] = Field(default=None, max_length=300)
+
+
+class DayGalleryPayload(BaseModel):
+    images: List[DayGalleryImage] = Field(default_factory=list, max_length=60)
+
+
+def _clean_gallery_images(images):
+    out = []
+    for im in images:
+        url = _relativize_url(im.url)
+        if not url:
+            continue
+        out.append({"url": url, "alt": im.alt})
+    return out
+
+
+@api_router.get("/day-galleries")
+async def list_day_galleries():
+    """Bulk-list every day gallery — public site hydrates all itinerary
+    galleries in a single request (mirrors /api/slots)."""
+    cursor = db.day_galleries.find({}).limit(20000)
+    items = []
+    async for d in cursor:
+        items.append({
+            "key": d.get("_id"),
+            "images": [
+                {"url": _relativize_url(i.get("url")), "alt": i.get("alt")}
+                for i in (d.get("images") or [])
+                if i and i.get("url")
+            ],
+        })
+    return {"galleries": items}
+
+
+@api_router.get("/day-galleries/{key}")
+async def get_day_gallery(key: str):
+    d = await db.day_galleries.find_one({"_id": key})
+    images = [] if not d else [
+        {"url": _relativize_url(i.get("url")), "alt": i.get("alt")}
+        for i in (d.get("images") or []) if i and i.get("url")
+    ]
+    return {"key": key, "images": images}
+
+
+@api_router.put("/day-galleries/{key}")
+async def put_day_gallery(key: str, payload: DayGalleryPayload):
+    """Replace the full ordered image list for a day (handles reorder,
+    delete and 'set featured' = move to index 0). Saves instantly."""
+    images = _clean_gallery_images(payload.images)
+    await db.day_galleries.update_one(
+        {"_id": key},
+        {"$set": {"images": images, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True,
+    )
+    return {"key": key, "images": images}
+
+
+@api_router.delete("/day-galleries/{key}")
+async def delete_day_gallery(key: str):
+    await db.day_galleries.delete_one({"_id": key})
+    return {"key": key, "images": []}
+
+
+@api_router.post("/day-galleries/{key}/upload")
+async def upload_day_gallery_image(key: str, file: UploadFile = File(...)):
+    """Upload one image, optimise + store it, append it to the day's
+    gallery and return the updated ordered list."""
+    if file.content_type not in ALLOWED_MIME:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type: {file.content_type}. Use JPG, PNG, WEBP or AVIF.",
+        )
+    data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds 20 MB limit.")
+
+    sha = hashlib.sha256(data).hexdigest()
+    size_original = len(data)
+    data, ctype, ext = optimize_image(data, file.content_type)
+    safe_key = "".join(c for c in key if c.isalnum() or c in "._-")[:80] or "day"
+    storage_path = f"xaluca/day-galleries/{safe_key}/{uuid.uuid4().hex}.{ext}"
+
+    try:
+        result = await asyncio.to_thread(put_object, storage_path, data, ctype)
+    except Exception as exc:
+        logger.exception("Day gallery upload failed")
+        raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
+
+    canonical_path = result.get("path", storage_path)
+    public_url = f"/api/files/{canonical_path}"
+
+    await db.files.insert_one({
+        "id": str(uuid.uuid4()),
+        "slot_id": f"day-gallery:{key}",
+        "storage_path": canonical_path,
+        "original_filename": file.filename,
+        "content_type": ctype,
+        "size": result.get("size", len(data)),
+        "sha256": sha,
+        "size_original": size_original,
+        "is_deleted": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+    doc = await db.day_galleries.find_one({"_id": key})
+    images = (doc.get("images") if doc else []) or []
+    images.append({"url": public_url, "alt": file.filename})
+    await db.day_galleries.update_one(
+        {"_id": key},
+        {"$set": {"images": images, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True,
+    )
+    return {
+        "key": key,
+        "images": [{"url": _relativize_url(i["url"]), "alt": i.get("alt")} for i in images],
+        "added": {"url": public_url, "alt": file.filename},
+    }
+
+
 @api_router.post("/library/upload")
 async def upload_library_images(
     files: List[UploadFile] = File(...),

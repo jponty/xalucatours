@@ -77,6 +77,18 @@ export const usePageNamespace = () => {
   return useMemo(() => normalisePathname(loc.pathname), [loc.pathname]);
 };
 
+/** Non-hook: the language-independent slot namespace for a routeId.
+ *  Mirrors normalisePathname() so admin tools can compute the SAME slot
+ *  base the live page uses, without being on that page. */
+export const namespaceForRouteId = (routeId) => {
+  const slug = (ROUTES[routeId]?.es || "")
+    .replace(/^\/+|\/+$/g, "")
+    .split("/")
+    .filter(Boolean)
+    .join(".");
+  return slug || "home";
+};
+
 /** Hook: returns the active scope path as a dot-joined string
  *  (without the page prefix). Useful for read-only consumers. */
 export const useSlotPath = () => {

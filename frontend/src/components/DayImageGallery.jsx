@@ -4,6 +4,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import { EditableGroup } from "@/contexts/EditableGroupContext";
 import { useSlotId } from "@/components/slotScope";
+import { useDayGallery, resolveGalleryUrl } from "@/lib/dayGalleryStore";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
 
@@ -49,21 +50,59 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
   const { lang } = useLanguage();
   // Page-namespaced base → gallery is independent per itinerary URL.
   const base = useSlotId(`day.${day.id}`);
-  const images = useMemo(() => buildImages(base, day), [base, day]);
+  const alt = pick(day.title, lang);
+
+  // Dynamic CMS gallery (managed from /admin). When present it overrides
+  // the legacy fixed slots. images[0] is the featured/main image.
+  const dynamic = useDayGallery(base);
+
+  const slides = useMemo(() => {
+    if (dynamic && dynamic.length) {
+      return dynamic.map((im, i) => ({
+        id: `dyn-${i}`,
+        url: resolveGalleryUrl(im.url),
+        alt: im.alt || alt,
+        ratio: i === 0 ? "5/6" : "1/1",
+      }));
+    }
+    return buildImages(base, day).map((im) => ({ ...im, id: im.slot }));
+  }, [dynamic, base, day, alt]);
+
   const [active, setActive] = useState(0);
   const touchX = useRef(null);
   const railRef = useRef(null);
 
-  const total = images.length;
+  const total = slides.length;
   const go = (dir) => setActive((p) => (p + dir + total) % total);
-  const current = images[active] || images[0];
+  // Clamp active if the gallery shrank (e.g. images deleted in admin).
+  const safeActive = active < total ? active : 0;
+  const current = slides[safeActive] || slides[0];
+
+  const renderImg = (slide, thumb) =>
+    slide.slot ? (
+      <EditableImage
+        slot={slide.slot}
+        fallback={slide.fallback}
+        alt={thumb ? `${alt} · ${slide.id}` : alt}
+        aspectRatio={thumb ? "1/1" : slide.ratio}
+        imgProps={{ loading: "lazy" }}
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+    ) : (
+      <img
+        src={slide.url}
+        alt={slide.alt}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+    );
 
   // Keep the active thumbnail visible inside the rail after prev/next —
   // scrolls ONLY the rail (never the page).
   useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
-    const el = rail.querySelector(`[data-thumb-idx="${active}"]`);
+    const el = rail.querySelector(`[data-thumb-idx="${safeActive}"]`);
     if (!el) return;
     const viewLeft = rail.scrollLeft;
     const viewRight = viewLeft + rail.clientWidth;
@@ -74,7 +113,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
     } else if (elRight > viewRight) {
       rail.scrollTo({ left: elRight - rail.clientWidth + 12, behavior: "smooth" });
     }
-  }, [active]);
+  }, [safeActive]);
 
   const onTouchStart = (e) => { touchX.current = e.touches[0]?.clientX ?? null; };
   const onTouchEnd = (e) => {
@@ -83,8 +122,6 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
     if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
     touchX.current = null;
   };
-
-  const alt = pick(day.title, lang);
 
   return (
     <EditableGroup id={base} label={`Galería · ${dayLabel} ${dayNum}`}>
@@ -96,15 +133,9 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <EditableImage
-            key={current.slot}
-            slot={current.slot}
-            fallback={current.fallback}
-            alt={alt}
-            aspectRatio={current.ratio}
-            imgProps={{ loading: "lazy" }}
-            className="ken-burns absolute inset-0 w-full h-full object-cover"
-          />
+          <div key={current.id} className="ken-burns absolute inset-0">
+            {renderImg(current, false)}
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent pointer-events-none" />
           <span className="film-grain" />
 
@@ -137,7 +168,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
             className="absolute bottom-4 right-4 z-[4] bg-[#1A1513]/70 text-[#FDFBF7] text-[10px] tracking-[0.25em] uppercase px-2.5 py-1 tabular-nums pointer-events-none"
             data-testid={`day-gallery-counter-${day.id}`}
           >
-            {active + 1} / {total}
+            {safeActive + 1} / {total}
           </span>
 
           {/* Prev / next arrows */}
@@ -171,11 +202,11 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
           className="mt-4 flex gap-2.5 overflow-x-auto no-scrollbar px-1 py-1.5 scroll-smooth w-full"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
-          {images.map((img, i) => {
-            const on = i === active;
+          {slides.map((img, i) => {
+            const on = i === safeActive;
             return (
               <button
-                key={img.slot}
+                key={img.id}
                 type="button"
                 data-thumb-idx={i}
                 data-testid={`day-gallery-thumb-${day.id}-${i}`}
@@ -187,14 +218,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
                 }`}
                 style={on ? { ["--tw-ring-color"]: day.accent } : undefined}
               >
-                <EditableImage
-                  slot={img.slot}
-                  fallback={img.fallback}
-                  alt={`${alt} · ${i + 1}`}
-                  aspectRatio="1/1"
-                  imgProps={{ loading: "lazy" }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                {renderImg(img, true)}
               </button>
             );
           })}
