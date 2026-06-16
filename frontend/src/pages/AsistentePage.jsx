@@ -1,40 +1,26 @@
-import React, { useEffect } from "react";
-import { Mic, Sparkles, ArrowDown } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import React from "react";
+import { Mic, Sparkles } from "lucide-react";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import TravelFaq from "@/components/TravelFaq";
+import { openChatbaseAssistant } from "@/lib/chatbase";
 
-const CONVAI_SCRIPT = "https://unpkg.com/@elevenlabs/convai-widget-embed";
-const AGENT_ID = "agent_4001ktxba372etwtx87b1qpp5z92";
+const T = (es, en, fr) => ({ es, en, fr });
+
+const ARIA_OPEN = T(
+  "Abrir el asistente virtual",
+  "Open the virtual assistant",
+  "Ouvrir l'assistant virtuel",
+);
 
 /* ============================================================
-   AsistentePage — dedicated page that hosts the ElevenLabs ConvAI
-   voice assistant. The widget is mounted ONLY here: the custom
-   element lives in this page's markup (so it disappears when the
-   user navigates away) and the embed script is loaded on mount.
+   AsistentePage — dedicated page for the virtual assistant.
+   The active solution is the Chatbase widget: the central
+   microphone illustration opens it on click, and the global
+   Chatbase bubble stays available at the bottom-right.
 ============================================================ */
 export default function AsistentePage() {
-  const { lang } = useLanguage(); // eslint-disable-line no-unused-vars
-
-  useEffect(() => {
-    // Load the ConvAI embed script once; it registers the
-    // <elevenlabs-convai> custom element globally.
-    let script = document.querySelector(`script[src="${CONVAI_SCRIPT}"]`);
-    if (!script) {
-      script = document.createElement("script");
-      script.src = CONVAI_SCRIPT;
-      script.async = true;
-      script.type = "text/javascript";
-      document.body.appendChild(script);
-    }
-
-    // Hide the global Chatbase widget while on this page only, so the
-    // ElevenLabs assistant is the single focus here.
-    document.body.classList.add("asistente-page");
-    return () => {
-      document.body.classList.remove("asistente-page");
-    };
-  }, []);
+  const { lang } = useLanguage();
 
   return (
     <main data-testid="asistente-page" className="bg-[#FDFBF7] text-[#1A1513] min-h-screen relative overflow-hidden">
@@ -79,27 +65,33 @@ export default function AsistentePage() {
           className="mt-6 text-base md:text-lg text-[#1A1513]/70 leading-relaxed block max-w-2xl mx-auto"
         />
 
-        {/* Prominent voice-assistant illustration: pulsing mic */}
+        {/* Prominent, fully interactive voice-assistant button → opens Chatbase */}
         <div className="mt-12 md:mt-14 flex items-center justify-center" data-testid="asistente-mic-illustration">
-          <div className="relative flex items-center justify-center">
+          <button
+            type="button"
+            onClick={openChatbaseAssistant}
+            aria-label={pick(ARIA_OPEN, lang)}
+            data-testid="asistente-mic-button"
+            className="group relative flex items-center justify-center outline-none"
+          >
             <span className="absolute w-44 h-44 md:w-56 md:h-56 rounded-full bg-[#C16542]/12 animate-ping" style={{ animationDuration: "3s" }} aria-hidden="true" />
             <span className="absolute w-32 h-32 md:w-44 md:h-44 rounded-full bg-[#C16542]/16 animate-ping" style={{ animationDuration: "3s", animationDelay: "0.7s" }} aria-hidden="true" />
             <span className="absolute w-36 h-36 md:w-48 md:h-48 rounded-full border border-[#C16542]/25" aria-hidden="true" />
-            <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-[#C16542] to-[#A35133] flex items-center justify-center shadow-[0_26px_60px_-16px_rgba(163,81,51,0.55)]">
+            <span className="relative w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-[#C16542] to-[#A35133] flex items-center justify-center shadow-[0_26px_60px_-16px_rgba(163,81,51,0.55)] transition-transform duration-300 group-hover:scale-110 group-active:scale-95 group-focus-visible:ring-4 group-focus-visible:ring-[#C16542]/40">
               <Mic className="w-10 h-10 md:w-12 md:h-12 text-[#FDFBF7]" strokeWidth={1.6} />
-            </div>
-          </div>
+            </span>
+          </button>
         </div>
 
-        {/* Call to action hint → points to the floating voice widget */}
+        {/* Call to action hint → click the microphone */}
         <div className="mt-10 inline-flex items-center gap-2.5 text-[11px] tracking-[0.28em] uppercase text-[#1A1513]/60" data-testid="asistente-cta-hint">
-          <ArrowDown className="w-4 h-4 text-[#C16542] animate-bounce" strokeWidth={1.8} />
+          <Mic className="w-4 h-4 text-[#C16542]" strokeWidth={1.8} />
           <EditableText
             slot="asistente.hero.hint"
             defaults={{
-              es: "Pulsa el botón inferior para hablar",
-              en: "Tap the button below to talk",
-              fr: "Appuyez sur le bouton ci-dessous pour parler",
+              es: "Pulsa el micrófono para hablar con nuestro asistente",
+              en: "Tap the microphone to talk to our assistant",
+              fr: "Appuyez sur le microphone pour parler à notre assistant",
             }}
             multiline={false}
           />
@@ -108,9 +100,6 @@ export default function AsistentePage() {
 
       {/* Frequently asked questions about tailor-made Morocco trips */}
       <TravelFaq />
-
-      {/* ElevenLabs ConvAI widget — floats centered at the bottom of the page */}
-      <elevenlabs-convai agent-id={AGENT_ID} data-testid="elevenlabs-convai-widget"></elevenlabs-convai>
     </main>
   );
 }
