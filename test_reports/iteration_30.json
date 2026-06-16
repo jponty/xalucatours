@@ -1,0 +1,38 @@
+{
+  "summary": "Frontend e2e verified for new 'preferred contact channel' feature in PlannerForm and ContactForm on /planifica-tu-viaje, plus 'Canal pref.' column in admin leads tables. All 5 acceptance criteria pass functionally. One minor i18n bug in ContactForm inline error (literal key instead of translated string).",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ContactForm",
+        "issue": "Inline preference error shows literal i18n key 'form_required' instead of translated text 'Campo obligatorio'. Root cause: in ContactForm.jsx:40, t('form_required') returns the key string (truthy) when the translation is missing, so the fallback `|| 'Campo obligatorio'` never activates. The key 'form_required' is not defined in any locale (es/en/fr).",
+        "selector": "[data-testid=\"contact-pref-error\"]",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    ".screenshots/planner_initial.png",
+    ".screenshots/planner_success.png",
+    ".screenshots/contact_success.png",
+    ".screenshots/admin_contact_leads.png",
+    ".screenshots/admin_planner_leads.png"
+  ],
+  "action_items": [
+    "Fix ContactForm.jsx line 40: either add 'form_required' translation to locale files (es: 'Campo obligatorio', en: 'Required field', fr: 'Champ obligatoire') OR change to `setPrefError(t('form_required', 'Campo obligatorio'))` or use a check like `const txt = t('form_required'); setPrefError(txt === 'form_required' ? 'Campo obligatorio' : txt);`. PlannerForm correctly uses an inline T() helper and shows 'Campo obligatorio' as expected."
+  ],
+  "critical_code_review_comments": [
+    "ContactForm uses i18n key 'form_required' that isn't defined anywhere — the fallback chain `t(key) || fallback` doesn't work when t() returns the key on missing translation (common react-i18next behavior). Add the key to locales or use a sentinel check.",
+    "PlannerForm and ContactForm use different validation/error-text strategies (T() helper vs t() lookup). Consider unifying for consistency."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a", "frontend": "95%" },
+  "test_credentials": "Admin: /admin password 'xaluca' (from /app/memory/test_credentials.md). Used and verified.",
+  "seed_data_creation": "Submitted 2 test leads via the live forms: (1) PlannerForm lead 'TEST Validator' / test_validator@example.com with preferred_contact=phone; (2) ContactForm lead 'TEST QuickValidator' / test_quick_validator@example.com with preferred_contact=email. Both visible in admin leads tables with correct '📞 Teléfono' and '✉️ Email' values in the 'Canal pref.' column.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All five acceptance criteria verified end-to-end against external REACT_APP_BACKEND_URL. PlannerForm is single-page (not multi-step nav) — Step 06 'Tus datos' is the last block on /planifica-tu-viaje and contains full-name/email/phone/notes plus the new planner-pref-phone/email radios, planner-what-next info block, and plan-trip-submit. ContactForm sits in the 'form-tab-quick' tab. Admin leads sub-tabs use testids admin-leads-tab-contact-requests and admin-leads-tab-trip-planner. The minor i18n bug does not block functionality — validation still prevents submission and the toast in Spanish appears.",
+  "rca_of_the_issue": "ContactForm bug RCA: setPrefError(t('form_required') || 'Campo obligatorio') — react-i18next's t() returns the key itself (a truthy string) when the translation is missing, so the OR-fallback never executes. Fix: define the translation key in locale resources, or call t('form_required', { defaultValue: 'Campo obligatorio' }), or use the explicit second-arg signature t('form_required', 'Campo obligatorio') if supported."
+}

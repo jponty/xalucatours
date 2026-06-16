@@ -8,6 +8,7 @@ import { translations } from "@/lib/i18n";
 import { resolvePath } from "@/lib/routes";
 import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
 import EditableText from "@/components/EditableText";
+import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -18,6 +19,7 @@ const initialState = {
   travel_dates: "",
   party_size: "",
   journey_interest: "",
+  preferred_contact: "",
   message: "",
 };
 
@@ -27,12 +29,19 @@ export const ContactForm = () => {
   const [form, setForm] = useState(initialState);
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [prefError, setPrefError] = useState("");
 
   const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (sending) return;
+    if (!form.preferred_contact) {
+      setPrefError(t("form_required") || "Campo obligatorio");
+      toast.error(t("form_error"));
+      return;
+    }
+    setPrefError("");
     setSending(true);
     try {
       let routeId = null;
@@ -173,6 +182,21 @@ export const ContactForm = () => {
                     <textarea required name="message" value={form.message} onChange={onChange} rows={5}
                       data-testid="contact-input-message" className="form-input resize-none" />
                   </Field>
+                </div>
+
+                <div className="mt-8">
+                  <ContactPreference
+                    tone="dark"
+                    lang={lang}
+                    value={form.preferred_contact}
+                    onChange={(id) => { setForm((p) => ({ ...p, preferred_contact: id })); setPrefError(""); }}
+                    error={prefError}
+                    testidPrefix="contact-pref"
+                  />
+                </div>
+
+                <div className="mt-8">
+                  <WhatHappensNext tone="dark" lang={lang} testid="contact-what-next" />
                 </div>
 
                 <button

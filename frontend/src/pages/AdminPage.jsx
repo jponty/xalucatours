@@ -1693,6 +1693,9 @@ const tripPlannerDates = (r) => {
   return "—";
 };
 
+const LEAD_CONTACT_PREF = { phone: "📞 Teléfono", email: "✉️ Email" };
+const leadContactPref = (v) => LEAD_CONTACT_PREF[v] || "—";
+
 const colValue = (col, r) => {
   if (col.email) return r.email || "";
   if (col.phone) return r.phone || "";
@@ -1730,6 +1733,7 @@ const LEAD_FORMS = [
       { header: "Viajeros", get: (r) => r.party_size || "—", nowrap: true },
       { header: "Fechas", get: (r) => r.travel_dates || "—", truncate: true },
       { header: "Estilo", get: (r) => r.journey_interest || "—", truncate: true },
+      { header: "Canal pref.", get: (r) => leadContactPref(r.preferred_contact), nowrap: true },
       { header: "Mensaje", get: (r) => r.message || "—", truncate: true, title: (r) => r.message },
       { header: "Origen", get: (r) => r.source_label || r.source_route_id || r.source_path || "—", truncate: true, title: (r) => `${r.source_label || ""}\n${r.source_path || ""}` },
       { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
@@ -1751,6 +1755,7 @@ const LEAD_FORMS = [
       { header: "Alojamiento", get: (r) => r.accommodation || "—" },
       { header: "Regiones", get: (r) => (r.regions || []).join(", ") || "—", truncate: true, title: (r) => (r.regions || []).join(", ") },
       { header: "Actividades", get: (r) => (r.activities || []).join(", ") || "—", truncate: true, title: (r) => (r.activities || []).join(", ") },
+      { header: "Canal pref.", get: (r) => leadContactPref(r.preferred_contact), nowrap: true },
       { header: "Notas", get: (r) => r.notes || "—", truncate: true, title: (r) => r.notes },
       { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
     ],

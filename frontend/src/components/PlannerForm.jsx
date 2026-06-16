@@ -14,6 +14,7 @@ import FromPrice from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
+import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 
 /* ============================================================
    PlannerForm · reusable detailed trip-planner form
@@ -208,6 +209,7 @@ export default function PlannerForm() {
     selectedTrips: prefillTrip ? [prefillTrip.routeId] : [],
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
+    preferredContact: "",
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
@@ -227,6 +229,7 @@ export default function PlannerForm() {
     const e = {};
     if (!form.fullName || form.fullName.trim().length < 2) e.fullName = tr("required");
     if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = tr("required");
+    if (!form.preferredContact) e.preferredContact = tr("required");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -261,6 +264,7 @@ export default function PlannerForm() {
         }),
         activities: form.activities,
         notes: form.notes.trim() || null,
+        preferred_contact: form.preferredContact,
         language: lang,
       };
       const res = await fetch(API_URL, {
@@ -607,7 +611,23 @@ export default function PlannerForm() {
                 />
               </Field>
             </div>
+
+            <div className="mt-10">
+              <ContactPreference
+                tone="light"
+                lang={lang}
+                value={form.preferredContact}
+                onChange={(id) => set("preferredContact", id)}
+                error={errors.preferredContact}
+                testidPrefix="planner-pref"
+              />
+            </div>
           </SectionBlock>
+
+          {/* ============ WHAT HAPPENS NEXT ============ */}
+          <div className="max-w-2xl">
+            <WhatHappensNext tone="light" lang={lang} testid="planner-what-next" />
+          </div>
 
           {/* ============ SUBMIT ============ */}
           <div className="pt-2">

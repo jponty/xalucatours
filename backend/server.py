@@ -89,6 +89,7 @@ class ContactRequest(BaseModel):
     travel_dates: Optional[str] = None
     party_size: Optional[str] = None
     journey_interest: Optional[str] = None
+    preferred_contact: Optional[str] = None
     message: str
     source_route_id: Optional[str] = None
     source_path: Optional[str] = None
@@ -104,6 +105,7 @@ class ContactRequestCreate(BaseModel):
     travel_dates: Optional[str] = Field(default=None, max_length=120)
     party_size: Optional[str] = Field(default=None, max_length=40)
     journey_interest: Optional[str] = Field(default=None, max_length=120)
+    preferred_contact: Optional[str] = Field(default=None, max_length=10)
     message: str = Field(..., min_length=4, max_length=4000)
     source_route_id: Optional[str] = Field(default=None, max_length=120)
     source_path: Optional[str] = Field(default=None, max_length=300)
@@ -139,6 +141,7 @@ class TripPlannerRequest(BaseModel):
     selected_trips_detail: List[TripRef] = Field(default_factory=list)
     activities: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
+    preferred_contact: Optional[str] = None
     language: Optional[str] = "es"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -159,6 +162,7 @@ class TripPlannerCreate(BaseModel):
     selected_trips_detail: List[TripRef] = Field(default_factory=list, max_length=50)
     activities: List[str] = Field(default_factory=list, max_length=20)
     notes: Optional[str] = Field(default=None, max_length=4000)
+    preferred_contact: Optional[str] = Field(default=None, max_length=10)
     language: Optional[str] = "es"
 
 
@@ -721,6 +725,13 @@ def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None
         logger.error("Client confirmation email failed: %s", exc)
 
 
+_CONTACT_PREF_LABELS = {"phone": "Llamada telefónica", "email": "Correo electrónico"}
+
+
+def _contact_pref_label(value):
+    return _CONTACT_PREF_LABELS.get((value or "").strip(), value)
+
+
 @api_router.post("/contact-requests", response_model=ContactRequest)
 async def create_contact_request(payload: ContactRequestCreate, background_tasks: BackgroundTasks):
     obj = ContactRequest(**payload.model_dump())
@@ -737,6 +748,7 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
             ("Fechas", obj.travel_dates),
             ("Viajeros", obj.party_size),
             ("Interés", obj.journey_interest),
+            ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
             ("Mensaje", obj.message),
             ("Página origen", obj.source_label or obj.source_path),
             ("Idioma", obj.language),
@@ -819,6 +831,7 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
             ("Viajes de interés", trips_value),
             ("Actividades", activities),
             ("Notas", obj.notes),
+            ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
             ("Idioma", obj.language),
         ],
     )
