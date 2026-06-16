@@ -84,7 +84,7 @@ export default function AsistentePage() {
         </div>
 
         {/* Call to action hint → click the microphone */}
-        <div className="mt-10 inline-flex items-center gap-2.5 text-[11px] tracking-[0.28em] uppercase text-[#1A1513]/60" data-testid="asistente-cta-hint">
+        <div className="mt-16 md:mt-20 inline-flex items-center gap-2.5 text-[11px] tracking-[0.28em] uppercase text-[#1A1513]/60" data-testid="asistente-cta-hint">
           <Mic className="w-4 h-4 text-[#C16542]" strokeWidth={1.8} />
           <EditableText
             slot="asistente.hero.hint"
