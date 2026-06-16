@@ -1,7 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause, Volume2, VolumeX, Film } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Film, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
+
+// Open the Chatbase virtual assistant without leaving the page.
+const openChatbaseAssistant = () => {
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 
 /* ============================================================
    ToursVideoSection — inspirational intermediate video block
@@ -297,6 +306,16 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
                 ) : (
                   <Volume2 className="w-4 h-4" strokeWidth={1.8} />
                 )}
+              </button>
+              <button
+                type="button"
+                onClick={openChatbaseAssistant}
+                aria-label="Asistente Virtual"
+                title="Asistente Virtual"
+                data-testid="viajes-video-assistant"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#FDFBF7]/15 hover:bg-[#FDFBF7]/30 backdrop-blur-md border border-[#FDFBF7]/25 text-[#FDFBF7] transition-colors duration-300"
+              >
+                <Headset className="w-4 h-4" strokeWidth={1.8} />
               </button>
             </div>
           </div>

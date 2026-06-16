@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { EditableImage } from "@/components/EditableImage";
@@ -9,6 +9,15 @@ import {
   toggleNarration,
   toggleNarrationMuted,
 } from "@/lib/narrationStore";
+
+// Open the Chatbase virtual assistant without leaving the page.
+const openChatbaseAssistant = () => {
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 
 /* Shared placeholder narration. Every cinematic VideoSection currently plays
    this same audio until page-specific narrations are provided (the caller can
@@ -219,6 +228,16 @@ export default function VideoSection({
                 ) : (
                   <Volume2 className="w-4 h-4 md:w-5 md:h-5" strokeWidth={1.6} />
                 )}
+              </button>
+              <button
+                type="button"
+                onClick={openChatbaseAssistant}
+                data-testid={`${testid}-assistant`}
+                aria-label="Asistente Virtual"
+                title="Asistente Virtual"
+                className="inline-flex items-center justify-center w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#FDFBF7]/12 hover:bg-[#FDFBF7]/25 backdrop-blur-md border border-[#FDFBF7]/30 text-[#FDFBF7] transition-colors"
+              >
+                <Headset className="w-4 h-4 md:w-5 md:h-5" strokeWidth={1.6} />
               </button>
             </div>
           </div>
