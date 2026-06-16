@@ -471,3 +471,9 @@
 - Abre con hover en desktop Y con tap en movil; el tap sobre el precio NO navega a la pagina del viaje (preventDefault + stopPropagation).
 - Cierra al tocar fuera (movil) y al salir el raton (desktop). role=button + aria-label para accesibilidad.
 - Verificado: hub fez-rak desktop hover (7n8d 1600/1815...) y movil tap (6n7d, navigated=False, desglose visible).
+
+## 2026-06-16 — Acceso "Asistente Virtual" en cabecera movil
+- TopInfoBar: anadido boton "Asistente Virtual" (con icono chat) visible solo en movil (sm:hidden), junto al telefono.
+- Al pulsarlo abre el chat de Chatbase (window.chatbase.open(), fallback a la URL del help). Mismo patron que ContactPage.
+- Trilingue (es/en/fr) via EditableText slot topbar.assistant_label. data-testid: top-info-assistant.
+- Verificado a 390px: assistant=flex, email=none, chatbase abre correctamente. En desktop sigue oculto.
