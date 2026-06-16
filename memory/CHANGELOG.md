@@ -1,4 +1,24 @@
 
+## Música de ambiente en el navbar (Jun 2026)
+- **User request**: añadir botón de música de fondo en el navbar (izquierda, junto al menú burger) usando un MP3 propio; debe poder sonar a la vez que las audioguías (capa de audio independiente, sin bloquearlas) y ofrecer play/pausa, mute/unmute, control de volumen y stop.
+- **Implementación**:
+  - MP3 descargado a `frontend/public/background-music.mp3` (servido por el dev server, soporta range/206).
+  - NUEVO `components/BackgroundMusic.jsx`: `<audio loop>` propio + Popover (Radix) con play/pausa, stop (pausa + currentTime=0), mute/unmute y Slider de volumen (default 0.35). Icono `Music` en navbar con punto terracota cuando suena. Trilingüe (es/en/fr), accesible (aria-labels, focus visible). data-testids: `bg-music-button`, `bg-music-panel`, `bg-music-play-toggle`, `bg-music-stop`, `bg-music-mute-toggle`, `bg-music-volume`, `bg-music-audio`.
+  - `Header.jsx`: clúster izquierdo con el botón de menú + `<BackgroundMusic />`. Header persiste entre rutas (Layout) → la música continúa al navegar.
+- **Capa independiente**: al ser `<audio>` HTML separado, reproduce en paralelo a las audioguías sin detenerlas (no usa Web Audio API compartida).
+- **Validado** (Playwright): botón presente junto a "MENÚ"; panel abre; play → `paused=false`, `volume=0.35`, src `background-music.mp3`, tiempo avanza; con audioguía reproduciéndose ("AHORA SUENA") la música de fondo sigue sonando (no se interrumpe). MP3 200/206 `audio/mpeg`.
+
+## Postales por viaje: sección + carrusel + reubicación (Jun 2026)
+- 3 postales manuscritas en 1ª persona por corredor de destino (15 familias, 63 routeIds mapeados) en `lib/programPostcards.js` + `components/TripPostcards.jsx`. Diseño igual a la postal de /viajes. Carrusel horizontal (scroll-snap, flechas, dots). Ubicada antes del folleto interactivo (`ProgramFlipbook`) en `ProgramTemplate.jsx`. Validado por testing agent (iteration_32) + screenshots.
+
+## Galería del lugar: botones de acción solo-icono (Jun 2026)
+- En cada tarjeta de `LandmarkCarousel`: 3 botones solo-icono — Planificación (`Compass`→/planifica-tu-viaje), Asistente (`Headset`→Chatbase), Teléfono (`Phone`→tel:+34937268366). 44x44px, aria-labels trilingües.
+
+## Asistente /asistente + widget "Mejor mes" (Jun 2026)
+- /asistente: FAQ trilingüe (14 preguntas), hero claro con micrófono interactivo que abre Chatbase, ElevenLabs ocultado.
+- BestMonthFab: escala progresiva de 4 niveles (sin blanco/vacío) + tooltip nativo y línea de detalle climático por mes (hover/focus/tap).
+
+
 ## Imagen maestra por viaje: Hero ↔ tarjetas sincronizadas (Feb 2026)
 - **User request**: la imagen de cada tarjeta de "Todos los viajes" (home) debe estar totalmente sincronizada con la imagen principal (Hero) de las páginas específicas de ese viaje. Una única imagen maestra por viaje, compartida y bidireccional, reflejada en: tarjeta de la home, Hero de todas las páginas del viaje, y cualquier otra tarjeta/listado/recomendación que enlace a ese viaje. Emparejado por ID estable, sin duplicidades.
 - **Implementación**:
