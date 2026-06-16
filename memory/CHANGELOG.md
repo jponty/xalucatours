@@ -483,3 +483,8 @@
 - Mismo estilo/tamano que el boton secundario (outline). Al pulsar abre Chatbase (window.chatbase.open(), fallback URL help).
 - Trilingue (es/en/fr). data-testid: program-hero-assistant. Aplica a todas las paginas de viaje (componente compartido).
 - Verificado en preview: boton visible y Chatbase abre correctamente.
+
+## 2026-06-16 — Hero de viaje responsive: botones visibles en mobile/tablet
+- ProgramHero: cambiado de altura fija h-[100svh]+overflow-hidden (recortaba contenido) a min-h-[100svh] para que el hero crezca con el contenido en pantallas pequenas.
+- Ahora la fila de botones de accion (Solicitar/Ver/Descargar/Asistente Virtual) es totalmente visible y no se recorta en desktop, tablet y movil.
+- Verificado: desktop (fila), tablet 820px (clipped=False), movil 390px (clipped=False, apilados). Boton Asistente Virtual abre Chatbase en todos.

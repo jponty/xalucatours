@@ -186,7 +186,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
   // editing it anywhere updates everywhere automatically.
   const heroSlot = tripHeroSlot(routeId);
   return (
-  <section data-testid="program-hero" className="relative h-[100svh] min-h-[720px] w-full overflow-hidden bg-[#1A1513]">
+  <section data-testid="program-hero" className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
       slot={heroSlot}
       fallback={tripHeroImage(routeId) || vt.hero_image}
@@ -198,7 +198,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
     <span className="film-grain" />
-    <div className="relative z-10 h-full flex flex-col">
+    <div className="relative z-10 min-h-[100svh] flex flex-col">
       <div className="flex-1 flex items-end pt-32 md:pt-44 pb-20 md:pb-28">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-4xl">
