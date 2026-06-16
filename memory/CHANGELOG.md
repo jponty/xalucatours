@@ -498,3 +498,8 @@
 - HeroSlider: anadido boton "Asistente Virtual" (icono Headset) junto a Planificar mi viaje / Explorar rutas, mismo estilo outline y tamano.
 - Abre Chatbase (window.chatbase.open(), fallback URL). Trilingue via EditableText slot home.hero.cta_assistant. data-testid: hero-cta-assistant.
 - Verificado en preview: visible en una sola linea con los otros 2 botones y Chatbase abre correctamente.
+
+## 2026-06-16 — Icono Asistente Virtual en cards de "Todos los viajes"
+- HomeAllTripsCatalog: area de acciones cambiada a flex justify-between; anadido boton-icono (Headset, solo icono 36x36) a la derecha de "Ver itinerario".
+- Abre Chatbase con preventDefault+stopPropagation (no navega a la ficha). aria-label/title "Asistente Virtual". data-testid: home-all-trips-assistant-{routeId}.
+- Verificado desktop+movil: misma linea que Ver itinerario, icono a la derecha, dentro de la card, Chatbase abre sin navegar.

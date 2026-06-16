@@ -10,7 +10,7 @@
 ============================================================ */
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
@@ -26,6 +26,19 @@ import {
   TRIP_PACES,
   TRIP_DURATIONS,
 } from "@/lib/allTripsCatalog";
+
+const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+
+// Open the Chatbase virtual assistant without leaving the page.
+const openChatbaseAssistant = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 
 const COPY = {
   eyebrow: { es: "Todos los viajes", en: "Every trip we run", fr: "Tous nos voyages" },
@@ -211,11 +224,21 @@ const TripCard = ({ trip, lang }) => {
           <div className="mt-5">
             <FromPrice tone="dark" size="md" routeId={trip.routeId} testid={`home-all-trips-from-${trip.routeId}`} />
           </div>
-          <div className="mt-5 pt-4 border-t border-[#2C2621]/10">
+          <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
               {pick(COPY.details, lang)}
               <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
             </span>
+            <button
+              type="button"
+              onClick={openChatbaseAssistant}
+              data-testid={`home-all-trips-assistant-${trip.routeId}`}
+              aria-label={pick(ASSISTANT_LABEL, lang)}
+              title={pick(ASSISTANT_LABEL, lang)}
+              className="shrink-0 inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+            >
+              <Headset className="w-4 h-4" strokeWidth={1.7} />
+            </button>
           </div>
         </div>
         {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
