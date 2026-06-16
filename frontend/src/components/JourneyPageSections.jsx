@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, ArrowLeftRight, Compass, ChevronDown, MapPin, Clock,
-  Headphones, Pencil, Award, ShieldCheck, Phone, Mail, Calendar, MessageCircle,
+  Headphones, Pencil, Award, ShieldCheck, Phone, Mail, Calendar, MessageCircle, Headset,
 } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -16,6 +16,19 @@ import { useSlotId } from "@/components/slotScope";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
+
+const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+
+// Open the Chatbase virtual assistant without leaving the page.
+const openChatbaseAssistant = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 
 // Collect every deep-linkable routeId for an itinerary so <FromPrice> shows
 // that itinerary's real lowest tariff, consistent with the trip detail page
@@ -765,10 +778,24 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                         <p className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3">
                           {pick(p.blurb, lang)}
                         </p>
-                        <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/90 group-hover:gap-4 transition-all duration-300">
-                          {p.link ? (labels.card_active || (lang === "es" ? "Ver itinerario" : lang === "fr" ? "Voir l'itinéraire" : "View itinerary")) : cardLabel}
-                          {p.link && <ArrowRight className="w-3 h-3" strokeWidth={1.5} />}
-                        </span>
+                        <div className="mt-5 flex items-center justify-between gap-3">
+                          <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/90 group-hover:gap-4 transition-all duration-300">
+                            {p.link ? (labels.card_active || (lang === "es" ? "Ver itinerario" : lang === "fr" ? "Voir l'itinéraire" : "View itinerary")) : cardLabel}
+                            {p.link && <ArrowRight className="w-3 h-3" strokeWidth={1.5} />}
+                          </span>
+                          {p.link && (
+                            <button
+                              type="button"
+                              onClick={openChatbaseAssistant}
+                              data-testid={`hub-preview-assistant-${p.id}`}
+                              aria-label={pick(ASSISTANT_LABEL, lang)}
+                              title={pick(ASSISTANT_LABEL, lang)}
+                              className="shrink-0 inline-flex items-center justify-center w-9 h-9 border border-[#FDFBF7]/30 text-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] hover:border-[#FDFBF7] transition-colors duration-300"
+                            >
+                              <Headset className="w-4 h-4" strokeWidth={1.6} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </>
                   );

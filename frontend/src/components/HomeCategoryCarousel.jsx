@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
@@ -31,6 +31,19 @@ const LABELS = {
   es: { prev: "Anterior", next: "Siguiente", view: "Ver viaje", spots_left: "plazas", from: "desde" },
   en: { prev: "Previous", next: "Next", view: "View trip", spots_left: "spots", from: "from" },
   fr: { prev: "Précédent", next: "Suivant", view: "Voir le voyage", spots_left: "places", from: "dès" },
+};
+
+const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+
+// Open the Chatbase virtual assistant without leaving the page.
+const openChatbaseAssistant = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
 };
 
 const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
@@ -139,17 +152,30 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
               {pick(ctaLabel || { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }, lang)}
             </span>
           )}
-          <span
-            className="inline-flex items-center justify-center w-8 h-8 border transition-all duration-300 group-hover:bg-[#2C2621] group-hover:text-[#FDFBF7]"
-            style={{
-              borderColor: `${tone.border}26`,
-              color: tone.ink,
-              background: isDark ? "transparent" : "transparent",
-            }}
-            aria-hidden="true"
-          >
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={openChatbaseAssistant}
+              data-testid={`home-trip-assistant-${trip.id}`}
+              aria-label={pick(ASSISTANT_LABEL, lang)}
+              title={pick(ASSISTANT_LABEL, lang)}
+              className="inline-flex items-center justify-center w-8 h-8 border transition-colors duration-300 hover:bg-[#2C2621] hover:text-[#FDFBF7]"
+              style={{ borderColor: `${tone.border}26`, color: tone.ink }}
+            >
+              <Headset className="w-3.5 h-3.5" strokeWidth={1.6} />
+            </button>
+            <span
+              className="inline-flex items-center justify-center w-8 h-8 border transition-all duration-300 group-hover:bg-[#2C2621] group-hover:text-[#FDFBF7]"
+              style={{
+                borderColor: `${tone.border}26`,
+                color: tone.ink,
+                background: isDark ? "transparent" : "transparent",
+              }}
+              aria-hidden="true"
+            >
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+            </span>
+          </div>
         </div>
       </div>
 

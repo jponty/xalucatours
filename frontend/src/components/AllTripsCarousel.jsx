@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Compass, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
@@ -17,6 +17,19 @@ import xMonogram from "@/assets/monograma-x-white.png";
 ============================================================ */
 
 const T = (es, en, fr) => ({ es, en, fr });
+
+const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+
+// Open the Chatbase virtual assistant without leaving the page.
+const openChatbaseAssistant = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 
 const COPY = {
   overline: T("Todos los viajes", "All journeys", "Tous les voyages"),
@@ -260,10 +273,22 @@ export default function AllTripsCarousel() {
                   <span className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
                     {pick(COPY.cta, lang)}
                   </span>
-                  <ArrowUpRight
-                    className="w-4 h-4 text-[#2C2621] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542]"
-                    strokeWidth={1.6}
-                  />
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={openChatbaseAssistant}
+                      data-testid={`all-trips-assistant-${trip.id}`}
+                      aria-label={pick(ASSISTANT_LABEL, lang)}
+                      title={pick(ASSISTANT_LABEL, lang)}
+                      className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+                    >
+                      <Headset className="w-4 h-4" strokeWidth={1.7} />
+                    </button>
+                    <ArrowUpRight
+                      className="w-4 h-4 text-[#2C2621] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542]"
+                      strokeWidth={1.6}
+                    />
+                  </div>
                 </div>
               </div>
             </Link>
