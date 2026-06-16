@@ -19,7 +19,7 @@ const initialState = {
   travel_dates: "",
   party_size: "",
   journey_interest: "",
-  preferred_contact: "",
+  preferred_contact: [],
   message: "",
 };
 
@@ -32,11 +32,18 @@ export const ContactForm = () => {
   const [prefError, setPrefError] = useState("");
 
   const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const togglePref = (id) =>
+    setForm((p) => ({
+      ...p,
+      preferred_contact: p.preferred_contact.includes(id)
+        ? p.preferred_contact.filter((x) => x !== id)
+        : [...p.preferred_contact, id],
+    }));
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (sending) return;
-    if (!form.preferred_contact) {
+    if (!form.preferred_contact.length) {
       const req = { es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" };
       setPrefError(pick(req, lang));
       toast.error(t("form_error"));
@@ -190,7 +197,7 @@ export const ContactForm = () => {
                     tone="dark"
                     lang={lang}
                     value={form.preferred_contact}
-                    onChange={(id) => { setForm((p) => ({ ...p, preferred_contact: id })); setPrefError(""); }}
+                    onToggle={(id) => { togglePref(id); setPrefError(""); }}
                     error={prefError}
                     testidPrefix="contact-pref"
                   />

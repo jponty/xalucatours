@@ -42,16 +42,27 @@ export const CONTACT_PREF_LABEL = T(
   "Comment préférez-vous être contacté ?",
 );
 
+export const CONTACT_PREF_HINT = T(
+  "Puedes elegir una o ambas opciones.",
+  "You can choose one or both options.",
+  "Vous pouvez choisir une ou les deux options.",
+);
+
 export const CONTACT_PREF_OPTIONS = [
   { id: "phone", Icon: Phone, label: T("Llamada telefónica", "Phone call", "Appel téléphonique") },
   { id: "email", Icon: Mail,  label: T("Correo electrónico", "Email", "E-mail") },
 ];
 
-/* Human-readable label for a stored value (used by the planner success
-   screen etc.). Falls back to the raw value. */
-export const contactPrefLabel = (id, lang) => {
-  const o = CONTACT_PREF_OPTIONS.find((x) => x.id === id);
-  return o ? pick(o.label, lang) : id || "";
+/* Human-readable label(s) for stored value(s). Accepts a string or an
+   array of ids and returns a comma-joined, localized label. */
+export const contactPrefLabel = (value, lang) => {
+  const ids = Array.isArray(value) ? value : (value ? [value] : []);
+  return ids
+    .map((id) => {
+      const o = CONTACT_PREF_OPTIONS.find((x) => x.id === id);
+      return o ? pick(o.label, lang) : id;
+    })
+    .join(", ");
 };
 
 const TONES = {
@@ -112,24 +123,26 @@ export const WhatHappensNext = ({ tone = "light", lang, testid = "what-happens-n
   );
 };
 
-export const ContactPreference = ({ tone = "light", lang, value, onChange, error, testidPrefix = "contact-pref" }) => {
+export const ContactPreference = ({ tone = "light", lang, value = [], onToggle, error, testidPrefix = "contact-pref" }) => {
   const c = TONES[tone] || TONES.light;
+  const selected = Array.isArray(value) ? value : (value ? [value] : []);
   return (
     <div data-testid={`${testidPrefix}-group`}>
-      <span className={`block text-[11px] tracking-[0.3em] uppercase mb-3 ${c.reqLabel}`}>
+      <span className={`block text-[11px] tracking-[0.3em] uppercase mb-1.5 ${c.reqLabel}`}>
         {pick(CONTACT_PREF_LABEL, lang)} <span style={{ color: c.eyebrowAccent }}>*</span>
       </span>
-      <div role="radiogroup" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <span className={`block text-[12px] mb-3 ${c.body}`}>{pick(CONTACT_PREF_HINT, lang)}</span>
+      <div role="group" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CONTACT_PREF_OPTIONS.map((opt) => {
-          const on = value === opt.id;
+          const on = selected.includes(opt.id);
           return (
             <button
               key={opt.id}
               type="button"
-              role="radio"
+              role="checkbox"
               aria-checked={on}
               data-testid={`${testidPrefix}-${opt.id}`}
-              onClick={() => onChange(opt.id)}
+              onClick={() => onToggle(opt.id)}
               className={`group inline-flex items-center gap-3 px-5 py-4 text-[13px] tracking-[0.05em] border-2 transition-colors ${on ? c.optOn : c.optIdle}`}
             >
               <opt.Icon className="w-4 h-4 shrink-0" strokeWidth={1.7}

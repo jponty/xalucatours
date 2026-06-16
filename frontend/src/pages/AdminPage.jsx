@@ -1694,7 +1694,11 @@ const tripPlannerDates = (r) => {
 };
 
 const LEAD_CONTACT_PREF = { phone: "📞 Teléfono", email: "✉️ Email" };
-const leadContactPref = (v) => LEAD_CONTACT_PREF[v] || "—";
+const leadContactPref = (v) => {
+  const ids = Array.isArray(v) ? v : (v ? [v] : []);
+  const labels = ids.map((x) => LEAD_CONTACT_PREF[x] || x).filter(Boolean);
+  return labels.length ? labels.join(", ") : "—";
+};
 
 const colValue = (col, r) => {
   if (col.email) return r.email || "";

@@ -89,13 +89,22 @@ class ContactRequest(BaseModel):
     travel_dates: Optional[str] = None
     party_size: Optional[str] = None
     journey_interest: Optional[str] = None
-    preferred_contact: Optional[str] = None
+    preferred_contact: Optional[List[str]] = None
     message: str
     source_route_id: Optional[str] = None
     source_path: Optional[str] = None
     source_label: Optional[str] = None
     language: Optional[str] = "en"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    @field_validator("preferred_contact", mode="before")
+    @classmethod
+    def _coerce_pref_contact(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            return [v] if v else []
+        return v
 
 
 class ContactRequestCreate(BaseModel):
@@ -105,12 +114,21 @@ class ContactRequestCreate(BaseModel):
     travel_dates: Optional[str] = Field(default=None, max_length=120)
     party_size: Optional[str] = Field(default=None, max_length=40)
     journey_interest: Optional[str] = Field(default=None, max_length=120)
-    preferred_contact: Optional[str] = Field(default=None, max_length=10)
+    preferred_contact: Optional[List[str]] = Field(default=None, max_length=4)
     message: str = Field(..., min_length=4, max_length=4000)
     source_route_id: Optional[str] = Field(default=None, max_length=120)
     source_path: Optional[str] = Field(default=None, max_length=300)
     source_label: Optional[str] = Field(default=None, max_length=300)
     language: Optional[str] = "en"
+
+    @field_validator("preferred_contact", mode="before")
+    @classmethod
+    def _coerce_pref_contact(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            return [v] if v else []
+        return v
 
 
 # ---------- Trip Planner ----------
@@ -141,9 +159,18 @@ class TripPlannerRequest(BaseModel):
     selected_trips_detail: List[TripRef] = Field(default_factory=list)
     activities: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
-    preferred_contact: Optional[str] = None
+    preferred_contact: Optional[List[str]] = None
     language: Optional[str] = "es"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    @field_validator("preferred_contact", mode="before")
+    @classmethod
+    def _coerce_pref_contact(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            return [v] if v else []
+        return v
 
 
 class TripPlannerCreate(BaseModel):
@@ -162,8 +189,17 @@ class TripPlannerCreate(BaseModel):
     selected_trips_detail: List[TripRef] = Field(default_factory=list, max_length=50)
     activities: List[str] = Field(default_factory=list, max_length=20)
     notes: Optional[str] = Field(default=None, max_length=4000)
-    preferred_contact: Optional[str] = Field(default=None, max_length=10)
+    preferred_contact: Optional[List[str]] = Field(default=None, max_length=4)
     language: Optional[str] = "es"
+
+    @field_validator("preferred_contact", mode="before")
+    @classmethod
+    def _coerce_pref_contact(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            return [v] if v else []
+        return v
 
 
 # ---------- Program brochure download (lead-gated) ----------
@@ -729,7 +765,10 @@ _CONTACT_PREF_LABELS = {"phone": "Llamada telef√≥nica", "email": "Correo electr√
 
 
 def _contact_pref_label(value):
-    return _CONTACT_PREF_LABELS.get((value or "").strip(), value)
+    if not value:
+        return None
+    ids = value if isinstance(value, (list, tuple)) else [value]
+    return ", ".join(_CONTACT_PREF_LABELS.get((v or "").strip(), v) for v in ids if v)
 
 
 @api_router.post("/contact-requests", response_model=ContactRequest)

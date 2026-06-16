@@ -209,7 +209,7 @@ export default function PlannerForm() {
     selectedTrips: prefillTrip ? [prefillTrip.routeId] : [],
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
-    preferredContact: "",
+    preferredContact: [],
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
@@ -224,12 +224,13 @@ export default function PlannerForm() {
   const toggleRegion   = toggleArrayItem("regions");
   const toggleActivity = toggleArrayItem("activities");
   const toggleTrip     = toggleArrayItem("selectedTrips");
+  const togglePref     = toggleArrayItem("preferredContact");
 
   const validate = () => {
     const e = {};
     if (!form.fullName || form.fullName.trim().length < 2) e.fullName = tr("required");
     if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = tr("required");
-    if (!form.preferredContact) e.preferredContact = tr("required");
+    if (!form.preferredContact.length) e.preferredContact = tr("required");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -617,7 +618,7 @@ export default function PlannerForm() {
                 tone="light"
                 lang={lang}
                 value={form.preferredContact}
-                onChange={(id) => set("preferredContact", id)}
+                onToggle={(id) => togglePref(id)}
                 error={errors.preferredContact}
                 testidPrefix="planner-pref"
               />
