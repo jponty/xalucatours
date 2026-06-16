@@ -477,3 +477,9 @@
 - Al pulsarlo abre el chat de Chatbase (window.chatbase.open(), fallback a la URL del help). Mismo patron que ContactPage.
 - Trilingue (es/en/fr) via EditableText slot topbar.assistant_label. data-testid: top-info-assistant.
 - Verificado a 390px: assistant=flex, email=none, chatbase abre correctamente. En desktop sigue oculto.
+
+## 2026-06-16 — Boton "Asistente Virtual" en el hero de cada viaje
+- ProgramTemplate (ProgramHero): anadido boton "Asistente Virtual" con icono Headset (teleoperador), junto a Solicitar/Ver programa/Descargar.
+- Mismo estilo/tamano que el boton secundario (outline). Al pulsar abre Chatbase (window.chatbase.open(), fallback URL help).
+- Trilingue (es/en/fr). data-testid: program-hero-assistant. Aplica a todas las paginas de viaje (componente compartido).
+- Verificado en preview: boton visible y Chatbase abre correctamente.

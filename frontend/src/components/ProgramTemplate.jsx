@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
-  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag,
+  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
@@ -28,6 +28,16 @@ import DownloadProgramModal from "@/components/DownloadProgramModal";
 import VideoSection from "@/components/VideoSection";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
+const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+
+// Open the Chatbase virtual assistant (same behaviour as the top bar & Contact page).
+const openChatbaseAssistant = () => {
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
@@ -246,6 +256,10 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
               <button type="button" onClick={onDownload} data-testid="program-hero-download"
                  className="inline-flex items-center gap-3 bg-[#FDFBF7] hover:bg-[#D4A373] text-[#1A1513] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
                 {pick(DOWNLOAD_LABEL, lang)}<Download className="w-3.5 h-3.5" strokeWidth={1.7} />
+              </button>
+              <button type="button" onClick={openChatbaseAssistant} data-testid="program-hero-assistant"
+                 className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+                <Headset className="w-3.5 h-3.5" strokeWidth={1.6} />{pick(ASSISTANT_LABEL, lang)}
               </button>
             </div>
           </div>
