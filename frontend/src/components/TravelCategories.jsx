@@ -137,7 +137,7 @@ export const TravelCategories = () => {
                             <Link
                               to={pathFor(lang, trip.routeId)}
                               data-testid={`category-option-${c.slug}-${trip.routeId}`}
-                              className="group/opt flex items-start gap-2.5 py-2 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
+                              className="group/opt flex items-start gap-2.5 pt-2 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
                             >
                               <ArrowRight
                                 className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C16542] transition-transform duration-300 group-hover/opt:translate-x-1"
@@ -145,7 +145,17 @@ export const TravelCategories = () => {
                               />
                               <span className="leading-snug">{pick(trip.title, lang)}</span>
                             </Link>
-                            <TripPriceDisclosure routeId={trip.routeId} slug={c.slug} />
+                            {trip.summary && (
+                              <p
+                                data-testid={`category-option-desc-${trip.routeId}`}
+                                className="mt-1 ml-6 text-[12px] text-[#5C5248] leading-[1.6] line-clamp-2"
+                              >
+                                {pick(trip.summary, lang)}
+                              </p>
+                            )}
+                            <div className="ml-6">
+                              <TripPriceDisclosure routeId={trip.routeId} slug={c.slug} />
+                            </div>
                           </li>
                         ))}
                       </ul>
