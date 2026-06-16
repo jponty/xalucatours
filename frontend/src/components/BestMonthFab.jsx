@@ -132,27 +132,83 @@ const parseBestMonthsEn = (bestEn) => {
   return Array.from(months).sort((a, b) => a - b);
 };
 
-/* Mini 12-month bar visualisation. */
-const MonthBar = ({ activeMonths, accent }) => {
+/* Convert a hex accent colour to an rgba string with the given alpha. */
+const hexToRgba = (hex, alpha) => {
+  if (!hex) return `rgba(193,101,66,${alpha})`;
+  const h = hex.replace("#", "");
+  const n = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const r = parseInt(n.slice(0, 2), 16);
+  const g = parseInt(n.slice(2, 4), 16);
+  const b = parseInt(n.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+/* Distance (in months, wrap-around) from a month to the nearest best month.
+   0 = best, 1 = very good, 2 = good, 3+ = suitable (capped at 3). */
+const monthTier = (monthIdx, bestMonths) => {
+  if (!bestMonths || bestMonths.length === 0) return 3;
+  let min = 12;
+  bestMonths.forEach((b) => {
+    const diff = Math.abs(monthIdx - b);
+    const d = Math.min(diff, 12 - diff);
+    if (d < min) min = d;
+  });
+  return Math.min(min, 3);
+};
+
+/* Progressive, always-positive colour scale built from the region accent.
+   No pure white / empty states — every month stays visually active. */
+const tierStyle = (tier, accent) => {
+  switch (tier) {
+    case 0: return { backgroundColor: accent, color: "#FDFBF7" };
+    case 1: return { backgroundColor: hexToRgba(accent, 0.72), color: "#FDFBF7" };
+    case 2: return { backgroundColor: hexToRgba(accent, 0.42), color: "#2C2621" };
+    default: return { backgroundColor: hexToRgba(accent, 0.22), color: "#2C2621" };
+  }
+};
+
+const TIER_KEYS = ["best", "veryGood", "good", "suitable"];
+const TIER_LABELS = {
+  best:     { es: "Mejor",     en: "Best",      fr: "Meilleur" },
+  veryGood: { es: "Muy bueno", en: "Very good", fr: "Très bon" },
+  good:     { es: "Bueno",     en: "Good",      fr: "Bon" },
+  suitable: { es: "Favorable", en: "Suitable",  fr: "Favorable" },
+};
+
+/* Mini 12-month bar visualisation — progressive 4-tier colour scale. */
+const MonthBar = ({ bestMonths, accent, lang }) => {
   const labels = ["E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
   return (
-    <div className="grid grid-cols-12 gap-1">
-      {labels.map((l, i) => {
-        const active = activeMonths.includes(i + 1);
-        return (
-          <div
-            key={i}
-            className={`text-center text-[10px] tracking-[0.15em] uppercase py-1.5 border transition-colors ${
-              active
-                ? "border-transparent text-[#FDFBF7]"
-                : "border-[#2C2621]/15 text-[#2C2621]/30"
-            }`}
-            style={active ? { backgroundColor: accent } : {}}
-          >
-            {l}
-          </div>
-        );
-      })}
+    <div>
+      <div className="grid grid-cols-12 gap-1">
+        {labels.map((l, i) => {
+          const tier = monthTier(i + 1, bestMonths);
+          return (
+            <div
+              key={i}
+              data-testid={`best-month-cell-${i + 1}`}
+              data-tier={tier}
+              className="text-center text-[10px] tracking-[0.15em] uppercase py-1.5 border border-transparent transition-colors"
+              style={tierStyle(tier, accent)}
+            >
+              {l}
+            </div>
+          );
+        })}
+      </div>
+      {/* Legend — communicates the relative recommendation per season */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="best-month-legend">
+        {TIER_KEYS.map((key, t) => (
+          <span key={key} className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.12em] uppercase text-[#5C5248]">
+            <span
+              className="w-3 h-3 rounded-[2px] border border-[#2C2621]/10"
+              style={{ backgroundColor: tierStyle(t, accent).backgroundColor }}
+              aria-hidden="true"
+            />
+            {pick(TIER_LABELS[key], lang)}
+          </span>
+        ))}
+      </div>
     </div>
   );
 };
@@ -280,7 +336,7 @@ export default function BestMonthFab() {
 
               {/* Month bar */}
               <div>
-                <MonthBar activeMonths={bestMonths} accent={region.accent} />
+                <MonthBar bestMonths={bestMonths} accent={region.accent} lang={lang} />
                 <div className="mt-4 grid grid-cols-2 gap-4 text-[12px]">
                   <div>
                     <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1">
