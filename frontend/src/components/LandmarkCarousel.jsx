@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, Camera, X, MapPin, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Camera, X, MapPin, Compass, Headset, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { openChatbaseAssistant } from "@/lib/chatbase";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { ALIAS_PROFILE } from "@/lib/placeGalleries";
 import { POI_CARD_COPY } from "@/lib/poiCardCopy";
@@ -56,6 +57,9 @@ const PLACE_UI = {
 };
 
 const PLAN_CTA = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
+const ASSISTANT_CTA = { es: "Asistente virtual", en: "Virtual assistant", fr: "Assistant virtuel" };
+const CALL_CTA = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
+const CALL_TEL = "+34937268366";
 
 const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
   return (
@@ -113,14 +117,36 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
         className="text-[13px] md:text-[13.5px] text-[#5C5248] leading-[1.7] flex-1"
       />
       <span className="block w-10 h-px mt-1" style={{ background: accent }} />
-      <Link
-        to={pathFor(lang, "planTrip")}
-        data-testid={`landmark-card-plan-cta-${index}`}
-        className="mt-2 inline-flex items-center justify-center gap-2.5 w-full bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3 text-[10px] tracking-[0.22em] uppercase transition-colors"
-      >
-        {pick(PLAN_CTA, lang)}
-        <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-      </Link>
+      <div className="mt-2 flex items-center gap-2.5" data-testid={`landmark-card-actions-${index}`}>
+        <Link
+          to={pathFor(lang, "planTrip")}
+          data-testid={`landmark-card-plan-cta-${index}`}
+          aria-label={pick(PLAN_CTA, lang)}
+          title={pick(PLAN_CTA, lang)}
+          className="inline-flex items-center justify-center w-11 h-11 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
+        >
+          <Compass className="w-[18px] h-[18px]" strokeWidth={1.6} />
+        </Link>
+        <button
+          type="button"
+          onClick={openChatbaseAssistant}
+          data-testid={`landmark-card-assistant-cta-${index}`}
+          aria-label={pick(ASSISTANT_CTA, lang)}
+          title={pick(ASSISTANT_CTA, lang)}
+          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+        >
+          <Headset className="w-[18px] h-[18px]" strokeWidth={1.6} />
+        </button>
+        <a
+          href={`tel:${CALL_TEL}`}
+          data-testid={`landmark-card-call-cta-${index}`}
+          aria-label={pick(CALL_CTA, lang)}
+          title={pick(CALL_CTA, lang)}
+          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+        >
+          <Phone className="w-[18px] h-[18px]" strokeWidth={1.6} />
+        </a>
+      </div>
     </div>
   </article>
   );
