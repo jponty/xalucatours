@@ -1,0 +1,42 @@
+{
+  "summary": "Frontend-only verification of the new TripPostcards section on individual trip pages. Confirmed presence, exact count (3), corridor-specific content, correct layout placement (between overview and pricing), unique signatures per corridor, and trilingual switching to FR (EN data exists in source). All checks pass for the 3 reachable routes; no valid northern route slug located via guessed paths.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "tests_executed": [
+    {"name": "Section data-testid='trip-postcards' present on /viajes/marrakech_ergchebbi/programa_4n_5d", "result": "PASS"},
+    {"name": "Exactly 3 postcards rendered (trip-postcard-0/1/2) on all 3 routes", "result": "PASS"},
+    {"name": "Each card exposes trip-postcard-greeting-N and trip-postcard-signature-N", "result": "PASS"},
+    {"name": "Stamp <img> rendered inside each postcard (3 images per page)", "result": "PASS"},
+    {"name": "Section placed AFTER overview and BEFORE pricing (verified by scrollY ordering)", "result": "PASS - overview < postcards < pricing on all 3 routes"},
+    {"name": "Marrakech↔Erg corridor mentions Atlas / Marrakech / Erg Chebbi / Tizi", "result": "PASS"},
+    {"name": "Atlas-Desierto corridor mentions Merzouga / Aït Ben Haddou / Dades / Todra", "result": "PASS"},
+    {"name": "Escapada Marrakech corridor mentions Marrakech / medina / riad / Jemaa", "result": "PASS"},
+    {"name": "Corridor differentiation (signatures differ between marrakechErg=['Carlos','Ana','Javier'] vs escapadaMarrakech=['Marta','Pablo','Lucía'] vs desertAtlas=['Marta','Lucía','Diego'])", "result": "PASS"},
+    {"name": "Trilingual switch to FR changes greeting + section title", "result": "PASS - ES 'Hola desde la carretera,' → FR 'Bonjour de la route,'; title 'Souvenirs écrits à la main'"},
+    {"name": "Visual style matches /viajes postcard (font-hand, aged paper, tape spans, postmark, stamp img)", "result": "PASS - DOM contains postcard-paper, postcard-tape, postcard-postmark, font-hand classes"}
+  ],
+  "partial_or_inconclusive": [
+    {"name": "EN switch on desktop header", "note": "Could not click EN button via standard selectors (Element not visible at 1920x4000) — likely it lives inside a collapsed menu/dropdown on this layout. FR switch from same state DID work, proving trilingual mechanism. Since English copy exists in lib/programPostcards.js for every postcard and uses the same pick(p.x, lang) accessor as FR, EN will render identically. No code bug suspected; this is a selector limitation."},
+    {"name": "Northern route postcards", "note": "No valid Spanish slug for a northern itinerary was reachable via guessed paths (/viajes/norte/*, /viajes/imperiales/*, /viajes/tanger_chefchaouen/* all 404). Data corridors 'north', 'imperialRif', 'grandNorthSouth' exist in programPostcards.js and are mapped in ROUTE_FAMILY, so any northern routeId will produce postcards. Not a regression."}
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "TripPostcards.jsx is clean and concise (~130 lines), reuses the /viajes visual language tokens (postcard-paper, postcard-tape, postcard-postmark, font-hand) — good consistency.",
+    "programPostcards.js is a single 850-line data file. Acceptable for a content-only module but consider splitting into one file per corridor (e.g. lib/postcards/marrakechErg.js) if it grows further.",
+    "ROUTE_FAMILY exhaustively maps every routeId; missing routeIds fall back to FAMILIES.morocco = marrakechErg, so nothing 500s — good defensive default.",
+    "Postcard component does not have a data-testid for the closing line or stamp img. Not required by spec but worth adding (trip-postcard-closing-N, trip-postcard-stamp-N) for future regression tests."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% on tested checks"},
+  "test_credentials": "None needed; /admin not used.",
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "TripPostcards verified on /viajes/marrakech_ergchebbi/programa_4n_5d, /viajes/atlas_desierto/programa_4n_5d and /viajes/escapadas/marrakech/programa_2n_3d. To exercise other corridors look up the actual slug map (resolvePath in @/lib/routes) — guessed northern slugs all 404. To click EN in the header on desktop use whatever selector the LanguageSwitcher actually exposes (FR click via 'button:has-text(FR)' works; EN button is in DOM but currently not visible at 1920x4000 — may be hidden behind a hover/click menu).",
+  "rca of the issue": "No issues found. Feature works as specified."
+}

@@ -16,6 +16,7 @@ import ProgramFlipbook from "@/components/ProgramFlipbook";
 import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
+import TripPostcards from "@/components/TripPostcards";
 import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
@@ -677,6 +678,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
       <Itinerary t={t} lang={lang} days={program.days} routeId={routeId} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <ProgramFlipbook src={flipbookSrc} routeId={routeId} />
       <TripOverview days={program.days} />
+      <TripPostcards routeId={routeId} />
       <PricingSection id="pricing" testid="program-pricing" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />
       <HubPeerNav routeId={routeId} />
