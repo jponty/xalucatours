@@ -19,8 +19,7 @@ import HubPeerNav from "@/components/HubPeerNav";
 import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
-import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
-import monogramaX from "@/assets/monograma-x-crop.png";
+import { DayImageGallery } from "@/components/DayImageGallery";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 import FromPrice from "@/components/FromPrice";
@@ -358,49 +357,13 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
 const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false }) => {
   const reverse = idx % 2 === 1;
   const dayNum = String(idx + 1).padStart(2, "0");
-  // Page-namespaced so the day image is independent per itinerary URL,
-  // even when several programmes reuse the same shared `day.id`.
-  const dayImageSlot = useSlotId(`day.${day.id}.image`);
   return (
     <article id={day.id} data-testid={`program-day-${day.id}`}
              className="relative bg-[#FDFBF7] py-20 md:py-24 overflow-hidden border-b border-[#2C2621]/10">
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start ${reverse ? "lg:[direction:rtl]" : ""}`}>
           <div className="lg:col-span-6 lg:[direction:ltr]">
-            <div className="relative aspect-[4/5] md:aspect-[5/6] overflow-hidden bg-[#1A1513] sticky lg:top-24">
-              <EditableImage
-                slot={dayImageSlot}
-                fallback={day.image}
-                alt={pick(day.title, lang)}
-                aspectRatio="5/6"
-                imgProps={{ loading: "lazy" }}
-                className="ken-burns absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent pointer-events-none" />
-              <span className="film-grain" />
-              {/* Xaluca "&" monogram — anchored to the bottom-right edge */}
-              <img
-                src={monogramaX}
-                alt=""
-                aria-hidden="true"
-                data-testid={`day-monogram-${day.id}`}
-                className="pointer-events-none select-none absolute right-0 bottom-0 h-[82%] w-auto object-contain opacity-55 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-              />
-              {/* Xaluca logo — visible, top-right corner of the day's image */}
-              <div className="absolute top-4 right-4 z-10 pointer-events-none">
-                <img
-                  src={grupXalucaLogo}
-                  alt="Xaluca"
-                  data-testid={`day-logo-${day.id}`}
-                  className="w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
-                />
-              </div>
-              <div className="absolute top-5 left-5 inline-flex items-center gap-3 bg-[#FDFBF7]/95 backdrop-blur-sm px-4 py-2">
-                <span className="font-serif-x text-xl leading-none" style={{ color: day.accent }}>
-                  <L k="day_label" /> {dayNum}
-                </span>
-              </div>
-            </div>
+            <DayImageGallery day={day} dayLabel={t.day_label} dayNum={dayNum} />
           </div>
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase" style={{ color: day.accent }}>
