@@ -37,7 +37,8 @@ export const ContactForm = () => {
     e.preventDefault();
     if (sending) return;
     if (!form.preferred_contact) {
-      setPrefError(t("form_required") || "Campo obligatorio");
+      const req = { es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" };
+      setPrefError(pick(req, lang));
       toast.error(t("form_error"));
       return;
     }
