@@ -69,10 +69,10 @@ export default function FormTabs({ defaultTab = "detailed" }) {
     <div data-testid="form-tabs" id="contact-forms">
       {/* Tab bar */}
       <div className="bg-[#FBF5EA] pt-16 md:pt-20 pb-1">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 text-center">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 text-center">
           <FT k="eyebrow" defaults={TABS_COPY.eyebrow} as="span"
               className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-6" />
-          <div role="tablist" className="flex items-stretch justify-center gap-0 flex-wrap">
+          <div role="tablist" className="flex items-stretch justify-center gap-0 flex-wrap lg:flex-nowrap">
             {tabs.map((t) => {
               const active = tab === t.id;
               return (
@@ -83,13 +83,13 @@ export default function FormTabs({ defaultTab = "detailed" }) {
                   aria-selected={active}
                   data-testid={`form-tab-${t.id}`}
                   onClick={() => setTab(t.id)}
-                  className={`inline-flex items-center gap-2.5 px-6 sm:px-9 py-4 text-[10px] sm:text-[11px] tracking-[0.28em] uppercase border-2 transition-colors ${
+                  className={`inline-flex items-center justify-center gap-2.5 whitespace-nowrap px-5 sm:px-7 lg:px-6 py-4 text-[10px] sm:text-[11px] tracking-[0.22em] sm:tracking-[0.26em] uppercase border-2 transition-colors ${
                     active
                       ? "bg-[#2C2621] text-[#FDFBF7] border-[#2C2621]"
                       : "bg-transparent text-[#5C5248] border-[#2C2621]/20 hover:border-[#2C2621]/50 hover:text-[#2C2621]"
                   }`}
                 >
-                  <t.Icon className="w-4 h-4" strokeWidth={1.7} />
+                  <t.Icon className="w-4 h-4 shrink-0" strokeWidth={1.7} />
                   <FT k={t.id} defaults={t.label} as="span" />
                 </button>
               );
