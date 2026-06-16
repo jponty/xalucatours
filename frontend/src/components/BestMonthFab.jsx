@@ -175,27 +175,74 @@ const TIER_LABELS = {
   suitable: { es: "Favorable", en: "Suitable",  fr: "Favorable" },
 };
 
-/* Mini 12-month bar visualisation — progressive 4-tier colour scale. */
-const MonthBar = ({ bestMonths, accent, lang }) => {
+const DETAIL_HINT = {
+  es: "Pasa el ratón o toca un mes para ver su clima.",
+  en: "Hover or tap a month to see its climate.",
+  fr: "Survolez ou touchez un mois pour voir son climat.",
+};
+
+/* Mini 12-month bar visualisation — progressive 4-tier colour scale,
+   with a hover/tap climate detail line and native tooltips per month. */
+const MonthBar = ({ bestMonths, accent, lang, months }) => {
   const labels = ["E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+  const [hovered, setHovered] = useState(null);
+  const byId = (id) => months.find((m) => m.id === id);
+  const hm = hovered ? byId(hovered) : null;
+  const hoveredTier = hovered ? monthTier(hovered, bestMonths) : null;
+
   return (
     <div>
       <div className="grid grid-cols-12 gap-1">
         {labels.map((l, i) => {
-          const tier = monthTier(i + 1, bestMonths);
+          const id = i + 1;
+          const tier = monthTier(id, bestMonths);
+          const m = byId(id);
+          const tierLabel = pick(TIER_LABELS[TIER_KEYS[tier]], lang);
+          const titleStr = m ? `${pick(m.name, lang)} · ${m.temp} · ${tierLabel}` : l;
           return (
-            <div
+            <button
+              type="button"
               key={i}
-              data-testid={`best-month-cell-${i + 1}`}
+              data-testid={`best-month-cell-${id}`}
               data-tier={tier}
-              className="text-center text-[10px] tracking-[0.15em] uppercase py-1.5 border border-transparent transition-colors"
+              title={titleStr}
+              aria-label={titleStr}
+              onMouseEnter={() => setHovered(id)}
+              onMouseLeave={() => setHovered(null)}
+              onFocus={() => setHovered(id)}
+              onBlur={() => setHovered(null)}
+              onClick={() => setHovered((h) => (h === id ? null : id))}
+              className="text-center text-[10px] tracking-[0.15em] uppercase py-1.5 border border-transparent transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-[#2C2621]/40"
               style={tierStyle(tier, accent)}
             >
               {l}
-            </div>
+            </button>
           );
         })}
       </div>
+
+      {/* Hover / tap climate detail — reinforces confidence per season */}
+      <div className="mt-3 min-h-[42px]" data-testid="best-month-detail" aria-live="polite">
+        {hm ? (
+          <div>
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-[13px] font-medium text-[#2C2621]" data-testid="best-month-detail-name">
+                {pick(hm.name, lang)} · {hm.temp}
+              </span>
+              <span
+                className="text-[9px] tracking-[0.2em] uppercase shrink-0"
+                style={{ color: hoveredTier <= 1 ? accent : "#5C5248" }}
+              >
+                {pick(TIER_LABELS[TIER_KEYS[hoveredTier]], lang)}
+              </span>
+            </div>
+            <p className="text-[12px] text-[#5C5248] italic leading-snug mt-0.5">{pick(hm.highlight, lang)}</p>
+          </div>
+        ) : (
+          <p className="text-[12px] text-[#5C5248] leading-snug">{pick(DETAIL_HINT, lang)}</p>
+        )}
+      </div>
+
       {/* Legend — communicates the relative recommendation per season */}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="best-month-legend">
         {TIER_KEYS.map((key, t) => (
@@ -336,7 +383,7 @@ export default function BestMonthFab() {
 
               {/* Month bar */}
               <div>
-                <MonthBar bestMonths={bestMonths} accent={region.accent} lang={lang} />
+                <MonthBar bestMonths={bestMonths} accent={region.accent} lang={lang} months={MONTHS} />
                 <div className="mt-4 grid grid-cols-2 gap-4 text-[12px]">
                   <div>
                     <span className="block text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-1">
