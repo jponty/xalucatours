@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Compass, MessageCircle, Headset } from "lucide-react";
+import { Compass, MessageCircle, Headset, Calendar } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 import PlannerForm from "@/components/PlannerForm";
 import ContactForm from "@/components/ContactForm";
+import BookingSession from "@/components/BookingSession";
 
 /* ============================================================
    FormTabs — tabbed switcher between the detailed trip planner
@@ -16,6 +17,7 @@ const TABS_COPY = {
   detailed: { es: "Planificación detallada", en: "Detailed planner", fr: "Planification détaillée" },
   quick:    { es: "Contacto rápido", en: "Quick contact", fr: "Contact rapide" },
   assistant:{ es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" },
+  appointment:{ es: "Cita previa", en: "Book appointment", fr: "Prendre rendez-vous" },
   eyebrow:  { es: "Elige cómo contactarnos", en: "Choose how to reach us", fr: "Choisissez comment nous contacter" },
 };
 
@@ -60,6 +62,7 @@ export default function FormTabs({ defaultTab = "detailed" }) {
     { id: "detailed", Icon: Compass,        label: TABS_COPY.detailed },
     { id: "quick",    Icon: MessageCircle,  label: TABS_COPY.quick },
     { id: "assistant",Icon: Headset,        label: TABS_COPY.assistant },
+    { id: "appointment", Icon: Calendar,    label: TABS_COPY.appointment },
   ];
 
   return (
@@ -126,6 +129,11 @@ export default function FormTabs({ defaultTab = "detailed" }) {
               {pick(ASSISTANT_PANEL.cta, lang)}
             </button>
           </div>
+        </div>
+      )}
+      {tab === "appointment" && (
+        <div className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-appointment" role="tabpanel">
+          <BookingSession testid="form-tab-booking-session" />
         </div>
       )}
     </div>

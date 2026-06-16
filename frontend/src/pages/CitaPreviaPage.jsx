@@ -8,14 +8,14 @@
      4. CTA to the full contact page / phone
    All copy is editable via <E> (SlotScope id="citaprevia").
 ============================================================ */
-import React, { useEffect, useState } from "react";
-import { Compass, Calendar, CheckCircle2, Phone, MapPin, ArrowRight } from "lucide-react";
+import React, { useEffect } from "react";
+import { Compass, Calendar, CheckCircle2, Phone, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
-import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
+import BookingSession from "@/components/BookingSession";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 
@@ -67,15 +67,8 @@ const COPY = {
     ],
   },
   booking: {
-    eyebrow: { es: "Reserva tu sesión", en: "Book your session", fr: "Réservez votre séance" },
-    title: { es: "Selecciona el día y la hora", en: "Select the day and time", fr: "Choisissez le jour et l'heure" },
-    body: {
-      es: "Elige una sesión telefónica para el día y la hora que mejor te convenga, o reserva una visita a nuestras oficinas en Tremp para planificar tu próxima aventura cara a cara.",
-      en: "Choose a phone session at a time that suits you, or book a visit to our offices in Tremp to plan your next adventure face to face.",
-      fr: "Choisissez une séance téléphonique quand cela vous convient, ou réservez une visite à nos bureaux de Tremp pour planifier votre prochaine aventure en personne.",
-    },
-    tabPhone: { es: "Sesión telefónica", en: "Phone session", fr: "Séance téléphonique" },
-    tabOffice: { es: "Visita en oficina", en: "Visit at our office", fr: "Visite au bureau" },
+    // Booking copy now lives in <BookingSession> (BOOKING_COPY) so it can be
+    // shared 1:1 with the "Cita previa" tab on /planifica-tu-viaje.
   },
   outro: {
     title: { es: "¿Prefieres escribirnos?", en: "Prefer to write to us?", fr: "Vous préférez nous écrire ?" },
@@ -92,8 +85,6 @@ const SEO_KEYWORDS = "Viajes a Marruecos, Viajes por Marruecos, Viaje a Marrueco
 
 const CitaPreviaPage = () => {
   const { lang } = useLanguage();
-  const [tab, setTab] = useState("phone");
-  useCalendlyScript();
 
   useEffect(() => {
     document.title = ({
@@ -193,49 +184,7 @@ const CitaPreviaPage = () => {
         {/* ============== CALENDLY BOOKING ============== */}
         <section id="booking" data-testid="citaprevia-booking"
                  className="py-20 md:py-28 bg-[#F8F2E6]/40 border-b border-[#2C2621]/10">
-          <div className="max-w-6xl mx-auto px-6 md:px-12">
-            <div className="text-center max-w-3xl mx-auto mb-10">
-              <E name="booking.eyebrow" defaults={COPY.booking.eyebrow} multiline={false} as="span"
-                 className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
-              <E name="booking.title" defaults={COPY.booking.title} multiline={false} as="h2"
-                 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
-              <E name="booking.body" defaults={COPY.booking.body} as="p"
-                 className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
-            </div>
-
-            <div role="tablist" className="flex items-stretch justify-center gap-0 mb-8">
-              {[
-                { id: "phone", Icon: Phone, label: <E name="booking.tabPhone" defaults={COPY.booking.tabPhone} multiline={false} />, testid: "tab-phone" },
-                { id: "office", Icon: MapPin, label: <E name="booking.tabOffice" defaults={COPY.booking.tabOffice} multiline={false} />, testid: "tab-office" },
-              ].map((tb) => {
-                const active = tab === tb.id;
-                return (
-                  <button
-                    key={tb.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    data-testid={`citaprevia-booking-${tb.testid}`}
-                    onClick={() => setTab(tb.id)}
-                    className={`inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 text-[10px] sm:text-[11px] tracking-[0.28em] uppercase border-2 transition-colors ${
-                      active
-                        ? "bg-[#2C2621] text-[#FDFBF7] border-[#2C2621]"
-                        : "bg-transparent text-[#5C5248] border-[#2C2621]/20 hover:border-[#2C2621]/50 hover:text-[#2C2621]"
-                    }`}
-                  >
-                    <tb.Icon className="w-3.5 h-3.5" strokeWidth={1.7} />
-                    <span>{tb.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="bg-[#FDFBF7] border border-[#2C2621]/10 p-3 md:p-4">
-              {tab === "phone"
-                ? <CalendlyEmbed url={CALENDLY_PHONE} testid="citaprevia-calendly-phone" />
-                : <CalendlyEmbed url={CALENDLY_OFFICE} testid="citaprevia-calendly-office" />}
-            </div>
-          </div>
+          <BookingSession testid="citaprevia-booking-session" />
         </section>
 
         {/* ============== OUTRO CTA ============== */}
