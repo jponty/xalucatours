@@ -105,6 +105,16 @@ export const PLANNER_COPY = {
 
 const COPY = PLANNER_COPY;
 
+/* Read a ?trip=<routeId> query param and resolve it to a catalog trip.
+   Used to pre-fill the planner when arriving from a trip page's
+   per-day "Contactar" button. */
+const getPrefilledTrip = () => {
+  if (typeof window === "undefined") return null;
+  const id = new URLSearchParams(window.location.search).get("trip");
+  if (!id) return null;
+  return ALL_TRIPS.find((x) => x.routeId === id) || null;
+};
+
 const ACCOMMODATIONS = [
   {
     id: "basic", accent: "#A07042",
@@ -187,13 +197,15 @@ export default function PlannerForm() {
   const { lang } = useLanguage();
   const tr = (k) => pick(COPY[k], lang);
 
+  const prefillTrip = useMemo(() => getPrefilledTrip(), []);
+
   const [form, setForm] = useState({
     dateMode: "range",
     startDate: "", endDate: "", exactDate: "", flexMonth: "",
     adults: 2, children: 0,
     accommodation: "superior",
-    regions: [],
-    selectedTrips: [],
+    regions: prefillTrip ? [prefillTrip.region] : [],
+    selectedTrips: prefillTrip ? [prefillTrip.routeId] : [],
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
   });

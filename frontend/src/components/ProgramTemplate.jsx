@@ -355,7 +355,7 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
   );
 };
 
-const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
+const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false }) => {
   const reverse = idx % 2 === 1;
   const dayNum = String(idx + 1).padStart(2, "0");
   // Page-namespaced so the day image is independent per itinerary URL,
@@ -479,7 +479,7 @@ const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
                 {pick(ASSISTANT_LABEL, lang)}
               </button>
               <Link
-                to={pathFor(lang, "planTrip")}
+                to={`${pathFor(lang, "planTrip")}${routeId ? `?trip=${routeId}` : ""}`}
                 data-testid={`day-contact-${day.id}`}
                 className="inline-flex items-center gap-2.5 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300"
               >
@@ -542,7 +542,7 @@ const DayTimeline = ({ days, lang, t }) => {
   );
 };
 
-const Itinerary = ({ t, lang, days, hideDayGallery = false }) => (
+const Itinerary = ({ t, lang, days, routeId, hideDayGallery = false }) => (
   <section id="itinerary" data-testid="program-itinerary"
            className="relative bg-[#FDFBF7] pt-20 md:pt-28">
     <div className="relative max-w-7xl mx-auto px-6 md:px-12 text-center mb-12">
@@ -550,7 +550,7 @@ const Itinerary = ({ t, lang, days, hideDayGallery = false }) => (
       <L k="itinerary_title" as="h2" className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 text-[#2C2621]" />
     </div>
     {days.map((d, i) => (
-      <DayBlock key={`${d.id}-${i}`} day={d} idx={i} total={days.length} lang={lang} t={t} hideDayGallery={hideDayGallery} />
+      <DayBlock key={`${d.id}-${i}`} day={d} idx={i} total={days.length} lang={lang} t={t} routeId={routeId} hideDayGallery={hideDayGallery} />
     ))}
   </section>
 );
@@ -716,7 +716,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
         }}
       />
       <DayTimeline days={program.days} lang={lang} t={t} />
-      <Itinerary t={t} lang={lang} days={program.days} hideDayGallery={routeId === "tourMarrakechErg56"} />
+      <Itinerary t={t} lang={lang} days={program.days} routeId={routeId} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <ProgramFlipbook src={flipbookSrc} routeId={routeId} />
       <TripOverview days={program.days} />
       <PricingSection id="pricing" testid="program-pricing" routeId={routeId} />
