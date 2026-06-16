@@ -658,7 +658,6 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
       <StickyNav items={navItems} testid="program-nav" />
       {program.route && <TripRouteMap route={program.route} days={program.days} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
-      <TripPostcards routeId={routeId} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <VideoSection
         testid={`program-audio-${routeId || program.duration_key}`}
@@ -677,6 +676,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
       />
       <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} routeId={routeId} hideDayGallery={routeId === "tourMarrakechErg56"} />
+      <TripPostcards routeId={routeId} />
       <ProgramFlipbook src={flipbookSrc} routeId={routeId} />
       <TripOverview days={program.days} />
       <PricingSection id="pricing" testid="program-pricing" routeId={routeId} />
