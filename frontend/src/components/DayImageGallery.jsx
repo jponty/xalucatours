@@ -168,7 +168,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
         <div
           data-testid={`day-gallery-thumbs-${day.id}`}
           ref={railRef}
-          className="mt-4 flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"
+          className="mt-4 flex gap-2.5 overflow-x-auto no-scrollbar px-1 py-1.5 scroll-smooth w-full"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {images.map((img, i) => {
