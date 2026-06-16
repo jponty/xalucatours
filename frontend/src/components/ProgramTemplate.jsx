@@ -244,24 +244,27 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                 </span>
               </a>
             </dl>
-            <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
-              <Link to={pathFor(lang, "contact")} data-testid="program-hero-cta-primary"
-                 className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
-                <L k="cta_primary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-              </Link>
-              <a href="#itinerary" data-testid="program-hero-cta-secondary"
-                 className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
-                <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-              </a>
-              <button type="button" onClick={onDownload} data-testid="program-hero-download"
-                 className="inline-flex items-center gap-3 bg-[#FDFBF7] hover:bg-[#D4A373] text-[#1A1513] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
-                {pick(DOWNLOAD_LABEL, lang)}<Download className="w-3.5 h-3.5" strokeWidth={1.7} />
-              </button>
-              <button type="button" onClick={openChatbaseAssistant} data-testid="program-hero-assistant"
-                 className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
-                <Headset className="w-3.5 h-3.5" strokeWidth={1.6} />{pick(ASSISTANT_LABEL, lang)}
-              </button>
-            </div>
+          </div>
+          {/* Action buttons live OUTSIDE the max-w-4xl text column so they can
+              use the full content width and sit on a single row on desktop;
+              flex-wrap reflows them cleanly (no clipping/overlap) on tablet/mobile. */}
+          <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
+            <Link to={pathFor(lang, "contact")} data-testid="program-hero-cta-primary"
+               className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
+              <L k="cta_primary" /><ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
+            </Link>
+            <a href="#itinerary" data-testid="program-hero-cta-secondary"
+               className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 whitespace-nowrap">
+              <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+            </a>
+            <button type="button" onClick={onDownload} data-testid="program-hero-download"
+               className="inline-flex items-center gap-3 bg-[#FDFBF7] hover:bg-[#D4A373] text-[#1A1513] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
+              {pick(DOWNLOAD_LABEL, lang)}<Download className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
+            </button>
+            <button type="button" onClick={openChatbaseAssistant} data-testid="program-hero-assistant"
+               className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 whitespace-nowrap">
+              <Headset className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />{pick(ASSISTANT_LABEL, lang)}
+            </button>
           </div>
         </div>
       </div>

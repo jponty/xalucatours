@@ -488,3 +488,8 @@
 - ProgramHero: cambiado de altura fija h-[100svh]+overflow-hidden (recortaba contenido) a min-h-[100svh] para que el hero crezca con el contenido en pantallas pequenas.
 - Ahora la fila de botones de accion (Solicitar/Ver/Descargar/Asistente Virtual) es totalmente visible y no se recorta en desktop, tablet y movil.
 - Verificado: desktop (fila), tablet 820px (clipped=False), movil 390px (clipped=False, apilados). Boton Asistente Virtual abre Chatbase en todos.
+
+## 2026-06-16 — Botones del hero en una sola linea (desktop) + reflow responsive
+- ProgramHero: la fila de botones (Solicitar/Ver/Descargar/Asistente Virtual) se movio FUERA de la columna max-w-4xl al contenedor max-w-7xl para que quepan en una sola linea en desktop.
+- Padding reducido a px-6 lg:px-7, gap-3 sm:gap-4, whitespace-nowrap + shrink-0 en iconos. flex-wrap conserva 1 linea cuando hay espacio y reflowa sin recortes/solapes en tablet/movil.
+- Verificado: desktop 1440 = 1 fila (tops iguales); tablet 768 = 2 filas; movil 390 = apilados; clippedBySection=False en todos.
