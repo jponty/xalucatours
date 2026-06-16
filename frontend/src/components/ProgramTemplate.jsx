@@ -29,6 +29,7 @@ import VideoSection from "@/components/VideoSection";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+const CONTACT_LABEL = { es: "Contactar", en: "Contact us", fr: "Contacter" };
 
 // Open the Chatbase virtual assistant (same behaviour as the top bar & Contact page).
 const openChatbaseAssistant = () => {
@@ -464,6 +465,28 @@ const DayBlock = ({ day, idx, total, lang, t, hideDayGallery = false }) => {
                 </div>
               </div>
             )}
+
+            {/* Per-day action buttons — chat assistant + contact */}
+            <div className="mt-10 pt-8 border-t border-[#2C2621]/10 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={openChatbaseAssistant}
+                data-testid={`day-assistant-${day.id}`}
+                className="inline-flex items-center gap-2.5 text-[#FDFBF7] px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 hover:opacity-90"
+                style={{ background: day.accent }}
+              >
+                <Headset className="w-4 h-4" strokeWidth={1.6} />
+                {pick(ASSISTANT_LABEL, lang)}
+              </button>
+              <Link
+                to={pathFor(lang, "planTrip")}
+                data-testid={`day-contact-${day.id}`}
+                className="inline-flex items-center gap-2.5 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300"
+              >
+                <Mail className="w-4 h-4" strokeWidth={1.6} />
+                {pick(CONTACT_LABEL, lang)}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
