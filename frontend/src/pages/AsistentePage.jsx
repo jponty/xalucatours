@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Mic, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
+import TravelFaq from "@/components/TravelFaq";
 
 const CONVAI_SCRIPT = "https://unpkg.com/@elevenlabs/convai-widget-embed";
 const AGENT_ID = "agent_4001ktxba372etwtx87b1qpp5z92";
@@ -86,6 +87,9 @@ export default function AsistentePage() {
           />
         </div>
       </section>
+
+      {/* Frequently asked questions about tailor-made Morocco trips */}
+      <TravelFaq />
 
       {/* ElevenLabs ConvAI widget — floats centered at the bottom of the page */}
       <elevenlabs-convai agent-id={AGENT_ID} data-testid="elevenlabs-convai-widget"></elevenlabs-convai>
