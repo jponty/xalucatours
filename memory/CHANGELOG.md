@@ -1,4 +1,13 @@
 
+## "El recorrido completo" (TripRouteMap) en TODAS las páginas de viaje (Jun 2026)
+- **User request**: la sección "El recorrido completo / Tu travesía en un solo mapa" (mapa Leaflet de la ruta) debe estar en todas las páginas de viaje, cada una con SU itinerario real, sin reutilizar el mismo mapa entre itinerarios distintos.
+- **Problema previo**: en `ProgramTemplate` la sección sólo se renderizaba si `program.route` existía. Los 23 programas de `programData.js` y los 2 de enduro NO tenían `route` → no mostraban la sección.
+- **Solución**: NUEVO `lib/deriveTripRoute.js` que construye una ruta (1 nodo por día) desde los datos propios de cada día vía `deriveDayPlaces()` (gacetero) con fallback a `resolveDayRoute()`. Nodo = `{day,lat,lng,type,name:{es,en,fr}}`. Mapea kind→type (town→city, dunes→desert, gorges→gorge, site→unesco...). Nudge de coords duplicadas (estancias multi-noche) para que cada marcador sea visible.
+- `ProgramTemplate.jsx`: `tripRoute = program.route (si length≥2) || deriveTripRoute(program)`; render `{tripRoute.length>=2 && <TripRouteMap route={tripRoute} days/>}`. Las rutas curadas se conservan; el resto se derivan.
+- **Fix a11y/testid** en `TripRouteMap.jsx`: el estado activo pasó de `stop.day` a índice de nodo `idx`; `data-testid={trip-route-stop-${stop.day}-${idx}}`, `aria-controls`/`id` del detalle `trip-route-detail-${stop.day}-${idx}`. Resuelve colisiones cuando una ruta curada tiene varias paradas el mismo día (norte, escapadas) y evita que se abran varios detalles a la vez.
+- **Validado** (testing agent iteration_33, ~93% + verificación propia): sección presente en A (atlas_desierto 4n5d, 5 paradas/315km), B (marrakech_ergchebbi), C (gransur fez_marrakech 9n10d, 10 paradas curadas), D (norte ciudadesimperiales_rif 6n7d, 15 paradas), E (escapadas marrakech vs fez → disjuntas), F (enduro 5 paradas). Mapas únicos por itinerario, tiles+polyline+markers OK, expand de un solo panel correcto, 15 testids únicos.
+
+
 ## Música de ambiente en el navbar (Jun 2026)
 - **User request**: añadir botón de música de fondo en el navbar (izquierda, junto al menú burger) usando un MP3 propio; debe poder sonar a la vez que las audioguías (capa de audio independiente, sin bloquearlas) y ofrecer play/pausa, mute/unmute, control de volumen y stop.
 - **Implementación**:

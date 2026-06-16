@@ -208,7 +208,7 @@ const DayDetail = ({ id, day, dayNumber, color, lang, t, onClose }) => {
 export const TripRouteMap = ({ route, days = [] }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
-  const [activeDay, setActiveDay] = useState(null);
+  const [activeNode, setActiveNode] = useState(null);
 
   /* Index program days by day-number for O(1) lookup when expanding. */
   const dayByNumber = useMemo(() => {
@@ -298,7 +298,7 @@ export const TripRouteMap = ({ route, days = [] }) => {
                 />
                 {route.map((stop, idx) => {
                   const color = TYPE_COLORS[stop.type] || "#C16542";
-                  const isActive = activeDay === stop.day;
+                  const isActive = activeNode === idx;
                   return (
                     <React.Fragment key={`${stop.day}-${idx}`}>
                       <CircleMarker
@@ -317,7 +317,7 @@ export const TripRouteMap = ({ route, days = [] }) => {
                           fillOpacity: 1,
                         }}
                         eventHandlers={{
-                          click: () => setActiveDay((prev) => (prev === stop.day ? null : stop.day)),
+                          click: () => setActiveNode((prev) => (prev === idx ? null : idx)),
                         }}
                       >
                         <Tooltip direction="top" offset={[0, -10]} opacity={0.95} permanent={false}>
@@ -352,7 +352,7 @@ export const TripRouteMap = ({ route, days = [] }) => {
             <ol className="space-y-2" data-testid="trip-route-rail">
               {route.map((stop, idx) => {
                 const color = TYPE_COLORS[stop.type] || "#C16542";
-                const isActive = activeDay === stop.day;
+                const isActive = activeNode === idx;
                 const kindLabel = TYPE_LABELS[stop.type];
                 const dayData = dayByNumber[stop.day] || days[idx];
                 const hasDetails = !!dayData;
@@ -360,10 +360,10 @@ export const TripRouteMap = ({ route, days = [] }) => {
                   <li key={`${stop.day}-${idx}`}>
                     <button
                       type="button"
-                      onClick={() => setActiveDay((prev) => (prev === stop.day ? null : stop.day))}
-                      data-testid={`trip-route-stop-${stop.day}`}
+                      onClick={() => setActiveNode((prev) => (prev === idx ? null : idx))}
+                      data-testid={`trip-route-stop-${stop.day}-${idx}`}
                       aria-expanded={isActive}
-                      aria-controls={`trip-route-detail-${stop.day}`}
+                      aria-controls={`trip-route-detail-${stop.day}-${idx}`}
                       className={`group w-full text-left flex items-start gap-4 px-4 py-3 border transition-all duration-300 ${
                         isActive
                           ? "bg-[#FDFBF7] border-[#2C2621]"
@@ -402,13 +402,13 @@ export const TripRouteMap = ({ route, days = [] }) => {
 
                     {isActive && dayData && (
                       <DayDetail
-                        id={`trip-route-detail-${stop.day}`}
+                        id={`trip-route-detail-${stop.day}-${idx}`}
                         day={dayData}
                         dayNumber={stop.day}
                         color={color}
                         lang={lang}
                         t={t}
-                        onClose={() => setActiveDay(null)}
+                        onClose={() => setActiveNode(null)}
                       />
                     )}
                   </li>
