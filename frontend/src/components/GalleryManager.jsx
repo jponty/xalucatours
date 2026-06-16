@@ -8,9 +8,9 @@
    `day_galleries` backend so the public site updates without code
    changes or redeploys.
 ============================================================ */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin, ExternalLink,
+  Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin, ExternalLink, Library,
 } from "lucide-react";
 import TRIP_PROGRAMS from "@/lib/tripPrograms";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
@@ -18,6 +18,7 @@ import { ROUTES, pathFor } from "@/lib/routes";
 import { namespaceForRouteId } from "@/components/slotScope";
 import { pick } from "@/contexts/LanguageContext";
 import { setDayGalleryLocal, resolveGalleryUrl } from "@/lib/dayGalleryStore";
+import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const MAX_SEED_SLIDES = 12;
@@ -224,6 +225,9 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
   const [busy, setBusy] = useState(false);
   const [savedTick, setSavedTick] = useState(false);
   const [dragIdx, setDragIdx] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const imagesRef = useRef(images);
+  useEffect(() => { imagesRef.current = images; }, [images]);
 
   const flash = () => { setSavedTick(true); setTimeout(() => setSavedTick(false), 1400); };
 
@@ -244,6 +248,15 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
     } finally {
       setBusy(false);
     }
+  };
+
+  // Add an image chosen from the shared Image Library (Pexels / Unsplash /
+  // local library / selections). The asset is already hosted on our storage.
+  const onPickFromLibrary = (libItem) => {
+    if (!libItem?.url) return;
+    const next = [...imagesRef.current, { url: libItem.url, alt: libItem.original_filename || null }];
+    imagesRef.current = next;
+    persist(next);
   };
 
   const onUpload = async (e) => {
@@ -367,10 +380,28 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
               Subir
               <input type="file" accept="image/*" multiple className="hidden" onChange={onUpload} disabled={busy} />
             </label>
+
+            {/* Image Library tile */}
+            <button
+              type="button"
+              data-testid={`gallery-library-${galleryKey}`}
+              onClick={() => setPickerOpen(true)}
+              disabled={busy}
+              className="w-[68px] h-[68px] flex flex-col items-center justify-center gap-1 border border-dashed border-white/25 text-white/50 hover:text-white hover:border-[#D4A373] cursor-pointer text-[9px] disabled:opacity-50"
+            >
+              <Library className="w-4 h-4" />
+              Biblioteca
+            </button>
           </div>
           <p className="mt-2 text-[10px] text-white/35">Arrastra para reordenar · ⭐ principal · 🗑 eliminar · cambios publicados al instante.</p>
         </div>
       </div>
+
+      <ImageLibraryPicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={onPickFromLibrary}
+      />
     </section>
   );
 };
