@@ -766,7 +766,7 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                       <span className="film-grain" />
-                      <ImageBrandBadges testid={`hub-${hub.id}-${p.id}`} />
+                      <ImageBrandBadges testid={`hub-${hub.id}-${p.id}`} monogramPosition="top-left" />
                       <div className="absolute inset-0 p-6 md:p-7 pb-14 md:pb-16 flex flex-col justify-end text-[#FDFBF7]">
                         <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
                           {getLabel(k)}
