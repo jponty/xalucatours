@@ -10,6 +10,7 @@ import { openChatbaseAssistant } from "@/lib/chatbase";
 import CategoryImageCarousel from "@/components/CategoryImageCarousel";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
+import TripPriceDisclosure from "@/components/TripPriceDisclosure";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -132,11 +133,11 @@ export const TravelCategories = () => {
                       </span>
                       <ul className="mt-3 border-t border-[#2C2621]/10 divide-y divide-[#2C2621]/10">
                         {OPTIONS_BY_SLUG[c.slug].map((trip) => (
-                          <li key={trip.id}>
+                          <li key={trip.id} className="py-1">
                             <Link
                               to={pathFor(lang, trip.routeId)}
                               data-testid={`category-option-${c.slug}-${trip.routeId}`}
-                              className="group/opt flex items-start gap-2.5 py-2.5 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
+                              className="group/opt flex items-start gap-2.5 py-2 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
                             >
                               <ArrowRight
                                 className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C16542] transition-transform duration-300 group-hover/opt:translate-x-1"
@@ -144,6 +145,7 @@ export const TravelCategories = () => {
                               />
                               <span className="leading-snug">{pick(trip.title, lang)}</span>
                             </Link>
+                            <TripPriceDisclosure routeId={trip.routeId} slug={c.slug} />
                           </li>
                         ))}
                       </ul>
