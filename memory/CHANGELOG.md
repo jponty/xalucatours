@@ -493,3 +493,8 @@
 - ProgramHero: la fila de botones (Solicitar/Ver/Descargar/Asistente Virtual) se movio FUERA de la columna max-w-4xl al contenedor max-w-7xl para que quepan en una sola linea en desktop.
 - Padding reducido a px-6 lg:px-7, gap-3 sm:gap-4, whitespace-nowrap + shrink-0 en iconos. flex-wrap conserva 1 linea cuando hay espacio y reflowa sin recortes/solapes en tablet/movil.
 - Verificado: desktop 1440 = 1 fila (tops iguales); tablet 768 = 2 filas; movil 390 = apilados; clippedBySection=False en todos.
+
+## 2026-06-16 — Boton "Asistente Virtual" en el hero de la home
+- HeroSlider: anadido boton "Asistente Virtual" (icono Headset) junto a Planificar mi viaje / Explorar rutas, mismo estilo outline y tamano.
+- Abre Chatbase (window.chatbase.open(), fallback URL). Trilingue via EditableText slot home.hero.cta_assistant. data-testid: hero-cta-assistant.
+- Verificado en preview: visible en una sola linea con los otros 2 botones y Chatbase abre correctamente.

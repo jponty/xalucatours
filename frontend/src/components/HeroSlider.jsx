@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Compass, Phone, Mail } from "lucide-react";
+import { ArrowRight, Compass, Phone, Mail, Headset } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
@@ -23,6 +23,18 @@ import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 const HERO_VIDEO_SRC = "https://stream.mux.com/HlwGpYi2dBcP007P3601vNiRiY9acrPyBB/high.mp4";
 const HERO_VIDEO_POSTER =
   "https://image.mux.com/HlwGpYi2dBcP007P3601vNiRiY9acrPyBB/thumbnail.jpg?width=1280&time=0";
+
+const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+
+// Open the Chatbase virtual assistant (same behaviour as the top bar, hero of
+// trip pages and the Contact page).
+const openChatbaseAssistant = () => {
+  if (window.chatbase && typeof window.chatbase.open === "function") {
+    window.chatbase.open();
+  } else {
+    window.open("https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help", "_blank", "noopener,noreferrer");
+  }
+};
 
 const HERO_PLACE = {
   en: "Morocco · From north to south",
@@ -156,6 +168,19 @@ export const HeroSlider = () => {
                   />
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </a>
+                <button
+                  type="button"
+                  onClick={openChatbaseAssistant}
+                  data-testid="hero-cta-assistant"
+                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 whitespace-nowrap"
+                >
+                  <Headset className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
+                  <EditableText
+                    slot="home.hero.cta_assistant"
+                    defaults={ASSISTANT_LABEL}
+                    multiline={false}
+                  />
+                </button>
               </div>
 
               {/* Quick contact pill */}
