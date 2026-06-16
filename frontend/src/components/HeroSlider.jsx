@@ -83,6 +83,13 @@ export const HeroSlider = () => {
       {/* 3. Berber pattern + film-grain (consistent with the rest of the site) */}
       <div className="absolute inset-0 berber-bg-cross opacity-30 pointer-events-none" aria-hidden="true" />
       <span className="film-grain" />
+      {/* 4. Bottom-right corner mask — hides the Xaluca watermark baked into the
+            background video, blending into the existing brand vignette. */}
+      <div
+        className="absolute bottom-0 right-0 w-80 h-64 z-[2] pointer-events-none"
+        style={{ background: "radial-gradient(130% 130% at 100% 100%, #1A1513 0%, rgba(26,21,19,0.92) 42%, rgba(26,21,19,0) 75%)" }}
+        aria-hidden="true"
+      />
 
       {/* ---------- Foreground content ---------- */}
       <div className="relative z-10 h-full flex flex-col">
