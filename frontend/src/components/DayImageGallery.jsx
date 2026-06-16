@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
@@ -27,7 +27,7 @@ import monogramaX from "@/assets/monograma-x-crop.png";
 ============================================================ */
 
 // Total images per day = 1 main + EXTRA_COUNT additional squares.
-const EXTRA_COUNT = 5;
+const EXTRA_COUNT = 9;
 
 const buildImages = (base, day) => {
   const extras = Array.isArray(day.gallery) ? day.gallery : [];
@@ -52,10 +52,29 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
   const images = useMemo(() => buildImages(base, day), [base, day]);
   const [active, setActive] = useState(0);
   const touchX = useRef(null);
+  const railRef = useRef(null);
 
   const total = images.length;
   const go = (dir) => setActive((p) => (p + dir + total) % total);
   const current = images[active] || images[0];
+
+  // Keep the active thumbnail visible inside the rail after prev/next —
+  // scrolls ONLY the rail (never the page).
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const el = rail.querySelector(`[data-thumb-idx="${active}"]`);
+    if (!el) return;
+    const viewLeft = rail.scrollLeft;
+    const viewRight = viewLeft + rail.clientWidth;
+    const elLeft = el.offsetLeft;
+    const elRight = elLeft + el.offsetWidth;
+    if (elLeft < viewLeft) {
+      rail.scrollTo({ left: Math.max(0, elLeft - 12), behavior: "smooth" });
+    } else if (elRight > viewRight) {
+      rail.scrollTo({ left: elRight - rail.clientWidth + 12, behavior: "smooth" });
+    }
+  }, [active]);
 
   const onTouchStart = (e) => { touchX.current = e.touches[0]?.clientX ?? null; };
   const onTouchEnd = (e) => {
@@ -143,9 +162,14 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
         </div>
 
         {/* ---- Thumbnail rail ---- */}
+        {/* Same width as the main viewer (both full-width children of the
+            sticky wrapper); horizontal scroll keeps thumbs inside that
+            width on every breakpoint. */}
         <div
           data-testid={`day-gallery-thumbs-${day.id}`}
-          className="mt-3 flex gap-2.5 overflow-x-auto no-scrollbar pb-1"
+          ref={railRef}
+          className="mt-4 flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"
+          style={{ WebkitOverflowScrolling: "touch" }}
         >
           {images.map((img, i) => {
             const on = i === active;
@@ -153,11 +177,12 @@ export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
               <button
                 key={img.slot}
                 type="button"
+                data-thumb-idx={i}
                 data-testid={`day-gallery-thumb-${day.id}-${i}`}
                 aria-label={`Ver imagen ${i + 1}`}
                 aria-current={on}
                 onClick={() => setActive(i)}
-                className={`relative shrink-0 w-16 h-16 md:w-[72px] md:h-[72px] overflow-hidden bg-[#1A1513] transition-all duration-200 ${
+                className={`relative shrink-0 w-[72px] h-[72px] md:w-[84px] md:h-[84px] overflow-hidden bg-[#1A1513] transition-all duration-200 ${
                   on ? "ring-2 ring-offset-2 ring-offset-[#FDFBF7]" : "opacity-70 hover:opacity-100"
                 }`}
                 style={on ? { ["--tw-ring-color"]: day.accent } : undefined}
