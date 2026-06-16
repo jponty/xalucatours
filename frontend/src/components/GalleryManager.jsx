@@ -10,11 +10,11 @@
 ============================================================ */
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin,
+  Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin, ExternalLink,
 } from "lucide-react";
 import TRIP_PROGRAMS from "@/lib/tripPrograms";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
-import { ROUTES } from "@/lib/routes";
+import { ROUTES, pathFor } from "@/lib/routes";
 import { namespaceForRouteId } from "@/components/slotScope";
 import { pick } from "@/contexts/LanguageContext";
 import { setDayGalleryLocal, resolveGalleryUrl } from "@/lib/dayGalleryStore";
@@ -134,20 +134,48 @@ export default function GalleryManager({ lang = "es" }) {
             <div key={region}>
               <p className="px-2 py-1 text-[9px] tracking-[0.28em] uppercase text-white/35">{regionName(region)}</p>
               <ul className="space-y-0.5">
-                {list.map((t) => (
+                {list.map((t) => {
+                  const path = pathFor(lang, t.routeId);
+                  return (
                   <li key={t.routeId}>
-                    <button
-                      data-testid={`gallery-trip-${t.routeId}`}
-                      onClick={() => setSelected(t.routeId)}
-                      className={`w-full text-left px-2.5 py-2 text-xs flex items-center justify-between gap-2 ${
-                        selected === t.routeId ? "bg-[#C16542]/25 text-white" : "text-white/70 hover:bg-white/5"
-                      }`}
+                    <div
+                      className={`px-2.5 py-2 ${selected === t.routeId ? "bg-[#C16542]/25" : "hover:bg-white/5"}`}
                     >
-                      <span className="truncate">{pick(t.title, lang)}</span>
-                      <span className="text-[9px] text-white/35 shrink-0">{t.days.length}d</span>
-                    </button>
+                      <button
+                        data-testid={`gallery-trip-${t.routeId}`}
+                        onClick={() => setSelected(t.routeId)}
+                        className={`w-full text-left text-xs flex items-center justify-between gap-2 ${
+                          selected === t.routeId ? "text-white" : "text-white/70"
+                        }`}
+                      >
+                        <span className="truncate">{pick(t.title, lang)}</span>
+                        <span className="text-[9px] text-white/35 shrink-0">{t.days.length}d</span>
+                      </button>
+                      <div className="mt-1 flex items-center gap-1.5">
+                        <span
+                          className="truncate text-[10px] text-white/40 font-mono"
+                          title={path}
+                          data-testid={`gallery-trip-url-${t.routeId}`}
+                        >
+                          {path}
+                        </span>
+                        <a
+                          href={path}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title="Abrir página en una pestaña nueva"
+                          aria-label="Abrir página en una pestaña nueva"
+                          data-testid={`gallery-trip-open-${t.routeId}`}
+                          className="shrink-0 text-white/40 hover:text-[#D4A373] transition-colors"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
           ))}
