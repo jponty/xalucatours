@@ -5,8 +5,8 @@
    Content is route-specific and written in first person, as if a
    traveller had sent it home. Trilingual via lib/programPostcards.
 ============================================================ */
-import React from "react";
-import { Send, Plane, Mail } from "lucide-react";
+import React, { useRef, useState, useCallback } from "react";
+import { Send, Plane, Mail, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getTripPostcards } from "@/lib/programPostcards";
 
@@ -25,15 +25,12 @@ const COPY = {
 };
 
 const Postcard = ({ p, lang, index }) => {
-  const rotation = index % 2 === 0 ? "rotate-[-1.2deg]" : "rotate-[1.2deg]";
+  const rotation = index % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]";
   return (
-    <div
-      className="relative max-w-4xl mx-auto px-3 sm:px-6"
-      data-testid={`trip-postcard-${index}`}
-    >
+    <div className="relative pt-4" data-testid={`trip-postcard-${index}`}>
       {/* tape pieces */}
-      <span className="postcard-tape absolute -top-3 left-10 w-20 h-7 rotate-[-6deg] z-20 hidden sm:block" aria-hidden="true" />
-      <span className="postcard-tape absolute -top-3 right-12 w-16 h-7 rotate-[5deg] z-20 hidden sm:block" aria-hidden="true" />
+      <span className="postcard-tape absolute top-0 left-10 w-20 h-7 rotate-[-6deg] z-20 hidden sm:block" aria-hidden="true" />
+      <span className="postcard-tape absolute top-0 right-12 w-16 h-7 rotate-[5deg] z-20 hidden sm:block" aria-hidden="true" />
 
       <article className={`postcard-paper relative overflow-hidden border border-[#2C2621]/15 shadow-[0_30px_60px_-25px_rgba(26,21,19,0.45)] ${rotation} transition-transform duration-500 hover:rotate-0`}>
         <div className="absolute inset-0 berber-bg-diamond opacity-[0.05] pointer-events-none" aria-hidden="true" />
@@ -99,7 +96,31 @@ const Postcard = ({ p, lang, index }) => {
 export default function TripPostcards({ routeId }) {
   const { lang } = useLanguage();
   const postcards = getTripPostcards(routeId);
+  const scrollerRef = useRef(null);
+  const [active, setActive] = useState(0);
+
+  const goTo = useCallback(
+    (i) => {
+      const el = scrollerRef.current;
+      if (!el) return;
+      const idx = Math.max(0, Math.min((postcards?.length || 1) - 1, i));
+      const slide = el.children[idx];
+      if (slide) el.scrollTo({ left: slide.offsetLeft - el.offsetLeft, behavior: "smooth" });
+      setActive(idx);
+    },
+    [postcards]
+  );
+
+  const onScroll = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setActive(Math.round(el.scrollLeft / el.clientWidth));
+  }, []);
+
   if (!postcards || postcards.length === 0) return null;
+
+  const navLabel = { es: "anterior", en: "previous", fr: "précédente" };
+  const nextLabel = { es: "siguiente", en: "next", fr: "suivante" };
 
   return (
     <section
@@ -109,7 +130,7 @@ export default function TripPostcards({ routeId }) {
     >
       <div className="absolute inset-0 berber-bg-cross opacity-[0.4] pointer-events-none" aria-hidden="true" />
 
-      <div className="relative max-w-5xl mx-auto px-6 md:px-12 text-center mb-14 md:mb-16">
+      <div className="relative max-w-5xl mx-auto px-6 md:px-12 text-center mb-12 md:mb-14">
         <span className="inline-flex items-center gap-2.5 text-[11px] tracking-[0.35em] uppercase text-[#C16542] font-semibold">
           <Mail className="w-3.5 h-3.5" strokeWidth={1.6} />
           {pick(COPY.eyebrow, lang)}
@@ -122,9 +143,58 @@ export default function TripPostcards({ routeId }) {
         </p>
       </div>
 
-      <div className="relative space-y-16 md:space-y-20">
-        {postcards.map((p, i) => (
-          <Postcard key={`trip-pc-${i}`} p={p} lang={lang} index={i} />
+      {/* Horizontal slider */}
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-10 md:px-14">
+        {/* prev / next arrows */}
+        <button
+          type="button"
+          onClick={() => goTo(active - 1)}
+          disabled={active === 0}
+          data-testid="trip-postcards-prev"
+          aria-label={pick(navLabel, lang)}
+          className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 items-center justify-center w-11 h-11 rounded-full bg-[#FDFBF7] border border-[#2C2621]/15 text-[#2C2621] shadow-[0_8px_24px_-10px_rgba(26,21,19,0.4)] transition-all hover:bg-[#C16542] hover:text-[#FDFBF7] hover:border-[#C16542] disabled:opacity-0 disabled:pointer-events-none"
+        >
+          <ChevronLeft className="w-5 h-5" strokeWidth={1.6} />
+        </button>
+        <button
+          type="button"
+          onClick={() => goTo(active + 1)}
+          disabled={active === postcards.length - 1}
+          data-testid="trip-postcards-next"
+          aria-label={pick(nextLabel, lang)}
+          className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 items-center justify-center w-11 h-11 rounded-full bg-[#FDFBF7] border border-[#2C2621]/15 text-[#2C2621] shadow-[0_8px_24px_-10px_rgba(26,21,19,0.4)] transition-all hover:bg-[#C16542] hover:text-[#FDFBF7] hover:border-[#C16542] disabled:opacity-0 disabled:pointer-events-none"
+        >
+          <ChevronRight className="w-5 h-5" strokeWidth={1.6} />
+        </button>
+
+        <div
+          ref={scrollerRef}
+          onScroll={onScroll}
+          data-testid="trip-postcards-track"
+          className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar"
+        >
+          {postcards.map((p, i) => (
+            <div key={`trip-pc-${i}`} className="snap-center shrink-0 w-full px-2 pb-6">
+              <Postcard p={p} lang={lang} index={i} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* dots */}
+      <div className="relative flex justify-center gap-2.5 mt-6" data-testid="trip-postcards-dots">
+        {postcards.map((_, i) => (
+          <button
+            key={`dot-${i}`}
+            type="button"
+            onClick={() => goTo(i)}
+            data-testid={`trip-postcards-dot-${i}`}
+            aria-label={`${pick(COPY.eyebrow, lang)} ${i + 1}`}
+            aria-current={active === i}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              active === i ? "w-7 bg-[#C16542]" : "w-2 bg-[#2C2621]/20 hover:bg-[#2C2621]/40"
+            }`}
+          />
         ))}
       </div>
     </section>
