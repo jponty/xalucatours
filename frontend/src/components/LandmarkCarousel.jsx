@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, Camera, X, MapPin, Compass, Headset, Phone } from "lucide-react";
+import { ChevronLeft, ChevronRight, Camera, X, MapPin, Compass, Headset, Phone, CalendarClock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { openChatbaseAssistant } from "@/lib/chatbase";
+import ShareTripButton from "@/components/ShareTripButton";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
 import { ALIAS_PROFILE } from "@/lib/placeGalleries";
 import { POI_CARD_COPY } from "@/lib/poiCardCopy";
@@ -60,6 +61,7 @@ const PLAN_CTA = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier
 const ASSISTANT_CTA = { es: "Asistente virtual", en: "Virtual assistant", fr: "Assistant virtuel" };
 const CALL_CTA = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
 const CALL_TEL = "+34937268366";
+const APPOINTMENT_CTA = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
 
 const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
   return (
@@ -117,7 +119,7 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
         className="text-[13px] md:text-[13.5px] text-[#5C5248] leading-[1.7] flex-1"
       />
       <span className="block w-10 h-px mt-1" style={{ background: accent }} />
-      <div className="mt-2 flex items-center gap-2.5" data-testid={`landmark-card-actions-${index}`}>
+      <div className="mt-2 flex flex-wrap items-center gap-2.5" data-testid={`landmark-card-actions-${index}`}>
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid={`landmark-card-plan-cta-${index}`}
@@ -146,6 +148,16 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
         >
           <Phone className="w-[18px] h-[18px]" strokeWidth={1.6} />
         </a>
+        <Link
+          to={pathFor(lang, "appointment")}
+          data-testid={`landmark-card-appointment-cta-${index}`}
+          aria-label={pick(APPOINTMENT_CTA, lang)}
+          title={pick(APPOINTMENT_CTA, lang)}
+          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+        >
+          <CalendarClock className="w-[18px] h-[18px]" strokeWidth={1.6} />
+        </Link>
+        <ShareTripButton index={index} />
       </div>
     </div>
   </article>
