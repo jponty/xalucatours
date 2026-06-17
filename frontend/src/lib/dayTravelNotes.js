@@ -245,14 +245,20 @@ export const isDayTravelNotesEnabled = (routeId) =>
    places, history and highlights — perfect source material for
    the day notes. We turn the first up-to-3 culture blocks of each
    day into post-it notes, so every trip gets day-specific notes
-   without inventing any content. The bespoke NOTES above still
-   take precedence (e.g. tourAtlasDesierto67). Every derived note
-   remains individually CMS-editable per route + day, so the team
-   can refine the wording from the front-end Edit Text mode.
+   without inventing any place-specific content.
+
+   When a day has fewer than 3 culture blocks (or none), we TOP UP
+   to 3 with practical preparation tips chosen by the day's theme
+   (desert / mountain / city / coast / general). These tips are
+   generic-but-useful (clothing, weather, desert nights, transfers,
+   local culture, photography), matching the handwritten tone of the
+   bespoke Atlas-Desierto notes. The bespoke NOTES above still take
+   precedence, and every note stays individually CMS-editable per
+   route + day from the front-end Edit Text mode.
 ============================================================ */
 
-// Rotating taglines by note position. Icons/accents are fixed in
-// DayTravelNotes (Star · Lightbulb · Camera).
+// Rotating taglines for the culture-derived (highlight) notes. Icons/
+// accents are fixed in DayTravelNotes (Star · Lightbulb · Camera).
 const DERIVED_TAGLINES = [
   T("No te lo pierdas", "Don't miss it", "À ne pas manquer"),
   T("Sabías que", "Did you know", "Le saviez-vous"),
@@ -281,15 +287,177 @@ const firstSentences = (s, n = 2) => {
 const tidyBody = (body) =>
   body ? { es: firstSentences(body.es), en: firstSentences(body.en), fr: firstSentences(body.fr) } : body;
 
+/* ---- Practical preparation tips, by detected day theme ---- */
+const tip = (tagline, title, body) => ({ tagline, title, body });
+
+const THEME_TIPS = {
+  desert: [
+    tip(
+      T("Tu noche en el desierto", "Your night in the desert", "Votre nuit au désert"),
+      T("Noche en el bivouac", "Night at the bivouac", "Nuit au bivouac"),
+      T("Lleva una bolsa pequeña con lo justo para la noche y algo de abrigo: el desierto refresca al caer el sol. La maleta grande se queda en el vehículo.",
+        "Bring a small bag with just the essentials for the night and something warm: the desert cools down after sunset. Your big suitcase stays in the vehicle.",
+        "Emportez un petit sac avec l'essentiel pour la nuit et un vêtement chaud : le désert se rafraîchit au coucher du soleil. La grande valise reste dans le véhicule."),
+    ),
+    tip(
+      T("Consejo del día", "Tip of the day", "Conseil du jour"),
+      T("Sol, viento y arena", "Sun, wind & sand", "Soleil, vent et sable"),
+      T("Gorra, gafas de sol, protección SPF 50 y un pañuelo (cheche) para el viento y la arena fina. Bebe agua a menudo.",
+        "A cap, sunglasses, SPF 50 and a scarf (cheche) for the wind and fine sand. Drink water often.",
+        "Casquette, lunettes, crème SPF 50 et un foulard (cheche) pour le vent et le sable fin. Buvez souvent."),
+    ),
+    tip(
+      T("Para la foto", "For the photo", "Pour la photo"),
+      T("Luz dorada y estrellas", "Golden light & stars", "Lumière dorée et étoiles"),
+      T("El amanecer y el atardecer tiñen las dunas de naranja en minutos. De noche, sin contaminación lumínica, la Vía Láctea es espectacular: activa el modo noche.",
+        "Sunrise and sunset turn the dunes orange in minutes. At night, with no light pollution, the Milky Way is spectacular: switch on night mode.",
+        "Le lever et le coucher du soleil parent les dunes d'orange en quelques minutes. La nuit, sans pollution lumineuse, la Voie lactée est spectaculaire : activez le mode nuit."),
+    ),
+  ],
+  mountain: [
+    tip(
+      T("Clima y ritmo", "Weather & pace", "Climat et rythme"),
+      T("Viste por capas", "Layer up", "Habillez-vous en couches"),
+      T("Las mañanas y noches del Atlas son frescas y los mediodías templados: capas y un forro polar. A esta altitud conviene un ritmo tranquilo y agua a mano.",
+        "Atlas mornings and nights are cool and middays mild: layers and a fleece. At this altitude, keep an easy pace and water within reach.",
+        "Les matinées et nuits de l'Atlas sont fraîches et les midis doux : des couches et une polaire. À cette altitude, gardez un rythme tranquille et de l'eau à portée."),
+    ),
+    tip(
+      T("Consejo del día", "Tip of the day", "Conseil du jour"),
+      T("Calzado cómodo", "Comfy footwear", "Chaussures confortables"),
+      T("Habrá tramos a pie por pistas, valles y gargantas: zapatillas cerradas y ya usadas. Lleva un pequeño snack para el camino.",
+        "There will be sections on foot along tracks, valleys and gorges: closed, broken-in shoes. Bring a small snack for the road.",
+        "Il y aura des portions à pied sur pistes, vallées et gorges : chaussures fermées et déjà rodées. Emportez un en-cas pour la route."),
+    ),
+    tip(
+      T("Para la foto", "For the photo", "Pour la photo"),
+      T("Miradores del Atlas", "Atlas viewpoints", "Belvédères de l'Atlas"),
+      T("Las curvas de montaña regalan panorámicas espectaculares: aprovecha las paradas para fotos cálidas de valles, kasbahs y puertos de montaña.",
+        "The mountain bends offer spectacular panoramas: use the stops for warm photos of valleys, kasbahs and passes.",
+        "Les virages de montagne offrent des panoramas spectaculaires : profitez des arrêts pour de belles photos de vallées, kasbahs et cols."),
+    ),
+  ],
+  city: [
+    tip(
+      T("Cultura local", "Local culture", "Culture locale"),
+      T("En la medina", "In the medina", "Dans la médina"),
+      T("Ropa cómoda y modesta para entrar en mezquitas y medersas (hombros y rodillas cubiertos). Las medinas se recorren mejor a pie y con calma.",
+        "Comfortable, modest clothing for mosques and medersas (shoulders and knees covered). Medinas are best explored on foot and unhurried.",
+        "Des vêtements confortables et couvrants pour mosquées et médersas (épaules et genoux couverts). Les médinas se parcourent à pied, sans se presser."),
+    ),
+    tip(
+      T("Consejo del día", "Tip of the day", "Conseil du jour"),
+      T("Zocos y regateo", "Souks & bargaining", "Souks et marchandage"),
+      T("Lleva algo de efectivo en dírhams para zocos, té y propinas. El regateo es parte de la experiencia: hazlo con calma y buen humor.",
+        "Bring some cash in dirhams for souks, tea and tips. Bargaining is part of the experience: do it calmly and with good humour.",
+        "Prévoyez des espèces en dirhams pour les souks, le thé et les pourboires. Le marchandage fait partie de l'expérience : avec calme et bonne humeur."),
+    ),
+    tip(
+      T("Para la foto", "For the photo", "Pour la photo"),
+      T("Rincones con encanto", "Charming corners", "Coins pleins de charme"),
+      T("Patios, puertas de cedro y callejuelas son pura fotografía. Pide permiso antes de fotografiar a las personas.",
+        "Courtyards, cedar doors and alleys are pure photography. Ask permission before photographing people.",
+        "Patios, portes en cèdre et ruelles sont très photogéniques. Demandez la permission avant de photographier les personnes."),
+    ),
+  ],
+  coast: [
+    tip(
+      T("Clima y ritmo", "Weather & pace", "Climat et rythme"),
+      T("Brisa atlántica", "Atlantic breeze", "Brise atlantique"),
+      T("La brisa del mar refresca, sobre todo al atardecer: lleva un cortavientos o una capa ligera de abrigo.",
+        "The sea breeze cools things down, especially at sunset: bring a windbreaker or a light warm layer.",
+        "La brise marine rafraîchit, surtout au coucher du soleil : prévoyez un coupe-vent ou une couche chaude légère."),
+    ),
+    tip(
+      T("Consejo del día", "Tip of the day", "Conseil du jour"),
+      T("Sol de costa", "Coastal sun", "Soleil de la côte"),
+      T("El sol de la costa engaña: gorra, gafas y protección solar. Calzado cómodo para murallas, puerto y paseos junto al mar.",
+        "The coastal sun is deceptive: cap, sunglasses and sunscreen. Comfortable shoes for ramparts, port and seaside walks.",
+        "Le soleil de la côte est trompeur : casquette, lunettes et crème solaire. Chaussures confortables pour remparts, port et balades en bord de mer."),
+    ),
+    tip(
+      T("Sabor local", "Local flavour", "Saveur locale"),
+      T("Pescado fresco", "Fresh fish", "Poisson frais"),
+      T("Reserva apetito para el pescado y el marisco recién llegado del puerto: son los grandes protagonistas del litoral.",
+        "Save your appetite for fish and seafood straight from the port: they take centre stage on the coast.",
+        "Gardez de l'appétit pour le poisson et les fruits de mer tout droit du port : les vedettes du littoral."),
+    ),
+  ],
+  general: [
+    tip(
+      T("Prepara tu equipaje", "Pack smart", "Préparez vos bagages"),
+      T("Lo esencial del día", "The day's essentials", "L'essentiel du jour"),
+      T("Capas ligeras, calzado cómodo y ya usado, gafas de sol y protección solar. Una botella reutilizable siempre ayuda.",
+        "Light layers, comfortable broken-in shoes, sunglasses and sunscreen. A reusable bottle always helps.",
+        "Des couches légères, des chaussures confortables déjà rodées, lunettes et crème solaire. Une gourde réutilisable aide toujours."),
+    ),
+    tip(
+      T("Consejo del día", "Tip of the day", "Conseil du jour"),
+      T("Efectivo y ritmo", "Cash & pace", "Espèces et rythme"),
+      T("Lleva algo de efectivo en dírhams para propinas, té y pequeñas compras. Viaja con calma y disfruta del camino.",
+        "Bring some cash in dirhams for tips, tea and small purchases. Travel calmly and enjoy the journey.",
+        "Prévoyez des espèces en dirhams pour les pourboires, le thé et les petits achats. Voyagez tranquillement et profitez du chemin."),
+    ),
+    tip(
+      T("Cultura local", "Local culture", "Culture locale"),
+      T("Té a la menta", "Mint tea", "Thé à la menthe"),
+      T("Si te invitan a un té a la menta, acéptalo: es el gesto de bienvenida más auténtico de Marruecos.",
+        "If you're offered a mint tea, accept it: it's the most genuine welcome in Morocco.",
+        "Si l'on vous offre un thé à la menthe, acceptez : c'est l'accueil le plus authentique du Maroc."),
+    ),
+  ],
+};
+
+// Detect a day's theme from its (trilingual) title + body keywords.
+const detectTheme = (day) => {
+  const blob = `${(day.title && (day.title.es || "")) || ""} ${(day.title && (day.title.en || "")) || ""} ${(day.body && (day.body.es || "")) || ""} ${(day.body && (day.body.en || "")) || ""}`.toLowerCase();
+  if (/(desierto|dunas|erg chebbi|sahara|sáhara|bivouac|bivvouac|dromedario|merzouga|haima|jaima|desert|dune|camel)/.test(blob)) return "desert";
+  if (/(essaouira|tánger|tanger|tangier|asilah|costa|atlántico|atlantico|atlantic|océano|oceano|ocean|coast|seaside|playa|beach)/.test(blob)) return "coast";
+  if (/(atlas|tichka|gargantas|gorge|todra|dades|dadès|m'goun|mgoun|montaña|montagne|mountain|valle|valley|puerto de monta)/.test(blob)) return "mountain";
+  if (/(medina|médina|zoco|souk|marrakech|fez|fès|fes|mequinez|meknes|meknès|volubilis|chefchaouen|rabat|tetuán|tetuan|kasbah|ciudad|ville|city|imperial)/.test(blob)) return "city";
+  return "general";
+};
+
 const deriveDayNotes = (routeId, dayIndex) => {
   const entry = TRIP_PROGRAMS[routeId];
   const days = entry && entry.program && entry.program.days;
   const day = days && days[dayIndex - 1];
-  const culture = day && Array.isArray(day.culture) ? day.culture : null;
-  if (!culture || culture.length === 0) return null;
-  return culture.slice(0, 3).map((c, i) => ({
-    tagline: DERIVED_TAGLINES[i % DERIVED_TAGLINES.length],
-    title: tidyTitle(c.title),
-    body: tidyBody(c.body),
-  }));
+  if (!day) return null;
+
+  const culture = Array.isArray(day.culture) ? day.culture : [];
+  const notes = [];
+
+  if (culture.length > 0) {
+    culture.slice(0, 3).forEach((c, i) => {
+      notes.push({
+        tagline: DERIVED_TAGLINES[i % DERIVED_TAGLINES.length],
+        title: tidyTitle(c.title),
+        body: tidyBody(c.body),
+      });
+    });
+  } else if (day.title && day.body) {
+    // No curated culture: lead with the day's own description.
+    notes.push({
+      tagline: DERIVED_TAGLINES[0],
+      title: tidyTitle(day.title),
+      body: tidyBody(day.body),
+    });
+  }
+
+  // Top up to 3 with practical, theme-based preparation tips. Rotate the
+  // start index by day so consecutive days don't repeat the same tips.
+  if (notes.length > 0 && notes.length < 3) {
+    const theme = detectTheme(day);
+    const pool = [...(THEME_TIPS[theme] || []), ...THEME_TIPS.general];
+    const start = pool.length ? (dayIndex - 1) % pool.length : 0;
+    const rotated = [...pool.slice(start), ...pool.slice(0, start)];
+    for (const t of rotated) {
+      if (notes.length >= 3) break;
+      if (!notes.some((n) => n.title && t.title && n.title.es === t.title.es)) {
+        notes.push(t);
+      }
+    }
+  }
+
+  return notes.length ? notes : null;
 };

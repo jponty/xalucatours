@@ -1,0 +1,38 @@
+{
+  "summary": "Frontend-only retest of the DayTravelNotes top-up fix. EVERY active itinerary day on fez_tanger/programa_6n_7d now renders a day-travel-notes block with exactly 3 post-it cards (covered ft67-d1..d7, including arrival d1 and return d6/d7 that previously rendered nothing). Regressions on marrakech_ergchebbi (full culture, 3 culture-derived notes per day, NO tip top-up) and atlas_desierto (bespoke day-1 notes preserved) both still hold. CMS Textos toggle still works on fez_tanger (63 contenteditable=true editable slots, derived note slots editable). Zero JS console errors on full scroll of any of the 3 pages.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/viajes/norte/fez_tanger/programa_6n_7d  ft67-d3 (Volubilis · Moulay Idriss · Meknès)",
+        "issues": ["Theme detection picks 'mountain' for this day (probably because the day body mentions valle/atlas/montaña terms, and detectTheme() in dayTravelNotes.js evaluates mountain before city). Result: a 'Miradores del Atlas' top-up tip appears on a Roman-ruins/imperial-cities day. Not desert-themed (so satisfies the strict acceptance bullet), but city-themed would feel more on-brand for a north-Morocco cultural day. Cheap fix: reorder detectTheme to test 'city' before 'mountain', or exclude generic 'valle'/'valley' keywords from the mountain bucket."]
+      }
+    ]
+  },
+  "validated_behaviour": {
+    "fez_tanger_programa_6n_7d (PRIMARY)": "7 [data-testid^='day-travel-notes-'] blocks (ft67-d1..d7), each with exactly 3 [data-testid^='day-note-'] cards and 3 carousel dots.  Sample wording (es): d1 note0 'Llegada a Fez' (NO TE LO PIERDAS), note1 'En la medina' (CULTURA LOCAL), note2 'Zocos y regateo' (CONSEJO DEL DÍA).  d2 note0 'Al-Qarawiyyin · universidad más antigua del mundo' (NO TE LO PIERDAS), note1 'Zocos y regateo' (CONSEJO DEL DÍA), note2 'Rincones con encanto' (PARA LA FOTO).  d3 'Volubilis · UNESCO' + 'Miradores del Atlas' + 'Lo esencial del día'.  d4 'Chefchaouen · ciudad azul' + 'Lo esencial del día' + 'Efectivo y ritmo'.  d5 'Asilah · murallas portuguesas' + 'Efectivo y ritmo' + 'Té a la menta'.  d6 'Cabo Espartel · Grutas de Hércules · Tánger' + 'Té a la menta' + 'Brisa atlántica'.  d7 'Regreso desde Tánger' + 'Brisa atlántica' + 'Sol de costa'. Taglines rotate among NO TE LO PIERDAS / CULTURA LOCAL / CONSEJO DEL DÍA / PARA LA FOTO / PREPARA TU EQUIPAJE / CLIMA Y RITMO as expected. 0 console errors.",
+    "marrakech_ergchebbi_programa_6n_7d (REGRESSION full culture)": "7 day-travel-notes blocks, each with 3 cards and 3 dots. Day 1 (dia-1): Djemaa el-Fna / Un cambio total entre el día y la noche / Marrakech y la diferencia horaria. Day 2: La Koutoubia / Los zocos de Marrakech / Djemaa el-Fna. Taglines NO TE LO PIERDAS / SABÍAS QUE / PARA LA FOTO. All titles are culture-derived (no generic preparation-tip wording like 'En la medina'/'Lo esencial del día' anywhere) — top-up correctly NOT triggered when culture has 3 items. 0 console errors.",
+    "atlas_desierto_programa_6n_7d (REGRESSION bespoke)": "7 blocks, day 1 (dia-1) still renders the bespoke hand-written set: 'Aït Ben Haddou' (NO TE LO PIERDAS), 'El puerto de Tizi n'Tichka' (CONSEJO DEL DÍA), 'Luz dorada en el Dadès' (PARA LA FOTO). Other days unchanged from previous iterations. 0 console errors.",
+    "theme_relevance_fez_tanger": "All topped-up tips on fez_tanger are city/coast/general — NO desert-themed tips appear (no 'Noche en el bivouac', 'Sol, viento y arena', 'Luz dorada y estrellas'). Bullet 4 of acceptance criteria SATISFIED.",
+    "no_console_errors": "Zero JS errors and zero page errors across full top-to-bottom scroll on all 3 pages.",
+    "cms_textos_toggle_fez_tanger": "[data-testid='header-text-edit-toggle'] click activates edit mode (footer banner 'MODO TEXTOS · NAVEGACIÓN BLOQUEADA' appears). On full-scroll, 63 elements with [data-testid^='editable-text-program.tourFezTanger67.'] exist, ALL with contenteditable=true. 21 of them are note-title slots, matching the expected 7 days × 3 notes. Specifically confirmed: editable-text-program.tourFezTanger67.day.1.note.0.title (text 'Llegada a Fez', contenteditable=true) and editable-text-program.tourFezTanger67.day.1.note.1.title (text 'En la medina' — a topped-up tip — also contenteditable=true). No edits were saved."
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Optional polish) In /app/frontend/src/lib/dayTravelNotes.js detectTheme(): consider testing the 'city' regex BEFORE 'mountain' (or excluding generic 'valle'/'valley' from mountain). Reason: fez_tanger d3 (Volubilis · Moulay Idriss · Meknès) currently gets the mountain 'Miradores del Atlas' tip instead of a city/medina tip, because day text mentions valleys/atlas. Acceptance test still passes (not desert), but city tips would feel more on-brand for a north-Morocco Roman-ruins day."
+  ],
+  "critical_code_review_comments": [
+    "deriveDayNotes top-up logic in dayTravelNotes.js is clean: it correctly falls back to day.title/body when culture is empty (so previously-blank arrival/return days now render note 0 from the day itself), then rotates THEME_TIPS by (dayIndex-1) to avoid consecutive-day repetition, and dedupes by title.es so a culture-derived note won't be repeated as a tip.",
+    "All practical tips remain registered under the same per-route+day+note slot keys (editable-text-program.<routeId>.day.<n>.note.<i>.{tagline|title|body}) so the CMS still edits each note independently — verified on fez_tanger: derived AND topped-up notes are both editable.",
+    "Theme detection regex orders desert→coast→mountain→city — the only side-effect of this order is that days mixing imperial-city + valley terminology fall into 'mountain'. Not a bug per acceptance, just slightly off-brand for north-Morocco cultural days (see action_items)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only)", "frontend": "100% on acceptance criteria"},
+  "test_credentials": "Not required.",
+  "seed_data_creation": "None. CMS edit mode opened but no edits were saved.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Per-day post-it top-up to 3 cards is fully working across all 3 trips and trilingual switching/carousel/CMS edit-mode for derived notes were re-confirmed in this iteration and prior (35/38). The only remaining nit is the mountain-vs-city theme priority in detectTheme (see action_items + design_issues). The Chatbase floating widget still auto-opens near scroll-bottom and can intercept clicks in the bottom-right area; in this run we hid it via JS (iframe display:none + chatbase ids/classes display:none) before scrolling and that worked reliably."
+}
