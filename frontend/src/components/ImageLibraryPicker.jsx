@@ -669,7 +669,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
               >
                 <Check className="w-3.5 h-3.5" strokeWidth={2} />
                 {selectedCount > 0
-                  ? `Añadir ${selectedCount} imagen${selectedCount === 1 ? "" : "es"}`
+                  ? `Añadir ${selectedCount} ${selectedCount === 1 ? "imagen" : "imágenes"}`
                   : "Añadir imágenes"}
               </button>
             )}
