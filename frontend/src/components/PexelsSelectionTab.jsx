@@ -45,7 +45,7 @@ const fetchPexels = async (path, params) => {
   return r.json();
 };
 
-export default function PexelsSelectionTab({ onSelect }) {
+export default function PexelsSelectionTab({ onSelect, selectionMode = false, selectedKeys, onToggleSelect }) {
   const { lang } = useLanguage();
   const groups = useMemo(() => getDestinationGroups(lang), [lang]);
 
@@ -213,16 +213,34 @@ export default function PexelsSelectionTab({ onSelect }) {
             {photos.map((p) => {
               const isImporting = importingId === p.id;
               const isImported = importedId === p.id;
+              const selKey = `pexels-${p.id}`;
+              const selected = selectionMode && selectedKeys?.has(selKey);
+              const handleClick = () => {
+                if (selectionMode) {
+                  onToggleSelect?.({
+                    _key: selKey,
+                    _pexelsId: p.id,
+                    _needsImport: true,
+                    thumb_url: p.thumb_url,
+                    original_filename: p.alt || `Pexels ${p.id}`,
+                  });
+                } else {
+                  importPhoto(p);
+                }
+              };
               return (
                 <div
                   key={p.id}
                   data-testid={`pexels-selection-card-${p.id}`}
-                  className="group relative bg-[#1A1513] overflow-hidden border border-transparent hover:border-[#C16542]/60 transition-colors"
+                  className={`group relative bg-[#1A1513] overflow-hidden border transition-colors ${
+                    selected ? "border-[#C16542] ring-2 ring-[#C16542]" : "border-transparent hover:border-[#C16542]/60"
+                  }`}
                 >
                   <button
                     type="button"
-                    disabled={isImporting}
-                    onClick={() => importPhoto(p)}
+                    disabled={isImporting && !selectionMode}
+                    onClick={handleClick}
+                    aria-pressed={selectionMode ? selected : undefined}
                     data-testid={`pexels-selection-pick-${p.id}`}
                     className="block w-full aspect-[4/3] relative cursor-pointer disabled:cursor-progress"
                     aria-label={`Insertar foto de ${p.photographer}`}
@@ -234,26 +252,51 @@ export default function PexelsSelectionTab({ onSelect }) {
                       style={{ backgroundColor: p.avg_color || "#1A1513" }}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
-                    <span className="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition-colors flex items-center justify-center">
-                      {isImporting && (
-                        <span className="inline-flex items-center gap-2 bg-[#FDFBF7] text-[#2C2621] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          {COPY.importing}
-                        </span>
-                      )}
-                      {isImported && !isImporting && (
-                        <span className="inline-flex items-center gap-2 bg-[#5A6B4F] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
-                          <Check className="w-3.5 h-3.5" />
-                          {COPY.inserted}
-                        </span>
-                      )}
-                      {!isImporting && !isImported && (
-                        <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
-                          <Check className="w-3.5 h-3.5" strokeWidth={2} />
-                          Usar esta
-                        </span>
+                    <span className={`absolute inset-0 transition-colors flex items-center justify-center ${
+                      selected ? "bg-black/35" : "bg-black/0 group-hover:bg-black/35"
+                    }`}>
+                      {selectionMode ? (
+                        !selected && (
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
+                            <Check className="w-3.5 h-3.5" strokeWidth={2} />
+                            Seleccionar
+                          </span>
+                        )
+                      ) : (
+                        <>
+                          {isImporting && (
+                            <span className="inline-flex items-center gap-2 bg-[#FDFBF7] text-[#2C2621] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              {COPY.importing}
+                            </span>
+                          )}
+                          {isImported && !isImporting && (
+                            <span className="inline-flex items-center gap-2 bg-[#5A6B4F] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
+                              <Check className="w-3.5 h-3.5" />
+                              {COPY.inserted}
+                            </span>
+                          )}
+                          {!isImporting && !isImported && (
+                            <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
+                              <Check className="w-3.5 h-3.5" strokeWidth={2} />
+                              Usar esta
+                            </span>
+                          )}
+                        </>
                       )}
                     </span>
+                    {selectionMode && (
+                      <span
+                        data-testid={`pexels-selection-check-${p.id}`}
+                        className={`absolute bottom-2 right-2 inline-flex items-center justify-center w-7 h-7 rounded-full border-2 transition-all ${
+                          selected
+                            ? "bg-[#C16542] border-[#C16542] text-[#FDFBF7] scale-100"
+                            : "bg-[#FDFBF7]/80 border-[#FDFBF7] text-transparent scale-90 group-hover:scale-100"
+                        }`}
+                      >
+                        <Check className="w-4 h-4" strokeWidth={2.4} />
+                      </span>
+                    )}
                   </button>
                   <div className="px-2.5 py-2 bg-[#FDFBF7] border-t border-[#2C2621]/10">
                     <span className="text-[10px] text-[#5C5248] truncate block">

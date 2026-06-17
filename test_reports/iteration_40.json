@@ -1,0 +1,53 @@
+{
+  "summary": "Frontend-only validation that the multi-select behaviour from the Biblioteca tab now also works on the Pexels and Selección (pexels-selection) tabs of the Image Library inside Galerías. All 7 acceptance bullets pass: toggle-on-click (no immediate import), check badge + ring, footer counter+'Añadir N imágenes'+'Limpiar', 'Añadiendo…' loading state while imports run, modal closes after add, day's thumb count grows by exactly the number selected per tab, tab-switch resets selection, Biblioteca regression still works, cleanup removed all 6 added thumbs. Zero JS console errors. The iteration-36 i18n nit ('IMAGENES' missing tilde) is ALSO fixed — button now reads 'AÑADIR 2 IMÁGENES'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "tests_executed": [
+    {"name": "Admin login (xaluca) + open Galerías + first day auto-load", "result": "PASS"},
+    {"name": "Open day's 'Biblioteca' button opens image-library-picker modal", "result": "PASS"},
+    {"name": "PEXELS tab: pexels-grid renders 24 pexels-pick-* cards", "result": "PASS"},
+    {"name": "PEXELS: clicking a card does NOT import immediately — modal stays open, pexels-check-<id> badge transitions to active style, count appears in footer", "result": "PASS"},
+    {"name": "PEXELS: selecting 2 cards shows footer 'AÑADIR 2 IMÁGENES' (image-library-add-selected) + 'Limpiar' (image-library-clear-selection)", "result": "PASS"},
+    {"name": "PEXELS: clicking already-selected card deselects (count 2→1, label 'AÑADIR 1 IMAGEN')", "result": "PASS"},
+    {"name": "PEXELS: clicking 'Añadir 2 imágenes' shows 'AÑADIENDO…' loading state, then modal closes, day counter goes 1→3 (delta = +2)", "result": "PASS"},
+    {"name": "SELECCIÓN: switching to image-library-tab-pexels-selection + clicking pexels-selection-dest-<id> chip loads pexels-selection-grid with cards", "result": "PASS"},
+    {"name": "SELECCIÓN: same toggle behaviour — pexels-selection-pick-<id> toggles a pexels-selection-check-<id> badge + ring, footer shows count + 'Añadir N imágenes'", "result": "PASS"},
+    {"name": "SELECCIÓN: switching tab (selección → library) RESETS selection ('AÑADIR IMÁGENES' with no count, disabled)", "result": "PASS"},
+    {"name": "SELECCIÓN: 'Añadir 2 imágenes' → 'AÑADIENDO…' → modal closes → counter 3→5 (delta = +2)", "result": "PASS"},
+    {"name": "REGRESSION Biblioteca: image-library-tab-library still supports multi-select; 2 picks → 'AÑADIR 2 IMÁGENES' → modal closes WITHOUT loading delay → counter 5→7 (delta = +2)", "result": "PASS"},
+    {"name": "CLEANUP: removed 6 added thumbs via gallery-delete-<key>-<i>; final count = initial (1)", "result": "PASS"},
+    {"name": "ZERO JS console errors / page errors across the entire flow (Tailwind CDN warning excluded as pre-existing)", "result": "PASS"}
+  ],
+  "validated_selectors": {
+    "image-library-picker": "modal root present",
+    "image-library-tab-pexels / image-library-tab-pexels-selection / image-library-tab-library": "all three tabs reachable, switching them resets selectedMap",
+    "pexels-grid + pexels-pick-<id> + pexels-check-<id>": "wired correctly — click toggles select (in selectionMode), badge rendered always in selectionMode but visually switches from hollow/scale-90 to filled-#C16542/scale-100 when selected",
+    "pexels-selection-dest-<id> chip → pexels-selection-grid + pexels-selection-pick-<id> + pexels-selection-check-<id>": "identical behaviour",
+    "image-library-add-selected": "label rotates 'AÑADIR IMÁGENES' (count=0, disabled) → 'AÑADIR 1 IMAGEN' (singular) → 'AÑADIR N IMÁGENES' (plural with tilde) → 'AÑADIENDO…' (during async import)",
+    "image-library-clear-selection": "only rendered when selectedCount>0 — confirmed disappears after Limpiar / after modal closes",
+    "gallery-thumb-<key>-<i> + gallery-delete-<key>-<i>": "thumbs and delete buttons work for cleanup; native confirm() dialog auto-accepted in test"
+  },
+  "consistency_check": "PASS — selection UX (toggle-on-click, bottom-right check badge, ring highlight, subtitle/footer counter, 'Añadir N imágenes' button, 'Limpiar' clear button) is identical across Biblioteca / Pexels / Selección. Difference is correctly localised to the import step: Pexels and Selección show 'AÑADIENDO…' for ~1–3 s while POST /api/pexels/import runs per selected photo; Biblioteca closes instantly. selectedMap is independent per tab — switching tabs resets selection so hosted and to-import items can never be mixed in a single add.",
+  "thumb_count_progression": "initial=1 → +2 PEXELS=3 → +2 SELECCIÓN=5 → +2 BIBLIOTECA=7 → cleanup → 1 (back to initial). 6 added, 6 removed, net 0.",
+  "i18n_fix_confirmed": "iteration_36 reported the button rendered 'AÑADIR 3 IMAGENES' (missing tilde). This iteration confirms the label now reads 'AÑADIR 2 IMÁGENES' with the correct Spanish tilde. Singular 'AÑADIR 1 IMAGEN' and zero-state 'AÑADIR IMÁGENES' also correct.",
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ImageLibraryPicker.jsx — SELECTION_TABS = ['library','pexels','pexels-selection']; selectionMode = multiple && onSelectMany && SELECTION_TABS.includes(tab). Clean extension of the iteration-36 design. The two reset effects (on close AND on tab change) correctly prevent mixing hosted + to-import items.",
+    "confirmSelection() fast-paths the Biblioteca case (no _needsImport items → calls onSelectMany synchronously, no 'Añadiendo…' flicker). Pexels/Selección path sets adding=true, iterates items, POSTs /api/pexels/import per item, tolerates single-item import failures (try/catch around each fetch, push only on r.ok && j.url), and emits onSelectMany once with the resolved array. Single PUT /day-galleries/<key> via GalleryManager.onPickManyFromLibrary follows — matches the spec.",
+    "PexelsTab + PexelsSelectionTab accept selectionMode/selectedKeys/onToggleSelect symmetrically. In selectionMode the button onClick calls onToggleSelect({_key:`pexels-${id}` | `pexels-selection-${id}`, _pexelsId, _needsImport:true, ...}) instead of the legacy importPhoto flow. aria-pressed reflects state. Single-pick fallback (when not in selectionMode) is preserved for callers that pass only onSelect.",
+    "Minor — the *-check-<id> badge element is ALWAYS rendered in selectionMode (its visual state changes via className based on `selected`). That's intentional for the hover-affordance and is fine, but means a test cannot use 'badge element existence' as a selection check; tests must inspect the className or the footer counter. Worth noting for future testing agents."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only)", "frontend": "100% (14/14 test points pass)"},
+  "test_credentials": "/admin password: xaluca (confirmed).",
+  "seed_data_creation": "Added 6 thumbs to viajes.desierto_atlas.programa_4n_5d.day.1.dia-1 during the flow (2 via Pexels import, 2 via Selección import, 2 via Biblioteca) and removed all 6 in cleanup via gallery-delete-<key>-<i>. Final thumb count restored to the original 1 — production gallery left untouched.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Multi-select now works on Biblioteca + Pexels + Selección. Key selectors for future regression: image-library-picker, image-library-tab-{library|pexels|pexels-selection}, pexels-grid + pexels-pick-<id> + pexels-check-<id>, pexels-selection-dest-<id> chip → pexels-selection-grid + pexels-selection-pick-<id> + pexels-selection-check-<id>, image-library-add-selected (text rotates 'AÑADIR IMÁGENES' / 'AÑADIR 1 IMAGEN' / 'AÑADIR N IMÁGENES' / 'AÑADIENDO…'), image-library-clear-selection (only present when count>0). NOTE: in selectionMode the *-check-<id> badge element is ALWAYS rendered (style changes with selection); use the footer counter / className to assert selection, not the badge's presence. The Pexels import path waits ~1–3 s per photo, so use timeout≥30 s on the modal-detach wait. Tab switch resets selectedMap — confirmed in this iteration.",
+  "rca of the issue": "n/a — feature works as designed; no bugs found."
+}

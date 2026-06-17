@@ -52,34 +52,73 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
   const replaceInputRef = useRef(null);
   const replaceForIdRef = useRef(null);
 
-  /* ---- Multi-select state (only used when `multiple` + library tab) ----
-     Keyed Map id→item preserves insertion order so the images are added
-     in the order the admin picked them. */
+  /* ---- Multi-select state ----
+     Used when `multiple` + onSelectMany, on the Biblioteca, Pexels and
+     Selección tabs. A keyed Map preserves insertion order so the images
+     are added in the order the admin picked them. Library items carry a
+     ready `url`; Pexels items carry `_needsImport` + `_pexelsId` so they
+     are downloaded to storage only when the admin confirms the add. */
   const [selectedMap, setSelectedMap] = useState(() => new Map());
-  const selectionMode = multiple && tab === "library" && typeof onSelectMany === "function";
+  const [adding, setAdding] = useState(false);
+  const SELECTION_TABS = ["library", "pexels", "pexels-selection"];
+  const selectionMode = multiple && typeof onSelectMany === "function" && SELECTION_TABS.includes(tab);
   const selectedCount = selectedMap.size;
+  const selectedKeys = useMemo(() => new Set(selectedMap.keys()), [selectedMap]);
 
-  const selectionKey = useCallback((item) => item.id || item.storage_path, []);
+  const selectionKey = useCallback((item) => item._key || item.id || item.storage_path, []);
   const toggleSelect = useCallback((item) => {
     setSelectedMap((prev) => {
       const next = new Map(prev);
-      const key = item.id || item.storage_path;
+      const key = item._key || item.id || item.storage_path;
       if (next.has(key)) next.delete(key);
       else next.set(key, item);
       return next;
     });
   }, []);
   const clearSelection = useCallback(() => setSelectedMap(new Map()), []);
-  const confirmSelection = useCallback(() => {
-    if (selectedMap.size === 0) return;
-    onSelectMany?.(Array.from(selectedMap.values()));
-    setSelectedMap(new Map());
-  }, [selectedMap, onSelectMany]);
+  const confirmSelection = useCallback(async () => {
+    if (selectedMap.size === 0 || adding) return;
+    const items = Array.from(selectedMap.values());
+    // Fast path: everything already hosted (Biblioteca) — no import needed.
+    if (!items.some((it) => it._needsImport)) {
+      onSelectMany?.(items);
+      setSelectedMap(new Map());
+      return;
+    }
+    // Pexels/Selección: download each selected photo to storage first.
+    setAdding(true);
+    try {
+      const resolved = [];
+      for (const it of items) {
+        if (it._needsImport && it._pexelsId != null) {
+          try {
+            const r = await fetch(`${API}/api/pexels/import`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ pexels_id: it._pexelsId }),
+            });
+            const j = await r.json();
+            if (r.ok && j.url) {
+              const absUrl = j.url.startsWith("http") ? j.url : `${API}${j.url}`;
+              resolved.push({ ...j, url: absUrl });
+            }
+          } catch { /* skip a single failed import, keep the rest */ }
+        } else if (it.url) {
+          resolved.push(it);
+        }
+      }
+      if (resolved.length) onSelectMany?.(resolved);
+      setSelectedMap(new Map());
+    } finally {
+      setAdding(false);
+    }
+  }, [selectedMap, onSelectMany, adding]);
 
-  /* Reset selection whenever the modal closes or the tab changes away
-     from the local library (the other tabs keep single-pick behaviour). */
+  /* Reset selection whenever the modal closes or the tab changes (each
+     tab keeps an independent selection to avoid mixing hosted + to-import
+     items in a single add). */
   useEffect(() => { if (!open) setSelectedMap(new Map()); }, [open]);
-  useEffect(() => { if (tab !== "library") setSelectedMap(new Map()); }, [tab]);
+  useEffect(() => { setSelectedMap(new Map()); }, [tab]);
 
   /* Callback ref: set the directory-picker attributes the moment the
      hidden input mounts (the modal is conditionally rendered, so a
@@ -388,14 +427,14 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
                 Biblioteca de imágenes
               </h3>
               <p className="text-[11px] tracking-[0.18em] uppercase text-[#5C5248] mt-0.5 truncate">
-                {tab === "pexels"
+                {selectionMode && selectedCount > 0
+                  ? `${selectedCount} seleccionada${selectedCount === 1 ? "" : "s"} · pulsa para añadir o quitar`
+                  : tab === "pexels"
                   ? "Pexels · Stock fotográfico gratuito"
                   : tab === "unsplash"
                   ? "Unsplash · Fotografía editorial gratuita"
                   : tab === "pexels-selection"
                   ? "Selección Pexels · galerías por destino"
-                  : selectionMode && selectedCount > 0
-                  ? `${selectedCount} seleccionada${selectedCount === 1 ? "" : "s"} · pulsa para añadir o quitar`
                   : selectionMode
                   ? "Selección múltiple · marca varias y añádelas de una vez"
                   : counterLine}
@@ -615,7 +654,13 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
           </>
         ) : tab === "pexels" ? (
           <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
-            <PexelsTab onSelect={onSelect} onClose={onClose} />
+            <PexelsTab
+              onSelect={onSelect}
+              onClose={onClose}
+              selectionMode={selectionMode}
+              selectedKeys={selectedKeys}
+              onToggleSelect={toggleSelect}
+            />
           </div>
         ) : tab === "unsplash" ? (
           <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
@@ -623,21 +668,29 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-6 md:px-8 pt-8 pb-6 bg-[#FDFBF7]">
-            <PexelsSelectionTab onSelect={onSelect} onClose={onClose} />
+            <PexelsSelectionTab
+              onSelect={onSelect}
+              onClose={onClose}
+              selectionMode={selectionMode}
+              selectedKeys={selectedKeys}
+              onToggleSelect={toggleSelect}
+            />
           </div>
         )}
 
         {/* Footer */}
         <div className="px-6 md:px-8 py-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3 text-[11px] text-[#5C5248]">
           <span className="tracking-[0.2em] uppercase hidden md:inline">
-            {tab === "pexels"
+            {selectionMode
+              ? (tab === "library"
+                  ? "Marca varias fotos y pulsa «Añadir» para sumarlas al día de una vez."
+                  : "Marca varias fotos y pulsa «Añadir»: se descargan al storage de una vez.")
+              : tab === "pexels"
               ? "Stock libre · Pexels descarga al storage al pulsar."
               : tab === "unsplash"
               ? "Fotografía editorial · Unsplash descarga al storage al pulsar."
               : tab === "pexels-selection"
               ? "Galerías por destino · Pexels descarga al storage al pulsar."
-              : selectionMode
-              ? "Marca varias fotos y pulsa «Añadir» para sumarlas al día de una vez."
               : "Las fotos se reutilizan al pulsar — no se vuelven a subir."}
           </span>
           <div className="flex items-center gap-4 ml-auto">
@@ -645,8 +698,9 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
               <button
                 type="button"
                 onClick={clearSelection}
+                disabled={adding}
                 data-testid="image-library-clear-selection"
-                className="text-[#2C2621] hover:text-[#C16542] tracking-[0.25em] uppercase font-semibold"
+                className="text-[#2C2621] hover:text-[#C16542] tracking-[0.25em] uppercase font-semibold disabled:opacity-40 disabled:pointer-events-none"
               >
                 Limpiar
               </button>
@@ -663,14 +717,23 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
               <button
                 type="button"
                 onClick={confirmSelection}
-                disabled={selectedCount === 0}
+                disabled={selectedCount === 0 || adding}
                 data-testid="image-library-add-selected"
                 className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-2.5 text-[10px] tracking-[0.25em] uppercase disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                <Check className="w-3.5 h-3.5" strokeWidth={2} />
-                {selectedCount > 0
-                  ? `Añadir ${selectedCount} ${selectedCount === 1 ? "imagen" : "imágenes"}`
-                  : "Añadir imágenes"}
+                {adding ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={2} />
+                    Añadiendo…
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-3.5 h-3.5" strokeWidth={2} />
+                    {selectedCount > 0
+                      ? `Añadir ${selectedCount} ${selectedCount === 1 ? "imagen" : "imágenes"}`
+                      : "Añadir imágenes"}
+                  </>
+                )}
               </button>
             )}
           </div>
