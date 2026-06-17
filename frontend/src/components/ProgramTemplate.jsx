@@ -666,7 +666,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
     <div data-testid={`program-page-${program.duration_key}`}>
       <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
       <StickyNav items={navItems} testid="program-nav" />
-      {tripRoute && tripRoute.length >= 2 && <TripRouteMap route={tripRoute} days={program.days} />}
+      {tripRoute && tripRoute.length >= 2 && <TripRouteMap route={tripRoute} days={program.days} routeId={routeId} />}
       <Description vt={vt} t={t} program={program} variant={variant} />
       <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
       <VideoSection

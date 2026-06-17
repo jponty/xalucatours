@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from "react-leaflet";
 import MapLogoBadge from "@/components/MapLogoBadge";
+import TripPackingNotes from "@/components/TripPackingNotes";
 import { Map as MapIcon, MapPin, ArrowRight, ChevronDown, Sparkles, BookOpen, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 
@@ -205,7 +206,7 @@ const DayDetail = ({ id, day, dayNumber, color, lang, t, onClose }) => {
   );
 };
 
-export const TripRouteMap = ({ route, days = [] }) => {
+export const TripRouteMap = ({ route, days = [], routeId }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
   const [activeNode, setActiveNode] = useState(null);
@@ -341,6 +342,10 @@ export const TripRouteMap = ({ route, days = [] }) => {
                 </li>
               ))}
             </ul>
+
+            {/* Travel notes (sticky-note carousel) — route-specific; renders
+                nothing when this trip has no packing notes defined. */}
+            <TripPackingNotes routeId={routeId} />
           </div>
 
           {/* Right rail · ordered list of days with expandable details */}
