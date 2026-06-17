@@ -60,7 +60,13 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
 
   // Dynamic CMS gallery (managed from /admin). When present it overrides
   // the legacy fixed slots. images[0] is the featured/main image.
-  const dynamic = useDayGallery(galleryKey);
+  // BACK-COMPAT: galleries saved before the index-based key change were
+  // stored under the id-based key (`base`). Prefer the new index key, but
+  // fall back to the legacy key so previously-configured galleries are
+  // recovered without re-uploading.
+  const dynamicNew = useDayGallery(galleryKey);
+  const dynamicLegacy = useDayGallery(base);
+  const dynamic = (dynamicNew && dynamicNew.length) ? dynamicNew : dynamicLegacy;
 
   const slides = useMemo(() => {
     if (dynamic && dynamic.length) {

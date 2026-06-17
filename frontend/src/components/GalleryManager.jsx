@@ -101,9 +101,12 @@ export default function GalleryManager({ lang = "es" }) {
 
   // Seed a day's images from current dynamic doc, else from CMS slots/fallback.
   // `key` is the index-based managed-gallery key; `legacyBase` is the id-based
-  // base used by the legacy inline slots (so we can pre-fill the editor).
+  // base used by the legacy inline slots AND by galleries saved BEFORE the
+  // index-based key change. We recover those legacy galleries so previously
+  // configured images are not lost (they migrate to the new key on next save).
   const seedFor = (key, legacyBase, day) => {
     if (galleries[key] && galleries[key].length) return galleries[key];
+    if (galleries[legacyBase] && galleries[legacyBase].length) return galleries[legacyBase];
     const out = [];
     const main = slots[`${legacyBase}.image`] || day.image;
     if (main) out.push({ url: main, alt: pick(day.title, lang) });
