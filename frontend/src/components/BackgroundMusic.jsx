@@ -26,9 +26,10 @@ const COPY = {
   mute:    { es: "Silenciar",  en: "Mute",  fr: "Couper" },
   unmute:  { es: "Activar sonido", en: "Unmute", fr: "Activer le son" },
   volume:  { es: "Volumen",    en: "Volume", fr: "Volume" },
+  label:   { es: "Música",     en: "Music",  fr: "Musique" },
 };
 
-export default function BackgroundMusic() {
+export default function BackgroundMusic({ variant = "navbar" }) {
   const { lang } = useLanguage();
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -86,26 +87,45 @@ export default function BackgroundMusic() {
 
       <Popover>
         <PopoverTrigger asChild>
-          <button
-            type="button"
-            data-testid="bg-music-button"
-            aria-label={pick(COPY.aria, lang)}
-            title={pick(COPY.title, lang)}
-            className="relative inline-flex items-center justify-center w-9 h-9 text-[#2C2621] hover:text-[#C16542] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]/40 rounded-full"
-          >
-            <Music className="w-[18px] h-[18px]" strokeWidth={1.6} />
-            {playing && !muted && (
-              <span
-                className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#C16542] animate-pulse"
-                aria-hidden="true"
-              />
-            )}
-          </button>
+          {variant === "bar" ? (
+            <button
+              type="button"
+              data-testid="bg-music-button"
+              aria-label={pick(COPY.aria, lang)}
+              title={pick(COPY.title, lang)}
+              className="relative inline-flex items-center gap-2 text-[#FDFBF7]/90 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap outline-none focus-visible:text-[#D4A373]"
+            >
+              <Music className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.8} />
+              <span className="hidden sm:inline text-[#D4A373] uppercase tracking-[0.2em]">
+                {pick(COPY.label, lang)}
+              </span>
+              {playing && !muted && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4A373] animate-pulse" aria-hidden="true" />
+              )}
+            </button>
+          ) : (
+            <button
+              type="button"
+              data-testid="bg-music-button"
+              aria-label={pick(COPY.aria, lang)}
+              title={pick(COPY.title, lang)}
+              className="relative inline-flex items-center justify-center w-9 h-9 text-[#2C2621] hover:text-[#C16542] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]/40 rounded-full"
+            >
+              <Music className="w-[18px] h-[18px]" strokeWidth={1.6} />
+              {playing && !muted && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#C16542] animate-pulse"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
+          )}
         </PopoverTrigger>
 
         <PopoverContent
-          align="start"
+          align="end"
           sideOffset={10}
+          collisionPadding={12}
           data-testid="bg-music-panel"
           className="w-72 bg-[#FDFBF7] border-[#2C2621]/12 text-[#2C2621] shadow-[0_20px_50px_-20px_rgba(26,21,19,0.4)]"
         >

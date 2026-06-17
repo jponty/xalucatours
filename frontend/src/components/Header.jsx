@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Menu, ArrowRight, CalendarClock } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
-import BackgroundMusic from "@/components/BackgroundMusic";
 import TopInfoBar from "./TopInfoBar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
@@ -70,26 +69,22 @@ export const Header = () => {
       >
         <TopInfoBar />
         <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 md:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 md:gap-4">
-            <button
-              data-testid="header-menu-button"
-              onClick={() => setOpen(true)}
-              data-edit-allow="true"
-              className="inline-flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
-              aria-label={t("nav_menu")}
-            >
-              <Menu className="w-4 h-4" strokeWidth={1.5} />
-              <span className="hidden sm:inline">
-                <EditableText
-                  slot="header.nav_menu"
-                  defaults={translations.nav_menu}
-                  multiline={false}
-                />
-              </span>
-            </button>
-
-            <BackgroundMusic />
-          </div>
+          <button
+            data-testid="header-menu-button"
+            onClick={() => setOpen(true)}
+            data-edit-allow="true"
+            className="inline-flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
+            aria-label={t("nav_menu")}
+          >
+            <Menu className="w-4 h-4" strokeWidth={1.5} />
+            <span className="hidden sm:inline">
+              <EditableText
+                slot="header.nav_menu"
+                defaults={translations.nav_menu}
+                multiline={false}
+              />
+            </span>
+          </button>
 
           <BrandMark />
 

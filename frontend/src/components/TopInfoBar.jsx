@@ -5,6 +5,7 @@ import EditableText from "@/components/EditableText";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { openChatbaseAssistant } from "@/lib/chatbase";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 const CALL_LABEL = { es: "Llámanos", en: "Call us", fr: "Appelez-nous" };
 const PHONE = { es: "+34 937 268 366", en: "+34 937 268 366", fr: "+34 937 268 366" };
@@ -86,6 +87,10 @@ export const TopInfoBar = () => {
           <span className="text-[#FDFBF7]/30">|</span>
           <EditableText slot="topbar.email" defaults={EMAIL} multiline={false} />
         </Link>
+
+        {/* Background music control — lives here to keep the main nav clean */}
+        <span className="inline-block w-px h-3.5 bg-[#FDFBF7]/20" aria-hidden="true" />
+        <BackgroundMusic variant="bar" />
       </div>
     </div>
   );
