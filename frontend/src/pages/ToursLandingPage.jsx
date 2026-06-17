@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight, Compass, Mountain, Sparkles, MapPin, Calendar,
   Phone, MessageCircle, Mail, Building2, ChevronDown, BookOpen, Crown, Users,
-  Globe2, Tag, Filter, Clock, Plane, Send,
+  Globe2, Tag, Filter, Clock, Plane, Send, Leaf,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -18,7 +18,7 @@ import ToursVideoSection from "@/components/ToursVideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 
-const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users };
+const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users, Leaf };
 
 // Region card "from" price = the lowest real tariff among that region's trips,
 // so it stays consistent with the trip pages and /precios.
@@ -731,7 +731,7 @@ const COPY = {
       cta: "Descubrir rutas",
     },
     experiences: {
-      overline: "Por experiencia", title: "Cinco estilos de viaje.",
+      overline: "Por experiencia", title: "Seis estilos de viaje.",
       body: "Del silencio del desierto a las cumbres del Atlas, de los talleres de artesanos a las salidas en grupo. Encuentra tu manera de viajar.",
       cta: "Ver viajes",
     },
@@ -799,7 +799,7 @@ const COPY = {
       cta: "Discover routes",
     },
     experiences: {
-      overline: "By experience", title: "Five travel styles.",
+      overline: "By experience", title: "Six travel styles.",
       body: "From desert silence to Atlas summits, from artisan workshops to group departures. Find the way you love to travel.",
       cta: "View trips",
     },
@@ -867,7 +867,7 @@ const COPY = {
       cta: "Découvrir les itinéraires",
     },
     experiences: {
-      overline: "Par expérience", title: "Cinq styles de voyage.",
+      overline: "Par expérience", title: "Six styles de voyage.",
       body: "Du silence du désert aux sommets de l'Atlas, des ateliers d'artisans aux départs en groupe. Trouvez votre façon de voyager.",
       cta: "Voir les voyages",
     },
