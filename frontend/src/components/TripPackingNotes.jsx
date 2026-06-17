@@ -11,6 +11,7 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Luggage, Shirt, Sun, Moon, Pin, Check, ChevronLeft, ChevronRight, Footprints, Wind, Mountain, Backpack } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import EditableText from "@/components/EditableText";
 import { getTripPackingNotes } from "@/lib/tripPackingNotes";
 
 const COPY = {
@@ -40,9 +41,10 @@ const THEME_ICON = {
   comfort: Backpack,
 };
 
-const Note = ({ note, lang, index }) => {
+const Note = ({ note, lang, index, routeId }) => {
   const Icon = THEME_ICON[note.theme] || Luggage;
   const rotation = index % 2 === 0 ? "rotate-[-1.4deg]" : "rotate-[1.2deg]";
+  const slotBase = `trip.${routeId}.packing.note.${index}`;
   return (
     <article
       data-testid={`packing-note-${index}`}
@@ -73,12 +75,21 @@ const Note = ({ note, lang, index }) => {
           style={{ color: note.accent }}
         >
           <Icon className="w-4 h-4" strokeWidth={1.7} />
-          {pick(note.tagline, lang)}
+          <EditableText
+            slot={`${slotBase}.tagline`}
+            defaults={note.tagline}
+            as="span"
+            multiline={false}
+          />
         </span>
 
-        <h4 className="font-hand text-[30px] md:text-[32px] leading-[1.05] text-[#2C2621] mt-2 pr-6">
-          {pick(note.title, lang)}
-        </h4>
+        <EditableText
+          slot={`${slotBase}.title`}
+          defaults={note.title}
+          as="h4"
+          multiline={false}
+          className="font-hand text-[30px] md:text-[32px] leading-[1.05] text-[#2C2621] mt-2 pr-6"
+        />
 
         <span className="block w-12 h-px mt-3 mb-4" style={{ background: `${note.accent}66` }} />
 
@@ -86,9 +97,12 @@ const Note = ({ note, lang, index }) => {
           {note.items.map((it, i) => (
             <li key={`pn-${index}-${i}`} className="flex items-start gap-2.5">
               <Check className="w-4 h-4 mt-1 shrink-0" style={{ color: note.accent }} strokeWidth={2.2} />
-              <span className="font-hand text-[19px] md:text-[20px] leading-[1.35] text-[#2C2621]/90">
-                {pick(it, lang)}
-              </span>
+              <EditableText
+                slot={`${slotBase}.item.${i}`}
+                defaults={it}
+                as="span"
+                className="font-hand text-[19px] md:text-[20px] leading-[1.35] text-[#2C2621]/90"
+              />
             </li>
           ))}
         </ul>
@@ -183,7 +197,7 @@ export default function TripPackingNotes({ routeId }) {
         className="flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pt-4 pb-3 -mx-1 px-1"
       >
         {notes.map((note, i) => (
-          <Note key={`packing-${i}`} note={note} lang={lang} index={i} />
+          <Note key={`packing-${i}`} note={note} lang={lang} index={i} routeId={routeId} />
         ))}
       </div>
 
