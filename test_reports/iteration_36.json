@@ -1,0 +1,51 @@
+{
+  "summary": "Frontend-only validation of NEW multi-select in the Image Library ('Biblioteca') used by the Galerías editor (GalleryManager → ImageLibraryPicker). Verified login, opening of the picker from a day, multi-select toggle/deselect/Limpiar, the 'Añadir N imagen(es)' confirm action, gallery thumb-count delta, post-reload persistence, and regression that the Pexels / Unsplash / Selección tabs keep the old single-pick behaviour (no multi-select footer there). 100% functional pass. One minor i18n nit: plural label is rendered as 'IMAGENES' (missing tilde) instead of 'IMÁGENES'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "ImageLibraryPicker footer (multi-select)",
+        "issues": [
+          "Plural label is missing the Spanish accent: button text reads 'AÑADIR 3 IMAGENES' but should be 'AÑADIR 3 IMÁGENES'. Same issue for any plural >1. Source: ImageLibraryPicker.jsx line ~672 (`Añadir ${selectedCount} imagen${selectedCount === 1 ? '' : 'es'}`). Replace 'es' suffix with 'es' on accented stem, e.g. ``Añadir ${n} ${n===1 ? 'imagen' : 'imágenes'}``. Cosmetic, low priority."
+        ]
+      }
+    ]
+  },
+  "tests_executed": [
+    {"name": "Login /admin via admin-login-password + admin-login-submit", "result": "PASS"},
+    {"name": "Galerías tab loads day sections (gallery-day-*) — found 5 days, 5 'Biblioteca' buttons", "result": "PASS"},
+    {"name": "Click first day's gallery-library-* opens image-library-picker modal", "result": "PASS"},
+    {"name": "Biblioteca tab grid renders (image-library-grid, 120 image-library-pick-* thumbs)", "result": "PASS"},
+    {"name": "MULTI-SELECT: clicking 3 different thumbs does NOT close modal, shows 3 image-library-check-* badges and footer 'image-library-add-selected' with text 'AÑADIR 3 IMAGENES' (enabled), plus 'image-library-clear-selection' (Limpiar)", "result": "PASS"},
+    {"name": "DESELECT: clicking the same selected thumb again decreases count to 2 ('AÑADIR 2 IMAGENES')", "result": "PASS"},
+    {"name": "Limpiar: clears all → add button becomes disabled with generic 'AÑADIR IMÁGENES' label, and the Limpiar button itself disappears (only rendered when selectedCount>0)", "result": "PASS"},
+    {"name": "ADD ACTION: re-select 2 images, click 'image-library-add-selected' → modal closes, day's thumb count goes 1 → 3 (delta = 2 = number selected)", "result": "PASS"},
+    {"name": "PERSISTENCE: full page reload + re-open Galerías tab — gallery-thumb-*-* count remains 3 (PUT /day-galleries/<key> persisted)", "result": "PASS"},
+    {"name": "REGRESSION: Pexels tab — no image-library-add-selected, no image-library-clear-selection rendered (old single-pick UX preserved)", "result": "PASS"},
+    {"name": "REGRESSION: Unsplash tab — no multi-select footer rendered", "result": "PASS"},
+    {"name": "REGRESSION: Selección (pexels-selection) tab — no multi-select footer rendered", "result": "PASS"},
+    {"name": "Returning to Biblioteca tab — multi-select footer (Añadir button) re-appears as expected", "result": "PASS"},
+    {"name": "No console errors during full flow (only Tailwind CDN production warning, pre-existing)", "result": "PASS"}
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "LOW: Fix Spanish pluralisation of the confirm-button label in ImageLibraryPicker.jsx (~line 671-673): swap the suffix toggle for a full word switch so the plural carries the tilde — e.g. ``${selectedCount > 0 ? `Añadir ${selectedCount} ${selectedCount === 1 ? 'imagen' : 'imágenes'}` : 'Añadir imágenes'}``."
+  ],
+  "critical_code_review_comments": [
+    "ImageLibraryPicker.jsx: clean implementation. `selectionMode = multiple && tab==='library' && typeof onSelectMany==='function'` correctly scopes the new behaviour to the local Biblioteca tab only — verified by regression on Pexels/Unsplash/Selección.",
+    "selectedMap is a Map keyed by id||storage_path, preserving insertion order so picks are appended in user-pick order. confirmSelection() emits Array.from(values) → onSelectMany, then clears the map. Good.",
+    "selection auto-resets on modal close AND on tab change away from 'library' (two dedicated effects). No state leak between sessions.",
+    "GalleryManager.onPickManyFromLibrary appends via imagesRef.current (not stale `images`) and persists with a SINGLE PUT, then closes the modal — matches the spec.",
+    "LibraryThumb wires the same onClick to either onSelect (single) or onToggle (multi) via `handlePick`; aria-pressed reflects selection state — accessibility-friendly.",
+    "Only i18n nit (see action items): plural label is 'IMAGENES' without tilde. No functional impact."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% functional (14/14). 1 minor i18n typo."},
+  "test_credentials": "/admin password: xaluca (confirmed working).",
+  "seed_data_creation": "Added 2 real library images to day-1 of viajes.desierto_atlas.programa_4n_5d gallery (key=viajes.desierto_atlas.programa_4n_5d.day.1.dia-1). Counter went from 1 → 3 and persisted after reload. Main agent may want to revert if undesired, but they were valid Pexels-sourced photos already in the shared library.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Multi-select feature is FUNCTIONALLY COMPLETE on the Biblioteca tab of ImageLibraryPicker. Selectors used: [data-testid='image-library-picker'], [data-testid='image-library-tab-library|pexels|unsplash|pexels-selection'], [data-testid^='image-library-pick-<id>'], [data-testid^='image-library-check-<id>'], [data-testid='image-library-add-selected'] (button text 'Añadir N imagen(es)', disabled when count=0), [data-testid='image-library-clear-selection'] (only rendered when selectedCount>0). GalleryManager-side selectors: [data-testid^='gallery-library-<galleryKey>'], [data-testid='gallery-day-<galleryKey>'], [data-testid^='gallery-thumb-<galleryKey>-<i>']. galleryKey format: '<namespace>.day.<1-based-index>.<dayId>' — confirmed example: 'viajes.desierto_atlas.programa_4n_5d.day.1.dia-1'. The selectedMap is keyed by id||storage_path so duplicated assets in the library (e.g. two near-identical test_day2.jpg) can both be picked independently. Only i18n polish remains (plural tilde)."
+}

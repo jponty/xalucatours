@@ -21,7 +21,7 @@ const API = process.env.REACT_APP_BACKEND_URL || "";
 const TAB_STORAGE_KEY = "xaluca_image_picker_tab";
 const VALID_TABS = ["library", "pexels", "unsplash", "pexels-selection"];
 
-export default function ImageLibraryPicker({ open, onClose, onSelect }) {
+export default function ImageLibraryPicker({ open, onClose, onSelect, multiple = false, onSelectMany }) {
   // Remember the last used tab locally so reopening the picker lands on it.
   const [tab, setTab] = useState(() => {
     try {
@@ -51,6 +51,35 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
   const folderInputRef = useRef(null);
   const replaceInputRef = useRef(null);
   const replaceForIdRef = useRef(null);
+
+  /* ---- Multi-select state (only used when `multiple` + library tab) ----
+     Keyed Map id→item preserves insertion order so the images are added
+     in the order the admin picked them. */
+  const [selectedMap, setSelectedMap] = useState(() => new Map());
+  const selectionMode = multiple && tab === "library" && typeof onSelectMany === "function";
+  const selectedCount = selectedMap.size;
+
+  const selectionKey = useCallback((item) => item.id || item.storage_path, []);
+  const toggleSelect = useCallback((item) => {
+    setSelectedMap((prev) => {
+      const next = new Map(prev);
+      const key = item.id || item.storage_path;
+      if (next.has(key)) next.delete(key);
+      else next.set(key, item);
+      return next;
+    });
+  }, []);
+  const clearSelection = useCallback(() => setSelectedMap(new Map()), []);
+  const confirmSelection = useCallback(() => {
+    if (selectedMap.size === 0) return;
+    onSelectMany?.(Array.from(selectedMap.values()));
+    setSelectedMap(new Map());
+  }, [selectedMap, onSelectMany]);
+
+  /* Reset selection whenever the modal closes or the tab changes away
+     from the local library (the other tabs keep single-pick behaviour). */
+  useEffect(() => { if (!open) setSelectedMap(new Map()); }, [open]);
+  useEffect(() => { if (tab !== "library") setSelectedMap(new Map()); }, [tab]);
 
   /* Callback ref: set the directory-picker attributes the moment the
      hidden input mounts (the modal is conditionally rendered, so a
@@ -365,6 +394,10 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                   ? "Unsplash · Fotografía editorial gratuita"
                   : tab === "pexels-selection"
                   ? "Selección Pexels · galerías por destino"
+                  : selectionMode && selectedCount > 0
+                  ? `${selectedCount} seleccionada${selectedCount === 1 ? "" : "s"} · pulsa para añadir o quitar`
+                  : selectionMode
+                  ? "Selección múltiple · marca varias y añádelas de una vez"
                   : counterLine}
               </p>
             </div>
@@ -568,6 +601,9 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
                   item={it}
                   usage={usageById[it.id]}
                   onSelect={onSelect}
+                  selectable={selectionMode}
+                  selected={selectionMode && selectedMap.has(selectionKey(it))}
+                  onToggle={toggleSelect}
                   onDelete={() => setConfirmDelete(it)}
                   onEdit={() => setEditing(it)}
                   onReplace={() => askReplace(it)}
@@ -600,16 +636,44 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
               ? "Fotografía editorial · Unsplash descarga al storage al pulsar."
               : tab === "pexels-selection"
               ? "Galerías por destino · Pexels descarga al storage al pulsar."
+              : selectionMode
+              ? "Marca varias fotos y pulsa «Añadir» para sumarlas al día de una vez."
               : "Las fotos se reutilizan al pulsar — no se vuelven a subir."}
           </span>
-          <button
-            type="button"
-            onClick={onClose}
-            data-testid="image-library-cancel"
-            className="text-[#2C2621] hover:text-[#C16542] tracking-[0.25em] uppercase font-semibold ml-auto"
-          >
-            Cancelar
-          </button>
+          <div className="flex items-center gap-4 ml-auto">
+            {selectionMode && selectedCount > 0 && (
+              <button
+                type="button"
+                onClick={clearSelection}
+                data-testid="image-library-clear-selection"
+                className="text-[#2C2621] hover:text-[#C16542] tracking-[0.25em] uppercase font-semibold"
+              >
+                Limpiar
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              data-testid="image-library-cancel"
+              className="text-[#2C2621] hover:text-[#C16542] tracking-[0.25em] uppercase font-semibold"
+            >
+              Cancelar
+            </button>
+            {selectionMode && (
+              <button
+                type="button"
+                onClick={confirmSelection}
+                disabled={selectedCount === 0}
+                data-testid="image-library-add-selected"
+                className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-2.5 text-[10px] tracking-[0.25em] uppercase disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <Check className="w-3.5 h-3.5" strokeWidth={2} />
+                {selectedCount > 0
+                  ? `Añadir ${selectedCount} imagen${selectedCount === 1 ? "" : "es"}`
+                  : "Añadir imágenes"}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Hidden inputs */}
@@ -675,21 +739,25 @@ export default function ImageLibraryPicker({ open, onClose, onSelect }) {
 /* ============================================================
    LibraryThumb
 ============================================================ */
-function LibraryThumb({ item, usage, onSelect, onDelete, onEdit, onReplace }) {
+function LibraryThumb({ item, usage, onSelect, onDelete, onEdit, onReplace, selectable = false, selected = false, onToggle }) {
   const fullUrl = item.url?.startsWith("http") ? item.url : `${API}${item.url}`;
   const niceName = item.original_filename || item.slot_id || item.storage_path?.split("/").pop();
   const sizeKb = item.size ? Math.max(1, Math.round(item.size / 1024)) : null;
   const tags = item.tags || [];
   const usageCount = usage?.count ?? null;
+  const handlePick = () => (selectable ? onToggle?.(item) : onSelect?.(item));
 
   return (
     <div
       data-testid={`image-library-item-${(item.id || item.storage_path || "x").slice(0, 24)}`}
-      className="group relative flex flex-col bg-[#FDFBF7] border border-[#2C2621]/12 hover:border-[#C16542] transition-colors text-left"
+      className={`group relative flex flex-col bg-[#FDFBF7] border transition-colors text-left ${
+        selected ? "border-[#C16542] ring-2 ring-[#C16542]" : "border-[#2C2621]/12 hover:border-[#C16542]"
+      }`}
     >
       <button
         type="button"
-        onClick={() => onSelect?.(item)}
+        onClick={handlePick}
+        aria-pressed={selectable ? selected : undefined}
         className="relative aspect-square overflow-hidden bg-[#F2EBE1] focus:outline-none focus:ring-2 focus:ring-[#C16542]"
         data-testid={`image-library-pick-${(item.id || "x").slice(0, 24)}`}
       >
@@ -700,12 +768,30 @@ function LibraryThumb({ item, usage, onSelect, onDelete, onEdit, onReplace }) {
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => { e.currentTarget.style.opacity = "0.2"; }}
         />
-        <div className="absolute inset-0 bg-[#1A1513]/0 group-hover:bg-[#1A1513]/35 transition-colors flex items-center justify-center">
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2 text-[10px] tracking-[0.25em] uppercase">
+        <div className={`absolute inset-0 transition-colors flex items-center justify-center ${
+          selected ? "bg-[#1A1513]/25" : "bg-[#1A1513]/0 group-hover:bg-[#1A1513]/35"
+        }`}>
+          <span className={`transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2 text-[10px] tracking-[0.25em] uppercase ${
+            selected ? "opacity-0" : "opacity-0 group-hover:opacity-100"
+          }`}>
             <Check className="w-3.5 h-3.5" strokeWidth={2} />
-            Usar esta
+            {selectable ? "Seleccionar" : "Usar esta"}
           </span>
         </div>
+
+        {/* Selection check — bottom-right when in multi-select mode */}
+        {selectable && (
+          <span
+            data-testid={`image-library-check-${(item.id || "x").slice(0, 24)}`}
+            className={`absolute bottom-2 right-2 inline-flex items-center justify-center w-7 h-7 rounded-full border-2 transition-all ${
+              selected
+                ? "bg-[#C16542] border-[#C16542] text-[#FDFBF7] scale-100"
+                : "bg-[#FDFBF7]/80 border-[#FDFBF7] text-transparent scale-90 group-hover:scale-100"
+            }`}
+          >
+            <Check className="w-4 h-4" strokeWidth={2.4} />
+          </span>
+        )}
 
         {/* Usage badge — visible always, top-left */}
         {usageCount !== null && (

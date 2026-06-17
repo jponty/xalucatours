@@ -356,6 +356,20 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
     setPickerOpen(false); // close the library modal after a successful pick
   };
 
+  // Add SEVERAL images chosen from the local library in one action — they are
+  // appended (in pick order) and persisted with a single save.
+  const onPickManyFromLibrary = (libItems) => {
+    const valid = (libItems || []).filter((it) => it?.url);
+    if (!valid.length) return;
+    const next = [
+      ...imagesRef.current,
+      ...valid.map((it) => ({ url: it.url, alt: it.original_filename || null })),
+    ];
+    imagesRef.current = next;
+    persist(next);
+    setPickerOpen(false);
+  };
+
   const onUpload = async (e) => {
     const files = Array.from(e.target.files || []);
     e.target.value = "";
@@ -515,6 +529,8 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onSelect={onPickFromLibrary}
+        multiple
+        onSelectMany={onPickManyFromLibrary}
       />
     </section>
   );
