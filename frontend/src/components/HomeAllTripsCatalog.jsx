@@ -9,12 +9,13 @@
    matching trip page registered in `lib/routes.js`.
 ============================================================ */
 import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp, Headset } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp, Headset, Phone, CalendarClock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
+import ShareTripButton from "@/components/ShareTripButton";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
@@ -28,6 +29,10 @@ import {
 } from "@/lib/allTripsCatalog";
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+const PLAN_LABEL = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
+const CALL_LABEL = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
+const APPOINTMENT_LABEL = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
+const CALL_TEL = "+34937268366";
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
@@ -164,78 +169,124 @@ const ChipGroup = ({ icon: Icon, label, options, value, onChange, testidBase }) 
 
 /* ---------- Card ---------- */
 const TripCard = ({ trip, lang }) => {
+  const navigate = useNavigate();
   const href = pathFor(lang, trip.routeId);
   // Shares the trip's MASTER image slot with the page Hero and all listings.
   const slot = tripHeroSlot(trip.routeId);
   return (
     <SlotScope id={trip.routeId}>
-      <Link
-        to={href}
+      <div
         data-testid={`home-all-trips-card-${trip.routeId}`}
         className="group flex flex-col bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#C16542]/60 transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(44,38,33,0.35)]"
       >
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1513]">
-          <EditableImage
-            slot={slot}
-            fallback={trip.image}
-            alt={pick(trip.title, lang)}
-            aspectRatio="4/3"
-            imgProps={{ loading: "lazy" }}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
-          />
-          {/* Xaluca "&" monogram — anchored to the bottom-right edge */}
-          <img
-            src={monogramaX}
-            alt=""
-            aria-hidden="true"
-            data-testid={`home-all-trips-monogram-${trip.routeId}`}
-            className="pointer-events-none select-none absolute right-0 bottom-0 h-[78%] w-auto object-contain opacity-55 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-          />
-          {/* Xaluca logo — anchored to the bottom-left edge of the image */}
-          <XalucaLogoBadge className="bottom-3 left-3 w-11 h-11" testid={`home-all-trips-logo-${trip.routeId}`} />
-          {/* Region badge */}
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#2C2621]">
-            {pick(REGION_LABEL[trip.region] || { es: trip.region }, lang)}
-          </span>
-          {/* Pace badge */}
-          <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 bg-[#2C2621]/90 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#FDFBF7]">
-            {pick(PACE_LABEL[trip.pace] || { es: trip.pace }, lang)}
-          </span>
-        </div>
-        <div className="flex flex-col flex-1 p-5">
-          <div className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#C16542] mb-2">
-            <Moon className="w-3 h-3" strokeWidth={1.7} />
-            {trip.nights} {pick(COPY.nights, lang)}
-          </div>
-          <h3 className="font-serif text-xl md:text-[22px] text-[#2C2621] leading-tight mb-2">
-            {pick(trip.title, lang)}
-          </h3>
-          <p className="text-[13px] text-[#5C5248] leading-relaxed flex-1">
-            {pick(trip.summary, lang)}
-          </p>
-          <div className="mt-5">
-            <FromPrice tone="dark" size="md" routeId={trip.routeId} testid={`home-all-trips-from-${trip.routeId}`} />
-          </div>
-          <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
-              {pick(COPY.details, lang)}
-              <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
+        <Link
+          to={href}
+          data-testid={`home-all-trips-link-${trip.routeId}`}
+          className="flex flex-col flex-1"
+        >
+          <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1513]">
+            <EditableImage
+              slot={slot}
+              fallback={trip.image}
+              alt={pick(trip.title, lang)}
+              aspectRatio="4/3"
+              imgProps={{ loading: "lazy" }}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+            />
+            {/* Xaluca "&" monogram — anchored to the bottom-right edge */}
+            <img
+              src={monogramaX}
+              alt=""
+              aria-hidden="true"
+              data-testid={`home-all-trips-monogram-${trip.routeId}`}
+              className="pointer-events-none select-none absolute right-0 bottom-0 h-[78%] w-auto object-contain opacity-55 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+            />
+            {/* Xaluca logo — anchored to the bottom-left edge of the image */}
+            <XalucaLogoBadge className="bottom-3 left-3 w-11 h-11" testid={`home-all-trips-logo-${trip.routeId}`} />
+            {/* Region badge */}
+            <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#2C2621]">
+              {pick(REGION_LABEL[trip.region] || { es: trip.region }, lang)}
             </span>
-            <button
-              type="button"
-              onClick={openChatbaseAssistant}
-              data-testid={`home-all-trips-assistant-${trip.routeId}`}
-              aria-label={pick(ASSISTANT_LABEL, lang)}
-              title={pick(ASSISTANT_LABEL, lang)}
-              className="shrink-0 inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-            >
-              <Headset className="w-4 h-4" strokeWidth={1.7} />
-            </button>
+            {/* Pace badge */}
+            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 bg-[#2C2621]/90 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#FDFBF7]">
+              {pick(PACE_LABEL[trip.pace] || { es: trip.pace }, lang)}
+            </span>
           </div>
+          <div className="flex flex-col flex-1 p-5">
+            <div className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#C16542] mb-2">
+              <Moon className="w-3 h-3" strokeWidth={1.7} />
+              {trip.nights} {pick(COPY.nights, lang)}
+            </div>
+            <h3 className="font-serif text-xl md:text-[22px] text-[#2C2621] leading-tight mb-2">
+              {pick(trip.title, lang)}
+            </h3>
+            <p className="text-[13px] text-[#5C5248] leading-relaxed flex-1">
+              {pick(trip.summary, lang)}
+            </p>
+            <div className="mt-5">
+              <FromPrice tone="dark" size="md" routeId={trip.routeId} testid={`home-all-trips-from-${trip.routeId}`} />
+            </div>
+            <div className="mt-5 pt-4 border-t border-[#2C2621]/10">
+              <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
+                {pick(COPY.details, lang)}
+                <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
+              </span>
+            </div>
+          </div>
+        </Link>
+
+        {/* CTA icon group — siblings of the link so they never trigger card navigation */}
+        <div
+          className="px-5 pb-5 flex flex-wrap items-center gap-2"
+          data-testid={`home-all-trips-actions-${trip.routeId}`}
+        >
+          <button
+            type="button"
+            onClick={() => navigate(pathFor(lang, "planTrip"))}
+            data-testid={`home-all-trips-plan-${trip.routeId}`}
+            aria-label={pick(PLAN_LABEL, lang)}
+            title={pick(PLAN_LABEL, lang)}
+            className="inline-flex items-center justify-center w-9 h-9 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
+          >
+            <Compass className="w-4 h-4" strokeWidth={1.7} />
+          </button>
+          <button
+            type="button"
+            onClick={openChatbaseAssistant}
+            data-testid={`home-all-trips-assistant-${trip.routeId}`}
+            aria-label={pick(ASSISTANT_LABEL, lang)}
+            title={pick(ASSISTANT_LABEL, lang)}
+            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+          >
+            <Headset className="w-4 h-4" strokeWidth={1.7} />
+          </button>
+          <a
+            href={`tel:${CALL_TEL}`}
+            data-testid={`home-all-trips-call-${trip.routeId}`}
+            aria-label={pick(CALL_LABEL, lang)}
+            title={pick(CALL_LABEL, lang)}
+            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+          >
+            <Phone className="w-4 h-4" strokeWidth={1.7} />
+          </a>
+          <button
+            type="button"
+            onClick={() => navigate(pathFor(lang, "appointment"))}
+            data-testid={`home-all-trips-appointment-${trip.routeId}`}
+            aria-label={pick(APPOINTMENT_LABEL, lang)}
+            title={pick(APPOINTMENT_LABEL, lang)}
+            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+          >
+            <CalendarClock className="w-4 h-4" strokeWidth={1.7} />
+          </button>
+          <ShareTripButton
+            testid={`home-all-trips-share-${trip.routeId}`}
+            shareUrl={typeof window !== "undefined" ? `${window.location.origin}${href}` : ""}
+          />
         </div>
         {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
         <CardHighlightsMarquee routeId={trip.routeId} testid={`home-all-trips-highlights-${trip.routeId}`} />
-      </Link>
+      </div>
     </SlotScope>
   );
 };
