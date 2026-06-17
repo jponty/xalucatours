@@ -10,7 +10,7 @@
 ============================================================ */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin, ExternalLink, Library,
+  Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin, ExternalLink, Library, RefreshCw,
 } from "lucide-react";
 import TRIP_PROGRAMS from "@/lib/tripPrograms";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
@@ -122,6 +122,74 @@ export default function GalleryManager({ lang = "es" }) {
     setDayGalleryLocal(key, images);
   };
 
+  // ---- One-time migration: unify legacy id-based galleries into the
+  // definitive index-based keys, then clear the old keys. Idempotent &
+  // safe (old key cleared only AFTER its images are copied). For days that
+  // share the same day.id, the (single, shared) legacy gallery is copied to
+  // EVERY such day's index key so the current display is preserved and each
+  // day becomes independently editable afterwards.
+  const [migrating, setMigrating] = useState(false);
+  const [migrateReport, setMigrateReport] = useState(null);
+
+  const runMigration = async () => {
+    if (migrating) return;
+    if (!window.confirm(
+      "Se migrarán todas las galerías a la clave definitiva (indexada por día) y se limpiarán las claves antiguas.\n\nEs una operación segura e idempotente (puedes repetirla). Actúa sobre la base de datos de ESTE entorno.\n\n¿Continuar?"
+    )) return;
+    setMigrating(true);
+    setMigrateReport(null);
+    const report = { migrated: 0, skipped: 0, cleared: 0, errors: 0 };
+    try {
+      const data = await fetch(`${API}/day-galleries`).then((r) => (r.ok ? r.json() : { galleries: [] })).catch(() => ({ galleries: [] }));
+      const current = {};
+      (data.galleries || []).forEach((x) => { if (x.key) current[x.key] = x.images || []; });
+
+      const oldKeysToClear = new Set();
+      // Phase 1 — copy legacy → index-based keys.
+      for (const t of trips) {
+        for (let i = 0; i < t.days.length; i += 1) {
+          const day = t.days[i];
+          const newKey = `${t.ns}.${dayGallerySegment(i + 1, day.id)}`;
+          const oldKey = `${t.ns}.day.${day.id}`;
+          if (newKey === oldKey) continue;
+          if (current[newKey] && current[newKey].length) { report.skipped += 1; continue; }
+          const legacyImgs = current[oldKey];
+          if (legacyImgs && legacyImgs.length) {
+            try {
+              const r = await fetch(`${API}/day-galleries/${encodeURIComponent(newKey)}`, {
+                method: "PUT", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ images: legacyImgs }),
+              });
+              if (r.ok) {
+                const d = await r.json();
+                current[newKey] = d.images || legacyImgs;
+                setDayGalleryLocal(newKey, current[newKey]);
+                report.migrated += 1;
+                oldKeysToClear.add(oldKey);
+              } else { report.errors += 1; }
+            } catch { report.errors += 1; }
+          }
+        }
+      }
+      // Phase 2 — clear consumed legacy keys (after all copies, since
+      // duplicate-id days share a single legacy key).
+      for (const oldKey of oldKeysToClear) {
+        try {
+          const r = await fetch(`${API}/day-galleries/${encodeURIComponent(oldKey)}`, {
+            method: "PUT", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ images: [] }),
+          });
+          if (r.ok) { delete current[oldKey]; setDayGalleryLocal(oldKey, []); report.cleared += 1; }
+          else { report.errors += 1; }
+        } catch { report.errors += 1; }
+      }
+      setGalleries(current);
+      setMigrateReport(report);
+    } finally {
+      setMigrating(false);
+    }
+  };
+
   return (
     <div data-testid="admin-gallery-manager" className="h-full flex flex-col md:flex-row">
       {/* Trip selector */}
@@ -140,6 +208,22 @@ export default function GalleryManager({ lang = "es" }) {
               className="w-full bg-white/5 border border-white/10 pl-8 pr-2 py-2 text-xs text-white/90 outline-none focus:border-[#D4A373]"
             />
           </div>
+          <button
+            data-testid="gallery-migrate-btn"
+            onClick={runMigration}
+            disabled={migrating}
+            title="Unifica las galerías antiguas en la clave definitiva por día y limpia las claves obsoletas. Seguro e idempotente."
+            className="mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-[10px] tracking-[0.16em] uppercase border border-[#D4A373]/40 text-[#D4A373] hover:bg-[#D4A373]/10 transition-colors disabled:opacity-50"
+          >
+            {migrating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            {migrating ? "Migrando…" : "Migrar galerías a clave definitiva"}
+          </button>
+          {migrateReport && (
+            <p data-testid="gallery-migrate-report" className="mt-2 text-[10px] text-white/60 leading-relaxed">
+              ✓ Migradas: {migrateReport.migrated} · Omitidas: {migrateReport.skipped} · Limpiadas: {migrateReport.cleared}
+              {migrateReport.errors ? ` · Errores: ${migrateReport.errors}` : ""}
+            </p>
+          )}
         </div>
         <div className="overflow-y-auto p-2 space-y-3">
           {Object.entries(grouped).map(([region, list]) => (
