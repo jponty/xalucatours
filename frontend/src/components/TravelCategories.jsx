@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Headset } from "lucide-react";
+import { ArrowRight, Calendar, Headset, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
@@ -17,6 +17,8 @@ const BADGE_KEY = {
   last:     "badge_last",
   seasonal: "badge_seasonal",
 };
+
+const PLAN_LABEL = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
 
 /* Specific trip pages associated with each travel style. */
 const OPTIONS_BY_SLUG = {
@@ -202,6 +204,15 @@ export const TravelCategories = () => {
                     >
                       <Headset className="w-4 h-4" strokeWidth={1.5} />
                     </button>
+                    <Link
+                      to={pathFor(lang, "planTrip")}
+                      data-testid={`category-plan-${c.slug}`}
+                      aria-label={pick(PLAN_LABEL, lang)}
+                      title={pick(PLAN_LABEL, lang)}
+                      className="inline-flex items-center justify-center w-[50px] h-[50px] bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors duration-300"
+                    >
+                      <Compass className="w-4 h-4" strokeWidth={1.6} />
+                    </Link>
                   </div>
                 </div>
               </article>
