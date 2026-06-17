@@ -135,7 +135,7 @@ export default function DayTravelNotes({ routeId, dayId, dayIndex }) {
   const slotFor = (i) => `program.${routeId}.day.${dayIndex}.note.${i}`;
 
   return (
-    <div className="mt-7" data-testid={`day-travel-notes-${dayId}`}>
+    <div className="mt-12 md:mt-16" data-testid={`day-travel-notes-${dayId}`}>
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-2">
         <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#C16542] font-semibold">
