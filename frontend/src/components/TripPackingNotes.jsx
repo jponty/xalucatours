@@ -9,7 +9,7 @@
    when the current trip has no notes defined.
 ============================================================ */
 import React, { useRef, useState, useCallback } from "react";
-import { Luggage, Shirt, Sun, Moon, Pin, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Luggage, Shirt, Sun, Moon, Pin, Check, ChevronLeft, ChevronRight, Footprints, Wind, Mountain, Backpack } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getTripPackingNotes } from "@/lib/tripPackingNotes";
 
@@ -30,7 +30,15 @@ const COPY = {
   next: { es: "siguiente", en: "next", fr: "suivante" },
 };
 
-const THEME_ICON = { clothing: Shirt, accessories: Sun, desert: Moon };
+const THEME_ICON = {
+  clothing: Shirt,
+  accessories: Sun,
+  desert: Moon,
+  city: Footprints,
+  coast: Wind,
+  adventure: Mountain,
+  comfort: Backpack,
+};
 
 const Note = ({ note, lang, index }) => {
   const Icon = THEME_ICON[note.theme] || Luggage;
