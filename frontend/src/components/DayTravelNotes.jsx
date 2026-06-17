@@ -113,10 +113,17 @@ export default function DayTravelNotes({ routeId, dayId, dayIndex }) {
   const onScroll = useCallback(() => {
     const el = trackRef.current;
     if (!el || !el.children.length) return;
+    // Match the snap-center behaviour: the active note is the card whose
+    // centre is closest to the rail's viewport centre. Using the centre
+    // (rather than the left edge) keeps the dots correct even when the
+    // column is narrower than the full rail and the last card can never
+    // reach the left edge.
+    const viewportCentre = el.scrollLeft + el.clientWidth / 2;
     let nearest = 0;
     let best = Infinity;
     Array.from(el.children).forEach((c, i) => {
-      const d = Math.abs(c.offsetLeft - el.offsetLeft - el.scrollLeft);
+      const childCentre = c.offsetLeft - el.offsetLeft + c.offsetWidth / 2;
+      const d = Math.abs(childCentre - viewportCentre);
       if (d < best) { best = d; nearest = i; }
     });
     setActive(nearest);
