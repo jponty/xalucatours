@@ -1,0 +1,52 @@
+{
+  "summary": "Frontend-only validation of the NEW DayTravelNotes 'Notas del día' swipeable carousel on /viajes/atlas_desierto/programa_6n_7d. Verified 7 day blocks, 3 notes each (tagline/title/body), Spanish content for day 1, trilingual switching (es/en/fr), CMS edit mode contenteditable surfaces, and absence on the other trip /viajes/marrakech_ergchebbi/programa_6n_7d. One minor UX issue with the dot-indicator active state when the carousel rail cannot fully scroll to the requested slide.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "DayTravelNotes carousel (dot/active sync)",
+        "issue": "Clicking 'next' arrow once on day 1 (desktop, 1920px) did NOT advance the active dot from 0->1, although the rail visually scrolled and notes 2 & 3 became visible. Subsequently clicking dot index 2 settled the active state on index 1 (not 2). Root cause: the lg:col-span-6 column is narrower than 3*280px=840px so the rail can scroll but the requested slide may not reach the left edge; the `onScroll` handler then re-derives `active` from the nearest child to `scrollLeft+offsetLeft` and overrides the `setActive(idx)` call from `goTo`. Pure UX/polish issue; navigation still works visually and arrows/dots are clickable.",
+        "selector": "[data-testid='day-notes-next-dia-1'] / [data-testid='day-notes-dot-dia-1-*']",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "tests_executed": [
+    {"name": "7 day-travel-notes blocks on tourAtlasDesierto67", "result": "PASS — found 7 blocks: day-travel-notes-{dia-1, dia-atlas-mgoun, dia-dades-todra, dia-2, dia-3, dia-4-rissani, dia-ziz-return}. Note: day.ids are slugs, not 'dia-1..dia-7' — this is fine because the component derives storage slot from routeId + 1-based dayIndex, not the dayId."},
+    {"name": "3 notes per day (data-testid day-note-0/1/2)", "result": "PASS for all 7 days; each block contains exactly 3 cards with tagline + title + body."},
+    {"name": "Day 1 contains Spanish keywords (Aït Ben Haddou, Tizi n'Tichka, Dadès)", "result": "PASS — all three present in notes 0, 1, 2 respectively."},
+    {"name": "Carousel navigation: prev/next buttons + 3 dot indicators exist for each day", "result": "PASS — selectors [data-testid='day-notes-prev-<dayId>'], [data-testid='day-notes-next-<dayId>'], [data-testid='day-notes-dot-<dayId>-0/1/2'] all present and clickable."},
+    {"name": "prev disabled at first slide, next disabled at last slide", "result": "PARTIAL — prev correctly disabled at initial state (active=0). next.disabled state correlates with computed active rather than logical last slide, so when active gets stuck at 0/1 due to the dot-sync issue, next never reaches disabled. See ui_bug above."},
+    {"name": "Carousel rail visually scrolls on click", "result": "PASS — rail's scrollLeft changes; new notes become visible in screenshots."},
+    {"name": "Trilingual switch via footer-lang-button-en", "result": "PASS — day 1 note 0 changes: 'DON\\'T MISS IT' / 'Morocco\\'s most famous earthen kasbah... World Heritage site...'"},
+    {"name": "Trilingual switch via footer-lang-button-fr", "result": "PASS — 'À NE PAS MANQUER' / 'kasbah de terre... patrimoine mondial...'"},
+    {"name": "Trilingual switch back to es", "result": "PASS — text returns to ES defaults."},
+    {"name": "CMS edit toggle [data-testid='header-text-edit-toggle'] enables contenteditable", "result": "PASS — after toggle ON, all 3 slots become contenteditable='true': editable-text-program.tourAtlasDesierto67.day.1.note.0.{tagline,title,body}. Each is focusable (document.activeElement.dataset.testid matches after click)."},
+    {"name": "CMS edit toggle OFF removes contenteditable", "result": "PASS — contenteditable attribute drops to null after toggling off."},
+    {"name": "Regression: trip-packing-notes still rendered on Atlas Desierto trip", "result": "PASS"},
+    {"name": "Regression: day-assistant-dia-1 button still rendered", "result": "PASS"},
+    {"name": "Negative case: /viajes/marrakech_ergchebbi/programa_6n_7d has ZERO day-travel-notes blocks", "result": "PASS — 0 blocks found. trip-packing-notes still rendered (route map packing notes are global, not gated by routeId)."},
+    {"name": "No JS console errors during the whole flow", "result": "PASS — no error-level console output captured."}
+  ],
+  "action_items": [
+    "LOW PRIORITY UX POLISH: In DayTravelNotes.jsx, the `onScroll` callback re-derives `active` from scrollLeft and can override `goTo`'s setActive when the rail cannot fully position the requested slide at offsetLeft 0. Two possible fixes: (a) debounce/suppress onScroll updates for ~400ms after a goTo programmatic scroll, OR (b) compute `nearest` against the centre of the viewport instead of the left edge so that the currently centred snap-child is reported. This is purely cosmetic — visual scrolling and snapping already work correctly."
+  ],
+  "critical_code_review_comments": [
+    "DayTravelNotes.jsx (193 lines) — clean, well-scoped component. Uses unique slot namespace `program.${routeId}.day.${dayIndex}.note.${i}.{tagline|title|body}` based on 1-based day index so edits cannot leak across days even when two days in a trip share the same dayId (mirrors the index-based fix applied to galleries in iteration 34). Good.",
+    "Gating via getDayTravelNotes(routeId, dayIndex) → returns null if not configured, so component returns null. Verified negative case on marrakech_ergchebbi trip (0 blocks).",
+    "onScroll handler at line 113-123 calls setActive on every scroll event including during smooth-scroll animations triggered by goTo; this races with goTo's own setActive(idx) and produces the dot-desync observed. Consider a flag like `isProgrammaticScroll` set inside goTo and cleared after ~400ms.",
+    "All interactive elements have proper data-testid (prev/next buttons, dots, track, individual notes, edit text slots). Excellent testability.",
+    "Trilingual content via pick(COPY.eyebrow, lang) + EditableText defaults={note.tagline} (objects {es,en,fr}) — works correctly across all 3 languages."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% on all functional checks (14/14 functional tests). 1 LOW-priority UX polish issue with carousel dot active-state synchronization."},
+  "test_credentials": "Not required for this test (text-edit toggle is global, no login).",
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "DayTravelNotes feature is functionally COMPLETE on tourAtlasDesierto67. The 7 day blocks have heterogeneous dayId slugs (dia-1, dia-atlas-mgoun, dia-dades-todra, dia-2, dia-3, dia-4-rissani, dia-ziz-return) — do NOT assume 'dia-1..dia-7'. Use [data-testid^='day-travel-notes-'] to enumerate. Slot keying uses 1-based dayIndex, not dayId. Language switcher lives in Footer.jsx with data-testid='footer-lang-button-{es|en|fr}'. The only outstanding issue is a minor dot-indicator sync glitch (LOW priority) inside DayTravelNotes.jsx onScroll handler.",
+  "rca of the issue": "Dot indicator desync RCA: In DayTravelNotes.jsx, goTo(idx) calls el.scrollTo({left: slide.offsetLeft - el.offsetLeft, behavior:'smooth'}) AND setActive(idx). During the smooth-scroll animation, onScroll fires many times and recomputes active via Math.abs(child.offsetLeft - el.offsetLeft - el.scrollLeft). On a rail that cannot scroll as far as the requested slide's offset (e.g. last slide when rail width > viewport), the final settled scrollLeft is at max-scroll which corresponds to a slide index LOWER than the requested one, so setActive lands on (n-1) instead of (n). On the first 'next' click the smooth-scroll briefly reaches scrollLeft near slide 1 then snaps back near slide 0 due to snap-mandatory + insufficient overflow, leaving active=0. Mitigation: gate onScroll updates with a programmatic-scroll flag for ~400ms after goTo, or compute nearest from the rail's viewport centre instead of left edge."
+}

@@ -22,6 +22,7 @@ import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import { DayImageGallery } from "@/components/DayImageGallery";
+import DayTravelNotes from "@/components/DayTravelNotes";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 import FromPrice from "@/components/FromPrice";
@@ -361,6 +362,7 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
         <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start ${reverse ? "lg:[direction:rtl]" : ""}`}>
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <DayImageGallery day={day} dayLabel={t.day_label} dayNum={dayNum} dayIndex={idx + 1} />
+            <DayTravelNotes routeId={routeId} dayId={day.id} dayIndex={idx + 1} />
           </div>
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase" style={{ color: day.accent }}>
