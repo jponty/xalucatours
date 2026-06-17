@@ -266,6 +266,7 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
     const next = [...imagesRef.current, { url: libItem.url, alt: libItem.original_filename || null }];
     imagesRef.current = next;
     persist(next);
+    setPickerOpen(false); // close the library modal after a successful pick
   };
 
   const onUpload = async (e) => {
@@ -274,7 +275,23 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
     if (!files.length) return;
     setBusy(true);
     try {
-      let latest = images;
+      // Persist the current (possibly seeded-but-unsaved) list FIRST so the
+      // uploaded files ADD to what's shown instead of replacing the seed on a
+      // brand-new day. Idempotent when the gallery is already persisted.
+      let latest = imagesRef.current;
+      if (latest.length) {
+        const r0 = await fetch(`${API}/day-galleries/${encodeURIComponent(galleryKey)}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ images: latest }),
+        });
+        if (r0.ok) {
+          const d0 = await r0.json();
+          latest = d0.images || latest;
+          setImages(latest);
+          imagesRef.current = latest;
+        }
+      }
       for (const f of files) {
         const fd = new FormData();
         fd.append("file", f);
@@ -283,6 +300,7 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
           const data = await r.json();
           latest = data.images || latest;
           setImages(latest);
+          imagesRef.current = latest;
         }
       }
       onSaved(galleryKey, latest);
