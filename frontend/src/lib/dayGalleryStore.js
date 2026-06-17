@@ -43,6 +43,13 @@ export const ensureDayGalleries = () => {
 
 export const getDayGallery = (key) => store.map.get(key) || null;
 
+/* Canonical key segment for a per-day managed gallery. Uses the day's
+   1-based POSITION within the programme so each day is INDEPENDENT even
+   when several days share the same `day.id` (some programmes reuse the
+   same day module / generic ids). Both the admin editor and the public
+   page build the key from this helper so they always agree. */
+export const dayGallerySegment = (index, dayId) => `day.${index}.${dayId}`;
+
 /* Push a fresh image list into the cache (used by the admin editor so
    the live preview updates without a refetch). */
 export const setDayGalleryLocal = (key, images) => {

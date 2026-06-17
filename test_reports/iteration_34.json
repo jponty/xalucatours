@@ -1,0 +1,43 @@
+{
+  "summary": "Frontend-only validation of GalleryManager per-day isolation + optimistic updates + trip switching on /admin → Galerías tab. Used trip tourMarrakechErg67 (6n/7d) which has DUPLICATE day.ids (day.2 & day.3 both share dia-2; day.4 & day.6 share dia-4; day.5 & day.7 share dia-5) — the worst-case scenario for the previous bug. All isolation and optimistic UI flows now work correctly with the new INDEX-based key `${ns}.day.${index}.${dayId}`. NO console errors during any flow.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ImageLibraryPicker", "issue": "After choosing an image via [data-testid^=image-library-pick-] the picker modal does NOT auto-close — the overlay remains open on top of the GalleryManager, blocking subsequent hover/click on other days until manually dismissed (only Cancelar closes it). The pick itself succeeds (Day's gallery updates optimistically), so this is a UX/QoL issue, not a data bug.", "selector": "[data-testid=image-library-picker]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "tests_executed": [
+    {"name": "Admin login → /admin password 'xaluca' → admin-page", "result": "PASS"},
+    {"name": "Click Galerías tab → admin-gallery-manager renders left trip list + right day editor", "result": "PASS"},
+    {"name": "Select gallery-trip-tourMarrakechErg67 → 7 day sections (data-testid^='gallery-day-') rendered with 'Día N' headers + 'N img' badges", "result": "PASS — keys: day.1.dia-1, day.2.dia-2, day.3.dia-2, day.4.dia-4, day.5.dia-5, day.6.dia-4, day.7.dia-5 (duplicate ids correctly disambiguated by index)"},
+    {"name": "UPLOAD ISOLATION (Day 2) — upload small JPG via Day 2's hidden <input type=file>", "result": "PASS — Day 2 count 1→2; Day 3 (same dia-2 id) UNCHANGED at 1; Day 7 (same dia-5 id as a different day) UNCHANGED; all 6 other days unchanged. The new image's URL appears ONLY in Day 2 (no contamination)."},
+    {"name": "OPTIMISTIC UPLOAD — new thumb appears in Day 2 immediately without manual refresh", "result": "PASS — count is updated client-side within <500ms (optimistic) before server PUT completes"},
+    {"name": "SELECT FROM LIBRARY ISOLATION + OPTIMISTIC (Day 5)", "result": "PASS — opened image-library-picker (120 items available), clicked image-library-pick-0; Day 5 count 1→2 immediately; Day 7 (same dia-5 id) UNCHANGED; all other days unchanged"},
+    {"name": "DELETE ISOLATION + OPTIMISTIC — hover Day 2 first thumb, click gallery-delete-*", "result": "PASS — Day 2 count 2→1 immediately (optimistic, <500ms); all other days UNCHANGED. Delete button correctly appears on thumb hover."},
+    {"name": "REORDER OPTIMISTIC (setmain) on Day 5 — hover 2nd thumb, click gallery-setmain-*", "result": "PASS — 2nd thumbnail (orange test image) became the new Principal preview immediately and moved to index 0. Original first image moved to index 1. Other days unaffected. Visible confirmation in final screenshot: orange image now PRINCIPAL on Day 5."},
+    {"name": "TRIP SWITCH (no browser refresh) — click gallery-trip-tourAtlasDesierto67", "result": "PASS — right panel immediately replaced 7 day sections with Atlas Desierto's own day.ids (1.dia-1, 2.dia-atlas-mgoun, 3.dia-dades-todra, …). ZERO Marrakech keys leaked into Atlas view."},
+    {"name": "TRIP SWITCH BACK — click gallery-trip-tourMarrakechErg67 → state per day persisted", "result": "PASS — all 7 Marrakech day counts identical to pre-switch state (Day 2 = 2, Day 5 = 2, Day 3 = 1, Day 7 = 1, etc). State for each trip kept independently."},
+    {"name": "No JS console errors during entire flow", "result": "PASS — captured errors = []"}
+  ],
+  "action_items": [
+    "MINOR: Close the ImageLibraryPicker modal automatically after a successful pick (image-library-pick-*). It currently stays open and overlays the gallery, blocking further hover-driven actions until the user clicks Cancelar."
+  ],
+  "critical_code_review_comments": [
+    "GalleryManager.jsx onUpload (line 271-293) only updates `latest` from the server response and never combines with the seed images — works correctly because the backend appends server-side. Good. However, the very first upload on a day whose state is purely SEEDED (no persisted gallery yet) will result in the server creating a fresh doc with ONLY the uploaded image (since the seed images were never PUT to the server). On this run all observed days already had persisted data so no regression manifested, but this could surprise users on a brand-new day: the on-screen seed thumbnail vanishes after the first upload. Consider PUT-persisting the seed before the first upload, or seeding the server doc on first GET.",
+    "Index-based key apiKey(ns, index, dayId)=`${ns}.day.${index}.${dayId}` (line 53) successfully decorrelates duplicate day.ids — verified with tourMarrakechErg67 where 3 different day.ids appear twice each. Public consumer (DayImageGallery via dayGallerySegment) uses identical logic, so admin↔public alignment is preserved.",
+    "DayGalleryEditor uses local `images` state + `imagesRef.current` for picker callbacks (line 238-239,266-268). Good closure-safe pattern; avoids stale-state bugs that previously caused cross-day overwrites.",
+    "ImageLibraryPicker should call onClose() (or whatever prop dismisses it) inside the pick handler to provide one-click UX; currently the picker only closes via Cancelar.",
+    "GalleryManager.jsx is 417 lines — borderline OK but split-candidate if more features land (consider extracting DayGalleryEditor into its own file)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% on all 11 isolation/optimistic/switch checks; 1 minor UX issue (picker doesn't auto-close)"},
+  "test_credentials": "Admin: /admin, password 'xaluca' (from /app/memory/test_credentials.md). Used successfully.",
+  "seed_data_creation": "Generated /tmp/testimg/test_day2.jpg (200x200 orange JPG, 1KB) for upload tests. Uploaded into Day 2 and Day 1 of tourMarrakechErg67; an additional copy ended up bulk-tagged in the Library and was selected into Day 5. These can be cleaned up by deleting from the day editors and the Biblioteca.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Per-day INDEX-based gallery keying is now verified for the previously-failing duplicate-day-id case (tourMarrakechErg67 — 3 duplicate ids: dia-2, dia-4, dia-5). Upload, library-pick, delete, setmain/reorder all isolate correctly and update optimistically with no page refresh. Trip switching reloads per-trip state immediately and keeps state independent per trip. Only outstanding cosmetic issue: ImageLibraryPicker modal stays open after a pick, blocking other interactions until 'Cancelar' is clicked.",
+  "rca of the issue": "Original bug RCA confirmed and fixed: previous key `${ns}.day.${dayId}` collided when two days in a programme shared the same day.id, causing shared storage + duplicate React keys. Fix applied: `${ns}.day.${index}.${dayId}` where index is 1-based position, mirrored on admin (GalleryManager apiKey) and public (DayImageGallery via dayGallerySegment). Verified end-to-end: writing to Day 2 (dia-2) no longer leaks into Day 3 (also dia-2); Day 5 (dia-5) does not leak into Day 7 (also dia-5)."
+}

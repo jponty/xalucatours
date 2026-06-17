@@ -4,7 +4,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import { EditableGroup } from "@/contexts/EditableGroupContext";
 import { useSlotId } from "@/components/slotScope";
-import { useDayGallery, resolveGalleryUrl } from "@/lib/dayGalleryStore";
+import { useDayGallery, resolveGalleryUrl, dayGallerySegment } from "@/lib/dayGalleryStore";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
 
@@ -46,15 +46,21 @@ const buildImages = (base, day) => {
   return images;
 };
 
-export const DayImageGallery = ({ day, dayLabel, dayNum }) => {
+export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
   const { lang } = useLanguage();
-  // Page-namespaced base → gallery is independent per itinerary URL.
+  // Page-namespaced base → legacy inline-CMS slots, independent per URL.
   const base = useSlotId(`day.${day.id}`);
+  // Index-based key for the admin-managed dynamic gallery, so each day is
+  // fully INDEPENDENT even when two days in a programme share the same
+  // `day.id`. `dayIndex` is the day's 1-based position (from ProgramTemplate);
+  // fall back to parsing `dayNum` ("01" → 1) for safety.
+  const idx1 = dayIndex || parseInt(dayNum, 10) || 1;
+  const galleryKey = useSlotId(dayGallerySegment(idx1, day.id));
   const alt = pick(day.title, lang);
 
   // Dynamic CMS gallery (managed from /admin). When present it overrides
   // the legacy fixed slots. images[0] is the featured/main image.
-  const dynamic = useDayGallery(base);
+  const dynamic = useDayGallery(galleryKey);
 
   const slides = useMemo(() => {
     if (dynamic && dynamic.length) {

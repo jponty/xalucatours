@@ -17,7 +17,7 @@ import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { namespaceForRouteId } from "@/components/slotScope";
 import { pick } from "@/contexts/LanguageContext";
-import { setDayGalleryLocal, resolveGalleryUrl } from "@/lib/dayGalleryStore";
+import { setDayGalleryLocal, resolveGalleryUrl, dayGallerySegment } from "@/lib/dayGalleryStore";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -47,7 +47,13 @@ const buildTrips = () => {
     .filter((t) => ROUTES[t.routeId] && t.days.length > 0);
 };
 
-const apiKey = (ns, dayId) => `${ns}.day.${dayId}`;
+/* Dynamic gallery key — INDEX-based so each day is independent even when
+   two days in a programme share the same `day.id`. Mirrors the public
+   DayImageGallery (lib/dayGalleryStore → dayGallerySegment). */
+const apiKey = (ns, index, dayId) => `${ns}.${dayGallerySegment(index, dayId)}`;
+/* Legacy id-based base for reading existing inline-CMS image slots when
+   seeding a day that has no managed gallery yet. */
+const legacyBaseFor = (ns, dayId) => `${ns}.day.${dayId}`;
 
 export default function GalleryManager({ lang = "es" }) {
   const trips = useMemo(buildTrips, []);
@@ -94,13 +100,15 @@ export default function GalleryManager({ lang = "es" }) {
   };
 
   // Seed a day's images from current dynamic doc, else from CMS slots/fallback.
-  const seedFor = (key, day) => {
+  // `key` is the index-based managed-gallery key; `legacyBase` is the id-based
+  // base used by the legacy inline slots (so we can pre-fill the editor).
+  const seedFor = (key, legacyBase, day) => {
     if (galleries[key] && galleries[key].length) return galleries[key];
     const out = [];
-    const main = slots[`${key}.image`] || day.image;
+    const main = slots[`${legacyBase}.image`] || day.image;
     if (main) out.push({ url: main, alt: pick(day.title, lang) });
     for (let i = 0; i < MAX_SEED_SLIDES; i += 1) {
-      const u = slots[`${key}.slide.${i}`];
+      const u = slots[`${legacyBase}.slide.${i}`];
       if (u) out.push({ url: u, alt: null });
     }
     return out;
@@ -198,7 +206,8 @@ export default function GalleryManager({ lang = "es" }) {
               <MapPin className="w-3.5 h-3.5" /> {pick(trip.title, lang)} · {trip.days.length} días
             </div>
             {trip.days.map((day, i) => {
-              const key = apiKey(trip.ns, day.id);
+              const key = apiKey(trip.ns, i + 1, day.id);
+              const legacyBase = legacyBaseFor(trip.ns, day.id);
               return (
                 <DayGalleryEditor
                   key={key}
@@ -207,7 +216,7 @@ export default function GalleryManager({ lang = "es" }) {
                   dayTitle={pick(day.title, lang)}
                   dayBody={pick(day.body, lang)}
                   accent={day.accent || "#C16542"}
-                  initial={seedFor(key, day)}
+                  initial={seedFor(key, legacyBase, day)}
                   onSaved={onSaved}
                 />
               );

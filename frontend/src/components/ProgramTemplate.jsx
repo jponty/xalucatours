@@ -360,7 +360,7 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start ${reverse ? "lg:[direction:rtl]" : ""}`}>
           <div className="lg:col-span-6 lg:[direction:ltr]">
-            <DayImageGallery day={day} dayLabel={t.day_label} dayNum={dayNum} />
+            <DayImageGallery day={day} dayLabel={t.day_label} dayNum={dayNum} dayIndex={idx + 1} />
           </div>
           <div className="lg:col-span-6 lg:[direction:ltr]">
             <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase" style={{ color: day.accent }}>
