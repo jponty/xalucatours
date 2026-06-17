@@ -13,6 +13,8 @@
    To enable another trip, add an entry keyed by routeId (1-based day index).
 ============================================================ */
 
+import TRIP_PROGRAMS from "@/lib/tripPrograms";
+
 const T = (es, en, fr) => ({ es, en, fr });
 
 // Fixed visual "kinds" by note position (icon/accent live in the component).
@@ -226,7 +228,68 @@ const NOTES = {
   },
 };
 
-export const getDayTravelNotes = (routeId, dayIndex) =>
-  (NOTES[routeId] && NOTES[routeId][dayIndex]) || null;
+export const getDayTravelNotes = (routeId, dayIndex) => {
+  const bespoke = NOTES[routeId] && NOTES[routeId][dayIndex];
+  if (bespoke) return bespoke;
+  return deriveDayNotes(routeId, dayIndex);
+};
 
-export const isDayTravelNotesEnabled = (routeId) => Boolean(NOTES[routeId]);
+export const isDayTravelNotesEnabled = (routeId) =>
+  Boolean(NOTES[routeId]) || Boolean(TRIP_PROGRAMS[routeId]);
+
+/* ============================================================
+   Auto-derivation for every OTHER trip.
+   ----
+   Each itinerary day already carries a curated, trilingual
+   `culture` array ({title, body}) describing that day's REAL
+   places, history and highlights — perfect source material for
+   the day notes. We turn the first up-to-3 culture blocks of each
+   day into post-it notes, so every trip gets day-specific notes
+   without inventing any content. The bespoke NOTES above still
+   take precedence (e.g. tourAtlasDesierto67). Every derived note
+   remains individually CMS-editable per route + day, so the team
+   can refine the wording from the front-end Edit Text mode.
+============================================================ */
+
+// Rotating taglines by note position. Icons/accents are fixed in
+// DayTravelNotes (Star · Lightbulb · Camera).
+const DERIVED_TAGLINES = [
+  T("No te lo pierdas", "Don't miss it", "À ne pas manquer"),
+  T("Sabías que", "Did you know", "Le saviez-vous"),
+  T("Para la foto", "For the photo", "Pour la photo"),
+];
+
+// Keep the title short: if it carries an early colon ("Place: subtitle"),
+// keep the part before it; otherwise keep the full title.
+const tidyTitle = (title) => {
+  if (!title) return title;
+  const cut = (s) => {
+    if (!s) return s;
+    const i = s.indexOf(":");
+    return i > 0 && i <= 38 ? s.slice(0, i).trim() : s;
+  };
+  return { es: cut(title.es), en: cut(title.en), fr: cut(title.fr) };
+};
+
+// Trim a body to its first couple of sentences so it fits the post-it.
+const firstSentences = (s, n = 2) => {
+  if (!s) return s;
+  const parts = s.match(/[^.!?]+[.!?]+/g);
+  if (!parts || parts.length <= n) return s.trim();
+  return parts.slice(0, n).join("").trim();
+};
+const tidyBody = (body) =>
+  body ? { es: firstSentences(body.es), en: firstSentences(body.en), fr: firstSentences(body.fr) } : body;
+
+const deriveDayNotes = (routeId, dayIndex) => {
+  const entry = TRIP_PROGRAMS[routeId];
+  const days = entry && entry.program && entry.program.days;
+  const day = days && days[dayIndex - 1];
+  const culture = day && Array.isArray(day.culture) ? day.culture : null;
+  if (!culture || culture.length === 0) return null;
+  return culture.slice(0, 3).map((c, i) => ({
+    tagline: DERIVED_TAGLINES[i % DERIVED_TAGLINES.length],
+    title: tidyTitle(c.title),
+    body: tidyBody(c.body),
+  }));
+};
