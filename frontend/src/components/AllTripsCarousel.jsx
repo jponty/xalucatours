@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Compass, Headset } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Compass, Headset, Phone, CalendarClock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import ShareTripButton from "@/components/ShareTripButton";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import xMonogram from "@/assets/monograma-x-white.png";
 
@@ -19,6 +20,10 @@ import xMonogram from "@/assets/monograma-x-white.png";
 const T = (es, en, fr) => ({ es, en, fr });
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+const PLAN_LABEL = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
+const CALL_LABEL = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
+const APPOINTMENT_LABEL = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
+const CALL_TEL = "+34937268366";
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
@@ -132,6 +137,7 @@ const TRIPS = [
 /* ============================================================ */
 export default function AllTripsCarousel() {
   const { lang } = useLanguage();
+  const navigate = useNavigate();
   const railRef = useRef(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -214,76 +220,118 @@ export default function AllTripsCarousel() {
           className="flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-6 md:-mx-12 px-6 md:px-12 no-scrollbar"
         >
           {TRIPS.map((trip) => (
-            <Link
+            <div
               key={trip.id}
-              to={pathFor(lang, trip.routeId)}
               data-testid={`all-trips-card-${trip.id}`}
-              className="group relative shrink-0 w-[78vw] sm:w-[320px] md:w-[340px] snap-start bg-white border border-[#2C2621]/8 hover:border-[#2C2621]/30 transition-colors"
+              className="group relative shrink-0 w-[78vw] sm:w-[320px] md:w-[340px] snap-start bg-white border border-[#2C2621]/8 hover:border-[#2C2621]/30 transition-colors flex flex-col"
             >
-              <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
-                <EditableImage
-                  slot={tripHeroSlot(trip.routeId)}
-                  fallback={tripHeroImage(trip.routeId) || trip.image}
-                  alt={pick(trip.title, lang)}
-                  imgProps={{ loading: "lazy" }}
-                  aspectRatio="4/5"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/90 via-[#1A1513]/30 to-[#1A1513]/8" />
-                <span className="film-grain opacity-40" aria-hidden="true" />
-                <XalucaLogoBadge testid={`all-trips-logo-${trip.id}`} />
+              <Link
+                to={pathFor(lang, trip.routeId)}
+                data-testid={`all-trips-link-${trip.id}`}
+                className="block"
+              >
+                <div className="relative aspect-[4/5] overflow-hidden bg-[#1A1513]">
+                  <EditableImage
+                    slot={tripHeroSlot(trip.routeId)}
+                    fallback={tripHeroImage(trip.routeId) || trip.image}
+                    alt={pick(trip.title, lang)}
+                    imgProps={{ loading: "lazy" }}
+                    aspectRatio="4/5"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/90 via-[#1A1513]/30 to-[#1A1513]/8" />
+                  <span className="film-grain opacity-40" aria-hidden="true" />
+                  <XalucaLogoBadge testid={`all-trips-logo-${trip.id}`} />
 
-                <span className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image"
-                  style={{ background: `${trip.accent}f0` }}>
-                  {pick(TAGS[trip.tag], lang)}
-                </span>
-
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/80 mb-2 text-on-image">
-                    {trip.nights}
+                  <span className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image"
+                    style={{ background: `${trip.accent}f0` }}>
+                    {pick(TAGS[trip.tag], lang)}
                   </span>
-                  <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight pr-12">
-                    {pick(trip.title, lang)}
-                  </h3>
+
+                  <div className="absolute inset-x-0 bottom-0 p-5">
+                    <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/80 mb-2 text-on-image">
+                      {trip.nights}
+                    </span>
+                    <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight pr-12">
+                      {pick(trip.title, lang)}
+                    </h3>
+                  </div>
+
+                  {/* Xaluca "X" monogram — bottom-right of each image */}
+                  <img
+                    src={xMonogram}
+                    alt=""
+                    aria-hidden="true"
+                    data-testid={`all-trips-monogram-${trip.id}`}
+                    className="pointer-events-none select-none absolute bottom-3 right-3 w-9 h-9 md:w-10 md:h-10 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] z-[3]"
+                  />
                 </div>
 
-                {/* Xaluca "X" monogram — bottom-right of each image */}
-                <img
-                  src={xMonogram}
-                  alt=""
-                  aria-hidden="true"
-                  data-testid={`all-trips-monogram-${trip.id}`}
-                  className="pointer-events-none select-none absolute bottom-3 right-3 w-9 h-9 md:w-10 md:h-10 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] z-[3]"
-                />
-              </div>
-
-              <div className="px-5 py-5">
-                <p className="text-[13px] text-[#5C5248] leading-[1.7] min-h-[2.6em]">
-                  {pick(trip.desc, lang)}
-                </p>
-                <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
-                  <span className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
-                    {pick(COPY.cta, lang)}
-                  </span>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={openChatbaseAssistant}
-                      data-testid={`all-trips-assistant-${trip.id}`}
-                      aria-label={pick(ASSISTANT_LABEL, lang)}
-                      title={pick(ASSISTANT_LABEL, lang)}
-                      className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-                    >
-                      <Headset className="w-4 h-4" strokeWidth={1.7} />
-                    </button>
+                <div className="px-5 pt-5">
+                  <p className="text-[13px] text-[#5C5248] leading-[1.7] min-h-[2.6em]">
+                    {pick(trip.desc, lang)}
+                  </p>
+                  <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
+                      {pick(COPY.cta, lang)}
+                    </span>
                     <ArrowUpRight
                       className="w-4 h-4 text-[#2C2621] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542]"
                       strokeWidth={1.6}
                     />
                   </div>
                 </div>
+              </Link>
+
+              <div
+                className="px-5 pb-5 pt-4 mt-auto flex flex-wrap items-center gap-2"
+                data-testid={`all-trips-actions-${trip.id}`}
+              >
+                <button
+                  type="button"
+                  onClick={() => navigate(pathFor(lang, "planTrip"))}
+                  data-testid={`all-trips-plan-${trip.id}`}
+                  aria-label={pick(PLAN_LABEL, lang)}
+                  title={pick(PLAN_LABEL, lang)}
+                  className="inline-flex items-center justify-center w-10 h-10 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
+                >
+                  <Compass className="w-4 h-4" strokeWidth={1.7} />
+                </button>
+                <button
+                  type="button"
+                  onClick={openChatbaseAssistant}
+                  data-testid={`all-trips-assistant-${trip.id}`}
+                  aria-label={pick(ASSISTANT_LABEL, lang)}
+                  title={pick(ASSISTANT_LABEL, lang)}
+                  className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+                >
+                  <Headset className="w-4 h-4" strokeWidth={1.7} />
+                </button>
+                <a
+                  href={`tel:${CALL_TEL}`}
+                  data-testid={`all-trips-call-${trip.id}`}
+                  aria-label={pick(CALL_LABEL, lang)}
+                  title={pick(CALL_LABEL, lang)}
+                  className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+                >
+                  <Phone className="w-4 h-4" strokeWidth={1.7} />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => navigate(pathFor(lang, "appointment"))}
+                  data-testid={`all-trips-appointment-${trip.id}`}
+                  aria-label={pick(APPOINTMENT_LABEL, lang)}
+                  title={pick(APPOINTMENT_LABEL, lang)}
+                  className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
+                >
+                  <CalendarClock className="w-4 h-4" strokeWidth={1.7} />
+                </button>
+                <ShareTripButton
+                  testid={`all-trips-share-${trip.id}`}
+                  shareUrl={typeof window !== "undefined" ? `${window.location.origin}${pathFor(lang, trip.routeId)}` : ""}
+                />
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
