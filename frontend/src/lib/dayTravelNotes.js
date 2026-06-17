@@ -409,12 +409,15 @@ const THEME_TIPS = {
 };
 
 // Detect a day's theme from its (trilingual) title + body keywords.
+// Order matters: the most climate-specific buckets (desert, coast) are
+// tested first; city is tested before mountain so that imperial-city /
+// medina days that merely mention a valley don't get mountain tips.
 const detectTheme = (day) => {
   const blob = `${(day.title && (day.title.es || "")) || ""} ${(day.title && (day.title.en || "")) || ""} ${(day.body && (day.body.es || "")) || ""} ${(day.body && (day.body.en || "")) || ""}`.toLowerCase();
-  if (/(desierto|dunas|erg chebbi|sahara|sáhara|bivouac|bivvouac|dromedario|merzouga|haima|jaima|desert|dune|camel)/.test(blob)) return "desert";
+  if (/(desierto|dunas|erg chebbi|sahara|sáhara|bivouac|dromedario|merzouga|haima|jaima|desert|dune|camel)/.test(blob)) return "desert";
   if (/(essaouira|tánger|tanger|tangier|asilah|costa|atlántico|atlantico|atlantic|océano|oceano|ocean|coast|seaside|playa|beach)/.test(blob)) return "coast";
-  if (/(atlas|tichka|gargantas|gorge|todra|dades|dadès|m'goun|mgoun|montaña|montagne|mountain|valle|valley|puerto de monta)/.test(blob)) return "mountain";
-  if (/(medina|médina|zoco|souk|marrakech|fez|fès|fes|mequinez|meknes|meknès|volubilis|chefchaouen|rabat|tetuán|tetuan|kasbah|ciudad|ville|city|imperial)/.test(blob)) return "city";
+  if (/(medina|médina|zoco|souk|marrakech|fez|fès|mequinez|meknes|meknès|volubilis|moulay idriss|chefchaouen|rabat|tetuán|tetuan|ciudad|imperial)/.test(blob)) return "city";
+  if (/(atlas|tichka|gargantas|gorge|todra|dades|dadès|m'goun|mgoun|montaña|montagne|mountain|\bpass\b)/.test(blob)) return "mountain";
   return "general";
 };
 
