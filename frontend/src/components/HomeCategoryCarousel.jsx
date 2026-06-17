@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users, Headset } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
+import TripCardActions from "@/components/TripCardActions";
 import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
 
 /* ============================================================
@@ -33,11 +34,6 @@ const LABELS = {
   fr: { prev: "Précédent", next: "Suivant", view: "Voir le voyage", spots_left: "places", from: "dès" },
 };
 
-const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
-
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
-import { openChatbaseAssistant } from "@/lib/chatbase";
-
 const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
   const tx = LABELS[lang] || LABELS.es;
   const isDark = tone === TONES.dark;
@@ -49,131 +45,129 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
   const imgSlot = useMaster ? tripHeroSlot(trip.routeId) : `home.cat-carousel.${trip.id}`;
   const imgFallback = (useMaster && tripHeroImage(trip.routeId)) || trip.image;
   return (
-    <Link
-      to={pathFor(lang, trip.routeId)}
+    <div
       data-testid={`home-trip-card-${trip.id}`}
       className="snap-start shrink-0 w-[82vw] sm:w-[340px] md:w-[360px] flex flex-col group transition-shadow duration-500 hover:shadow-[0_30px_60px_-30px_rgba(26,21,19,0.4)]"
       style={{ background: tone.card, border: `1px solid ${tone.border}1A` }}
     >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
-        <EditableImage
-          slot={imgSlot}
-          fallback={imgFallback}
-          alt={pick(trip.title, lang)}
-          imgProps={{ loading: "lazy" }}
-          aspectRatio="4/3"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-        />
-        {/* Dedicated bottom-half gradient — soft on top, stronger near
-            the title for guaranteed readability on light imagery. */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(20,15,12,0.86) 0%, rgba(20,15,12,0.55) 38%, rgba(20,15,12,0.18) 70%, rgba(20,15,12,0) 100%)",
-          }}
-        />
-        <span className="film-grain pointer-events-none opacity-40" aria-hidden="true" />
-        <XalucaLogoBadge testid={`home-trip-logo-${trip.id}`} />
-        <span
-          className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-white text-on-image z-[2]"
-          style={{ background: `${cardAccent}f0` }}
-          data-testid={`home-trip-tag-${trip.id}`}
-        >
-          {pick(trip.tag, lang)}
-        </span>
-        <div className="absolute inset-x-0 bottom-0 p-5 z-[2]">
-          <span className="block text-[10px] tracking-[0.3em] uppercase text-white/90 mb-1.5 text-on-image-strong">
-            {pick(trip.duration, lang)}
+      <Link
+        to={pathFor(lang, trip.routeId)}
+        data-testid={`home-trip-link-${trip.id}`}
+        className="flex flex-col flex-1"
+      >
+        {/* Image */}
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
+          <EditableImage
+            slot={imgSlot}
+            fallback={imgFallback}
+            alt={pick(trip.title, lang)}
+            imgProps={{ loading: "lazy" }}
+            aspectRatio="4/3"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+          />
+          {/* Dedicated bottom-half gradient — soft on top, stronger near
+              the title for guaranteed readability on light imagery. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(20,15,12,0.86) 0%, rgba(20,15,12,0.55) 38%, rgba(20,15,12,0.18) 70%, rgba(20,15,12,0) 100%)",
+            }}
+          />
+          <span className="film-grain pointer-events-none opacity-40" aria-hidden="true" />
+          <XalucaLogoBadge testid={`home-trip-logo-${trip.id}`} />
+          <span
+            className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-white text-on-image z-[2]"
+            style={{ background: `${cardAccent}f0` }}
+            data-testid={`home-trip-tag-${trip.id}`}
+          >
+            {pick(trip.tag, lang)}
           </span>
-          <h3 className="font-serif-x text-white text-on-image-strong text-[20px] md:text-[22px] leading-[1.12] tracking-tight">
-            {pick(trip.title, lang)}
-          </h3>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="p-5 md:p-6 flex-1 flex flex-col gap-4" style={{ color: tone.ink }}>
-        {/* Route / dates */}
-        {compactMeta && trip.dates ? (
-          <div className="space-y-2">
-            <p className="inline-flex items-center gap-2 text-[12px]" style={{ color: tone.mute }}>
-              <Clock className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
-              <span>{pick(trip.dates, lang)}</span>
-            </p>
-            {trip.spots != null && (
-              <p className="inline-flex items-center gap-2 text-[12px]" style={{ color: tone.mute }}>
-                <Users className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
-                <span>
-                  {trip.spots}/{trip.capacity} {tx.spots_left}
-                </span>
-              </p>
-            )}
+          <div className="absolute inset-x-0 bottom-0 p-5 z-[2]">
+            <span className="block text-[10px] tracking-[0.3em] uppercase text-white/90 mb-1.5 text-on-image-strong">
+              {pick(trip.duration, lang)}
+            </span>
+            <h3 className="font-serif-x text-white text-on-image-strong text-[20px] md:text-[22px] leading-[1.12] tracking-tight">
+              {pick(trip.title, lang)}
+            </h3>
           </div>
-        ) : (
-          <p className="inline-flex items-start gap-2 text-[12px] leading-[1.6]" style={{ color: tone.mute }}>
-            <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
-            <span>{pick(trip.route, lang)}</span>
-          </p>
-        )}
+        </div>
 
-        {/* Summary */}
-        <p className="text-[13.5px] leading-[1.7]" style={{ color: tone.mute }}>
-          {pick(trip.summary, lang)}
-        </p>
-
-        {/* CTA */}
-        <div
-          className="mt-auto pt-4 flex items-center justify-between gap-3 border-t"
-          style={{ borderColor: `${tone.border}14` }}
-        >
-          {compactMeta && trip.price ? (
-            <span
-              className="text-[10px] tracking-[0.28em] uppercase"
-              style={{ color: cardAccent, fontWeight: 600 }}
-            >
-              {tx.from} {trip.price}€
-            </span>
+        {/* Body */}
+        <div className="p-5 md:p-6 flex-1 flex flex-col gap-4" style={{ color: tone.ink }}>
+          {/* Route / dates */}
+          {compactMeta && trip.dates ? (
+            <div className="space-y-2">
+              <p className="inline-flex items-center gap-2 text-[12px]" style={{ color: tone.mute }}>
+                <Clock className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
+                <span>{pick(trip.dates, lang)}</span>
+              </p>
+              {trip.spots != null && (
+                <p className="inline-flex items-center gap-2 text-[12px]" style={{ color: tone.mute }}>
+                  <Users className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
+                  <span>
+                    {trip.spots}/{trip.capacity} {tx.spots_left}
+                  </span>
+                </p>
+              )}
+            </div>
           ) : (
-            <span
-              className="text-[10px] tracking-[0.3em] uppercase"
-              style={{ color: cardAccent, fontWeight: 600 }}
-            >
-              {pick(ctaLabel || { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }, lang)}
-            </span>
+            <p className="inline-flex items-start gap-2 text-[12px] leading-[1.6]" style={{ color: tone.mute }}>
+              <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
+              <span>{pick(trip.route, lang)}</span>
+            </p>
           )}
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={openChatbaseAssistant}
-              data-testid={`home-trip-assistant-${trip.id}`}
-              aria-label={pick(ASSISTANT_LABEL, lang)}
-              title={pick(ASSISTANT_LABEL, lang)}
-              className="inline-flex items-center justify-center w-8 h-8 border transition-colors duration-300 hover:bg-[#2C2621] hover:text-[#FDFBF7]"
-              style={{ borderColor: `${tone.border}26`, color: tone.ink }}
-            >
-              <Headset className="w-3.5 h-3.5" strokeWidth={1.6} />
-            </button>
+
+          {/* Summary */}
+          <p className="text-[13.5px] leading-[1.7]" style={{ color: tone.mute }}>
+            {pick(trip.summary, lang)}
+          </p>
+
+          {/* CTA */}
+          <div
+            className="mt-auto pt-4 flex items-center justify-between gap-3 border-t"
+            style={{ borderColor: `${tone.border}14` }}
+          >
+            {compactMeta && trip.price ? (
+              <span
+                className="text-[10px] tracking-[0.28em] uppercase"
+                style={{ color: cardAccent, fontWeight: 600 }}
+              >
+                {tx.from} {trip.price}€
+              </span>
+            ) : (
+              <span
+                className="text-[10px] tracking-[0.3em] uppercase"
+                style={{ color: cardAccent, fontWeight: 600 }}
+              >
+                {pick(ctaLabel || { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }, lang)}
+              </span>
+            )}
             <span
               className="inline-flex items-center justify-center w-8 h-8 border transition-all duration-300 group-hover:bg-[#2C2621] group-hover:text-[#FDFBF7]"
-              style={{
-                borderColor: `${tone.border}26`,
-                color: tone.ink,
-                background: isDark ? "transparent" : "transparent",
-              }}
+              style={{ borderColor: `${tone.border}26`, color: tone.ink }}
               aria-hidden="true"
             >
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             </span>
           </div>
         </div>
+      </Link>
+
+      {/* CTA icon group — siblings of the link so they never trigger card navigation */}
+      <div className="px-5 md:px-6 pb-5 md:pb-6">
+        <TripCardActions
+          lang={lang}
+          routeId={trip.routeId}
+          testidBase={`home-trip-${trip.id}`}
+          tone={isDark ? "dark" : "light"}
+        />
       </div>
 
       {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
       <CardHighlightsMarquee routeId={trip.routeId} testid={`home-trip-highlights-${trip.id}`} />
-    </Link>
+    </div>
   );
 };
 

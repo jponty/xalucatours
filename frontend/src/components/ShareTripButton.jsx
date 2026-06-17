@@ -40,7 +40,7 @@ const tripUrl = () =>
 const tripTitle = () =>
   typeof document !== "undefined" ? document.title : "Xaluca Tours";
 
-export default function ShareTripButton({ index, shareUrl, testid }) {
+export default function ShareTripButton({ index, shareUrl, testid, triggerClassName, iconClassName }) {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -86,9 +86,9 @@ export default function ShareTripButton({ index, shareUrl, testid }) {
           aria-label={pick(COPY.trigger, lang)}
           title={pick(COPY.trigger, lang)}
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+          className={triggerClassName || "inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"}
         >
-          <Share2 className="w-[18px] h-[18px]" strokeWidth={1.6} />
+          <Share2 className={iconClassName || "w-[18px] h-[18px]"} strokeWidth={1.6} />
         </button>
       </DialogTrigger>
 

@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Compass, Headset, Phone, CalendarClock } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
-import ShareTripButton from "@/components/ShareTripButton";
+import TripCardActions from "@/components/TripCardActions";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import xMonogram from "@/assets/monograma-x-white.png";
 
@@ -18,15 +18,6 @@ import xMonogram from "@/assets/monograma-x-white.png";
 ============================================================ */
 
 const T = (es, en, fr) => ({ es, en, fr });
-
-const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
-const PLAN_LABEL = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
-const CALL_LABEL = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
-const APPOINTMENT_LABEL = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
-const CALL_TEL = "+34937268366";
-
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
-import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const COPY = {
   overline: T("Todos los viajes", "All journeys", "Tous les voyages"),
@@ -137,7 +128,6 @@ const TRIPS = [
 /* ============================================================ */
 export default function AllTripsCarousel() {
   const { lang } = useLanguage();
-  const navigate = useNavigate();
   const railRef = useRef(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -283,53 +273,8 @@ export default function AllTripsCarousel() {
                 </div>
               </Link>
 
-              <div
-                className="px-5 pb-5 pt-4 mt-auto flex flex-wrap items-center gap-2"
-                data-testid={`all-trips-actions-${trip.id}`}
-              >
-                <button
-                  type="button"
-                  onClick={() => navigate(pathFor(lang, "planTrip"))}
-                  data-testid={`all-trips-plan-${trip.id}`}
-                  aria-label={pick(PLAN_LABEL, lang)}
-                  title={pick(PLAN_LABEL, lang)}
-                  className="inline-flex items-center justify-center w-10 h-10 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
-                >
-                  <Compass className="w-4 h-4" strokeWidth={1.7} />
-                </button>
-                <button
-                  type="button"
-                  onClick={openChatbaseAssistant}
-                  data-testid={`all-trips-assistant-${trip.id}`}
-                  aria-label={pick(ASSISTANT_LABEL, lang)}
-                  title={pick(ASSISTANT_LABEL, lang)}
-                  className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-                >
-                  <Headset className="w-4 h-4" strokeWidth={1.7} />
-                </button>
-                <a
-                  href={`tel:${CALL_TEL}`}
-                  data-testid={`all-trips-call-${trip.id}`}
-                  aria-label={pick(CALL_LABEL, lang)}
-                  title={pick(CALL_LABEL, lang)}
-                  className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-                >
-                  <Phone className="w-4 h-4" strokeWidth={1.7} />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => navigate(pathFor(lang, "appointment"))}
-                  data-testid={`all-trips-appointment-${trip.id}`}
-                  aria-label={pick(APPOINTMENT_LABEL, lang)}
-                  title={pick(APPOINTMENT_LABEL, lang)}
-                  className="inline-flex items-center justify-center w-10 h-10 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-                >
-                  <CalendarClock className="w-4 h-4" strokeWidth={1.7} />
-                </button>
-                <ShareTripButton
-                  testid={`all-trips-share-${trip.id}`}
-                  shareUrl={typeof window !== "undefined" ? `${window.location.origin}${pathFor(lang, trip.routeId)}` : ""}
-                />
+              <div className="px-5 pb-5 pt-4 mt-auto">
+                <TripCardActions lang={lang} routeId={trip.routeId} testidBase={`all-trips-${trip.id}`} />
               </div>
             </div>
           ))}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, ArrowLeftRight, Compass, ChevronDown, MapPin, Clock,
-  Headphones, Pencil, Award, ShieldCheck, Phone, Mail, Calendar, MessageCircle, Headset,
+  Headphones, Pencil, Award, ShieldCheck, Phone, Mail, Calendar, MessageCircle,
 } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -12,15 +12,11 @@ import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ImageBrandBadges from "@/components/ImageBrandBadges";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
+import TripCardActions from "@/components/TripCardActions";
 import { useSlotId } from "@/components/slotScope";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
-
-const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
-
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
-import { openChatbaseAssistant } from "@/lib/chatbase";
 
 // Collect every deep-linkable routeId for an itinerary so <FromPrice> shows
 // that itinerary's real lowest tariff, consistent with the trip detail page
@@ -746,7 +742,7 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {items.map((p) => {
-                  const inner = (
+                  const overlay = (
                     <>
                       <EditableImage
                         slot={`hub.${hub.id}.preview.${p.id}`}
@@ -759,7 +755,7 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                       <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/10 pointer-events-none" />
                       <span className="film-grain" />
                       <ImageBrandBadges testid={`hub-${hub.id}-${p.id}`} monogramPosition="top-left" />
-                      <div className="absolute inset-0 p-6 md:p-7 pb-14 md:pb-16 flex flex-col justify-end text-[#FDFBF7]">
+                      <div className="absolute inset-0 p-6 md:p-7 pb-14 md:pb-16 flex flex-col justify-end text-[#FDFBF7] pointer-events-none z-[3]">
                         <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: p.accent }}>
                           {getLabel(k)}
                         </span>
@@ -770,39 +766,40 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                         <p className="mt-3 text-sm text-[#FDFBF7]/80 leading-relaxed line-clamp-3">
                           {pick(p.blurb, lang)}
                         </p>
-                        <div className="mt-5 flex items-center justify-between gap-3">
-                          <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/90 group-hover:gap-4 transition-all duration-300">
-                            {p.link ? (labels.card_active || (lang === "es" ? "Ver itinerario" : lang === "fr" ? "Voir l'itinéraire" : "View itinerary")) : cardLabel}
-                            {p.link && <ArrowRight className="w-3 h-3" strokeWidth={1.5} />}
-                          </span>
-                          {p.link && (
-                            <button
-                              type="button"
-                              onClick={openChatbaseAssistant}
-                              data-testid={`hub-preview-assistant-${p.id}`}
-                              aria-label={pick(ASSISTANT_LABEL, lang)}
-                              title={pick(ASSISTANT_LABEL, lang)}
-                              className="shrink-0 inline-flex items-center justify-center w-9 h-9 border border-[#FDFBF7]/30 text-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] hover:border-[#FDFBF7] transition-colors duration-300"
-                            >
-                              <Headset className="w-4 h-4" strokeWidth={1.6} />
-                            </button>
-                          )}
-                        </div>
+                        <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/90 group-hover:gap-4 transition-all duration-300">
+                          {p.link ? (labels.card_active || (lang === "es" ? "Ver itinerario" : lang === "fr" ? "Voir l'itinéraire" : "View itinerary")) : cardLabel}
+                          {p.link && <ArrowRight className="w-3 h-3" strokeWidth={1.5} />}
+                        </span>
+                        {p.link && (
+                          <div className="mt-4 pointer-events-auto">
+                            <TripCardActions
+                              lang={lang}
+                              routeId={p.link}
+                              testidBase={`hub-preview-${p.id}`}
+                              tone="dark"
+                            />
+                          </div>
+                        )}
                       </div>
                     </>
                   );
                   if (p.link) {
                     return (
-                      <Link
+                      <div
                         key={p.id}
-                        to={pathFor(lang, p.link)}
                         data-testid={`hub-preview-card-${p.id}`}
-                        className="group relative block overflow-hidden h-[420px]"
+                        className="group relative overflow-hidden h-[460px]"
                       >
-                        {inner}
+                        <Link
+                          to={pathFor(lang, p.link)}
+                          data-testid={`hub-preview-link-${p.id}`}
+                          aria-label={pick(COMMON_NIGHTS[p.nights], lang)}
+                          className="absolute inset-0 z-[2]"
+                        />
+                        {overlay}
                         {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
                         <CardHighlightsMarquee routeId={p.link} variant="overlay" testid={`hub-preview-highlights-${p.id}`} />
-                      </Link>
+                      </div>
                     );
                   }
                   return (
@@ -810,9 +807,9 @@ export const HubOptionsPreview = ({ hub, lang, labels = {}, testid }) => {
                       key={p.id}
                       data-testid={`hub-preview-card-${p.id}`}
                       aria-disabled="true"
-                      className="group relative block overflow-hidden h-[420px] cursor-not-allowed"
+                      className="group relative block overflow-hidden h-[460px] cursor-not-allowed"
                     >
-                      {inner}
+                      {overlay}
                     </article>
                   );
                 })}

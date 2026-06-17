@@ -9,13 +9,13 @@
    matching trip page registered in `lib/routes.js`.
 ============================================================ */
 import React, { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp, Headset, Phone, CalendarClock } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Moon, Compass, Gauge, Search, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
-import ShareTripButton from "@/components/ShareTripButton";
+import TripCardActions from "@/components/TripCardActions";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
@@ -27,15 +27,6 @@ import {
   TRIP_PACES,
   TRIP_DURATIONS,
 } from "@/lib/allTripsCatalog";
-
-const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
-const PLAN_LABEL = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
-const CALL_LABEL = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
-const APPOINTMENT_LABEL = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
-const CALL_TEL = "+34937268366";
-
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
-import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const COPY = {
   eyebrow: { es: "Todos los viajes", en: "Every trip we run", fr: "Tous nos voyages" },
@@ -169,7 +160,6 @@ const ChipGroup = ({ icon: Icon, label, options, value, onChange, testidBase }) 
 
 /* ---------- Card ---------- */
 const TripCard = ({ trip, lang }) => {
-  const navigate = useNavigate();
   const href = pathFor(lang, trip.routeId);
   // Shares the trip's MASTER image slot with the page Hero and all listings.
   const slot = tripHeroSlot(trip.routeId);
@@ -236,53 +226,8 @@ const TripCard = ({ trip, lang }) => {
         </Link>
 
         {/* CTA icon group — siblings of the link so they never trigger card navigation */}
-        <div
-          className="px-5 pb-5 flex flex-wrap items-center gap-2"
-          data-testid={`home-all-trips-actions-${trip.routeId}`}
-        >
-          <button
-            type="button"
-            onClick={() => navigate(pathFor(lang, "planTrip"))}
-            data-testid={`home-all-trips-plan-${trip.routeId}`}
-            aria-label={pick(PLAN_LABEL, lang)}
-            title={pick(PLAN_LABEL, lang)}
-            className="inline-flex items-center justify-center w-9 h-9 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
-          >
-            <Compass className="w-4 h-4" strokeWidth={1.7} />
-          </button>
-          <button
-            type="button"
-            onClick={openChatbaseAssistant}
-            data-testid={`home-all-trips-assistant-${trip.routeId}`}
-            aria-label={pick(ASSISTANT_LABEL, lang)}
-            title={pick(ASSISTANT_LABEL, lang)}
-            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-          >
-            <Headset className="w-4 h-4" strokeWidth={1.7} />
-          </button>
-          <a
-            href={`tel:${CALL_TEL}`}
-            data-testid={`home-all-trips-call-${trip.routeId}`}
-            aria-label={pick(CALL_LABEL, lang)}
-            title={pick(CALL_LABEL, lang)}
-            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-          >
-            <Phone className="w-4 h-4" strokeWidth={1.7} />
-          </a>
-          <button
-            type="button"
-            onClick={() => navigate(pathFor(lang, "appointment"))}
-            data-testid={`home-all-trips-appointment-${trip.routeId}`}
-            aria-label={pick(APPOINTMENT_LABEL, lang)}
-            title={pick(APPOINTMENT_LABEL, lang)}
-            className="inline-flex items-center justify-center w-9 h-9 border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors duration-300"
-          >
-            <CalendarClock className="w-4 h-4" strokeWidth={1.7} />
-          </button>
-          <ShareTripButton
-            testid={`home-all-trips-share-${trip.routeId}`}
-            shareUrl={typeof window !== "undefined" ? `${window.location.origin}${href}` : ""}
-          />
+        <div className="px-5 pb-5">
+          <TripCardActions lang={lang} routeId={trip.routeId} testidBase={`home-all-trips-${trip.routeId}`} />
         </div>
         {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
         <CardHighlightsMarquee routeId={trip.routeId} testid={`home-all-trips-highlights-${trip.routeId}`} />
