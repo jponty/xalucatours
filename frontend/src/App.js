@@ -15,6 +15,8 @@ import AdminPage from "@/pages/AdminPage";
 import { BlogPostPage } from "@/pages/BlogPage";
 import { resolvePath, pathFor } from "@/lib/routes";
 import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
+import SeoHead from "@/components/SeoHead";
+import { getSeoMeta } from "@/lib/seoMeta";
 
 /**
  * Single resolver — reads the current pathname and renders the right page.
@@ -34,15 +36,36 @@ const LocalizedRouter = () => {
 
   // Blog post: dynamic slug under /blog/:slug · /en/blog/:slug · /fr/blog/:slug
   // (resolvePath only matches exact slugs; we handle the post route manually.)
+  // BlogPostPage injects its own SeoHead, so return it directly.
   const blogMatch = location.pathname.match(/^\/(?:(en|fr)\/)?blog\/([^/?#]+)\/?$/);
   if (blogMatch) return <BlogPostPage />;
 
   const Component = ROUTE_COMPONENTS[routeId];
-  if (Component) return <Component />;
-  if (routeId)   return <StubPage routeId={routeId} />;
+  if (!Component && !routeId) {
+    // Unknown URL within a known lang → redirect to home of that lang
+    return <Navigate to={pathFor(lang, "home")} replace />;
+  }
 
-  // Unknown URL within a known lang → redirect to home of that lang
-  return <Navigate to={pathFor(lang, "home")} replace />;
+  // Per-page SEO: title + description + canonical + hreflang for every
+  // resolved page. Social crawlers (no JS) read the static defaults in
+  // public/index.html; this refines what Google (which renders JS) sees.
+  const meta = getSeoMeta(routeId, lang);
+  const hreflang = routeId
+    ? { es: pathFor("es", routeId), en: pathFor("en", routeId), fr: pathFor("fr", routeId) }
+    : undefined;
+
+  return (
+    <>
+      <SeoHead
+        title={meta.title}
+        description={meta.description}
+        image="/og-image.jpg"
+        lang={lang}
+        hreflang={hreflang}
+      />
+      {Component ? <Component /> : <StubPage routeId={routeId} />}
+    </>
+  );
 };
 
 function App() {
