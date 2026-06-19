@@ -206,7 +206,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
 
         {/* ---- Thumbnail rail ---- */}
         {/* Same width as the main viewer (both full-width children of the
-            sticky wrapper); horizontal scroll keeps thumbs inside that
+            gallery wrapper); horizontal scroll keeps thumbs inside that
             width on every breakpoint. */}
         <div
           data-testid={`day-gallery-thumbs-${day.id}`}
