@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only visual regression for the Notas del día / gallery overlap fix on /viajes/atlas_desierto/programa_6n_7d. Verified on desktop (1440x900) and mobile (390x844) across ALL 7 itinerary days that (a) the gallery wrapper is no longer position:sticky (computed style: relative z-0), (b) the notes container sits above (relative z-10), (c) there is clear vertical spacing between the thumbnail rail and the 'NOTAS DEL DÍA' eyebrow title, and (d) no gallery element paints above the notes title (elementsFromPoint at the eyebrow centre returned 0 day-gallery hits on every day). Confirmed the gallery scrolls naturally with the page (delta == -250px on a 250px scroll). Regression checks pass: thumbnail click swaps the main image and updates the '1/10' counter, gallery prev/next arrows update the counter, and the post-it carousel next button advances the active dot. No JS console errors, no pageerror events.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/.screenshots/desktop_day1_thumbs_notes.png",
+    "/app/.screenshots/mobile_day1_combined.png"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "DayImageGallery.jsx (lines ~207-210) still has a stale comment referring to 'the sticky wrapper' — the wrapper is no longer sticky. Update wording to avoid future confusion.",
+    "Minor: consider extracting the thumbnail rail into its own component if more features land here (file currently ~244 lines, OK)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "skipped (frontend-only request)", "frontend": "100% (14/14 day-checks across 2 viewports + all regression checks)" },
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "The /viajes/atlas_desierto/programa_6n_7d page renders 7 day blocks with NON-sequential testid suffixes: dia-1, dia-atlas-mgoun, dia-dades-todra, dia-2, dia-3, dia-4-rissani, dia-ziz-return. Always enumerate via querySelectorAll('[data-testid^=\"day-travel-notes-\"]') rather than assuming dia-1..dia-7 (an earlier attempt timed out waiting on day-travel-notes-dia-4 which does not exist). Measured spacing thumbs→notes: 64px desktop / 48px mobile. Computed styles confirmed: gallery wrapper {position:relative, z-index:0}, notes wrapper {position:relative, z-index:10}.",
+  "rca of the issue": "Original bug: the gallery wrapper used `position:sticky lg:top-24`. Sticky created a positioned stacking context, so during scroll the gallery painted on top of subsequent in-flow content — the 'NOTAS DEL DÍA' eyebrow title appeared behind the thumbnails. Fix applied by main agent and verified here: (1) DayImageGallery.jsx wrapper changed from `sticky lg:top-24` to `relative z-0`, removing the sticky stacking context; (2) DayTravelNotes.jsx root changed to `relative z-10 mt-12 md:mt-16`, promoting the notes layer above any gallery sibling and adding explicit top spacing. Reproduction (pre-fix): scroll the page on desktop; the sticky gallery would remain at top:96px while the notes block slid behind it. Post-fix: the gallery scrolls away normally (verified by 250px scroll → top moves by 250px) and the notes title sits with a visible 48-64px gap below the thumbnail rail on every day."
+}

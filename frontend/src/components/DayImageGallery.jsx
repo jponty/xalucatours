@@ -137,7 +137,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
 
   return (
     <EditableGroup id={base} label={`Galería · ${dayLabel} ${dayNum}`}>
-      <div className="sticky lg:top-24">
+      <div className="relative z-0">
         {/* ---- Main viewer ---- */}
         <div
           data-testid={`day-gallery-viewer-${day.id}`}
