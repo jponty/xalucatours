@@ -5,6 +5,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { BerberZigzagDivider } from "./BerberDivider";
 import { pathFor, rewriteForLang, SUPPORTED_LANGS } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
+import { translations } from "@/lib/i18n";
+import EditableText from "@/components/EditableText";
 
 const FOOTER_LANGS = [
   { code: "es", label: "ES" },
@@ -13,7 +15,7 @@ const FOOTER_LANGS = [
 ];
 
 export const Footer = () => {
-  const { t, lang, setLang } = useLanguage();
+  const { lang, setLang } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -50,29 +52,43 @@ export const Footer = () => {
       <div className="relative max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           <div className="md:col-span-5">
-            <span className="overline text-[#D4A373]">Xaluca · Tours</span>
-            <h3 className="font-serif-x text-4xl md:text-5xl leading-[1.05] mt-6 tracking-tight">
-              {t("footer_tag")}
-            </h3>
+            <EditableText
+              slot="footer.brand"
+              defaults={{ es: "Xaluca · Tours", en: "Xaluca · Tours", fr: "Xaluca · Tours" }}
+              as="span"
+              multiline={false}
+              noTranslate
+              className="overline text-[#D4A373]"
+            />
+            <EditableText
+              as="h3"
+              slot="footer.tag"
+              defaults={translations.footer_tag}
+              className="font-serif-x text-4xl md:text-5xl leading-[1.05] mt-6 tracking-tight block"
+            />
             <Link
               to={pathFor(lang, "planTrip")}
               data-testid="footer-enquire-button"
               className="mt-10 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
-              {t("cta_plan")}
+              <EditableText slot="footer.cta" defaults={translations.cta_plan} multiline={false} />
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             </Link>
           </div>
 
           <div className="md:col-span-3">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] mb-5">
-              {t("footer_explore")}
-            </p>
+            <EditableText
+              as="p"
+              slot="footer.explore_label"
+              defaults={translations.footer_explore}
+              multiline={false}
+              className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] mb-5 block"
+            />
             <ul className="space-y-3 text-sm text-[#FDFBF7]/80">
               {exploreLinks.map((l) => (
                 <li key={l.routeId}>
                   <Link to={pathFor(lang, l.routeId)} className="hover:text-[#D4A373] transition-colors">
-                    {labels[l.k][lang] || labels[l.k].es}
+                    <EditableText slot={`footer.link.${l.k}`} defaults={labels[l.k]} as="span" multiline={false} />
                   </Link>
                 </li>
               ))}
@@ -80,13 +96,31 @@ export const Footer = () => {
           </div>
 
           <div className="md:col-span-4">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] mb-5">
-              {t("footer_contact")}
-            </p>
+            <EditableText
+              as="p"
+              slot="footer.contact_label"
+              defaults={translations.footer_contact}
+              multiline={false}
+              className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] mb-5 block"
+            />
             <ul className="space-y-4 text-sm text-[#FDFBF7]/80">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 text-[#D4A373]" strokeWidth={1.5} />
-                <span>Grup Xaluca · Barcelona, España<br />Sede & operaciones en Marruecos</span>
+                <span>
+                  <EditableText
+                    slot="footer.address.line1"
+                    defaults={{ es: "Grup Xaluca · Barcelona, España", en: "Grup Xaluca · Barcelona, Spain", fr: "Grup Xaluca · Barcelone, Espagne" }}
+                    as="span"
+                    multiline={false}
+                  />
+                  <br />
+                  <EditableText
+                    slot="footer.address.line2"
+                    defaults={{ es: "Sede & operaciones en Marruecos", en: "Headquarters & operations in Morocco", fr: "Siège & opérations au Maroc" }}
+                    as="span"
+                    multiline={false}
+                  />
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#D4A373]" strokeWidth={1.5} />
@@ -103,8 +137,19 @@ export const Footer = () => {
               <li className="flex items-start gap-3">
                 <Clock className="w-4 h-4 mt-0.5 text-[#D4A373]" strokeWidth={1.5} />
                 <span>
-                  <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55">{t("office_hours_label")}</span>
-                  {t("office_hours_value")}
+                  <EditableText
+                    slot="footer.office_hours_label"
+                    defaults={translations.office_hours_label}
+                    as="span"
+                    multiline={false}
+                    className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55"
+                  />
+                  <EditableText
+                    slot="footer.office_hours_value"
+                    defaults={translations.office_hours_value}
+                    as="span"
+                    multiline={false}
+                  />
                 </span>
               </li>
             </ul>
@@ -112,7 +157,13 @@ export const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-[#FDFBF7]/15 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <p className="text-xs text-[#FDFBF7]/55">{t("footer_rights")}</p>
+          <EditableText
+            as="p"
+            slot="footer.rights"
+            defaults={translations.footer_rights}
+            multiline={false}
+            className="text-xs text-[#FDFBF7]/55 block"
+          />
 
           {/* Language selector — integrated in the footer */}
           <div
@@ -139,9 +190,13 @@ export const Footer = () => {
             ))}
           </div>
 
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/40">
-            {t("contact_24_7")}
-          </p>
+          <EditableText
+            as="p"
+            slot="footer.contact_24_7"
+            defaults={translations.contact_24_7}
+            multiline={false}
+            className="text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/40 block"
+          />
         </div>
       </div>
     </footer>

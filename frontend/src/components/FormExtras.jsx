@@ -10,6 +10,7 @@
 import React from "react";
 import { Phone, Mail, Check, Clock } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
+import EditableText from "@/components/EditableText";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -98,9 +99,13 @@ export const WhatHappensNext = ({ tone = "light", lang, testid = "what-happens-n
   const c = TONES[tone] || TONES.light;
   return (
     <div data-testid={testid} className={`border p-6 md:p-8 ${c.box}`}>
-      <h4 className={`font-serif-x text-xl md:text-2xl leading-snug tracking-tight ${c.title}`}>
-        {pick(WHAT_NEXT.title, lang)}
-      </h4>
+      <EditableText
+        as="h4"
+        slot="form.next.title"
+        defaults={WHAT_NEXT.title}
+        multiline={false}
+        className={`font-serif-x text-xl md:text-2xl leading-snug tracking-tight block ${c.title}`}
+      />
       <ol className="mt-5 space-y-3.5">
         {WHAT_NEXT.steps.map((s, i) => (
           <li key={i} className={`flex items-start gap-3 text-[14px] leading-relaxed ${c.body}`}>
@@ -111,13 +116,13 @@ export const WhatHappensNext = ({ tone = "light", lang, testid = "what-happens-n
             >
               {i + 1}
             </span>
-            <span>{pick(s, lang)}</span>
+            <EditableText as="span" slot={`form.next.step.${i}`} defaults={s} />
           </li>
         ))}
       </ol>
       <p className={`mt-6 pt-5 border-t border-current/10 flex items-start gap-2.5 text-[13px] leading-relaxed ${c.response}`}>
         <Clock className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={1.6} />
-        <span>{pick(WHAT_NEXT.response, lang)}</span>
+        <EditableText as="span" slot="form.next.response" defaults={WHAT_NEXT.response} />
       </p>
     </div>
   );
@@ -129,9 +134,12 @@ export const ContactPreference = ({ tone = "light", lang, value = [], onToggle, 
   return (
     <div data-testid={`${testidPrefix}-group`}>
       <span className={`block text-[11px] tracking-[0.3em] uppercase mb-1.5 ${c.reqLabel}`}>
-        {pick(CONTACT_PREF_LABEL, lang)} <span style={{ color: c.eyebrowAccent }}>*</span>
+        <EditableText as="span" slot="form.pref.label" defaults={CONTACT_PREF_LABEL} multiline={false} />{" "}
+        <span style={{ color: c.eyebrowAccent }}>*</span>
       </span>
-      <span className={`block text-[12px] mb-3 ${c.body}`}>{pick(CONTACT_PREF_HINT, lang)}</span>
+      <span className={`block text-[12px] mb-3 ${c.body}`}>
+        <EditableText as="span" slot="form.pref.hint" defaults={CONTACT_PREF_HINT} multiline={false} />
+      </span>
       <div role="group" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CONTACT_PREF_OPTIONS.map((opt) => {
           const on = selected.includes(opt.id);
@@ -147,7 +155,9 @@ export const ContactPreference = ({ tone = "light", lang, value = [], onToggle, 
             >
               <opt.Icon className="w-4 h-4 shrink-0" strokeWidth={1.7}
                 style={{ color: on ? c.optIconOn : c.optIconIdle }} />
-              <span className="flex-1 text-left">{pick(opt.label, lang)}</span>
+              <span className="flex-1 text-left">
+                <EditableText as="span" slot={`form.pref.option.${opt.id}`} defaults={opt.label} multiline={false} />
+              </span>
               {on && <Check className="w-4 h-4 shrink-0" strokeWidth={2.2} style={{ color: c.optIconOn }} />}
             </button>
           );

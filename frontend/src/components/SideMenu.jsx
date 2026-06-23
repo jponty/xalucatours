@@ -7,10 +7,12 @@ import {
   CalendarDays, Users, Landmark, Wand2,
   BookOpen, Sunrise, Images, Tag, Star, Plane,
 } from "lucide-react";
-import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { MENU_TREE } from "@/lib/menu";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
+import { translations } from "@/lib/i18n";
+import EditableText from "@/components/EditableText";
 
 const ICONS = {
   "home": Home, "calendar-clock": CalendarClock, "compass": Compass,
@@ -88,7 +90,9 @@ export const SideMenu = ({ open, onClose }) => {
             strokeWidth={1.6}
           />
         )}
-        <span className="flex-1">{pick(item.label, lang)}</span>
+        <span className="flex-1">
+          <EditableText as="span" slot={`menu.item.${item.id}.label`} defaults={item.label} multiline={false} />
+        </span>
         <ArrowRight
           className={`w-3 h-3 transition-all duration-300 text-[#D4A373] ${
             active ? "opacity-100 translate-x-0" : "-translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0"
@@ -130,7 +134,7 @@ export const SideMenu = ({ open, onClose }) => {
             className="group flex items-center justify-between gap-3 mb-5 px-3 py-2.5 bg-[#FDFBF7]/[0.04] border border-[#D4A373]/25 hover:border-[#D4A373] hover:bg-[#FDFBF7]/[0.07] transition-all"
           >
             <span className="text-[11px] tracking-[0.28em] uppercase text-[#D4A373]">
-              {pick(l0.headerLabel, lang)}
+              <EditableText as="span" slot={`menu.${l0.id}.header`} defaults={l0.headerLabel} multiline={false} />
             </span>
             <ArrowRight className="w-3.5 h-3.5 text-[#D4A373] group-hover:translate-x-1 transition-transform" strokeWidth={1.6} />
           </Link>
@@ -142,7 +146,7 @@ export const SideMenu = ({ open, onClose }) => {
             <div className="flex items-center gap-3 mb-3">
               <Icon name={g.icon} className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.6} />
               <span className="text-[10px] tracking-[0.32em] uppercase text-[#D4A373]">
-                {pick(g.label, lang)}
+                <EditableText as="span" slot={`menu.group.${g.id}.label`} defaults={g.label} multiline={false} />
               </span>
               <span className="flex-1 h-px bg-[#D4A373]/25" />
             </div>
@@ -179,7 +183,14 @@ export const SideMenu = ({ open, onClose }) => {
         <div className="relative h-full flex flex-col overflow-y-auto">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-7 md:px-10 py-6 bg-[#1A1513]/95 backdrop-blur-md border-b border-[#FDFBF7]/10">
-            <span className="overline text-[#D4A373]">Xaluca · Tours</span>
+            <EditableText
+              slot="footer.brand"
+              defaults={{ es: "Xaluca · Tours", en: "Xaluca · Tours", fr: "Xaluca · Tours" }}
+              as="span"
+              multiline={false}
+              noTranslate
+              className="overline text-[#D4A373]"
+            />
             <button
               data-testid="side-menu-close"
               onClick={onClose}
@@ -194,7 +205,6 @@ export const SideMenu = ({ open, onClose }) => {
           <nav className="px-7 md:px-10 py-8 flex-1">
             <ul className="space-y-1">
               {MENU_TREE.map((l0, i) => {
-                const l0Label = pick(l0.label, lang);
                 const hasClassic = Array.isArray(l0.children) && l0.children.length > 0;
                 const hasGroups  = Array.isArray(l0.groups)   && l0.groups.length   > 0;
                 const expandable = hasClassic || hasGroups;
@@ -216,7 +226,9 @@ export const SideMenu = ({ open, onClose }) => {
                         <span className="text-[10px] tracking-[0.3em] opacity-50 w-6 font-sans">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <span className="flex-1">{l0Label}</span>
+                        <span className="flex-1">
+                          <EditableText as="span" slot={`menu.${l0.id}.label`} defaults={l0.label} multiline={false} />
+                        </span>
                         {l0Active && (
                           <span className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-px bg-[#D4A373]" aria-hidden="true" />
                         )}
@@ -241,7 +253,9 @@ export const SideMenu = ({ open, onClose }) => {
                       <span className="text-[10px] tracking-[0.3em] opacity-50 w-6 font-sans">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex-1">{l0Label}</span>
+                      <span className="flex-1">
+                        <EditableText as="span" slot={`menu.${l0.id}.label`} defaults={l0.label} multiline={false} />
+                      </span>
                       <ChevronDown
                         className={`w-4 h-4 text-[#D4A373] transition-transform duration-300 ${
                           l0Open ? "rotate-180" : "rotate-0"
@@ -267,9 +281,13 @@ export const SideMenu = ({ open, onClose }) => {
 
           {/* Footer block */}
           <div className="px-7 md:px-10 py-8 border-t border-[#FDFBF7]/15">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] mb-4">
-              {t("footer_contact")}
-            </p>
+            <EditableText
+              as="p"
+              slot="footer.contact_label"
+              defaults={translations.footer_contact}
+              multiline={false}
+              className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373] mb-4 block"
+            />
             <div className="space-y-3 text-sm text-[#FDFBF7]/85">
               <a
                 href={`tel:${CONTACT.phoneRaw}`}
@@ -288,7 +306,13 @@ export const SideMenu = ({ open, onClose }) => {
                 {CONTACT.email}
               </a>
             </div>
-            <p className="mt-6 text-xs text-[#FDFBF7]/55">{t("office_hours_value")}</p>
+            <EditableText
+              as="p"
+              slot="footer.office_hours_value"
+              defaults={translations.office_hours_value}
+              multiline={false}
+              className="mt-6 text-xs text-[#FDFBF7]/55 block"
+            />
           </div>
         </div>
       </aside>

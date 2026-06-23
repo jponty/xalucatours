@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only validation of Batch 2 (global chrome + shared form text). All 8 review-request scenarios verified end-to-end on the public preview URL. Footer + SideMenu menu items + FormExtras (planner) are fully editable in text-edit mode; navigation is correctly blocked; persistence to /api/text_slots confirmed; normal-mode regression clean.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_flows": [
+    "Enter text edit mode via [data-testid=header-text-edit-toggle] on /; body.classList contains 'edit-mode-text' (banner is CSS ::after, asserted via class).",
+    "Footer slots (count=20 inc. SideMenu-shared duplicates): editable-text-footer.brand/tag/cta/explore_label/link.menu_all/link.menu_south/link.menu_full/link.menu_short/link.menu_north/link.menu_adventure/contact_label/address.line1/address.line2/office_hours_label/office_hours_value/rights/contact_24_7 ALL present. No missing required slot.",
+    "Footer persistence: typed TEST_RIGHTS_PERSIST_CHECK into editable-text-footer.rights, blur fired PUT /api/text_slots/footer.rights, reload + re-enter text mode -> value persisted. Original text '© 2026 Xaluca Tours · Parte de Grup Xaluca · Todos los derechos reservados.' restored (second PUT fired, verified DOM match).",
+    "SideMenu opens in text-edit mode by clicking the LEFT ICON area of [data-testid=header-menu-button] (bbox.x + 10, bbox.cy); aside [data-testid=side-menu] getBoundingClientRect().left === 0.",
+    "SideMenu editable menu slots: 28 unique testids — top-level .label (home, appointment, tours, about-cluster, guides, precios, opiniones, contact, galeria, juego, morocco, vuelos), .header (tours.header), .group.<gid>.label (by-region, by-format), .item.<itemid>.label (south, north, full, short, adventure, bespoke, departures, plan-trip, events, team, when, wts, wwd). Count >= 15 ✓.",
+    "Menu item edit does NOT navigate: clicked editable-text-menu.item.adventure.label (an <a>), URL unchanged (capture-phase guard works); typed ' Z', text updated to 'Viajes de aventura Z' (editable=True), then restored to 'Viajes de aventura' (DOM match).",
+    "FormExtras on /planifica-tu-viaje (Spanish): all 10 required form.* slots present — form.next.title, form.next.step.0..3, form.next.response, form.pref.label, form.pref.hint, form.pref.option.phone, form.pref.option.email. None missing.",
+    "Contact-preference toggle blocked: clicking the editable label editable-text-form.pref.option.phone does NOT change parent <button> aria-checked (stayed 'false'); className unchanged → EditableText stops propagation.",
+    "Normal-mode regression: reload home WITHOUT toggling — body lacks edit-mode-text, document.querySelectorAll('[data-testid^=editable-text-']).length === 0. Footer renders Xaluca/Horario/2026/contact text. SideMenu opens via hamburger normally (left=0) and contains all expected labels: Inicio, Cita previa, Nuestros viajes, Sobre nosotros, Guías, Precios, Opiniones. No JS console errors (only the same benign CSP report-only + Chatbase widget logs as iteration_43)."
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Footer.jsx — clean implementation; all visible strings wrapped in EditableText with footer.* slots, defaults sourced from translations table or inline language maps. SideMenu re-uses footer.brand / footer.contact_label / footer.office_hours_value as documented (intended single-source-of-truth).",
+    "SideMenu.jsx hamburger UX caveat: because the entire button label 'MENÚ' inside [data-testid=header-menu-button] is itself an EditableText in text-edit mode, REAL USERS who click the text instead of the icon will edit the label and the menu will NOT open. The reviewer note explicitly accepts this (click the icon area), but consider adding [data-edit-allow=true] on the chevron/icon and/or splitting the click target so end-users can still open the menu while in text-edit mode without having to aim at the icon.",
+    "FormExtras.jsx — propagation correctly stopped inside EditableText; pref-option button continues to respond to clicks outside the label area, label-area clicks are absorbed (verified).",
+    "Banner 'MODO TEXTOS · NAVEGACIÓN BLOQUEADA' is still rendered via CSS ::after pseudo-element (carried over from iteration_43). Future automated tests must check body.classList rather than innerText; recommend adding a real DOM element with data-testid='edit-mode-banner' for testability."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "skipped", "frontend": "100%"},
+  "test_credentials": "none required",
+  "seed_data_creation": "Edited footer.rights restored to original; menu.item.adventure.label restored to original.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Batch 1 verified in iteration_43, Batch 2 verified here (iteration_44). To open the SideMenu in text-edit mode, click LEFT ICON of [data-testid=header-menu-button] (e.g. bbox.x+8/10 by bbox.center_y); clicking the center hits the editable 'MENÚ' label and only enters edit mode for that label. Edit-mode banner is a CSS ::after pseudo on body.edit-mode-text — assert via document.body.classList.contains('edit-mode-text'). Persistence backend route is PUT /api/text_slots/{slot_id} with {values:{es,en,fr}}. Spanish planner route is /planifica-tu-viaje. Edit mode does NOT persist across page navigation via goto() — you may need to re-toggle after navigating between routes during a test."
+}
