@@ -10,19 +10,22 @@ const LANGS = ["es", "en", "fr"];
 const LANG_LABEL = { es: "ES", en: "EN", fr: "FR" };
 
 /* ============================================================
-   TextSlotsPanel — admin browser for every saved CMS text slot.
-   Lists all stored text_slots grouped by page (via describeSlot),
-   with full-text search across slot id + es/en/fr values, inline
-   trilingual editing, ES→EN/FR autotranslate and a deep link to
-   open the page. Saves through PUT /api/text_slots/{id}.
+   TextSlotsPanel — admin browser for every editable CMS text.
+   Merges the saved values (/api/text_slots) with the slot
+   registry (/api/text_slots/registry, harvested from rendered
+   <EditableText> defaults) so it lists 100% of editable copy
+   grouped by page, with full-text search, inline trilingual
+   editing, ES→EN/FR autotranslate and a deep link per page.
 ============================================================ */
 export default function TextSlotsPanel() {
-  const [slots, setSlots] = useState({});       // slot_id -> {es,en,fr}
+  const [values, setValues] = useState({});     // slot_id -> {es,en,fr}  (edited/saved)
+  const [registry, setRegistry] = useState({}); // slot_id -> {es,en,fr}  (code defaults)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [q, setQ] = useState("");
-  const [collapsed, setCollapsed] = useState({}); // pageLabel -> bool
-  const [edits, setEdits] = useState({});         // slot_id -> {es,en,fr}
+  const [onlyUnedited, setOnlyUnedited] = useState(false);
+  const [collapsed, setCollapsed] = useState({});
+  const [edits, setEdits] = useState({});        // slot_id -> {es,en,fr}
   const [saving, setSaving] = useState({});       // slot_id -> 'saving'|'done'|'error'
   const [translating, setTranslating] = useState({});
 
@@ -30,9 +33,17 @@ export default function TextSlotsPanel() {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch(`${API}/text_slots`);
-      const data = await res.json();
-      setSlots((data && data.slots) || {});
+      const [vRes, rRes] = await Promise.all([
+        fetch(`${API}/text_slots`),
+        fetch(`${API}/text_slots/registry`),
+      ]);
+      const vData = await vRes.json();
+      const rData = await rRes.json();
+      setValues((vData && vData.slots) || {});
+      const reg = {};
+      const rawReg = (rData && rData.registry) || {};
+      for (const [id, entry] of Object.entries(rawReg)) reg[id] = (entry && entry.defaults) || {};
+      setRegistry(reg);
     } catch {
       setError(true);
     }
@@ -41,19 +52,42 @@ export default function TextSlotsPanel() {
 
   useEffect(() => { load(); }, [load]);
 
+  const storedVal = (id, lang) => (values[id] && values[id][lang]) || "";
+  const defaultVal = (id, lang) => (registry[id] && registry[id][lang]) || "";
+  const baseline = (id, lang) => storedVal(id, lang) || defaultVal(id, lang) || "";
+  const isEdited = (id) => !!values[id] && LANGS.some((l) => (values[id][l] || "") !== "");
+  const getVal = (id, lang) => {
+    const e = edits[id];
+    if (e && lang in e) return e[lang];
+    return baseline(id, lang);
+  };
+  const isDirty = (id) => {
+    const e = edits[id];
+    if (!e) return false;
+    return LANGS.some((l) => (e[l] ?? "") !== baseline(id, l));
+  };
+  const setVal = (id, lang, value) =>
+    setEdits((p) => ({ ...p, [id]: { ...(p[id] || {}), [lang]: value } }));
+
+  const allIds = useMemo(
+    () => Array.from(new Set([...Object.keys(values), ...Object.keys(registry)])),
+    [values, registry]
+  );
+
   const groups = useMemo(() => {
     const ql = q.trim().toLowerCase();
-    const filtered = Object.entries(slots).filter(([id, vals]) => {
+    const filtered = allIds.filter((id) => {
+      if (onlyUnedited && isEdited(id)) return false;
       if (!ql) return true;
       if (id.toLowerCase().includes(ql)) return true;
-      return LANGS.some((l) => (vals && vals[l] ? String(vals[l]).toLowerCase().includes(ql) : false));
+      return LANGS.some((l) => baseline(id, l).toLowerCase().includes(ql));
     });
     const map = new Map();
-    for (const [id, vals] of filtered) {
+    for (const id of filtered) {
       const info = describeSlot(id);
       const key = info.pageLabel || "—";
       if (!map.has(key)) map.set(key, { pageLabel: key, href: info.href, items: [] });
-      map.get(key).items.push({ id, vals: vals || {}, sectionLabel: info.sectionLabel, href: info.href });
+      map.get(key).items.push({ id, sectionLabel: info.sectionLabel });
     }
     const arr = Array.from(map.values());
     arr.forEach((g) => g.items.sort((a, b) => a.id.localeCompare(b.id)));
@@ -63,42 +97,30 @@ export default function TextSlotsPanel() {
       return a.pageLabel.localeCompare(b.pageLabel);
     });
     return arr;
-  }, [slots, q]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allIds, values, registry, q, onlyUnedited]);
 
-  const totalCount = Object.keys(slots).length;
+  const totalCount = allIds.length;
   const shownCount = groups.reduce((n, g) => n + g.items.length, 0);
-
-  const getVal = (id, lang) => {
-    const e = edits[id];
-    if (e && lang in e) return e[lang];
-    return (slots[id] && slots[id][lang]) || "";
-  };
-  const isDirty = (id) => {
-    const e = edits[id];
-    if (!e) return false;
-    return LANGS.some((l) => (e[l] ?? "") !== ((slots[id] && slots[id][l]) || ""));
-  };
-  const setVal = (id, lang, value) =>
-    setEdits((p) => ({ ...p, [id]: { ...(p[id] || {}), [lang]: value } }));
 
   const clearSaving = (id, delay = 1600) =>
     setTimeout(() => setSaving((p) => { const n = { ...p }; delete n[id]; return n; }), delay);
 
   const save = async (id) => {
-    const values = {};
+    const payload = {};
     LANGS.forEach((l) => {
       const v = getVal(id, l);
-      if (v !== "" || (slots[id] && l in slots[id])) values[l] = v;
+      if (v !== "") payload[l] = v;
     });
     setSaving((p) => ({ ...p, [id]: "saving" }));
     try {
       const res = await fetch(`${API}/text_slots/${encodeURIComponent(id)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ values }),
+        body: JSON.stringify({ values: payload }),
       });
       if (!res.ok) throw new Error("save-failed");
-      setSlots((p) => ({ ...p, [id]: values }));
+      setValues((p) => ({ ...p, [id]: payload }));
       setEdits((p) => { const n = { ...p }; delete n[id]; return n; });
       setSaving((p) => ({ ...p, [id]: "done" }));
       clearSaving(id);
@@ -145,8 +167,18 @@ export default function TextSlotsPanel() {
           <Type className="w-5 h-5 text-[#D4A373]" strokeWidth={1.7} /> Textos editables
         </h2>
         <span data-testid="admin-texts-count" className="text-[10px] tracking-[0.18em] uppercase text-white/50">
-          {q ? `${shownCount} / ${totalCount}` : `${totalCount}`} textos
+          {q || onlyUnedited ? `${shownCount} / ${totalCount}` : `${totalCount}`} textos
         </span>
+        <label className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.18em] uppercase text-white/55 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            data-testid="admin-texts-only-unedited"
+            checked={onlyUnedited}
+            onChange={(e) => setOnlyUnedited(e.target.checked)}
+            className="accent-[#C16542]"
+          />
+          Solo sin editar
+        </label>
         <button
           type="button"
           onClick={load}
@@ -178,7 +210,7 @@ export default function TextSlotsPanel() {
         <p className="text-sm text-[#E07856]">No se pudieron cargar los textos.</p>
       ) : shownCount === 0 ? (
         <p data-testid="admin-texts-empty" className="text-sm text-white/55">
-          {q ? "Ningún texto coincide con la búsqueda." : "Aún no hay textos guardados en este entorno."}
+          {q || onlyUnedited ? "Ningún texto coincide con el filtro." : "Aún no hay textos registrados. Navega por el sitio para indexarlos."}
         </p>
       ) : (
         <div className="space-y-4 max-w-4xl">
@@ -213,13 +245,19 @@ export default function TextSlotsPanel() {
                     {g.items.map((it) => {
                       const dirty = isDirty(it.id);
                       const st = saving[it.id];
+                      const edited = isEdited(it.id);
                       return (
                         <li key={it.id} data-testid={`admin-text-slot-${it.id}`} className="px-4 py-4">
                           <div className="flex items-start justify-between gap-3 mb-2">
                             <div className="min-w-0">
-                              {it.sectionLabel && (
-                                <p className="text-[12px] text-white/80 truncate">{it.sectionLabel}</p>
-                              )}
+                              <p className="text-[12px] text-white/80 truncate flex items-center gap-2">
+                                {it.sectionLabel || it.id}
+                                {!edited && (
+                                  <span className="text-[8px] tracking-[0.16em] uppercase text-[#D4A373]/80 border border-[#D4A373]/30 px-1.5 py-0.5">
+                                    sin editar
+                                  </span>
+                                )}
+                              </p>
                               <p className="font-mono text-[10px] text-white/35 break-all">{it.id}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">

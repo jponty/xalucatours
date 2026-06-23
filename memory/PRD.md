@@ -10,11 +10,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
-- **Buscador de textos en /admin → pestaña "Textos" (jun 2026) — COMPLETADO + TESTEADO**:
+- **Buscador de textos en /admin → pestaña "Textos" + REGISTRO CENTRAL (jun 2026) — COMPLETADO + TESTEADO**:
   - Nuevo componente `components/TextSlotsPanel.jsx` y nueva pestaña "Textos" en `AdminPage.jsx` (entre URLs y Galerías).
-  - Lista TODOS los textos guardados (`GET /api/text_slots`, 101 slots) AGRUPADOS por página vía `describeSlot()` (reutilizado de SlotUsagePanel), con enlace "Ver" por página.
-  - Búsqueda full-text por id de slot y por contenido ES/EN/FR; edición trilingüe inline; Guardar (`PUT /api/text_slots/{id}`) con persistencia verificada; autotraducción ES→EN/FR (`POST /api/translate`).
-  - LIMITACIÓN: solo muestra slots YA GUARDADOS en BD; los textos recién hechos editables (B1/B2) aparecen tras editarse al menos una vez inline. Posible mejora futura: registro central de slots+defaults para listar también los no editados.
+  - **Registro central de slots**: `EditableText` reporta (batch, fire-and-forget, deduplicado por sesión) cada `slot`+`defaults` a `POST /api/text_slots/register`; backend los guarda en colección `text_slot_registry`. El panel hace merge de `GET /api/text_slots` (valores guardados) + `GET /api/text_slots/registry` (defaults) → lista el **100% de textos editables**, también los nunca editados (badge "sin editar", defaults precargados). Tras navegar el sitio el registro creció a 484+ slots (576 textos visibles en el panel).
+  - Búsqueda full-text por id de slot y por contenido ES/EN/FR; filtro "Solo sin editar"; edición trilingüe inline; Guardar (`PUT /api/text_slots/{id}`) con persistencia verificada; autotraducción ES→EN/FR (`POST /api/translate`); enlace "Ver" por página.
+  - IMPORTANTE rutas backend: `/text_slots/registry` y `/text_slots/register` declaradas ANTES de `/text_slots/{slot_id}` para no colisionar con el path param.
+  - Nota: el registro se rellena a medida que se navegan las páginas (en producción crecerá con el tráfico; en preview se puede sembrar visitando las páginas o desde el iframe de preview del admin).
+
 
 - **Modo edición de TEXTOS: navegar slides mientras editas + cobertura de textos (jun 2026) — FASE A + B1 + B2/B3 parcial — COMPLETADO + TESTEADO (100%)**:
   - **Fase A (navegar slides editando texto)**: `EditModeContext` ahora expone `anyEditMode` (imagen||texto). Los carruseles con autoplay/fade (`EmotionalIntro`, `CategoryImageCarousel`) PAUSAN el autoplay y MUESTRAN flechas/puntos también en modo TEXTO (antes solo en modo imagen) → se puede ir slide a slide y editar el texto de cada uno. Pies de foto de `EmotionalIntro` ahora editables por slide: `home.intro.caption.${idx}`. (testing iteration_43, 100%).

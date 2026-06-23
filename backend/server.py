@@ -4,6 +4,7 @@ import resend
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import UpdateOne
 import os
 import re
 import logging
@@ -14,7 +15,7 @@ from io import BytesIO
 from PIL import Image
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
 
@@ -2643,6 +2644,57 @@ class TextSlotPayload(BaseModel):
                 raise ValueError("Text exceeds 5000 characters")
             out[lang] = t
         return out
+
+
+@api_router.get("/text_slots/registry")
+async def get_text_slot_registry():
+    """Return every editable text slot known site-wide (harvested from the
+    client as <EditableText> instances render), with its code defaults.
+    Lets the admin Textos browser list 100% of editable copy, even slots
+    that have never been edited/saved yet."""
+    cursor = db.text_slot_registry.find({}, {"updated_at": 0, "first_seen": 0}).limit(20000)
+    items: Dict[str, Dict[str, Any]] = {}
+    async for doc in cursor:
+        sid = doc.get("_id")
+        if sid:
+            items[sid] = {"defaults": doc.get("defaults") or {}}
+    return {"registry": items}
+
+
+class SlotRegisterItem(BaseModel):
+    slot_id: str
+    defaults: Dict[str, Optional[str]] = Field(default_factory=dict)
+
+
+class SlotRegisterPayload(BaseModel):
+    slots: List[SlotRegisterItem] = Field(default_factory=list)
+
+
+@api_router.post("/text_slots/register")
+async def register_text_slots(payload: SlotRegisterPayload):
+    """Upsert a batch of {slot_id, defaults} into the slot registry. Idempotent
+    and best-effort — called fire-and-forget by the frontend on first render."""
+    if not payload.slots:
+        return {"registered": 0}
+    now = datetime.now(timezone.utc).isoformat()
+    ops = []
+    for item in payload.slots[:5000]:
+        sid = (item.slot_id or "").strip()
+        if not sid or len(sid) > 200:
+            continue
+        defaults: Dict[str, str] = {}
+        for lang, txt in (item.defaults or {}).items():
+            if isinstance(lang, str) and len(lang) <= 5 and isinstance(txt, str):
+                defaults[lang] = txt[:5000]
+        ops.append(UpdateOne(
+            {"_id": sid},
+            {"$set": {"defaults": defaults, "updated_at": now},
+             "$setOnInsert": {"first_seen": now}},
+            upsert=True,
+        ))
+    if ops:
+        await db.text_slot_registry.bulk_write(ops, ordered=False)
+    return {"registered": len(ops)}
 
 
 @api_router.get("/text_slots/{slot_id}")
