@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Search, Library as LibraryIcon, RefreshCw, Loader2, Plus, Trash2, Save,
-  ExternalLink, Check, AlertTriangle, ChevronDown, ChevronRight, MapPin, ImageOff,
+  ExternalLink, Check, AlertTriangle, ChevronDown, ChevronRight, MapPin, ImageOff, Sparkles,
 } from "lucide-react";
 import { buildLibraryIndex } from "@/lib/libraryIndex";
 import { ZONES } from "@/lib/poiZones";
@@ -40,7 +40,7 @@ export default function LibraryManager() {
   const [kindFilter, setKindFilter] = useState("");
   const [zoneFilter, setZoneFilter] = useState("");
   const [expanded, setExpanded] = useState(null);
-  const [picker, setPicker] = useState(null);     // location id whose gallery is being added to
+  const [picker, setPicker] = useState(null);     // { id, tab?, query? } — gallery being added to
 
   const fetchAll = useCallback(async () => {
     const res = await fetch(`${API}/library/locations`);
@@ -107,7 +107,7 @@ export default function LibraryManager() {
 
   const onAddImages = (items) => {
     if (!picker) return;
-    const id = picker;
+    const id = picker.id;
     const existing = new Set(imagesOf(id).map((im) => im.url));
     const additions = (items || [])
       .filter((it) => it.url && !existing.has(it.url))
@@ -280,14 +280,25 @@ export default function LibraryManager() {
                       <p className="text-[9px] tracking-[0.24em] uppercase text-white/40 inline-flex items-center gap-1.5">
                         <MapPin className="w-3 h-3" /> Galería · {imgs.length} imágenes
                       </p>
-                      <button
-                        type="button"
-                        onClick={() => setPicker(p.id)}
-                        data-testid={`library-add-images-${p.id}`}
-                        className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 px-2.5 py-1.5 hover:bg-white/5"
-                      >
-                        <Plus className="w-3.5 h-3.5" strokeWidth={2} /> Añadir imágenes
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPicker({ id: p.id, tab: "pexels", query: `${pick(p.name, "es") || p.id} Marruecos` })}
+                          data-testid={`library-suggest-images-${p.id}`}
+                          title="Buscar imágenes en Pexels por el nombre del lugar"
+                          className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.18em] uppercase border border-[#D4A373]/40 text-[#D4A373] px-2.5 py-1.5 hover:bg-[#D4A373]/10"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} /> Sugerir imágenes
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPicker({ id: p.id })}
+                          data-testid={`library-add-images-${p.id}`}
+                          className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.18em] uppercase border border-white/15 px-2.5 py-1.5 hover:bg-white/5"
+                        >
+                          <Plus className="w-3.5 h-3.5" strokeWidth={2} /> Añadir imágenes
+                        </button>
+                      </div>
                     </div>
 
                     {imgs.length === 0 ? (
@@ -365,6 +376,8 @@ export default function LibraryManager() {
         <ImageLibraryPicker
           open={!!picker}
           multiple
+          initialTab={picker.tab}
+          initialQuery={picker.query}
           onClose={() => setPicker(null)}
           onSelect={(item) => onAddImages([item])}
           onSelectMany={(items) => onAddImages(items)}

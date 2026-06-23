@@ -64,9 +64,9 @@ const fetchPexels = async (path, params) => {
   return r.json();
 };
 
-export default function PexelsTab({ onSelect, selectionMode = false, selectedKeys, onToggleSelect }) {
-  const [query, setQuery]       = useState("");
-  const [debounced, setDeb]     = useState("");
+export default function PexelsTab({ onSelect, selectionMode = false, selectedKeys, onToggleSelect, initialQuery }) {
+  const [query, setQuery]       = useState(() => initialQuery || "");
+  const [debounced, setDeb]     = useState(() => (initialQuery || "").trim());
   const [photos, setPhotos]     = useState([]);
   const [page, setPage]         = useState(1);
   const [hasMore, setHasMore]   = useState(false);

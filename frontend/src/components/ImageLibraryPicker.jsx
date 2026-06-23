@@ -21,15 +21,20 @@ const API = process.env.REACT_APP_BACKEND_URL || "";
 const TAB_STORAGE_KEY = "xaluca_image_picker_tab";
 const VALID_TABS = ["library", "pexels", "unsplash", "pexels-selection"];
 
-export default function ImageLibraryPicker({ open, onClose, onSelect, multiple = false, onSelectMany }) {
+export default function ImageLibraryPicker({ open, onClose, onSelect, multiple = false, onSelectMany, initialTab, initialQuery }) {
   // Remember the last used tab locally so reopening the picker lands on it.
   const [tab, setTab] = useState(() => {
+    if (initialTab && VALID_TABS.includes(initialTab)) return initialTab;
     try {
       const saved = localStorage.getItem(TAB_STORAGE_KEY);
       if (saved && VALID_TABS.includes(saved)) return saved;
     } catch { /* ignore */ }
     return "library";
   });
+  // When opened with a forced tab (e.g. "Sugerir imágenes" → Pexels), honour it.
+  useEffect(() => {
+    if (open && initialTab && VALID_TABS.includes(initialTab)) setTab(initialTab);
+  }, [open, initialTab]);
   useEffect(() => {
     try { localStorage.setItem(TAB_STORAGE_KEY, tab); } catch { /* ignore */ }
   }, [tab]);
@@ -660,6 +665,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
               selectionMode={selectionMode}
               selectedKeys={selectedKeys}
               onToggleSelect={toggleSelect}
+              initialQuery={initialQuery}
             />
           </div>
         ) : tab === "unsplash" ? (
