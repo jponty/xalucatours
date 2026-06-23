@@ -1,0 +1,38 @@
+{
+  "summary": "Frontend-only validation of Phase A (slide nav while editing text) + B1 (home text coverage). All 9 review-request scenarios verified end-to-end on the public preview URL with text edit mode toggled via the bottom-left 'Textos' FAB. Edit persistence to /api/text_slots confirmed by reload-after-edit cycle; original text restored as required.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "EmotionalIntro carousel dots", "issues": ["Dot buttons are only 6x6px and sit at bottom-right corner of the carousel, which overlaps the Chatbase chat-widget bubble (z-index higher) at desktop 1920px. With Chatbase open or even when closed (the floating launcher), real users may have trouble hitting the dots. Consider increasing dot hit-area (8x8 visual with 16x16 invisible padding/click target) and/or shifting them slightly upward so they clear the bottom-right corner where third-party chat widgets dock. This was test-confirmed: playwright force=True click was intercepted by an overlay div at the same point."]}
+    ]
+  },
+  "verified_flows": [
+    "header-text-edit-toggle activates text edit mode; body gains 'edit-mode-on edit-mode-text' classes; banner 'MODO TEXTOS · NAVEGACIÓN BLOQUEADA' visible (CSS ::after pseudo-element).",
+    "EmotionalIntro: prev/next arrows visible & functional while text edit is on; clicking next swaps caption from .caption.0 to .caption.1 (both render as contenteditable EditableText with default Spanish copy).",
+    "Edit persistence: typed text into editable-text-home.intro.caption.0, blurred (PUT /api/text_slots fired), reloaded, re-entered edit mode -> edited value persisted. Original text restored afterward (verified in DOM).",
+    "AllTripsCarousel: editable slots tourAtlasDesierto45.tag/duration/title/summary all present (count=1 each); editable-text-home.alltrips.card_cta present (count=21, one per card); all-trips-prev/next visible and click does NOT change URL.",
+    "HeroSlider editable-text-home.hero.place present (count=1).",
+    "TravelCategories: editable slots for home.cat.<slug>.region, home.cat.options_label, home.cat.discover_cta, home.cat.<slug>.badge.popular/seasonal etc. all rendered (>25 testids enumerated).",
+    "Navigation blocking: clicking a tel: anchor while in text edit mode does NOT navigate (URL unchanged); middle/normal clicks blocked by capture-phase guard.",
+    "Normal mode regression: after reload without toggling, body has NO edit-mode classes, ZERO 'editable-text-*' testids in DOM, no JS errors (only benign CSP report-only warning + Upstash Redis env warnings)."
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "(Optional polish) Enlarge hit-target of emotional-intro-dot-* buttons or relocate them so they don't sit under the bottom-right Chatbase widget area at desktop widths."
+  ],
+  "critical_code_review_comments": [
+    "EditModeContext.jsx capture-phase guard correctly allows [data-edit-allow=true] and [data-testid^=editable-text-]; clean implementation.",
+    "Banner is rendered via CSS pseudo-element (body.edit-mode-text::after) — works visually but is NOT in the DOM; any future automated test querying innerText for 'MODO TEXTOS' will fail. Consider adding a real DOM element (data-testid='edit-mode-banner') for testability.",
+    "EmotionalIntro autoplay correctly pauses on anyEditMode; arrows toggle opacity-100 on anyEditMode — good UX.",
+    "AllTripsCarousel card_cta renders 21 instances of the same slot id ('home.alltrips.card_cta') — fine for shared label, but PUT will overwrite the single slot for all cards (single source of truth, intended)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "skipped", "frontend": "100%"},
+  "test_credentials": "none required (public site FAB)",
+  "seed_data_creation": "none; edited caption restored to original",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Text edit mode toggle is the bottom-left FAB 'Textos' [data-testid=header-text-edit-toggle]. The 'MODO TEXTOS · NAVEGACIÓN BLOQUEADA' banner is rendered via body.edit-mode-text::after CSS pseudo — query body.classList.contains('edit-mode-text') instead of innerText. To programmatically click emotional-intro-dot-N, use page.evaluate() because the Chatbase widget overlays the bottom-right of the carousel and intercepts force=True pointer clicks. Persistence backend route is PUT /api/text_slots/{slot_id} with {values:{es,en,fr}}."
+}

@@ -8,7 +8,7 @@ import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import TripCardActions from "@/components/TripCardActions";
-import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
+import { tripHeroSlot, tripHeroImage, usesTripMaster, tripTextSlot } from "@/lib/tripHero";
 
 /* ============================================================
    HomeCategoryCarousel — title + lede + horizontal trip cards + CTA
@@ -35,7 +35,6 @@ const LABELS = {
 };
 
 const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
-  const tx = LABELS[lang] || LABELS.es;
   const isDark = tone === TONES.dark;
   const cardAccent = trip.accent || accent;
   // Shared per-trip MASTER image: every card linking to the same trip page
@@ -44,6 +43,10 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
   const useMaster = usesTripMaster(trip.routeId);
   const imgSlot = useMaster ? tripHeroSlot(trip.routeId) : `home.cat-carousel.${trip.id}`;
   const imgFallback = (useMaster && tripHeroImage(trip.routeId)) || trip.image;
+  // Per-trip text slots when this card maps to a real trip page (so copy syncs
+  // site-wide); otherwise a per-card slot for aggregate listings (departures).
+  const textSlot = (field) =>
+    useMaster ? tripTextSlot(trip.routeId, field) : `home.cat-carousel.${trip.id}.${field}`;
   return (
     <div
       data-testid={`home-trip-card-${trip.id}`}
@@ -82,15 +85,19 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
             style={{ background: `${cardAccent}f0` }}
             data-testid={`home-trip-tag-${trip.id}`}
           >
-            {pick(trip.tag, lang)}
+            <EditableText slot={textSlot("tag")} defaults={trip.tag} as="span" multiline={false} />
           </span>
           <div className="absolute inset-x-0 bottom-0 p-5 z-[2]">
             <span className="block text-[10px] tracking-[0.3em] uppercase text-white/90 mb-1.5 text-on-image-strong">
-              {pick(trip.duration, lang)}
+              <EditableText slot={textSlot("duration")} defaults={trip.duration} as="span" multiline={false} noTranslate />
             </span>
-            <h3 className="font-serif-x text-white text-on-image-strong text-[20px] md:text-[22px] leading-[1.12] tracking-tight">
-              {pick(trip.title, lang)}
-            </h3>
+            <EditableText
+              as="h3"
+              slot={textSlot("title")}
+              defaults={trip.title}
+              multiline={false}
+              className="font-serif-x text-white text-on-image-strong text-[20px] md:text-[22px] leading-[1.12] tracking-tight block"
+            />
           </div>
         </div>
 
@@ -107,7 +114,13 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
                 <p className="inline-flex items-center gap-2 text-[12px]" style={{ color: tone.mute }}>
                   <Users className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
                   <span>
-                    {trip.spots}/{trip.capacity} {tx.spots_left}
+                    {trip.spots}/{trip.capacity}{" "}
+                    <EditableText
+                      slot="home.trip_card.spots"
+                      defaults={{ es: "plazas", en: "spots", fr: "places" }}
+                      as="span"
+                      multiline={false}
+                    />
                   </span>
                 </p>
               )}
@@ -115,14 +128,18 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
           ) : (
             <p className="inline-flex items-start gap-2 text-[12px] leading-[1.6]" style={{ color: tone.mute }}>
               <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.6} style={{ color: cardAccent }} />
-              <span>{pick(trip.route, lang)}</span>
+              <EditableText slot={textSlot("route")} defaults={trip.route} as="span" multiline={false} />
             </p>
           )}
 
           {/* Summary */}
-          <p className="text-[13.5px] leading-[1.7]" style={{ color: tone.mute }}>
-            {pick(trip.summary, lang)}
-          </p>
+          <EditableText
+            as="p"
+            slot={textSlot("summary")}
+            defaults={trip.summary}
+            className="text-[13.5px] leading-[1.7] block"
+            style={{ color: tone.mute }}
+          />
 
           {/* CTA */}
           <div
@@ -134,14 +151,25 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
                 className="text-[10px] tracking-[0.28em] uppercase"
                 style={{ color: cardAccent, fontWeight: 600 }}
               >
-                {tx.from} {trip.price}€
+                <EditableText
+                  slot="home.trip_card.from"
+                  defaults={{ es: "desde", en: "from", fr: "dès" }}
+                  as="span"
+                  multiline={false}
+                />{" "}
+                {trip.price}€
               </span>
             ) : (
               <span
                 className="text-[10px] tracking-[0.3em] uppercase"
                 style={{ color: cardAccent, fontWeight: 600 }}
               >
-                {pick(ctaLabel || { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }, lang)}
+                <EditableText
+                  slot="home.trip_card.view"
+                  defaults={ctaLabel || { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }}
+                  as="span"
+                  multiline={false}
+                />
               </span>
             )}
             <span
@@ -326,7 +354,12 @@ export const HomeCategoryCarousel = ({
                 color: "#FDFBF7",
               }}
             >
-              {pick(ctaLabel || { es: "Ver todos", en: "View all", fr: "Tout voir" }, lang)}
+              <EditableText
+                slot={slotPrefix ? `${slotPrefix}.view_all` : "home.section.view_all"}
+                defaults={ctaLabel || { es: "Ver todos", en: "View all", fr: "Tout voir" }}
+                as="span"
+                multiline={false}
+              />
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
             </Link>
           </div>

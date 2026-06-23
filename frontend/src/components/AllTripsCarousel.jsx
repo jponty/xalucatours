@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
+import { tripHeroSlot, tripHeroImage, tripTextSlot } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import TripCardActions from "@/components/TripCardActions";
@@ -235,16 +235,31 @@ export default function AllTripsCarousel() {
 
                   <span className="absolute top-4 left-4 inline-flex items-center gap-2 px-2.5 py-1 text-[9px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image"
                     style={{ background: `${trip.accent}f0` }}>
-                    {pick(TAGS[trip.tag], lang)}
+                    <EditableText
+                      slot={tripTextSlot(trip.routeId, "tag")}
+                      defaults={TAGS[trip.tag]}
+                      as="span"
+                      multiline={false}
+                    />
                   </span>
 
                   <div className="absolute inset-x-0 bottom-0 p-5">
                     <span className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/80 mb-2 text-on-image">
-                      {trip.nights}
+                      <EditableText
+                        slot={tripTextSlot(trip.routeId, "duration")}
+                        defaults={{ es: trip.nights, en: trip.nights, fr: trip.nights }}
+                        as="span"
+                        multiline={false}
+                        noTranslate
+                      />
                     </span>
-                    <h3 className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight pr-12">
-                      {pick(trip.title, lang)}
-                    </h3>
+                    <EditableText
+                      as="h3"
+                      slot={tripTextSlot(trip.routeId, "title")}
+                      defaults={trip.title}
+                      multiline={false}
+                      className="font-serif-x text-[#FDFBF7] text-on-image text-xl md:text-[22px] leading-[1.15] tracking-tight pr-12 block"
+                    />
                   </div>
 
                   {/* Xaluca "X" monogram — bottom-right of each image */}
@@ -258,12 +273,20 @@ export default function AllTripsCarousel() {
                 </div>
 
                 <div className="px-5 pt-5">
-                  <p className="text-[13px] text-[#5C5248] leading-[1.7] min-h-[2.6em]">
-                    {pick(trip.desc, lang)}
-                  </p>
+                  <EditableText
+                    as="p"
+                    slot={tripTextSlot(trip.routeId, "summary")}
+                    defaults={trip.desc}
+                    className="text-[13px] text-[#5C5248] leading-[1.7] min-h-[2.6em] block"
+                  />
                   <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
                     <span className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
-                      {pick(COPY.cta, lang)}
+                      <EditableText
+                        slot="home.alltrips.card_cta"
+                        defaults={COPY.cta}
+                        as="span"
+                        multiline={false}
+                      />
                     </span>
                     <ArrowUpRight
                       className="w-4 h-4 text-[#2C2621] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542]"

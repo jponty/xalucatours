@@ -30,7 +30,7 @@ export default function CategoryImageCarousel({
   const list = Array.isArray(images) && images.length > 0 ? images : [];
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const { editMode } = useEditMode();
+  const { anyEditMode } = useEditMode();
   const total = list.length;
   const touchStartX = useRef(null);
   const SWIPE_THRESHOLD = 50; // px
@@ -64,10 +64,10 @@ export default function CategoryImageCarousel({
   useEffect(() => {
     // Never auto-advance while editing — the user needs the visible slide
     // to stay put so they can click it and open its image editor.
-    if (paused || editMode || total <= 1) return undefined;
+    if (paused || anyEditMode || total <= 1) return undefined;
     const id = setInterval(next, interval);
     return () => clearInterval(id);
-  }, [paused, editMode, total, interval, next]);
+  }, [paused, anyEditMode, total, interval, next]);
 
   if (total === 0) return null;
 
@@ -113,7 +113,7 @@ export default function CategoryImageCarousel({
             data-testid={`cat-carousel-prev-${slug}`}
             data-edit-allow="true"
             className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 ${
-              editMode ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+              anyEditMode ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
             }`}
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.6} />
@@ -125,7 +125,7 @@ export default function CategoryImageCarousel({
             data-testid={`cat-carousel-next-${slug}`}
             data-edit-allow="true"
             className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-10 h-10 bg-[#1A1513]/55 hover:bg-[#1A1513]/85 backdrop-blur-md border border-[#FDFBF7]/20 text-[#FDFBF7] transition-opacity duration-300 ${
-              editMode ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+              anyEditMode ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
             }`}
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.6} />

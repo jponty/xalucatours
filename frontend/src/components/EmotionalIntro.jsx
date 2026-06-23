@@ -56,7 +56,7 @@ const AUTOPLAY_MS = 5200;
 
 export const EmotionalIntro = () => {
   const { t, lang } = useLanguage();
-  const { editMode } = useEditMode();
+  const { anyEditMode } = useEditMode();
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -65,12 +65,12 @@ export const EmotionalIntro = () => {
   }, []);
 
   useEffect(() => {
-    if (paused || editMode) return undefined;
+    if (paused || anyEditMode) return undefined;
     const id = setInterval(() => {
       setIdx((p) => (p + 1) % SLIDES.length);
     }, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [paused, editMode]);
+  }, [paused, anyEditMode]);
 
   return (
     <section
@@ -165,13 +165,19 @@ export const EmotionalIntro = () => {
               <span className="film-grain pointer-events-none" />
               <XalucaLogoBadge testid="emotional-intro-logo" />
 
-              {/* Caption — trilingual, fades with the slide */}
+              {/* Caption — trilingual, fades with the slide. Editable per slide
+                  so each frame's copy is managed independently from the CMS. */}
               <span
                 key={`cap-${idx}`}
                 className="landmark-image-fade absolute bottom-6 left-6 right-16 text-[#FDFBF7] text-on-image font-serif-x-italic text-lg md:text-xl leading-[1.3]"
                 data-testid={`emotional-intro-caption-${idx}`}
               >
-                {pick(SLIDES[idx].caption, lang)}
+                <EditableText
+                  as="span"
+                  slot={`home.intro.caption.${idx}`}
+                  defaults={SLIDES[idx].caption}
+                  multiline={false}
+                />
               </span>
 
               {/* Manual nav arrows — always above the edit overlay (z-50)
@@ -183,7 +189,7 @@ export const EmotionalIntro = () => {
                 data-testid="emotional-intro-prev"
                 data-edit-allow="true"
                 className={`absolute top-1/2 left-3 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
-                  editMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  anyEditMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" strokeWidth={1.6} />
@@ -195,7 +201,7 @@ export const EmotionalIntro = () => {
                 data-testid="emotional-intro-next"
                 data-edit-allow="true"
                 className={`absolute top-1/2 right-3 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
-                  editMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  anyEditMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
                 <ChevronRight className="w-4 h-4" strokeWidth={1.6} />

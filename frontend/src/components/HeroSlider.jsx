@@ -117,7 +117,12 @@ export const HeroSlider = () => {
                   data-testid="hero-place"
                   className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80"
                 >
-                  {HERO_PLACE[lang] || HERO_PLACE.es}
+                  <EditableText
+                    slot="home.hero.place"
+                    defaults={HERO_PLACE}
+                    as="span"
+                    multiline={false}
+                  />
                 </span>
               </div>
 

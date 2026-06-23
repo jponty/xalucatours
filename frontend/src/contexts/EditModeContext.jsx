@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 const EditModeContext = createContext({
   imageEditMode: false,
   textEditMode: false,
+  anyEditMode: false,         // imageEditMode || textEditMode
   editMode: false,            // legacy alias = imageEditMode
   toggle: () => {},           // legacy alias = toggleImage
   toggleImage: () => {},
@@ -167,6 +168,7 @@ export const EditModeProvider = ({ children }) => {
   const value = {
     imageEditMode,
     textEditMode,
+    anyEditMode: anyMode,       // image OR text edit is active
     editMode: imageEditMode,    // legacy alias
     toggle: toggleImage,        // legacy alias
     toggleImage,

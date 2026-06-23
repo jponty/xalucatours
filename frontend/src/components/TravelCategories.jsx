@@ -96,7 +96,12 @@ export const TravelCategories = () => {
                           className="inline-flex items-center bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
                           style={{ color: c.accent }}
                         >
-                          {t(BADGE_KEY[b])}
+                          <EditableText
+                            slot={`home.cat.${c.slug}.badge.${b}`}
+                            defaults={translations[BADGE_KEY[b]]}
+                            as="span"
+                            multiline={false}
+                          />
                         </span>
                       ))}
                     </div>
@@ -119,9 +124,13 @@ export const TravelCategories = () => {
                 </ImageWrapper>
 
                 <div className={`md:col-span-5 ${reverse ? "md:order-1 md:pr-6" : "md:pl-6"}`}>
-                  <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
-                    {pick(c.region, lang)}
-                  </span>
+                  <EditableText
+                    slot={`home.cat.${c.slug}.region`}
+                    defaults={c.region}
+                    as="span"
+                    multiline={false}
+                    className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]"
+                  />
                   <EditableText as="h3" slot={`home.cat.${c.slug}.title`} defaults={c.title}
                     className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-3 tracking-tight text-[#2C2621] block" />
                   <EditableText as="p" slot={`home.cat.${c.slug}.summary`} defaults={c.summary}
@@ -131,7 +140,12 @@ export const TravelCategories = () => {
                   {OPTIONS_BY_SLUG[c.slug]?.length > 0 && (
                     <div className="mt-7" data-testid={`category-options-${c.slug}`}>
                       <span className="block text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
-                        {pick(OPTIONS_LABEL, lang)}
+                        <EditableText
+                          slot="home.cat.options_label"
+                          defaults={OPTIONS_LABEL}
+                          as="span"
+                          multiline={false}
+                        />
                       </span>
                       <ul className="mt-3 border-t border-[#2C2621]/10 divide-y divide-[#2C2621]/10">
                         {OPTIONS_BY_SLUG[c.slug].map((trip) => (
@@ -191,7 +205,12 @@ export const TravelCategories = () => {
                       data-testid={`category-cta-${c.slug}`}
                       className="inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
                     >
-                      {t("cta_discover_routes")}
+                      <EditableText
+                        slot="home.cat.discover_cta"
+                        defaults={translations.cta_discover_routes}
+                        as="span"
+                        multiline={false}
+                      />
                       <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                     </Link>
                     <button

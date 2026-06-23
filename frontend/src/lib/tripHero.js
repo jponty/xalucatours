@@ -19,6 +19,11 @@ import { ALL_TRIPS } from "@/lib/allTripsCatalog";
 
 export const tripHeroSlot = (routeId) => `trip.${routeId}.hero`;
 
+/* Per-trip MASTER text slot (title, summary, tag, duration, route…). Shared by
+   every card linking to the same trip page so editing copy anywhere keeps it in
+   sync site-wide, mirroring the master image behaviour. */
+export const tripTextSlot = (routeId, field) => `trip.${routeId}.${field}`;
+
 /* Aggregate listing routes that map MANY distinct cards to a SINGLE page
    (e.g. all upcoming group departures share one route). These must NOT
    collapse to a single shared master image, so cards for them keep their
