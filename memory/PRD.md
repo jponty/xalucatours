@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Buscador de textos en /admin → pestaña "Textos" (jun 2026) — COMPLETADO + TESTEADO**:
+  - Nuevo componente `components/TextSlotsPanel.jsx` y nueva pestaña "Textos" en `AdminPage.jsx` (entre URLs y Galerías).
+  - Lista TODOS los textos guardados (`GET /api/text_slots`, 101 slots) AGRUPADOS por página vía `describeSlot()` (reutilizado de SlotUsagePanel), con enlace "Ver" por página.
+  - Búsqueda full-text por id de slot y por contenido ES/EN/FR; edición trilingüe inline; Guardar (`PUT /api/text_slots/{id}`) con persistencia verificada; autotraducción ES→EN/FR (`POST /api/translate`).
+  - LIMITACIÓN: solo muestra slots YA GUARDADOS en BD; los textos recién hechos editables (B1/B2) aparecen tras editarse al menos una vez inline. Posible mejora futura: registro central de slots+defaults para listar también los no editados.
+
 - **Modo edición de TEXTOS: navegar slides mientras editas + cobertura de textos (jun 2026) — FASE A + B1 + B2/B3 parcial — COMPLETADO + TESTEADO (100%)**:
   - **Fase A (navegar slides editando texto)**: `EditModeContext` ahora expone `anyEditMode` (imagen||texto). Los carruseles con autoplay/fade (`EmotionalIntro`, `CategoryImageCarousel`) PAUSAN el autoplay y MUESTRAN flechas/puntos también en modo TEXTO (antes solo en modo imagen) → se puede ir slide a slide y editar el texto de cada uno. Pies de foto de `EmotionalIntro` ahora editables por slide: `home.intro.caption.${idx}`. (testing iteration_43, 100%).
   - **B1 (textos del Home)**: HeroSlider `home.hero.place`; TravelCategories badges `home.cat.<slug>.badge.<b>`, región `home.cat.<slug>.region`, `home.cat.options_label`, `home.cat.discover_cta`; tarjetas de `AllTripsCarousel` y `HomeCategoryCarousel` editables y SINCRONIZADAS por viaje vía `tripTextSlot(routeId, field)` = `trip.${routeId}.{tag|duration|title|summary|route}` (helper en `lib/tripHero.js`; rutas agregadas usan `home.cat-carousel.${id}.*`); labels `home.alltrips.card_cta`, `home.trip_card.{from|spots|view}`, `${slotPrefix}.view_all`.

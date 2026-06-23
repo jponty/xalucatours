@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
+import TextSlotsPanel from "@/components/TextSlotsPanel";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
 import { LANDMARK_CATALOG, infoSlots, cardSlots } from "@/lib/dayLandmarkCatalog";
@@ -466,6 +467,7 @@ export default function AdminPage() {
           <nav className="p-3 flex md:flex-col gap-1">
             {[
               { id: "urls",   label: "URLs",          icon: Globe },
+              { id: "texts",  label: "Textos",        icon: Type },
               { id: "galleries", label: "Galerías",   icon: Images },
               { id: "leads",  label: "Leads",         icon: Inbox },
               { id: "notify", label: "Notificaciones", icon: Mail },
@@ -656,6 +658,10 @@ export default function AdminPage() {
         ) : tab === "galleries" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-hidden max-h-[calc(100vh-56px)]">
             <GalleryManager lang={previewLang} />
+          </section>
+        ) : tab === "texts" ? (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
+            <TextSlotsPanel />
           </section>
         ) : tab === "mirror" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
