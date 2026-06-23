@@ -102,8 +102,6 @@ export default function LibraryManager() {
 
   const removeImage = (id, imgId) =>
     setDraft(id, { images: imagesOf(id).filter((im) => (im.id || im.url) !== imgId) });
-  const setCaption = (id, imgId, caption) =>
-    setDraft(id, { images: imagesOf(id).map((im) => ((im.id || im.url) === imgId ? { ...im, caption } : im)) });
 
   const onAddImages = (items) => {
     if (!picker) return;
@@ -323,13 +321,6 @@ export default function LibraryManager() {
                               >
                                 <Trash2 className="w-3.5 h-3.5" strokeWidth={1.8} />
                               </button>
-                              <input
-                                value={im.caption || ""}
-                                onChange={(e) => setCaption(p.id, key, e.target.value)}
-                                data-testid={`library-caption-${p.id}-${key}`}
-                                placeholder="Pie de foto…"
-                                className="w-full bg-transparent border-t border-white/10 px-2 py-1.5 text-[11px] text-white/85 placeholder:text-white/30 focus:outline-none focus:bg-white/5"
-                              />
                             </div>
                           );
                         })}
