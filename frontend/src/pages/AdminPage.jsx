@@ -3,7 +3,7 @@ import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
-  MapPin, Languages, Inbox, Mail, Images,
+  MapPin, Languages, Inbox, Mail, Images, Database,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
@@ -469,6 +469,7 @@ export default function AdminPage() {
               { id: "galleries", label: "Galerías",   icon: Images },
               { id: "leads",  label: "Leads",         icon: Inbox },
               { id: "notify", label: "Notificaciones", icon: Mail },
+              { id: "mirror", label: "Mirror DB",      icon: Database },
             ].map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -655,6 +656,10 @@ export default function AdminPage() {
         ) : tab === "galleries" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-hidden max-h-[calc(100vh-56px)]">
             <GalleryManager lang={previewLang} />
+          </section>
+        ) : tab === "mirror" ? (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
+            <MirrorPanel />
           </section>
         ) : (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
@@ -903,6 +908,158 @@ const PricingEditor = ({ onSaved }) => {
     </div>
   );
 };
+
+
+/* ---------- Mirror Production Database ----------
+   One-click FULL pull: this environment's content is OVERWRITTEN with an
+   exact copy of production (https://xalucatravel.com). The backend reads
+   production's public endpoints (cms/export, day-galleries, files) — no
+   prod redeploy needed — and image binaries live in shared object storage,
+   so previews show the same images immediately. Run on PREVIEW before a
+   deploy so live CMS edits are never lost. */
+const MirrorPanel = () => {
+  const PROD = "https://xalucatravel.com";
+  const onProd = (process.env.REACT_APP_BACKEND_URL || "").includes("xalucatravel.com");
+  const [busy, setBusy] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+
+  const runMirror = async () => {
+    setBusy(true); setError(""); setResult(null);
+    try {
+      const token = localStorage.getItem("xaluca_admin_token");
+      const r = await fetch(`${API}/admin/mirror-production`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({}),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "Error al sincronizar la base de datos.");
+      setResult(d.mirrored || {});
+    } catch (e) {
+      setError(e.message || "Error al sincronizar la base de datos.");
+    } finally {
+      setBusy(false); setConfirming(false);
+    }
+  };
+
+  const rows = result && [
+    ["Textos y traducciones", result.text_slots],
+    ["Imágenes (Edit Image)", result.image_slots],
+    ["Galerías por día", result.day_galleries],
+    ["Biblioteca de imágenes", result.files],
+    ["Precios", result.pricing ? "Sí" : "—"],
+  ];
+
+  return (
+    <div className="max-w-2xl mx-auto p-6 md:p-10 text-white" data-testid="mirror-panel">
+      <div className="flex items-center gap-3 mb-2">
+        <Database className="w-6 h-6 text-[#D4A373]" strokeWidth={1.6} />
+        <h2 className="text-2xl font-serif-x">Mirror Production Database</h2>
+      </div>
+      <p className="text-sm text-white/65 leading-relaxed mb-6">
+        Copia el contenido completo de <span className="text-[#D4A373]">producción</span> a este entorno
+        para que ambos queden idénticos antes de un despliegue. Así no se pierden los cambios hechos en la
+        web en vivo (CMS, Edit Text, Edit Image). Las imágenes se comparten en el almacenamiento, así que
+        aparecen al instante.
+      </p>
+
+      <div className="space-y-2 text-[11px] tracking-[0.15em] uppercase text-white/50 mb-6">
+        <div className="flex items-center justify-between border border-white/10 px-4 py-2.5">
+          <span>Origen (producción)</span>
+          <span className="text-white/80 normal-case tracking-normal">{PROD}</span>
+        </div>
+        <div className="flex items-center justify-between border border-white/10 px-4 py-2.5">
+          <span>Destino (este entorno)</span>
+          <span className="text-white/80 normal-case tracking-normal truncate max-w-[55%]">
+            {(process.env.REACT_APP_BACKEND_URL || "").replace(/^https?:\/\//, "")}
+          </span>
+        </div>
+      </div>
+
+      {/* Destructive warning */}
+      <div className="flex items-start gap-3 bg-[#C16542]/10 border border-[#C16542]/40 px-4 py-3 mb-6">
+        <AlertTriangle className="w-4 h-4 text-[#C16542] mt-0.5 shrink-0" strokeWidth={1.8} />
+        <p className="text-xs text-white/75 leading-relaxed">
+          Esta acción <b>sobrescribe por completo</b> el contenido de este entorno (textos, imágenes,
+          galerías, biblioteca y precios) con el de producción. No afecta a producción ni a los leads.
+          {onProd && (
+            <span className="block mt-2 text-[#C16542] font-semibold">
+              ⚠ Estás en producción. Esta herramienta está pensada para ejecutarse en PREVIEW.
+            </span>
+          )}
+        </p>
+      </div>
+
+      {!confirming ? (
+        <button
+          type="button"
+          data-testid="mirror-start-btn"
+          onClick={() => { setConfirming(true); setResult(null); setError(""); }}
+          disabled={busy}
+          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-white px-6 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+        >
+          <DownloadCloud className="w-4 h-4" strokeWidth={1.8} />
+          Mirror Production Database
+        </button>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3" data-testid="mirror-confirm-row">
+          <span className="text-sm text-white/80">¿Sobrescribir este entorno con producción?</span>
+          <button
+            type="button"
+            data-testid="mirror-confirm-btn"
+            onClick={runMirror}
+            disabled={busy}
+            className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-white px-5 py-2.5 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+          >
+            {busy ? <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={1.8} /> : <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />}
+            {busy ? "Sincronizando…" : "Sí, sobrescribir"}
+          </button>
+          <button
+            type="button"
+            data-testid="mirror-cancel-btn"
+            onClick={() => setConfirming(false)}
+            disabled={busy}
+            className="text-[11px] tracking-[0.25em] uppercase text-white/60 hover:text-white disabled:opacity-50"
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
+
+      {busy && (
+        <p className="mt-4 text-xs text-white/55">Copiando la base de datos de producción… puede tardar hasta un minuto. No cierres esta página.</p>
+      )}
+
+      {error && (
+        <div className="mt-6 flex items-start gap-3 bg-red-500/10 border border-red-500/40 px-4 py-3" data-testid="mirror-error">
+          <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" strokeWidth={1.8} />
+          <p className="text-xs text-red-300 leading-relaxed">{error}</p>
+        </div>
+      )}
+
+      {result && (
+        <div className="mt-6 border border-[#5A6B4F]/50 bg-[#5A6B4F]/10 px-5 py-4" data-testid="mirror-result">
+          <div className="flex items-center gap-2 mb-3 text-[#9DBE8C]">
+            <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />
+            <span className="text-sm font-semibold">Mirror completado — este entorno es ahora una copia de producción.</span>
+          </div>
+          <ul className="space-y-1.5">
+            {rows.map(([label, val]) => (
+              <li key={label} className="flex items-center justify-between text-xs text-white/75">
+                <span>{label}</span>
+                <span className="text-white font-mono">{val}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[11px] text-white/45">Recarga la web para ver el contenido actualizado.</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 
 /* ---------- CMS Sync panel ----------

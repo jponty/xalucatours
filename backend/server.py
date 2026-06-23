@@ -427,6 +427,155 @@ async def cms_import(payload: CmsImportPayload, authorization: str = Header(defa
     return {"ok": True, "imported": result}
 
 
+# ---------- Mirror Production Database (pull FULL content prod → here) ----------
+# Reads ALL editable content from a source environment (default: production)
+# using ONLY the source's PUBLIC GET endpoints — which are already deployed —
+# then OVERWRITES this environment's collections so they become an exact mirror.
+# No redeploy of the source is required. Image binaries live in the SHARED
+# Emergent object storage, so mirroring the DB records is enough. Leads / PII
+# (contact_requests, trip_planner_requests, downloads) are deliberately excluded.
+PRODUCTION_BASE_URL = os.environ.get("PRODUCTION_BASE_URL", "https://xalucatravel.com").rstrip("/")
+
+
+class MirrorPayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    source_url: Optional[str] = None
+
+
+@api_router.post("/admin/mirror-production")
+async def mirror_production(payload: MirrorPayload, authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+
+    src = (payload.source_url or PRODUCTION_BASE_URL).strip().rstrip("/")
+    if not src.startswith("http"):
+        raise HTTPException(status_code=400, detail="source_url inválida (debe empezar por http).")
+
+    # ---- 1) Fetch EVERYTHING first; abort before wiping if anything fails ----
+    try:
+        async with httpx.AsyncClient(timeout=90, follow_redirects=True) as http:
+            cms_r = await http.get(f"{src}/api/cms/export")
+            cms_r.raise_for_status()
+            cms = cms_r.json()
+
+            gal_r = await http.get(f"{src}/api/day-galleries")
+            gal_r.raise_for_status()
+            galleries = gal_r.json().get("galleries", [])
+
+            files = []
+            skip = 0
+            while True:
+                fr = await http.get(f"{src}/api/files", params={"limit": 200, "skip": skip})
+                fr.raise_for_status()
+                fj = fr.json()
+                files.extend(fj.get("items", []))
+                if not fj.get("has_more"):
+                    break
+                skip += 200
+                if skip > 200000:  # hard safety stop
+                    break
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=502, detail=f"No se pudo leer el origen ({src}): {exc}")
+
+    if not isinstance(cms, dict) or "image_slots" not in cms or "text_slots" not in cms:
+        raise HTTPException(status_code=502, detail="El origen no devolvió un export CMS válido.")
+
+    image_slots = cms.get("image_slots") or []
+    text_slots = cms.get("text_slots") or []
+    pricing = cms.get("pricing")
+    now = datetime.now(timezone.utc).isoformat()
+
+    # ---- 2) Overwrite local collections (exact mirror) ----
+    # image slots
+    await db.image_slots.delete_many({})
+    img_docs = []
+    for d in image_slots:
+        sid = d.get("_id")
+        if not sid:
+            continue
+        nd = {k: v for k, v in d.items() if k != "_id"}
+        if nd.get("url"):
+            nd["url"] = _relativize_url(nd["url"])
+        nd["_id"] = sid
+        nd["updated_at"] = now
+        img_docs.append(nd)
+    if img_docs:
+        await db.image_slots.insert_many(img_docs)
+
+    # text slots
+    await db.text_slots.delete_many({})
+    txt_docs = []
+    for d in text_slots:
+        sid = d.get("_id")
+        if not sid:
+            continue
+        nd = {k: v for k, v in d.items() if k != "_id"}
+        nd["_id"] = sid
+        nd["updated_at"] = now
+        txt_docs.append(nd)
+    if txt_docs:
+        await db.text_slots.insert_many(txt_docs)
+
+    # day galleries
+    await db.day_galleries.delete_many({})
+    gal_docs = []
+    for g in galleries:
+        key = g.get("key")
+        if not key:
+            continue
+        imgs = [
+            {"url": _relativize_url(i.get("url")), "alt": i.get("alt")}
+            for i in (g.get("images") or []) if i and i.get("url")
+        ]
+        gal_docs.append({"_id": key, "images": imgs, "updated_at": now})
+    if gal_docs:
+        await db.day_galleries.insert_many(gal_docs)
+
+    # image library (files) — metadata only; binaries are in shared storage
+    await db.files.delete_many({})
+    file_docs = []
+    seen_paths = set()
+    for f in files:
+        sp = f.get("storage_path")
+        if not sp or sp in seen_paths:
+            continue
+        seen_paths.add(sp)
+        file_docs.append({
+            "id": f.get("id") or str(uuid.uuid4()),
+            "storage_path": sp,
+            "original_filename": f.get("original_filename"),
+            "content_type": f.get("content_type"),
+            "size": f.get("size"),
+            "slot_id": f.get("slot_id"),
+            "tags": f.get("tags") or [],
+            "created_at": f.get("created_at") or now,
+            "is_deleted": False,
+        })
+    if file_docs:
+        await db.files.insert_many(file_docs)
+
+    # global pricing
+    if pricing:
+        pdoc = {k: v for k, v in pricing.items() if k != "_id"}
+        pdoc["updated_at"] = now
+        await db.config.update_one({"_id": "pricing"}, {"$set": pdoc}, upsert=True)
+
+    return {
+        "ok": True,
+        "source": src,
+        "mirrored": {
+            "image_slots": len(img_docs),
+            "text_slots": len(txt_docs),
+            "day_galleries": len(gal_docs),
+            "files": len(file_docs),
+            "pricing": bool(pricing),
+        },
+        "completed_at": now,
+    }
+
+
+
 # ============================================================
 #  LEAD EMAIL NOTIFICATIONS (Resend)
 #  Fire-and-forget: a failed email must never break lead creation.
