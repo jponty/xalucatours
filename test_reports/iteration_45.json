@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only verification of new admin Library dashboard (/admin → 'Library' tab). All requested flows passed: panel load with 132/132 lugares · 385 imágenes; search 'fez' reduces results; kind filter 'dunes' (12 rows) and zone filter 'sahara' (52 rows) work and reset chips work; expanding 'fez' shows trip chips (10+ itinerary links), 3 default images each with caption inputs + remove buttons, 'Añadir imágenes' button, notes textarea and Guardar; caption edit→save→reload persisted and was restored; ImageLibraryPicker add-image flow on 'erfoud' (3→4) persisted after reload and was cleaned back to 3; Re-indexar button reloads list consistently (count stays 132/132 · 385); notes edit→save→reload persisted on 'erfoud' and was restored. Library edits are independent of curated itinerary galleries as designed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LibraryManager / lib/libraryIndex.js",
+        "issue": "React 'Encountered two children with the same key' warning fires continuously for ids: 'bivouac-luxe', 'boutaghrar', 'xaluca-dades', 'merdani'. buildLibraryIndex() returns duplicate entries for these POIs, so they are rendered twice in the list. Observable effect: when searching 'fez' the count text shows '4/132 lugares' but the DOM contains 8 [data-testid^=library-location-toggle-] elements (4 expected + 4 stray duplicates) — i.e. these 4 duplicated rows appear regardless of filter/search and pollute the list. Also produces a flood of console errors in production.",
+        "selector": "[data-testid^='library-location-toggle-']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "In lib/libraryIndex.js (buildLibraryIndex), de-duplicate by POI id before returning. Likely cause: same id appears in LANDMARK_CATALOG multiple times OR is reached via both kasbah/camp and another kind. A simple `const seen=new Set(); result.filter(p=> !seen.has(p.id) && seen.add(p.id))` will fix the duplicate React keys, the count mismatch, and the console spam. Also ensure the count text uses the de-duped list length so '4/132 lugares' matches the rendered row count."
+  ],
+  "critical_code_review_comments": [
+    "LibraryManager.jsx: every render re-evaluates KIND_LABEL/ZONE_LABEL fine, but the count text 'N/total lugares' currently trusts index.length and rows.length even when index contains duplicates — the rendered DOM does not match the displayed count. After de-duping in buildLibraryIndex this becomes accurate.",
+    "Console: existing third-party warning 'cdn.tailwindcss.com should not be used in production' — pre-existing, not part of this feature.",
+    "Saving UX is solid (debounced 'Guardado' state, dirty-button color); add-image picker correctly closes on confirm and the new thumb is appended. No overlay/blocking issues observed."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% (10/10 scripted flows)"},
+  "test_credentials": "/admin password: xaluca",
+  "seed_data_creation": "None. All test mutations (caption on 'fez', added image + notes on 'erfoud') were reverted at end of test. Final state verified clean (erfoud back to 3 imgs, no TEST_xaluca strings remaining).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Library tab loads after first admin sync seeds 132 locs with default 3-image galleries each (~385 imgs total). Filters/search are client-side. Persistence is via PUT /api/library/locations/{id}; verified through reload. Only outstanding issue: duplicate POI ids in buildLibraryIndex causing React key warnings + duplicated rows (see action_items).",
+  "rca of the issue": "RCA: lib/libraryIndex.js#buildLibraryIndex() emits the same id twice for {bivouac-luxe, boutaghrar, xaluca-dades, merdani}. Repro: open /admin → Library → DevTools console shows 'two children with the same key' on every render for those 4 ids; type 'fez' in admin-library-search → count text says '4/132' but DOM has 8 toggles. Mitigation: de-dup by id at the end of buildLibraryIndex (Set-based filter), and base the count on the de-duped array."
+}

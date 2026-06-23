@@ -2771,6 +2771,137 @@ class TranslateBody(BaseModel):
     targets: List[str] = Field(default_factory=lambda: ["en", "fr"])
 
 
+# ---------- Destination Media Library ----------
+# A SEPARATE, independent media library indexed from the itineraries. It does
+# NOT touch the curated itinerary galleries (image_slots / poi.*.gallery.*):
+# it lives in its own `library_locations` collection and acts as a secondary
+# pool of contextual destination imagery. One document per location id.
+class LibraryImage(BaseModel):
+    id: Optional[str] = None
+    url: str
+    storage_path: Optional[str] = None
+    caption: Optional[str] = ""
+    source: Optional[str] = None   # 'seed' | 'upload' | 'library' | 'pexels'
+
+
+class LibraryLocationPayload(BaseModel):
+    name: Optional[Dict[str, Optional[str]]] = None
+    kind: Optional[str] = None
+    zone: Optional[str] = None
+    group: Optional[str] = None
+    trips: Optional[List[Dict[str, Any]]] = None
+    notes: Optional[str] = None
+    images: Optional[List[LibraryImage]] = None
+
+
+class LibrarySyncItem(BaseModel):
+    id: str
+    name: Dict[str, Optional[str]] = Field(default_factory=dict)
+    kind: Optional[str] = None
+    zone: Optional[str] = None
+    group: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    trips: List[Dict[str, Any]] = Field(default_factory=list)
+    seedImages: List[str] = Field(default_factory=list)
+    seedCaptions: List[str] = Field(default_factory=list)
+
+
+class LibrarySyncPayload(BaseModel):
+    locations: List[LibrarySyncItem] = Field(default_factory=list)
+
+
+@api_router.get("/library/locations")
+async def list_library_locations():
+    """Return every indexed Library location with its independent gallery."""
+    cursor = db.library_locations.find({}).limit(5000)
+    items = []
+    async for doc in cursor:
+        doc["id"] = doc.pop("_id")
+        items.append(doc)
+    return {"locations": items}
+
+
+@api_router.post("/library/locations/sync")
+async def sync_library_locations(payload: LibrarySyncPayload):
+    """Upsert location metadata harvested from the itinerary index. Existing
+    Library images/notes are preserved; brand-new locations are seeded with
+    their default programmatic gallery so the Library is never empty."""
+    if not payload.locations:
+        return {"synced": 0, "created": 0}
+    now = datetime.now(timezone.utc).isoformat()
+    ops = []
+    for loc in payload.locations[:5000]:
+        lid = (loc.id or "").strip()
+        if not lid:
+            continue
+        seed_imgs = []
+        for i, url in enumerate(loc.seedImages[:40]):
+            if isinstance(url, str) and url.strip():
+                seed_imgs.append({
+                    "id": uuid.uuid4().hex,
+                    "url": url,
+                    "storage_path": None,
+                    "caption": (loc.seedCaptions[i] if i < len(loc.seedCaptions) else "") or "",
+                    "source": "seed",
+                })
+        ops.append(UpdateOne(
+            {"_id": lid},
+            {
+                "$set": {
+                    "name": loc.name or {},
+                    "kind": loc.kind,
+                    "zone": loc.zone,
+                    "group": loc.group,
+                    "lat": loc.lat,
+                    "lng": loc.lng,
+                    "trips": loc.trips or [],
+                    "updated_at": now,
+                },
+                "$setOnInsert": {
+                    "images": seed_imgs,
+                    "notes": "",
+                    "indexed_at": now,
+                },
+            },
+            upsert=True,
+        ))
+    created = 0
+    if ops:
+        res = await db.library_locations.bulk_write(ops, ordered=False)
+        created = res.upserted_count or 0
+    return {"synced": len(ops), "created": created}
+
+
+@api_router.put("/library/locations/{location_id}")
+async def update_library_location(location_id: str, payload: LibraryLocationPayload):
+    update: Dict[str, Any] = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    if payload.images is not None:
+        imgs = []
+        for im in payload.images[:200]:
+            if not im.url:
+                continue
+            imgs.append({
+                "id": im.id or uuid.uuid4().hex,
+                "url": im.url,
+                "storage_path": im.storage_path,
+                "caption": (im.caption or "")[:1000],
+                "source": im.source,
+            })
+        update["images"] = imgs
+    if payload.notes is not None:
+        update["notes"] = payload.notes[:5000]
+    for f in ("name", "kind", "zone", "group", "trips"):
+        v = getattr(payload, f)
+        if v is not None:
+            update[f] = v
+    await db.library_locations.update_one({"_id": location_id}, {"$set": update}, upsert=True)
+    doc = await db.library_locations.find_one({"_id": location_id})
+    if doc:
+        doc["id"] = doc.pop("_id")
+    return doc or {"id": location_id, **update}
+
+
 @api_router.post("/translate")
 async def translate_text(body: TranslateBody):
     """Translate a short CMS string from `source` into each of `targets`.

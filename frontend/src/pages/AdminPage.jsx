@@ -3,11 +3,12 @@ import {
   Search, Save, ExternalLink, RefreshCw, Image as ImageIcon, Type, Layout,
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
-  MapPin, Languages, Inbox, Mail, Images, Database,
+  MapPin, Languages, Inbox, Mail, Images, Database, Library,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
 import TextSlotsPanel from "@/components/TextSlotsPanel";
+import LibraryManager from "@/components/LibraryManager";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
 import { LANDMARK_CATALOG, infoSlots, cardSlots } from "@/lib/dayLandmarkCatalog";
@@ -469,6 +470,7 @@ export default function AdminPage() {
               { id: "urls",   label: "URLs",          icon: Globe },
               { id: "texts",  label: "Textos",        icon: Type },
               { id: "galleries", label: "Galerías",   icon: Images },
+              { id: "library", label: "Library",     icon: Library },
               { id: "leads",  label: "Leads",         icon: Inbox },
               { id: "notify", label: "Notificaciones", icon: Mail },
               { id: "mirror", label: "Mirror DB",      icon: Database },
@@ -662,6 +664,10 @@ export default function AdminPage() {
         ) : tab === "texts" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <TextSlotsPanel />
+          </section>
+        ) : tab === "library" ? (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
+            <LibraryManager />
           </section>
         ) : tab === "mirror" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
