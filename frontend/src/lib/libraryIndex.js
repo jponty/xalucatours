@@ -17,11 +17,14 @@ import { tripsForPoi } from "@/lib/poiTripIndex";
 
 const pickStr = (o) => (o && (o.es || o.en || o.fr)) || "";
 
-export const buildLibraryIndex = () =>
-  LANDMARK_CATALOG.map((p) => {
+export const buildLibraryIndex = () => {
+  const seen = new Set();
+  return LANDMARK_CATALOG.reduce((acc, p) => {
+    if (!p.id || seen.has(p.id)) return acc;   // a curated id can also exist as a gazetteer poiKey
+    seen.add(p.id);
     const trips = tripsForPoi(p.id) || [];
     const cards = Array.isArray(p.cards) ? p.cards : [];
-    return {
+    acc.push({
       id: p.id,
       name: p.name || { es: "", en: "", fr: "" },
       kind: p.kind || "",
@@ -32,7 +35,9 @@ export const buildLibraryIndex = () =>
       trips: trips.map((t) => ({ routeId: t.routeId, title: t.title })),
       seedImages: cards.map((c) => c.image).filter(Boolean).slice(0, 40),
       seedCaptions: cards.map((c) => pickStr(c.title)).slice(0, 40),
-    };
-  });
+    });
+    return acc;
+  }, []);
+};
 
 export default buildLibraryIndex;

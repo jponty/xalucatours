@@ -10,6 +10,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Library — biblioteca de medios de destinos en /admin (jun 2026) — COMPLETADO + TESTEADO (100%, 10/10 flujos)**:
+  - Nueva pestaña "Library" en `/admin` (`components/LibraryManager.jsx`, icono Library, entre Galerías y Leads). Indexa automáticamente las ~128 localizaciones de TODOS los itinerarios (`lib/libraryIndex.js` → `buildLibraryIndex` desde `LANDMARK_CATALOG` + `tripsForPoi`, deduplicado por id).
+  - **INDEPENDIENTE de las galerías curadas**: colección propia `library_locations` (no toca `image_slots`/`poi.*.gallery.*`). Verificado: `image_slots` intacto (1032) tras editar el Library. Es una fuente SECUNDARIA de imágenes contextuales.
+  - Por lugar: nombre (ES/EN/FR), tipo (`kind`: ciudad/aldea/kasbah/hotel/dunas/valle/gargantas/mirador/mercado/palmeral/sitio/fósiles/montaña/campamento/aeropuerto), zona, **galería propia** (sembrada con la galería por defecto del catálogo), captions por imagen, notas/metadatos, y **lista de itinerarios que lo referencian** con enlaces.
+  - Búsqueda + filtros por tipo y por zona; añadir imágenes vía `ImageLibraryPicker` (biblioteca/Pexels, multi-select); quitar; guardar (persistencia verificada); botón Re-indexar.
+  - Backend (`server.py`): `GET /api/library/locations`, `POST /api/library/locations/sync` (upsert metadata; siembra imágenes solo en nuevos, idempotente), `PUT /api/library/locations/{id}` (escribe solo en `library_locations`). (testing iteration_45, 100%).
+  - PENDIENTE (fase 2, según el usuario): modal "Ver más imágenes relacionadas" dentro de la galería del itinerario que tire del Library; fusión manual de lugares; recomendaciones de imágenes con IA.
+
 - **Buscador de textos en /admin → pestaña "Textos" + REGISTRO CENTRAL (jun 2026) — COMPLETADO + TESTEADO**:
   - Nuevo componente `components/TextSlotsPanel.jsx` y nueva pestaña "Textos" en `AdminPage.jsx` (entre URLs y Galerías).
   - **Registro central de slots**: `EditableText` reporta (batch, fire-and-forget, deduplicado por sesión) cada `slot`+`defaults` a `POST /api/text_slots/register`; backend los guarda en colección `text_slot_registry`. El panel hace merge de `GET /api/text_slots` (valores guardados) + `GET /api/text_slots/registry` (defaults) → lista el **100% de textos editables**, también los nunca editados (badge "sin editar", defaults precargados). Tras navegar el sitio el registro creció a 484+ slots (576 textos visibles en el panel).
