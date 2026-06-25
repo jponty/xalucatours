@@ -1,18 +1,20 @@
 import React from "react";
-import { Award, Sparkles, ShieldCheck, MapPinned } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Award, Sparkles, ShieldCheck, MapPinned, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
 
 const CARDS = [
-  { num: "01", icon: Award,       k_title: "why_c1_title", k_body: "why_c1_body" },
-  { num: "02", icon: Sparkles,    k_title: "why_c2_title", k_body: "why_c2_body" },
-  { num: "03", icon: ShieldCheck, k_title: "why_c3_title", k_body: "why_c3_body" },
-  { num: "04", icon: MapPinned,   k_title: "why_c4_title", k_body: "why_c4_body" },
+  { num: "01", icon: Award,       k_title: "why_c1_title", k_body: "why_c1_body", route: "toursLanding", cta: { es: "Descubrir viajes", en: "Discover trips", fr: "Découvrir les voyages" } },
+  { num: "02", icon: Sparkles,    k_title: "why_c2_title", k_body: "why_c2_body", route: "planTrip",     cta: { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" } },
+  { num: "03", icon: ShieldCheck, k_title: "why_c3_title", k_body: "why_c3_body", route: "appointment",  cta: { es: "Solicitar cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" } },
+  { num: "04", icon: MapPinned,   k_title: "why_c4_title", k_body: "why_c4_body", route: "contact",      cta: { es: "Hablar con un especialista", en: "Talk to a specialist", fr: "Parler à un spécialiste" } },
 ];
 
 export const WhyXaluca = () => {
-  const { t } = useLanguage(); // eslint-disable-line no-unused-vars
+  const { lang } = useLanguage();
 
   return (
     <section
@@ -70,6 +72,21 @@ export const WhyXaluca = () => {
                 />
 
                 <span className="mt-6 h-px w-10 bg-[#C16542] group-hover:w-20 transition-all duration-500" />
+
+                <Link
+                  to={pathFor(lang, c.route)}
+                  data-testid={`why-card-cta-${c.num}`}
+                  className="mt-5 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#2C2621] hover:gap-3 transition-all duration-300"
+                >
+                  <EditableText
+                    slot={`home.why.${c.num}.cta`}
+                    defaults={c.cta}
+                    as="span"
+                    multiline={false}
+                    className="inline"
+                  />
+                  <ArrowRight className="w-4 h-4 shrink-0" strokeWidth={1.7} />
+                </Link>
               </article>
             );
           })}

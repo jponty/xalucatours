@@ -10,6 +10,9 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **CTAs en "Por qué Xaluca Tours" (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - Añadido un CTA con verbo de acción al final de cada uno de los 4 bloques (`components/WhyXaluca.jsx`), con flecha animada (hover gap), texto trilingüe editable por CMS (slots `home.why.{01..04}.cta`) y enlace localizado vía `pathFor`: 01→Descubrir viajes `/viajes` (toursLanding); 02→Planificar mi viaje `/planifica-tu-viaje` (planTrip); 03→Solicitar cita previa `/citaprevia` (appointment); 04→Hablar con un especialista `/contacto` (contact). testid `why-card-cta-{num}`. Verificado en home (hrefs correctos).
+
 - **Card CTA "Solicitar cita previa" en Bloques culturales (PILOTO en tourAtlasDesierto67) (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - En "Bloques culturales destacados" (`ProgramTemplate.DayBlock`, grid de 2 columnas), cuando el nº de bloques culturales es IMPAR se añade automáticamente una card CTA que rellena la celda vacía y equilibra la composición (p.ej. 3 → 4).
   - Nuevo `components/DayCultureCTA.jsx`: avatar circular con el monograma X blanco sobre el color de acento del día, eyebrow "Xaluca Tours · Especialistas", titular "¿Tienes alguna duda sobre este viaje?", mensaje invitando a hablar con un especialista y botón "Solicitar cita previa" → `pathFor(lang,"appointment")` (= `/citaprevia` en ES, localizado en EN/FR). Fondo espresso `#2C2621` para destacar como CTA. Textos editables por CMS (slots globales `program.culture_cta.{title|body|button}`). testid `day-culture-cta` / `day-culture-cta-button`.
