@@ -16,6 +16,7 @@
    per trip, no duplicates, no cross-page inconsistencies.
 ============================================================ */
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
+import { prefetchImage } from "@/lib/imageUrl";
 
 export const tripHeroSlot = (routeId) => `trip.${routeId}.hero`;
 
@@ -45,5 +46,18 @@ const HERO_IMAGE_BY_ROUTE = ALL_TRIPS.reduce((map, trip) => {
 /* The master default image for a route (used as the shared fallback by
    the Hero and every listing, so all appearances match from the start). */
 export const tripHeroImage = (routeId) => HERO_IMAGE_BY_ROUTE[routeId] || null;
+
+/* Warm the browser + server cache for a trip's hero on hover/focus, at the
+   width the browser will actually request for a 100vw hero (viewport × DPR,
+   snapped to the responsive bucket). Lands the user on an already-decoded
+   hero when they click a deep-link card. No-op if the trip has no known hero
+   or outside the browser. */
+export const warmTripHero = (routeId) => {
+  const url = routeId && tripHeroImage(routeId);
+  if (!url || typeof window === "undefined") return;
+  const need = Math.ceil((window.innerWidth || 1280) * (window.devicePixelRatio || 1));
+  const w = [768, 960, 1280, 1600, 1920].find((b) => b >= need) || 1920;
+  prefetchImage(url, w);
+};
 
 export default tripHeroSlot;

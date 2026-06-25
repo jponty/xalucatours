@@ -8,6 +8,7 @@ import EditableText from "@/components/EditableText";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { tripHeroSlot, tripHeroImage, usesTripMaster } from "@/lib/tripHero";
+import { warmTripHero } from "@/lib/tripHero";
 import {
   JourneyHero,
   StickyNav,
@@ -175,6 +176,8 @@ const OptionsGrid = ({ options, programs, lang, ctaTarget, t }) => {
                     key={p.id}
                     to={p.link ? pathFor(lang, p.link) : ctaTarget}
                     data-testid={`hub-program-${p.id}`}
+                    onMouseEnter={() => warmTripHero(p.link)}
+                    onFocus={() => warmTripHero(p.link)}
                     className="group relative block overflow-hidden h-[440px]"
                   >
                     <EditableImage

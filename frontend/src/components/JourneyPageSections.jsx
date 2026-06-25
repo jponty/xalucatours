@@ -15,6 +15,7 @@ import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import TripCardActions from "@/components/TripCardActions";
 import { useSlotId } from "@/components/slotScope";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
+import { warmTripHero as warmHero } from "@/lib/tripHero";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
 
@@ -353,6 +354,8 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                       <Link
                         to={pathFor(lang, v.link)}
                         data-testid={`itinerary-variant-link-${itinerary.id}-${i}`}
+                        onMouseEnter={() => warmHero(v.link)}
+                        onFocus={() => warmHero(v.link)}
                         className="group flex items-center justify-between gap-3 px-4 py-3 border bg-[#FDFBF7]/70 border-[#2C2621]/15 hover:bg-[#2C2621] hover:border-[#2C2621] transition-all duration-300"
                         style={{ boxShadow: `inset 3px 0 0 ${itinerary.accent}` }}
                       >
