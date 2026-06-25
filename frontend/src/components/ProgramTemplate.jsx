@@ -25,6 +25,7 @@ import EditableImage from "@/components/EditableImage";
 import { DayImageGallery } from "@/components/DayImageGallery";
 import DayTravelNotes from "@/components/DayTravelNotes";
 import DayTestimonial from "@/components/DayTestimonial";
+import DayCultureCTA from "@/components/DayCultureCTA";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 import FromPrice from "@/components/FromPrice";
@@ -426,6 +427,12 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
                       />
                     </div>
                   ))}
+                  {/* Balance the 2-col grid: when there's an odd number of
+                      cultural blocks, fill the empty cell with a CTA card.
+                      Pilot: reference programme only for now. */}
+                  {routeId === "tourAtlasDesierto67" && day.culture.length % 2 === 1 && (
+                    <DayCultureCTA accent={day.accent} />
+                  )}
                 </div>
               </div>
             )}

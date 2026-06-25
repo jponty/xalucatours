@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Card CTA "Solicitar cita previa" en Bloques culturales (PILOTO en tourAtlasDesierto67) (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - En "Bloques culturales destacados" (`ProgramTemplate.DayBlock`, grid de 2 columnas), cuando el nº de bloques culturales es IMPAR se añade automáticamente una card CTA que rellena la celda vacía y equilibra la composición (p.ej. 3 → 4).
+  - Nuevo `components/DayCultureCTA.jsx`: avatar circular con el monograma X blanco sobre el color de acento del día, eyebrow "Xaluca Tours · Especialistas", titular "¿Tienes alguna duda sobre este viaje?", mensaje invitando a hablar con un especialista y botón "Solicitar cita previa" → `pathFor(lang,"appointment")` (= `/citaprevia` en ES, localizado en EN/FR). Fondo espresso `#2C2621` para destacar como CTA. Textos editables por CMS (slots globales `program.culture_cta.{title|body|button}`). testid `day-culture-cta` / `day-culture-cta-button`.
+  - Gating: solo `routeId === "tourAtlasDesierto67"` y `culture.length % 2 === 1`. Verificado: 6 de 7 días lo muestran (1 día con nº par no), botón apunta a `/citaprevia`.
+
+
 - **Testimonio por día en TODOS los programas (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - El bloque `DayTestimonial` ahora se muestra en cada día de cada programa (`ProgramTemplate.DayBlock`), en la columna lateral, justo debajo de "Asistente Virtual"/"Contactar". Un testimonio DISTINTO por día.
   - `lib/dayTestimonials.js` `getDayTestimonial(routeId, day, dayIndex)`: (1) overrides curados (solo `tourAtlasDesierto67`, orígenes corregidos a ciudades españolas); (2) resto AUTO-DERIVADO del contenido del día: detecta lugar icónico (Erg Chebbi, Aït Ben Haddou, Chefchaouen, Todra, Dades, Essaouira, Volubilis/Meknes, Agafay, M'Goun, Rissani, Khamlia, Ziz, Ouarzazate, Rabat, Fez, Marrakech…) o tema (llegada, desierto, montaña, gargantas, ciudad, costa, mercado, oasis, relax, regreso) → cita trilingüe acorde.
