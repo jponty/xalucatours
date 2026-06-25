@@ -2475,49 +2475,69 @@ async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, ta
     limit = max(1, min(int(limit or 60), 200))
     skip = max(0, int(skip or 0))
 
-    query: Dict = {"is_deleted": {"$ne": True}}
-    if q:
-        safe = q.strip()[:80]
-        # Escape regex special chars to avoid injection / parser errors.
-        import re
-        safe_re = re.escape(safe)
-        query["$or"] = [
-            {"original_filename": {"$regex": safe_re, "$options": "i"}},
-            {"slot_id": {"$regex": safe_re, "$options": "i"}},
-            {"tags": {"$regex": safe_re, "$options": "i"}},
+    try:
+        query: Dict = {"is_deleted": {"$ne": True}}
+        if q:
+            safe = q.strip()[:80]
+            # Escape regex special chars to avoid injection / parser errors.
+            import re
+            safe_re = re.escape(safe)
+            query["$or"] = [
+                {"original_filename": {"$regex": safe_re, "$options": "i"}},
+                {"slot_id": {"$regex": safe_re, "$options": "i"}},
+                {"tags": {"$regex": safe_re, "$options": "i"}},
+            ]
+        if tag:
+            query["tags"] = tag.strip().lower()[:30]
+
+        # Metadata-only projection (never the file bytes) + bounded query time
+        # so a slow/large scan returns gracefully instead of hanging into a
+        # gateway 520. One extra row detects "has more".
+        cursor = (
+            db.files
+            .find(query, {
+                "_id": 0, "id": 1, "storage_path": 1, "original_filename": 1,
+                "content_type": 1, "size": 1, "slot_id": 1, "tags": 1, "created_at": 1,
+            })
+            .sort("created_at", -1)
+            .skip(skip)
+            .limit(limit + 1)
+            .max_time_ms(8000)
+        )
+        items_raw = await cursor.to_list(limit + 1)
+        has_more = len(items_raw) > limit
+        items_raw = items_raw[:limit]
+
+        items = [
+            {
+                "id": it.get("id"),
+                "url": f"/api/files/{it['storage_path']}",
+                "storage_path": it["storage_path"],
+                "original_filename": it.get("original_filename"),
+                "content_type": it.get("content_type"),
+                "size": it.get("size"),
+                "slot_id": it.get("slot_id"),
+                "tags": it.get("tags") or [],
+                "created_at": it.get("created_at"),
+            }
+            for it in items_raw
+            if it.get("storage_path")
         ]
-    if tag:
-        query["tags"] = tag.strip().lower()[:30]
 
-    cursor = (
-        db.files
-        .find(query, {"_id": 0})
-        .sort("created_at", -1)
-        .skip(skip)
-        .limit(limit + 1)  # one extra to detect "has more"
-    )
-    items_raw = await cursor.to_list(limit + 1)
-    has_more = len(items_raw) > limit
-    items_raw = items_raw[:limit]
+        # Exact count is best-effort and time-bounded — never let it break the
+        # listing. Falls back to a lower-bound estimate from the current page.
+        try:
+            total = await db.files.count_documents(query, maxTimeMS=4000)
+        except Exception:
+            total = skip + len(items) + (1 if has_more else 0)
 
-    items = [
-        {
-            "id": it.get("id"),
-            "url": f"/api/files/{it['storage_path']}",
-            "storage_path": it["storage_path"],
-            "original_filename": it.get("original_filename"),
-            "content_type": it.get("content_type"),
-            "size": it.get("size"),
-            "slot_id": it.get("slot_id"),
-            "tags": it.get("tags") or [],
-            "created_at": it.get("created_at"),
-        }
-        for it in items_raw
-        if it.get("storage_path")
-    ]
-
-    total = await db.files.count_documents(query)
-    return {"items": items, "total": total, "has_more": has_more, "limit": limit, "skip": skip}
+        return {"items": items, "total": total, "has_more": has_more, "limit": limit, "skip": skip}
+    except Exception as exc:
+        # Always return valid JSON (200) so the CMS picker degrades gracefully
+        # instead of surfacing a 5xx / gateway 520.
+        logger.exception("/api/files listing failed: %s", exc)
+        return {"items": [], "total": 0, "has_more": False, "limit": limit, "skip": skip,
+                "error": "files-listing-unavailable"}
 
 
 def _encode_variant(data, content_type, width, target, mime_map):
@@ -3415,8 +3435,14 @@ async def startup_storage():
     # Index for fast duplicate detection on the library/files collection.
     try:
         await db.files.create_index("sha256")
+        # Supports the /api/files listing query (filter on is_deleted + sort by
+        # created_at) using an index → no in-memory sort / sort-memory-limit
+        # errors and instant pagination even on a large collection.
+        await db.files.create_index([("is_deleted", 1), ("created_at", -1)])
+        # Speeds up storage_path lookups (dedup, backfill update_many).
+        await db.files.create_index("storage_path")
     except Exception as exc:
-        logger.error("files.sha256 index creation failed: %s", exc)
+        logger.error("files index creation failed: %s", exc)
     # Hydrate the editable lead-notification recipient list.
     await load_notify_emails()
     # Optionally warm the modern-format image cache in the background. OFF by
