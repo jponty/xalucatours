@@ -1244,6 +1244,13 @@ def optimize_image(data: bytes, content_type: str):
     fallback_ext = _EXT_BY_MIME.get(content_type, "bin")
     try:
         img = _PILImage.open(_BytesIO(data))
+        # Reduced-scale decode hint near the target width — slashes peak decode
+        # memory + time on multi-MB JPEG originals (no-op for PNG/other). Keeps
+        # the in-place re-optimisation of giant masters from spiking RAM.
+        try:
+            img.draft(None, (MAX_IMAGE_WIDTH, MAX_IMAGE_WIDTH))
+        except Exception:
+            pass
         img = _PILImageOps.exif_transpose(img)  # honour camera orientation
         has_alpha = img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info)
         img = img.convert("RGBA" if has_alpha else "RGB")
@@ -2747,6 +2754,11 @@ def _env_flag(name, default=False):
     return v.strip().lower() in ("1", "true", "yes", "on")
 
 WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", True)
+# Auto-shrink oversized stored masters in the background on boot (sequential,
+# throttled, idempotent). Default ON so production giants self-heal without the
+# manual admin button. Runs BEFORE the warm-up (serialized) so memory-heavy
+# decodes never overlap. Disable with IMG_REOPT_ON_STARTUP=false.
+REOPT_ON_STARTUP = _env_flag("IMG_REOPT_ON_STARTUP", True)
 try:
     _WARM_WORKERS = max(1, int(os.environ.get("IMG_WARM_WORKERS", "1")))
 except (TypeError, ValueError):
@@ -3499,19 +3511,29 @@ async def startup_storage():
         logger.error("files index creation failed: %s", exc)
     # Hydrate the editable lead-notification recipient list.
     await load_notify_emails()
-    # Optionally warm the modern-format image cache in the background. OFF by
-    # default (set IMG_WARM_ON_STARTUP=true to enable) so a fresh deploy can
-    # never risk an OOM crash-loop on a constrained container. Even with it off:
-    # the /api/files proxy still encodes on demand + caches, the on-upload hook
-    # warms new images, and the admin "Optimizar todas las imágenes" button can
-    # run the full warm-up manually at any time.
-    if WARM_ON_STARTUP:
-        async def _delayed_warm():
-            await asyncio.sleep(25)
-            await _run_warm_cache()
-        try:
-            asyncio.create_task(_delayed_warm())
-        except Exception as exc:
-            logger.error("could not schedule image cache warm-up: %s", exc)
-    else:
-        logger.info("image cache warm-up on startup disabled (set IMG_WARM_ON_STARTUP=true to enable)")
+    # Background startup maintenance (after a boot delay, all wrapped so it can
+    # NEVER crash the app). Runs SEQUENTIALLY — re-optimize first, then warm-up —
+    # so the two memory-heavy jobs never overlap and can't double peak RAM:
+    #   1) IMG_REOPT_ON_STARTUP (default ON): shrink oversized masters in place
+    #      (one at a time, throttled, idempotent via `reoptimized_at`) so giant
+    #      PNG/JPEG originals self-heal to bounded WebP — no manual button needed.
+    #   2) IMG_WARM_ON_STARTUP (default ON): warm AVIF/WebP variants (skips any
+    #      remaining >WARM_MAX_MASTER_BYTES master, so it can't OOM).
+    async def _startup_maintenance():
+        await asyncio.sleep(25)
+        if REOPT_ON_STARTUP:
+            try:
+                await _run_reoptimize_library()
+            except Exception as exc:
+                logger.error("startup re-optimize failed: %s", exc)
+        if WARM_ON_STARTUP:
+            try:
+                await _run_warm_cache()
+            except Exception as exc:
+                logger.error("startup warm-up failed: %s", exc)
+        if not (REOPT_ON_STARTUP or WARM_ON_STARTUP):
+            logger.info("startup image maintenance disabled (IMG_REOPT_ON_STARTUP / IMG_WARM_ON_STARTUP)")
+    try:
+        asyncio.create_task(_startup_maintenance())
+    except Exception as exc:
+        logger.error("could not schedule startup image maintenance: %s", exc)
