@@ -1428,6 +1428,7 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
 
     canonical_path = result.get("path", storage_path)
     public_url = f"/api/files/{canonical_path}"
+    asyncio.create_task(_warm_one_path(canonical_path, data))
 
     doc = {
         "url": public_url,
@@ -1564,6 +1565,7 @@ async def upload_day_gallery_image(key: str, file: UploadFile = File(...)):
 
     canonical_path = result.get("path", storage_path)
     public_url = f"/api/files/{canonical_path}"
+    asyncio.create_task(_warm_one_path(canonical_path, data))
 
     await db.files.insert_one({
         "id": str(uuid.uuid4()),
@@ -1658,6 +1660,7 @@ async def upload_library_images(
             skipped.append({"filename": f.filename, "reason": f"storage-error:{exc}"})
             continue
         canonical_path = result.get("path", storage_path)
+        asyncio.create_task(_warm_one_path(canonical_path, data))
         record = {
             "id": str(uuid.uuid4()),
             "slot_id": None,
@@ -1769,6 +1772,7 @@ async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
 
     canonical_path = result.get("path", storage_path)
+    asyncio.create_task(_warm_one_path(canonical_path, data))
     now_iso = datetime.now(timezone.utc).isoformat()
     await db.files.update_one(
         {"id": file_id},
@@ -2785,6 +2789,29 @@ async def _run_warm_cache():
             _warm_state["total"], _warm_state["generated"],
             _warm_state["skipped"], _warm_state["errors"],
         )
+
+
+async def _warm_one_path(path: str, data=None):
+    """Fire-and-forget: warm the standard AVIF/WebP variants for a SINGLE
+    freshly uploaded/edited image so it is hot immediately (no first-visit
+    encode). Uses the bytes already in hand when provided (no storage
+    round-trip). Encoding runs in a thread so it never blocks the request."""
+    try:
+        missing, _skipped = await asyncio.to_thread(_missing_variants, path)
+        if not missing:
+            return
+        if data is None:
+            data, _ct = await asyncio.to_thread(get_object, path)
+        specs = [(w, f) for (w, f, _cf) in missing]
+        results = await asyncio.to_thread(_encode_all_variants, data, specs)
+        for (w, f, cf), res in zip(missing, results):
+            if isinstance(res, (bytes, bytearray)) and res:
+                try:
+                    cf.write_bytes(res)
+                except Exception:
+                    pass
+    except Exception as exc:
+        logger.debug("post-upload warm failed for %s: %s", path, exc)
 
 
 @api_router.post("/admin/warm-image-cache")
