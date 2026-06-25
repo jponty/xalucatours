@@ -84,3 +84,31 @@ export const useDayGallery = (key) => {
 
 export const resolveGalleryUrl = (url) =>
   url && url.startsWith("/api/") ? `${process.env.REACT_APP_BACKEND_URL}${url}` : url;
+
+/* Build the seed image list for a day that has no managed gallery yet.
+   Single source of truth shared by the Admin Gallery tab (GalleryManager)
+   and the inline Image Edit Mode editor (DayImageGallery) so the FIRST edit
+   of a day starts from exactly what the public page shows:
+
+     1. main image  → CMS override (`<legacyBase>.image`) or the code default
+        `day.image`
+     2. curated gallery extras → `day.gallery[]` (the code default the public
+        page falls back to for the square slides)
+     3. legacy CMS slide overrides → `<legacyBase>.slide.<i>` if uploaded
+
+   Deduplicated, preserving order. `slotUrl(slotId)` reads CMS overrides
+   (image_slots) — pass () => null when unavailable. */
+export const buildDaySeed = ({ day, mainAlt = null, slotUrl, legacyBase, maxSlides = 12 }) => {
+  const lookup = typeof slotUrl === "function" ? slotUrl : () => null;
+  const out = [];
+  const seen = new Set();
+  const push = (url, alt) => {
+    if (!url || seen.has(url)) return;
+    seen.add(url);
+    out.push({ url, alt: alt ?? null });
+  };
+  push(lookup(`${legacyBase}.image`) || day.image, mainAlt);
+  (Array.isArray(day.gallery) ? day.gallery : []).forEach((u) => push(u, null));
+  for (let i = 0; i < maxSlides; i += 1) push(lookup(`${legacyBase}.slide.${i}`), null);
+  return out;
+};

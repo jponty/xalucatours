@@ -1,10 +1,19 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { createPortal } from "react-dom";
+import { ChevronLeft, ChevronRight, Images, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import EditableImage from "@/components/EditableImage";
+import EditableImage, { getSlotUrl, ensureSlotsLoaded } from "@/components/EditableImage";
 import { EditableGroup } from "@/contexts/EditableGroupContext";
+import { useEditMode } from "@/contexts/EditModeContext";
 import { useSlotId } from "@/components/slotScope";
-import { useDayGallery, resolveGalleryUrl, dayGallerySegment } from "@/lib/dayGalleryStore";
+import {
+  useDayGallery,
+  resolveGalleryUrl,
+  dayGallerySegment,
+  setDayGalleryLocal,
+  buildDaySeed,
+} from "@/lib/dayGalleryStore";
+import { DayGalleryEditor } from "@/components/DayGalleryEditor";
 import { Img } from "@/components/Img";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
@@ -49,6 +58,7 @@ const buildImages = (base, day) => {
 
 export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
   const { lang } = useLanguage();
+  const { imageEditMode } = useEditMode();
   // Page-namespaced base → legacy inline-CMS slots, independent per URL.
   const base = useSlotId(`day.${day.id}`);
   // Index-based key for the admin-managed dynamic gallery, so each day is
@@ -59,15 +69,29 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
   const galleryKey = useSlotId(dayGallerySegment(idx1, day.id));
   const alt = pick(day.title, lang);
 
-  // Dynamic CMS gallery (managed from /admin). When present it overrides
-  // the legacy fixed slots. images[0] is the featured/main image.
-  // BACK-COMPAT: galleries saved before the index-based key change were
-  // stored under the id-based key (`base`). Prefer the new index key, but
-  // fall back to the legacy key so previously-configured galleries are
-  // recovered without re-uploading.
+  // Dynamic CMS gallery (managed from /admin OR inline Edit Mode). When
+  // present it overrides the legacy fixed slots. images[0] is the
+  // featured/main image. BACK-COMPAT: galleries saved before the index-based
+  // key change were stored under the id-based key (`base`). Prefer the new
+  // index key, but fall back to the legacy key so previously-configured
+  // galleries are recovered without re-uploading.
   const dynamicNew = useDayGallery(galleryKey);
   const dynamicLegacy = useDayGallery(base);
   const dynamic = (dynamicNew && dynamicNew.length) ? dynamicNew : dynamicLegacy;
+
+  // Inline gallery editor (Image Edit Mode) — opens the SAME DayGalleryEditor
+  // the Admin uses, on the SAME `day_galleries/{galleryKey}` record.
+  const [editorOpen, setEditorOpen] = useState(false);
+  // Warm the image-slot cache so the editor seed reflects CMS overrides even
+  // if the editor is opened before any EditableImage finished hydrating.
+  useEffect(() => { ensureSlotsLoaded?.(); }, []);
+
+  const seed = useMemo(() => {
+    if (dynamic && dynamic.length) return dynamic;
+    return buildDaySeed({ day, mainAlt: alt, slotUrl: (id) => getSlotUrl(id), legacyBase: base });
+  }, [dynamic, day, alt, base]);
+
+  const handleSaved = (key, images) => { setDayGalleryLocal(key, images); };
 
   const slides = useMemo(() => {
     if (dynamic && dynamic.length) {
@@ -91,24 +115,32 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
   const safeActive = active < total ? active : 0;
   const current = slides[safeActive] || slides[0];
 
-  const renderImg = (slide, thumb) =>
-    slide.slot ? (
-      <EditableImage
-        slot={slide.slot}
-        fallback={slide.fallback}
-        alt={thumb ? `${alt} · ${slide.id}` : alt}
-        aspectRatio={thumb ? "1/1" : slide.ratio}
-        imgProps={{ loading: "lazy" }}
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-    ) : (
+  const renderImg = (slide, thumb) => {
+    // In Image Edit Mode we suppress the per-image overlay/cropper and unify
+    // editing on the single "Editar galería" button → DayGalleryEditor. So
+    // legacy slots render as plain (non-editable) images while editing.
+    if (slide.slot && !imageEditMode) {
+      return (
+        <EditableImage
+          slot={slide.slot}
+          fallback={slide.fallback}
+          alt={thumb ? `${alt} · ${slide.id}` : alt}
+          aspectRatio={thumb ? "1/1" : slide.ratio}
+          imgProps={{ loading: "lazy" }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      );
+    }
+    const raw = slide.url || (slide.slot ? getSlotUrl(slide.slot) : null) || slide.fallback;
+    return (
       <Img
-        src={slide.url}
-        alt={slide.alt}
-        width={1024}
+        src={resolveGalleryUrl(raw)}
+        alt={slide.alt || alt}
+        width={thumb ? 200 : 1024}
         className="absolute inset-0 w-full h-full object-cover"
       />
     );
+  };
 
   // Keep the active thumbnail visible inside the rail after prev/next —
   // scrolls ONLY the rail (never the page).
@@ -203,6 +235,22 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.7} />
           </button>
+
+          {/* Inline gallery edit trigger — only while Image Edit Mode is on.
+              Opens the SAME editor the Admin uses (full parity). */}
+          {imageEditMode && (
+            <button
+              type="button"
+              data-testid={`day-gallery-edit-${day.id}`}
+              aria-label="Editar galería del día"
+              data-edit-allow="true"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditorOpen(true); }}
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[30] inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#a9512f] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.28em] uppercase shadow-[0_10px_30px_-10px_rgba(0,0,0,0.6)] transition-colors"
+            >
+              <Images className="w-4 h-4" strokeWidth={1.8} />
+              Editar galería
+            </button>
+          )}
         </div>
 
         {/* ---- Thumbnail rail ---- */}
@@ -237,6 +285,45 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
           })}
         </div>
       </div>
+
+      {/* Inline gallery editor modal — shared DayGalleryEditor, same record. */}
+      {editorOpen && createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Editar galería del día"
+          data-testid={`day-gallery-editor-modal-${day.id}`}
+          className="fixed inset-0 z-[9998] flex items-center justify-center bg-[#1A1513]/85 backdrop-blur-sm p-4 md:p-8"
+          onClick={(e) => { if (e.target === e.currentTarget) setEditorOpen(false); }}
+        >
+          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#0F0D0B] border border-white/10 shadow-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#0F0D0B]">
+              <span className="text-[11px] tracking-[0.28em] uppercase text-white/70 inline-flex items-center gap-2">
+                <Images className="w-4 h-4" strokeWidth={1.8} /> Editar galería · {dayLabel} {dayNum}
+              </span>
+              <button
+                type="button"
+                data-testid={`day-gallery-editor-close-${day.id}`}
+                aria-label="Cerrar editor"
+                onClick={() => setEditorOpen(false)}
+                className="inline-flex items-center justify-center w-8 h-8 border border-white/15 text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" strokeWidth={1.7} />
+              </button>
+            </div>
+            <DayGalleryEditor
+              galleryKey={galleryKey}
+              dayNum={idx1}
+              dayTitle={pick(day.title, lang)}
+              dayBody={pick(day.body, lang)}
+              accent={day.accent || "#C16542"}
+              initial={seed}
+              onSaved={handleSaved}
+            />
+          </div>
+        </div>,
+        document.body,
+      )}
     </EditableGroup>
   );
 };

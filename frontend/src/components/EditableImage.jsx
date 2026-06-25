@@ -85,6 +85,18 @@ const imgCacheSet = (slot, val) => {
   notifyImg(slot);
 };
 
+/* Read the persisted (CMS-overridden) URL for a slot from the global cache.
+   Returns null when the slot is unset or was explicitly cleared. Used by the
+   inline day-gallery editor to seed exactly what the page is displaying.
+   The cache is warmed by the EditableImage instances already on the page;
+   callers that may run before any mount can await ensureSlotsLoaded(). */
+export const getSlotUrl = (slotId) => {
+  if (!slotId) return null;
+  const v = imgCache.values.get(slotId);
+  return v && !v.cleared ? (v.url || null) : null;
+};
+export const ensureSlotsLoaded = ensureImgLoaded;
+
 /* URLs already loaded+decoded this session → render instantly (no shimmer,
    no fade) on subsequent mounts/navigations, on top of the browser HTTP
    cache. Gives the "immediate on repeat visits" behaviour. */

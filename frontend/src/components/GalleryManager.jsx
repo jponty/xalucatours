@@ -19,7 +19,7 @@ import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { namespaceForRouteId } from "@/components/slotScope";
 import { pick } from "@/contexts/LanguageContext";
-import { setDayGalleryLocal, dayGallerySegment } from "@/lib/dayGalleryStore";
+import { setDayGalleryLocal, dayGallerySegment, buildDaySeed } from "@/lib/dayGalleryStore";
 import { DayGalleryEditor } from "@/components/DayGalleryEditor";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -109,14 +109,13 @@ export default function GalleryManager({ lang = "es" }) {
   const seedFor = (key, legacyBase, day) => {
     if (galleries[key] && galleries[key].length) return galleries[key];
     if (galleries[legacyBase] && galleries[legacyBase].length) return galleries[legacyBase];
-    const out = [];
-    const main = slots[`${legacyBase}.image`] || day.image;
-    if (main) out.push({ url: main, alt: pick(day.title, lang) });
-    for (let i = 0; i < MAX_SEED_SLIDES; i += 1) {
-      const u = slots[`${legacyBase}.slide.${i}`];
-      if (u) out.push({ url: u, alt: null });
-    }
-    return out;
+    return buildDaySeed({
+      day,
+      mainAlt: pick(day.title, lang),
+      slotUrl: (id) => slots[id] || null,
+      legacyBase,
+      maxSlides: MAX_SEED_SLIDES,
+    });
   };
 
   const onSaved = (key, images) => {

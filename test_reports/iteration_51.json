@@ -1,0 +1,26 @@
+{
+  "summary": "E2E frontend testing of the unified Image Edit Mode for trip day galleries on /viajes/atlas_desierto/programa_6n_7d. All P0 acceptance criteria pass: public gallery renders normally; the FAB (data-testid=header-edit-mode-toggle) enables Image Edit Mode; the per-image edit overlay is hidden (0 editable-image overlays inside the day viewer); a single 'Editar galería' button (day-gallery-edit-<dayId>) appears on each day viewer; clicking it opens the editor modal (day-gallery-editor-modal-<dayId>) with Principal preview, Itinerario text and Subir / Biblioteca tiles; delete, set-main, drag-reorder, upload and library multi-select all persist instantly via PUT /api/day-galleries/{key}; modal close returns to the page with live updates; reload preserves the changes; and the Admin → Galerías tab renders the SAME `gallery-day-<key>` records via the SAME shared DayGalleryEditor (confirmed visually and structurally — identical testids, identical Día 1 with 10 IMG and the same Principal image after edits). Confirmed Admin and inline editor are a single source of truth (/api/day-galleries/{key}).",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "DayImageGallery.jsx: solid — index-based galleryKey with legacy id-based fallback covers migration safely; portal modal isolates clicks from the navigation guard via data-edit-allow.",
+    "DayGalleryEditor.jsx: shared by Admin and inline use, persists every action immediately via PUT /api/day-galleries/{key}; busy/savedTick indicator present (Loader2 / Check).",
+    "Minor: in DayGalleryEditor onUpload the pre-save PUT runs even when the gallery is already persisted (idempotent but creates a redundant request). Consider skipping when `dynamic` already exists. Non-blocking.",
+    "Minor: ImageLibraryPicker confirms via 'Añadir' text — works, but exposing a data-testid on the picker confirm button would harden multi-select testing.",
+    "Minor: per-image overlay suppression relies on `imageEditMode` flag; if a future mode toggles both text+image editing, ensure the day viewer still uses plain <Img> to avoid overlay leaks."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "100%" },
+  "test_credentials": "Admin /admin password 'xaluca' (read from /app/memory/test_credentials.md)",
+  "seed_data_creation": "No seed data created. Test used existing trip /viajes/atlas_desierto/programa_6n_7d, day-1 gallery (galleryKey=viajes.atlas_desierto.programa_6n_7d.day.1.dia-1). Net change to that gallery: deleted last image (idx 9) and added 1 image from Image Library — final count unchanged at 10. setMain on idx=1 reordered it to first.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All testids used: day-gallery-viewer-<dayId>, day-gallery-counter-<dayId>, day-gallery-edit-<dayId>, day-gallery-editor-modal-<dayId>, day-gallery-editor-close-<dayId>; inside the editor gallery-thumb-<key>-<i>, gallery-setmain-<key>-<i>, gallery-delete-<key>-<i>, gallery-upload-<key>, gallery-library-<key>. Index-based galleryKey format: <namespace>.day.<index>.<dayId> (e.g. viajes.atlas_desierto.programa_6n_7d.day.1.dia-1). Chatbase widget was hidden via CSS injection to avoid click interception. Admin: /admin, password 'xaluca', Galerías tab in left sidebar; pick trip from BIBLIOTECA DE VIAJES list to view its days.",
+  "rca of the issue": "N/A — no failures."
+}
