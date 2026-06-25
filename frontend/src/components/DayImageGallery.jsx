@@ -14,6 +14,7 @@ import {
   buildDaySeed,
 } from "@/lib/dayGalleryStore";
 import { DayGalleryEditor } from "@/components/DayGalleryEditor";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import { Img } from "@/components/Img";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
@@ -251,6 +252,10 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
               Editar galería
             </button>
           )}
+
+          {/* Quick contact bubble — bottom-left of the featured photo.
+              Unique behaviour: expands LEFT→RIGHT into the image. */}
+          <ImageContactBubble slug={`gallery-day-${idx1}`} align="left" zClass="z-[10]" />
         </div>
 
         {/* ---- Thumbnail rail ---- */}

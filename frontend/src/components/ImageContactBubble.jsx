@@ -26,15 +26,25 @@ const CTA = { es: "Solicitar cita", en: "Book a call", fr: "Prendre rendez-vous"
 const OPEN_LABEL = { es: "Contactar con un agente", en: "Contact an agent", fr: "Contacter un agent" };
 const CLOSE_LABEL = { es: "Cerrar", en: "Close", fr: "Fermer" };
 
-export const ImageContactBubble = ({ slug, zClass = "z-[5]" }) => {
+export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right" }) => {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
 
+  // Default ("right"): anchored bottom-right, ball on the right, panel grows
+  // LEFT (existing behaviour — must stay unchanged everywhere it's used).
+  // "left": anchored bottom-left, ball on the left, panel grows RIGHT toward
+  // the interior so it never overflows / gets clipped by the left border.
+  const isLeft = align === "left";
+  const sideCls = isLeft
+    ? "bottom-5 left-5 flex-row max-w-[calc(100%-2.5rem)]"
+    : "bottom-12 right-4 flex-row-reverse max-w-[calc(100%-2rem)]";
+
   return (
     <div
-      className={`absolute bottom-12 right-4 ${zClass} flex flex-row-reverse items-end gap-2 max-w-[calc(100%-2rem)]`}
+      className={`absolute ${sideCls} ${zClass} flex items-end gap-2`}
       data-testid={`image-contact-bubble-${slug}`}
       data-open={open ? "true" : "false"}
+      onClick={(e) => e.stopPropagation()}
     >
       {/* Ball toggle (always visible) */}
       <button
