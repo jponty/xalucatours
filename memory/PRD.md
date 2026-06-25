@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Backfill "Re-optimizar Biblioteca" (jun 2026) — APLICADO en preview, VERIFICADO e2e; requiere REDEPLOY**:
+  - Backend: job en segundo plano `_run_reoptimize_library()` + endpoints `POST/GET /api/admin/reoptimize-library[/status]` (auth). Busca masters en `db.files` >500KB sin `reoptimized_at`, los re-encoda con `optimize_image` (≤2000px WebP) y SOBRESCRIBE la misma `storage_path` (no rompe ninguna referencia de slot/galería). Tras cada uno: `_invalidate_path_cache` (borra variantes AVIF/WebP/orig cacheadas en disco para esa ruta) + `_warm_one_path` (re-calienta). Secuencial, throttle, try/except por archivo, idempotente (filtro `reoptimized_at`).
+  - Frontend: `ReoptimizeLibraryPanel` en la pestaña Mirror DB (junto a Mirror + Warm-up), con barra de progreso y MB liberados (testids `reoptimize-library-*`).
+  - Verificado e2e: 3346 masters candidatos; master de **5,7MB → 749KB**; backend RECEPTIVO durante el job (`/api/pricing` 0,002s); 0 errores; ~43MB liberados en el primer lote; variantes se regeneran bien (AVIF 960px 102KB en 0,3s); panel renderiza OK en el admin.
+  - Tras REDEPLOY: pulsar "Re-optimizar Biblioteca" en el admin de PRODUCCIÓN (su DB es independiente) para encoger los masters gigantes existentes en producción.
+
 - **Masters de stock optimizados al importar (jun 2026) — APLICADO en preview, VERIFICADO e2e; requiere REDEPLOY**:
   - Antes, Pexels import / Pexels bulk-fill / Unsplash import guardaban el ORIGINAL crudo (Pexels ~5–6 MB). Ahora los 3 pasan por `optimize_image` (≤2000px + WebP q80, helper ya usado por library/upload) ANTES de `put_object`, y disparan `_warm_one_path` para calentar el nuevo master al instante.
   - Verificado e2e: import real de Pexels → master `image/webp` de **~165 KB** (antes ~5,7 MB → **~97% menos**); variantes bajo demanda desde el nuevo master: cold AVIF w960 **0,16s**, WebP w1600 **0,53s**.

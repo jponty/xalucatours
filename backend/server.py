@@ -2894,6 +2894,129 @@ async def warm_image_cache_status(authorization: str = Header(default="")):
     return st
 
 
+# ---------- Re-optimize library (backfill oversized masters) ----------
+# One-time backfill: re-encode already-stored masters that are still large
+# (e.g. raw Pexels/Unsplash originals imported before import-time optimisation)
+# down to a bounded WebP master, OVERWRITING the same storage path so every
+# slot/gallery reference keeps working. Cached variants are then invalidated +
+# re-warmed. Background + idempotent (skips already-small / non-shrinkable).
+REOPT_SIZE_THRESHOLD = 500 * 1024  # only touch masters larger than ~500 KB
+
+_reopt_state = {
+    "running": False, "total": 0, "done": 0, "optimized": 0,
+    "skipped": 0, "errors": 0, "saved_bytes": 0,
+    "started_at": None, "finished_at": None,
+}
+
+
+def _invalidate_path_cache(path: str) -> int:
+    """Delete every on-disk transformed variant cached for `path` (all width
+    buckets × formats) so a freshly re-encoded master is served, not a stale
+    variant generated from the old original."""
+    removed = 0
+    widths = [None] + list(IMG_WIDTH_BUCKETS)
+    for ext in ("avif", "webp", "orig"):
+        for width in widths:
+            key = hashlib.sha1(f"{path}|{width}|{ext}".encode("utf-8")).hexdigest()
+            cf = IMG_CACHE_DIR / f"{key}.{ext}"
+            try:
+                if cf.exists():
+                    cf.unlink()
+                    removed += 1
+            except Exception:
+                pass
+    return removed
+
+
+async def _run_reoptimize_library():
+    """Background job: shrink oversized stored masters in place."""
+    if _reopt_state["running"]:
+        return
+    _reopt_state.update({
+        "running": True, "total": 0, "done": 0, "optimized": 0,
+        "skipped": 0, "errors": 0, "saved_bytes": 0,
+        "started_at": datetime.now(timezone.utc).isoformat(), "finished_at": None,
+    })
+    try:
+        candidates, seen = [], set()
+        async for d in db.files.find(
+            {"is_deleted": {"$ne": True}, "size": {"$gt": REOPT_SIZE_THRESHOLD},
+             "reoptimized_at": {"$exists": False}},
+            {"storage_path": 1},
+        ):
+            p = d.get("storage_path")
+            if p and p not in seen:
+                seen.add(p)
+                candidates.append(p)
+        _reopt_state["total"] = len(candidates)
+
+        for path in candidates:
+            try:
+                data, ctype = await asyncio.to_thread(get_object, path)
+                old_size = len(data)
+                new_data, new_ctype, _ext = await asyncio.to_thread(optimize_image, data, ctype)
+                # Only rewrite when meaningfully smaller (>10% saved).
+                if new_data is data or len(new_data) >= old_size * 0.9:
+                    _reopt_state["skipped"] += 1
+                else:
+                    await asyncio.to_thread(put_object, path, new_data, new_ctype)
+                    await db.files.update_many(
+                        {"storage_path": path},
+                        {"$set": {
+                            "content_type": new_ctype,
+                            "size": len(new_data),
+                            "reoptimized_at": datetime.now(timezone.utc).isoformat(),
+                        }},
+                    )
+                    _invalidate_path_cache(path)
+                    asyncio.create_task(_warm_one_path(path, new_data))
+                    _reopt_state["optimized"] += 1
+                    _reopt_state["saved_bytes"] += (old_size - len(new_data))
+            except Exception as exc:
+                logger.debug("reoptimize failed for %s: %s", path, exc)
+                _reopt_state["errors"] += 1
+            finally:
+                _reopt_state["done"] += 1
+                if _WARM_THROTTLE:
+                    await asyncio.sleep(_WARM_THROTTLE)
+    except Exception as exc:
+        logger.error("library re-optimize failed: %s", exc)
+    finally:
+        _reopt_state["running"] = False
+        _reopt_state["finished_at"] = datetime.now(timezone.utc).isoformat()
+        logger.info(
+            "library re-optimize finished: total=%s optimized=%s skipped=%s errors=%s saved=%sB",
+            _reopt_state["total"], _reopt_state["optimized"],
+            _reopt_state["skipped"], _reopt_state["errors"], _reopt_state["saved_bytes"],
+        )
+
+
+@api_router.post("/admin/reoptimize-library")
+async def reoptimize_library(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    if _reopt_state["running"]:
+        return {"started": False, **_reopt_state}
+    asyncio.create_task(_run_reoptimize_library())
+    return {"started": True, "running": True}
+
+
+@api_router.get("/admin/reoptimize-library/status")
+async def reoptimize_library_status(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    st = dict(_reopt_state)
+    if st["total"]:
+        st["percent"] = round(100 * st["done"] / st["total"], 1)
+    else:
+        st["percent"] = 0.0 if st["running"] else 100.0
+    st["saved_mb"] = round(st["saved_bytes"] / (1024 * 1024), 1)
+    return st
+
+
+
 # ---------- Text slots (admin inline editing) ----------
 # Stored in collection `text_slots` as a single document per slot id
 # (e.g. "home.hero.title") with { values: {es, en, fr}, updated_at }.
