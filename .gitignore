@@ -73,6 +73,13 @@ agenthub/agents/youtube/db
 *.deb
 *.dylib
 
+# Ephemeral image transform cache — AVIF/WebP variants generated at runtime by
+# the warm-up / re-optimize jobs. Must NEVER be committed or shipped in the
+# deploy: it grows to GBs (tens of thousands of files), bloats the repo and
+# breaks the deploy "copy code from pod" tar. It self-regenerates on startup.
+backend/img_cache/
+img_cache/
+
 # Build caches
 .cache/
 
