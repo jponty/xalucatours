@@ -10,6 +10,10 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **CMS como única fuente de verdad de imágenes: eliminado el render de fallbacks de código (jun 2026) — IMPLEMENTADO y luego REVERTIDO a petición del usuario**:
+  - NOTA DE ESTADO: se implementó (CMS-only en `EditableImage`) y se verificó, pero al ver el impacto (home 54 / página de viaje 27 slots pasaban a "Sin imagen" porque hay muchos más `EditableImage` que los ~1.041 slots guardados) el usuario pidió volver al estado anterior. **REVERTIDO** (los 4 cambios de render + el testid `cms-empty-image`). Los fallbacks de código vuelven a mostrarse. Nada se perdió: los fallbacks son URLs en `lib/`, y las imágenes reales del CMS viven en Mongo (intactas).
+  - Si se retoma: el enfoque seguro sería poblar primero los slots vacíos (Edit Mode / informe de "imágenes faltantes" en admin / import de defaults al storage) ANTES de quitar fallbacks, para no dejar huecos.
+
 - **Auto-mantenimiento de imágenes en arranque: re-optimización + warm-up serializados (jun 2026) — APLICADO en preview, VERIFICADO; requiere REDEPLOY**:
   - Objetivo (continuación del fix 520): que los masters gigantes se encojan SOLOS tras cada arranque (sin pulsar el botón manual) y luego se calienten, sin reintroducir el riesgo OOM.
   - `server.py`: nuevo flag `IMG_REOPT_ON_STARTUP` (default ON). El startup ahora lanza `_startup_maintenance()` (delay 25s, todo en try/except) que ejecuta SECUENCIALMENTE: (1) `_run_reoptimize_library()` (encoge masters >500KB a WebP ≤2000px, uno a uno, throttle, idempotente vía `reoptimized_at`), y SOLO al terminar (2) `_run_warm_cache()` (con la guardia `WARM_MAX_MASTER_BYTES`). Serializar evita que los dos trabajos pesados en memoria se solapen → nunca doblan el pico de RAM.
