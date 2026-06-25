@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Fix + endurecimiento de `GET /api/files` (listado) — VERIFICADO por testing_agent (iteration_50, 14/14, 100%); requiere REDEPLOY para producción**:
+  - RCA: el listado era la lectura más pesada (sort por `created_at` SIN índice + `count_documents` sin límite sobre ~4k+ docs) → bajo carga superaba el timeout del gateway → Cloudflare 520 en producción (preview iba bien).
+  - Fix en `server.py`: índices en startup (`db.files` `[(is_deleted,1),(created_at,-1)]` + `storage_path`); proyección SOLO metadatos (nunca bytes); `.max_time_ms(8000)` en el cursor y `count_documents(maxTimeMS=4000)` con fallback; todo en try/except → SIEMPRE devuelve JSON válido (200) aunque falle. `limit` cap 1..200, `skip` normalizado.
+  - Verificado (testing_agent + curl): JSON válido, items solo metadatos (id, url, storage_path, original_filename, content_type, size, slot_id, tags, created_at — sin contenido binario), paginación OK, edge cases (skip/limit negativos, q largo, regex) → 200, ~160ms sobre 4228 docs. Regresión: `GET /api/files/{path}` sigue sirviendo bytes de imagen (AVIF/WebP). Suite: `/app/backend/tests/test_files_listing.py`.
+  - Nota: el 520 real es de producción (infra/Cloudflare); el fix de código surte efecto tras REDEPLOY. Si tras redeploy persiste 520 en TODOS los `/api/*` → infra (Emergent Support).
+
 - **Backfill "Re-optimizar Biblioteca" (jun 2026) — APLICADO en preview, VERIFICADO e2e; requiere REDEPLOY**:
   - Backend: job en segundo plano `_run_reoptimize_library()` + endpoints `POST/GET /api/admin/reoptimize-library[/status]` (auth). Busca masters en `db.files` >500KB sin `reoptimized_at`, los re-encoda con `optimize_image` (≤2000px WebP) y SOBRESCRIBE la misma `storage_path` (no rompe ninguna referencia de slot/galería). Tras cada uno: `_invalidate_path_cache` (borra variantes AVIF/WebP/orig cacheadas en disco para esa ruta) + `_warm_one_path` (re-calienta). Secuencial, throttle, try/except por archivo, idempotente (filtro `reoptimized_at`).
   - Frontend: `ReoptimizeLibraryPanel` en la pestaña Mirror DB (junto a Mirror + Warm-up), con barra de progreso y MB liberados (testids `reoptimize-library-*`).
