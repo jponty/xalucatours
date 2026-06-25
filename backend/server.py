@@ -2524,6 +2524,15 @@ def _encode_variant(data, content_type, width, target, mime_map):
     breaks because of optimisation."""
     try:
         img = Image.open(BytesIO(data))
+        # Fast-path huge JPEGs: ask the decoder for a reduced-scale raster
+        # (1/2, 1/4, 1/8) near the target width — slashes decode time on
+        # multi-MB originals before the precise LANCZOS downscale. No-op for
+        # non-JPEG sources.
+        if width:
+            try:
+                img.draft(None, (width, width))
+            except Exception:
+                pass
         img.load()
         # Downscale only (never upscale) to preserve sharpness.
         if width and img.width > width:
@@ -2540,8 +2549,9 @@ def _encode_variant(data, content_type, width, target, mime_map):
                 # speed=8 keeps the (first-request) encode snappy; cached after.
                 save_kwargs = {"quality": 58, "speed": 8}
             else:
-                # method=6 → best WebP compression (slower, but cached on disk).
-                save_kwargs = {"quality": 80, "method": 6}
+                # method=4 → fast WebP encode (was 6, which is ~10× slower on
+                # large originals); near-identical size, cached on disk anyway.
+                save_kwargs = {"quality": 80, "method": 4}
             img.save(out, format=save_fmt, **save_kwargs)
             return out.getvalue(), mime_map[target], target, True
         # Resize-only (no modern target) → keep original format, still cache.
@@ -2661,23 +2671,32 @@ async def download_file(
 import multiprocessing as _mp
 from concurrent.futures import ProcessPoolExecutor
 
-# Warm-up is intentionally conservative by default so it can NEVER OOM a
+# Warm-up is intentionally conservative so it can NEVER OOM / peg-CPU a
 # memory-constrained container. Tune via env:
-#   IMG_WARM_ON_STARTUP  → run the full batch warm-up on boot (default: OFF)
+#   IMG_WARM_ON_STARTUP  → run the full batch warm-up on boot (default: ON)
 #   IMG_WARM_WORKERS     → CPU worker processes (default: 1 → encodes in
-#                          threads, no extra processes; >1 spawns a pool)
+#                          threads, fully sequential, no extra processes;
+#                          >1 spawns a pool for faster but heavier warming)
+#   IMG_WARM_THROTTLE    → seconds to pause between images (default: 0.05) so
+#                          live traffic always keeps CPU headroom
 def _env_flag(name, default=False):
     v = os.environ.get(name)
     if v is None:
         return default
     return v.strip().lower() in ("1", "true", "yes", "on")
 
-WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", False)
+WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", True)
 try:
     _WARM_WORKERS = max(1, int(os.environ.get("IMG_WARM_WORKERS", "1")))
 except (TypeError, ValueError):
     _WARM_WORKERS = 1
-_WARM_INFLIGHT = _WARM_WORKERS + 1
+# Sequential by default (inflight == workers) → with 1 worker only one image is
+# encoded at a time, leaving the rest of the cores free for serving requests.
+_WARM_INFLIGHT = _WARM_WORKERS
+try:
+    _WARM_THROTTLE = max(0.0, float(os.environ.get("IMG_WARM_THROTTLE", "0.05")))
+except (TypeError, ValueError):
+    _WARM_THROTTLE = 0.05
 
 
 def _encode_all_variants(data: bytes, specs):
@@ -2689,6 +2708,14 @@ def _encode_all_variants(data: bytes, specs):
     results = [None] * len(specs)
     try:
         base = Image.open(BytesIO(data))
+        # Reduced-scale decode hint sized to the largest requested width — a
+        # big speedup for multi-MB JPEG originals (no-op for other formats).
+        max_w = max((w for (w, _f) in specs if w), default=None)
+        if max_w:
+            try:
+                base.draft(None, (max_w, max_w))
+            except Exception:
+                pass
         base.load()
         if base.mode not in ("RGB", "RGBA"):
             base = base.convert("RGBA" if "A" in base.getbands() else "RGB")
@@ -2707,7 +2734,7 @@ def _encode_all_variants(data: bytes, specs):
             if fmt == "avif":
                 resized[width].save(out, format="AVIF", quality=58, speed=8)
             else:
-                resized[width].save(out, format="WEBP", quality=80, method=6)
+                resized[width].save(out, format="WEBP", quality=80, method=4)
             results[i] = out.getvalue()
         except Exception:
             results[i] = None
@@ -2791,6 +2818,10 @@ async def _run_warm_cache():
                     _warm_state["errors"] += 1
                 finally:
                     _warm_state["done"] += 1
+            # Throttle OUTSIDE the semaphore so we never hold a slot while
+            # idling — keeps CPU headroom for live image/API requests.
+            if _WARM_THROTTLE:
+                await asyncio.sleep(_WARM_THROTTLE)
 
         await asyncio.gather(*[_worker(p) for p in uniq])
     except Exception as exc:
@@ -3267,7 +3298,7 @@ async def startup_storage():
     # run the full warm-up manually at any time.
     if WARM_ON_STARTUP:
         async def _delayed_warm():
-            await asyncio.sleep(20)
+            await asyncio.sleep(25)
             await _run_warm_cache()
         try:
             asyncio.create_task(_delayed_warm())

@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Rendimiento de imágenes: codificación rápida + warm-up seguro reactivado (jun 2026) — APLICADO en preview, VERIFICADO; requiere REDEPLOY**:
+  - Causa de la lentitud: tras desactivar el warm-up (para frenar el 520), la caché de imágenes de producción quedaba FRÍA → cada imagen se codificaba bajo demanda en la 1ª visita; medido en preview: WebP `method=6` sobre originales de ~5,7 MB tardaba **hasta ~16s** la primera vez. Además `IMG_CACHE_DIR=/app/backend/img_cache` es efímero (se borra en cada redeploy).
+  - `server.py` — acelerada la codificación en `_encode_variant` y `_encode_all_variants`: WebP `method` 6→4 y `Image.draft()` (decode JPEG a escala reducida hacia el ancho objetivo). Resultado medido: cold WebP/AVIF ahora **~0,5-1,1s** (consistente), caliente ~0,17s.
+  - Warm-up reactivado y endurecido: `IMG_WARM_ON_STARTUP` default ON; secuencial (`_WARM_INFLIGHT=_WARM_WORKERS`, default 1 → 1 imagen a la vez en hilos, sin procesos); throttle `IMG_WARM_THROTTLE` (0,05s) entre imágenes; delay de arranque 25s; todo en try/except. Verificado: warm-up corre en background (4227 variantes, 0 errores) y el backend responde al instante durante el proceso (`/api/pricing` 0,002s). Smoke test: página de programa con 116 imágenes, 0 rotas.
+  - Tras REDEPLOY: la caché se auto-calienta en segundo plano tras cada arranque (se auto-cura el disco efímero) y las cargas bajo demanda son rápidas. Opcional: `IMG_WARM_WORKERS=2` para calentar más rápido; disco persistente para la caché = infra (Emergent Support).
+
 - **Endurecimiento del warm-up de imágenes + fix de deploy (jun 2026) — APLICADO en preview, VERIFICADO; requiere REDEPLOY**:
   - Incidencia: producción (xalucatravel.com) devolvía HTTP 520 en TODOS los `/api/*` (backend caído/bucle de reinicio) tras redeploy; home estática OK; preview sano. Causa probable: el warm-up de caché (ProcessPoolExecutor con cpu-2 procesos codificando AVIF en arranque) tumbaba por OOM un contenedor con poca RAM.
   - `server.py`: warm-up de arranque DESACTIVADO por defecto (env `IMG_WARM_ON_STARTUP`, default off); por defecto codifica en threads (`IMG_WARM_WORKERS`=1, sin spawnear procesos; >1 usa ProcessPoolExecutor); todo envuelto en try/except → nunca tumba el backend. On-upload hook (thread, 1 imagen) y proxy `/api/files` on-demand intactos; botón admin "Optimizar imágenes" sigue disponible para warm-up manual.
