@@ -13,6 +13,7 @@
 ============================================================ */
 import React, { useEffect, useRef, useState } from "react";
 import { Upload, Trash2, Star, GripVertical, Loader2, Check, Library } from "lucide-react";
+import { toast } from "sonner";
 import { Img } from "@/components/Img";
 import { resolveGalleryUrl } from "@/lib/dayGalleryStore";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
@@ -28,7 +29,16 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
   const imagesRef = useRef(images);
   useEffect(() => { imagesRef.current = images; }, [images]);
 
-  const flash = () => { setSavedTick(true); setTimeout(() => setSavedTick(false), 1400); };
+  const flash = () => {
+    setSavedTick(true);
+    setTimeout(() => setSavedTick(false), 1800);
+    // Visible reassurance that the change is live on the website. A fixed id
+    // collapses rapid saves (drag-reorder, set-main) into a single toast.
+    toast.success("Cambios publicados", {
+      id: "day-gallery-saved",
+      description: "La galería se actualizó en la web al instante.",
+    });
+  };
 
   const persist = async (next) => {
     setImages(next);
@@ -138,8 +148,19 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
         <span className="font-serif-x text-lg" style={{ color: accent }}>Día {dayNum}</span>
         <span className="text-sm text-white/85 truncate">{dayTitle}</span>
         <span className="ml-auto flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-white/40">
-          {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : savedTick ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : null}
-          {images.length} img
+          {busy ? (
+            <span className="inline-flex items-center gap-1.5 text-white/60">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Guardando…
+            </span>
+          ) : savedTick ? (
+            <span
+              data-testid={`gallery-published-${galleryKey}`}
+              className="inline-flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 px-2 py-0.5 rounded-full"
+            >
+              <Check className="w-3.5 h-3.5" /> Publicado
+            </span>
+          ) : null}
+          <span>{images.length} img</span>
         </span>
       </header>
 

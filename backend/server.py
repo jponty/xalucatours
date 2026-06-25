@@ -1278,6 +1278,32 @@ def _relativize_url(url):
     return m.group(1) if m else url
 
 
+def _path_from_files_url(url):
+    """Return the storage path for a URL pointing at our `/api/files/<path>`
+    proxy (absolute or relative), else None for external/stock CDN URLs."""
+    if not url or not isinstance(url, str):
+        return None
+    m = re.match(r"^(?:https?://[^/]+)?/api/files/(.+)$", url, re.IGNORECASE)
+    if not m:
+        return None
+    path = m.group(1).split("?", 1)[0].split("#", 1)[0]
+    return path or None
+
+
+def _warm_gallery_images(images):
+    """Fire-and-forget warm-up of the AVIF/WebP variants for every
+    storage-hosted image in a saved gallery/slot, so freshly referenced
+    images (e.g. picked from the Image Library, where no upload hook ran)
+    are hot immediately. Idempotent — already-cached paths return fast."""
+    seen = set()
+    for im in images or []:
+        url = im.get("url") if isinstance(im, dict) else getattr(im, "url", None)
+        p = _path_from_files_url(url)
+        if p and p not in seen:
+            seen.add(p)
+            asyncio.create_task(_warm_one_path(p))
+
+
 class SlotPayload(BaseModel):
     # url is optional so the same endpoint can update metadata-only
     # (alt_i18n / caption_i18n) without touching the image itself,
@@ -1379,6 +1405,12 @@ async def put_slot(slot_id: str, payload: SlotPayload):
         {"$set": update},
         upsert=True,
     )
+    # Warm variants when an existing storage-hosted image is referenced via the
+    # slot (e.g. reused from the Image Library) so it's optimized + hot instantly.
+    if "url" in update and update.get("url"):
+        p = _path_from_files_url(update["url"])
+        if p:
+            asyncio.create_task(_warm_one_path(p))
     doc = await db.image_slots.find_one({"_id": slot_id}, {"_id": 0})
     return {"slot_id": slot_id, "exists": True, **(doc or {})}
 
@@ -1529,6 +1561,9 @@ async def put_day_gallery(key: str, payload: DayGalleryPayload):
         {"$set": {"images": images, "updated_at": datetime.now(timezone.utc).isoformat()}},
         upsert=True,
     )
+    # Warm variants for any storage-hosted images (e.g. library picks that
+    # skipped the upload hook) so they're optimized + hot instantly.
+    _warm_gallery_images(images)
     return {"key": key, "images": images}
 
 
