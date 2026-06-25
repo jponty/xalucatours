@@ -16,6 +16,7 @@ import ProgramFlipbook from "@/components/ProgramFlipbook";
 import { TripRouteMap } from "@/components/TripRouteMap";
 import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
+import RelatedJourneys from "@/components/RelatedJourneys";
 import TripPostcards from "@/components/TripPostcards";
 import { deriveTripRoute } from "@/lib/deriveTripRoute";
 import { useSlotId } from "@/components/EditableSection";
@@ -694,6 +695,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
       <PricingSection id="pricing" testid="program-pricing" routeId={routeId} />
       <DetailsAccordion t={t} lang={lang} program={program} />
       <HubPeerNav routeId={routeId} />
+      <RelatedJourneys routeId={routeId} />
       <ContactBand t={t} lang={lang} />
       <div id="form"><ContactForm /></div>
       <DownloadProgramModal

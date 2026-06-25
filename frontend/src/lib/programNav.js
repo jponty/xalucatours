@@ -155,3 +155,33 @@ export const programLabel = (program, lang) =>
 /* peerPrograms: same hub, excluding the current program */
 export const peerPrograms = (hub, currentRouteId) =>
   (hub?.programs || []).filter((p) => p.link && p.link !== currentRouteId);
+
+/* ----------------------------------------------------------------
+   Cross-sell: "También te puede interesar"
+   From a short escape (escapada) suggest longer, higher-value
+   journeys. Keyed by hubRouteId (hub-grouped escapes) OR by the
+   program routeId (hub-less direct escapes). Targets are HUB
+   routeIds already registered in HUB_NAV → resolve + link safely.
+---------------------------------------------------------------- */
+export const CROSS_SELL = {
+  // Hub-grouped escapadas (keyed by hubRouteId)
+  tourEscapadaRakErgRakHub: ["tourMarrakechErgHub", "tourGransurTangerRak"],
+  tourEscapadaFez:          ["tourNorteCiudadesImperiales", "tourGransurFezRak"],
+  tourEscapadaMarrakech:    ["tourMarrakechErgHub", "tourMarrakechLoopHub"],
+  tourEscapadaTanger:       ["tourNorteTangerFez", "tourNorteCiudadesImperiales"],
+  // Direct (hub-less) escapadas (keyed by program routeId)
+  tourEscapadaDesierto34:   ["tourAtlasDesiertoHub", "tourGransurFezRak"],
+  tourEscapadaAtlas34:      ["tourAtlasDesiertoHub", "tourMarrakechLoopHub"],
+};
+
+/* relatedJourneys: resolve cross-sell targets for a given routeId.
+   Returns [{ hubRouteId, section, hub }] (registered hubs only). */
+export const relatedJourneys = (routeId) => {
+  const nav = PROGRAM_NAV[routeId];
+  const key = nav && nav.hub ? nav.hubRouteId : routeId;
+  const targets = CROSS_SELL[key] || [];
+  return targets
+    .map((id) => HUB_NAV[id])
+    .filter(Boolean)
+    .filter((t) => t.hubRouteId !== key); // never suggest the same hub
+};

@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Cross-sell "También te puede interesar" en escapadas (jun 2026) — COMPLETADO + VERIFICADO (self-test)**:
+  - Nuevo componente `components/RelatedJourneys.jsx` (banda oscura premium, acento dorado #D4A373): desde una escapada sugiere 2 itinerarios más largos/de mayor valor (card con héroe del hub destino, sección, título, subtítulo y CTA "Ver itinerario").
+  - `programNav.js`: mapa `CROSS_SELL` (keyed por hubRouteId para escapadas con hub, o por routeId para directas) + helper `relatedJourneys(routeId)` que resuelve hubs registrados en HUB_NAV (links seguros) y excluye el propio hub. Targets: Desierto→{Atlas-Desierto Sur, Gran Sur Fez-Rak}; Atlas→{Atlas-Desierto, Marrakech Loop}; Rak-Erg-Rak→{Marrakech-Erg, Gran Sur Tánger-Rak}; Fez→{Ciudades Imperiales, Gran Sur Fez-Rak}; Marrakech→{Marrakech-Erg, Marrakech Loop}; Tánger→{Tánger-Fez, Ciudades Imperiales}.
+  - Montado en `ProgramTemplate` (tras HubPeerNav) y en `EscapadaIntroPage` (tras ContactBand) → cubre programas de escapada, programas DIRECTOS (Desierto/Atlas, que no tenían peer-nav) e intros (Fez/Marrakech/Tánger). Devuelve null si no hay cross-sell curado (no afecta a otras páginas).
+  - Verificado por screenshots: Desierto (sin peer-nav → cross-sell con 2 cards), Fez 2n3d (peer-nav + cross-sell), Tánger intro (cross-sell). Frontend compila.
+
 - **Hubs de Escapadas cortas — cableado completo en `tourShort` (jun 2026) — COMPLETADO + VERIFICADO (self-test, 9 páginas)**:
   - Creados 3 hubs editoriales en `itineraryHubs.js` (solo para programNav; las páginas siguen usando `EscapadaIntroPage`): `HUB_ESCAPADA_FEZ` (`tourEscapadaFez` → fez23, fez34, fezSidiali34, fezSidiali45), `HUB_ESCAPADA_MARRAKECH` (`tourEscapadaMarrakech` → marrakech23, rakAgafay34), `HUB_ESCAPADA_TANGER` (`tourEscapadaTanger`, sin programas hijos: solo da breadcrumb a la intro). Añadidos a `HUBS_BY_ID`.
   - `programNav.js`: registrados en `SECTION_HUBS.tourShort` + nuevo `SECTION_DIRECT_PROGRAMS.tourShort` para escapadas de UN solo programa sin hub intermedio (`tourEscapadaDesierto34`, `tourEscapadaAtlas34`) → breadcrumb `Inicio › Viajes › Escapadas cortas › <label>` (sin nivel hub). Loop de build amplía `PROGRAM_NAV` con flag `direct` + `label` trilingüe.

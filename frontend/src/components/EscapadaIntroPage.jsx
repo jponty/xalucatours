@@ -7,6 +7,7 @@ import { pathFor } from "@/lib/routes";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import ContactForm from "@/components/ContactForm";
 import ProgramFlipbook from "@/components/ProgramFlipbook";
+import RelatedJourneys from "@/components/RelatedJourneys";
 
 /* ============================================================
    EscapadaIntroPage — single-section editorial intro for each
@@ -270,6 +271,7 @@ export default function EscapadaIntroPage({ data, accent }) {
       <Gallery items={data.gallery} lang={lang} t={t} accent={accent} routeId={data.routeId} />
       <ProgramFlipbook routeId={data.routeId} />
       <ContactBand lang={lang} t={t} accent={accent} />
+      <RelatedJourneys routeId={data.routeId} />
       <ContactForm />
     </div>
   );
