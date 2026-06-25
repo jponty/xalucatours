@@ -2661,8 +2661,23 @@ async def download_file(
 import multiprocessing as _mp
 from concurrent.futures import ProcessPoolExecutor
 
-_WARM_WORKERS = max(2, (os.cpu_count() or 4) - 2)
-_WARM_INFLIGHT = _WARM_WORKERS + 2
+# Warm-up is intentionally conservative by default so it can NEVER OOM a
+# memory-constrained container. Tune via env:
+#   IMG_WARM_ON_STARTUP  → run the full batch warm-up on boot (default: OFF)
+#   IMG_WARM_WORKERS     → CPU worker processes (default: 1 → encodes in
+#                          threads, no extra processes; >1 spawns a pool)
+def _env_flag(name, default=False):
+    v = os.environ.get(name)
+    if v is None:
+        return default
+    return v.strip().lower() in ("1", "true", "yes", "on")
+
+WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", False)
+try:
+    _WARM_WORKERS = max(1, int(os.environ.get("IMG_WARM_WORKERS", "1")))
+except (TypeError, ValueError):
+    _WARM_WORKERS = 1
+_WARM_INFLIGHT = _WARM_WORKERS + 1
 
 
 def _encode_all_variants(data: bytes, specs):
@@ -2737,13 +2752,17 @@ async def _run_warm_cache():
         _warm_state["total"] = len(uniq)
 
         loop = asyncio.get_event_loop()
-        try:
-            # `spawn` re-imports cleanly (no fork-deadlock with the running
-            # event loop / Mongo sockets); workers only do CPU encoding.
-            pool = ProcessPoolExecutor(max_workers=_WARM_WORKERS, mp_context=_mp.get_context("spawn"))
-        except Exception as exc:
-            logger.warning("warm-up process pool unavailable (%s); falling back to threads", exc)
-            pool = None
+        # Only spawn worker processes when explicitly configured (>1). With the
+        # safe default (1) we encode in threads — no extra process memory, so a
+        # constrained container can never be OOM-killed by the warm-up.
+        if _WARM_WORKERS > 1:
+            try:
+                # `spawn` re-imports cleanly (no fork-deadlock with the running
+                # event loop / Mongo sockets); workers only do CPU encoding.
+                pool = ProcessPoolExecutor(max_workers=_WARM_WORKERS, mp_context=_mp.get_context("spawn"))
+            except Exception as exc:
+                logger.warning("warm-up process pool unavailable (%s); falling back to threads", exc)
+                pool = None
 
         sem = asyncio.Semaphore(_WARM_INFLIGHT)
 
@@ -3240,13 +3259,19 @@ async def startup_storage():
         logger.error("files.sha256 index creation failed: %s", exc)
     # Hydrate the editable lead-notification recipient list.
     await load_notify_emails()
-    # Warm the modern-format image cache in the background so even the first
-    # visitor gets instant AVIF/WebP for EVERY image. Idempotent + gentle;
-    # the short delay keeps it off the critical startup path.
-    async def _delayed_warm():
-        await asyncio.sleep(20)
-        await _run_warm_cache()
-    try:
-        asyncio.create_task(_delayed_warm())
-    except Exception as exc:
-        logger.error("could not schedule image cache warm-up: %s", exc)
+    # Optionally warm the modern-format image cache in the background. OFF by
+    # default (set IMG_WARM_ON_STARTUP=true to enable) so a fresh deploy can
+    # never risk an OOM crash-loop on a constrained container. Even with it off:
+    # the /api/files proxy still encodes on demand + caches, the on-upload hook
+    # warms new images, and the admin "Optimizar todas las imágenes" button can
+    # run the full warm-up manually at any time.
+    if WARM_ON_STARTUP:
+        async def _delayed_warm():
+            await asyncio.sleep(20)
+            await _run_warm_cache()
+        try:
+            asyncio.create_task(_delayed_warm())
+        except Exception as exc:
+            logger.error("could not schedule image cache warm-up: %s", exc)
+    else:
+        logger.info("image cache warm-up on startup disabled (set IMG_WARM_ON_STARTUP=true to enable)")
