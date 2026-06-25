@@ -92,6 +92,11 @@ function buildTrail(routeId, lang) {
   if (progNav) {
     trail.push({ label: sectionLabel("toursLanding", lang), href: pathFor(lang, "toursLanding"), testid: "tours" });
     trail.push({ label: sectionLabel(progNav.section, lang), href: pathFor(lang, progNav.section), testid: "section" });
+    if (progNav.direct) {
+      // Hub-less program: section → program directly
+      trail.push({ label: pickT(progNav.label, lang) || programLabel(progNav.program, lang) || routeId, testid: "program" });
+      return trail;
+    }
     trail.push({ label: hubLabel(progNav.hub, lang), href: pathFor(lang, progNav.hubRouteId), testid: "hub" });
     trail.push({ label: programLabel(progNav.program, lang) || routeId, testid: "program" });
     return trail;

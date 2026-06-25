@@ -10,6 +10,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Hubs de Escapadas cortas — cableado completo en `tourShort` (jun 2026) — COMPLETADO + VERIFICADO (self-test, 9 páginas)**:
+  - Creados 3 hubs editoriales en `itineraryHubs.js` (solo para programNav; las páginas siguen usando `EscapadaIntroPage`): `HUB_ESCAPADA_FEZ` (`tourEscapadaFez` → fez23, fez34, fezSidiali34, fezSidiali45), `HUB_ESCAPADA_MARRAKECH` (`tourEscapadaMarrakech` → marrakech23, rakAgafay34), `HUB_ESCAPADA_TANGER` (`tourEscapadaTanger`, sin programas hijos: solo da breadcrumb a la intro). Añadidos a `HUBS_BY_ID`.
+  - `programNav.js`: registrados en `SECTION_HUBS.tourShort` + nuevo `SECTION_DIRECT_PROGRAMS.tourShort` para escapadas de UN solo programa sin hub intermedio (`tourEscapadaDesierto34`, `tourEscapadaAtlas34`) → breadcrumb `Inicio › Viajes › Escapadas cortas › <label>` (sin nivel hub). Loop de build amplía `PROGRAM_NAV` con flag `direct` + `label` trilingüe.
+  - `Breadcrumbs.jsx`: rama de programa soporta `direct` (omite crumb de hub, usa `label`). `HubPeerNav.jsx`: guard `if (!nav || !nav.hub) return null` para no renderizar peer-nav en programas directos.
+  - Decisión: los 2 programas Fez-Sidiali se agrupan bajo el hub Fez (su parent natural; no existe ruta de hub propia) → quedan como peers de fez23/fez34. Blurbs distintos los diferencian aunque compartan "3N·4D".
+  - Verificado por screenshots: Fez 2n3d (BC + 3 peers), Fez-Sidiali 3n4d/4n5d (BC + peers bajo Fez), Marrakech 2n3d (BC + 1 peer rakAgafay), Desierto/Atlas (BC directo, sin peer-nav), intros Fez/Marrakech/Tánger (BC de hub). Frontend compila.
+
 - **Fases 3 y 4 — Navegación & enlaces "Escapadas cortas" (`tourShort`) y "Norte de Marruecos" (`tourNorth`) (jun 2026) — COMPLETADO + VERIFICADO (self-test, screenshots)**:
   - Registrados en `lib/programNav.js#SECTION_HUBS` (importados de `itineraryHubs.js`) sin solapamientos:
     - Fase 4 · `tourNorth`: `HUB_NORTE_CIUDADES_IMPERIALES` (`tourNorteCiudadesImperiales`) + `HUB_NORTE_TANGER_FEZ` (`tourNorteTangerFez`).
@@ -89,7 +96,7 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 ## Backlog / Próximas tareas
 - ✅ HECHO: Phase 2/3/4 Navegación/Linking (Gran Sur, Escapadas Rak-Erg-Rak, Norte)
-- P2: Crear hubs faltantes de Escapadas (Fez, Marrakech, Fez-Sidiali, Desierto, Atlas, Rak-Agafay, Tánger) + cablearlos en `tourShort`
+- ✅ HECHO: Hubs de Escapadas (Fez, Marrakech, Tánger) + programas directos (Desierto, Atlas) cableados en `tourShort`. Fez-Sidiali agrupado bajo hub Fez.
 - P2: Aliases POI no mapeados en textos narrativos (lib/programs/, dayPlaceGazetteer.js)
 - P2: Refactor server.py (>3200 líneas) → routers; dividir AdminPage.jsx (>2400 líneas)
 - P2: Aliases/redirects para slugs inconsistentes (evitar 404)

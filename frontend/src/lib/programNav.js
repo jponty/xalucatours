@@ -26,6 +26,9 @@ import {
   HUB_NORTE_CIUDADES_IMPERIALES,
   HUB_NORTE_TANGER_FEZ,
   HUB_ESCAPADA_RAK_ERG_RAK,
+  HUB_ESCAPADA_FEZ,
+  HUB_ESCAPADA_MARRAKECH,
+  HUB_ESCAPADA_TANGER,
   HUB_AVENTURA_ENDURO,
 } from "@/lib/itineraryHubs";
 
@@ -65,9 +68,22 @@ const SECTION_HUBS = {
   ],
   tourShort: [
     { routeId: "tourEscapadaRakErgRakHub",    hub: HUB_ESCAPADA_RAK_ERG_RAK },
+    { routeId: "tourEscapadaFez",             hub: HUB_ESCAPADA_FEZ },
+    { routeId: "tourEscapadaMarrakech",       hub: HUB_ESCAPADA_MARRAKECH },
+    { routeId: "tourEscapadaTanger",          hub: HUB_ESCAPADA_TANGER },
   ],
   tourAdventure: [
     { routeId: "tourAventuraEnduroHub",      hub: HUB_AVENTURA_ENDURO },
+  ],
+};
+
+/* ----- Programas que cuelgan DIRECTAMENTE de una sección (sin hub
+   intermedio): escapadas de un solo programa accesibles desde la
+   pasarela. Breadcrumb: Inicio › Viajes › Sección › <label>. ----- */
+const SECTION_DIRECT_PROGRAMS = {
+  tourShort: [
+    { routeId: "tourEscapadaDesierto34", nights: "3n4d", label: { es: "Escápate al desierto", en: "Desert escape", fr: "Escapade au désert" } },
+    { routeId: "tourEscapadaAtlas34",    nights: "3n4d", label: { es: "Escápate al Alto Atlas", en: "High Atlas escape", fr: "Escapade au Haut Atlas" } },
   ],
 };
 
@@ -84,6 +100,22 @@ for (const [section, entries] of Object.entries(SECTION_HUBS)) {
       if (p.link && !PROGRAM_NAV[p.link]) {
         PROGRAM_NAV[p.link] = { section, hubRouteId: routeId, hub, program: p };
       }
+    }
+  }
+}
+
+/* Direct (hub-less) section programs */
+for (const [section, entries] of Object.entries(SECTION_DIRECT_PROGRAMS)) {
+  for (const e of entries) {
+    if (!PROGRAM_NAV[e.routeId]) {
+      PROGRAM_NAV[e.routeId] = {
+        section,
+        hubRouteId: null,
+        hub: null,
+        program: { link: e.routeId, nights: e.nights },
+        direct: true,
+        label: e.label,
+      };
     }
   }
 }

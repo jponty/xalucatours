@@ -1186,6 +1186,87 @@ export const HUB_ESCAPADA_RAK_ERG_RAK = {
 
 
 /* ============================================================
+   Escapadas cortas · hubs editoriales (Fez · Marrakech · Tánger)
+   ----
+   Estas escapadas se renderizan con EscapadaIntroPage (intro +
+   contacto). Aquí solo se definen los hubs para programNav:
+   activan breadcrumbs + HubPeerNav en las páginas de programa hijas.
+============================================================ */
+export const HUB_ESCAPADA_FEZ = {
+  id: "escapada-fez",
+  hero: {
+    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
+    place: T("Fez · Meknés · Volubilis · Sidi Ali", "Fez · Meknes · Volubilis · Sidi Ali", "Fès · Meknès · Volubilis · Sidi Ali"),
+    title: T("Escapada a Fez.", "Fez short escape.", "Escapade à Fès."),
+    subtitle: T(
+      "La capital espiritual de Marruecos en pocas noches — medina UNESCO, Meknés, Volubilis y el lago Aguelmame Sidi Ali.",
+      "Morocco's spiritual capital in just a few nights — UNESCO medina, Meknes, Volubilis and Aguelmame Sidi Ali lake.",
+      "La capitale spirituelle du Maroc en quelques nuits — médina UNESCO, Meknès, Volubilis et le lac Aguelmame Sidi Ali.",
+    ),
+  },
+  intro: {
+    overline: T("Escapada a Fez", "Fez short escape", "Escapade à Fès"),
+    title: T("Elige tu escapada a Fez.", "Choose your Fez escape.", "Choisissez votre escapade à Fès."),
+  },
+  programs: [
+    { id: "esc-fez-2-3", nights: "2n3d", accent: "#A07042", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", link: "tourEscapadaFez23",
+      blurb: T("Fez en su esencia: dos noches en la medina UNESCO más antigua del mundo árabe.", "Fez at its purest: two nights in the oldest UNESCO medina in the Arab world.", "Fès à l'essentiel : deux nuits dans la plus ancienne médina UNESCO du monde arabe.") },
+    { id: "esc-fez-3-4", nights: "3n4d", accent: "#5A6B4F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourEscapadaFez34",
+      blurb: T("Fez ampliado con Meknés, Volubilis y Moulay Idriss — tres joyas imperiales en un solo viaje.", "Fez plus Meknes, Volubilis and Moulay Idriss — three imperial gems in one trip.", "Fès complété par Meknès, Volubilis et Moulay Idriss — trois joyaux impériaux en un seul voyage.") },
+    { id: "esc-fs-3-4", nights: "3n4d", accent: "#5A7F9C", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", link: "tourEscapadaFezSidiali34",
+      blurb: T("Fez y el Medio Atlas: Ifrane, los cedros centenarios y el lago Aguelmame Sidi Ali.", "Fez and the Middle Atlas: Ifrane, ancient cedars and Aguelmame Sidi Ali lake.", "Fès et le Moyen Atlas : Ifrane, les cèdres centenaires et le lac Aguelmame Sidi Ali.") },
+    { id: "esc-fs-4-5", nights: "4n5d", accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85", link: "tourEscapadaFezSidiali45",
+      blurb: T("Fez, Meknés, Volubilis y el lago Sidi Ali — la escapada más completa del norte interior.", "Fez, Meknes, Volubilis and Sidi Ali lake — the most complete inland-north escape.", "Fès, Meknès, Volubilis et le lac Sidi Ali — l'escapade la plus complète du nord intérieur.") },
+  ],
+};
+
+export const HUB_ESCAPADA_MARRAKECH = {
+  id: "escapada-marrakech",
+  hero: {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
+    place: T("Marrakech · Agafay · pies del Atlas", "Marrakech · Agafay · foothills of the Atlas", "Marrakech · Agafay · pieds de l'Atlas"),
+    title: T("Escapada a Marrakech.", "Marrakech short escape.", "Escapade à Marrakech."),
+    subtitle: T(
+      "La Ciudad Roja en pocas noches — Jemaa el-Fna, zocos y jardines, con opción de noche en el desierto de Agafay.",
+      "The Red City in just a few nights — Jemaa el-Fna, souks and gardens, with the option of a night in the Agafay desert.",
+      "La Ville Rouge en quelques nuits — Jemaa el-Fna, souks et jardins, avec option d'une nuit au désert d'Agafay.",
+    ),
+  },
+  intro: {
+    overline: T("Escapada a Marrakech", "Marrakech short escape", "Escapade à Marrakech"),
+    title: T("Elige tu escapada a Marrakech.", "Choose your Marrakech escape.", "Choisissez votre escapade à Marrakech."),
+  },
+  programs: [
+    { id: "esc-rak-2-3", nights: "2n3d", accent: "#D97742", image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85", link: "tourEscapadaMarrakech23",
+      blurb: T("Marrakech esencial: dos noches entre Jemaa el-Fna, zocos, palacios y jardines.", "Essential Marrakech: two nights amid Jemaa el-Fna, souks, palaces and gardens.", "Marrakech à l'essentiel : deux nuits entre Jemaa el-Fna, souks, palais et jardins.") },
+    { id: "esc-raga-3-4", nights: "3n4d", accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85", link: "tourEscapadaRakAgafay34",
+      blurb: T("Marrakech + el desierto de Agafay: una noche bajo las estrellas a los pies del Atlas.", "Marrakech + the Agafay desert: a night under the stars at the foot of the Atlas.", "Marrakech + le désert d'Agafay : une nuit sous les étoiles au pied de l'Atlas.") },
+  ],
+};
+
+export const HUB_ESCAPADA_TANGER = {
+  id: "escapada-tanger",
+  hero: {
+    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    eyebrow: T("Escapadas por Marruecos", "Morocco short escapes", "Escapades au Maroc"),
+    place: T("Tánger · Asilah · Tetuán · Chefchaouen", "Tangier · Asilah · Tetouan · Chefchaouen", "Tanger · Asilah · Tétouan · Chefchaouen"),
+    title: T("Escapada a Tánger.", "Tangier short escape.", "Escapade à Tanger."),
+    subtitle: T(
+      "El norte entre dos mares — Tánger, Asilah, Tetuán y el pueblo azul de Chefchaouen.",
+      "The north between two seas — Tangier, Asilah, Tetouan and the blue town of Chefchaouen.",
+      "Le nord entre deux mers — Tanger, Asilah, Tétouan et le village bleu de Chefchaouen.",
+    ),
+  },
+  intro: {
+    overline: T("Escapada a Tánger", "Tangier short escape", "Escapade à Tanger"),
+    title: T("Tu escapada al norte de Marruecos.", "Your northern Morocco escape.", "Votre escapade au nord du Maroc."),
+  },
+  programs: [],
+};
+
+/* ============================================================
    Hub · Aventura · Enduro por Marruecos
    ----
    Sub-hub of /viajes/aventura. Currently surfaces the 4n/5d
@@ -1276,7 +1357,8 @@ export const HUBS_BY_ID = [
   HUB_MARRAKECH_LOOP, HUB_MARRAKECH_ESSAOUIRA, HUB_ERRACHIDIA_ATLAS_FEZ, HUB_GRANSUR_FEZ_RAK,
   HUB_GRANSUR_FEZ_SIDIALI_RAK, HUB_GRANSUR_OUARZA_FEZ, HUB_GRANSUR_TANGER_RAK,
   HUB_NORTE_CIUDADES_IMPERIALES, HUB_NORTE_TANGER_FEZ, HUB_GRANSUR_RAK_FEZ,
-  HUB_ATLAS_DESIERTO_FEZ, HUB_ESCAPADA_RAK_ERG_RAK, HUB_AVENTURA_ENDURO,
+  HUB_ATLAS_DESIERTO_FEZ, HUB_ESCAPADA_RAK_ERG_RAK,
+  HUB_ESCAPADA_FEZ, HUB_ESCAPADA_MARRAKECH, HUB_ESCAPADA_TANGER, HUB_AVENTURA_ENDURO,
 ].reduce((acc, hub) => {
   if (hub && hub.id) acc[hub.id] = hub;
   return acc;

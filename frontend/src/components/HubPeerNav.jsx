@@ -32,7 +32,7 @@ const COPY = {
 export default function HubPeerNav({ routeId }) {
   const { lang } = useLanguage();
   const nav = lookupProgram(routeId);
-  if (!nav) return null;
+  if (!nav || !nav.hub) return null;
 
   const { hub, hubRouteId } = nav;
   const peers = peerPrograms(hub, routeId);
