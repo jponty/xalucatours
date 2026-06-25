@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Endurecimiento del warm-up de imágenes + fix de deploy (jun 2026) — APLICADO en preview, VERIFICADO; requiere REDEPLOY**:
+  - Incidencia: producción (xalucatravel.com) devolvía HTTP 520 en TODOS los `/api/*` (backend caído/bucle de reinicio) tras redeploy; home estática OK; preview sano. Causa probable: el warm-up de caché (ProcessPoolExecutor con cpu-2 procesos codificando AVIF en arranque) tumbaba por OOM un contenedor con poca RAM.
+  - `server.py`: warm-up de arranque DESACTIVADO por defecto (env `IMG_WARM_ON_STARTUP`, default off); por defecto codifica en threads (`IMG_WARM_WORKERS`=1, sin spawnear procesos; >1 usa ProcessPoolExecutor); todo envuelto en try/except → nunca tumba el backend. On-upload hook (thread, 1 imagen) y proxy `/api/files` on-demand intactos; botón admin "Optimizar imágenes" sigue disponible para warm-up manual.
+  - `.gitignore`: eliminados patrones amplios `.env`/`.env.*`/`*.env` (bloqueaban backend/.env y frontend/.env en deploy) + negaciones explícitas. `deployment_agent`: PASS.
+  - Verificado en preview: backend arranca limpio (200), log "warm-up on startup disabled", status running=False. **ACCIÓN PENDIENTE DEL USUARIO: redesplegar para recuperar producción.**
+
 - **Cross-sell "También te puede interesar" en escapadas (jun 2026) — COMPLETADO + VERIFICADO (self-test)**:
   - Nuevo componente `components/RelatedJourneys.jsx` (banda oscura premium, acento dorado #D4A373): desde una escapada sugiere 2 itinerarios más largos/de mayor valor (card con héroe del hub destino, sección, título, subtítulo y CTA "Ver itinerario").
   - `programNav.js`: mapa `CROSS_SELL` (keyed por hubRouteId para escapadas con hub, o por routeId para directas) + helper `relatedJourneys(routeId)` que resuelve hubs registrados en HUB_NAV (links seguros) y excluye el propio hub. Targets: Desierto→{Atlas-Desierto Sur, Gran Sur Fez-Rak}; Atlas→{Atlas-Desierto, Marrakech Loop}; Rak-Erg-Rak→{Marrakech-Erg, Gran Sur Tánger-Rak}; Fez→{Ciudades Imperiales, Gran Sur Fez-Rak}; Marrakech→{Marrakech-Erg, Marrakech Loop}; Tánger→{Tánger-Fez, Ciudades Imperiales}.
