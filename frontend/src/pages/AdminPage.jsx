@@ -4,6 +4,7 @@ import {
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
   MapPin, Languages, Inbox, Mail, Images, Database, Library,
+  ShieldCheck, Layers, Link2,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
@@ -1306,10 +1307,22 @@ const ReoptimizeLibraryPanel = () => {
    fallback stays as a never-triggered safety net until 100% coverage. */
 const MigrateFallbacksPanel = () => {
   const [status, setStatus] = useState(null);
+  const [coverage, setCoverage] = useState(null);
+  const [covLoading, setCovLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const pollRef = useRef(null);
   const tokenHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("xaluca_admin_token")}` });
+
+  const fetchCoverage = async () => {
+    setCovLoading(true);
+    try {
+      const r = await fetch(`${API}/admin/migrate-fallbacks/coverage`, { headers: tokenHeader() });
+      const d = await r.json();
+      if (r.ok) setCoverage(d);
+    } catch (e) { /* transient */ }
+    finally { setCovLoading(false); }
+  };
 
   const fetchStatus = async () => {
     try {
@@ -1318,12 +1331,14 @@ const MigrateFallbacksPanel = () => {
       if (r.ok) setStatus(d);
       if (d && !d.running && pollRef.current) {
         clearInterval(pollRef.current); pollRef.current = null; setBusy(false);
+        fetchCoverage();
       }
     } catch (e) { /* transient — keep polling */ }
   };
 
   useEffect(() => {
     fetchStatus();
+    fetchCoverage();
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, []);
 
@@ -1408,7 +1423,165 @@ const MigrateFallbacksPanel = () => {
             <p className="text-xs text-red-300 leading-relaxed">{error}</p>
           </div>
         )}
+
+        <CoverageReport coverage={coverage} loading={covLoading} onRefresh={fetchCoverage} />
       </div>
+    </div>
+  );
+};
+
+
+/* ---------- Coverage report (Informe de cobertura) ----------
+   Live snapshot from the DB of how many external (Unsplash/Pexels) image slots
+   and direct <Img> URLs are already centralised in the CMS vs. still pending.
+   When everything is done it is 100% safe to remove the code fallback system. */
+const CovBar = ({ label, done, total, pending, accent = "#D4A373", testid }) => {
+  const pct = total > 0 ? Math.round((done / total) * 1000) / 10 : 100;
+  return (
+    <div data-testid={testid}>
+      <div className="flex items-center justify-between text-[11px] text-white/70 mb-1.5">
+        <span className="tracking-[0.12em] uppercase">{label}</span>
+        <span className="tabular-nums text-white/55">{done}/{total} · {pct}%</span>
+      </div>
+      <div className="h-2 w-full bg-white/10 overflow-hidden rounded-full">
+        <div className="h-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: accent }} />
+      </div>
+      {pending > 0 && (
+        <p className="mt-1.5 text-[11px] text-[#C16542]">{pending} pendiente{pending === 1 ? "" : "s"} por centralizar</p>
+      )}
+    </div>
+  );
+};
+
+const CoverageReport = ({ coverage, loading, onRefresh }) => {
+  const c = coverage;
+  const ov = c?.overall;
+  const safe = !!ov?.safe_to_remove;
+  return (
+    <div className="mt-10 border-t border-white/10 pt-8" data-testid="coverage-report">
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="w-6 h-6 text-[#D4A373]" strokeWidth={1.6} />
+          <h2 className="text-2xl font-serif-x">Informe de cobertura</h2>
+        </div>
+        <button
+          type="button"
+          data-testid="coverage-refresh-btn"
+          onClick={onRefresh}
+          disabled={loading}
+          className="inline-flex items-center gap-2 border border-white/15 hover:border-white/30 text-white/80 px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} strokeWidth={1.8} />
+          Actualizar
+        </button>
+      </div>
+      <p className="text-sm text-white/60 leading-relaxed mb-6">
+        Mide cuántas imágenes externas (Unsplash/Pexels) ya están centralizadas en tu CMS frente a las que aún faltan.
+        Cuando llegue al <span className="text-[#D4A373]">100%</span> será totalmente seguro eliminar el sistema de fallback del código.
+      </p>
+
+      {!c && (
+        <p className="text-xs text-white/45" data-testid="coverage-loading">
+          {loading ? "Calculando cobertura…" : "Sin datos de cobertura todavía."}
+        </p>
+      )}
+
+      {c && (
+        <div className="space-y-6" data-testid="coverage-data">
+          {/* Overall gauge */}
+          <div
+            className={`flex items-center gap-4 px-5 py-4 border ${safe ? "border-[#9DBE8C]/40 bg-[#5A6B4F]/15" : "border-[#D4A373]/30 bg-[#D4A373]/5"}`}
+            data-testid="coverage-overall"
+          >
+            <div className={`text-4xl font-serif-x tabular-nums ${safe ? "text-[#9DBE8C]" : "text-[#D4A373]"}`} data-testid="coverage-overall-percent">
+              {ov?.percent ?? 0}%
+            </div>
+            <div className="text-sm leading-snug">
+              {safe ? (
+                <span className="flex items-center gap-2 text-[#9DBE8C]" data-testid="coverage-safe-flag">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" strokeWidth={1.8} />
+                  100% centralizado — es seguro eliminar el sistema de fallback del código.
+                </span>
+              ) : (
+                <span className="flex items-center gap-2 text-white/70" data-testid="coverage-unsafe-flag">
+                  <AlertTriangle className="w-4 h-4 text-[#C16542] shrink-0" strokeWidth={1.8} />
+                  Aún quedan imágenes externas sin centralizar. No elimines los fallbacks todavía.
+                </span>
+              )}
+              <p className="text-[11px] text-white/45 mt-1">{ov?.done ?? 0} de {ov?.total ?? 0} fuentes externas centralizadas.</p>
+            </div>
+          </div>
+
+          {/* Breakdown bars */}
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/80 text-xs tracking-[0.15em] uppercase">
+                <Layers className="w-4 h-4 text-[#D4A373]" strokeWidth={1.8} /> Slots editables
+              </div>
+              <CovBar
+                label="Slots con fallback externo"
+                done={c.slots?.done ?? 0}
+                total={c.slots?.external ?? 0}
+                pending={c.slots?.pending ?? 0}
+                testid="coverage-slots-bar"
+              />
+              <div className="text-[11px] text-white/45 leading-relaxed">
+                {c.slots?.total ?? 0} slots registrados ·
+                {" "}{c.slots?.migrated ?? 0} en el CMS ·
+                {" "}{c.slots?.cleared ?? 0} vaciados ·
+                {" "}{c.slots?.local_fallback ?? 0} ya locales ·
+                {" "}{c.slots?.no_fallback ?? 0} sin fallback
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/80 text-xs tracking-[0.15em] uppercase">
+                <Link2 className="w-4 h-4 text-[#D4A373]" strokeWidth={1.8} /> Imágenes directas
+              </div>
+              <CovBar
+                label="URLs <Img> remotas"
+                done={c.urls?.migrated ?? 0}
+                total={c.urls?.total ?? 0}
+                pending={c.urls?.pending ?? 0}
+                accent="#9DBE8C"
+                testid="coverage-urls-bar"
+              />
+              <div className="text-[11px] text-white/45 leading-relaxed">
+                {c.urls?.total ?? 0} URLs registradas ·
+                {" "}{c.urls?.migrated ?? 0} migradas al CMS ·
+                {" "}{c.urls?.pending ?? 0} pendientes
+              </div>
+            </div>
+          </div>
+
+          {/* Pending samples */}
+          {(c.slots?.pending > 0 || c.urls?.pending > 0) && (
+            <div className="border border-white/10 divide-y divide-white/5" data-testid="coverage-pending">
+              {c.slots?.pending > 0 && (
+                <div className="px-4 py-3">
+                  <p className="text-[11px] tracking-[0.15em] uppercase text-[#C16542] mb-2">Slots pendientes (muestra de {Math.min(c.slots.pending, 30)} de {c.slots.pending})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(c.slots.pending_sample || []).map((sid) => (
+                      <code key={sid} className="text-[10px] bg-white/5 text-white/60 px-2 py-0.5 rounded">{sid}</code>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {c.urls?.pending > 0 && (
+                <div className="px-4 py-3">
+                  <p className="text-[11px] tracking-[0.15em] uppercase text-[#C16542] mb-2">URLs pendientes (muestra de {Math.min(c.urls.pending, 30)} de {c.urls.pending})</p>
+                  <ul className="space-y-0.5">
+                    {(c.urls.pending_sample || []).map((u) => (
+                      <li key={u} className="text-[10px] text-white/50 truncate">{u}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <p className="px-4 py-2 text-[11px] text-white/45">Pulsa «Centralizar fallbacks en el CMS» arriba para importarlas. Antes, navega por las páginas para que el registro esté completo.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

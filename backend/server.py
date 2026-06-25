@@ -3480,6 +3480,108 @@ async def migrate_fallbacks_status(authorization: str = Header(default="")):
     return st
 
 
+@api_router.get("/admin/migrate-fallbacks/coverage")
+async def migrate_fallbacks_coverage(authorization: str = Header(default="")):
+    """Coverage report (computed live from the DB, independent of any running
+    job): how many registered image slots + direct <Img> URLs that still rely
+    on an external (Unsplash/Pexels) source are already centralised in the CMS
+    vs. still pending. When everything is done it is 100% safe to delete the
+    code-level fallback system."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+
+    # --- Image slots ---
+    slots_total = 0
+    external_slot_ids: List[str] = []
+    local_fallback = 0   # fallback already local/bundled → nothing to migrate
+    no_fallback = 0
+    async for d in db.image_slot_registry.find({}, {"fallback": 1}):
+        slots_total += 1
+        fb = d.get("fallback")
+        if _is_external_image_url(fb):
+            sid = d.get("_id")
+            if sid:
+                external_slot_ids.append(sid)
+        elif fb:
+            local_fallback += 1
+        else:
+            no_fallback += 1
+
+    slots_external = len(external_slot_ids)
+    slots_migrated = 0
+    slots_cleared = 0
+    done_ids = set()
+    if external_slot_ids:
+        async for s in db.image_slots.find(
+            {"_id": {"$in": external_slot_ids}}, {"url": 1, "cleared": 1}
+        ):
+            sid = s.get("_id")
+            url = s.get("url")
+            if url and "/api/files/" in url:
+                slots_migrated += 1
+                done_ids.add(sid)
+            elif s.get("cleared"):
+                slots_cleared += 1
+                done_ids.add(sid)
+    pending_slot_ids = [sid for sid in external_slot_ids if sid not in done_ids]
+    slots_done = slots_migrated + slots_cleared
+    slots_pending = len(pending_slot_ids)
+
+    # --- Direct <Img> remote URLs ---
+    url_ids: List[str] = []
+    async for d in db.remote_image_registry.find({}, {"_id": 1}):
+        u = d.get("_id")
+        if _is_external_image_url(u):
+            url_ids.append(u)
+    urls_total = len(url_ids)
+    migrated_set = set()
+    async for f in db.files.find(
+        {"migrated_from": {"$exists": True, "$ne": None}, "is_deleted": {"$ne": True}},
+        {"migrated_from": 1},
+    ):
+        mf = f.get("migrated_from")
+        if mf:
+            migrated_set.add(mf)
+    pending_url_list = [u for u in url_ids if u not in migrated_set]
+    urls_migrated = urls_total - len(pending_url_list)
+    urls_pending = len(pending_url_list)
+
+    denom = slots_external + urls_total
+    done = slots_done + urls_migrated
+    overall_percent = round(100 * done / denom, 1) if denom else 100.0
+    safe_to_remove = (slots_pending == 0 and urls_pending == 0)
+
+    return {
+        "slots": {
+            "total": slots_total,
+            "external": slots_external,
+            "migrated": slots_migrated,
+            "cleared": slots_cleared,
+            "done": slots_done,
+            "pending": slots_pending,
+            "local_fallback": local_fallback,
+            "no_fallback": no_fallback,
+            "percent": round(100 * slots_done / slots_external, 1) if slots_external else 100.0,
+            "pending_sample": pending_slot_ids[:30],
+        },
+        "urls": {
+            "total": urls_total,
+            "migrated": urls_migrated,
+            "pending": urls_pending,
+            "percent": round(100 * urls_migrated / urls_total, 1) if urls_total else 100.0,
+            "pending_sample": pending_url_list[:30],
+        },
+        "overall": {
+            "done": done,
+            "total": denom,
+            "percent": overall_percent,
+            "safe_to_remove": safe_to_remove,
+        },
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
 
 
 @api_router.get("/text_slots/{slot_id}")

@@ -10,6 +10,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Informe de cobertura de migración de imágenes (jun 2026) — COMPLETADO + VERIFICADO (curl + screenshot)**:
+  - Objetivo: saber con métricas exactas cuándo es 100% seguro eliminar el sistema de fallback del código.
+  - Backend (`server.py`): nuevo `GET /api/admin/migrate-fallbacks/coverage` (auth) que calcula EN VIVO desde la BD (independiente del job en curso): SLOTS — total registrados (`image_slot_registry`), cuántos con fallback EXTERNO, y de esos cuántos ya en CMS (`/api/files`), vaciados (`cleared`) y PENDIENTES (+ muestra de 30 ids); también `local_fallback`/`no_fallback`. URLs directas `<Img>` — total registradas (`remote_image_registry`), migradas (en `db.files.migrated_from` = url-map) y pendientes (+ muestra de 30). `overall` con `percent`, `done/total` y flag `safe_to_remove`.
+  - Frontend (`AdminPage.jsx`, pestaña Mirror DB): nuevo bloque `CoverageReport` dentro de `MigrateFallbacksPanel` — medidor global (verde si 100%/seguro, dorado si pendiente), 2 barras (slots / URLs directas), desglose numérico, muestras de pendientes y botón "Actualizar" (`coverage-refresh-btn`). Se refresca al montar y al terminar una migración. Testids: `coverage-report`, `coverage-overall-percent`, `coverage-safe-flag`, `coverage-slots-bar`, `coverage-urls-bar`, `coverage-pending`.
+  - Verificado en preview: endpoint devuelve `slots 1032/1032 · urls 5/5 · overall 100% · safe_to_remove=true`; el panel renderiza "100% centralizado — es seguro eliminar el sistema de fallback del código".
+
+
 - **Fase 2 — Centralizar también las imágenes `<Img>` directas (no-slot) vía mapa URL→CMS (jun 2026) — IMPLEMENTADO y VERIFICADO en preview**:
   - Problema: el contenido `<Img>` directo (miniaturas de tarjetas, postales, pósters de vídeo, related/peer-nav) **hotlinkea Unsplash/Pexels** (resize por params nativos en `imageUrl.js`), no se sirve desde el storage. Convertirlo a slots editables duplicaría imágenes que son espejo de heros ya slotted.
   - Solución (mapa de resolución, no slots): `Img.jsx` ahora (1) **registra** cada URL remota Unsplash/Pexels que renderiza (`POST /api/image_urls/register`, batched/deduped) y (2) carga una vez `GET /api/image-url-map` y **resuelve** `src` remoto → su copia `/api/files`. Backend: colección `remote_image_registry` + ambos endpoints; el job `migrate-fallbacks` AMPLIADO para importar también esas URLs registradas (reusa `_import_remote_image`, dedupe). El mapa = `db.files.migrated_from → /api/files`.
