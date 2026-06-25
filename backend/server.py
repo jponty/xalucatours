@@ -2759,6 +2759,18 @@ try:
 except (TypeError, ValueError):
     _WARM_THROTTLE = 0.05
 
+# Hard memory guard: never DECODE a master larger than this during warm-up.
+# A handful of un-optimised giants (e.g. raw multi-MB PNG/JPEG imported before
+# import-time optimisation) can balloon to hundreds of MB once decoded to a
+# raster and OOM-kill a constrained container — which takes the WHOLE backend
+# down and surfaces as a Cloudflare 520 on every /api/* route (incl. the
+# /api/files listing). Those giants are served on-demand instead and should be
+# shrunk via the "Re-optimizar Biblioteca" backfill. Default 4 MB; tune via env.
+try:
+    WARM_MAX_MASTER_BYTES = max(0, int(os.environ.get("IMG_WARM_MAX_MASTER_BYTES", str(4 * 1024 * 1024))))
+except (TypeError, ValueError):
+    WARM_MAX_MASTER_BYTES = 4 * 1024 * 1024
+
 
 def _encode_all_variants(data: bytes, specs):
     """Picklable, process-pool-safe. `specs` is a list of (width, fmt). Decodes
@@ -2832,11 +2844,11 @@ async def _run_warm_cache():
     pool = None
     try:
         seen, uniq = set(), []
-        async for d in db.files.find({}, {"storage_path": 1}):
+        async for d in db.files.find({}, {"storage_path": 1, "size": 1}):
             p = d.get("storage_path")
             if p and p not in seen:
                 seen.add(p)
-                uniq.append(p)
+                uniq.append((p, d.get("size") or 0))
         _warm_state["total"] = len(uniq)
 
         loop = asyncio.get_event_loop()
@@ -2854,9 +2866,13 @@ async def _run_warm_cache():
 
         sem = asyncio.Semaphore(_WARM_INFLIGHT)
 
-        async def _worker(p):
+        async def _worker(p, size=0):
             async with sem:
                 try:
+                    # Skip memory-bomb masters so the warm-up can never OOM.
+                    if WARM_MAX_MASTER_BYTES and size and size > WARM_MAX_MASTER_BYTES:
+                        _warm_state["skipped"] += 1
+                        return
                     missing, skipped = await asyncio.to_thread(_missing_variants, p)
                     _warm_state["skipped"] += skipped
                     if missing:
@@ -2884,7 +2900,7 @@ async def _run_warm_cache():
             if _WARM_THROTTLE:
                 await asyncio.sleep(_WARM_THROTTLE)
 
-        await asyncio.gather(*[_worker(p) for p in uniq])
+        await asyncio.gather(*[_worker(p, size) for (p, size) in uniq])
     except Exception as exc:
         logger.error("image cache warm-up failed: %s", exc)
     finally:
@@ -2913,6 +2929,9 @@ async def _warm_one_path(path: str, data=None):
             return
         if data is None:
             data, _ct = await asyncio.to_thread(get_object, path)
+        # Don't decode memory-bomb masters (OOM safety) — served on-demand.
+        if WARM_MAX_MASTER_BYTES and data and len(data) > WARM_MAX_MASTER_BYTES:
+            return
         specs = [(w, f) for (w, f, _cf) in missing]
         results = await asyncio.to_thread(_encode_all_variants, data, specs)
         for (w, f, cf), res in zip(missing, results):
