@@ -1930,8 +1930,10 @@ async def pexels_import(payload: PexelsImportRequest):
 
     # Pexels originals are JPEGs. We still sniff the content-type header.
     content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
-    ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
-    ext = ext_map.get(content_type, "jpg")
+    # Downscale + re-encode to a bounded WebP master (<=2000px) before storing.
+    # Stock originals can be 5-6 MB; this slashes storage and the cost of every
+    # later on-the-fly variant + the cache warm-up.
+    data, content_type, ext = await asyncio.to_thread(optimize_image, data, content_type)
 
     # 3. Upload to object storage (same path convention as bulk-upload)
     storage_path = f"xaluca/library/pexels_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
@@ -1941,6 +1943,7 @@ async def pexels_import(payload: PexelsImportRequest):
         logger.exception("Pexels import — storage put failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
     canonical_path = result.get("path", storage_path)
+    asyncio.create_task(_warm_one_path(canonical_path, data))
 
     # 4. Persist file record with Pexels attribution
     now_iso = datetime.now(timezone.utc).isoformat()
@@ -2052,10 +2055,11 @@ async def pexels_bulk_fill(payload: BulkFillRequest):
                     raise RuntimeError(f"download status {dl.status_code}")
                 data = dl.content
                 content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
-                ext = ext_map.get(content_type, "jpg")
+                data, content_type, ext = await asyncio.to_thread(optimize_image, data, content_type)
                 storage_path = f"xaluca/library/pexels_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
                 result = await asyncio.to_thread(put_object, storage_path, data, content_type)
                 canonical_path = result.get("path", storage_path)
+                asyncio.create_task(_warm_one_path(canonical_path, data))
                 public_url = f"/api/files/{canonical_path}"
                 now_iso = datetime.now(timezone.utc).isoformat()
                 attribution = {
@@ -2342,14 +2346,16 @@ async def unsplash_import(payload: UnsplashImportRequest):
         except Exception as exc:
             logger.warning("Unsplash download_location ping failed: %s", exc)
 
-    # 4. Upload to object storage
-    storage_path = f"xaluca/library/unsplash_{photo.get('id')}_{uuid.uuid4().hex[:8]}.jpg"
+    # 4. Downscale + re-encode to a bounded WebP master, then upload.
+    data, content_type, ext = await asyncio.to_thread(optimize_image, data, content_type)
+    storage_path = f"xaluca/library/unsplash_{photo.get('id')}_{uuid.uuid4().hex[:8]}.{ext}"
     try:
         result = await asyncio.to_thread(put_object, storage_path, data, content_type)
     except Exception as exc:
         logger.exception("Unsplash import — storage put failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
     canonical_path = result.get("path", storage_path)
+    asyncio.create_task(_warm_one_path(canonical_path, data))
 
     # 5. Persist library record with attribution
     user = photo.get("user") or {}
@@ -2366,7 +2372,7 @@ async def unsplash_import(payload: UnsplashImportRequest):
         "id": str(uuid.uuid4()),
         "slot_id": None,
         "storage_path": canonical_path,
-        "original_filename": f"Unsplash · {attribution['photographer']}.jpg",
+        "original_filename": f"Unsplash · {attribution['photographer']}.{ext}",
         "content_type": content_type,
         "size": result.get("size", len(data)),
         "is_deleted": False,

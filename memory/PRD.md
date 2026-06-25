@@ -10,6 +10,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Masters de stock optimizados al importar (jun 2026) — APLICADO en preview, VERIFICADO e2e; requiere REDEPLOY**:
+  - Antes, Pexels import / Pexels bulk-fill / Unsplash import guardaban el ORIGINAL crudo (Pexels ~5–6 MB). Ahora los 3 pasan por `optimize_image` (≤2000px + WebP q80, helper ya usado por library/upload) ANTES de `put_object`, y disparan `_warm_one_path` para calentar el nuevo master al instante.
+  - Verificado e2e: import real de Pexels → master `image/webp` de **~165 KB** (antes ~5,7 MB → **~97% menos**); variantes bajo demanda desde el nuevo master: cold AVIF w960 **0,16s**, WebP w1600 **0,53s**.
+  - Beneficio: menos almacenamiento, primer encode y warm-up mucho más rápidos (decodifica 165KB/2000px en vez de 5,7MB/6000px). Aplica a imports NUEVOS; los masters gigantes ya existentes siguen igual hasta re-importar (posible backfill como tarea opcional).
+
 - **Rendimiento de imágenes: codificación rápida + warm-up seguro reactivado (jun 2026) — APLICADO en preview, VERIFICADO; requiere REDEPLOY**:
   - Causa de la lentitud: tras desactivar el warm-up (para frenar el 520), la caché de imágenes de producción quedaba FRÍA → cada imagen se codificaba bajo demanda en la 1ª visita; medido en preview: WebP `method=6` sobre originales de ~5,7 MB tardaba **hasta ~16s** la primera vez. Además `IMG_CACHE_DIR=/app/backend/img_cache` es efímero (se borra en cada redeploy).
   - `server.py` — acelerada la codificación en `_encode_variant` y `_encode_all_variants`: WebP `method` 6→4 y `Image.draft()` (decode JPEG a escala reducida hacia el ancho objetivo). Resultado medido: cold WebP/AVIF ahora **~0,5-1,1s** (consistente), caliente ~0,17s.
