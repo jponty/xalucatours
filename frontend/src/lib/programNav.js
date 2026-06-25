@@ -5,6 +5,7 @@
    <HubPeerNav /> to wire programs ↔ hubs ↔ sections.
    ----
    Phase 1 scope: "Sur de Marruecos" (sectionRouteId: tourSouth)
+   Phase 2 scope: "Marruecos de norte a sur" (sectionRouteId: tourFull)
    Future phases: add hubs to the matching SECTION_HUBS array.
 ============================================================ */
 
@@ -16,6 +17,10 @@ import {
   HUB_MARRAKECH_LOOP,
   HUB_MARRAKECH_ESSAOUIRA,
   HUB_ERRACHIDIA_ATLAS_FEZ,
+  HUB_GRANSUR_FEZ_RAK,
+  HUB_GRANSUR_FEZ_SIDIALI_RAK,
+  HUB_GRANSUR_OUARZA_FEZ,
+  HUB_GRANSUR_TANGER_RAK,
   HUB_AVENTURA_ENDURO,
 } from "@/lib/itineraryHubs";
 
@@ -42,6 +47,12 @@ const SECTION_HUBS = {
     { routeId: "tourMarrakechLoopHub",       hub: HUB_MARRAKECH_LOOP },
     { routeId: "tourMarrakechEssHub",        hub: HUB_MARRAKECH_ESSAOUIRA },
     { routeId: "tourErrAtlasFezHub",         hub: HUB_ERRACHIDIA_ATLAS_FEZ },
+  ],
+  tourFull: [
+    { routeId: "tourGransurFezRak",          hub: HUB_GRANSUR_FEZ_RAK },
+    { routeId: "tourGransurFezSidiali",      hub: HUB_GRANSUR_FEZ_SIDIALI_RAK },
+    { routeId: "tourGransurOuarzaFez",       hub: HUB_GRANSUR_OUARZA_FEZ },
+    { routeId: "tourGransurTangerRak",       hub: HUB_GRANSUR_TANGER_RAK },
   ],
   tourAdventure: [
     { routeId: "tourAventuraEnduroHub",      hub: HUB_AVENTURA_ENDURO },
