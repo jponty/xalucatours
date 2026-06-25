@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline, useMap } from "react-leaflet";
 import MapLogoBadge from "@/components/MapLogoBadge";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import { MapPin, Navigation, Sparkles, ArrowRight, Home as HomeIcon } from "lucide-react";
 import { LANDMARK_KINDS, computeLandmarkBounds, DAY_LANDMARKS } from "@/lib/dayLandmarks";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -253,6 +254,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
                 })}
               </MapContainer>
               <MapLogoBadge />
+              <ImageContactBubble slug={`daymap-${day.route_id}`} zClass="z-[1000]" />
             </div>
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
               {usedKinds.map((k) => {
@@ -475,6 +477,7 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
                 })}
               </MapContainer>
               <MapLogoBadge />
+              <ImageContactBubble slug={`daymap-${day.route_id}`} zClass="z-[1000]" />
             </div>
           </div>
 
@@ -716,6 +719,7 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
                 </CircleMarker>
               </MapContainer>
               <MapLogoBadge />
+              <ImageContactBubble slug={`daymap-${day.route_id}`} zClass="z-[1000]" />
             </div>
           </div>
 

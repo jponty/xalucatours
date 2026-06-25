@@ -26,13 +26,13 @@ const CTA = { es: "Solicitar cita", en: "Book a call", fr: "Prendre rendez-vous"
 const OPEN_LABEL = { es: "Contactar con un agente", en: "Contact an agent", fr: "Contacter un agent" };
 const CLOSE_LABEL = { es: "Cerrar", en: "Close", fr: "Fermer" };
 
-export const ImageContactBubble = ({ slug }) => {
+export const ImageContactBubble = ({ slug, zClass = "z-[5]" }) => {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
 
   return (
     <div
-      className="absolute bottom-12 right-4 z-[5] flex flex-row-reverse items-end gap-2 max-w-[calc(100%-2rem)]"
+      className={`absolute bottom-12 right-4 ${zClass} flex flex-row-reverse items-end gap-2 max-w-[calc(100%-2rem)]`}
       data-testid={`image-contact-bubble-${slug}`}
       data-open={open ? "true" : "false"}
     >
