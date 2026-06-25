@@ -10,6 +10,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Primera sección desplegable abierta por defecto en páginas de viaje (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - Petición: en cada página de viaje, que la PRIMERA etapa/lugar aparezca desplegada por defecto al cargar; tras interacción, comportamiento normal de acordeón; al refrescar / nueva sesión, vuelve a abrirse la primera (sin persistencia).
+  - Solución (solo inicializadores de `useState`, sin persistencia → resetea en cada carga): `TripRouteMap` ("El recorrido completo") `activeNode` → primera etapa con detalle (índice 0). `DayRouteMap` ("Mapa del día"): `LandmarkMode.activeId` → `landmarks[0].id`; `WaypointMode.activeIdx` → primer waypoint con perfil; `StayInteractive.open` → `true`. Al abrir el primer lugar se muestra también su "Galería del lugar" (`LandmarkCarousel`).
+  - Verificado en `/viajes/atlas_desierto/programa_6n_7d`: recorrido completo con etapa 01 abierta (resto colapsado); cada uno de los 7 "Mapa del día" con su primer lugar abierto y su galería visible. Toggle/acordeón intactos.
+
+
 - **Informe de cobertura de migración de imágenes (jun 2026) — COMPLETADO + VERIFICADO (curl + screenshot)**:
   - Objetivo: saber con métricas exactas cuándo es 100% seguro eliminar el sistema de fallback del código.
   - Backend (`server.py`): nuevo `GET /api/admin/migrate-fallbacks/coverage` (auth) que calcula EN VIVO desde la BD (independiente del job en curso): SLOTS — total registrados (`image_slot_registry`), cuántos con fallback EXTERNO, y de esos cuántos ya en CMS (`/api/files`), vaciados (`cleared`) y PENDIENTES (+ muestra de 30 ids); también `local_fallback`/`no_fallback`. URLs directas `<Img>` — total registradas (`remote_image_registry`), migradas (en `db.files.migrated_from` = url-map) y pendientes (+ muestra de 30). `overall` con `percent`, `done/total` y flag `safe_to_remove`.

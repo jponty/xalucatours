@@ -189,7 +189,8 @@ const haversine = (a, b) => {
 const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
   const bounds = useMemo(() => computeLandmarkBounds(landmarks), [landmarks]);
   const mapBase = useSlotId("daymap");
-  const [activeId, setActiveId] = useState(null);
+  // First place (and its image gallery) open by default on every load/refresh.
+  const [activeId, setActiveId] = useState(() => landmarks[0]?.id ?? null);
   const activeLandmark = landmarks.find((l) => l.id === activeId);
   const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
   const handleSelect = (id) => setActiveId((prev) => (prev === id ? null : id));
@@ -392,7 +393,10 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
     () => waypoints.map((w, i) => waypointToLandmark(w, i, day.route_id)),
     [waypoints, day.route_id]
   );
-  const [activeIdx, setActiveIdx] = useState(null);
+  const [activeIdx, setActiveIdx] = useState(() => {
+    const first = wpLandmarks.findIndex(Boolean);
+    return first >= 0 ? first : null;
+  });
   const activeLandmark = activeIdx != null ? wpLandmarks[activeIdx] : null;
   const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
   const handleSelect = (i) => {
@@ -652,7 +656,8 @@ const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
 /* Interactive variant of StayCard — used when the anchor city has a profile.
    Mini-map + single side card + gallery drawer (mirrors the Tier 1 layout). */
 const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
-  const [open, setOpen] = useState(false);
+  // Open by default on every load/refresh so the place's image gallery shows.
+  const [open, setOpen] = useState(true);
   const mapBase = useSlotId("daymap");
   const center = [landmark.lat, landmark.lng];
   const bounds = useMemo(() => {

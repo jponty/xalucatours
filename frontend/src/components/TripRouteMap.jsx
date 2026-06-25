@@ -209,7 +209,11 @@ const DayDetail = ({ id, day, dayNumber, color, lang, t, onClose }) => {
 export const TripRouteMap = ({ route, days = [], routeId }) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
-  const [activeNode, setActiveNode] = useState(null);
+  // First stage open by default on every load/refresh (state resets per
+  // session — no persistence). Normal accordion behaviour afterwards.
+  const [activeNode, setActiveNode] = useState(() =>
+    Array.isArray(days) && days.length > 0 ? 0 : null
+  );
 
   /* Index program days by day-number for O(1) lookup when expanding. */
   const dayByNumber = useMemo(() => {
