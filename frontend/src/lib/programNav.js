@@ -6,6 +6,8 @@
    ----
    Phase 1 scope: "Sur de Marruecos" (sectionRouteId: tourSouth)
    Phase 2 scope: "Marruecos de norte a sur" (sectionRouteId: tourFull)
+   Phase 3 scope: "Escapadas cortas" (sectionRouteId: tourShort)
+   Phase 4 scope: "Norte de Marruecos" (sectionRouteId: tourNorth)
    Future phases: add hubs to the matching SECTION_HUBS array.
 ============================================================ */
 
@@ -21,6 +23,9 @@ import {
   HUB_GRANSUR_FEZ_SIDIALI_RAK,
   HUB_GRANSUR_OUARZA_FEZ,
   HUB_GRANSUR_TANGER_RAK,
+  HUB_NORTE_CIUDADES_IMPERIALES,
+  HUB_NORTE_TANGER_FEZ,
+  HUB_ESCAPADA_RAK_ERG_RAK,
   HUB_AVENTURA_ENDURO,
 } from "@/lib/itineraryHubs";
 
@@ -53,6 +58,13 @@ const SECTION_HUBS = {
     { routeId: "tourGransurFezSidiali",      hub: HUB_GRANSUR_FEZ_SIDIALI_RAK },
     { routeId: "tourGransurOuarzaFez",       hub: HUB_GRANSUR_OUARZA_FEZ },
     { routeId: "tourGransurTangerRak",       hub: HUB_GRANSUR_TANGER_RAK },
+  ],
+  tourNorth: [
+    { routeId: "tourNorteCiudadesImperiales", hub: HUB_NORTE_CIUDADES_IMPERIALES },
+    { routeId: "tourNorteTangerFez",          hub: HUB_NORTE_TANGER_FEZ },
+  ],
+  tourShort: [
+    { routeId: "tourEscapadaRakErgRakHub",    hub: HUB_ESCAPADA_RAK_ERG_RAK },
   ],
   tourAdventure: [
     { routeId: "tourAventuraEnduroHub",      hub: HUB_AVENTURA_ENDURO },

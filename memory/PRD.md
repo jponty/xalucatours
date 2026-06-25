@@ -10,6 +10,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Fases 3 y 4 — Navegación & enlaces "Escapadas cortas" (`tourShort`) y "Norte de Marruecos" (`tourNorth`) (jun 2026) — COMPLETADO + VERIFICADO (self-test, screenshots)**:
+  - Registrados en `lib/programNav.js#SECTION_HUBS` (importados de `itineraryHubs.js`) sin solapamientos:
+    - Fase 4 · `tourNorth`: `HUB_NORTE_CIUDADES_IMPERIALES` (`tourNorteCiudadesImperiales`) + `HUB_NORTE_TANGER_FEZ` (`tourNorteTangerFez`).
+    - Fase 3 · `tourShort`: `HUB_ESCAPADA_RAK_ERG_RAK` (`tourEscapadaRakErgRakHub`).
+  - Esto auto-construye `PROGRAM_NAV` → en cada página de programa de esas secciones se activan **Breadcrumbs** (`Inicio › Viajes › <Sección> › <Hub> › <Programa>`, con enlaces a `/viajes`, sección y hub) y **HubPeerNav** ("otros programas de este hub").
+  - Verificado por screenshots: Norte → `INICIO › VIAJES › NORTE DE MARRUECOS › CIUDADES IMPERIALES › 4 NOCHES · 5 DÍAS`; Escapada → `INICIO › VIAJES › ESCAPADAS CORTAS › ESCAPADAS… › 2 NOCHES · 3 DÍAS`; HubPeerNav (`hub-peer-nav`) presente en ambas; frontend compila.
+  - ALCANCE: solo existe 1 hub de escapadas (`HUB_ESCAPADA_RAK_ERG_RAK`). El resto de escapadas con ruta propia (Fez, Marrakech, Fez–Sidiali, Desierto, Atlas, Rak–Agafay, Tánger) NO tienen objeto "hub" todavía → sin breadcrumbs/peer-nav hasta crearlos (backlog).
 - **Cierre del bucle de navegación + prefetch del héroe (jun 2026) — COMPLETADO + VERIFICADO (self-test)**:
   - Hallazgo: el enlazado sección→hub→programa→hermanos YA estaba completo — las variantes de la pasarela `/viajes/marruecos` (`itinerary-variant-link-*`) deep-linkan al programa (`pathFor(lang, v.link)`), las tarjetas de los hubs (`hub-program-*`) también (`p.link`), el héroe del programa (`ProgramHero`/`EditableImage priority`) ya usa eager + `fetchPriority=high`, y los breadcrumbs/HubPeerNav se activaron en la Fase 2.
   - Añadido: `warmTripHero(routeId)` en `lib/tripHero.js` — prefetch del héroe del programa destino en `onMouseEnter`/`onFocus` de las tarjetas de variantes (`JourneyPageSections`) y de hub (`ItineraryHubPage`), al ancho que el navegador realmente pedirá para un héroe 100vw (viewport×DPR, snap a bucket responsive). Calienta caché de navegador Y servidor (anchos grandes que el warm-up batch no cubre) antes del clic → transición instantánea.
@@ -81,13 +88,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - CMS global, catálogo de viajes, Leads Dashboard, audio global, emails Resend con imágenes branded, flipbook Publuu Dark Academia, gestión de emails de notificación en Admin.
 
 ## Backlog / Próximas tareas
-- P1: Phase 2 Navegación/Linking "Marruecos de norte a sur"
-- P1: Phase 3 Navegación/Linking "Escapadas cortas"
-- P1: Phase 4 Navegación/Linking "La riqueza del norte"
+- ✅ HECHO: Phase 2/3/4 Navegación/Linking (Gran Sur, Escapadas Rak-Erg-Rak, Norte)
+- P2: Crear hubs faltantes de Escapadas (Fez, Marrakech, Fez-Sidiali, Desierto, Atlas, Rak-Agafay, Tánger) + cablearlos en `tourShort`
 - P2: Aliases POI no mapeados en textos narrativos (lib/programs/, dayPlaceGazetteer.js)
-- P2: Refactor server.py (>2400 líneas) → routers; dividir AdminPage.jsx
+- P2: Refactor server.py (>3200 líneas) → routers; dividir AdminPage.jsx (>2400 líneas)
 - P2: Aliases/redirects para slugs inconsistentes (evitar 404)
 - P3: Stripe Checkout en /proximas_salidas
+- P3: Integrar Library en galería curada ("Ver más imágenes relacionadas" desde library_locations)
 
 ## Credenciales
 - /admin password: xaluca (ver /app/memory/test_credentials.md)
