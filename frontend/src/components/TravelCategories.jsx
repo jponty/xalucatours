@@ -11,7 +11,7 @@ import CategoryImageCarousel from "@/components/CategoryImageCarousel";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
 import TripPriceDisclosure from "@/components/TripPriceDisclosure";
-import TravelHelpWidget from "@/components/TravelHelpWidget";
+import ImageContactBubble from "@/components/ImageContactBubble";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -53,9 +53,6 @@ export const TravelCategories = () => {
           </div>
         </div>
 
-        {/* Quick contact "ball" widget — sits above the navigation cards */}
-        <TravelHelpWidget />
-
         <div className="space-y-12 md:space-y-16">
           {TRAVEL_CATEGORIES.map((c, idx) => {
             const reverse = idx % 2 === 1;
@@ -70,11 +67,14 @@ export const TravelCategories = () => {
                 data-testid={`category-card-${c.slug}`}
                 className="group grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-10 items-center"
               >
-                <ImageWrapper
-                  {...imageProps}
-                  className={`relative md:col-span-7 overflow-hidden h-[56vh] min-h-[420px] max-h-[640px] block ${
+                <div
+                  className={`relative md:col-span-7 h-[56vh] min-h-[420px] max-h-[640px] ${
                     reverse ? "md:order-2" : ""
                   }`}
+                >
+                <ImageWrapper
+                  {...imageProps}
+                  className="relative block overflow-hidden w-full h-full"
                 >
                   <CategoryImageCarousel
                     slug={c.slug}
@@ -126,6 +126,8 @@ export const TravelCategories = () => {
                     />
                   </span>
                 </ImageWrapper>
+                  <ImageContactBubble slug={c.slug} />
+                </div>
 
                 <div className={`md:col-span-5 ${reverse ? "md:order-1 md:pr-6" : "md:pl-6"}`}>
                   <EditableText
