@@ -2495,6 +2495,46 @@ async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, ta
     return {"items": items, "total": total, "has_more": has_more, "limit": limit, "skip": skip}
 
 
+def _encode_variant(data, content_type, width, target, mime_map):
+    """CPU-bound: decode → optional downscale → re-encode to the target
+    modern format. Runs in a worker thread (asyncio.to_thread) so a burst
+    of first-time AVIF/WebP encodes never blocks the event loop.
+
+    Returns (bytes, mime, ext, cacheable). On any Pillow failure it returns
+    the untouched original (ext='orig', cacheable=False) so an <img> never
+    breaks because of optimisation."""
+    try:
+        img = Image.open(BytesIO(data))
+        img.load()
+        # Downscale only (never upscale) to preserve sharpness.
+        if width and img.width > width:
+            new_h = max(1, round(img.height * width / img.width))
+            img = img.resize((width, new_h), Image.LANCZOS)
+
+        save_fmt = {"avif": "AVIF", "webp": "WEBP"}.get(target)
+        out = BytesIO()
+        if save_fmt in ("WEBP", "AVIF"):
+            if img.mode not in ("RGB", "RGBA"):
+                img = img.convert("RGBA" if "A" in img.getbands() else "RGB")
+            if save_fmt == "AVIF":
+                # AVIF q~58 is perceptually on par with WebP q80 but ~30% lighter.
+                save_kwargs = {"quality": 58, "speed": 6}
+            else:
+                # method=6 → best WebP compression (slower, but cached on disk).
+                save_kwargs = {"quality": 80, "method": 6}
+            img.save(out, format=save_fmt, **save_kwargs)
+            return out.getvalue(), mime_map[target], target, True
+        # Resize-only (no modern target) → keep original format, still cache.
+        orig_fmt = (img.format or "JPEG")
+        if orig_fmt.upper() == "JPEG" and img.mode != "RGB":
+            img = img.convert("RGB")
+        img.save(out, format=orig_fmt)
+        return out.getvalue(), content_type, "orig", True
+    except Exception as exc:
+        logger.debug("img transform fallback: %s", exc)
+        return data, content_type, "orig", False
+
+
 @api_router.get("/files/{path:path}")
 async def download_file(
     path: str,
@@ -2539,11 +2579,13 @@ async def download_file(
     elif fmt == "webp":
         target = "webp"
     elif fmt == "auto":
-        # Prefer WebP (fast encode + ~97% support); only AVIF if WebP unsupported.
-        if "image/webp" in accept_l:
-            target = "webp"
-        elif "image/avif" in accept_l:
+        # Prefer AVIF (smallest at equal quality) when the browser advertises
+        # support; variants are cached on disk, so the heavier AVIF encode is
+        # paid only once. Fall back to WebP, then to the original bytes.
+        if "image/avif" in accept_l:
             target = "avif"
+        elif "image/webp" in accept_l:
+            target = "webp"
 
     # ---- Snap width to a small set of buckets to maximise cache hits ----
     width = None
@@ -2564,55 +2606,30 @@ async def download_file(
             headers=long_cache,
         )
 
-    # ---- Fetch original + transform ----
+    # ---- Fetch original + transform (encode off the event loop) ----
     try:
         data, content_type = await asyncio.to_thread(get_object, path)
     except Exception as exc:
         logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
         raise HTTPException(status_code=404, detail="File not found")
 
-    try:
-        img = Image.open(BytesIO(data))
-        img.load()
-        # Downscale only (never upscale) to preserve sharpness.
-        if width and img.width > width:
-            new_h = max(1, round(img.height * width / img.width))
-            img = img.resize((width, new_h), Image.LANCZOS)
-
-        save_fmt = {"avif": "AVIF", "webp": "WEBP"}.get(target)
-        out = BytesIO()
-        if save_fmt in ("WEBP", "AVIF"):
-            if img.mode not in ("RGB", "RGBA"):
-                img = img.convert("RGBA" if "A" in img.getbands() else "RGB")
-            save_kwargs = {"quality": 80}
-            if save_fmt == "AVIF":
-                save_kwargs["speed"] = 6   # keep encode latency reasonable
-            img.save(out, format=save_fmt, **save_kwargs)
-            out_mime = mime_map[target]
-        else:
-            # Resize-only, keep original format.
-            orig_fmt = (img.format or "JPEG")
-            if orig_fmt.upper() == "JPEG" and img.mode != "RGB":
-                img = img.convert("RGB")
-            img.save(out, format=orig_fmt)
-            out_mime = content_type
-            ext = "orig"
-            cache_file = IMG_CACHE_DIR / f"{key}.{ext}"
-
-        result = out.getvalue()
-        try:
-            cache_file.write_bytes(result)
-        except Exception as exc:
-            logger.debug("img cache write failed: %s", exc)
-        return Response(content=result, media_type=out_mime, headers=long_cache)
-    except Exception as exc:
-        # Anything Pillow can't handle (SVG, corrupt, etc.) → original bytes.
-        logger.debug("img transform fallback for %s: %s", path, exc)
+    result, out_mime, used_ext, cacheable = await asyncio.to_thread(
+        _encode_variant, data, content_type, width, target, mime_map
+    )
+    if not cacheable:
+        # Pillow couldn't process it (SVG, corrupt, …) → original bytes, short TTL.
         return Response(
-            content=data,
-            media_type=content_type,
+            content=result,
+            media_type=out_mime,
             headers={"Cache-Control": "public, max-age=86400"},
         )
+    # Persist the content-addressed variant for instant future hits.
+    cache_file = IMG_CACHE_DIR / f"{key}.{used_ext}"
+    try:
+        cache_file.write_bytes(result)
+    except Exception as exc:
+        logger.debug("img cache write failed: %s", exc)
+    return Response(content=result, media_type=out_mime, headers=long_cache)
 
 
 # ---------- Text slots (admin inline editing) ----------

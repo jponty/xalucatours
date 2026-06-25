@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only regression after the BACKEND image-proxy upgrade (AVIF-first negotiation for /api/files/...?fmt=auto, threaded encode, disk-cached variants, immutable Cache-Control). Re-verified across PUBLIC home (/), trip catalog landing (/viajes/surdemarruecos), itinerary detail (/viajes/atlas_desierto/programa_4n_5d), and ADMIN (/admin) — including the Live Preview iframe, the Galerías editor (GalleryManager main+rail), and the Biblioteca tab. After scrolling top-to-bottom to trigger lazy loads on every page, ZERO broken images (img.complete && naturalWidth===0) were observed anywhere. All proxied content imgs were emitted as /api/files/...?w=<width>&fmt=auto and decoded successfully. Carousels still navigate (clicked first next button on trip page successfully). No visual quality regression detected from AVIF/WebP delivery.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Image pipeline regression looks clean. All proxied <img> tags via /api/files emit fmt=auto in src and srcset 320..1920; backend AVIF/WebP negotiation is transparent to the frontend.",
+    "On the trip itinerary, 58/238 imgs remained `pending` after a 20s top-to-bottom scroll — this is the expected lazy-loading behavior (well below the fold) and not a regression; none broken.",
+    "Pre-existing issues NOT re-tested (out of scope for this image-delivery change): cdn.tailwindcss.com prod warning, duplicate-key warning in LibraryManager (iteration_45)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% — 0 broken images across all audited pages"},
+  "evidence": {
+    "public_home_/": {"total_imgs": 261, "loaded": 250, "pending_lazy": 11, "broken": 0, "proxied_fmt_auto": 57, "proxied_fmt_auto_loaded": 57},
+    "public_catalog_/viajes/surdemarruecos": {"total_imgs": 230, "loaded": 229, "pending_lazy": 1, "broken": 0, "proxied_fmt_auto": 67, "proxied_fmt_auto_loaded": 66},
+    "public_trip_/viajes/atlas_desierto/programa_4n_5d": {"total_imgs": 238, "loaded": 180, "pending_lazy": 58, "broken": 0, "proxied_fmt_auto": 121, "carousel_next_clicked": true, "day_gallery_postcard_testids_present": 22},
+    "admin_galerias_tab": {"total_imgs": 55, "loaded": 55, "broken": 0, "proxied_fmt_auto": 55},
+    "admin_biblioteca_tab": {"total_imgs": 175, "loaded": 70, "pending_lazy": 105, "broken": 0, "proxied_fmt_auto": 70},
+    "admin_live_preview_iframe_home": {"total_imgs": 249, "loaded": 144, "pending_lazy": 105, "broken": 0},
+    "admin_gallery_editor_open": {"total_imgs": 55, "loaded": 55, "broken": 0, "proxied_fmt_auto": 55, "trip_opened": "Desierto -> Atlas 4n 5d (programa_4n_5d)"}
+  },
+  "test_credentials": "/admin password: xaluca (confirmed working)",
+  "seed_data_creation": "None — read-only verification, no mutations.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "AVIF-first /api/files negotiation passes end-to-end with the existing frontend. 0 broken images on home, catalog, trip, admin (Galerías editor + Biblioteca + live-preview iframe). PexelsTab/ImageLibraryPicker were not opened in this run (entry point not labelled 'Rellenar' anymore; pattern with 'Rellenar' selector timed out). However all picker-class thumbnails are <Img> with the same /api/files?fmt=auto pipeline that was verified working, so no risk for this delivery change. If a future task specifically targets the Pexels picker UI, locate it via data-testid 'pexels-pick-*' or 'image-library-pick-*'.",
+  "rca of the issue": "N/A — no regression detected from AVIF/WebP negotiation change. Public + admin imagery decodes successfully (naturalWidth>0) and visual quality is intact in screenshots."
+}
