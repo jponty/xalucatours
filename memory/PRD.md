@@ -10,6 +10,9 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Widget de contacto tipo bola en "Estilos de viaje" (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - Nuevo `components/TravelHelpWidget.jsx` insertado en `TravelCategories` justo ENCIMA de las cards de navegación. Píldora crema ligera con avatar circular (bola) terracota + monograma X blanco + anillo con pulso (`animate-ping`) + punto "online" verde. Texto editable por CMS ("¿Necesitas ayuda?" / "Habla con un agente y encuentra tu viaje ideal.") y botón "Solicitar cita" → `pathFor(lang,"appointment")` (= `/citaprevia`). testids `travel-help-widget` / `travel-help-widget-cta`. Slots `home.cat.help.{title|body|cta}`. Verificado en home (href `/citaprevia`).
+
 - **CTAs en "Por qué Xaluca Tours" (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - Añadido un CTA con verbo de acción al final de cada uno de los 4 bloques (`components/WhyXaluca.jsx`), con flecha animada (hover gap), texto trilingüe editable por CMS (slots `home.why.{01..04}.cta`) y enlace localizado vía `pathFor`: 01→Descubrir viajes `/viajes` (toursLanding); 02→Planificar mi viaje `/planifica-tu-viaje` (planTrip); 03→Solicitar cita previa `/citaprevia` (appointment); 04→Hablar con un especialista `/contacto` (contact). testid `why-card-cta-{num}`. Verificado en home (hrefs correctos).
 

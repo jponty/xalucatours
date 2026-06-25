@@ -11,6 +11,7 @@ import CategoryImageCarousel from "@/components/CategoryImageCarousel";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
 import TripPriceDisclosure from "@/components/TripPriceDisclosure";
+import TravelHelpWidget from "@/components/TravelHelpWidget";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -51,6 +52,9 @@ export const TravelCategories = () => {
               className="text-base md:text-lg text-[#5C5248] leading-relaxed block" />
           </div>
         </div>
+
+        {/* Quick contact "ball" widget — sits above the navigation cards */}
+        <TravelHelpWidget />
 
         <div className="space-y-12 md:space-y-16">
           {TRAVEL_CATEGORIES.map((c, idx) => {
