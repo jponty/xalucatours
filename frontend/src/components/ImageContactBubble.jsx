@@ -32,7 +32,7 @@ export const ImageContactBubble = ({ slug }) => {
 
   return (
     <div
-      className="absolute bottom-4 right-4 z-[5] flex flex-row-reverse items-end gap-2 max-w-[calc(100%-2rem)]"
+      className="absolute bottom-12 right-4 z-[5] flex flex-row-reverse items-end gap-2 max-w-[calc(100%-2rem)]"
       data-testid={`image-contact-bubble-${slug}`}
       data-open={open ? "true" : "false"}
     >
@@ -57,17 +57,17 @@ export const ImageContactBubble = ({ slug }) => {
 
       {/* Expanding panel */}
       <div
-        className={`overflow-hidden rounded-2xl bg-[#FDFBF7]/97 backdrop-blur-md border border-[#2C2621]/10 shadow-[0_16px_44px_-20px_rgba(26,21,19,0.75)] transition-all duration-500 ease-out ${
+        className={`overflow-hidden rounded-2xl bg-[#2C2621]/95 backdrop-blur-md border border-[#FDFBF7]/15 shadow-[0_16px_44px_-20px_rgba(26,21,19,0.85)] transition-all duration-500 ease-out ${
           open ? "max-w-[280px] opacity-100" : "max-w-0 opacity-0 pointer-events-none"
         }`}
       >
         <div className="w-[58vw] max-w-[240px] px-4 py-3">
-          <p className="font-serif-x text-sm md:text-base text-[#2C2621] leading-tight">{pick(TITLE, lang)}</p>
-          <p className="mt-1 text-[11px] md:text-xs text-[#5C5248] leading-snug">{pick(BODY, lang)}</p>
+          <p className="font-serif-x text-sm md:text-base text-[#FDFBF7] leading-tight">{pick(TITLE, lang)}</p>
+          <p className="mt-1 text-[11px] md:text-xs text-[#FDFBF7]/85 leading-snug">{pick(BODY, lang)}</p>
           <Link
             to={pathFor(lang, "appointment")}
             data-testid={`image-contact-cta-${slug}`}
-            className="mt-2.5 inline-flex items-center gap-1.5 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-3.5 py-2 text-[9px] tracking-[0.18em] uppercase transition-colors duration-300 rounded-full"
+            className="mt-2.5 inline-flex items-center gap-1.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-3.5 py-2 text-[9px] tracking-[0.18em] uppercase transition-colors duration-300 rounded-full"
           >
             {pick(CTA, lang)}
             <ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
