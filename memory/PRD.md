@@ -10,6 +10,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Testimonio por día en TODOS los programas (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - El bloque `DayTestimonial` ahora se muestra en cada día de cada programa (`ProgramTemplate.DayBlock`), en la columna lateral, justo debajo de "Asistente Virtual"/"Contactar". Un testimonio DISTINTO por día.
+  - `lib/dayTestimonials.js` `getDayTestimonial(routeId, day, dayIndex)`: (1) overrides curados (solo `tourAtlasDesierto67`, orígenes corregidos a ciudades españolas); (2) resto AUTO-DERIVADO del contenido del día: detecta lugar icónico (Erg Chebbi, Aït Ben Haddou, Chefchaouen, Todra, Dades, Essaouira, Volubilis/Meknes, Agafay, M'Goun, Rissani, Khamlia, Ziz, Ouarzazate, Rabat, Fez, Marrakech…) o tema (llegada, desierto, montaña, gargantas, ciudad, costa, mercado, oasis, relax, regreso) → cita trilingüe acorde.
+  - Orígenes SIEMPRE de España (lista de 30 ciudades) y variados: autor + ciudad espaciados por posición del día con pasos coprimos (11 sobre 26 autores, 7 sobre 30 ciudades) → cada día del programa tiene viajero+ciudad DISTINTOS, deterministas y estables entre recargas. Cita editable por CMS (slots `trip.{routeId}.day.{idx}.testimonial.*`).
+  - Verificado en `/viajes/marrakech_ergchebbi/programa_6n_7d` (7 días, 7 ciudades únicas españolas, citas acordes a cada día) y en el piloto `atlas_desierto/programa_6n_7d` (curados).
+
+
 - **Testimonio por día en páginas de viaje (PILOTO en tourAtlasDesierto67) (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - Nuevo bloque `components/DayTestimonial.jsx` en la columna lateral de cada día, JUSTO debajo de los botones "Asistente Virtual" / "Contactar" (`ProgramTemplate.DayBlock`). Muestra un testimonio ESPECÍFICO del día que se está viendo (cita + autor + origen + 5 estrellas + badge "Viajero verificado").
   - Datos en `lib/dayTestimonials.js` (`getDayTestimonial(routeId, dayId)`), trilingüe; PILOTO solo para `tourAtlasDesierto67` (7 días). Devuelve null en el resto → el bloque no se renderiza (gating).

@@ -33,11 +33,12 @@ const initialsOf = (name) =>
     .map((w) => w[0].toUpperCase())
     .join("");
 
-export default function DayTestimonial({ routeId, dayId, dayIndex, accent = "#C16542" }) {
+export default function DayTestimonial({ routeId, day, dayIndex, accent = "#C16542" }) {
   const { lang } = useLanguage();
-  const data = getDayTestimonial(routeId, dayId);
+  const data = getDayTestimonial(routeId, day, dayIndex);
   if (!data) return null;
 
+  const dayId = day?.id;
   const rating = data.rating || 5;
   const slotBase = `trip.${routeId}.day.${dayIndex}.testimonial`;
 

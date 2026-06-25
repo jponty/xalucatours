@@ -454,7 +454,7 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
 
             {/* Day-specific traveller testimonial (pilot: only renders where
                 a testimonial is defined for this trip + day). */}
-            <DayTestimonial routeId={routeId} dayId={day.id} dayIndex={idx + 1} accent={day.accent} />
+            <DayTestimonial routeId={routeId} day={day} dayIndex={idx + 1} accent={day.accent} />
           </div>
         </div>
       </div>
