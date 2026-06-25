@@ -14,6 +14,7 @@
 import React, { useState, useCallback } from "react";
 import { Play } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { Img } from "@/components/Img";
 import EditableSection from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 
@@ -95,11 +96,12 @@ const MoroccoIntroVideo = () => {
                 aria-label={pick(COPY.play, lang)}
                 className="group absolute inset-0 w-full h-full cursor-pointer"
               >
-                <img
+                <Img
                   src={POSTER}
                   onError={(e) => { e.currentTarget.src = POSTER_FALLBACK; }}
                   alt={pick(COPY.title, lang)}
-                  loading="lazy"
+                  width={1280}
+                  sizes="(max-width: 1024px) 100vw, 960px"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
                 />
                 {/* Cinematic vignette */}

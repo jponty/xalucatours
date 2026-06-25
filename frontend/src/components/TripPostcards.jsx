@@ -9,6 +9,7 @@ import React, { useRef, useState, useCallback } from "react";
 import { Send, Plane, Mail, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getTripPostcards } from "@/lib/programPostcards";
+import { Img } from "@/components/Img";
 
 const COPY = {
   eyebrow: { es: "Postales del viaje", en: "Postcards from the journey", fr: "Cartes postales du voyage" },
@@ -69,10 +70,11 @@ const Postcard = ({ p, lang, index }) => {
             <div className="relative">
               <div className="relative w-28 rotate-3 bg-[#FDFBF7] p-[5px] shadow-[0_3px_12px_rgba(26,21,19,0.28)]">
                 <div className="relative overflow-hidden bg-[#1A1513]" style={{ aspectRatio: "7 / 8" }}>
-                  <img
+                  <Img
                     src={p.stamp}
                     alt={pick(p.stamp_caption, lang)}
-                    loading="lazy"
+                    width={320}
+                    sizes="112px"
                     className="block w-full h-full object-cover"
                   />
                 </div>

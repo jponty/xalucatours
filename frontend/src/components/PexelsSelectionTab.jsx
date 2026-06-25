@@ -13,6 +13,7 @@
    re-opening a destination is instant and never re-hits the API.
 ============================================================ */
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import { Img } from "@/components/Img";
 import {
   Loader2, Check, AlertCircle, MapPin, ChevronLeft, Compass, RotateCcw,
 } from "lucide-react";
@@ -245,10 +246,11 @@ export default function PexelsSelectionTab({ onSelect, selectionMode = false, se
                     className="block w-full aspect-[4/3] relative cursor-pointer disabled:cursor-progress"
                     aria-label={`Insertar foto de ${p.photographer}`}
                   >
-                    <img
+                    <Img
                       src={p.thumb_url}
                       alt={p.alt || `Photo by ${p.photographer} on Pexels`}
-                      loading="lazy"
+                      width={400}
+                      sizes="(max-width: 640px) 50vw, 300px"
                       style={{ backgroundColor: p.avg_color || "#1A1513" }}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />

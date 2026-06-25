@@ -5,6 +5,7 @@ import EditableImage from "@/components/EditableImage";
 import { EditableGroup } from "@/contexts/EditableGroupContext";
 import { useSlotId } from "@/components/slotScope";
 import { useDayGallery, resolveGalleryUrl, dayGallerySegment } from "@/lib/dayGalleryStore";
+import { Img } from "@/components/Img";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
 
@@ -101,10 +102,10 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
         className="absolute inset-0 w-full h-full object-cover"
       />
     ) : (
-      <img
+      <Img
         src={slide.url}
         alt={slide.alt}
-        loading="lazy"
+        width={1024}
         className="absolute inset-0 w-full h-full object-cover"
       />
     );

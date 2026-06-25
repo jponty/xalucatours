@@ -4,6 +4,7 @@ import {
   ExternalLink, Check, AlertTriangle, ChevronDown, ChevronRight, MapPin, ImageOff, Sparkles,
 } from "lucide-react";
 import { buildLibraryIndex } from "@/lib/libraryIndex";
+import { Img } from "@/components/Img";
 import { ZONES } from "@/lib/poiZones";
 import { pathFor } from "@/lib/routes";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -310,7 +311,7 @@ export default function LibraryManager() {
                           return (
                             <div key={key} data-testid={`library-image-${p.id}-${key}`} className="group relative border border-white/10 bg-[#0F0D0B]">
                               <div className="aspect-[4/3] overflow-hidden bg-black/30">
-                                <img src={im.url} alt={im.caption || ""} loading="lazy" className="w-full h-full object-cover" />
+                                <Img src={im.url} alt={im.caption || ""} width={400} sizes="(max-width: 640px) 50vw, 300px" className="w-full h-full object-cover" />
                               </div>
                               <button
                                 type="button"

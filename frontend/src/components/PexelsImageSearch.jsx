@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Search, Loader2, X, ImageOff, Sparkles, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Img } from "@/components/Img";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -309,10 +310,11 @@ export default function PexelsImageSearch({ lang = "es" }) {
                       className="group relative overflow-hidden bg-[#2C2621] shrink-0 snap-start w-[260px] sm:w-[300px] md:w-[340px] aspect-[4/3]"
                       style={ph.avg_color ? { backgroundColor: ph.avg_color } : undefined}
                     >
-                      <img
+                      <Img
                         src={ph.preview_url || ph.grid_url || ph.thumb_url}
                         alt={ph.alt || activeTerm}
-                        loading="lazy"
+                        width={480}
+                        sizes="340px"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
                       />
                       <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -365,9 +367,11 @@ export default function PexelsImageSearch({ lang = "es" }) {
           >
             <X className="w-5 h-5" strokeWidth={1.7} />
           </button>
-          <img
+          <Img
             src={lightbox.preview_url}
             alt={lightbox.alt || activeTerm}
+            width={1280}
+            sizes="100vw"
             onClick={(e) => e.stopPropagation()}
             className="max-w-full max-h-[85vh] object-contain shadow-2xl"
           />

@@ -13,6 +13,7 @@ import {
   Images, Search, Upload, Trash2, Star, GripVertical, Loader2, Check, MapPin, ExternalLink, Library, RefreshCw,
 } from "lucide-react";
 import TRIP_PROGRAMS from "@/lib/tripPrograms";
+import { Img } from "@/components/Img";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
 import { ROUTES, pathFor } from "@/lib/routes";
 import { namespaceForRouteId } from "@/components/slotScope";
@@ -368,7 +369,7 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
           {/* Main preview */}
           <div className="relative aspect-[5/6] max-h-72 overflow-hidden bg-black/40 border border-white/10 mb-3 mx-auto" style={{ maxWidth: 240 }}>
             {main ? (
-              <img src={resolveGalleryUrl(main.url)} alt="" className="w-full h-full object-cover" />
+              <Img src={resolveGalleryUrl(main.url)} alt="" width={480} sizes="240px" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">Sin imagen principal</div>
             )}
@@ -388,7 +389,7 @@ const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent, initi
                 onDragEnd={() => setDragIdx(null)}
                 className={`relative w-[68px] h-[68px] group bg-black/40 border ${i === 0 ? "border-[#D4A373]" : "border-white/10"} ${dragIdx === i ? "opacity-40" : ""}`}
               >
-                <img src={resolveGalleryUrl(im.url)} alt="" className="w-full h-full object-cover" />
+                <Img src={resolveGalleryUrl(im.url)} alt="" width={160} sizes="68px" className="w-full h-full object-cover" />
                 <span className="absolute top-0.5 left-0.5 text-white/70 bg-black/50 p-0.5 cursor-grab">
                   <GripVertical className="w-3 h-3" />
                 </span>

@@ -4,6 +4,7 @@ import {
   Trash2, Pencil, Replace, Tag, ChevronRight, Eye, ExternalLink, Sparkles, FolderUp, Compass,
 } from "lucide-react";
 import PexelsTab from "@/components/PexelsTab";
+import { Img } from "@/components/Img";
 import UnsplashTab from "@/components/UnsplashTab";
 import PexelsSelectionTab from "@/components/PexelsSelectionTab";
 
@@ -830,10 +831,11 @@ function LibraryThumb({ item, usage, onSelect, onDelete, onEdit, onReplace, sele
         className="relative aspect-square overflow-hidden bg-[#F2EBE1] focus:outline-none focus:ring-2 focus:ring-[#C16542]"
         data-testid={`image-library-pick-${(item.id || "x").slice(0, 24)}`}
       >
-        <img
+        <Img
           src={fullUrl}
           alt={niceName}
-          loading="lazy"
+          width={400}
+          sizes="(max-width: 640px) 50vw, 250px"
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => { e.currentTarget.style.opacity = "0.2"; }}
         />

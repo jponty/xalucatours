@@ -1,0 +1,34 @@
+{
+  "summary": "Frontend-only regression after the raw <img> -> <Img> wrapper migration (responsive srcSet + WebP/AVIF via /api/files?w=&fmt=auto and Unsplash/Pexels native resize). Verified across PUBLIC home (/), trip catalog landing (/viajes/surdemarruecos), an itinerary detail page (/viajes/atlas_desierto/programa_4n_5d) including DayImageGallery + TripPostcards stamps, and the ADMIN panel (/admin) on URLs, Galerías and Library tabs. Across every page visited and after scrolling to trigger lazy loads, ZERO broken images were observed (no img with complete && naturalWidth===0). On every page 100% of optimizable content imgs carried both a non-empty srcset and a width param (?w=) in src, while local logos/SVGs correctly pass through without srcset.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Img.jsx is clean (24-line wrapper); correctly forwards loading=lazy/eager, decoding=async, fetchpriority=high for priority, and only attaches sizes when srcset exists.",
+    "imageUrl.js#isOptimizable correctly excludes .svg, .gif and data: URIs so local logos (grup-xaluca-logo, monograma) are unaffected — confirmed in DOM (these imgs have no srcset and still display).",
+    "All sampled proxied content imgs are emitted as /api/files/...?w=<width>&fmt=auto with a full 320..1920 srcset, exactly matching the spec.",
+    "On the trip page 95/238 imgs remained `pending` after 20s of scrolling — this is the expected lazy behavior (well below the fold) and not a regression; none of them were broken.",
+    "Pre-existing console warning 'cdn.tailwindcss.com should not be used in production' still present (out of scope for this feature).",
+    "Pre-existing React duplicate-key warning in LibraryManager (iteration_45 RCA) NOT re-tested here — out of scope; still pending fix per previous report."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% — 0 broken images on every page visited"},
+  "evidence": {
+    "home_/": {"total_imgs": 261, "loaded": 211, "pending_lazy": 50, "broken": 0, "optimizable": 97, "with_srcset": 97, "with_w_param": 97},
+    "catalog_/viajes/surdemarruecos": {"total_imgs": 230, "loaded": 163, "pending_lazy": 67, "broken": 0, "optimizable": 78, "with_srcset": 78, "with_w_param": 78},
+    "trip_/viajes/atlas_desierto/programa_4n_5d": {"total_imgs": 238, "loaded": 143, "pending_lazy": 95, "broken": 0, "optimizable": 132, "with_srcset": 132, "with_w_param": 132, "postcard_stamps_rendered": 3, "day_gallery_viewer_present": true, "carousel_next_clicked": true},
+    "admin_library_expanded": {"total_imgs": 3, "loaded": 3, "broken": 0, "optimizable": 3, "with_srcset": 3},
+    "admin_galerias": {"total_imgs": 55, "loaded": 2, "pending_lazy": 53, "broken": 0, "optimizable": 55, "with_srcset": 55, "sample_src": "/api/files/xaluca/library/pexels_15157860_4ecd08c4.jpg?w=480&fmt=auto"}
+  },
+  "test_credentials": "/admin password: xaluca (confirmed working)",
+  "seed_data_creation": "None — read-only verification, no mutations.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Image pipeline migration is verified working end-to-end. <Img> drop-in correctly applies srcSet + sizes + optimized src for /api/files, Unsplash and Pexels; local SVG/webp logos correctly bypass optimization. No broken images across home/catalog/itinerary/admin. The only outstanding (pre-existing, unrelated) issue is the duplicate-key warning in LibraryManager flagged in iteration_45.",
+  "rca of the issue": "N/A — no regressions found from the migration."
+}

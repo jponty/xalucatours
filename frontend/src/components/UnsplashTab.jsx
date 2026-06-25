@@ -15,6 +15,7 @@
        persists attribution) → onSelect(asset)
 ============================================================ */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Img } from "@/components/Img";
 import {
   Search, Loader2, ExternalLink, Check, AlertCircle, Sparkles,
   RotateCcw, X, MapPin,
@@ -297,10 +298,11 @@ export default function UnsplashTab({ onSelect }) {
                   className="block w-full aspect-[4/3] relative cursor-pointer disabled:cursor-progress"
                   aria-label={`Insertar foto de ${p.photographer}`}
                 >
-                  <img
+                  <Img
                     src={p.thumb_url}
                     alt={p.alt || `Photo by ${p.photographer} on Unsplash`}
-                    loading="lazy"
+                    width={400}
+                    sizes="(max-width: 640px) 50vw, 300px"
                     style={{ backgroundColor: p.avg_color || "#1A1513" }}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                   />

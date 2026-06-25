@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { Img } from "@/components/Img";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { STUB_CONTENT } from "@/lib/stubContent";
@@ -27,10 +28,11 @@ export default function StubPage({ routeId }) {
   return (
     <div data-testid={`stub-page-${routeId}`}>
       <section className="relative bg-[#1A1513] text-[#FDFBF7] overflow-hidden pt-32 md:pt-40 pb-24 md:pb-32">
-        <img
+        <Img
           src={data.image}
           alt=""
-          loading="eager"
+          priority
+          width={1920}
           className="ken-burns absolute inset-0 w-full h-full object-cover opacity-45"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/65 to-[#1A1513]/40" />

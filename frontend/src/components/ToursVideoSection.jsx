@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, Volume2, VolumeX, Film, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { Img } from "@/components/Img";
 import EditableText from "@/components/EditableText";
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
@@ -231,10 +232,11 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
               }`}
               aria-hidden={started}
             >
-              <img
+              <Img
                 src={cover}
                 alt=""
-                loading="lazy"
+                width={1280}
+                sizes="(max-width: 900px) 100vw, 900px"
                 className="absolute inset-0 w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;

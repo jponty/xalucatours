@@ -9,6 +9,7 @@ import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
 import TextSlotsPanel from "@/components/TextSlotsPanel";
 import LibraryManager from "@/components/LibraryManager";
+import { Img } from "@/components/Img";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
 import { LANDMARK_CATALOG, infoSlots, cardSlots } from "@/lib/dayLandmarkCatalog";
@@ -695,7 +696,7 @@ const ImageEditor = ({ slot, onSave }) => {
   return (
     <li data-testid={`admin-image-${slot.slot_id}`} className="bg-white/[0.04] border border-white/10 p-3 flex gap-3">
       <div className="w-20 h-20 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
-        {url ? <img src={url} alt={slot.alt || ""} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-5 h-5" /></div>}
+        {url ? <Img src={url} alt={slot.alt || ""} width={160} sizes="80px" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-5 h-5" /></div>}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[10px] tracking-[0.18em] uppercase text-white/55 truncate" title={slot.slot_id}>{slot.slot_id}</p>
@@ -1481,7 +1482,7 @@ const PoiRow = ({ poi, imageMap, textMap, onSaveImage, onSaveText, onChanged }) 
       >
         <div className="w-14 h-14 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
           {headImg
-            ? <img src={headImg} alt="" className="w-full h-full object-cover" />
+            ? <Img src={headImg} alt="" width={120} sizes="56px" className="w-full h-full object-cover" />
             : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-4 h-4" /></div>}
         </div>
         <div className="flex-1 min-w-0">
@@ -1744,7 +1745,7 @@ const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSa
       <div className="flex items-center gap-2">
         <div className="w-9 h-9 flex-shrink-0 bg-black/40 overflow-hidden border border-white/10">
           {imgUrl
-            ? <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+            ? <Img src={imgUrl} alt="" width={96} sizes="36px" className="w-full h-full object-cover" />
             : <div className="w-full h-full flex items-center justify-center text-white/30"><ImageIcon className="w-3.5 h-3.5" /></div>}
         </div>
         <p className="text-[9px] tracking-[0.24em] uppercase text-[#D4A373] flex items-center gap-2">
