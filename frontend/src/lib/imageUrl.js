@@ -63,6 +63,13 @@ export const buildSrcSet = (url, widths = RESPONSIVE_WIDTHS) => {
   return widths.map((w) => `${optimizedSrc(url, w)} ${w}w`).join(", ");
 };
 
+/* A tiny low-quality image placeholder (LQIP, ~24px) for blur-up: a few
+   hundred bytes in a modern format, upscaled + blurred via CSS so the user
+   sees a soft preview instantly instead of a black/empty box. Returns
+   undefined for non-optimizable sources (local assets, SVG, data:). */
+export const LQIP_WIDTH = 24;
+export const lqipSrc = (url) => (isOptimizable(url) ? optimizedSrc(url, LQIP_WIDTH) : undefined);
+
 /* Sensible default `sizes`. Full-bleed (hero/banner) → 100vw; otherwise a
    card-friendly heuristic. Callers can override via the `sizes` prop. */
 export const defaultSizes = (priority) =>

@@ -2590,7 +2590,7 @@ async def download_file(
     # ---- Snap width to a small set of buckets to maximise cache hits ----
     width = None
     if w and w > 0:
-        buckets = [320, 480, 640, 768, 960, 1280, 1600, 1920, 2400]
+        buckets = [24, 48, 320, 480, 640, 768, 960, 1280, 1600, 1920, 2400]
         width = next((b for b in buckets if b >= w), buckets[-1])
 
     # ---- Disk cache lookup ----

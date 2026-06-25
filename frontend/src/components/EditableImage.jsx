@@ -13,7 +13,7 @@ import { useSlotId } from "@/components/slotScope";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 import EditableImageMeta from "@/components/EditableImageMeta";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
-import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable } from "@/lib/imageUrl";
+import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc } from "@/lib/imageUrl";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -217,10 +217,24 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
     }
   };
 
-  // Responsive + modern-format delivery (WebP/AVIF via lib/imageUrl).
+  // Responsive + modern-format delivery (AVIF/WebP via lib/imageUrl).
   const finalSrc = canOptimize ? optimizedSrc(currentSrc, priority ? 1920 : 960) : currentSrc;
   const finalSrcSet = canOptimize ? buildSrcSet(currentSrc) : undefined;
   const finalSizes = finalSrcSet ? (sizes || defaultSizes(priority)) : undefined;
+  // Blur-up: show a tiny LQIP (a real, soft preview of the photo) behind the
+  // image while it decodes — never a black/empty box. Non-optimizable sources
+  // (local assets, SVG, …) keep the warm shimmer skeleton instead.
+  const lqip = canOptimize ? lqipSrc(currentSrc) : undefined;
+  const skeletonClass = loaded ? " is-loaded" : (lqip ? "" : " cms-skeleton");
+  const blurStyle = lqip && !loaded
+    ? {
+        backgroundImage: `url("${lqip}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundColor: "#2b2622",
+      }
+    : undefined;
 
   return (
     <img
@@ -229,8 +243,8 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
       srcSet={finalSrcSet}
       sizes={finalSizes}
       alt={alt}
-      className={`${className} cms-img-fade${loaded ? " is-loaded" : " cms-skeleton"}`}
-      style={ratioStyle}
+      className={`${className} cms-img-fade${skeletonClass}`}
+      style={{ ...ratioStyle, ...blurStyle }}
       onLoad={handleLoad}
       onError={handleError}
       loading={priority ? "eager" : "lazy"}

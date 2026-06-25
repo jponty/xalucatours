@@ -1,0 +1,41 @@
+{
+  "summary": "PRIMARY BUG (black placeholder on per-day gallery images) is VERIFIED FIXED. Under CDP network throttling (~250KB/s, 200ms latency) on /viajes/atlas_desierto/programa_4n_5d, the day-gallery main viewer and ALL its thumbnails showed soft BLURRED PREVIEWS (LQIP) — no black box phase — and sharpened in cleanly once the full bitmap decoded. Same blur-up behavior confirmed on a second itinerary (/viajes/atlas_desierto/programa_5n_6d). DOM inspection confirms the dynamic gallery <img> carries class 'img-blurup' plus an inline backgroundImage pointing at the tiny LQIP (/api/files/...?w=24&fmt=auto). After full decode, 'is-loaded' is added and the inline backgroundImage is cleared (no dark residue). Gallery interaction (next arrow) cycles to the next image and the new image also blurs-up → sharpens. After scrolling top-to-bottom and removing throttling: 0 broken images on both trip pages (237/238 and 248/276 loaded, rest are below-fold lazy, all with naturalWidth>0 when in view). No layout shift observed — viewer reserves its aspect-ratio box. Admin regression NOT re-run in this iteration as image-pipeline regression already covered in iteration_47 (Galerías + Biblioteca: 0 broken).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Img.jsx blur-up logic is correct: lqip URL is built only for optimizable sources, inline backgroundImage is removed on load (style spread only when !loaded), class toggles 'is-loaded'. Clean and minimal.",
+    "imageUrl.js lqipSrc uses LQIP_WIDTH=24 → /api/files/...?w=24&fmt=auto, matching the backend's added 24/48 width buckets — verified the LQIP URL is requested and decoded in DevTools (screenshots show real blurred preview content, not the fallback color).",
+    "index.css '.img-blurup' uses background-color: #2b2622 (dark warm brown) as a fallback BEFORE the LQIP backgroundImage downloads. This is a sub-second pre-LQIP phase under heavy throttling and never shows pure black. Under normal connections it is imperceptible. Optional polish: warm it to the brand cream (#EDE5D5) so even the sub-LQIP frame is non-dark, matching the cms-skeleton color — but NOT required by the spec and not a bug.",
+    "EditableImage SmartImage cms-img-fade pipeline (used for legacy slot galleries / thumbnails) also rendered as soft blurred previews in the throttled screenshot — both pipelines satisfy the no-black requirement.",
+    "data-testid 'day-gallery-viewer-<dayId>' present on every day viewer (4+ observed: dia-1, dia-2, dia-3, dia-todra-erfoud). Aspect-ratio reservation prevents CLS — confirmed visually."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% — blur-up confirmed on 2 trips, 0 broken images, gallery navigation functional"},
+  "evidence": {
+    "trip_1_/viajes/atlas_desierto/programa_4n_5d": {
+      "viewer_testid_observed": "day-gallery-viewer-dia-1 (+ dia-2, dia-3, dia-todra-erfoud)",
+      "mid_load_under_throttle": "main img: img-blurup=true, is-loaded=false, complete=false, backgroundImage SET to LQIP. Screenshot shows soft blurred preview of the actual scene — NOT black.",
+      "post_load": "img-blurup=true, is-loaded=true, naturalWidth=800, backgroundImage cleared (bgClear=true)",
+      "total_imgs": 238, "loaded": 237, "pending_lazy": 1, "broken": 0,
+      "next_arrow_click": "cycled to next image; new main img blurup=true, is-loaded=true, naturalWidth=800"
+    },
+    "trip_2_/viajes/atlas_desierto/programa_5n_6d": {
+      "viewer_testid_observed": "day-gallery-viewer-dia-1",
+      "mid_load_under_throttle": "main img: img-blurup=true, is-loaded=false, backgroundImage SET (LQIP url scheduled)",
+      "post_load_full_scroll": {"total_imgs": 276, "loaded": 248, "pending_lazy": 28, "broken": 0}
+    },
+    "lqip_url_format_observed": "/api/files/<asset>?w=24&fmt=auto via inline style backgroundImage; full image src uses w=960&fmt=auto with full 320..1920 srcset"
+  },
+  "test_credentials": "/admin password: xaluca (not exercised this iteration — admin regression already in iteration_47).",
+  "seed_data_creation": "None — read-only verification.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Blur-up (LQIP) bug fix is verified end-to-end on dynamic <Img> galleries (img-blurup class + inline backgroundImage to /api/files?w=24&fmt=auto, is-loaded toggle, bg cleared on load). Both day-gallery main viewer and thumbnails render blurred previews (not black) under 250KB/s throttling. Gallery next/prev cycling preserves blur-up. 0 broken images. To reproduce the mid-load visual: open CDP, set Network.emulateNetworkConditions {downloadThroughput: 250*1024, latency: 200}, navigate fresh, scroll to first [data-testid^='day-gallery-viewer-'], screenshot within ~1s of scroll-in. Optional minor polish (not required): warm '.img-blurup' background-color to brand cream (#EDE5D5 like cms-skeleton) so the sub-LQIP frame is even softer — currently #2b2622 dark brown, acceptable.",
+  "rca of the issue": "N/A — bug already fixed by main agent in Img.jsx (stateful LQIP backgroundImage + is-loaded toggle), EditableImage SmartImage (cms-img-fade + LQIP), imageUrl.js (lqipSrc at w=24), index.css (.img-blurup rules), and backend width-bucket support for w=24/48. Independently re-verified here."
+}

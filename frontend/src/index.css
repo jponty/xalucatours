@@ -517,6 +517,31 @@ body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5
     animation: none;
     background-image: none;
 }
+/* ------------------------------------------------------------
+   Blur-up (LQIP) for plain <Img> imagery — galleries, carousels,
+   admin thumbnails. A tiny upscaled preview is set as the element's
+   own background; the foreground bitmap blurs in while loading and
+   sharpens once decoded. Never a black/empty placeholder. */
+.img-blurup {
+    background-color: #2b2622;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: filter 700ms ease;
+    will-change: filter;
+}
+.img-blurup:not(.is-loaded) {
+    filter: blur(16px);
+}
+.img-blurup.is-loaded {
+    filter: blur(0);
+    background-image: none !important;
+    background-color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+    .img-blurup { transition: none; }
+    .img-blurup:not(.is-loaded) { filter: none; }
+}
 @media (prefers-reduced-motion: reduce) {
     .cms-skeleton { animation: none; }
     .cms-img-fade { transition: filter 200ms ease; filter: none; transform: none; }
