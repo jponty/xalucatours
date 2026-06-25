@@ -1105,6 +1105,18 @@ const WarmCachePanel = () => {
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, []);
 
+  // Keep polling whenever a warm-up is running — whether it was started by the
+  // button here OR automatically by the server at boot (button is disabled in
+  // that case, so the click handler alone would never start the interval).
+  useEffect(() => {
+    if (status?.running && !pollRef.current) {
+      pollRef.current = setInterval(fetchStatus, 1500);
+    } else if (!status?.running && pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+  }, [status?.running]);
+
   const startWarm = async () => {
     setBusy(true); setError("");
     try {
