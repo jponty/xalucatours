@@ -1,5 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { optimizedSrc, buildSrcSet, defaultSizes, isOptimizable, lqipSrc } from "@/lib/imageUrl";
+
+const API = process.env.REACT_APP_BACKEND_URL;
+
+/* ============================================================
+   URL → CMS resolution for NON-slot imagery.
+   ------------------------------------------------------------
+   Cards / postcards / posters render remote Unsplash·Pexels URLs
+   directly (hotlinked). To centralise everything in the CMS we:
+     1. report each remote URL to the backend (it gets imported
+        into our storage by the "migrate" job), and
+     2. swap the remote URL for its /api/files copy via the map
+        below — so the image is served from the CMS, not hotlinked.
+   Loaded once per session; before it loads, the remote URL is used
+   (identical to today), then it re-renders to the CMS copy.
+============================================================ */
+const isRemoteStock = (u) =>
+  typeof u === "string" && /images\.(unsplash|pexels)\.com/.test(u);
+
+const urlMapStore = { map: null, loading: false, subs: new Set() };
+
+const ensureUrlMap = () => {
+  if (urlMapStore.map !== null || urlMapStore.loading) return;
+  urlMapStore.loading = true;
+  fetch(`${API}/api/image-url-map`)
+    .then((r) => r.json())
+    .then((d) => {
+      urlMapStore.map = (d && d.map) || {};
+      urlMapStore.subs.forEach((fn) => fn());
+    })
+    .catch(() => { urlMapStore.map = {}; })
+    .finally(() => { urlMapStore.loading = false; });
+};
+
+const resolveCmsUrl = (src) => {
+  const m = urlMapStore.map;
+  return m && m[src] ? m[src] : src;
+};
+
+const remoteReg = { known: new Set(), queue: new Set(), timer: null };
+const flushRemoteReg = () => {
+  remoteReg.timer = null;
+  if (remoteReg.queue.size === 0) return;
+  const urls = Array.from(remoteReg.queue);
+  remoteReg.queue.clear();
+  fetch(`${API}/api/image_urls/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ urls }),
+  }).catch(() => {});
+};
+const registerRemoteUrl = (src) => {
+  if (!isRemoteStock(src) || remoteReg.known.has(src)) return;
+  remoteReg.known.add(src);
+  remoteReg.queue.add(src);
+  if (!remoteReg.timer) remoteReg.timer = setTimeout(flushRemoteReg, 1500);
+};
 
 /* ============================================================
    <Img> — drop-in <img> replacement for NON-editable imagery
@@ -25,17 +81,26 @@ export const Img = ({
   ...rest
 }) => {
   const [loaded, setLoaded] = useState(false);
+  const [, force] = useReducer((x) => x + 1, 0);
+  useEffect(() => {
+    ensureUrlMap();
+    if (isRemoteStock(src)) registerRemoteUrl(src);
+    const sub = () => force();
+    urlMapStore.subs.add(sub);
+    return () => urlMapStore.subs.delete(sub);
+  }, [src]);
   if (!src) return null;
-  const opt = isOptimizable(src);
-  const srcSet = opt ? buildSrcSet(src) : undefined;
-  const lqip = opt ? lqipSrc(src) : undefined;
+  const resolved = resolveCmsUrl(src);
+  const opt = isOptimizable(resolved);
+  const srcSet = opt ? buildSrcSet(resolved) : undefined;
+  const lqip = opt ? lqipSrc(resolved) : undefined;
   const handleLoad = (e) => {
     setLoaded(true);
     if (onLoad) onLoad(e);
   };
   return (
     <img
-      src={opt ? optimizedSrc(src, width) : src}
+      src={opt ? optimizedSrc(resolved, width) : resolved}
       srcSet={srcSet}
       sizes={srcSet ? (sizes || defaultSizes(priority)) : undefined}
       alt={alt}

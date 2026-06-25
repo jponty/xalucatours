@@ -1359,12 +1359,13 @@ const MigrateFallbacksPanel = () => {
           <h2 className="text-2xl font-serif-x">Centralizar imágenes en el CMS</h2>
         </div>
         <p className="text-sm text-white/65 leading-relaxed mb-6">
-          Importa a tu propio almacenamiento todas las imágenes por defecto (de
-          Unsplash/Pexels) que aún viven en el código y <span className="text-[#D4A373]">no
-          están guardadas en el CMS</span>, y las fija en sus slots. Así todas las
-          imágenes quedan centralizadas y gestionables desde aquí. Respeta lo que
-          ya editaste, evita duplicados y es seguro relanzarlo.
-          <br /><span className="text-white/45">Sugerencia: navega antes por todas las páginas (o deja pasar tráfico) para que el catálogo de slots esté completo.</span>
+          Importa a tu propio almacenamiento todas las imágenes que aún se
+          sirven desde Unsplash/Pexels y <span className="text-[#D4A373]">no
+          están guardadas en el CMS</span> — tanto las de slots editables como
+          las imágenes directas (tarjetas, postales, pósters) — y las deja
+          servidas desde tu CMS. Así nada se hotlinkea. Respeta lo que ya
+          editaste, evita duplicados y es seguro relanzarlo.
+          <br /><span className="text-white/45">Sugerencia: navega antes por todas las páginas (o deja pasar tráfico) para que el catálogo de imágenes esté completo.</span>
         </p>
 
         <button

@@ -3243,6 +3243,57 @@ async def register_image_slots(payload: ImageSlotRegisterPayload):
 
 
 # ----------------------------------------------------------
+#  Direct-<Img> remote URL registry  +  URL→CMS resolution map
+#  ----
+#  Non-slot imagery (trip-card thumbnails, postcard stamps, video posters…)
+#  hotlinks Unsplash/Pexels CDNs directly. The frontend <Img> reports each such
+#  remote URL here; the migration job imports them into our storage; <Img> then
+#  resolves them to their /api/files copy via the map below — so EVERY image is
+#  served from the CMS, never hotlinked.
+# ----------------------------------------------------------
+class RemoteUrlRegisterPayload(BaseModel):
+    urls: List[str] = Field(default_factory=list)
+
+
+@api_router.post("/image_urls/register")
+async def register_remote_image_urls(payload: RemoteUrlRegisterPayload):
+    if not payload.urls:
+        return {"registered": 0}
+    now = datetime.now(timezone.utc).isoformat()
+    ops = []
+    for raw in payload.urls[:5000]:
+        u = (raw or "").strip()
+        if not _is_external_image_url(u) or len(u) > 2000:
+            continue
+        ops.append(UpdateOne(
+            {"_id": u},
+            {"$set": {"updated_at": now}, "$setOnInsert": {"first_seen": now}},
+            upsert=True,
+        ))
+    if ops:
+        await db.remote_image_registry.bulk_write(ops, ordered=False)
+    return {"registered": len(ops)}
+
+
+@api_router.get("/image-url-map")
+async def get_image_url_map():
+    """Map of {original_remote_url → /api/files copy} for every image already
+    imported into our storage. Consumed once by <Img> to serve non-slot
+    imagery from the CMS instead of hotlinking Unsplash/Pexels."""
+    mapping: Dict[str, str] = {}
+    cursor = db.files.find(
+        {"migrated_from": {"$exists": True, "$ne": None}, "is_deleted": {"$ne": True}},
+        {"migrated_from": 1, "storage_path": 1},
+    ).limit(50000)
+    async for doc in cursor:
+        src = doc.get("migrated_from")
+        sp = doc.get("storage_path")
+        if src and sp:
+            mapping[src] = f"/api/files/{sp}"
+    return {"map": mapping, "count": len(mapping)}
+
+
+# ----------------------------------------------------------
 #  Generic remote-image importer  +  "migrate fallbacks → CMS" job
 #  ----
 #  Pulls every external (Unsplash/Pexels/…) fallback that is NOT yet saved in
@@ -3340,7 +3391,15 @@ async def _run_migrate_fallbacks():
             fb = d.get("fallback")
             if sid and _is_external_image_url(fb):
                 entries.append((sid, fb))
-        _migrate_state["total"] = len(entries)
+        # Direct <Img> remote URLs (cards/postcards/posters that aren't slots)
+        # registered by the frontend — imported into storage so they're served
+        # from the CMS too (resolved via the /api/image-url-map).
+        url_entries = []
+        async for d in db.remote_image_registry.find({}, {"_id": 1}):
+            u = d.get("_id")
+            if _is_external_image_url(u):
+                url_entries.append(u)
+        _migrate_state["total"] = len(entries) + len(url_entries)
         for sid, fb in entries:
             try:
                 existing = await db.image_slots.find_one({"_id": sid}, {"url": 1, "cleared": 1})
@@ -3364,6 +3423,22 @@ async def _run_migrate_fallbacks():
                     _migrate_state["migrated"] += 1
             except Exception as exc:
                 logger.debug("migrate fallback failed for %s: %s", sid, exc)
+                _migrate_state["errors"] += 1
+            finally:
+                _migrate_state["done"] += 1
+                if _WARM_THROTTLE:
+                    await asyncio.sleep(_WARM_THROTTLE)
+        for u in url_entries:
+            try:
+                rec = await _import_remote_image(u, tags=["library", "img-migrated"], source="img")
+                if not rec:
+                    _migrate_state["errors"] += 1
+                elif rec.get("reused"):
+                    _migrate_state["reused"] += 1
+                else:
+                    _migrate_state["migrated"] += 1
+            except Exception as exc:
+                logger.debug("migrate remote url failed for %s: %s", u, exc)
                 _migrate_state["errors"] += 1
             finally:
                 _migrate_state["done"] += 1
