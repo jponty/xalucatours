@@ -8,9 +8,9 @@ import EditableText from "@/components/EditableText";
 
 const CARDS = [
   { num: "01", icon: Award,       k_title: "why_c1_title", k_body: "why_c1_body", route: "toursLanding", cta: { es: "Descubrir viajes", en: "Discover trips", fr: "Découvrir les voyages" } },
-  { num: "02", icon: Sparkles,    k_title: "why_c2_title", k_body: "why_c2_body", route: "planTrip",     cta: { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" } },
-  { num: "03", icon: ShieldCheck, k_title: "why_c3_title", k_body: "why_c3_body", route: "appointment",  cta: { es: "Solicitar cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" } },
-  { num: "04", icon: MapPinned,   k_title: "why_c4_title", k_body: "why_c4_body", route: "contact",      cta: { es: "Hablar con un especialista", en: "Talk to a specialist", fr: "Parler à un spécialiste" } },
+  { num: "02", icon: Sparkles,    k_title: "why_c2_title", k_body: "why_c2_body", route: "planTrip",     cta: { es: "Planificar viaje", en: "Plan trip", fr: "Planifier le voyage" } },
+  { num: "03", icon: ShieldCheck, k_title: "why_c3_title", k_body: "why_c3_body", route: "appointment",  cta: { es: "Solicitar cita", en: "Book a call", fr: "Prendre rendez-vous" } },
+  { num: "04", icon: MapPinned,   k_title: "why_c4_title", k_body: "why_c4_body", route: "contact",      cta: { es: "Hablar con agente", en: "Talk to an agent", fr: "Parler à un agent" } },
 ];
 
 export const WhyXaluca = () => {
