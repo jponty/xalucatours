@@ -673,6 +673,7 @@ export default function AdminPage() {
         ) : tab === "mirror" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <MirrorPanel />
+            <WarmCachePanel />
           </section>
         ) : (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
@@ -1069,6 +1070,106 @@ const MirrorPanel = () => {
           <p className="mt-3 text-[11px] text-white/45">Recarga la web para ver el contenido actualizado.</p>
         </div>
       )}
+    </div>
+  );
+};
+
+
+
+/* ---------- Image cache warm-up ----------
+   Pre-generates AVIF/WebP variants (+ the LQIP blur-up thumbnail) for EVERY
+   stored image so the first ("cold") visitor also gets instant delivery — no
+   initial blur on the most visible imagery. Runs automatically on the server
+   at startup; this panel lets the editor re-run it after adding new images
+   and watch progress. */
+const WarmCachePanel = () => {
+  const [status, setStatus] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const pollRef = useRef(null);
+  const tokenHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("xaluca_admin_token")}` });
+
+  const fetchStatus = async () => {
+    try {
+      const r = await fetch(`${API}/admin/warm-image-cache/status`, { headers: tokenHeader() });
+      const d = await r.json();
+      if (r.ok) setStatus(d);
+      if (d && !d.running && pollRef.current) {
+        clearInterval(pollRef.current); pollRef.current = null; setBusy(false);
+      }
+    } catch (e) { /* transient — keep polling */ }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []);
+
+  const startWarm = async () => {
+    setBusy(true); setError("");
+    try {
+      const r = await fetch(`${API}/admin/warm-image-cache`, { method: "POST", headers: tokenHeader() });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "No se pudo iniciar la optimización.");
+      setStatus(d);
+      if (!pollRef.current) pollRef.current = setInterval(fetchStatus, 1500);
+    } catch (e) {
+      setError(e.message || "Error al iniciar."); setBusy(false);
+    }
+  };
+
+  const running = status?.running || busy;
+  const pct = status?.percent ?? 0;
+
+  return (
+    <div className="max-w-2xl mx-auto px-6 md:px-10 pb-10 text-white" data-testid="warm-cache-panel">
+      <div className="border-t border-white/10 pt-8">
+        <div className="flex items-center gap-3 mb-2">
+          <ImageIcon className="w-6 h-6 text-[#D4A373]" strokeWidth={1.6} />
+          <h2 className="text-2xl font-serif-x">Optimizar todas las imágenes</h2>
+        </div>
+        <p className="text-sm text-white/65 leading-relaxed mb-6">
+          Pre-genera las versiones modernas (AVIF/WebP) y la miniatura de previsualización (blur-up)
+          de <span className="text-[#D4A373]">todas las imágenes</span>, para que incluso la primera
+          visita cargue al instante, sin desenfoque inicial en las fotos más visibles. Se ejecuta solo
+          al arrancar el servidor; vuelve a lanzarlo tras añadir imágenes nuevas.
+        </p>
+
+        <button
+          type="button"
+          data-testid="warm-cache-start-btn"
+          onClick={startWarm}
+          disabled={running}
+          className="inline-flex items-center gap-2 bg-[#5A6B4F] hover:bg-[#4A5A41] text-white px-6 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+        >
+          {running ? <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={1.8} /> : <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />}
+          {running ? "Optimizando…" : "Optimizar todas las imágenes"}
+        </button>
+
+        {status && (status.total > 0 || status.running) && (
+          <div className="mt-6" data-testid="warm-cache-progress">
+            <div className="h-2 w-full bg-white/10 overflow-hidden rounded-full">
+              <div className="h-full bg-[#D4A373] transition-all duration-500" style={{ width: `${pct}%` }} />
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/60">
+              <span>{status.done}/{status.total} imágenes · {pct}%</span>
+              <span>Generadas {status.generated} · en caché {status.skipped}{status.errors ? ` · errores ${status.errors}` : ""}</span>
+            </div>
+            {!status.running && status.total > 0 && (
+              <p className="mt-3 flex items-center gap-2 text-xs text-[#9DBE8C]" data-testid="warm-cache-done">
+                <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} /> Optimización completada.
+              </p>
+            )}
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-5 flex items-start gap-3 bg-red-500/10 border border-red-500/40 px-4 py-3" data-testid="warm-cache-error">
+            <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" strokeWidth={1.8} />
+            <p className="text-xs text-red-300 leading-relaxed">{error}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

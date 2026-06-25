@@ -1,0 +1,38 @@
+{
+  "summary": "Frontend-only verification of the new warm-cache admin panel + blur-up / no-broken-image regressions. Admin login at /admin with password 'xaluca' works; left sidebar renders (URLS/TEXTOS/GALERIAS/LIBRARY/LEADS/NOTIFICACIONES/MIRROR DB). Clicking MIRROR DB ([data-testid=admin-tab-mirror]) shows the Mirror DB section and below it the new 'Optimizar todas las imágenes' panel ([data-testid=warm-cache-panel]) with the start button ([data-testid=warm-cache-start-btn]) and a progress block ([data-testid=warm-cache-progress]). Backend warm-up confirmed running (curl-equivalent fetch from inside the admin page): total=4090, done growing 1076→1105→1182 across consecutive samples, errors=1 (acceptable), percent climbing 26.3→27→28.9. Trip regression PASSED on /viajes/atlas_desierto/programa_4n_5d: 5 day-gallery viewers, 238 <img>, 158 loaded / 80 still lazy-pending below fold, 0 broken (no naturalWidth===0 with src set); blur-up image observed with class 'img-blurup' + is-loaded=true and full-quality w=1024&fmt=auto. ONE REAL FRONTEND BUG FOUND in the warm-cache panel: when the server is already running a warm-up at the time the admin opens the MIRROR DB tab, the panel mounts with status.running=true → start button is correctly disabled, BUT the polling setInterval is never started (it is created ONLY inside startWarm() which the disabled button blocks). Result: the progress text is frozen on the very first /status snapshot and never updates while the warm-up continues server-side. Verified by request listener: 0 GETs to /api/admin/warm-image-cache/status after mount (only the 2 initial useEffect calls), progress text stayed at exact same numbers for 18s while backend done counter advanced ~120+ images.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AdminPage WarmCachePanel (/app/frontend/src/pages/AdminPage.jsx ~lines 1085-1175)",
+        "issue": "Progress UI does not auto-poll when a warm-up is already running at mount. setInterval(fetchStatus, 1500) is created only inside startWarm(); the start button is disabled while running, so the polling never starts and the progress block freezes on the initial /status snapshot indefinitely. Reproduces 100% by opening /admin → MIRROR DB while the server warm-up (auto-started at backend boot) is in progress.",
+        "selector": "[data-testid='warm-cache-progress']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix WarmCachePanel auto-polling. Minimal patch: in the existing useEffect after fetchStatus(), if status.running is true, also start the polling interval; OR add a second useEffect that watches status?.running and starts/stops pollRef accordingly. Example:\n\n    useEffect(() => {\n      if (status?.running && !pollRef.current) {\n        pollRef.current = setInterval(fetchStatus, 1500);\n      }\n      if (!status?.running && pollRef.current) {\n        clearInterval(pollRef.current); pollRef.current = null;\n      }\n    }, [status?.running]);\n\nThis way the admin sees live progress whether they clicked the button OR landed on the tab while a startup-triggered warm-up is already running — exactly what the spec describes ('clicking still shows the live progress')."
+  ],
+  "critical_code_review_comments": [
+    "WarmCachePanel: polling lifecycle is tied to the click handler only. Should be tied to status.running so the panel keeps polling regardless of who started the warm-up (boot vs. button).",
+    "fetchStatus swallows errors silently ('/* transient — keep polling */'). Acceptable for resilience, but when pollRef is never started (current bug) the user has no signal that progress is stale. After the fix, no change needed.",
+    "tokenHeader() reads localStorage on every call — fine but if token expires mid-poll the panel will silently keep getting 401s. Low priority; current bug is the blocker.",
+    "Trip page <Img> blur-up pipeline still healthy: 1 sample observed class='img-blurup' + is-loaded=true with full w=1024&fmt=auto src; 0 broken images across 238 <img> on the 4n/5d itinerary.",
+    "Server warm-up is actively producing variants (generated counter climbed 4636 → 5302 in ~20s during the test). Backend side is fine; the issue is purely the frontend polling gating."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "n/a (skipped per request — direct /status fetch from page confirmed endpoints respond and progress is advancing)",
+    "frontend": "~83% — login OK, sidebar OK, MIRROR DB tab OK, panel renders OK, start button + progress block render OK, blur-up regression OK, no broken images OK. Live progress polling broken when warm-up already running at mount."
+  },
+  "test_credentials": "/admin password: xaluca (works; token stored under localStorage key 'xaluca_admin_token', length ~115).",
+  "seed_data_creation": "None — read-only verification + one POST attempt that was blocked by the disabled button (no state change).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "To reproduce the polling-freeze bug: (1) ensure the server has just started (warm-up auto-runs and takes minutes for 4000+ images) OR start one via curl; (2) open /admin, log in with 'xaluca', click MIRROR DB sidebar tab, scroll to the Optimizar todas las imágenes panel; (3) note that the start button shows 'OPTIMIZANDO…' and is disabled, the progress text shows e.g. '1182/4090 imágenes · 28.9%' and STAYS frozen for >15s while /api/admin/warm-image-cache/status (called manually from devtools) reports a higher 'done'. After the fix, opening the panel during an in-progress warm-up should tick the progress bar every 1.5s without any user interaction. Selectors: [data-testid=admin-tab-mirror], [data-testid=warm-cache-panel], [data-testid=warm-cache-start-btn], [data-testid=warm-cache-progress], [data-testid=warm-cache-done] (only when finished), [data-testid=warm-cache-error]. Note: navigate with wait_until='domcontentloaded' (networkidle never settles due to ongoing warm-up + Chatbase widget). The trip page blur-up + zero-broken-image regression is fine and does not need re-verification.",
+  "rca of the issue": "AdminPage.jsx WarmCachePanel — pollRef lifecycle is owned by startWarm() only. On mount, useEffect calls fetchStatus() once (good) but does NOT start the polling interval. If the fetched status has running=true (warm-up started at backend boot), the start button is disabled by `disabled={running}` so the user cannot trigger startWarm() either, and the only place the interval is set is unreachable. Net effect: progress UI is a static snapshot. Mitigation: bind the interval to status.running via a dedicated useEffect (see action_items snippet)."
+}
