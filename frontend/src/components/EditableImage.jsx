@@ -97,6 +97,44 @@ export const getSlotUrl = (slotId) => {
 };
 export const ensureSlotsLoaded = ensureImgLoaded;
 
+/* ============================================================
+   Image-slot registry — report each slot + its code default
+   (fallback) URL to the backend so it knows EVERY image slot
+   site-wide. Powers the admin "migrate fallbacks → CMS" job.
+   Batched + deduped per session, fire-and-forget.
+============================================================ */
+const imgRegistry = {
+  known: new Set(),
+  queue: new Map(),   // slot_id → { fallback, alt }
+  timer: null,
+};
+
+const flushImgRegistry = async () => {
+  imgRegistry.timer = null;
+  if (imgRegistry.queue.size === 0) return;
+  const slots = Array.from(imgRegistry.queue.entries()).map(
+    ([slot_id, meta]) => ({ slot_id, fallback: meta.fallback || null, alt: meta.alt || null })
+  );
+  imgRegistry.queue.clear();
+  try {
+    await fetch(`${API}/api/image_slots/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slots }),
+    });
+  } catch {
+    // best-effort convenience index; not critical state
+  }
+};
+
+const registerImageSlot = (slot, fallback, alt) => {
+  if (!slot || imgRegistry.known.has(slot)) return;
+  imgRegistry.known.add(slot);
+  imgRegistry.queue.set(slot, { fallback: fallback || null, alt: alt || null });
+  if (!imgRegistry.timer) imgRegistry.timer = setTimeout(flushImgRegistry, 1500);
+};
+
+
 /* URLs already loaded+decoded this session → render instantly (no shimmer,
    no fade) on subsequent mounts/navigations, on top of the browser HTTP
    cache. Gives the "immediate on repeat visits" behaviour. */
@@ -343,6 +381,9 @@ export const EditableImage = ({
   // Hydrate from the global slot cache (single bulk fetch) + live updates.
   useEffect(() => {
     if (!slot) { setReady(true); return undefined; }
+    // Report this slot + its code default to the registry (fire-and-forget)
+    // so the backend can list/migrate every image slot site-wide.
+    registerImageSlot(slot, fallback, alt);
     let active = true;
     const apply = (val) => {
       if (!active) return;

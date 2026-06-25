@@ -3185,6 +3185,228 @@ async def register_text_slots(payload: SlotRegisterPayload):
     return {"registered": len(ops)}
 
 
+# ----------------------------------------------------------
+#  Image slot registry  (mirror of the text-slot registry)
+#  ----
+#  Each <EditableImage> reports {slot_id, fallback, alt} on first render so
+#  the backend knows EVERY image slot site-wide + its code default image.
+#  Powers the "migrate fallbacks into the CMS" job below.
+# ----------------------------------------------------------
+class ImageSlotRegisterItem(BaseModel):
+    slot_id: str
+    fallback: Optional[str] = Field(default=None, max_length=2000)
+    alt: Optional[str] = Field(default=None, max_length=500)
+
+
+class ImageSlotRegisterPayload(BaseModel):
+    slots: List[ImageSlotRegisterItem] = Field(default_factory=list)
+
+
+@api_router.get("/image_slots/registry")
+async def get_image_slot_registry():
+    """Return every editable IMAGE slot known site-wide, with its code default
+    (fallback) URL. Harvested from the client as <EditableImage> renders."""
+    cursor = db.image_slot_registry.find({}, {"updated_at": 0, "first_seen": 0}).limit(50000)
+    items: Dict[str, Dict[str, Any]] = {}
+    async for doc in cursor:
+        sid = doc.get("_id")
+        if sid:
+            items[sid] = {"fallback": doc.get("fallback"), "alt": doc.get("alt")}
+    return {"registry": items, "count": len(items)}
+
+
+@api_router.post("/image_slots/register")
+async def register_image_slots(payload: ImageSlotRegisterPayload):
+    """Upsert a batch of {slot_id, fallback, alt}. Idempotent + best-effort —
+    called fire-and-forget by the frontend on first render."""
+    if not payload.slots:
+        return {"registered": 0}
+    now = datetime.now(timezone.utc).isoformat()
+    ops = []
+    for item in payload.slots[:5000]:
+        sid = (item.slot_id or "").strip()
+        if not sid or len(sid) > 200:
+            continue
+        set_doc = {"updated_at": now}
+        if item.fallback is not None:
+            set_doc["fallback"] = item.fallback[:2000]
+        if item.alt is not None:
+            set_doc["alt"] = item.alt[:500]
+        ops.append(UpdateOne(
+            {"_id": sid},
+            {"$set": set_doc, "$setOnInsert": {"first_seen": now}},
+            upsert=True,
+        ))
+    if ops:
+        await db.image_slot_registry.bulk_write(ops, ordered=False)
+    return {"registered": len(ops)}
+
+
+# ----------------------------------------------------------
+#  Generic remote-image importer  +  "migrate fallbacks → CMS" job
+#  ----
+#  Pulls every external (Unsplash/Pexels/…) fallback that is NOT yet saved in
+#  the CMS into our own object storage, optimises it to WebP, and writes the
+#  resulting /api/files URL into `image_slots`. After a full run every slot is
+#  served from the CMS — the code fallback becomes a never-triggered safety net.
+# ----------------------------------------------------------
+def _is_external_image_url(u) -> bool:
+    return isinstance(u, str) and u.lower().startswith("http") and "/api/files/" not in u
+
+
+async def _import_remote_image(url: str, *, tags=None, source="import"):
+    """Download → optimise to WebP → store → insert db.files record. Dedupes by
+    source URL (`migrated_from`) and by sha256 of the original bytes so the same
+    asset is stored once even if many slots share it. Returns
+    {id, url(/api/files), storage_path, reused} or None on any failure."""
+    if not _is_external_image_url(url):
+        return None
+    # 1) Reuse if this exact source URL was already imported.
+    prior = await db.files.find_one(
+        {"migrated_from": url, "is_deleted": {"$ne": True}}, {"storage_path": 1, "id": 1})
+    if prior and prior.get("storage_path"):
+        return {"id": prior.get("id"), "url": f"/api/files/{prior['storage_path']}",
+                "storage_path": prior["storage_path"], "reused": True}
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0), follow_redirects=True) as cx:
+            dl = await cx.get(url)
+        if dl.status_code != 200:
+            return None
+        data = dl.content
+        if not data or len(data) > MAX_UPLOAD_BYTES * 3:
+            return None
+        content_type = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip()
+        if not content_type.startswith("image/"):
+            content_type = "image/jpeg"
+        # 2) Reuse if the exact bytes already exist (different URL, same image).
+        sha = hashlib.sha256(data).hexdigest()
+        dup = await db.files.find_one(
+            {"sha256": sha, "is_deleted": {"$ne": True}}, {"storage_path": 1, "id": 1})
+        if dup and dup.get("storage_path"):
+            await db.files.update_one({"id": dup["id"]}, {"$set": {"migrated_from": url}})
+            return {"id": dup.get("id"), "url": f"/api/files/{dup['storage_path']}",
+                    "storage_path": dup["storage_path"], "reused": True}
+        opt, octype, ext = await asyncio.to_thread(optimize_image, data, content_type)
+        storage_path = f"xaluca/library/migrated_{uuid.uuid4().hex}.{ext}"
+        result = await asyncio.to_thread(put_object, storage_path, opt, octype)
+        canonical = result.get("path", storage_path)
+        asyncio.create_task(_warm_one_path(canonical, opt))
+        rec = {
+            "id": str(uuid.uuid4()),
+            "slot_id": None,
+            "storage_path": canonical,
+            "original_filename": f"migrated.{ext}",
+            "content_type": octype,
+            "size": result.get("size", len(opt)),
+            "size_original": len(data),
+            "sha256": sha,
+            "is_deleted": False,
+            "tags": tags or ["library", "fallback-migrated"],
+            "source": source,
+            "migrated_from": url,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.files.insert_one(rec)
+        return {"id": rec["id"], "url": f"/api/files/{canonical}",
+                "storage_path": canonical, "reused": False}
+    except Exception as exc:
+        logger.debug("import remote image failed for %s: %s", url, exc)
+        return None
+
+
+_migrate_state = {
+    "running": False, "total": 0, "done": 0, "migrated": 0,
+    "reused": 0, "skipped": 0, "errors": 0,
+    "started_at": None, "finished_at": None,
+}
+
+
+async def _run_migrate_fallbacks():
+    """Background job: for every registered image slot with an external fallback
+    that is NOT yet saved in the CMS, import the fallback into storage and write
+    it into `image_slots`. Idempotent (skips slots already saved or cleared),
+    sequential + throttled, never crashes the app."""
+    if _migrate_state["running"]:
+        return
+    _migrate_state.update({
+        "running": True, "total": 0, "done": 0, "migrated": 0,
+        "reused": 0, "skipped": 0, "errors": 0,
+        "started_at": datetime.now(timezone.utc).isoformat(), "finished_at": None,
+    })
+    try:
+        entries = []
+        async for d in db.image_slot_registry.find({}, {"fallback": 1, "alt": 1}):
+            sid = d.get("_id")
+            fb = d.get("fallback")
+            if sid and _is_external_image_url(fb):
+                entries.append((sid, fb))
+        _migrate_state["total"] = len(entries)
+        for sid, fb in entries:
+            try:
+                existing = await db.image_slots.find_one({"_id": sid}, {"url": 1, "cleared": 1})
+                # Respect existing CMS choices: saved image OR explicit clear.
+                if existing and (existing.get("url") or existing.get("cleared")):
+                    _migrate_state["skipped"] += 1
+                    continue
+                rec = await _import_remote_image(fb, tags=["library", "fallback-migrated"], source="fallback")
+                if not rec:
+                    _migrate_state["errors"] += 1
+                    continue
+                await db.image_slots.update_one(
+                    {"_id": sid},
+                    {"$set": {"url": rec["url"], "cleared": False, "source": "fallback",
+                              "updated_at": datetime.now(timezone.utc).isoformat()}},
+                    upsert=True,
+                )
+                if rec.get("reused"):
+                    _migrate_state["reused"] += 1
+                else:
+                    _migrate_state["migrated"] += 1
+            except Exception as exc:
+                logger.debug("migrate fallback failed for %s: %s", sid, exc)
+                _migrate_state["errors"] += 1
+            finally:
+                _migrate_state["done"] += 1
+                if _WARM_THROTTLE:
+                    await asyncio.sleep(_WARM_THROTTLE)
+    except Exception as exc:
+        logger.error("migrate fallbacks failed: %s", exc)
+    finally:
+        _migrate_state["running"] = False
+        _migrate_state["finished_at"] = datetime.now(timezone.utc).isoformat()
+        logger.info(
+            "migrate fallbacks finished: total=%s migrated=%s reused=%s skipped=%s errors=%s",
+            _migrate_state["total"], _migrate_state["migrated"], _migrate_state["reused"],
+            _migrate_state["skipped"], _migrate_state["errors"],
+        )
+
+
+@api_router.post("/admin/migrate-fallbacks")
+async def migrate_fallbacks(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    if _migrate_state["running"]:
+        return {"started": False, **_migrate_state}
+    asyncio.create_task(_run_migrate_fallbacks())
+    return {"started": True, "running": True}
+
+
+@api_router.get("/admin/migrate-fallbacks/status")
+async def migrate_fallbacks_status(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    st = dict(_migrate_state)
+    if st["total"]:
+        st["percent"] = round(100 * st["done"] / st["total"], 1)
+    else:
+        st["percent"] = 0.0 if st["running"] else 100.0
+    return st
+
+
+
+
 @api_router.get("/text_slots/{slot_id}")
 async def get_text_slot(slot_id: str):
     doc = await db.text_slots.find_one({"_id": slot_id}, {"_id": 0})

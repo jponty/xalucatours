@@ -675,6 +675,7 @@ export default function AdminPage() {
             <MirrorPanel />
             <WarmCachePanel />
             <ReoptimizeLibraryPanel />
+            <MigrateFallbacksPanel />
           </section>
         ) : (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
@@ -1296,6 +1297,121 @@ const ReoptimizeLibraryPanel = () => {
     </div>
   );
 };
+
+
+/* ---------- Migrate fallbacks → CMS panel ----------
+   One-click job that pulls every external (Unsplash/Pexels) code-fallback that
+   is NOT yet saved in the CMS into our own storage and writes the resulting
+   /api/files URL into image_slots. Centralises all images in the CMS. The code
+   fallback stays as a never-triggered safety net until 100% coverage. */
+const MigrateFallbacksPanel = () => {
+  const [status, setStatus] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const pollRef = useRef(null);
+  const tokenHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("xaluca_admin_token")}` });
+
+  const fetchStatus = async () => {
+    try {
+      const r = await fetch(`${API}/admin/migrate-fallbacks/status`, { headers: tokenHeader() });
+      const d = await r.json();
+      if (r.ok) setStatus(d);
+      if (d && !d.running && pollRef.current) {
+        clearInterval(pollRef.current); pollRef.current = null; setBusy(false);
+      }
+    } catch (e) { /* transient — keep polling */ }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []);
+
+  useEffect(() => {
+    if (status?.running && !pollRef.current) {
+      pollRef.current = setInterval(fetchStatus, 1500);
+    } else if (!status?.running && pollRef.current) {
+      clearInterval(pollRef.current); pollRef.current = null;
+    }
+  }, [status?.running]);
+
+  const start = async () => {
+    setBusy(true); setError("");
+    try {
+      const r = await fetch(`${API}/admin/migrate-fallbacks`, { method: "POST", headers: tokenHeader() });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "No se pudo iniciar la migración.");
+      setStatus(d);
+      if (!pollRef.current) pollRef.current = setInterval(fetchStatus, 1500);
+    } catch (e) {
+      setError(e.message || "Error al iniciar."); setBusy(false);
+    }
+  };
+
+  const running = status?.running || busy;
+  const pct = status?.percent ?? 0;
+
+  return (
+    <div className="max-w-2xl mx-auto px-6 md:px-10 pb-10 text-white" data-testid="migrate-fallbacks-panel">
+      <div className="border-t border-white/10 pt-8">
+        <div className="flex items-center gap-3 mb-2">
+          <DownloadCloud className="w-6 h-6 text-[#D4A373]" strokeWidth={1.6} />
+          <h2 className="text-2xl font-serif-x">Centralizar imágenes en el CMS</h2>
+        </div>
+        <p className="text-sm text-white/65 leading-relaxed mb-6">
+          Importa a tu propio almacenamiento todas las imágenes por defecto (de
+          Unsplash/Pexels) que aún viven en el código y <span className="text-[#D4A373]">no
+          están guardadas en el CMS</span>, y las fija en sus slots. Así todas las
+          imágenes quedan centralizadas y gestionables desde aquí. Respeta lo que
+          ya editaste, evita duplicados y es seguro relanzarlo.
+          <br /><span className="text-white/45">Sugerencia: navega antes por todas las páginas (o deja pasar tráfico) para que el catálogo de slots esté completo.</span>
+        </p>
+
+        <button
+          type="button"
+          data-testid="migrate-fallbacks-start-btn"
+          onClick={start}
+          disabled={running}
+          className="inline-flex items-center gap-2 bg-[#5A6B4F] hover:bg-[#4A5A41] text-white px-6 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+        >
+          {running ? <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={1.8} /> : <DownloadCloud className="w-4 h-4" strokeWidth={1.8} />}
+          {running ? "Migrando…" : "Centralizar fallbacks en el CMS"}
+        </button>
+
+        {status && (status.total > 0 || status.running) && (
+          <div className="mt-6" data-testid="migrate-fallbacks-progress">
+            <div className="h-2 w-full bg-white/10 overflow-hidden rounded-full">
+              <div className="h-full bg-[#D4A373] transition-all duration-500" style={{ width: `${pct}%` }} />
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/60">
+              <span>{status.done}/{status.total} slots · {pct}%</span>
+              <span>Importadas {status.migrated} · reutilizadas {status.reused} · ya guardadas {status.skipped}{status.errors ? ` · errores ${status.errors}` : ""}</span>
+            </div>
+            {!status.running && status.total > 0 && (
+              <p className="mt-3 flex items-center gap-2 text-xs text-[#9DBE8C]" data-testid="migrate-fallbacks-done">
+                <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} /> Migración completada · {status.migrated + status.reused} imágenes centralizadas en el CMS.
+              </p>
+            )}
+          </div>
+        )}
+
+        {status && !status.running && status.total === 0 && status.finished_at && (
+          <p className="mt-4 text-xs text-white/50" data-testid="migrate-fallbacks-empty">
+            No hay fallbacks pendientes — todas las imágenes registradas ya están en el CMS.
+          </p>
+        )}
+
+        {error && (
+          <div className="mt-5 flex items-start gap-3 bg-red-500/10 border border-red-500/40 px-4 py-3" data-testid="migrate-fallbacks-error">
+            <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" strokeWidth={1.8} />
+            <p className="text-xs text-red-300 leading-relaxed">{error}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 
 
