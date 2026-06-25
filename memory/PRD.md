@@ -10,6 +10,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
 ## Implementado (jun 2026)
+- **Testimonio por día en páginas de viaje (PILOTO en tourAtlasDesierto67) (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - Nuevo bloque `components/DayTestimonial.jsx` en la columna lateral de cada día, JUSTO debajo de los botones "Asistente Virtual" / "Contactar" (`ProgramTemplate.DayBlock`). Muestra un testimonio ESPECÍFICO del día que se está viendo (cita + autor + origen + 5 estrellas + badge "Viajero verificado").
+  - Datos en `lib/dayTestimonials.js` (`getDayTestimonial(routeId, dayId)`), trilingüe; PILOTO solo para `tourAtlasDesierto67` (7 días). Devuelve null en el resto → el bloque no se renderiza (gating).
+  - Editable por CMS: `quote`/`author`/`origin` vía `<EditableText>` con slots únicos por viaje+día (`trip.${routeId}.day.${dayIndex}.testimonial.{quote|author|origin}`). Visual dark-academia (papel cálido `#F8F2E6`, borde de acento del día, estrellas `#D4A373`, marca de agua de comillas). testid `day-testimonial-<dayId>`.
+  - Verificado en `/viajes/atlas_desierto/programa_6n_7d`: Día 1 → "Marta & Javier · Madrid" sobre Ouarzazate/Hotel Xaluca Dades. PENDIENTE decisión usuario: extender al resto de programas tras evaluar el piloto.
+
+
 - **Primera sección desplegable abierta por defecto en páginas de viaje (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - Petición: en cada página de viaje, que la PRIMERA etapa/lugar aparezca desplegada por defecto al cargar; tras interacción, comportamiento normal de acordeón; al refrescar / nueva sesión, vuelve a abrirse la primera (sin persistencia).
   - Solución (solo inicializadores de `useState`, sin persistencia → resetea en cada carga): `TripRouteMap` ("El recorrido completo") `activeNode` → primera etapa con detalle (índice 0). `DayRouteMap` ("Mapa del día"): `LandmarkMode.activeId` → `landmarks[0].id`; `WaypointMode.activeIdx` → primer waypoint con perfil; `StayInteractive.open` → `true`. Al abrir el primer lugar se muestra también su "Galería del lugar" (`LandmarkCarousel`).

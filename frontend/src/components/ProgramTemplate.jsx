@@ -24,6 +24,7 @@ import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import { DayImageGallery } from "@/components/DayImageGallery";
 import DayTravelNotes from "@/components/DayTravelNotes";
+import DayTestimonial from "@/components/DayTestimonial";
 import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 import FromPrice from "@/components/FromPrice";
@@ -450,6 +451,10 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
                 {pick(CONTACT_LABEL, lang)}
               </Link>
             </div>
+
+            {/* Day-specific traveller testimonial (pilot: only renders where
+                a testimonial is defined for this trip + day). */}
+            <DayTestimonial routeId={routeId} dayId={day.id} dayIndex={idx + 1} accent={day.accent} />
           </div>
         </div>
       </div>
