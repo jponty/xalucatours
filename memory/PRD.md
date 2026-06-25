@@ -13,7 +13,9 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - **Card CTA "Solicitar cita previa" en Bloques culturales (PILOTO en tourAtlasDesierto67) (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - En "Bloques culturales destacados" (`ProgramTemplate.DayBlock`, grid de 2 columnas), cuando el nº de bloques culturales es IMPAR se añade automáticamente una card CTA que rellena la celda vacía y equilibra la composición (p.ej. 3 → 4).
   - Nuevo `components/DayCultureCTA.jsx`: avatar circular con el monograma X blanco sobre el color de acento del día, eyebrow "Xaluca Tours · Especialistas", titular "¿Tienes alguna duda sobre este viaje?", mensaje invitando a hablar con un especialista y botón "Solicitar cita previa" → `pathFor(lang,"appointment")` (= `/citaprevia` en ES, localizado en EN/FR). Fondo espresso `#2C2621` para destacar como CTA. Textos editables por CMS (slots globales `program.culture_cta.{title|body|button}`). testid `day-culture-cta` / `day-culture-cta-button`.
-  - Gating: solo `routeId === "tourAtlasDesierto67"` y `culture.length % 2 === 1`. Verificado: 6 de 7 días lo muestran (1 día con nº par no), botón apunta a `/citaprevia`.
+- **Card CTA "Solicitar cita previa" en Bloques culturales — EXTENDIDA A TODOS LOS PROGRAMAS (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - Se eliminó el gating por `routeId`; ahora la card `DayCultureCTA` se añade en CUALQUIER programa cuando el nº de bloques culturales del día es impar (rellena la celda vacía del grid 2×2). Verificado también en `marrakech_ergchebbi/programa_6n_7d` (7 días → 7 cards, botón → `/citaprevia`, avatar con acento del día).
+
 
 
 - **Testimonio por día en TODOS los programas (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:

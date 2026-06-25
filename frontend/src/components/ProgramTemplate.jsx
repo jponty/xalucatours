@@ -429,8 +429,8 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
                   ))}
                   {/* Balance the 2-col grid: when there's an odd number of
                       cultural blocks, fill the empty cell with a CTA card.
-                      Pilot: reference programme only for now. */}
-                  {routeId === "tourAtlasDesierto67" && day.culture.length % 2 === 1 && (
+                      Applied to every programme. */}
+                  {day.culture.length % 2 === 1 && (
                     <DayCultureCTA accent={day.accent} />
                   )}
                 </div>
