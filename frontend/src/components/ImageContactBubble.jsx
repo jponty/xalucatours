@@ -26,22 +26,27 @@ const CTA = { es: "Solicitar cita", en: "Book a call", fr: "Prendre rendez-vous"
 const OPEN_LABEL = { es: "Contactar con un agente", en: "Contact an agent", fr: "Contacter un agent" };
 const CLOSE_LABEL = { es: "Cerrar", en: "Close", fr: "Fermer" };
 
-export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right" }) => {
+export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", vertical = "bottom" }) => {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
 
-  // Default ("right"): anchored bottom-right, ball on the right, panel grows
-  // LEFT (existing behaviour — must stay unchanged everywhere it's used).
-  // "left": anchored bottom-left, ball on the left, panel grows RIGHT toward
-  // the interior so it never overflows / gets clipped by the left border.
+  // Default ("right" + "bottom"): anchored bottom-right, ball on the right,
+  // panel grows LEFT (existing behaviour — unchanged everywhere it's used).
+  // "left": ball on the left, panel grows RIGHT toward the interior (so it
+  // never overflows / gets clipped at a left edge). "vertical" places the
+  // widget at the top or bottom edge. Content always stays inside the
+  // (overflow-hidden) container, with the panel width clamped.
   const isLeft = align === "left";
-  const sideCls = isLeft
-    ? "bottom-5 left-5 flex-row max-w-[calc(100%-2.5rem)]"
-    : "bottom-12 right-4 flex-row-reverse max-w-[calc(100%-2rem)]";
+  const isTop = vertical === "top";
+  const flexCls = isLeft ? "flex-row" : "flex-row-reverse";
+  const itemsCls = isTop ? "items-start" : "items-end";
+  const maxWCls = isLeft ? "max-w-[calc(100%-2.5rem)]" : "max-w-[calc(100%-2rem)]";
+  const hPos = isLeft ? "left-5" : "right-4";
+  const vPos = isTop ? "top-5" : isLeft ? "bottom-5" : "bottom-12";
 
   return (
     <div
-      className={`absolute ${sideCls} ${zClass} flex items-end gap-2`}
+      className={`absolute ${vPos} ${hPos} ${flexCls} ${itemsCls} ${maxWCls} ${zClass} flex gap-2`}
       data-testid={`image-contact-bubble-${slug}`}
       data-open={open ? "true" : "false"}
       onClick={(e) => e.stopPropagation()}

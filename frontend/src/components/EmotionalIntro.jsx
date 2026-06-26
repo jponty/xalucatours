@@ -5,6 +5,7 @@ import { useEditMode } from "@/contexts/EditModeContext";
 import { translations } from "@/lib/i18n";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import EditableText from "@/components/EditableText";
 
 /* Curated Moroccan-only Unsplash imagery — each frame carries a
@@ -164,6 +165,9 @@ export const EmotionalIntro = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-[#1A1513]/10 to-transparent pointer-events-none" />
               <span className="film-grain pointer-events-none" />
               <XalucaLogoBadge testid="emotional-intro-logo" />
+
+              {/* Quick contact bubble — top-left of the story image */}
+              <ImageContactBubble slug="home-story" align="left" vertical="top" zClass="z-[40]" />
 
               {/* Caption — trilingual, fades with the slide. Editable per slide
                   so each frame's copy is managed independently from the CMS. */}
