@@ -11,12 +11,20 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Optimización de imágenes — revisión completa (jun 2026) — COMPLETADO + VERIFICADO (curl + harness Node + screenshots)**:
+  - **Negociación de formato explícita (CDN-friendly)**: `lib/imageUrl.js` detecta soporte AVIF una sola vez (probe data-URL persistido en `localStorage.xt_avif`) y pide formato EXPLÍCITO al proxy: `fmt=avif` si hay soporte, `fmt=webp` si no, y `fmt=auto` (negociación por `Accept` en backend) SOLO en la 1ª visita mientras el probe resuelve. Cada formato es una URL distinta → 100% cacheable en Cloudflare sin fragmentación por `Vary`. Cubre `<Img>` y `<SmartImage>` (ambos usan `optimizedSrc`/`buildSrcSet`).
+  - **Backend `Vary: Accept`** añadido a las respuestas transformadas (`/api/files/...?w=&fmt=`) como red de seguridad para que un caché compartido nunca sirva AVIF a un cliente que pidió WebP. Origen devuelve `Cache-Control: public, max-age=31536000, immutable` (el ingress de PREVIEW lo sobrescribe a no-store; producción/Cloudflare lo respeta).
+  - **Compresión mejor sin pérdida perceptible**: calidades/esfuerzo configurables por env (`IMG_AVIF_QUALITY`=55, `IMG_WEBP_QUALITY`=80, `IMG_AVIF_SPEED`/`_WARM`=8/6, `IMG_WEBP_METHOD`/`_WARM`=4/6). El servido on-the-fly sigue rápido (speed 8 / method 4); el warm-up/offline usa más esfuerzo (speed 6 / method 6) → variantes cacheadas ~5-15% más ligeras (coste pagado una sola vez). Medición real: foto 750 KB → AVIF 960px ≈100 KB vs WebP ≈175 KB (AVIF ~41% más ligero).
+  - **Frontend** `Img.jsx`: prop React `fetchPriority` (antes `fetchpriority` minúscula). `EditableImage.jsx` ya lo usaba.
+  - NOTA: las ~28k variantes ya cacheadas conservan los ajustes antiguos (q58/method4); para regenerarlas con los nuevos ajustes habría que vaciar `backend/img_cache` y re-ejecutar "Calentar caché" desde Admin (opcional, ahorro modesto).
+
 - **Miniaturas + botón «Responder a {nombre}» en el email del equipo (Resend) — COMPLETADO + VERIFICADO (unit + curl)**:
   - `build_trip_gazetteer.py` ahora extrae `ROUTE_IMAGES` de `allTripsCatalog.js` → cada entrada del `trip_gazetteer.json` incluye `image` (40/40). Regenerado.
   - `server.py`: `TripRef` admite `image`; nuevo `_trip_image_for(route_id)` resuelve la portada desde el gazetteer. `_build_trips_email_value` ahora renderiza una tabla con MINIATURA (52×52, redondeada) + título enlazado por itinerario (imagen del payload si llega, si no fallback del gazetteer).
   - Nuevo `_reply_cta_html(name,email,subject,lang)`: botón píldora terracota `mailto:{email}?subject=RE:{asunto}` con etiqueta trilingüe ("Responder a"/"Reply to"/"Répondre à"). `_lead_email_html` acepta `reply_cta`. Cableado en `/api/trip-planner` (asunto = `_planner_subject`) y en `/api/contact-requests`.
   - Frontend `PlannerForm.jsx`: el payload `selected_trips_detail` ahora envía también `image` (de `resolveTripContext`) para que los viajes solo-programa también tengan miniatura.
   - Verificado: builders OK (unit), `POST /api/trip-planner` → 200 y email enviado sin errores en logs.
+
 
 ## Implementado (jun 2026)
 - **Widget de contacto circular SOBRE cada foto en "Estilos de viaje" (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:

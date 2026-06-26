@@ -21,6 +21,37 @@ const isStorageProxy = (url) => /\/api\/files\//.test(url);
 const isUnsplash = (url) => /images\.unsplash\.com/.test(url);
 const isPexels = (url) => /images\.pexels\.com/.test(url);
 
+/* ------------------------------------------------------------------
+   Browser format support, detected once and persisted. Lets the
+   storage-proxy request an EXPLICIT format (`fmt=avif|webp`) so every
+   variant is a distinct, fully CDN-cacheable URL (no `Vary` cache
+   fragmentation). Until the async AVIF probe resolves on a first-ever
+   visit we emit `fmt=auto` so the backend negotiates via the Accept
+   header (still correct + AVIF-capable). WebP is assumed when AVIF is
+   unsupported (universally available in every browser since ~2020). */
+let _avif = null; // null = unknown, true/false once known
+try {
+  const s = typeof localStorage !== "undefined" && localStorage.getItem("xt_avif");
+  if (s === "1") _avif = true;
+  else if (s === "0") _avif = false;
+} catch { /* ignore (private mode / SSR) */ }
+
+const _AVIF_PROBE =
+  "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAEAAAABAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQAMAAAAABNjb2xybmNseAACAAIABoAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEDQgMgkQAAAAB8dSLfI=";
+
+if (_avif === null && typeof window !== "undefined" && typeof Image !== "undefined") {
+  const probe = new Image();
+  const done = (ok) => {
+    _avif = ok;
+    try { localStorage.setItem("xt_avif", ok ? "1" : "0"); } catch { /* ignore */ }
+  };
+  probe.onload = () => done(probe.width > 0 && probe.height > 0);
+  probe.onerror = () => done(false);
+  probe.src = _AVIF_PROBE;
+}
+
+const proxyFormat = () => (_avif === true ? "avif" : _avif === false ? "webp" : "auto");
+
 /* Can this URL be width-optimized at all? */
 export const isOptimizable = (url) => {
   if (!url || typeof url !== "string") return false;
@@ -53,8 +84,10 @@ export const optimizedSrc = (url, w) => {
   if (isPexels(url)) {
     return withParams(url, { auto: "compress", cs: "tinysrgb", w });
   }
-  // Our storage proxy → backend resize + format negotiation.
-  return withParams(url, { w, fmt: "auto" });
+  // Our storage proxy → backend resize + format negotiation. Request an
+  // explicit modern format once detected (CDN-cacheable per format), falling
+  // back to server-side Accept negotiation (`auto`) on a first-ever visit.
+  return withParams(url, { w, fmt: proxyFormat() });
 };
 
 /* A srcSet string ("url 320w, url 640w, …") or undefined if not optimizable. */

@@ -2664,6 +2664,24 @@ async def list_files(limit: int = 60, skip: int = 0, q: Optional[str] = None, ta
                 "error": "files-listing-unavailable"}
 
 
+# --- Encoder tuning (env-configurable) -----------------------------------
+# Quality is shared by on-the-fly and warm/offline encodes; the encode EFFORT
+# differs: on-the-fly favours latency (fast), warm favours smaller files (slow,
+# paid only once because variants are cached on disk).
+def _env_int(name, default):
+    try:
+        return int(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+AVIF_QUALITY = _env_int("IMG_AVIF_QUALITY", 55)        # ~visually lossless for photos
+WEBP_VARIANT_QUALITY = _env_int("IMG_WEBP_QUALITY", 80)
+AVIF_SPEED_ONTHEFLY = _env_int("IMG_AVIF_SPEED", 8)    # 0=best/slowest … 10=fastest
+AVIF_SPEED_WARM = _env_int("IMG_AVIF_SPEED_WARM", 6)   # slower → ~10-15% smaller, cached once
+WEBP_METHOD_ONTHEFLY = _env_int("IMG_WEBP_METHOD", 4)  # 0=fast … 6=best
+WEBP_METHOD_WARM = _env_int("IMG_WEBP_METHOD_WARM", 6)
+
+
 def _encode_variant(data, content_type, width, target, mime_map):
     """CPU-bound: decode → optional downscale → re-encode to the target
     modern format. Runs in a worker thread (asyncio.to_thread) so a burst
@@ -2695,13 +2713,14 @@ def _encode_variant(data, content_type, width, target, mime_map):
             if img.mode not in ("RGB", "RGBA"):
                 img = img.convert("RGBA" if "A" in img.getbands() else "RGB")
             if save_fmt == "AVIF":
-                # AVIF q~58 is perceptually on par with WebP q80 but ~30% lighter.
-                # speed=8 keeps the (first-request) encode snappy; cached after.
-                save_kwargs = {"quality": 58, "speed": 8}
+                # AVIF at this quality is perceptually on par with WebP q80 but
+                # ~30% lighter. speed=8 keeps the (first-request) encode snappy;
+                # cached on disk afterwards.
+                save_kwargs = {"quality": AVIF_QUALITY, "speed": AVIF_SPEED_ONTHEFLY}
             else:
                 # method=4 → fast WebP encode (was 6, which is ~10× slower on
                 # large originals); near-identical size, cached on disk anyway.
-                save_kwargs = {"quality": 80, "method": 4}
+                save_kwargs = {"quality": WEBP_VARIANT_QUALITY, "method": WEBP_METHOD_ONTHEFLY}
             img.save(out, format=save_fmt, **save_kwargs)
             return out.getvalue(), mime_map[target], target, True
         # Resize-only (no modern target) → keep original format, still cache.
@@ -2777,7 +2796,10 @@ async def download_file(
     key = hashlib.sha1(f"{path}|{width}|{ext}".encode("utf-8")).hexdigest()
     cache_file = IMG_CACHE_DIR / f"{key}.{ext}"
     mime_map = {"avif": "image/avif", "webp": "image/webp"}
-    long_cache = {"Cache-Control": "public, max-age=31536000, immutable"}
+    # `Vary: Accept` so a shared/CDN cache (Cloudflare) never serves an AVIF
+    # variant to a client that only advertised WebP (or vice-versa) on the
+    # `fmt=auto` negotiated path. Harmless for explicit `fmt=avif|webp`.
+    long_cache = {"Cache-Control": "public, max-age=31536000, immutable", "Vary": "Accept"}
     if cache_file.exists():
         return Response(
             content=cache_file.read_bytes(),
@@ -2800,7 +2822,7 @@ async def download_file(
         return Response(
             content=result,
             media_type=out_mime,
-            headers={"Cache-Control": "public, max-age=86400"},
+            headers={"Cache-Control": "public, max-age=86400", "Vary": "Accept"},
         )
     # Persist the content-addressed variant for instant future hits.
     cache_file = IMG_CACHE_DIR / f"{key}.{used_ext}"
@@ -2899,9 +2921,9 @@ def _encode_all_variants(data: bytes, specs):
                 resized[width] = im
             out = BytesIO()
             if fmt == "avif":
-                resized[width].save(out, format="AVIF", quality=58, speed=8)
+                resized[width].save(out, format="AVIF", quality=AVIF_QUALITY, speed=AVIF_SPEED_WARM)
             else:
-                resized[width].save(out, format="WEBP", quality=80, method=4)
+                resized[width].save(out, format="WEBP", quality=WEBP_VARIANT_QUALITY, method=WEBP_METHOD_WARM)
             results[i] = out.getvalue()
         except Exception:
             results[i] = None
