@@ -4,6 +4,7 @@ import { Camera } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import xMonogram from "@/assets/monograma-x-white.png";
+import ImageContactBubble from "@/components/ImageContactBubble";
 
 /* ============================================================
    SectionGallery — Editorial mosaic gallery used inside the
@@ -33,6 +34,7 @@ export default function SectionGallery({
   images = [],
   accent = "#C16542",
   testid = "section-gallery",
+  showContact = false,
 }) {
   const { lang } = useLanguage();
 
@@ -123,6 +125,12 @@ export default function SectionGallery({
                   {pickLang(img.caption, lang)}
                 </span>
               </span>
+
+              {/* Quick contact bubble — top-left of the featured image.
+                  Same design/behaviour as the rest of the site. */}
+              {showContact && i === 0 && (
+                <ImageContactBubble slug={`${testid}-${i}`} align="left" vertical="top" zClass="z-[10]" />
+              )}
             </figure>
           ))}
         </div>
