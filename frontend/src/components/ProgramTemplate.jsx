@@ -677,9 +677,8 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
     { id: "contact",     label: t.nav_contact },
   ];
 
-  // Pilot reorder (only this program for now):
+  // Section order applied to ALL programs:
   // Description → Quick → Audio → Map.
-  const reorderSections = routeId === "tourAtlasDesierto67";
   const audioSection = (
     <VideoSection
       testid={`program-audio-${routeId || program.duration_key}`}
@@ -708,22 +707,15 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
           : null;
         const descSection = <Description vt={vt} t={t} program={program} variant={variant} />;
         const quickSection = <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />;
-        return reorderSections ? (
+        return (
           <>
             {descSection}
             {quickSection}
             {audioSection}
             {mapSection}
           </>
-        ) : (
-          <>
-            {mapSection}
-            {descSection}
-            {quickSection}
-          </>
         );
       })()}
-      {reorderSections ? null : audioSection}
       <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} routeId={routeId} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <TripPostcards routeId={routeId} />
