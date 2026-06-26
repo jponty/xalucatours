@@ -195,7 +195,6 @@ export default function PlannerForm() {
   const PREFILL_LABEL = { es: "Estás planificando", en: "You're planning", fr: "Vous planifiez" };
   const REVIEW_LABEL = { es: "Ver el itinerario", en: "View the itinerary", fr: "Voir l'itinéraire" };
   const DISMISS_LABEL = { es: "Quitar viaje seleccionado", en: "Remove selected trip", fr: "Retirer le voyage sélectionné" };
-  const [prefillDismissed, setPrefillDismissed] = useState(false);
 
   const [form, setForm] = useState({
     dateMode: "range",
@@ -222,6 +221,15 @@ export default function PlannerForm() {
   const toggleActivity = toggleArrayItem("activities");
   const toggleTrip     = toggleArrayItem("selectedTrips");
   const togglePref     = toggleArrayItem("preferredContact");
+
+  // Banner reflects the LIVE selection: every selected itinerary,
+  // resolved (catalog + program registry) and updated on add/remove.
+  const selectedTripsCtx = useMemo(
+    () => form.selectedTrips.map((id) => resolveTripContext(id, lang)).filter(Boolean),
+    [form.selectedTrips, lang],
+  );
+  const removeTrip = (id) =>
+    setForm((f) => ({ ...f, selectedTrips: f.selectedTrips.filter((x) => x !== id) }));
 
   const validate = () => {
     const e = {};
@@ -318,63 +326,67 @@ export default function PlannerForm() {
           className="space-y-16"
           noValidate
         >
-          {/* Pre-filled trip confirmation banner (arrives with ?trip=).
-              Clickable → back to the trip page; X → discard preselection. */}
-          {prefillTrip && !prefillDismissed && (
+          {/* Selection banner — live list of every selected itinerary.
+              Stays in sync with the "Suggested itineraries" picker. */}
+          {selectedTripsCtx.length > 0 && (
             <div
               data-testid="plan-prefill-banner"
-              className="relative flex items-stretch bg-[#F8F2E6] border border-[#C16542]/25"
+              className="bg-[#F8F2E6] border border-[#C16542]/25 px-3 py-4 md:px-4 md:py-5"
               style={{ borderLeft: "3px solid #C16542" }}
             >
-              <Link
-                to={pathFor(lang, prefillTrip.routeId)}
-                data-testid="plan-prefill-link"
-                className="group flex items-center gap-4 flex-1 min-w-0 px-5 py-4 md:px-6 md:py-5 hover:bg-[#F2EBE1] transition-colors"
-              >
-                {prefillTrip.image && (
-                  <img
-                    src={prefillTrip.image}
-                    alt=""
-                    loading="lazy"
-                    className="hidden sm:block w-16 h-16 object-cover shrink-0"
-                  />
-                )}
-                <div className="min-w-0">
-                  <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
-                    <Compass className="w-3.5 h-3.5" strokeWidth={1.7} />
-                    {pick(PREFILL_LABEL, lang)}
-                  </span>
-                  <p className="font-serif-x text-lg md:text-xl text-[#2C2621] leading-snug mt-1">
-                    <span className="align-middle">{prefillTrip.title}</span>
-                    {prefillTrip.durationLabel && (
-                      <span className="text-[#5C5248] text-sm md:text-base align-middle">
-                        {" · "}{prefillTrip.durationLabel}
-                      </span>
-                    )}
-                  </p>
-                  <span className="mt-1.5 inline-flex items-center gap-1 text-[10px] tracking-[0.18em] uppercase text-[#C16542] opacity-80 group-hover:opacity-100 transition-opacity">
-                    {pick(REVIEW_LABEL, lang)}
-                    <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" strokeWidth={1.8} />
-                  </span>
-                </div>
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setForm((f) => ({
-                    ...f,
-                    regions: f.regions.filter((r) => r !== prefillTrip.region),
-                    selectedTrips: f.selectedTrips.filter((id) => id !== prefillTrip.routeId),
-                  }));
-                  setPrefillDismissed(true);
-                }}
-                data-testid="plan-prefill-dismiss"
-                aria-label={pick(DISMISS_LABEL, lang)}
-                title={pick(DISMISS_LABEL, lang)}
-                className="shrink-0 self-start m-2 inline-flex items-center justify-center w-8 h-8 rounded-full text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] transition-colors"
-              >
-                <X className="w-4 h-4" strokeWidth={1.8} />
-              </button>
+              <div className="flex items-center justify-between gap-3 px-2 mb-3">
+                <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
+                  <Compass className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  {pick(PREFILL_LABEL, lang)}
+                </span>
+                <span
+                  data-testid="plan-prefill-count"
+                  className="text-[10px] tracking-[0.28em] uppercase text-[#A07042]"
+                >
+                  {selectedTripsCtx.length}
+                </span>
+              </div>
+              <ul className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                {selectedTripsCtx.map((t) => (
+                  <li
+                    key={t.routeId}
+                    data-testid={`plan-prefill-item-${t.routeId}`}
+                    className="flex items-stretch border border-[#2C2621]/10 bg-[#FDFBF7]/50"
+                  >
+                    <Link
+                      to={pathFor(lang, t.routeId)}
+                      data-testid={`plan-prefill-link-${t.routeId}`}
+                      className="group flex items-center gap-3 flex-1 min-w-0 px-3 py-2.5 md:px-4 hover:bg-[#F2EBE1] transition-colors"
+                    >
+                      {t.image && (
+                        <img src={t.image} alt="" loading="lazy" className="hidden sm:block w-12 h-12 object-cover shrink-0" />
+                      )}
+                      <div className="min-w-0">
+                        <p className="font-serif-x text-[15px] md:text-base text-[#2C2621] leading-snug truncate">
+                          <span className="align-middle">{t.title}</span>
+                          {t.durationLabel && (
+                            <span className="text-[#5C5248] text-xs md:text-sm align-middle">{" · "}{t.durationLabel}</span>
+                          )}
+                        </p>
+                        <span className="inline-flex items-center gap-1 text-[9px] tracking-[0.16em] uppercase text-[#C16542] opacity-80 group-hover:opacity-100 transition-opacity">
+                          {pick(REVIEW_LABEL, lang)}
+                          <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" strokeWidth={1.8} />
+                        </span>
+                      </div>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => removeTrip(t.routeId)}
+                      data-testid={`plan-prefill-remove-${t.routeId}`}
+                      aria-label={pick(DISMISS_LABEL, lang)}
+                      title={pick(DISMISS_LABEL, lang)}
+                      className="shrink-0 self-center mr-1.5 inline-flex items-center justify-center w-8 h-8 rounded-full text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] transition-colors"
+                    >
+                      <X className="w-4 h-4" strokeWidth={1.8} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
