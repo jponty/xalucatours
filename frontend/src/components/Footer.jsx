@@ -7,6 +7,8 @@ import { pathFor, rewriteForLang, SUPPORTED_LANGS } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
+import xMonogram from "@/assets/monograma-x-white.png";
 
 const FOOTER_LANGS = [
   { code: "es", label: "ES" },
@@ -47,11 +49,26 @@ export const Footer = () => {
   return (
     <footer data-testid="site-footer" className="relative bg-[#1A1513] text-[#FDFBF7] overflow-hidden">
       <div className="absolute inset-0 berber-bg-cross opacity-60" aria-hidden="true" />
+      {/* Oversized X monogram bleeding into the bottom-right border —
+          discreet brand watermark, behind all content. */}
+      <img
+        src={xMonogram}
+        alt=""
+        aria-hidden="true"
+        data-testid="footer-monogram"
+        className="pointer-events-none select-none absolute -bottom-16 -right-12 md:-bottom-24 md:-right-16 w-[20rem] md:w-[32rem] opacity-[0.05] z-0"
+      />
       <BerberZigzagDivider className="opacity-60" />
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           <div className="md:col-span-5">
+            <img
+              src={grupXalucaLogo}
+              alt="Xaluca"
+              data-testid="footer-logo"
+              className="w-14 h-14 object-contain mb-5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
+            />
             <EditableText
               slot="footer.brand"
               defaults={{ es: "Xaluca · Tours", en: "Xaluca · Tours", fr: "Xaluca · Tours" }}
