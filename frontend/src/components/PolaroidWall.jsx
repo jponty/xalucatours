@@ -17,6 +17,8 @@ import { Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import Img from "@/components/Img";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import xMonogram from "@/assets/monograma-x-white.png";
 
 const COPY = {
   overline: { es: "Memorias de viaje", en: "Travel memories", fr: "Souvenirs de voyage" },
@@ -85,13 +87,26 @@ const Polaroid = ({ photo }) => (
       className="pointer-events-none absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-5 bg-[#C16542]/25 border border-[#C16542]/35 rotate-[-2deg]"
       aria-hidden="true"
     />
-    <div className="overflow-hidden bg-[#C16542]/5">
+    <div className="relative overflow-hidden bg-[#C16542]/5">
       <Img
         src={photo.src}
         alt=""
         width={520}
         sizes="(max-width: 640px) 68vw, 290px"
         className="block w-full aspect-[4/5] object-cover"
+      />
+      {/* Xaluca brand overlay — logo top-right + "X" monogram bottom-right,
+          same style/position as the rest of the site's images. */}
+      <XalucaLogoBadge
+        className="top-3 right-3 w-9 h-9 md:w-10 md:h-10"
+        testid={`polaroid-${photo.id}-logo`}
+      />
+      <img
+        src={xMonogram}
+        alt=""
+        aria-hidden="true"
+        data-testid={`polaroid-${photo.id}-monogram`}
+        className="pointer-events-none select-none absolute bottom-3 right-3 w-9 h-9 md:w-10 md:h-10 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)] z-[3]"
       />
     </div>
     <figcaption className="text-center mt-2.5 px-1">
