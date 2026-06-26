@@ -1302,6 +1302,13 @@ MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB (originals are compressed server-si
 from io import BytesIO as _BytesIO
 from PIL import Image as _PILImage, ImageOps as _PILImageOps
 
+# Our library masters are curated, trusted images (Pexels/Unsplash imports) and
+# some are extremely high-resolution (>178 MP). Pillow's default decompression-
+# bomb guard raises on those, which `optimize_image` caught and silently treated
+# as "skipped" — so the very giants we most need to shrink never got optimized.
+# Raise the ceiling generously (these are trusted, processed one/two at a time).
+_PILImage.MAX_IMAGE_PIXELS = None
+
 MAX_IMAGE_WIDTH = 2000   # px — downscale anything wider, never upscale
 WEBP_QUALITY = 80        # sweet spot: visually lossless, light files
 _EXT_BY_MIME = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif"}
@@ -3283,9 +3290,18 @@ async def _run_reoptimize_library():
                         # and be RESUMABLE: a restart (e.g. after an OOM) picks
                         # up where it left off instead of re-downloading and
                         # re-encoding the whole library from scratch forever.
+                        # Also refresh size/content_type to the ACTUAL stored
+                        # bytes: the binary may already have been optimized (e.g.
+                        # by another environment sharing this object storage),
+                        # so this corrects stale DB metadata (and the dashboard
+                        # totals) instead of leaving an inflated old size.
                         await db.files.update_many(
                             {"storage_path": path},
-                            {"$set": {"reoptimized_at": datetime.now(timezone.utc).isoformat()}},
+                            {"$set": {
+                                "content_type": ctype,
+                                "size": old_size,
+                                "reoptimized_at": datetime.now(timezone.utc).isoformat(),
+                            }},
                         )
                         _reopt_state["skipped"] += 1
                     else:
