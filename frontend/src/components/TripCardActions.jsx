@@ -9,8 +9,9 @@
 ============================================================ */
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Compass, Headset, Phone, CalendarClock } from "lucide-react";
+import { Compass, Headset, Phone, CalendarClock, Heart } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { pathFor } from "@/lib/routes";
 import { openChatbaseAssistant } from "@/lib/chatbase";
 import ShareTripButton from "@/components/ShareTripButton";
@@ -19,6 +20,8 @@ const PLAN_LABEL = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifi
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 const CALL_LABEL = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
 const APPOINTMENT_LABEL = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
+const FAV_LABEL = { es: "Añadir a favoritos", en: "Add to favourites", fr: "Ajouter aux favoris" };
+const FAV_LABEL_ON = { es: "Quitar de favoritos", en: "Remove from favourites", fr: "Retirer des favoris" };
 const CALL_TEL = "+34937268366";
 
 const SIZES = {
@@ -35,7 +38,10 @@ export default function TripCardActions({
   className = "",
 }) {
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const s = SIZES[size] || SIZES.sm;
+  const fav = routeId ? isFavorite(routeId) : false;
+  const tripQs = routeId ? `?trip=${routeId}` : "";
   const shareUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}${routeId ? pathFor(lang, routeId) : window.location.pathname}`
@@ -47,6 +53,7 @@ export default function TripCardActions({
       ? `${box} border border-[#FDFBF7]/30 text-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] hover:border-[#FDFBF7]`
       : `${box} border border-[#2C2621]/20 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621]`;
   const plan = `${box} bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7]`;
+  const favClass = fav ? `${box} border border-[#C16542] bg-[#C16542]/10 text-[#C16542]` : outline;
 
   return (
     <div
@@ -55,7 +62,7 @@ export default function TripCardActions({
     >
       <button
         type="button"
-        onClick={() => navigate(pathFor(lang, "planTrip"))}
+        onClick={() => navigate(`${pathFor(lang, "planTrip")}${tripQs}`)}
         data-testid={`${testidBase}-plan`}
         aria-label={pick(PLAN_LABEL, lang)}
         title={pick(PLAN_LABEL, lang)}
@@ -84,7 +91,7 @@ export default function TripCardActions({
       </a>
       <button
         type="button"
-        onClick={() => navigate(pathFor(lang, "appointment"))}
+        onClick={() => navigate(`${pathFor(lang, "appointment")}${tripQs}`)}
         data-testid={`${testidBase}-appointment`}
         aria-label={pick(APPOINTMENT_LABEL, lang)}
         title={pick(APPOINTMENT_LABEL, lang)}
@@ -98,6 +105,17 @@ export default function TripCardActions({
         triggerClassName={outline}
         iconClassName={s.icon}
       />
+      <button
+        type="button"
+        onClick={() => routeId && toggleFavorite(routeId)}
+        data-testid={`${testidBase}-favorite`}
+        aria-label={pick(fav ? FAV_LABEL_ON : FAV_LABEL, lang)}
+        title={pick(fav ? FAV_LABEL_ON : FAV_LABEL, lang)}
+        aria-pressed={fav}
+        className={favClass}
+      >
+        <Heart className={s.icon} strokeWidth={1.7} fill={fav ? "currentColor" : "none"} />
+      </button>
     </div>
   );
 }
