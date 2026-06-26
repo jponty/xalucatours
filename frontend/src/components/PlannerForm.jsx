@@ -14,7 +14,7 @@ import FromPrice from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
-import { resolveTripContext, getTripParam } from "@/lib/tripContext";
+import { resolveTripContext, getTripParams } from "@/lib/tripContext";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 
 /* ============================================================
@@ -189,8 +189,14 @@ export default function PlannerForm() {
   const { lang } = useLanguage();
   const tr = (k) => pick(COPY[k], lang);
 
-  const tripParam = useMemo(() => getTripParam(), []);
-  const prefillTrip = useMemo(() => resolveTripContext(tripParam, lang), [tripParam, lang]);
+  const initialTrips = useMemo(() => {
+    const resolved = getTripParams().map((id) => resolveTripContext(id, lang)).filter(Boolean);
+    return {
+      routeIds: resolved.map((t) => t.routeId),
+      regions: [...new Set(resolved.map((t) => t.region).filter(Boolean))],
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const PREFILL_LABEL = { es: "Estás planificando", en: "You're planning", fr: "Vous planifiez" };
   const REVIEW_LABEL = { es: "Ver el itinerario", en: "View the itinerary", fr: "Voir l'itinéraire" };
@@ -201,8 +207,8 @@ export default function PlannerForm() {
     startDate: "", endDate: "", exactDate: "", flexMonth: "",
     adults: 2, children: 0,
     accommodation: "superior",
-    regions: prefillTrip?.region ? [prefillTrip.region] : [],
-    selectedTrips: tripParam && prefillTrip ? [tripParam] : [],
+    regions: initialTrips.regions,
+    selectedTrips: initialTrips.routeIds,
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
     preferredContact: [],

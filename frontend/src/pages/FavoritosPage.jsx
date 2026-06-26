@@ -21,6 +21,7 @@ const COPY = {
     fr: "Vos itinéraires favoris, réunis en un seul endroit pour y revenir quand vous le souhaitez.",
   },
   count: { es: "guardados", en: "saved", fr: "enregistrés" },
+  planAll: { es: "Planificar con mis favoritos", en: "Plan with my favourites", fr: "Planifier avec mes favoris" },
   view: { es: "Ver el viaje", en: "View the trip", fr: "Voir le voyage" },
   remove: { es: "Quitar de favoritos", en: "Remove from favourites", fr: "Retirer des favoris" },
   emptyTitle: { es: "Aún no has guardado ningún viaje", en: "You haven't saved any trips yet", fr: "Vous n'avez encore enregistré aucun voyage" },
@@ -90,9 +91,19 @@ export default function FavoritosPage() {
           </h1>
           <p className="text-base md:text-lg text-[#5C5248] mt-5 leading-relaxed">{pick(COPY.subtitle, lang)}</p>
           {count > 0 && (
-            <p data-testid="favorites-page-count" className="overline text-[#A07042] mt-6">
-              {count} {pick(COPY.count, lang)}
-            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-5">
+              <p data-testid="favorites-page-count" className="overline text-[#A07042]">
+                {count} {pick(COPY.count, lang)}
+              </p>
+              <Link
+                to={`${pathFor(lang, "planTrip")}?trips=${favorites.join(",")}`}
+                data-testid="favorites-plan-all"
+                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              >
+                <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+                {pick(COPY.planAll, lang)}
+              </Link>
+            </div>
           )}
         </div>
 

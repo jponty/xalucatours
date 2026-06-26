@@ -25,6 +25,17 @@ export const getTripParam = () => {
   return new URLSearchParams(window.location.search).get("trip");
 };
 
+/* Read one or several routeIds from the URL:
+   ?trips=a,b,c (preferred for collections) or ?trip=a (single). */
+export const getTripParams = () => {
+  if (typeof window === "undefined") return [];
+  const sp = new URLSearchParams(window.location.search);
+  const multi = sp.get("trips");
+  if (multi) return multi.split(",").map((s) => s.trim()).filter(Boolean);
+  const single = sp.get("trip");
+  return single ? [single] : [];
+};
+
 export const resolveTripContext = (routeId, lang) => {
   if (!routeId) return null;
 
