@@ -2858,11 +2858,13 @@ def _env_flag(name, default=False):
     return v.strip().lower() in ("1", "true", "yes", "on")
 
 WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", True)
-# Auto-shrink oversized stored masters in the background on boot (sequential,
-# throttled, idempotent). Default ON so production giants self-heal without the
-# manual admin button. Runs BEFORE the warm-up (serialized) so memory-heavy
-# decodes never overlap. Disable with IMG_REOPT_ON_STARTUP=false.
-REOPT_ON_STARTUP = _env_flag("IMG_REOPT_ON_STARTUP", True)
+# Auto-shrink oversized stored masters on boot. DEFAULT OFF (manual-only):
+# re-optimization is a one-time catch-up for legacy oversized masters (new
+# uploads are already optimized at upload time), so running it on EVERY boot
+# just risks hammering a constrained container in a loop. Run it on demand from
+# the Admin panel ("Re-optimizar Biblioteca") during low traffic instead.
+# Set IMG_REOPT_ON_STARTUP=true to re-enable the automatic boot run.
+REOPT_ON_STARTUP = _env_flag("IMG_REOPT_ON_STARTUP", False)
 try:
     _WARM_WORKERS = max(1, int(os.environ.get("IMG_WARM_WORKERS", "1")))
 except (TypeError, ValueError):
@@ -4151,9 +4153,10 @@ async def startup_storage():
     # Background startup maintenance (after a boot delay, all wrapped so it can
     # NEVER crash the app). Runs SEQUENTIALLY — re-optimize first, then warm-up —
     # so the two memory-heavy jobs never overlap and can't double peak RAM:
-    #   1) IMG_REOPT_ON_STARTUP (default ON): shrink oversized masters in place
-    #      (one at a time, throttled, idempotent via `reoptimized_at`) so giant
-    #      PNG/JPEG originals self-heal to bounded WebP — no manual button needed.
+    #   1) IMG_REOPT_ON_STARTUP (default OFF — manual-only): shrink oversized
+    #      masters in place (one at a time, throttled, idempotent via
+    #      `reoptimized_at`). Run on demand from the Admin panel instead of on
+    #      every boot, so a constrained container is never hammered in a loop.
     #   2) IMG_WARM_ON_STARTUP (default ON): warm AVIF/WebP variants (skips any
     #      remaining >WARM_MAX_MASTER_BYTES master, so it can't OOM).
     async def _startup_maintenance():

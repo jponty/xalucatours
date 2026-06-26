@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Re-optimización ahora MANUAL por defecto + diagnóstico del error `<!DOCTYPE` en /admin de producción (jun 2026) — COMPLETADO (pendiente REDEPLOY)**:
+  - Diagnóstico (con token de admin contra producción): el error `Unexpected token '<', "<!DOCTYPE"` al entrar en `/admin` de prod NO es de auth ni de URL (login prod verificado: 200+token; bundle prod tiene `https://xalucatravel.com/api` correcto; sin service worker). Es un SÍNTOMA: el job "Re-optimizar Biblioteca" desplegado (código viejo, no idempotente) corría descontrolado (`30/2939`, lentísimo, reiniciando el backend en bucle). Cuando el backend se satura/reinicia, `/api/*` devuelve transitoriamente el `index.html` del SPA (HTML 200) → de ahí el error de parseo JSON.
+  - Cambio: `REOPT_ON_STARTUP` por defecto **False** (manual-only). La re-optimización es una puesta al día única (los originales nuevos ya se optimizan al subir), así que ya NO se ejecuta en cada arranque; se lanza desde el panel Admin en horas valle. El warm-up (`WARM_ON_STARTUP`) sigue ON (ligero, idempotente, necesario para velocidad). Reactivable con `IMG_REOPT_ON_STARTUP=true`.
+  - Hardening frontend `AdminPage.doLogin`: distingue 401 (contraseña incorrecta) de respuesta no-JSON (backend no disponible) → muestra "El servidor no está disponible ahora mismo…" en vez del error críptico.
+  - No requiere subir CPU/RAM: la causa era el bucle de código, no falta de recursos.
+
 - **Fix "Re-optimizar Biblioteca" se quedaba bloqueado / nunca terminaba en producción (jun 2026) — COMPLETADO + VERIFICADO (curl, convergencia)**:
   - Causa raíz: al OMITIR una imagen ya óptima (no se puede reducir ≥10%) NO se marcaba `reoptimized_at`. En cada ejecución/arranque volvía a descargar+re-encodear las MISMAS ~2953 imágenes; si el contenedor hacía OOM y reiniciaba, empezaba de cero → no convergía nunca ("se queda en un número y no avanza"). Solo subía "Omitidas" porque la biblioteca ya está casi toda en WebP ≤2000px.
   - Fix en `server.py` `_run_reoptimize_library._reopt_one`: las imágenes OMITIDAS ahora también se marcan `reoptimized_at` → el proceso CONVERGE y es REANUDABLE tras reinicios (cada pasada solo trata lo nuevo/pendiente). Verificado: 1ª pasada marca 59/59 → 2ª pasada `total=0` e instantánea.
