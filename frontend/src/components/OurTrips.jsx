@@ -6,6 +6,7 @@ import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import ImageContactBubble from "@/components/ImageContactBubble";
 
 /* ============================================================
    OurTrips — editorial bento grid of trip categories
@@ -184,25 +185,27 @@ const FeaturedCard = ({ trip, lang }) => {
 
 const SmallCard = ({ trip, lang }) => {
   const I = ICONS[trip.icon];
+  const to = pathFor(lang, trip.routeId);
   return (
-    <Link
-      to={pathFor(lang, trip.routeId)}
+    <div
       data-testid={`our-trips-card-${trip.id}`}
-      className="group relative overflow-hidden bg-[#FBF5EA] border border-[#2C2621]/8 hover:border-[#2C2621]/25 transition-colors block"
+      className="group relative overflow-hidden bg-[#FBF5EA] border border-[#2C2621]/8 hover:border-[#2C2621]/25 transition-colors"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-[#1A1513]">
-        <EditableImage
-          slot={`home.trips.${trip.id}`}
-          fallback={trip.image}
-          alt={pick(trip.title, lang)}
-          imgProps={{ loading: "lazy" }}
-          aspectRatio="16/10"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-        />
-        <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-[#1A1513]/10" />
+        <Link to={to} aria-label={pick(trip.title, lang)} className="block absolute inset-0 z-[1]">
+          <EditableImage
+            slot={`home.trips.${trip.id}`}
+            fallback={trip.image}
+            alt={pick(trip.title, lang)}
+            imgProps={{ loading: "lazy" }}
+            aspectRatio="16/10"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+          />
+          <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-[#1A1513]/10" />
+        </Link>
         <XalucaLogoBadge testid={`our-trips-logo-${trip.id}`} />
         {/* Tag */}
-        <span className="absolute top-4 left-4 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image">
+        <span className="absolute top-4 left-4 z-[2] inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7] text-on-image pointer-events-none">
           {I && (
             <span
               className="inline-flex items-center justify-center w-6 h-6 rounded-full"
@@ -213,9 +216,11 @@ const SmallCard = ({ trip, lang }) => {
           )}
           {pick(trip.category, lang)}
         </span>
+        {/* /citaprevia widget — bottom-left of the image, sibling of the link */}
+        <ImageContactBubble slug={`our-trips-${trip.id}`} align="left" />
       </div>
 
-      <div className="p-6 md:p-7">
+      <Link to={to} className="block p-6 md:p-7">
         <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.1] tracking-tight text-[#2C2621]">
           {pick(trip.title, lang)}
         </h3>
@@ -233,8 +238,8 @@ const SmallCard = ({ trip, lang }) => {
             <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.6} />
           </span>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 

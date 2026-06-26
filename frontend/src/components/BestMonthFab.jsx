@@ -4,6 +4,7 @@ import { Sunrise, X, ArrowRight, Sparkles } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { REGIONS, MONTHS } from "@/lib/bestTimeData";
+import { getTripProgram } from "@/lib/tripPrograms";
 
 /* ------------------------------------------------------------------
    BestMonthFab
@@ -20,7 +21,7 @@ const HIDDEN_ROUTES = new Set([
 ]);
 
 /* Map routeId → climate region id from REGIONS. */
-const routeToRegion = (routeId) => {
+export const routeToRegion = (routeId) => {
   if (!routeId) return null;
   const id = routeId.toLowerCase();
 
@@ -78,7 +79,7 @@ const routeToRegion = (routeId) => {
 };
 
 /* Page chrome strings — kept local to keep the component self-contained. */
-const COPY = {
+export const COPY = {
   fab: {
     es: "Mejor mes para mi viaje",
     en: "Best month for my trip",
@@ -104,7 +105,7 @@ const COPY = {
 };
 
 /* Parse "Oct – Apr" English string into 1-12 month indexes (wrap-around aware). */
-const parseBestMonthsEn = (bestEn) => {
+export const parseBestMonthsEn = (bestEn) => {
   if (!bestEn) return [];
   const monthMap = {
     jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
@@ -183,7 +184,7 @@ const DETAIL_HINT = {
 
 /* Mini 12-month bar visualisation — progressive 4-tier colour scale,
    with a hover/tap climate detail line and native tooltips per month. */
-const MonthBar = ({ bestMonths, accent, lang, months }) => {
+export const MonthBar = ({ bestMonths, accent, lang, months }) => {
   const labels = ["E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
   const [hovered, setHovered] = useState(null);
   const byId = (id) => months.find((m) => m.id === id);
@@ -280,6 +281,15 @@ export default function BestMonthFab() {
     }
   }, [open]);
 
+  /* Allow opening the panel from anywhere via a custom event — used by the
+     fixed in-page button inside a trip program's "Información rápida" section,
+     so it opens the same side panel as the hub-page launcher. */
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("xaluca:open-best-month", handler);
+    return () => window.removeEventListener("xaluca:open-best-month", handler);
+  }, []);
+
   const regionId = useMemo(() => routeToRegion(routeId), [routeId]);
   const region = useMemo(
     () => REGIONS.find((r) => r.id === regionId),
@@ -299,10 +309,15 @@ export default function BestMonthFab() {
 
   /* Hide entirely on irrelevant routes or when no region inferred. */
   if (HIDDEN_ROUTES.has(routeId) || !region) return null;
+  /* On single-trip program pages the floating launcher is hidden — the panel
+     is opened from a fixed button inside the "Información rápida" section
+     instead. The panel itself stays mounted so that button can open it. */
+  const isProgram = !!getTripProgram(routeId);
 
   return (
     <>
-      {/* Floating pill button — fixed terracotta, no colour change on any state */}
+      {/* Floating pill button — fixed terracotta. Hidden on program pages. */}
+      {!isProgram && (
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -321,6 +336,7 @@ export default function BestMonthFab() {
           {pick(COPY.fab, lang)}
         </span>
       </button>
+      )}
 
       {/* Overlay + side modal */}
       <div

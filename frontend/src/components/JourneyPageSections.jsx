@@ -12,6 +12,7 @@ import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ImageBrandBadges from "@/components/ImageBrandBadges";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
+import HeroMonogram from "@/components/HeroMonogram";
 import TripCardActions from "@/components/TripCardActions";
 import { useSlotId } from "@/components/slotScope";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
@@ -70,6 +71,7 @@ export const JourneyHero = ({
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35" />
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
     <span className="film-grain" />
+    <HeroMonogram />
 
     <div className="relative z-10 h-full flex flex-col">
       <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
@@ -418,7 +420,7 @@ export const EditorialBlock = ({ block, lang }) => {
         <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/55 to-transparent" />
         <span className="film-grain opacity-40" />
 
-        <ImageBrandBadges testid={`editorial-${block.id}`} />
+        <ImageBrandBadges testid={`editorial-${block.id}`} monogramVariant="large-border" />
 
         <div className="relative h-full max-w-5xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-12 md:pb-16">
           <span className="overline text-[#D4A373] drop-shadow-[0_1px_8px_rgba(26,21,19,0.65)]">

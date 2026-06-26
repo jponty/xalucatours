@@ -19,9 +19,13 @@ import { getTripHighlights } from "@/lib/tripHighlights";
 
    Renders nothing when the route has no registered highlights.
 ============================================================ */
-export const CardHighlightsMarquee = ({ routeId, variant = "flow", testid }) => {
+export const CardHighlightsMarquee = ({ routeId, variant = "flow", testid, fallbackPlaces = [] }) => {
   const { lang } = useLanguage();
-  const places = getTripHighlights(routeId, lang);
+  const fromProgram = getTripHighlights(routeId, lang);
+  // Program highlights when the route maps to a single program; otherwise fall
+  // back to the card's own route places (aggregate/hub routes have no program),
+  // so EVERY card shows the same animated highlights bar.
+  const places = fromProgram.length ? fromProgram : (fallbackPlaces || []);
   if (!places.length) return null;
 
   // Repeat the base list until a single half-track comfortably exceeds a

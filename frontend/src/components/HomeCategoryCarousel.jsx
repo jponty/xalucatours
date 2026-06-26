@@ -187,8 +187,17 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
         />
       </div>
 
-      {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
-      <CardHighlightsMarquee routeId={trip.routeId} testid={`home-trip-highlights-${trip.id}`} />
+      {/* Highlights ticker — mirrors the trip page "Lugares destacados".
+          For aggregate/hub routes with no single program, falls back to the
+          card's own route places so every card shows the animated bar. */}
+      <CardHighlightsMarquee
+        routeId={trip.routeId}
+        testid={`home-trip-highlights-${trip.id}`}
+        fallbackPlaces={(pick(trip.route, lang) || "")
+          .split(/→|·|,|>/)
+          .map((s) => s.trim())
+          .filter(Boolean)}
+      />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
-
+import HeroMonogram from "@/components/HeroMonogram";
 /* ============================================================
    Hero (formerly HeroSlider)
    ----
@@ -90,6 +90,8 @@ export const HeroSlider = () => {
         style={{ background: "radial-gradient(130% 130% at 100% 100%, #1A1513 0%, rgba(26,21,19,0.92) 42%, rgba(26,21,19,0) 75%)" }}
         aria-hidden="true"
       />
+      {/* Xaluca brand monogram integrated into the bottom-right edge (desktop). */}
+      <HeroMonogram zClass="z-[3]" />
 
       {/* ---------- Foreground content ---------- */}
       <div className="relative z-10 h-full flex flex-col">

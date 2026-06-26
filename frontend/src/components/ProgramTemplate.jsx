@@ -2,9 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
-  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset,
+  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset, Sunrise,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { COPY as BEST_MONTH_COPY } from "@/components/BestMonthFab";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { StickyNav } from "@/components/JourneyPageSections";
@@ -18,7 +19,7 @@ import ContactForm from "@/components/ContactForm";
 import HubPeerNav from "@/components/HubPeerNav";
 import RelatedJourneys from "@/components/RelatedJourneys";
 import TripPostcards from "@/components/TripPostcards";
-import { deriveTripRoute } from "@/lib/deriveTripRoute";
+import HeroMonogram from "@/components/HeroMonogram";import { deriveTripRoute } from "@/lib/deriveTripRoute";
 import { useSlotId } from "@/components/EditableSection";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
@@ -200,8 +201,9 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
     <span className="film-grain" />
+    <HeroMonogram />
     <div className="relative z-10 min-h-[100svh] flex flex-col">
-      <div className="flex-1 flex items-end pt-32 md:pt-44 pb-20 md:pb-28">
+      <div className="flex-1 flex items-end pt-28 md:pt-44 pb-32 md:pb-28">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-4xl">
             <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
@@ -310,39 +312,39 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
           ))}
         </div>
 
-        {/* Action buttons — natural CTA block below the description */}
+        {/* Action buttons — single row on desktop; may wrap on tablet/mobile */}
         <div
           data-testid="program-description-actions"
-          className="mt-12 flex flex-wrap items-center justify-center gap-3"
+          className="mt-12 flex flex-wrap lg:flex-nowrap items-center justify-center gap-3 lg:gap-2.5"
         >
           <Link
             to={`${pathFor(lang, "planTrip")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-plan"
-            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+            className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-colors"
           >
-            <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <Compass className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             <C name="desc.cta_plan" multiline={false}
                defaults={{ es: "Planificar viaje", en: "Plan trip", fr: "Planifier le voyage" }} />
           </Link>
           <Link
             to={`${pathFor(lang, "appointment")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-appointment"
-            className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+            className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
           >
-            <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <Calendar className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             <C name="desc.cta_appointment" multiline={false}
                defaults={{ es: "Reservar cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" }} />
           </Link>
           <Link
             to={`${pathFor(lang, "contact")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-contact"
-            className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+            className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
           >
-            <Mail className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <Mail className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             <C name="desc.cta_contact" multiline={false}
                defaults={{ es: "Contactar", en: "Contact", fr: "Contact" }} />
           </Link>
-          <FavoriteButton routeId={routeId} />
+          <FavoriteButton routeId={routeId} className="whitespace-nowrap px-7 lg:px-4 lg:gap-2 tracking-[0.25em] lg:tracking-[0.12em]" />
         </div>
       </div>
     </section>
@@ -385,6 +387,24 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
               <span className="font-serif-x text-[15px] leading-snug text-[#2C2621]">{c.value}</span>
             </div>
           ))}
+        </div>
+
+        {/* Fixed "best month for my trip" button — opens the same side panel
+            as the hub-page launcher (not floating). */}
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            data-testid="program-best-month-trigger"
+            onClick={() => window.dispatchEvent(new CustomEvent("xaluca:open-best-month"))}
+            className="inline-flex items-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] pl-3 pr-5 py-3 transition-colors"
+          >
+            <span className="w-7 h-7 -ml-1 flex items-center justify-center rounded-full bg-[#A35133]">
+              <Sunrise className="w-3.5 h-3.5" strokeWidth={1.7} />
+            </span>
+            <span className="text-[11px] tracking-[0.22em] uppercase font-medium">
+              {pick(BEST_MONTH_COPY.fab, lang)}
+            </span>
+          </button>
         </div>
       </div>
     </section>

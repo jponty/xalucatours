@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import EditableImage from "@/components/EditableImage";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Compass, Heart, Users, Sparkles, Baby, Activity,
@@ -383,6 +385,21 @@ const TripTypesGrid = ({ t, lang }) => (
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent pointer-events-none" />
+                {/* Xaluca brand logo — top-right */}
+                <XalucaLogoBadge
+                  className="top-3 right-3 w-10 h-10 md:w-12 md:h-12"
+                  testid={`bespoke-type-${tt.id}-logo`}
+                />
+                {/* Xaluca "X" border monogram — large, integrated into the
+                    bottom-right edge (same treatment as the rest of the site):
+                    clipped by the container, aspect preserved, low opacity. */}
+                <img
+                  src={xMonogramBorde}
+                  alt=""
+                  aria-hidden="true"
+                  data-testid={`bespoke-type-${tt.id}-monogram`}
+                  className="pointer-events-none select-none absolute bottom-0 right-0 h-[118%] w-auto max-w-none object-contain opacity-[0.22] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] z-[2]"
+                />
                 <span
                   className="absolute top-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#FDFBF7]/95 backdrop-blur-sm"
                   style={{ borderColor: `${tt.accent}66`, color: tt.accent }}
