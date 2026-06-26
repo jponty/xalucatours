@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Auditoría completa de optimización de imágenes en la web + fix de 2 miniaturas (jun 2026) — COMPLETADO + VERIFICADO (testing agent, 8 plantillas de página)**:
+  - Cobertura del pipeline: `optimizedSrc`/`buildSrcSet`/`<Img>`/`<EditableImage>` optimizan `/api/files` (AVIF/WebP+srcset), Unsplash (auto=format+w) y Pexels (auto=+w). El resto (SVG/GIF/data:/`/static/`/póster Mux) se sirve crudo a propósito.
+  - Bug detectado y corregido: `TripContextBanner.jsx` y `PlannerForm.jsx` renderizaban `trip.image` con `<img>` crudo → cargaban la Unsplash a **1600px para mostrarse a 48–64px**. Ahora pasan por `optimizedSrc(img, 128)` → verificado w=128 (PASS).
+  - Auditoría empírica (testing agent) en home, /viajes, hub destino, ficha de viaje, planner (?trip y ?trips), favoritos, contacto: TODAS las fotos reales (héroes, cards, galerías, carruseles, postales, testimonios, banners, miniaturas) se sirven optimizadas. Únicos "flags": tiles de mapa Leaflet (256×256 nativos, no son fotos) y 1 cover de YouTube (`maxresdefault` 1280×720) que es CORRECTO porque su contenedor es grande (~900px); reducirlo dañaría la calidad y YouTube no ofrece AVIF/WebP ahí. No accionable sin pérdida de calidad.
+  - Sin cambios de backend. Frontend compila OK.
+
 - **BUG FIX: imágenes gigantes se "omitían" en vez de optimizarse (jun 2026) — COMPLETADO + VERIFICADO (testing agent, backend+frontend 100%)**:
   - Síntoma (producción): "Re-optimizar Biblioteca" mostraba `Optimizadas: 0, Omitidas: N, ahorrado: 0 MB` pese a haber originales enormes.
   - Causa raíz (reproducida con masters reales de prod vía storage compartido): los originales de muy alta resolución (>178 MP, p. ej. JPEG de 14 MB de Pexels) disparan el guard anti-"decompression bomb" de Pillow → `optimize_image` capturaba la excepción y **devolvía el original → contado como "omitida"** silenciosamente. Por eso los gigantes nunca se optimizaban.
