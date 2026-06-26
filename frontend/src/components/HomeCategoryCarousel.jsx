@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Clock, Compass, MapPin, Users } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
@@ -172,13 +172,11 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
                 />
               </span>
             )}
-            <span
-              className="inline-flex items-center justify-center w-8 h-8 border transition-all duration-300 group-hover:bg-[#2C2621] group-hover:text-[#FDFBF7]"
-              style={{ borderColor: `${tone.border}26`, color: tone.ink }}
+            <ArrowUpRight
+              className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542] ${isDark ? "text-[#FDFBF7]" : "text-[#2C2621]"}`}
+              strokeWidth={1.6}
               aria-hidden="true"
-            >
-              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-            </span>
+            />
           </div>
         </div>
       </Link>

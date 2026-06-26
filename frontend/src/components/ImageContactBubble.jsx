@@ -50,6 +50,7 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
       data-testid={`image-contact-bubble-${slug}`}
       data-open={open ? "true" : "false"}
       onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => e.stopPropagation()}
     >
       {/* Ball toggle (always visible) */}
       <button

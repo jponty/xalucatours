@@ -20,7 +20,8 @@ import EditableText from "@/components/EditableText";
 import Img from "@/components/Img";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import PassportStamp from "@/components/PassportStamp";
-import xMonogram from "@/assets/monograma-x-white.png";
+import ImageContactBubble from "@/components/ImageContactBubble";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
 
 const COPY = {
   overline: { es: "Memorias de viaje", en: "Travel memories", fr: "Souvenirs de voyage" },
@@ -186,18 +187,23 @@ const Polaroid = ({ photo, active, onSelect, lang }) => (
         sizes="(max-width: 640px) 68vw, 290px"
         className="block w-full aspect-[4/5] object-cover"
       />
-      {/* Xaluca brand overlay — logo top-right + "X" monogram bottom-right */}
+      {/* Large Xaluca "X" monogram integrated into the bottom-right edge of the
+          frame — a discreet, partially-clipped brand watermark (same treatment
+          as the footer's corner monogram). */}
+      <img
+        src={xMonogramBorde}
+        alt=""
+        aria-hidden="true"
+        data-testid={`polaroid-${photo.id}-monogram`}
+        className="pointer-events-none select-none absolute bottom-0 right-0 h-[120%] w-auto object-contain opacity-[0.22] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] z-[2]"
+      />
+      {/* Xaluca brand logo — top-right corner */}
       <XalucaLogoBadge
         className="top-3 right-3 w-9 h-9 md:w-10 md:h-10"
         testid={`polaroid-${photo.id}-logo`}
       />
-      <img
-        src={xMonogram}
-        alt=""
-        aria-hidden="true"
-        data-testid={`polaroid-${photo.id}-monogram`}
-        className="pointer-events-none select-none absolute bottom-3 right-3 w-9 h-9 md:w-10 md:h-10 object-contain opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)] z-[3]"
-      />
+      {/* Appointment (/citaprevia) widget — inside the image, interior-left */}
+      <ImageContactBubble slug={`polaroid-${photo.id}`} align="left" />
     </div>
 
     <figcaption className="text-center mt-2.5 px-1">
