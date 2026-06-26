@@ -278,7 +278,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
   );
 };
 
-const Description = ({ vt, t, program, variant, lang }) => {
+const Description = ({ vt, t, program, variant, lang, routeId }) => {
   const descAll = metaAllLangs(program, variant, "description");
   const descLen = Array.isArray(vt.description) ? vt.description.length : 0;
   return (
@@ -315,7 +315,7 @@ const Description = ({ vt, t, program, variant, lang }) => {
           className="mt-12 flex flex-wrap items-center justify-center gap-3"
         >
           <Link
-            to={pathFor(lang, "planTrip")}
+            to={`${pathFor(lang, "planTrip")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-plan"
             className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
@@ -739,7 +739,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
         const mapSection = tripRoute && tripRoute.length >= 2
           ? <TripRouteMap route={tripRoute} days={program.days} routeId={routeId} />
           : null;
-        const descSection = <Description vt={vt} t={t} program={program} variant={variant} lang={lang} />;
+        const descSection = <Description vt={vt} t={t} program={program} variant={variant} lang={lang} routeId={routeId} />;
         const quickSection = <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />;
         return (
           <>
