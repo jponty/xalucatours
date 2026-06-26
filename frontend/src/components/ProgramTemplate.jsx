@@ -677,6 +677,27 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
     { id: "contact",     label: t.nav_contact },
   ];
 
+  // Pilot reorder (only this program for now):
+  // Description → Quick → Audio → Map.
+  const reorderSections = routeId === "tourAtlasDesierto67";
+  const audioSection = (
+    <VideoSection
+      testid={`program-audio-${routeId || program.duration_key}`}
+      poster="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
+      eyebrow={{ es: "Escucha este viaje", en: "Listen to this journey", fr: "Écoutez ce voyage" }}
+      title={{
+        es: "Deja que te contemos la ruta.",
+        en: "Let us tell you the route.",
+        fr: "Laissez-nous vous raconter l'itinéraire.",
+      }}
+      caption={{
+        es: "Una narración para imaginar cada etapa antes de partir.",
+        en: "A narration to picture every stage before you set off.",
+        fr: "Une narration pour imaginer chaque étape avant le départ.",
+      }}
+    />
+  );
+
   return (
     <div data-testid={`program-page-${program.duration_key}`}>
       <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
@@ -687,12 +708,11 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
           : null;
         const descSection = <Description vt={vt} t={t} program={program} variant={variant} />;
         const quickSection = <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />;
-        // Pilot reorder (only this program for now): Description → Quick → Map.
-        const reorder = routeId === "tourAtlasDesierto67";
-        return reorder ? (
+        return reorderSections ? (
           <>
             {descSection}
             {quickSection}
+            {audioSection}
             {mapSection}
           </>
         ) : (
@@ -703,21 +723,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
           </>
         );
       })()}
-      <VideoSection
-        testid={`program-audio-${routeId || program.duration_key}`}
-        poster="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
-        eyebrow={{ es: "Escucha este viaje", en: "Listen to this journey", fr: "Écoutez ce voyage" }}
-        title={{
-          es: "Deja que te contemos la ruta.",
-          en: "Let us tell you the route.",
-          fr: "Laissez-nous vous raconter l'itinéraire.",
-        }}
-        caption={{
-          es: "Una narración para imaginar cada etapa antes de partir.",
-          en: "A narration to picture every stage before you set off.",
-          fr: "Une narration pour imaginer chaque étape avant le départ.",
-        }}
-      />
+      {reorderSections ? null : audioSection}
       <DayTimeline days={program.days} lang={lang} t={t} />
       <Itinerary t={t} lang={lang} days={program.days} routeId={routeId} hideDayGallery={routeId === "tourMarrakechErg56"} />
       <TripPostcards routeId={routeId} />
