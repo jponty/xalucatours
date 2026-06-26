@@ -115,6 +115,7 @@ import PreciosPage from "@/pages/PreciosPage";
 import OpinionesPage from "@/pages/OpinionesPage";
 import VuelosPage from "@/pages/VuelosPage";
 import AsistentePage from "@/pages/AsistentePage";
+import FavoritosPage from "@/pages/FavoritosPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -240,4 +241,5 @@ export const ROUTE_COMPONENTS = {
   opiniones:                     OpinionesPage,
   vuelos:                        VuelosPage,
   asistente:                     AsistentePage,
+  favorites:                     FavoritosPage,
 };

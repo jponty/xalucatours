@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ArrowRight, CalendarClock } from "lucide-react";
+import { Menu, ArrowRight, CalendarClock, Heart } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import TopInfoBar from "./TopInfoBar";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { translations } from "@/lib/i18n";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
@@ -12,6 +13,7 @@ import EditModeFAB from "@/components/EditModeFAB";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
+  const { count: favCount } = useFavorites();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -89,6 +91,22 @@ export const Header = () => {
           <BrandMark />
 
           <div className="flex items-center gap-2 md:gap-3">
+            <Link
+              to={pathFor(lang, "favorites")}
+              data-testid="header-favorites-button"
+              aria-label={{ es: "Favoritos", en: "Favourites", fr: "Favoris" }[lang] || "Favoritos"}
+              className="relative inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
+            >
+              <Heart className="w-5 h-5" strokeWidth={1.6} fill={favCount > 0 ? "#C16542" : "none"} />
+              {favCount > 0 && (
+                <span
+                  data-testid="header-favorites-count"
+                  className="absolute top-0 right-0 min-w-[17px] h-[17px] px-1 rounded-full bg-[#C16542] text-[#FDFBF7] text-[9px] font-semibold leading-none flex items-center justify-center"
+                >
+                  {favCount}
+                </span>
+              )}
+            </Link>
             <Link
               to={pathFor(lang, "appointment")}
               data-testid="header-appointment-button"

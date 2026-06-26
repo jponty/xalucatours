@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { EditModeProvider } from "@/contexts/EditModeContext";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import Layout from "@/components/Layout";
 import StubPage from "@/pages/StubPage";
 import AdminPage from "@/pages/AdminPage";
@@ -73,21 +74,23 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <LanguageProvider>
-          <EditModeProvider>
-            <Routes>
-              <Route path="/admin" element={<AdminPage />} />
-              <Route
-                path="*"
-                element={
-                  <Layout>
-                    <Routes>
-                      <Route path="*" element={<LocalizedRouter />} />
-                    </Routes>
-                  </Layout>
-                }
-              />
-            </Routes>
-          </EditModeProvider>
+          <FavoritesProvider>
+            <EditModeProvider>
+              <Routes>
+                <Route path="/admin" element={<AdminPage />} />
+                <Route
+                  path="*"
+                  element={
+                    <Layout>
+                      <Routes>
+                        <Route path="*" element={<LocalizedRouter />} />
+                      </Routes>
+                    </Layout>
+                  }
+                />
+              </Routes>
+            </EditModeProvider>
+          </FavoritesProvider>
         </LanguageProvider>
       </BrowserRouter>
     </div>

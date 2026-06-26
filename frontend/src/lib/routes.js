@@ -130,6 +130,7 @@ export const ROUTES = {
   whenToTravel:       { es: "cuando-viajar",             en: "when-to-travel",           fr: "quand-partir" },
   blog:               { es: "blog",                      en: "blog",                     fr: "blog" },
   galeria:            { es: "galeria",                   en: "gallery",                  fr: "galerie" },
+  favorites:          { es: "favoritos",                 en: "favorites",                fr: "favoris" },
 };
 
 /* Build a URL for a given language + routeId.

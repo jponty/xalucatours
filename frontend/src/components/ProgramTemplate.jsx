@@ -45,6 +45,7 @@ const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
  * or fall back to the variant copy block. Used to feed defaults={...}
  * to inline <E> editors so editing persists per language. */
 import { metaAllLangs, VARIANT_COPY } from "@/lib/programMeta";
+import FavoriteButton from "@/components/FavoriteButton";
 
 const LABELS = {
   es: {
@@ -341,6 +342,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
             <C name="desc.cta_contact" multiline={false}
                defaults={{ es: "Contactar", en: "Contact", fr: "Contact" }} />
           </Link>
+          <FavoriteButton routeId={routeId} />
         </div>
       </div>
     </section>
