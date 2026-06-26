@@ -153,6 +153,7 @@ class TripRef(BaseModel):
     id: str = ""
     title: str = ""
     url: Optional[str] = None
+    image: Optional[str] = None
 
 
 class TripPlannerRequest(BaseModel):
@@ -748,10 +749,16 @@ def _looks_like_trip_id(value: str) -> bool:
     return bool(value) and bool(re.match(r"^tour[A-Z]", value))
 
 
+def _trip_image_for(route_id: str) -> str:
+    entry = _TRIP_GAZETTEER.get(route_id) or {}
+    return (entry.get("image") or "").strip()
+
+
+
 def _build_trips_email_value(detail: list, ids: list, lang: str, base_url: str = "") -> str:
-    """Vertical HTML list of selected trips as linked titles. Never emits raw
-    internal ids — titles are resolved via the gazetteer and every entry is
-    linked to its exact page (built from `base_url` + the route slug)."""
+    """Vertical list of selected trips rendered as a thumbnail + linked title
+    per row. Never emits raw internal ids — titles are resolved via the
+    gazetteer and every entry is linked to its exact page (base_url + slug)."""
     base = (base_url or PUBLIC_SITE_URL or "").rstrip("/")
 
     def _link_for(rid: str, given_url: str) -> str:
@@ -760,31 +767,76 @@ def _build_trips_email_value(detail: list, ids: list, lang: str, base_url: str =
         p = _trip_path_for(rid, lang) if rid else None
         return f"{base}{p}" if (p and base) else ""
 
-    items: List[tuple] = []  # (title, url)
+    items: List[tuple] = []  # (title, url, image)
     if detail:
         for t in detail:
             rid = (getattr(t, "id", "") or "").strip()
             title = (getattr(t, "title", "") or "").strip()
             url = (getattr(t, "url", "") or "").strip()
+            img = (getattr(t, "image", "") or "").strip() or _trip_image_for(rid)
             if not title or _looks_like_trip_id(title):
                 title = _resolve_trip_title(rid or title, lang)
-            items.append((title, _link_for(rid, url)))
+            items.append((title, _link_for(rid, url), img))
     else:
         for rid in ids:
-            items.append((_resolve_trip_title(rid, lang), _link_for(rid, "")))
-    items = [(ti, u) for ti, u in items if ti]
+            items.append((_resolve_trip_title(rid, lang), _link_for(rid, ""), _trip_image_for(rid)))
+    items = [(ti, u, im) for ti, u, im in items if ti]
     if not items:
         return ""
-    return "".join(
-        '<div style="padding:3px 0;line-height:1.5">'
-        + (f'<a href="{u}" style="color:#C16542;text-decoration:none;border-bottom:1px solid #D4A373">{ti}</a>'
-           if u else ti)
-        + '</div>'
-        for ti, u in items
+
+    rows = []
+    for ti, u, im in items:
+        thumb = (
+            f'<td width="56" style="padding:0 12px 0 0;vertical-align:middle">'
+            f'<img src="{im}" alt="" width="52" height="52" '
+            f'style="display:block;width:52px;height:52px;object-fit:cover;'
+            f'border-radius:6px;border:1px solid #e6ddd0"></td>'
+            if im else
+            '<td width="56" style="padding:0 12px 0 0"></td>'
+        )
+        title_cell = (
+            f'<a href="{u}" style="color:#C16542;text-decoration:none;border-bottom:1px solid #D4A373">{ti}</a>'
+            if u else ti
+        )
+        rows.append(
+            '<tr>'
+            + thumb
+            + f'<td style="vertical-align:middle;color:#2C2621;font-size:14px;line-height:1.4;'
+              f'padding:6px 0">{title_cell}</td>'
+            '</tr>'
+        )
+    return (
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+        'style="width:100%;border-collapse:collapse">' + "".join(rows) + '</table>'
     )
 
 
-def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
+
+def _reply_cta_html(name: str, email: str, subject: str, lang: str = "es") -> str:
+    """A prominent 'Reply to {name}' button (mailto with prefilled subject)."""
+    if not email:
+        return ""
+    from urllib.parse import quote
+    labels = {
+        "es": "Responder a",
+        "en": "Reply to",
+        "fr": "Répondre à",
+    }
+    label = labels.get(lang, labels["es"])
+    safe_name = (name or "").strip() or email
+    mailto = f"mailto:{email}?subject={quote(f'RE: {subject}')}"
+    return (
+        '<tr><td style="padding:20px 28px 4px" align="center">'
+        f'<a href="{mailto}" '
+        'style="display:inline-block;background:#C16542;color:#FDFBF7;text-decoration:none;'
+        'font-size:15px;font-weight:bold;padding:13px 30px;border-radius:999px;'
+        'letter-spacing:.3px">'
+        f'{label} {safe_name}</a>'
+        '</td></tr>'
+    )
+
+
+def _lead_email_html(title: str, subtitle: str, rows: List[tuple], reply_cta: str = "") -> str:
     """Build a simple, email-client-safe HTML (inline CSS, table layout)."""
     body_rows = ""
     for label, value in rows:
@@ -810,7 +862,8 @@ def _lead_email_html(title: str, subtitle: str, rows: List[tuple]) -> str:
             f'<div style="color:#FDFBF7;opacity:.7;font-size:13px;margin-top:4px">{subtitle}</div>'
         )
         + f'<tr><td style="padding:8px 12px"><table role="presentation" width="100%">{body_rows}</table></td></tr>'
-        '<tr><td style="padding:16px 28px;background:#faf6ef;color:#8a7d6e;font-size:12px">'
+        + (reply_cta or "")
+        + '<tr><td style="padding:16px 28px;background:#faf6ef;color:#8a7d6e;font-size:12px">'
         'Responde directamente a este correo para contactar con el cliente.</td></tr>'
         '</table></div>'
     )
@@ -983,6 +1036,7 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
             ("Página origen", obj.source_label or obj.source_path),
             ("Idioma", obj.language),
         ],
+        reply_cta=_reply_cta_html(obj.full_name, obj.email, f"Nuevo contacto · {obj.full_name}", obj.language),
     )
     background_tasks.add_task(
         send_lead_notification,
@@ -1046,6 +1100,7 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
     # Build the linked trip titles (vertical list). Always resolves to real
     # titles via the gazetteer — internal ids are never shown in the email.
     trips_value = _build_trips_email_value(selected_trips_detail, selected_trips, obj.language, origin)
+    planner_subject = _planner_subject(obj.full_name, len(selected_trips_detail or selected_trips), regions)
     html = _lead_email_html(
         "Planifica tu viaje",
         f"{obj.full_name} · {obj.email}",
@@ -1064,10 +1119,11 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
             ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
             ("Idioma", obj.language),
         ],
+        reply_cta=_reply_cta_html(obj.full_name, obj.email, planner_subject, obj.language),
     )
     background_tasks.add_task(
         send_lead_notification,
-        _planner_subject(obj.full_name, len(selected_trips_detail or selected_trips), regions),
+        planner_subject,
         html,
         obj.email,
     )

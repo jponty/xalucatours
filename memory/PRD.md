@@ -9,6 +9,15 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - frontend/src/pages/{PreciosPage.jsx, AdminPage.jsx}
 - Idioma por defecto (es) en raíz; en/fr bajo /<lang>/<slug>
 
+
+## Implementado (jun 2026 — sesión actual)
+- **Miniaturas + botón «Responder a {nombre}» en el email del equipo (Resend) — COMPLETADO + VERIFICADO (unit + curl)**:
+  - `build_trip_gazetteer.py` ahora extrae `ROUTE_IMAGES` de `allTripsCatalog.js` → cada entrada del `trip_gazetteer.json` incluye `image` (40/40). Regenerado.
+  - `server.py`: `TripRef` admite `image`; nuevo `_trip_image_for(route_id)` resuelve la portada desde el gazetteer. `_build_trips_email_value` ahora renderiza una tabla con MINIATURA (52×52, redondeada) + título enlazado por itinerario (imagen del payload si llega, si no fallback del gazetteer).
+  - Nuevo `_reply_cta_html(name,email,subject,lang)`: botón píldora terracota `mailto:{email}?subject=RE:{asunto}` con etiqueta trilingüe ("Responder a"/"Reply to"/"Répondre à"). `_lead_email_html` acepta `reply_cta`. Cableado en `/api/trip-planner` (asunto = `_planner_subject`) y en `/api/contact-requests`.
+  - Frontend `PlannerForm.jsx`: el payload `selected_trips_detail` ahora envía también `image` (de `resolveTripContext`) para que los viajes solo-programa también tengan miniatura.
+  - Verificado: builders OK (unit), `POST /api/trip-planner` → 200 y email enviado sin errores en logs.
+
 ## Implementado (jun 2026)
 - **Widget de contacto circular SOBRE cada foto en "Estilos de viaje" (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - Nuevo `components/ImageContactBubble.jsx` superpuesto en la esquina inferior derecha de CADA imagen de las cards de `TravelCategories` (5 cards). Cerrado: bola circular terracota pequeña con monograma X + pulso. Al hacer click se expande horizontalmente sobre la foto mostrando "¿Necesitas ayuda? / Habla con un agente y encuentra tu viaje ideal." + botón "Solicitar cita" → `/citaprevia` (la bola pasa a "X" para cerrar). Responsive (panel `w-[58vw] max-w-[240px]`, raíz `max-w-[calc(100%-2rem)]`). testids `image-contact-bubble-{slug}` / `image-contact-toggle-{slug}` / `image-contact-cta-{slug}`.

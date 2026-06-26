@@ -19,6 +19,16 @@ for m in mk_re.finditer(CATALOG):
     rid, es, en, fr = m.groups()
     gaz[rid] = {"title": {"es": es, "en": en, "fr": fr}, "path": {}}
 
+# --- images: const ROUTE_IMAGES = { routeId: "https://...", ... } ---
+route_images = {}
+ri_block = re.search(r'const ROUTE_IMAGES\s*=\s*\{([\s\S]*?)\n\};', CATALOG)
+if ri_block:
+    for m in re.finditer(r'(\w+)\s*:\s*"([^"]+)"', ri_block.group(1)):
+        route_images[m.group(1)] = m.group(2)
+for rid in gaz:
+    if rid in route_images:
+        gaz[rid]["image"] = route_images[rid]
+
 # --- paths: routeId:{ es: "slug", en: "slug", fr: "slug" } ---
 path_re = re.compile(r'(\w+)\s*:\s*\{\s*es:\s*"([^"]*)"\s*,\s*en:\s*"([^"]*)"\s*,\s*fr:\s*"([^"]*)"\s*\}')
 all_paths = {}

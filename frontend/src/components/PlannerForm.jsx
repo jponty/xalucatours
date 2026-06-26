@@ -272,6 +272,7 @@ export default function PlannerForm() {
             id,
             title: t ? t.title : id,
             url: `${window.location.origin}${pathFor(lang, id)}`,
+            image: t && t.image ? t.image : undefined,
           };
         }),
         activities: form.activities,
