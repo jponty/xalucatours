@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from "react-leaflet";
 import MapLogoBadge from "@/components/MapLogoBadge";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import TripPackingNotes from "@/components/TripPackingNotes";
 import { Map as MapIcon, MapPin, ArrowRight, ChevronDown, Sparkles, BookOpen, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -245,7 +246,7 @@ export const TripRouteMap = ({ route, days = [], routeId }) => {
     <section
       id="route-map"
       data-testid="trip-route-map"
-      className="relative bg-[#F2EBE1] py-20 md:py-28 overflow-hidden"
+      className="relative z-0 bg-[#F2EBE1] py-20 md:py-28 overflow-hidden"
     >
       <div className="absolute inset-0 berber-bg-diamond opacity-20 pointer-events-none" aria-hidden="true" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
@@ -336,6 +337,7 @@ export const TripRouteMap = ({ route, days = [], routeId }) => {
                 })}
               </MapContainer>
               <MapLogoBadge />
+              <ImageContactBubble slug={routeId || "trip-route"} align="right" zClass="z-[1000]" />
             </div>
             {/* Legend */}
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">

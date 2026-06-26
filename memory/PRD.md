@@ -229,5 +229,8 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - P3: Stripe Checkout en /proximas_salidas
 - P3: Integrar Library en galería curada ("Ver más imágenes relacionadas" desde library_locations)
 
+## Cambios recientes
+- 2026-06-26: TripRouteMap «El recorrido completo» — añadido ImageContactBubble (abajo-derecha, align="right", z-[1000]) y la sección recibe `z-0` para crear contexto de apilamiento bajo, de modo que el MapLogoBadge (logo Xaluca) queda DETRÁS de la barra sticky del viaje (z-20 en ProgramTemplate.jsx). Verificado por screenshot. (HECHO)
+
 ## Credenciales
 - /admin password: xaluca (ver /app/memory/test_credentials.md)
