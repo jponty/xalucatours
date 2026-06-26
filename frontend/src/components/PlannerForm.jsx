@@ -200,6 +200,8 @@ export default function PlannerForm() {
 
   const prefillTrip = useMemo(() => getPrefilledTrip(), []);
 
+  const PREFILL_LABEL = { es: "Estás planificando", en: "You're planning", fr: "Vous planifiez" };
+
   const [form, setForm] = useState({
     dateMode: "range",
     startDate: "", endDate: "", exactDate: "", flexMonth: "",
@@ -321,6 +323,35 @@ export default function PlannerForm() {
           className="space-y-16"
           noValidate
         >
+          {/* Pre-filled trip confirmation banner (arrives with ?trip=) */}
+          {prefillTrip && (
+            <div
+              data-testid="plan-prefill-banner"
+              className="flex items-center gap-4 bg-[#F8F2E6] border border-[#C16542]/25 px-5 py-4 md:px-6 md:py-5"
+              style={{ borderLeft: "3px solid #C16542" }}
+            >
+              <img
+                src={prefillTrip.image}
+                alt=""
+                loading="lazy"
+                className="hidden sm:block w-16 h-16 object-cover shrink-0"
+              />
+              <div className="min-w-0">
+                <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
+                  <Compass className="w-3.5 h-3.5" strokeWidth={1.7} />
+                  {pick(PREFILL_LABEL, lang)}
+                </span>
+                <p className="font-serif-x text-lg md:text-xl text-[#2C2621] leading-snug mt-1">
+                  <span className="align-middle">{pick(prefillTrip.title, lang)}</span>
+                  <span className="text-[#5C5248] text-sm md:text-base align-middle">
+                    {" · "}{prefillTrip.nights + 1}{" "}{pick({ es: "días", en: "days", fr: "jours" }, lang)}
+                  </span>
+                </p>
+              </div>
+              <Check className="ml-auto w-5 h-5 text-[#5A6B4F] shrink-0" strokeWidth={1.8} />
+            </div>
+          )}
+
           {/* ============ STEP 1 · DATES ============ */}
           <SectionBlock
             step="01" icon={CalendarRange}
