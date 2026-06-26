@@ -127,10 +127,23 @@ export default function SectionGallery({
               </span>
 
               {/* Quick contact bubble — top-left of every image.
-                  Same design/behaviour as the rest of the site. */}
-              {showContact && (
-                <ImageContactBubble slug={`${testid}-${i}`} align="left" vertical="top" zClass="z-[10]" />
-              )}
+                  Same design/behaviour as the rest of the site.
+                  On MOBILE it's hidden on the smaller (half-width) tiles,
+                  where it would overlap other UI and hurt legibility; it
+                  stays visible on full-width/large tiles and on all of them
+                  from `md` upward. */}
+              {showContact && (() => {
+                const pos = i % SPAN_CLASSES.length;
+                const smallOnMobile = pos !== 0 && pos !== 3; // col-span-6 tiles
+                const bubble = (
+                  <ImageContactBubble slug={`${testid}-${i}`} align="left" vertical="top" zClass="z-[10]" />
+                );
+                return smallOnMobile ? (
+                  <span className="hidden md:block">{bubble}</span>
+                ) : (
+                  bubble
+                );
+              })()}
             </figure>
           ))}
         </div>

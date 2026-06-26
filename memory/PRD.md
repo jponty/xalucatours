@@ -11,6 +11,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Hub pages móvil: ocultar widget /citaprevia en imágenes pequeñas de la galería (jun 2026) — COMPLETADO + VERIFICADO (screenshot móvil + escritorio)**:
+  - En `SectionGallery.jsx` (galerías de SUR/NORTE/MARRUECOS/ESCAPADAS) el `ImageContactBubble` se solapaba con la UI en las tiles pequeñas (`col-span-6`, media anchura) en móvil. Fix: por posición en el ciclo `SPAN_CLASSES`, las tiles pequeñas (posiciones ≠ 0 y ≠ 3) envuelven el widget en `<span className="hidden md:block">` → oculto solo en móvil; las tiles grandes/full-width (`col-span-12`, posiciones 0 y 3) lo muestran siempre. En `md+` se muestra en TODAS. Verificado: móvil tiles 0/3 visibles, 1/2/4/5 ocultas; escritorio las 6 visibles. (El badge naranja "Grup Xaluca" es `XalucaLogoBadge`, no se toca.)
+
+
+- **Unificación del enlace (texto + flecha) en todas las cards de viaje (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - Las cards que tenían la flecha separada y pegada al borde derecho (`flex ... justify-between`) se unificaron al diseño de referencia de "Ver itinerario" (`HomeAllTripsCatalog`): el texto y la flecha van JUNTOS en un único `<span className="inline-flex items-center gap-2 ...">{texto}<ArrowUpRight w-3.5 h-3.5 .../></span>`, alineados a la izquierda, con la misma animación (`group-hover:translate-x-0.5 -translate-y-0.5`) y comportamiento (todo el span pasa a `#C16542` en hover; flecha hereda color). Cambiados: `AllTripsCarousel.jsx` ("Ver itinerario", antes `text-[#A07042]` separado) y `HomeCategoryCarousel.jsx` ("Ver viaje"/precio, antes `justify-between` con color por acento → ahora ink + hover terracota). El enlace completo (texto+flecha) sigue dentro del `<Link>` de la card → un único elemento interactivo. `RelatedJourneys` ya era inline; `HomeAllTripsCatalog` es la referencia (sin cambios).
+
+
 - **Header móvil: botón "Planificar" solo con icono de brújula (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - En `Header.jsx` el CTA `header-enquire-button` (→ planTrip) en móvil (`<sm`) muestra ÚNICAMENTE el icono `Compass` (sin texto ni flecha) → libera espacio y evita solapes en el header. En `sm+` se mantiene el label `cta_plan` + `ArrowRight` como antes. Misma funcionalidad (link a `planTrip`); añadido `aria-label={pick(translations.cta_plan, lang)}` para accesibilidad. Verificado: móvil texto vacío + icono (48px), escritorio "PLANIFICAR MI VIAJE".
 

@@ -279,19 +279,19 @@ export default function AllTripsCarousel() {
                     defaults={trip.desc}
                     className="text-[13px] text-[#5C5248] leading-[1.7] min-h-[2.6em] block"
                   />
-                  <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-[#A07042]">
+                  <div className="mt-4 pt-4 border-t border-[#2C2621]/10">
+                    <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#A07042] group-hover:text-[#C16542] transition-colors">
                       <EditableText
                         slot="home.alltrips.card_cta"
                         defaults={COPY.cta}
                         as="span"
                         multiline={false}
                       />
+                      <ArrowUpRight
+                        className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        strokeWidth={1.8}
+                      />
                     </span>
-                    <ArrowUpRight
-                      className="w-4 h-4 text-[#2C2621] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542]"
-                      strokeWidth={1.6}
-                    />
                   </div>
                 </div>
               </Link>

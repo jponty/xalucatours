@@ -141,42 +141,38 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
             style={{ color: tone.mute }}
           />
 
-          {/* CTA */}
+          {/* CTA — text + arrow together (unified with "Ver itinerario" cards) */}
           <div
-            className="mt-auto pt-4 flex items-center justify-between gap-3 border-t"
+            className="mt-auto pt-4 border-t"
             style={{ borderColor: `${tone.border}14` }}
           >
-            {compactMeta && trip.price ? (
-              <span
-                className="text-[10px] tracking-[0.28em] uppercase"
-                style={{ color: cardAccent, fontWeight: 600 }}
-              >
-                <EditableText
-                  slot="home.trip_card.from"
-                  defaults={{ es: "desde", en: "from", fr: "dès" }}
-                  as="span"
-                  multiline={false}
-                />{" "}
-                {trip.price}€
-              </span>
-            ) : (
-              <span
-                className="text-[10px] tracking-[0.3em] uppercase"
-                style={{ color: cardAccent, fontWeight: 600 }}
-              >
+            <span
+              className={`inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase group-hover:text-[#C16542] transition-colors ${isDark ? "text-[#FDFBF7]" : "text-[#2C2621]"}`}
+              style={{ fontWeight: 600 }}
+            >
+              {compactMeta && trip.price ? (
+                <span className="inline-flex items-center gap-1">
+                  <EditableText
+                    slot="home.trip_card.from"
+                    defaults={{ es: "desde", en: "from", fr: "dès" }}
+                    as="span"
+                    multiline={false}
+                  />
+                  {" "}{trip.price}€
+                </span>
+              ) : (
                 <EditableText
                   slot="home.trip_card.view"
                   defaults={ctaLabel || { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }}
                   as="span"
                   multiline={false}
                 />
-              </span>
-            )}
-            <ArrowUpRight
-              className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#C16542] ${isDark ? "text-[#FDFBF7]" : "text-[#2C2621]"}`}
-              strokeWidth={1.6}
-              aria-hidden="true"
-            />
+              )}
+              <ArrowUpRight
+                className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                strokeWidth={1.8}
+              />
+            </span>
           </div>
         </div>
       </Link>
