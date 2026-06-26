@@ -8,7 +8,7 @@ import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
-import xMonogram from "@/assets/monograma-x-white.png";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
 
 const FOOTER_LANGS = [
   { code: "es", label: "ES" },
@@ -49,15 +49,15 @@ export const Footer = () => {
   return (
     <footer data-testid="site-footer" className="relative bg-[#1A1513] text-[#FDFBF7] overflow-hidden">
       <div className="absolute inset-0 berber-bg-cross opacity-60" aria-hidden="true" />
-      {/* Oversized X monogram anchored to the bottom-right corner,
-          partially clipped by the footer edge — same corner treatment
-          used over images, blended as a discreet brand watermark. */}
+      {/* X monogram composed for the corner (provided asset), anchored
+          to the footer's bottom-right edge and partially clipped —
+          discreet brand watermark behind all content. */}
       <img
-        src={xMonogram}
+        src={xMonogramBorde}
         alt=""
         aria-hidden="true"
         data-testid="footer-monogram"
-        className="pointer-events-none select-none absolute bottom-0 right-0 translate-x-[26%] translate-y-[30%] w-[26rem] md:w-[42rem] opacity-[0.12] drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-0"
+        className="pointer-events-none select-none absolute bottom-0 right-0 h-[125%] w-auto opacity-[0.18] z-0"
       />
       <BerberZigzagDivider className="opacity-60" />
 
