@@ -41,7 +41,8 @@ WARM_WIDTHS = [24, 768, 960]
 WARM_FORMATS = ["avif", "webp"]
 _warm_state = {
     "running": False, "total": 0, "done": 0, "generated": 0,
-    "skipped": 0, "errors": 0, "started_at": None, "finished_at": None,
+    "skipped": 0, "errors": 0, "corrupt": 0, "corrupt_paths": [],
+    "started_at": None, "finished_at": None,
 }
 
 mongo_url = os.environ['MONGO_URL']
@@ -2918,7 +2919,10 @@ def _encode_all_variants(data: bytes, specs):
         if base.mode not in ("RGB", "RGBA"):
             base = base.convert("RGBA" if "A" in base.getbands() else "RGB")
     except Exception:
-        return results
+        # The master itself can't be decoded (corrupt/truncated/unsupported
+        # source). Signal that to the caller with None so it's counted as a
+        # single "corrupt" master — NOT as N per-variant "errors".
+        return None
     resized = {}
     for i, (width, fmt) in enumerate(specs):
         try:
@@ -2963,13 +2967,13 @@ async def _run_warm_cache():
         return
     _warm_state.update({
         "running": True, "total": 0, "done": 0, "generated": 0,
-        "skipped": 0, "errors": 0,
+        "skipped": 0, "errors": 0, "corrupt": 0, "corrupt_paths": [],
         "started_at": datetime.now(timezone.utc).isoformat(), "finished_at": None,
     })
     pool = None
     try:
         seen, uniq = set(), []
-        async for d in db.files.find({}, {"storage_path": 1, "size": 1}):
+        async for d in db.files.find({"is_deleted": {"$ne": True}}, {"storage_path": 1, "size": 1}):
             p = d.get("storage_path")
             if p and p not in seen:
                 seen.add(p)
@@ -3007,15 +3011,25 @@ async def _run_warm_cache():
                             results = await loop.run_in_executor(pool, _encode_all_variants, data, specs)
                         else:
                             results = await asyncio.to_thread(_encode_all_variants, data, specs)
-                        for (w, f, cf), res in zip(missing, results):
-                            if isinstance(res, (bytes, bytearray)) and res:
-                                try:
-                                    cf.write_bytes(res)
-                                    _warm_state["generated"] += 1
-                                except Exception:
+                        if results is None:
+                            # Master can't be decoded at all (corrupt/truncated
+                            # source). Count once as "corrupt" + record the path
+                            # so the operator can clean it up — NOT as N errors.
+                            _warm_state["corrupt"] += 1
+                            cp = _warm_state["corrupt_paths"]
+                            if len(cp) < 200:
+                                cp.append(p)
+                            logger.warning("warm-up: corrupt/undecodable master skipped: %s", p)
+                        else:
+                            for (w, f, cf), res in zip(missing, results):
+                                if isinstance(res, (bytes, bytearray)) and res:
+                                    try:
+                                        cf.write_bytes(res)
+                                        _warm_state["generated"] += 1
+                                    except Exception:
+                                        _warm_state["errors"] += 1
+                                else:
                                     _warm_state["errors"] += 1
-                            else:
-                                _warm_state["errors"] += 1
                 except Exception:
                     _warm_state["errors"] += 1
                 finally:
@@ -3037,9 +3051,9 @@ async def _run_warm_cache():
         _warm_state["running"] = False
         _warm_state["finished_at"] = datetime.now(timezone.utc).isoformat()
         logger.info(
-            "image cache warm-up finished: total=%s generated=%s skipped=%s errors=%s",
+            "image cache warm-up finished: total=%s generated=%s skipped=%s corrupt=%s errors=%s",
             _warm_state["total"], _warm_state["generated"],
-            _warm_state["skipped"], _warm_state["errors"],
+            _warm_state["skipped"], _warm_state["corrupt"], _warm_state["errors"],
         )
 
 
@@ -3059,6 +3073,9 @@ async def _warm_one_path(path: str, data=None):
             return
         specs = [(w, f) for (w, f, _cf) in missing]
         results = await asyncio.to_thread(_encode_all_variants, data, specs)
+        if results is None:
+            logger.debug("post-upload warm: corrupt/undecodable master %s", path)
+            return
         for (w, f, cf), res in zip(missing, results):
             if isinstance(res, (bytes, bytearray)) and res:
                 try:
@@ -3366,6 +3383,171 @@ async def reoptimize_library_status(authorization: str = Header(default="")):
         st["percent"] = 0.0 if st["running"] else 100.0
     st["saved_mb"] = round(st["saved_bytes"] / (1024 * 1024), 1)
     return st
+
+
+# ---------- Corrupt / undecodable master cleanup ----------
+# A handful of stored masters can be corrupt/truncated (e.g. an interrupted
+# upload, a failed stock download). Pillow can't decode them, so the warm-up
+# can never generate their AVIF/WebP variants — surfacing as a small "corrupt"
+# count. This maintenance job verifies each master (download + decode, with
+# retries so a transient storage timeout is NEVER mistaken for corruption) and
+# optionally soft-deletes the corrupt records (the bytes stay in shared object
+# storage — there is no delete API — but the record is hidden everywhere and
+# excluded from the warm-up). Background, idempotent, OOM-safe (low concurrency).
+try:
+    CORRUPT_SCAN_CONCURRENCY = max(1, int(os.environ.get("IMG_CORRUPT_SCAN_CONCURRENCY", "4")))
+except (TypeError, ValueError):
+    CORRUPT_SCAN_CONCURRENCY = 4
+
+_corrupt_state = {
+    "running": False, "mode": None, "total": 0, "done": 0,
+    "found": 0, "deleted": 0, "items": [],
+    "started_at": None, "finished_at": None,
+}
+
+
+def _fetch_object_with_retry(path: str, tries: int = 4):
+    """Blocking download with retries — so a transient storage timeout never
+    looks like a corrupt file."""
+    last = None
+    for _ in range(max(1, tries)):
+        try:
+            return get_object(path)
+        except Exception as exc:  # network/storage hiccup → retry
+            last = exc
+    raise last
+
+
+def _is_decodable(data: bytes) -> bool:
+    try:
+        img = _PILImage.open(BytesIO(data))
+        img.load()
+        return True
+    except Exception:
+        return False
+
+
+async def _run_corrupt_scan(delete: bool):
+    """Background job: find (and optionally soft-delete) corrupt masters."""
+    if _corrupt_state["running"]:
+        return
+    _corrupt_state.update({
+        "running": True, "mode": ("delete" if delete else "scan"),
+        "total": 0, "done": 0, "found": 0, "deleted": 0, "items": [],
+        "started_at": datetime.now(timezone.utc).isoformat(), "finished_at": None,
+    })
+    try:
+        docs, seen = [], set()
+        async for d in db.files.find(
+            {"is_deleted": {"$ne": True}},
+            {"storage_path": 1, "original_filename": 1, "content_type": 1, "size": 1, "slot_id": 1, "id": 1},
+        ):
+            p = d.get("storage_path")
+            if p and p not in seen:
+                seen.add(p)
+                docs.append(d)
+        _corrupt_state["total"] = len(docs)
+
+        sem = asyncio.Semaphore(CORRUPT_SCAN_CONCURRENCY)
+
+        async def _check(d):
+            p = d.get("storage_path")
+            async with sem:
+                try:
+                    data, _ct = await asyncio.to_thread(_fetch_object_with_retry, p)
+                except Exception:
+                    # Could not download even after retries → DON'T treat as
+                    # corrupt (avoid false positives / accidental deletion).
+                    _corrupt_state["done"] += 1
+                    return
+                ok = await asyncio.to_thread(_is_decodable, data)
+                if not ok:
+                    item = {
+                        "path": p,
+                        "filename": d.get("original_filename"),
+                        "content_type": d.get("content_type"),
+                        "size": d.get("size"),
+                        "slot_id": d.get("slot_id"),
+                    }
+                    _corrupt_state["found"] += 1
+                    if len(_corrupt_state["items"]) < 200:
+                        _corrupt_state["items"].append(item)
+                    logger.warning("corrupt master detected: %s (%s)", p, d.get("original_filename"))
+                    if delete:
+                        try:
+                            await db.files.update_many(
+                                {"storage_path": p},
+                                {"$set": {
+                                    "is_deleted": True,
+                                    "deleted_at": datetime.now(timezone.utc).isoformat(),
+                                    "delete_reason": "corrupt",
+                                }},
+                            )
+                            await asyncio.to_thread(_invalidate_path_cache, p)
+                            _corrupt_state["deleted"] += 1
+                        except Exception as exc:
+                            logger.error("failed to soft-delete corrupt master %s: %s", p, exc)
+                _corrupt_state["done"] += 1
+                if _WARM_THROTTLE:
+                    await asyncio.sleep(_WARM_THROTTLE)
+
+        await asyncio.gather(*(_check(d) for d in docs))
+    except Exception as exc:
+        logger.error("corrupt scan failed: %s", exc)
+    finally:
+        _corrupt_state["running"] = False
+        _corrupt_state["finished_at"] = datetime.now(timezone.utc).isoformat()
+        logger.info(
+            "corrupt scan finished: mode=%s total=%s found=%s deleted=%s",
+            _corrupt_state["mode"], _corrupt_state["total"],
+            _corrupt_state["found"], _corrupt_state["deleted"],
+        )
+
+
+def _corrupt_start_guard(token: str):
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    if _corrupt_state["running"]:
+        return {"started": False, **_corrupt_state}
+    if _warm_state["running"]:
+        return {"started": False, "running": False, "blocked_by": "warm"}
+    if _reopt_state["running"]:
+        return {"started": False, "running": False, "blocked_by": "reoptimize"}
+    return None
+
+
+@api_router.post("/admin/scan-corrupt-images")
+async def scan_corrupt_images(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    blocked = _corrupt_start_guard(token)
+    if blocked is not None:
+        return blocked
+    asyncio.create_task(_run_corrupt_scan(delete=False))
+    return {"started": True, "running": True, "mode": "scan"}
+
+
+@api_router.post("/admin/delete-corrupt-images")
+async def delete_corrupt_images(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    blocked = _corrupt_start_guard(token)
+    if blocked is not None:
+        return blocked
+    asyncio.create_task(_run_corrupt_scan(delete=True))
+    return {"started": True, "running": True, "mode": "delete"}
+
+
+@api_router.get("/admin/corrupt-images/status")
+async def corrupt_images_status(authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    st = dict(_corrupt_state)
+    if st["total"]:
+        st["percent"] = round(100 * st["done"] / st["total"], 1)
+    else:
+        st["percent"] = 0.0 if st["running"] else 100.0
+    return st
+
 
 
 

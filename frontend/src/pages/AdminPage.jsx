@@ -685,6 +685,7 @@ export default function AdminPage() {
             <ImageWeightPanel />
             <WarmCachePanel />
             <ReoptimizeLibraryPanel />
+            <CorruptImagesPanel />
             <MigrateFallbacksPanel />
           </section>
         ) : (
@@ -1316,8 +1317,18 @@ const WarmCachePanel = () => {
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/60">
               <span>{status.done}/{status.total} imágenes · {pct}%</span>
-              <span>Generadas {status.generated} · en caché {status.skipped}{status.errors ? ` · errores ${status.errors}` : ""}</span>
+              <span>
+                Generadas {status.generated} · en caché {status.skipped}
+                {status.corrupt ? ` · dañadas ${status.corrupt}` : ""}
+                {status.errors ? ` · errores ${status.errors}` : ""}
+              </span>
             </div>
+            {!status.running && status.corrupt > 0 && (
+              <p className="mt-2 flex items-center gap-2 text-[11px] text-amber-300/90" data-testid="warm-cache-corrupt-note">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.8} />
+                {status.corrupt} {status.corrupt === 1 ? "imagen dañada" : "imágenes dañadas"} (no son errores de la web: son archivos de origen corruptos). Límpialas abajo en «Imágenes dañadas».
+              </p>
+            )}
             {!status.running && status.total > 0 && (
               <p className="mt-3 flex items-center gap-2 text-xs text-[#9DBE8C]" data-testid="warm-cache-done">
                 <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} /> Optimización completada.
@@ -1336,6 +1347,167 @@ const WarmCachePanel = () => {
     </div>
   );
 };
+
+/* ---------- Corrupt images cleanup panel ----------
+   Finds (and optionally removes) master files that can't be decoded
+   (corrupt/truncated source uploads). These are what surface as "dañadas"
+   in the warm-up. Safe: re-verifies with retries before deleting. */
+const CorruptImagesPanel = () => {
+  const [status, setStatus] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [confirming, setConfirming] = useState(false);
+  const pollRef = useRef(null);
+  const tokenHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("xaluca_admin_token")}` });
+
+  const fetchStatus = async () => {
+    try {
+      const r = await fetch(`${API}/admin/corrupt-images/status`, { headers: tokenHeader() });
+      const d = await r.json();
+      if (r.ok) setStatus(d);
+      if (d && !d.running && pollRef.current) {
+        clearInterval(pollRef.current); pollRef.current = null; setBusy(false);
+      }
+    } catch (e) { /* transient — keep polling */ }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []);
+
+  useEffect(() => {
+    if (status?.running && !pollRef.current) {
+      pollRef.current = setInterval(fetchStatus, 1500);
+    } else if (!status?.running && pollRef.current) {
+      clearInterval(pollRef.current); pollRef.current = null;
+    }
+  }, [status?.running]);
+
+  const start = async (mode) => {
+    setBusy(true); setError(""); setConfirming(false);
+    const path = mode === "delete" ? "delete-corrupt-images" : "scan-corrupt-images";
+    try {
+      const r = await fetch(`${API}/admin/${path}`, { method: "POST", headers: tokenHeader() });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "No se pudo iniciar.");
+      if (d.blocked_by) throw new Error(`Hay otro proceso en curso (${d.blocked_by}). Espera a que termine.`);
+      setStatus((s) => ({ ...(s || {}), ...d }));
+      if (!pollRef.current) pollRef.current = setInterval(fetchStatus, 1500);
+    } catch (e) {
+      setError(e.message || "Error al iniciar."); setBusy(false);
+    }
+  };
+
+  const running = status?.running || busy;
+  const pct = status?.percent ?? 0;
+  const items = status?.items || [];
+
+  return (
+    <div className="max-w-2xl mx-auto px-6 md:px-10 pb-10 text-white" data-testid="corrupt-images-panel">
+      <div className="border-t border-white/10 pt-8">
+        <div className="flex items-center gap-3 mb-2">
+          <AlertTriangle className="w-6 h-6 text-amber-400" strokeWidth={1.6} />
+          <h2 className="text-2xl font-serif-x">Imágenes dañadas</h2>
+        </div>
+        <p className="text-sm text-white/65 leading-relaxed mb-6">
+          Localiza archivos máster que están <span className="text-amber-300">corruptos o truncados</span> (subidas
+          incompletas, descargas de stock fallidas). No se pueden convertir a AVIF/WebP, por eso aparecen como
+          «dañadas» al optimizar. <span className="text-white/80">No afectan a la web</span> (se sirve su fallback),
+          pero ensucian el contador. Primero <span className="text-[#D4A373]">busca</span> para ver cuáles son; luego
+          <span className="text-[#D4A373]"> elimínalas</span> de forma segura (se re-verifica con reintentos antes de borrar).
+        </p>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            data-testid="corrupt-scan-btn"
+            onClick={() => start("scan")}
+            disabled={running}
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+          >
+            {running && status?.mode === "scan" ? <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={1.8} /> : <Search className="w-4 h-4" strokeWidth={1.8} />}
+            {running && status?.mode === "scan" ? "Buscando…" : "Buscar imágenes dañadas"}
+          </button>
+
+          {!confirming ? (
+            <button
+              type="button"
+              data-testid="corrupt-delete-btn"
+              onClick={() => { setConfirming(true); setError(""); }}
+              disabled={running}
+              className="inline-flex items-center gap-2 bg-red-600/80 hover:bg-red-600 text-white px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+            >
+              <Trash2 className="w-4 h-4" strokeWidth={1.8} />
+              {running && status?.mode === "delete" ? "Eliminando…" : "Eliminar imágenes dañadas"}
+            </button>
+          ) : (
+            <div className="inline-flex items-center gap-2" data-testid="corrupt-delete-confirm-row">
+              <span className="text-[11px] text-white/70">¿Eliminar las dañadas?</span>
+              <button
+                type="button"
+                data-testid="corrupt-delete-confirm-btn"
+                onClick={() => start("delete")}
+                className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 text-[11px] tracking-[0.2em] uppercase transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" strokeWidth={1.9} /> Sí, eliminar
+              </button>
+              <button
+                type="button"
+                data-testid="corrupt-delete-cancel-btn"
+                onClick={() => setConfirming(false)}
+                className="px-4 py-2.5 text-[11px] tracking-[0.2em] uppercase text-white/70 hover:text-white transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
+        </div>
+
+        {status && (status.total > 0 || status.running) && (
+          <div className="mt-6" data-testid="corrupt-progress">
+            <div className="h-2 w-full bg-white/10 overflow-hidden rounded-full">
+              <div className="h-full bg-amber-400 transition-all duration-500" style={{ width: `${pct}%` }} />
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/60">
+              <span>{status.done}/{status.total} verificadas · {pct}%</span>
+              <span data-testid="corrupt-counts">
+                Dañadas {status.found ?? 0}{status.deleted ? ` · eliminadas ${status.deleted}` : ""}
+              </span>
+            </div>
+            {!status.running && status.total > 0 && (
+              <p className="mt-3 flex items-center gap-2 text-xs text-[#9DBE8C]" data-testid="corrupt-done">
+                <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />
+                {status.mode === "delete"
+                  ? `Limpieza completada · ${status.deleted ?? 0} eliminada(s).`
+                  : `Búsqueda completada · ${status.found ?? 0} dañada(s) encontrada(s).`}
+              </p>
+            )}
+          </div>
+        )}
+
+        {items.length > 0 && (
+          <div className="mt-4 border border-white/10 rounded-lg divide-y divide-white/5 max-h-56 overflow-auto" data-testid="corrupt-items">
+            {items.map((it, i) => (
+              <div key={it.path || i} className="px-4 py-2 flex items-center justify-between gap-3 text-[11px]">
+                <span className="text-white/80 truncate">{it.filename || "(sin nombre)"}</span>
+                <span className="text-white/40 shrink-0">{it.content_type || "?"} · {it.size ?? "?"} B</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-5 flex items-start gap-3 bg-red-500/10 border border-red-500/40 px-4 py-3" data-testid="corrupt-error">
+            <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" strokeWidth={1.8} />
+            <p className="text-xs text-red-300 leading-relaxed">{error}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 /* ---------- Re-optimize Library panel ----------
    One-click backfill that re-compresses oversized stored masters (old raw
