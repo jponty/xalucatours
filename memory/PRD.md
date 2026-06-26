@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Fix: monograma X del Footer deformado en móvil (jun 2026) — COMPLETADO + VERIFICADO (screenshot + medición de ratio)**:
+  - Síntoma: en móvil la X (`monograma-x-borde.png`, 1080×1920, ratio 0.562) se veía estirada verticalmente. Causa: usaba `h-[125%] w-auto`; el footer en móvil es muy alto → `w-auto` calculaba un ancho mayor que el viewport y el `img{max-width:100%}` del preflight de Tailwind lo recortaba mientras la altura seguía al 125% → deformación.
+  - Fix (`Footer.jsx`): tamaño por ANCHO en móvil (`w-[60%] max-w-[360px] h-auto`) y por ALTO en escritorio (`md:w-auto md:h-[125%] md:max-w-none`, evita el recorte) + `object-contain` como garantía. Verificado: render 248×442 (ratio 0.561 ≈ 0.562 natural), sin deformación; escritorio sin cambios.
+
+
 - **Polaroids (PolaroidWall) + unificación de flecha de cards (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
   - Polaroids (`PolaroidWall.jsx`): (1) añadida la **X monograma grande integrada en el borde** de cada foto (asset `monograma-x-borde.png`, anclada abajo-derecha, parcialmente recortada por `overflow-hidden`, `opacity-0.22`, z-2 — mismo tratamiento que la marca de agua del Footer). (2) La **X pequeña** (monograma blanco abajo-derecha) se SUSTITUYÓ por el **widget de /citaprevia** (`ImageContactBubble align="left"`), dentro de la imagen en la zona interior-izquierda (bola terracota → despliega "¿Necesitas ayuda?" + "Solicitar cita" → `/citaprevia`). `ImageContactBubble` ahora también hace `stopPropagation` en `onKeyDown` (para que activarlo dentro de la polaroid clicable no abra la historia). testid del monograma conservado: `polaroid-${id}-monogram`.
   - Flecha de cards "Ver viaje" (`HomeCategoryCarousel.jsx`): la flecha en caja (`ArrowRight` dentro de un `<span>` w-8 h-8 con borde) se reemplazó por la MISMA flecha de las cards "Ver itinerario" (`AllTripsCarousel`/`HomeAllTripsCatalog`): `ArrowUpRight` inline, animación `group-hover:translate-x-0.5 -translate-y-0.5` + color `#C16542` en hover, color base adaptado al tono (`isDark ? #FDFBF7 : #2C2621`). Mismo diseño, animación, hover/click y funcionalidad (dentro del `<Link>` → ficha del viaje). `ArrowRight` se mantiene para el CTA de sección "view_all".

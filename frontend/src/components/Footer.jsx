@@ -57,7 +57,7 @@ export const Footer = () => {
         alt=""
         aria-hidden="true"
         data-testid="footer-monogram"
-        className="pointer-events-none select-none absolute bottom-0 right-0 h-[125%] w-auto opacity-[0.18] z-0"
+        className="pointer-events-none select-none absolute bottom-0 right-0 z-0 opacity-[0.18] object-contain h-auto w-[60%] max-w-[360px] md:w-auto md:h-[125%] md:max-w-none"
       />
       <BerberZigzagDivider className="opacity-60" />
 
