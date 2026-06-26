@@ -13,6 +13,7 @@ import { EXTRA_POI_CARDS } from "@/lib/extraPois";
 const CARD_COPY = { ...POI_CARD_COPY, ...EXTRA_POI_CARDS };
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import monogramaX from "@/assets/monograma-x-crop.png";
 
@@ -104,6 +105,8 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
         data-testid={`landmark-card-logo-${index}`}
         className="absolute top-3 right-3 w-11 h-11 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] pointer-events-none z-[1]"
       />
+      {/* Quick contact bubble — bottom-left of each place photo */}
+      <ImageContactBubble slug={`landmark-${index}`} align="left" vertical="bottom" zClass="z-[6]" />
     </div>
     <div className="flex-1 p-5 md:p-6 flex flex-col gap-3">
       <EditableText
