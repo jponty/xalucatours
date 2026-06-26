@@ -19,6 +19,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import Img from "@/components/Img";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import PassportStamp from "@/components/PassportStamp";
 import xMonogram from "@/assets/monograma-x-white.png";
 
 const COPY = {
@@ -42,6 +43,23 @@ const initialsOf = (name) =>
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join("");
+
+/* Destination shown on the passport stamp for each memory. */
+const STAMP_PLACE = {
+  dunes: "Erg Chebbi",
+  tea: "Fès",
+  souk: "Marrakech",
+  chefchaouen: "Chefchaouen",
+  riad: "Marrakech",
+  artisan: "Fès",
+};
+
+/* Pull the "Month Year" portion out of a "Name · Month Year" signature. */
+const stampDate = (signature, lang) => {
+  const s = pick(signature, lang) || "";
+  const parts = s.split("·");
+  return (parts[1] || parts[0] || "").trim();
+};
 
 const PHOTOS = [
   {
@@ -245,6 +263,11 @@ const StoryPanel = ({ photo, lang, onClose }) => (
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/40 to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#FDFBF7]/15 pointer-events-none" />
         <XalucaLogoBadge className="top-3 right-3 w-9 h-9 md:w-10 md:h-10" />
+        <PassportStamp
+          place={STAMP_PLACE[photo.id] || pick(photo.caption, lang)}
+          date={stampDate(photo.signature, lang)}
+          className="bottom-4 left-4 w-24 h-24 md:w-28 md:h-28 drop-shadow-[0_2px_4px_rgba(26,21,19,0.85)]"
+        />
       </div>
 
       {/* Narrative */}
