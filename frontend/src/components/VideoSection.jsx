@@ -135,6 +135,30 @@ export default function VideoSection({
   const playing = isAudio ? audioPlaying : videoPlaying;
   const muted = isAudio ? audioMuted : videoMuted;
 
+  /* Editorial text (eyebrow / title / caption). Reused in two responsive
+     slots: as a cinematic OVERLAY on `md+`, and BELOW the media on mobile
+     (where the short 16/9 box would otherwise clip it). No data-testid here,
+     so rendering it in both slots creates no duplicate test ids. */
+  const textContent = (
+    <>
+      {eyebrow && (
+        <span className="block text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-[#D4A373] mb-3">
+          {pick(eyebrow, lang)}
+        </span>
+      )}
+      {title && (
+        <h3 className="font-serif-x text-2xl md:text-3xl lg:text-4xl text-[#FDFBF7] leading-[1.15] md:leading-[1.1]">
+          {pick(title, lang)}
+        </h3>
+      )}
+      {caption && (
+        <p className="mt-3 text-sm md:text-base text-[#FDFBF7]/80 leading-relaxed">
+          {pick(caption, lang)}
+        </p>
+      )}
+    </>
+  );
+
   return (
     <section
       data-testid={testid}
@@ -175,24 +199,12 @@ export default function VideoSection({
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/80 via-[#1A1513]/15 to-[#1A1513]/30 pointer-events-none" />
           <span className="film-grain pointer-events-none" />
 
-          {/* Caption layer */}
+          {/* Caption layer — text shown as a cinematic overlay only from `md`
+              upward (where the box is tall enough). Controls stay overlaid at
+              all sizes. */}
           <div className="absolute inset-x-0 bottom-0 p-6 md:p-10 lg:p-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6 pointer-events-none">
-            <div className="max-w-xl">
-              {eyebrow && (
-                <span className="block text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-[#D4A373] mb-3">
-                  {pick(eyebrow, lang)}
-                </span>
-              )}
-              {title && (
-                <h3 className="font-serif-x text-2xl md:text-3xl lg:text-4xl text-[#FDFBF7] leading-[1.1]">
-                  {pick(title, lang)}
-                </h3>
-              )}
-              {caption && (
-                <p className="mt-3 text-sm md:text-base text-[#FDFBF7]/80 leading-relaxed">
-                  {pick(caption, lang)}
-                </p>
-              )}
+            <div className="hidden md:block max-w-xl">
+              {textContent}
             </div>
 
             {/* Controls */}
@@ -241,6 +253,13 @@ export default function VideoSection({
             <div className="absolute inset-0 bg-gradient-to-br from-[#2C2621] via-[#3A2E25] to-[#2C2621] animate-pulse pointer-events-none" />
           )}
         </div>
+
+        {/* Mobile only: full editorial text below the media so it is never
+            clipped by the short 16/9 box. Hidden from `md` upward (overlay). */}
+        <div className="md:hidden mt-6 max-w-xl">
+          {textContent}
+        </div>
+
       </div>
     </section>
   );
