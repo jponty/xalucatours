@@ -188,7 +188,15 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: pw }),
       });
-      if (!r.ok) { setAuthErr("Contraseña incorrecta"); setAuthBusy(false); return; }
+      if (r.status === 401) { setAuthErr("Contraseña incorrecta"); setAuthBusy(false); return; }
+      // Guard against a non-JSON response (e.g. the SPA index.html served with
+      // 200 while the backend is briefly unavailable/restarting): avoids the
+      // cryptic "Unexpected token '<'" JSON parse error and shows a clear msg.
+      const ct = r.headers.get("content-type") || "";
+      if (!r.ok || !ct.includes("application/json")) {
+        setAuthErr("El servidor no está disponible ahora mismo. Espera unos segundos e inténtalo de nuevo.");
+        setAuthBusy(false); return;
+      }
       const d = await r.json();
       localStorage.setItem("xaluca_admin_token", d.token);
       setAuthed(true);
