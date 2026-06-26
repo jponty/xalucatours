@@ -12,6 +12,7 @@ import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import EditableText from "@/components/EditableText";
 import TripPriceDisclosure from "@/components/TripPriceDisclosure";
 import ImageContactBubble from "@/components/ImageContactBubble";
+import StyleTestimonial from "@/components/StyleTestimonial";
 
 const BADGE_KEY = {
   popular:  "badge_popular",
@@ -68,10 +69,9 @@ export const TravelCategories = () => {
                 className="group grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-10 items-center"
               >
                 <div
-                  className={`relative md:col-span-7 h-[56vh] min-h-[420px] max-h-[640px] ${
-                    reverse ? "md:order-2" : ""
-                  }`}
+                  className={`md:col-span-7 ${reverse ? "md:order-2" : ""}`}
                 >
+                <div className="relative h-[56vh] min-h-[420px] max-h-[640px]">
                 <ImageWrapper
                   {...imageProps}
                   className="relative block overflow-hidden w-full h-full"
@@ -127,6 +127,8 @@ export const TravelCategories = () => {
                   </span>
                 </ImageWrapper>
                   <ImageContactBubble slug={c.slug} />
+                </div>
+                  <StyleTestimonial slug={c.slug} accent={c.accent} />
                 </div>
 
                 <div className={`md:col-span-5 ${reverse ? "md:order-1 md:pr-6" : "md:pl-6"}`}>

@@ -230,6 +230,7 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - P3: Integrar Library en galería curada ("Ver más imágenes relacionadas" desde library_locations)
 
 ## Cambios recientes
+- 2026-06-26: Home «Estilos de viaje · Cinco formas de descubrir Marruecos» (TravelCategories) — añadida card de testimonial (nuevo StyleTestimonial.jsx + lib/styleTestimonials.js) bajo la imagen de los 4 bloques de contenido (magic-south, north-to-south, short-escapes, northern-morocco), mismo estilo/comportamiento que DayTestimonial, orígenes españoles, editable vía EditableText (slots home.cat.{slug}.testimonial.*). El bloque group-departures no la muestra. Columna de imagen reestructurada para alojar testimonio debajo sin romper alineación. Verificado por screenshot. (HECHO)
 - 2026-06-26: TripRouteMap «El recorrido completo» — añadido ImageContactBubble (abajo-derecha, align="right", z-[1000]) y la sección recibe `z-0` para crear contexto de apilamiento bajo, de modo que el MapLogoBadge (logo Xaluca) queda DETRÁS de la barra sticky del viaje (z-20 en ProgramTemplate.jsx). Verificado por screenshot. (HECHO)
 
 ## Credenciales
