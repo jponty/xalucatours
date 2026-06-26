@@ -229,6 +229,7 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 - P3: Stripe Checkout en /proximas_salidas
 - P3: Integrar Library en galería curada ("Ver más imágenes relacionadas" desde library_locations)
 
+- 2026-06-26: SurPage galerías — ImageContactBubble extendido a TODAS las imágenes de los 4 bloques (24 widgets, antes solo la imagen principal), esquina superior izquierda, mismo diseño/comportamiento. Verificado por screenshot. (HECHO)
 ## Cambios recientes
 - 2026-06-26: SurPage (/viajes/surdemarruecos) — añadido ImageContactBubble (arriba-izquierda, align="left" vertical="top", z-[10]) en la imagen principal de las 4 galerías SectionGallery: Mil kasbahs, Erg Chebbi (desierto), Atlas & Sáhara, Marrakech & Essaouira. Nuevo prop `showContact` en SectionGallery para no afectar a otras páginas que usan el componente. Mismo diseño/animación/comportamiento que el resto. Verificado por screenshot. (HECHO)
 - 2026-06-26: PolaroidWall/StoryPanel — añadido badge decorativo tipo sello de pasaporte (nuevo PassportStamp.jsx) sobre la foto ampliada de «Sus recuerdos de viaje». SVG con texto curvo (ROYAUME DU MAROC / XALUCA TOURS), destino + fecha derivados del viaje, anillos dobles, avión y filtro de desgaste (feTurbulence + feDisplacementMap + speckle). Tinta índigo (#3A4A5F) con halo blanco para legibilidad en fotos claras y oscuras. Verificado por screenshot (dunes y zoco). (HECHO)

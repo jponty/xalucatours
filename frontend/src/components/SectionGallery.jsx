@@ -126,9 +126,9 @@ export default function SectionGallery({
                 </span>
               </span>
 
-              {/* Quick contact bubble — top-left of the featured image.
+              {/* Quick contact bubble — top-left of every image.
                   Same design/behaviour as the rest of the site. */}
-              {showContact && i === 0 && (
+              {showContact && (
                 <ImageContactBubble slug={`${testid}-${i}`} align="left" vertical="top" zClass="z-[10]" />
               )}
             </figure>
