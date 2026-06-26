@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Fix "Re-optimizar Biblioteca" se quedaba bloqueado / nunca terminaba en producción (jun 2026) — COMPLETADO + VERIFICADO (curl, convergencia)**:
+  - Causa raíz: al OMITIR una imagen ya óptima (no se puede reducir ≥10%) NO se marcaba `reoptimized_at`. En cada ejecución/arranque volvía a descargar+re-encodear las MISMAS ~2953 imágenes; si el contenedor hacía OOM y reiniciaba, empezaba de cero → no convergía nunca ("se queda en un número y no avanza"). Solo subía "Omitidas" porque la biblioteca ya está casi toda en WebP ≤2000px.
+  - Fix en `server.py` `_run_reoptimize_library._reopt_one`: las imágenes OMITIDAS ahora también se marcan `reoptimized_at` → el proceso CONVERGE y es REANUDABLE tras reinicios (cada pasada solo trata lo nuevo/pendiente). Verificado: 1ª pasada marca 59/59 → 2ª pasada `total=0` e instantánea.
+  - `REOPT_CONCURRENCY` bajado a 2 por defecto y configurable por env `IMG_REOPT_CONCURRENCY` (reduce el pico de RAM que causaba el OOM con originales grandes; subir solo si el contenedor tiene margen).
+  - Producción: requiere REDEPLOY. La 1ª pasada completa aún descarga los masters una vez (lenta pero ahora reanudable y convergente); arranques posteriores la encuentran ya hecha.
+
 - **Panel Admin "Peso de las imágenes" + "Re-comprimir todo" (jun 2026) — COMPLETADO + VERIFICADO (curl + testing agent)**:
   - Backend `server.py`: `GET /api/admin/image-cache/stats` (auth) → `{masters:{count,total_mb,avg_kb,max_kb,over_1mb}, variants:{count,total_mb,avif_count,webp_count,avg_avif_kb,avg_webp_kb}, settings:{avif_quality,webp_quality,avif_speed_warm,webp_method_warm,warm_widths,warm_formats}, warm:{running,percent}}`. `POST /api/admin/recompress-all` (auth) → vacía `img_cache` y relanza `_run_warm_cache()` para regenerar todas las variantes con los ajustes ACTUALES (idempotente; los masters no se tocan).
   - Frontend `AdminPage.jsx`: nuevo `ImageWeightPanel` en la pestaña "Mirror DB" (antes de WarmCachePanel). Grid de métricas (testids `image-weight-stats`, `iw-masters-count`, `iw-avg-avif`, `iw-avg-webp`, `iw-variant-count`, `iw-cache-size`, `iw-settings`), botón "Actualizar" (`image-weight-refresh-btn`) y botón "Re-comprimir todo" (`recompress-all-btn`) con confirmación de 2 pasos (`recompress-confirm-btn`/`recompress-cancel-btn`) y barra de progreso del re-warm. El botón se deshabilita mientras hay un warm en curso.

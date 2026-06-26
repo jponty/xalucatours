@@ -3201,7 +3201,15 @@ async def recompress_all_images(authorization: str = Header(default="")):
 # slot/gallery reference keeps working. Cached variants are then invalidated +
 # re-warmed. Background + idempotent (skips already-small / non-shrinkable).
 REOPT_SIZE_THRESHOLD = 500 * 1024  # only touch masters larger than ~500 KB
-REOPT_CONCURRENCY = 4  # process up to N masters in parallel (bounded)
+# Process up to N masters in parallel. Kept LOW by default: each task fully
+# downloads + decodes a (possibly multi-MB) master, so high concurrency can
+# spike peak RAM and OOM-kill a constrained container mid-pass — which restarts
+# the backend and (before this was idempotent) re-did the whole library forever.
+# Tune up only if the container has memory headroom (IMG_REOPT_CONCURRENCY).
+try:
+    REOPT_CONCURRENCY = max(1, int(os.environ.get("IMG_REOPT_CONCURRENCY", "2")))
+except (TypeError, ValueError):
+    REOPT_CONCURRENCY = 2
 
 _reopt_state = {
     "running": False, "total": 0, "done": 0, "optimized": 0,
@@ -3261,6 +3269,16 @@ async def _run_reoptimize_library():
                     new_data, new_ctype, _ext = await asyncio.to_thread(optimize_image, data, ctype)
                     # Only rewrite when meaningfully smaller (>10% saved).
                     if new_data is data or len(new_data) >= old_size * 0.9:
+                        # Already optimal — can't shrink it ≥10%. Mark it as
+                        # processed anyway so future runs AND startup/restart
+                        # passes skip it entirely. This makes the job CONVERGE
+                        # and be RESUMABLE: a restart (e.g. after an OOM) picks
+                        # up where it left off instead of re-downloading and
+                        # re-encoding the whole library from scratch forever.
+                        await db.files.update_many(
+                            {"storage_path": path},
+                            {"$set": {"reoptimized_at": datetime.now(timezone.utc).isoformat()}},
+                        )
                         _reopt_state["skipped"] += 1
                     else:
                         await asyncio.to_thread(put_object, path, new_data, new_ctype)
