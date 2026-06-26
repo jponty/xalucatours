@@ -11,6 +11,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **BUG FIX: imágenes gigantes se "omitían" en vez de optimizarse (jun 2026) — COMPLETADO + VERIFICADO (testing agent, backend+frontend 100%)**:
+  - Síntoma (producción): "Re-optimizar Biblioteca" mostraba `Optimizadas: 0, Omitidas: N, ahorrado: 0 MB` pese a haber originales enormes.
+  - Causa raíz (reproducida con masters reales de prod vía storage compartido): los originales de muy alta resolución (>178 MP, p. ej. JPEG de 14 MB de Pexels) disparan el guard anti-"decompression bomb" de Pillow → `optimize_image` capturaba la excepción y **devolvía el original → contado como "omitida"** silenciosamente. Por eso los gigantes nunca se optimizaban.
+  - Fix 1 (`server.py` ~L1310): `_PILImage.MAX_IMAGE_PIXELS = None` → los masters gigantes (curados/confiables) se decodifican y se reducen a WebP. Verificado: 14 MB → 712 KB (−95%).
+  - Fix 2 (`_reopt_one`, rama de omitir): además de marcar `reoptimized_at`, actualiza `size`+`content_type` al valor REAL del binario → corrige metadatos obsoletos (la BD de prod mostraba 9.8 GB cuando el storage compartido ya estaba en su mayoría optimizado por preview).
+  - Verificado por testing agent: reopt → `optimized=1, skipped=5, errors=0, saved=13.1 MB, 6/6 100%`. Test pytest creado: `/app/backend/tests/test_reoptimize_library.py`. Bug "optimized=0" resuelto. PENDIENTE REDEPLOY para que aplique en producción.
+  - Nota: `optimize_image` ya loguea `warning` con el motivo del fallback, así que futuros fallos de decodificación quedan trazados (no se ocultan como omitidos silenciosos).
+
 - **Warm-up también MANUAL + seguro de exclusión mutua (jun 2026) — COMPLETADO (pendiente REDEPLOY)**:
   - Diagnóstico en prod (endpoint `image-cache/stats`): los originales de PRODUCCIÓN son ENORMES → `count 4308, total 9.8 GB, media 2.3 MB, máx 22 MB, 2673 >1MB` (preview era 2 GB / 469 KB). En 0.5 vCPU, el warm-up automático en arranque se quedaba clavado (19/4337) codificando AVIF de originales gigantes → saturaba la CPU y causaba indisponibilidad puntual (`/admin` → "El servidor no está disponible ahora mismo", que es el nuevo mensaje de hardening = confirma que ya redeployaron).
   - Cambio: `WARM_ON_STARTUP` por defecto **False** (igual que reopt). El arranque ya NO ejecuta trabajos pesados → siempre ligero/estable. La web sigue sirviendo vía on-the-fly + Cloudflare + LQIP. Reactivable con `IMG_WARM_ON_STARTUP=true`.
