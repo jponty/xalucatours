@@ -267,10 +267,10 @@ export default function PlannerForm() {
         regions: form.regions,
         selected_trips: form.selectedTrips,
         selected_trips_detail: form.selectedTrips.map((id) => {
-          const t = ALL_TRIPS.find((x) => x.routeId === id);
+          const t = resolveTripContext(id, lang);
           return {
             id,
-            title: t ? pick(t.title, lang) : id,
+            title: t ? t.title : id,
             url: `${window.location.origin}${pathFor(lang, id)}`,
           };
         }),

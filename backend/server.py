@@ -936,6 +936,32 @@ def _contact_pref_label(value):
     return ", ".join(_CONTACT_PREF_LABELS.get((v or "").strip(), v) for v in ids if v)
 
 
+# Short Spanish region labels for the lead email subject summary.
+_REGION_SUBJECT_LABELS = {
+    "sur": "Sur",
+    "norte": "Norte",
+    "completo": "Marruecos integral",
+    "escapadas": "Escapadas",
+    "aventura": "Aventura",
+    "eventos": "Eventos",
+}
+
+
+def _planner_subject(name: str, n_trips: int, regions: list) -> str:
+    """Summary subject like '3 itinerarios · Sur · María García'."""
+    parts = []
+    if n_trips:
+        parts.append(f"{n_trips} itinerario{'s' if n_trips != 1 else ''}")
+    region_labels = [
+        _REGION_SUBJECT_LABELS.get((r or "").strip(), (r or "").strip().capitalize())
+        for r in (regions or []) if r and r.strip()
+    ]
+    if region_labels:
+        parts.append(", ".join(region_labels))
+    summary = " · ".join(parts) if parts else "Nueva planificación"
+    return f"{summary} · {name}"
+
+
 @api_router.post("/contact-requests", response_model=ContactRequest)
 async def create_contact_request(payload: ContactRequestCreate, background_tasks: BackgroundTasks):
     obj = ContactRequest(**payload.model_dump())
@@ -1041,7 +1067,7 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
     )
     background_tasks.add_task(
         send_lead_notification,
-        f"Nueva planificación · {obj.full_name}",
+        _planner_subject(obj.full_name, len(selected_trips_detail or selected_trips), regions),
         html,
         obj.email,
     )
