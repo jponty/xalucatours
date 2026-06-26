@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
+import PolaroidWall from "@/components/PolaroidWall";
 
 const CARDS = [
   { num: "01", icon: Award,       k_title: "why_c1_title", k_body: "why_c1_body", route: "toursLanding", cta: { es: "Descubrir viajes", en: "Discover trips", fr: "Découvrir les voyages" } },
@@ -91,6 +92,8 @@ export const WhyXaluca = () => {
             );
           })}
         </div>
+
+        <PolaroidWall />
       </div>
     </section>
   );
