@@ -14,6 +14,7 @@ import { Compass, ArrowUpRight, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParam } from "@/lib/tripContext";
+import { optimizedSrc } from "@/lib/imageUrl";
 
 const LABEL = { es: "Viaje en contexto", en: "Trip in context", fr: "Voyage en contexte" };
 const REVIEW = { es: "Ver el itinerario", en: "View the itinerary", fr: "Voir l'itinéraire" };
@@ -38,7 +39,7 @@ export default function TripContextBanner({ className = "" }) {
         className="group flex items-center gap-4 flex-1 min-w-0 px-5 py-4 md:px-6 md:py-5 hover:bg-[#F2EBE1] transition-colors"
       >
         {trip.image && (
-          <img src={trip.image} alt="" loading="lazy" className="hidden sm:block w-16 h-16 object-cover shrink-0" />
+          <img src={optimizedSrc(trip.image, 128)} alt="" loading="lazy" decoding="async" className="hidden sm:block w-16 h-16 object-cover shrink-0" />
         )}
         <div className="min-w-0">
           <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">

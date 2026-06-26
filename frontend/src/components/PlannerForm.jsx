@@ -15,6 +15,7 @@ import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParams } from "@/lib/tripContext";
+import { optimizedSrc } from "@/lib/imageUrl";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 
 /* ============================================================
@@ -366,7 +367,7 @@ export default function PlannerForm() {
                       className="group flex items-center gap-3 flex-1 min-w-0 px-3 py-2.5 md:px-4 hover:bg-[#F2EBE1] transition-colors"
                     >
                       {t.image && (
-                        <img src={t.image} alt="" loading="lazy" className="hidden sm:block w-12 h-12 object-cover shrink-0" />
+                        <img src={optimizedSrc(t.image, 128)} alt="" loading="lazy" decoding="async" className="hidden sm:block w-12 h-12 object-cover shrink-0" />
                       )}
                       <div className="min-w-0">
                         <p className="font-serif-x text-[15px] md:text-base text-[#2C2621] leading-snug truncate">
