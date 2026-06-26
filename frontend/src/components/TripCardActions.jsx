@@ -8,6 +8,7 @@
    share link points to the specific trip (not the current page).
 ============================================================ */
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { Compass, Headset, Phone, CalendarClock, Heart, Euro, X } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
@@ -141,6 +142,7 @@ export default function TripCardActions({
           testidBase={testidBase}
           onClose={() => setPriceOpen(false)}
           onRequest={() => { setPriceOpen(false); navigate(`${pathFor(lang, "planTrip")}${tripQs}`); }}
+          onAppointment={() => { setPriceOpen(false); navigate(`${pathFor(lang, "appointment")}${tripQs}`); }}
         />
       )}
     </div>
@@ -149,12 +151,13 @@ export default function TripCardActions({
 
 /* Compact, summarised price dialog — opens in place over the card (no
    navigation). Reuses the centralised pricing store. */
-function QuickPriceDialog({ routeId, lang, testidBase, onClose, onRequest }) {
+function QuickPriceDialog({ routeId, lang, testidBase, onClose, onRequest, onAppointment }) {
   const pricing = usePricing();
   const tiers = getProgramTiers(routeId) || pricing.tiers;
   const from = getFromPrice({ tiers });
   const L = pricing.labels;
   const p = (o) => pickLang(o, lang);
+  const apptLabel = { es: "Reservar cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
@@ -164,9 +167,9 @@ function QuickPriceDialog({ routeId, lang, testidBase, onClose, onRequest }) {
     return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -174,7 +177,7 @@ function QuickPriceDialog({ routeId, lang, testidBase, onClose, onRequest }) {
     >
       <div className="absolute inset-0 bg-[#1A1513]/70 backdrop-blur-sm" />
       <div
-        className="relative w-full max-w-md bg-[#FDFBF7] text-[#2C2621] p-6 md:p-7 shadow-2xl"
+        className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#FDFBF7] text-[#2C2621] p-6 md:p-7 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -190,7 +193,7 @@ function QuickPriceDialog({ routeId, lang, testidBase, onClose, onRequest }) {
         <span className="block text-[10px] tracking-[0.32em] uppercase text-[#A07042] mb-1">
           {p(L.overline)}
         </span>
-        <h3 className="font-serif-x text-2xl leading-tight">{p(L.title)}</h3>
+        <h3 className="font-serif-x text-2xl leading-tight pr-8">{p(L.title)}</h3>
 
         {from != null && (
           <p className="mt-3 text-sm text-[#5C5248]" data-testid={`${testidBase}-price-from`}>
@@ -216,15 +219,27 @@ function QuickPriceDialog({ routeId, lang, testidBase, onClose, onRequest }) {
 
         <p className="mt-3 text-[11px] text-[#5C5248]/80 leading-relaxed">{p(L.placeholderNotice)}</p>
 
-        <button
-          type="button"
-          onClick={onRequest}
-          data-testid={`${testidBase}-price-cta`}
-          className="mt-5 w-full inline-flex items-center justify-center bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors"
-        >
-          {p(L.cta)}
-        </button>
+        <div className="mt-5 flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            onClick={onRequest}
+            data-testid={`${testidBase}-price-cta`}
+            className="flex-1 inline-flex items-center justify-center bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
+          >
+            {p(L.cta)}
+          </button>
+          <button
+            type="button"
+            onClick={onAppointment}
+            data-testid={`${testidBase}-price-cta-appointment`}
+            className="flex-1 inline-flex items-center justify-center gap-2 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-all duration-300"
+          >
+            <CalendarClock className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
+            {pick(apptLabel, lang)}
+          </button>
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
