@@ -16,6 +16,7 @@ import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
 import BookingSession from "@/components/BookingSession";
+import TripContextBanner from "@/components/TripContextBanner";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 
@@ -184,6 +185,9 @@ const CitaPreviaPage = () => {
         {/* ============== CALENDLY BOOKING ============== */}
         <section id="booking" data-testid="citaprevia-booking"
                  className="py-20 md:py-28 bg-[#F8F2E6]/40 border-b border-[#2C2621]/10">
+          <div className="max-w-3xl mx-auto px-6 md:px-12 mb-10">
+            <TripContextBanner />
+          </div>
           <BookingSession testid="citaprevia-booking-session" />
         </section>
 

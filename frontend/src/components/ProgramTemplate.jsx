@@ -324,7 +324,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
                defaults={{ es: "Planificar viaje", en: "Plan trip", fr: "Planifier le voyage" }} />
           </Link>
           <Link
-            to={pathFor(lang, "appointment")}
+            to={`${pathFor(lang, "appointment")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-appointment"
             className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
@@ -333,7 +333,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
                defaults={{ es: "Reservar cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" }} />
           </Link>
           <Link
-            to={pathFor(lang, "contact")}
+            to={`${pathFor(lang, "contact")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-contact"
             className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >

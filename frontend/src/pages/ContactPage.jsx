@@ -30,6 +30,7 @@ import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import FormTabs from "@/components/FormTabs";
 import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
+import TripContextBanner from "@/components/TripContextBanner";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 
@@ -257,6 +258,7 @@ const ContactPage = () => {
         {/* ============== DIRECT CONTACT — phone + email cards ============== */}
         <section data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <TripContextBanner className="mb-12 max-w-3xl" />
             <div className="max-w-2xl mb-12">
               <E name="contact.eyebrow" defaults={COPY.contact.eyebrow} multiline={false} as="span"
                  className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
