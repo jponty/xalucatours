@@ -278,7 +278,7 @@ export default function MarruecosPage() {
 
       <EditorialBlock block={t.intro} lang={lang} />
       <VideoSection {...MARRUECOS_VIDEOS.intro} testid="marruecos-video-intro" />
-      <SectionGallery {...MARRUECOS_GALLERIES[0]} testid="marruecos-gallery-intro" />
+      <SectionGallery {...MARRUECOS_GALLERIES[0]} showContact testid="marruecos-gallery-intro" />
 
       <ItinerariesOverview itineraries={MARRUECOS_ITINERARIES} t={t.overview} lang={lang} />
 

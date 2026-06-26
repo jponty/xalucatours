@@ -232,7 +232,7 @@ export default function EscapadasPage() {
               <VideoSection {...ESCAPADAS_VIDEOS[it.id]} testid={`escapadas-video-${it.id}`} />
             )}
             {ESCAPADAS_GALLERIES[i] && (
-              <SectionGallery {...ESCAPADAS_GALLERIES[i]} testid={`escapadas-gallery-${it.id}`} />
+              <SectionGallery {...ESCAPADAS_GALLERIES[i]} showContact testid={`escapadas-gallery-${it.id}`} />
             )}
             <ItineraryBlock
               itinerary={it}

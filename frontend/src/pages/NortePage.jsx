@@ -244,7 +244,7 @@ export default function NortePage() {
       {/* Editorial 1 — between itineraries */}
       <EditorialBlock block={NORTE_EDITORIAL[0]} lang={lang} />
       <VideoSection {...NORTE_VIDEOS.imperial} testid="norte-video-imperial" />
-      <SectionGallery {...NORTE_GALLERIES[0]} testid="norte-gallery-imperial" />
+      <SectionGallery {...NORTE_GALLERIES[0]} showContact testid="norte-gallery-imperial" />
 
       {/* Itinerary 2 */}
       <ItineraryBlock
@@ -268,7 +268,7 @@ export default function NortePage() {
       {/* Editorial 2 — closing narrative */}
       <EditorialBlock block={NORTE_EDITORIAL[1]} lang={lang} />
       <VideoSection {...NORTE_VIDEOS.rif} testid="norte-video-rif" />
-      <SectionGallery {...NORTE_GALLERIES[1]} testid="norte-gallery-rif" />
+      <SectionGallery {...NORTE_GALLERIES[1]} showContact testid="norte-gallery-rif" />
 
       {/* Cities row */}
       <CitiesRow t={t.cities} lang={lang} />
