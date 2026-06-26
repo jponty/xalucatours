@@ -681,9 +681,28 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
     <div data-testid={`program-page-${program.duration_key}`}>
       <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
       <StickyNav items={navItems} testid="program-nav" />
-      {tripRoute && tripRoute.length >= 2 && <TripRouteMap route={tripRoute} days={program.days} routeId={routeId} />}
-      <Description vt={vt} t={t} program={program} variant={variant} />
-      <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />
+      {(() => {
+        const mapSection = tripRoute && tripRoute.length >= 2
+          ? <TripRouteMap route={tripRoute} days={program.days} routeId={routeId} />
+          : null;
+        const descSection = <Description vt={vt} t={t} program={program} variant={variant} />;
+        const quickSection = <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />;
+        // Pilot reorder (only this program for now): Description → Quick → Map.
+        const reorder = routeId === "tourAtlasDesierto67";
+        return reorder ? (
+          <>
+            {descSection}
+            {quickSection}
+            {mapSection}
+          </>
+        ) : (
+          <>
+            {mapSection}
+            {descSection}
+            {quickSection}
+          </>
+        );
+      })()}
       <VideoSection
         testid={`program-audio-${routeId || program.duration_key}`}
         poster="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
