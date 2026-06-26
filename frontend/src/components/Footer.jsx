@@ -49,14 +49,15 @@ export const Footer = () => {
   return (
     <footer data-testid="site-footer" className="relative bg-[#1A1513] text-[#FDFBF7] overflow-hidden">
       <div className="absolute inset-0 berber-bg-cross opacity-60" aria-hidden="true" />
-      {/* Oversized X monogram bleeding into the bottom-right border —
-          discreet brand watermark, behind all content. */}
+      {/* Oversized X monogram anchored to the bottom-right corner,
+          partially clipped by the footer edge — same corner treatment
+          used over images, blended as a discreet brand watermark. */}
       <img
         src={xMonogram}
         alt=""
         aria-hidden="true"
         data-testid="footer-monogram"
-        className="pointer-events-none select-none absolute -bottom-16 -right-12 md:-bottom-24 md:-right-16 w-[20rem] md:w-[32rem] opacity-[0.05] z-0"
+        className="pointer-events-none select-none absolute bottom-0 right-0 translate-x-[26%] translate-y-[30%] w-[26rem] md:w-[42rem] opacity-[0.12] drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-0"
       />
       <BerberZigzagDivider className="opacity-60" />
 
@@ -67,7 +68,7 @@ export const Footer = () => {
               src={grupXalucaLogo}
               alt="Xaluca"
               data-testid="footer-logo"
-              className="w-14 h-14 object-contain mb-5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
+              className="w-24 h-24 md:w-28 md:h-28 object-contain mb-6 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
             />
             <EditableText
               slot="footer.brand"
