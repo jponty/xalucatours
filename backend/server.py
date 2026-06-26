@@ -2857,7 +2857,7 @@ def _env_flag(name, default=False):
         return default
     return v.strip().lower() in ("1", "true", "yes", "on")
 
-WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", True)
+WARM_ON_STARTUP = _env_flag("IMG_WARM_ON_STARTUP", False)
 # Auto-shrink oversized stored masters on boot. DEFAULT OFF (manual-only):
 # re-optimization is a one-time catch-up for legacy oversized masters (new
 # uploads are already optimized at upload time), so running it on EVERY boot
@@ -3069,6 +3069,10 @@ async def warm_image_cache(authorization: str = Header(default="")):
         raise HTTPException(status_code=401, detail="Sesión no válida")
     if _warm_state["running"]:
         return {"started": False, **_warm_state}
+    # Never run alongside a re-optimization: two heavy image jobs at once can
+    # double peak RAM and OOM a small container. Ask the user to wait.
+    if _reopt_state["running"]:
+        return {"started": False, "running": False, "blocked_by": "reoptimize"}
     asyncio.create_task(_run_warm_cache())
     return {"started": True, "running": True}
 
@@ -3175,6 +3179,8 @@ async def recompress_all_images(authorization: str = Header(default="")):
         raise HTTPException(status_code=401, detail="Sesión no válida")
     if _warm_state["running"]:
         return {"started": False, "running": True}
+    if _reopt_state["running"]:
+        return {"started": False, "running": False, "blocked_by": "reoptimize"}
 
     def _clear_cache() -> int:
         removed = 0
@@ -3324,6 +3330,10 @@ async def reoptimize_library(authorization: str = Header(default="")):
         raise HTTPException(status_code=401, detail="Sesión no válida")
     if _reopt_state["running"]:
         return {"started": False, **_reopt_state}
+    # Never run alongside a warm-up: two heavy image jobs at once can double
+    # peak RAM and OOM a small container. Ask the user to wait.
+    if _warm_state["running"]:
+        return {"started": False, "running": False, "blocked_by": "warm"}
     asyncio.create_task(_run_reoptimize_library())
     return {"started": True, "running": True}
 

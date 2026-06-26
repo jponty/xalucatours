@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Warm-up también MANUAL + seguro de exclusión mutua (jun 2026) — COMPLETADO (pendiente REDEPLOY)**:
+  - Diagnóstico en prod (endpoint `image-cache/stats`): los originales de PRODUCCIÓN son ENORMES → `count 4308, total 9.8 GB, media 2.3 MB, máx 22 MB, 2673 >1MB` (preview era 2 GB / 469 KB). En 0.5 vCPU, el warm-up automático en arranque se quedaba clavado (19/4337) codificando AVIF de originales gigantes → saturaba la CPU y causaba indisponibilidad puntual (`/admin` → "El servidor no está disponible ahora mismo", que es el nuevo mensaje de hardening = confirma que ya redeployaron).
+  - Cambio: `WARM_ON_STARTUP` por defecto **False** (igual que reopt). El arranque ya NO ejecuta trabajos pesados → siempre ligero/estable. La web sigue sirviendo vía on-the-fly + Cloudflare + LQIP. Reactivable con `IMG_WARM_ON_STARTUP=true`.
+  - Exclusión mutua: `warm`, `reoptimize` y `recompress-all` se rechazan entre sí si el otro está corriendo (`blocked_by`), para no doblar el pico de RAM y evitar OOM en contenedor pequeño.
+  - Flujo recomendado en prod (manual, horas valle): 1) "Re-optimizar Biblioteca" → encoge 9.8 GB → ~2 GB (gran alivio permanente, reanudable; si va justo de RAM usar `IMG_REOPT_CONCURRENCY=1`). 2) Luego "Re-comprimir todo"/warm → ya rápido con originales pequeños.
+
 - **Re-optimización ahora MANUAL por defecto + diagnóstico del error `<!DOCTYPE` en /admin de producción (jun 2026) — COMPLETADO (pendiente REDEPLOY)**:
   - Diagnóstico (con token de admin contra producción): el error `Unexpected token '<', "<!DOCTYPE"` al entrar en `/admin` de prod NO es de auth ni de URL (login prod verificado: 200+token; bundle prod tiene `https://xalucatravel.com/api` correcto; sin service worker). Es un SÍNTOMA: el job "Re-optimizar Biblioteca" desplegado (código viejo, no idempotente) corría descontrolado (`30/2939`, lentísimo, reiniciando el backend en bucle). Cuando el backend se satura/reinicia, `/api/*` devuelve transitoriamente el `index.html` del SPA (HTML 200) → de ahí el error de parseo JSON.
   - Cambio: `REOPT_ON_STARTUP` por defecto **False** (manual-only). La re-optimización es una puesta al día única (los originales nuevos ya se optimizan al subir), así que ya NO se ejecuta en cada arranque; se lanza desde el panel Admin en horas valle. El warm-up (`WARM_ON_STARTUP`) sigue ON (ligero, idempotente, necesario para velocidad). Reactivable con `IMG_REOPT_ON_STARTUP=true`.
