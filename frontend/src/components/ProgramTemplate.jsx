@@ -278,7 +278,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
   );
 };
 
-const Description = ({ vt, t, program, variant }) => {
+const Description = ({ vt, t, program, variant, lang }) => {
   const descAll = metaAllLangs(program, variant, "description");
   const descLen = Array.isArray(vt.description) ? vt.description.length : 0;
   return (
@@ -307,6 +307,40 @@ const Description = ({ vt, t, program, variant }) => {
               className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}
             />
           ))}
+        </div>
+
+        {/* Action buttons — natural CTA block below the description */}
+        <div
+          data-testid="program-description-actions"
+          className="mt-12 flex flex-wrap items-center justify-center gap-3"
+        >
+          <Link
+            to={pathFor(lang, "planTrip")}
+            data-testid="desc-cta-plan"
+            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+          >
+            <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <C name="desc.cta_plan" multiline={false}
+               defaults={{ es: "Planificar viaje", en: "Plan trip", fr: "Planifier le voyage" }} />
+          </Link>
+          <Link
+            to={pathFor(lang, "appointment")}
+            data-testid="desc-cta-appointment"
+            className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+          >
+            <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <C name="desc.cta_appointment" multiline={false}
+               defaults={{ es: "Reservar cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" }} />
+          </Link>
+          <Link
+            to={pathFor(lang, "contact")}
+            data-testid="desc-cta-contact"
+            className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+          >
+            <Mail className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <C name="desc.cta_contact" multiline={false}
+               defaults={{ es: "Contactar", en: "Contact", fr: "Contact" }} />
+          </Link>
         </div>
       </div>
     </section>
@@ -705,7 +739,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
         const mapSection = tripRoute && tripRoute.length >= 2
           ? <TripRouteMap route={tripRoute} days={program.days} routeId={routeId} />
           : null;
-        const descSection = <Description vt={vt} t={t} program={program} variant={variant} />;
+        const descSection = <Description vt={vt} t={t} program={program} variant={variant} lang={lang} />;
         const quickSection = <QuickInfo t={t} vt={vt} program={program} lang={lang} variant={variant} />;
         return (
           <>
