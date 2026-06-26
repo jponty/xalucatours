@@ -5,7 +5,7 @@ import {
   Users, BedDouble, Sparkles, Send, Check,
   Sun, Bike, Camera, Flower, Music, Waves,
   Mountain, MountainSnow, MapPin, ArrowRight, Compass,
-  Moon, ArrowUpRight,
+  Moon, ArrowUpRight, X,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS, TRIP_REGIONS } from "@/lib/allTripsCatalog";
@@ -201,6 +201,9 @@ export default function PlannerForm() {
   const prefillTrip = useMemo(() => getPrefilledTrip(), []);
 
   const PREFILL_LABEL = { es: "Estás planificando", en: "You're planning", fr: "Vous planifiez" };
+  const REVIEW_LABEL = { es: "Ver el itinerario", en: "View the itinerary", fr: "Voir l'itinéraire" };
+  const DISMISS_LABEL = { es: "Quitar viaje seleccionado", en: "Remove selected trip", fr: "Retirer le voyage sélectionné" };
+  const [prefillDismissed, setPrefillDismissed] = useState(false);
 
   const [form, setForm] = useState({
     dateMode: "range",
@@ -323,32 +326,59 @@ export default function PlannerForm() {
           className="space-y-16"
           noValidate
         >
-          {/* Pre-filled trip confirmation banner (arrives with ?trip=) */}
-          {prefillTrip && (
+          {/* Pre-filled trip confirmation banner (arrives with ?trip=).
+              Clickable → back to the trip page; X → discard preselection. */}
+          {prefillTrip && !prefillDismissed && (
             <div
               data-testid="plan-prefill-banner"
-              className="flex items-center gap-4 bg-[#F8F2E6] border border-[#C16542]/25 px-5 py-4 md:px-6 md:py-5"
+              className="relative flex items-stretch bg-[#F8F2E6] border border-[#C16542]/25"
               style={{ borderLeft: "3px solid #C16542" }}
             >
-              <img
-                src={prefillTrip.image}
-                alt=""
-                loading="lazy"
-                className="hidden sm:block w-16 h-16 object-cover shrink-0"
-              />
-              <div className="min-w-0">
-                <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
-                  <Compass className="w-3.5 h-3.5" strokeWidth={1.7} />
-                  {pick(PREFILL_LABEL, lang)}
-                </span>
-                <p className="font-serif-x text-lg md:text-xl text-[#2C2621] leading-snug mt-1">
-                  <span className="align-middle">{pick(prefillTrip.title, lang)}</span>
-                  <span className="text-[#5C5248] text-sm md:text-base align-middle">
-                    {" · "}{prefillTrip.nights + 1}{" "}{pick({ es: "días", en: "days", fr: "jours" }, lang)}
+              <Link
+                to={pathFor(lang, prefillTrip.routeId)}
+                data-testid="plan-prefill-link"
+                className="group flex items-center gap-4 flex-1 min-w-0 px-5 py-4 md:px-6 md:py-5 hover:bg-[#F2EBE1] transition-colors"
+              >
+                <img
+                  src={prefillTrip.image}
+                  alt=""
+                  loading="lazy"
+                  className="hidden sm:block w-16 h-16 object-cover shrink-0"
+                />
+                <div className="min-w-0">
+                  <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
+                    <Compass className="w-3.5 h-3.5" strokeWidth={1.7} />
+                    {pick(PREFILL_LABEL, lang)}
                   </span>
-                </p>
-              </div>
-              <Check className="ml-auto w-5 h-5 text-[#5A6B4F] shrink-0" strokeWidth={1.8} />
+                  <p className="font-serif-x text-lg md:text-xl text-[#2C2621] leading-snug mt-1">
+                    <span className="align-middle">{pick(prefillTrip.title, lang)}</span>
+                    <span className="text-[#5C5248] text-sm md:text-base align-middle">
+                      {" · "}{prefillTrip.nights + 1}{" "}{pick({ es: "días", en: "days", fr: "jours" }, lang)}
+                    </span>
+                  </p>
+                  <span className="mt-1.5 inline-flex items-center gap-1 text-[10px] tracking-[0.18em] uppercase text-[#C16542] opacity-80 group-hover:opacity-100 transition-opacity">
+                    {pick(REVIEW_LABEL, lang)}
+                    <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" strokeWidth={1.8} />
+                  </span>
+                </div>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setForm((f) => ({
+                    ...f,
+                    regions: f.regions.filter((r) => r !== prefillTrip.region),
+                    selectedTrips: f.selectedTrips.filter((id) => id !== prefillTrip.routeId),
+                  }));
+                  setPrefillDismissed(true);
+                }}
+                data-testid="plan-prefill-dismiss"
+                aria-label={pick(DISMISS_LABEL, lang)}
+                title={pick(DISMISS_LABEL, lang)}
+                className="shrink-0 self-start m-2 inline-flex items-center justify-center w-8 h-8 rounded-full text-[#5C5248] hover:bg-[#2C2621] hover:text-[#FDFBF7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] transition-colors"
+              >
+                <X className="w-4 h-4" strokeWidth={1.8} />
+              </button>
             </div>
           )}
 
