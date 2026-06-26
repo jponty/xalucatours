@@ -3084,6 +3084,116 @@ async def warm_image_cache_status(authorization: str = Header(default="")):
     return st
 
 
+def _scan_variant_cache() -> dict:
+    """Blocking: scan the on-disk variant cache. Returns count + total bytes,
+    broken down by format. Runs in a thread (offload)."""
+    count, total = 0, 0
+    by_ext = {"avif": {"n": 0, "bytes": 0}, "webp": {"n": 0, "bytes": 0}, "orig": {"n": 0, "bytes": 0}}
+    try:
+        for f in IMG_CACHE_DIR.iterdir():
+            if not f.is_file():
+                continue
+            try:
+                sz = f.stat().st_size
+            except OSError:
+                continue
+            count += 1
+            total += sz
+            ext = f.suffix.lstrip(".").lower()
+            if ext in by_ext:
+                by_ext[ext]["n"] += 1
+                by_ext[ext]["bytes"] += sz
+    except Exception as exc:
+        logger.debug("variant cache scan failed: %s", exc)
+    return {"count": count, "total_bytes": total, "by_ext": by_ext}
+
+
+@api_router.get("/admin/image-cache/stats")
+async def image_cache_stats(authorization: str = Header(default="")):
+    """Dashboard metrics: master file weights (from DB) + the on-disk variant
+    cache (the bytes actually delivered to browsers) + the active encoder
+    settings. Lets the operator see how light pages are and decide whether to
+    re-compress everything with the current settings."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+
+    sizes: List[int] = []
+    async for d in db.files.find({"is_deleted": {"$ne": True}}, {"size": 1}):
+        s = d.get("size") or 0
+        if s:
+            sizes.append(s)
+    sizes.sort()
+    n = len(sizes)
+    total = sum(sizes)
+    masters = {
+        "count": n,
+        "total_mb": round(total / (1024 * 1024), 1),
+        "avg_kb": round((total / n) / 1024, 1) if n else 0,
+        "max_kb": round(sizes[-1] / 1024, 1) if n else 0,
+        "over_1mb": sum(1 for s in sizes if s > 1024 * 1024),
+    }
+
+    variants = await asyncio.to_thread(_scan_variant_cache)
+    vt = variants["by_ext"]
+    avg_per_fmt = {}
+    for fmt in ("avif", "webp"):
+        nn = vt[fmt]["n"]
+        avg_per_fmt[fmt] = round((vt[fmt]["bytes"] / nn) / 1024, 1) if nn else 0
+    variants_out = {
+        "count": variants["count"],
+        "total_mb": round(variants["total_bytes"] / (1024 * 1024), 1),
+        "avif_count": vt["avif"]["n"],
+        "webp_count": vt["webp"]["n"],
+        "avg_avif_kb": avg_per_fmt["avif"],
+        "avg_webp_kb": avg_per_fmt["webp"],
+    }
+    settings = {
+        "avif_quality": AVIF_QUALITY,
+        "webp_quality": WEBP_VARIANT_QUALITY,
+        "avif_speed_warm": AVIF_SPEED_WARM,
+        "webp_method_warm": WEBP_METHOD_WARM,
+        "warm_widths": WARM_WIDTHS,
+        "warm_formats": WARM_FORMATS,
+    }
+    warm = {"running": _warm_state["running"]}
+    if _warm_state["total"]:
+        warm["percent"] = round(100 * _warm_state["done"] / _warm_state["total"], 1)
+    return {"masters": masters, "variants": variants_out, "settings": settings, "warm": warm}
+
+
+@api_router.post("/admin/recompress-all")
+async def recompress_all_images(authorization: str = Header(default="")):
+    """Clear the entire on-disk variant cache and re-warm it, so every AVIF/WebP
+    variant is regenerated with the CURRENT encoder settings (e.g. after tuning
+    quality/effort). Idempotent and safe: variants are derived from the stored
+    masters, so nothing is lost — they're simply re-encoded on demand + warmed."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    if _warm_state["running"]:
+        return {"started": False, "running": True}
+
+    def _clear_cache() -> int:
+        removed = 0
+        try:
+            for f in IMG_CACHE_DIR.iterdir():
+                if f.is_file():
+                    try:
+                        f.unlink()
+                        removed += 1
+                    except OSError:
+                        pass
+        except Exception as exc:
+            logger.debug("cache clear failed: %s", exc)
+        return removed
+
+    cleared = await asyncio.to_thread(_clear_cache)
+    logger.info("recompress-all: cleared %s cached variants; re-warming…", cleared)
+    asyncio.create_task(_run_warm_cache())
+    return {"started": True, "running": True, "cleared": cleared}
+
+
 # ---------- Re-optimize library (backfill oversized masters) ----------
 # One-time backfill: re-encode already-stored masters that are still large
 # (e.g. raw Pexels/Unsplash originals imported before import-time optimisation)

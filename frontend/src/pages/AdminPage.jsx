@@ -4,7 +4,7 @@ import {
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
   MapPin, Languages, Inbox, Mail, Images, Database, Library,
-  ShieldCheck, Layers, Link2,
+  ShieldCheck, Layers, Link2, Gauge,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
@@ -674,6 +674,7 @@ export default function AdminPage() {
         ) : tab === "mirror" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <MirrorPanel />
+            <ImageWeightPanel />
             <WarmCachePanel />
             <ReoptimizeLibraryPanel />
             <MigrateFallbacksPanel />
@@ -1085,6 +1086,145 @@ const MirrorPanel = () => {
    initial blur on the most visible imagery. Runs automatically on the server
    at startup; this panel lets the editor re-run it after adding new images
    and watch progress. */
+const ImageWeightPanel = () => {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [confirming, setConfirming] = useState(false);
+  const pollRef = useRef(null);
+  const tokenHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("xaluca_admin_token")}` });
+
+  const fetchStats = async () => {
+    try {
+      const r = await fetch(`${API}/admin/image-cache/stats`, { headers: tokenHeader() });
+      const d = await r.json();
+      if (r.ok) setStats(d);
+      if (d?.warm && !d.warm.running && pollRef.current) {
+        clearInterval(pollRef.current); pollRef.current = null; setBusy(false);
+      }
+    } catch (e) { /* transient */ }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []);
+
+  useEffect(() => {
+    if (stats?.warm?.running && !pollRef.current) {
+      pollRef.current = setInterval(fetchStats, 2000);
+    } else if (!stats?.warm?.running && pollRef.current) {
+      clearInterval(pollRef.current); pollRef.current = null;
+    }
+  }, [stats?.warm?.running]);
+
+  const recompress = async () => {
+    setBusy(true); setError(""); setConfirming(false);
+    try {
+      const r = await fetch(`${API}/admin/recompress-all`, { method: "POST", headers: tokenHeader() });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "No se pudo iniciar la re-compresión.");
+      if (!pollRef.current) pollRef.current = setInterval(fetchStats, 2000);
+      await fetchStats();
+    } catch (e) {
+      setError(e.message || "Error al iniciar."); setBusy(false);
+    }
+  };
+
+  const m = stats?.masters;
+  const v = stats?.variants;
+  const s = stats?.settings;
+  const warming = stats?.warm?.running || busy;
+  const savings = (m?.avg_kb && v?.avg_avif_kb)
+    ? Math.max(0, Math.round(100 - (v.avg_avif_kb / m.avg_kb) * 100)) : null;
+
+  const Stat = ({ label, value, sub, testid }) => (
+    <div className="bg-white/[0.03] border border-white/10 px-4 py-3" data-testid={testid}>
+      <div className="text-[10px] tracking-[0.2em] uppercase text-white/45">{label}</div>
+      <div className="mt-1 text-xl font-serif-x text-white">{value}</div>
+      {sub && <div className="text-[11px] text-white/40 mt-0.5">{sub}</div>}
+    </div>
+  );
+
+  return (
+    <div className="max-w-2xl mx-auto px-6 md:px-10 pb-10 text-white" data-testid="image-weight-panel">
+      <div className="border-t border-white/10 pt-8">
+        <div className="flex items-center gap-3 mb-2">
+          <Gauge className="w-6 h-6 text-[#D4A373]" strokeWidth={1.6} />
+          <h2 className="text-2xl font-serif-x">Peso de las imágenes</h2>
+          <button
+            type="button"
+            onClick={fetchStats}
+            data-testid="image-weight-refresh-btn"
+            className="ml-auto inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-white/55 hover:text-white transition-colors"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} strokeWidth={1.8} /> Actualizar
+          </button>
+        </div>
+        <p className="text-sm text-white/65 leading-relaxed mb-6">
+          Lo que el navegador descarga de verdad son las variantes <span className="text-[#D4A373]">AVIF/WebP</span>.
+          Tras ajustar la calidad de compresión puedes <span className="text-[#D4A373]">re-comprimir todo</span> para
+          regenerar las variantes ya cacheadas con los nuevos ajustes.
+        </p>
+
+        {stats && (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3" data-testid="image-weight-stats">
+              <Stat label="Imágenes" value={m.count} sub={`${m.total_mb} MB en originales`} testid="iw-masters-count" />
+              <Stat label="Peso medio AVIF" value={`${v.avg_avif_kb} KB`} sub={savings != null ? `~${savings}% más ligero que el original` : null} testid="iw-avg-avif" />
+              <Stat label="Peso medio WebP" value={`${v.avg_webp_kb} KB`} testid="iw-avg-webp" />
+              <Stat label="Variantes cacheadas" value={v.count} sub={`${v.avif_count} AVIF · ${v.webp_count} WebP`} testid="iw-variant-count" />
+              <Stat label="Tamaño de caché" value={`${v.total_mb} MB`} testid="iw-cache-size" />
+              <Stat label="Calidad" value={`AVIF q${s.avif_quality} · WebP q${s.webp_quality}`} sub={`warm: avif s${s.avif_speed_warm} · webp m${s.webp_method_warm}`} testid="iw-settings" />
+            </div>
+
+            <div className="mt-6 flex items-center gap-3">
+              {!confirming ? (
+                <button
+                  type="button"
+                  data-testid="recompress-all-btn"
+                  onClick={() => setConfirming(true)}
+                  disabled={warming}
+                  className="inline-flex items-center gap-2 bg-[#5A6B4F] hover:bg-[#4A5A41] text-white px-6 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors disabled:opacity-50"
+                >
+                  {warming ? <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={1.8} /> : <Gauge className="w-4 h-4" strokeWidth={1.8} />}
+                  {warming ? "Re-comprimiendo…" : "Re-comprimir todo"}
+                </button>
+              ) : (
+                <>
+                  <span className="text-xs text-white/70">¿Vaciar caché y regenerar todas las variantes?</span>
+                  <button type="button" data-testid="recompress-confirm-btn" onClick={recompress}
+                    className="bg-[#C16542] hover:bg-[#a8512f] text-white px-4 py-2 text-[11px] tracking-[0.2em] uppercase transition-colors">Sí, re-comprimir</button>
+                  <button type="button" data-testid="recompress-cancel-btn" onClick={() => setConfirming(false)}
+                    className="text-white/55 hover:text-white px-3 py-2 text-[11px] tracking-[0.2em] uppercase transition-colors">Cancelar</button>
+                </>
+              )}
+            </div>
+
+            {warming && stats?.warm?.percent != null && (
+              <div className="mt-5" data-testid="recompress-progress">
+                <div className="h-2 w-full bg-white/10 overflow-hidden rounded-full">
+                  <div className="h-full bg-[#D4A373] transition-all duration-500" style={{ width: `${stats.warm.percent}%` }} />
+                </div>
+                <div className="mt-2 text-[11px] text-white/60">Regenerando variantes · {stats.warm.percent}%</div>
+              </div>
+            )}
+          </>
+        )}
+
+        {error && (
+          <div className="mt-5 flex items-start gap-3 bg-red-500/10 border border-red-500/40 px-4 py-3" data-testid="image-weight-error">
+            <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" strokeWidth={1.8} />
+            <p className="text-xs text-red-300 leading-relaxed">{error}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const WarmCachePanel = () => {
   const [status, setStatus] = useState(null);
   const [busy, setBusy] = useState(false);
