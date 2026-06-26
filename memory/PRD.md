@@ -11,6 +11,10 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Header móvil: botón "Planificar" solo con icono de brújula (jun 2026) — COMPLETADO + VERIFICADO (screenshot)**:
+  - En `Header.jsx` el CTA `header-enquire-button` (→ planTrip) en móvil (`<sm`) muestra ÚNICAMENTE el icono `Compass` (sin texto ni flecha) → libera espacio y evita solapes en el header. En `sm+` se mantiene el label `cta_plan` + `ArrowRight` como antes. Misma funcionalidad (link a `planTrip`); añadido `aria-label={pick(translations.cta_plan, lang)}` para accesibilidad. Verificado: móvil texto vacío + icono (48px), escritorio "PLANIFICAR MI VIAJE".
+
+
 - **Fix: monograma X del Footer deformado en móvil (jun 2026) — COMPLETADO + VERIFICADO (screenshot + medición de ratio)**:
   - Síntoma: en móvil la X (`monograma-x-borde.png`, 1080×1920, ratio 0.562) se veía estirada verticalmente. Causa: usaba `h-[125%] w-auto`; el footer en móvil es muy alto → `w-auto` calculaba un ancho mayor que el viewport y el `img{max-width:100%}` del preflight de Tailwind lo recortaba mientras la altura seguía al 125% → deformación.
   - Fix (`Footer.jsx`): tamaño por ANCHO en móvil (`w-[60%] max-w-[360px] h-auto`) y por ALTO en escritorio (`md:w-auto md:h-[125%] md:max-w-none`, evita el recorte) + `object-contain` como garantía. Verificado: render 248×442 (ratio 0.561 ≈ 0.562 natural), sin deformación; escritorio sin cambios.

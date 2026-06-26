@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ArrowRight, CalendarClock, Heart } from "lucide-react";
+import { Menu, ArrowRight, CalendarClock, Heart, Compass } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import TopInfoBar from "./TopInfoBar";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { translations } from "@/lib/i18n";
 import { pathFor } from "@/lib/routes";
@@ -119,15 +119,16 @@ export const Header = () => {
             <Link
               to={pathFor(lang, "planTrip")}
               data-testid="header-enquire-button"
+              aria-label={pick(translations.cta_plan, lang)}
               className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
+              {/* Mobile: compass icon only (frees header space, no overlap) */}
+              <Compass className="w-4 h-4 sm:hidden" strokeWidth={1.6} aria-hidden="true" />
+              {/* Desktop: full label + arrow */}
               <span className="hidden sm:inline">
                 <EditableText slot="header.cta_plan" defaults={translations.cta_plan} multiline={false} />
               </span>
-              <span className="sm:hidden">
-                <EditableText slot="header.cta_plan_short" defaults={{ es: "Planificar", en: "Plan trip", fr: "Planifier" }} multiline={false} />
-              </span>
-              <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
+              <ArrowRight className="hidden sm:inline-block w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
             </Link>
           </div>
         </div>
