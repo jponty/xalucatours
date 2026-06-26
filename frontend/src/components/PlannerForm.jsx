@@ -14,6 +14,7 @@ import FromPrice from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
+import { resolveTripContext, getTripParam } from "@/lib/tripContext";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 
 /* ============================================================
@@ -106,16 +107,6 @@ export const PLANNER_COPY = {
 
 const COPY = PLANNER_COPY;
 
-/* Read a ?trip=<routeId> query param and resolve it to a catalog trip.
-   Used to pre-fill the planner when arriving from a trip page's
-   per-day "Contactar" button. */
-const getPrefilledTrip = () => {
-  if (typeof window === "undefined") return null;
-  const id = new URLSearchParams(window.location.search).get("trip");
-  if (!id) return null;
-  return ALL_TRIPS.find((x) => x.routeId === id) || null;
-};
-
 const ACCOMMODATIONS = [
   {
     id: "basic", accent: "#A07042",
@@ -198,7 +189,8 @@ export default function PlannerForm() {
   const { lang } = useLanguage();
   const tr = (k) => pick(COPY[k], lang);
 
-  const prefillTrip = useMemo(() => getPrefilledTrip(), []);
+  const tripParam = useMemo(() => getTripParam(), []);
+  const prefillTrip = useMemo(() => resolveTripContext(tripParam, lang), [tripParam, lang]);
 
   const PREFILL_LABEL = { es: "Estás planificando", en: "You're planning", fr: "Vous planifiez" };
   const REVIEW_LABEL = { es: "Ver el itinerario", en: "View the itinerary", fr: "Voir l'itinéraire" };
@@ -210,8 +202,8 @@ export default function PlannerForm() {
     startDate: "", endDate: "", exactDate: "", flexMonth: "",
     adults: 2, children: 0,
     accommodation: "superior",
-    regions: prefillTrip ? [prefillTrip.region] : [],
-    selectedTrips: prefillTrip ? [prefillTrip.routeId] : [],
+    regions: prefillTrip?.region ? [prefillTrip.region] : [],
+    selectedTrips: tripParam && prefillTrip ? [tripParam] : [],
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
     preferredContact: [],
@@ -339,22 +331,26 @@ export default function PlannerForm() {
                 data-testid="plan-prefill-link"
                 className="group flex items-center gap-4 flex-1 min-w-0 px-5 py-4 md:px-6 md:py-5 hover:bg-[#F2EBE1] transition-colors"
               >
-                <img
-                  src={prefillTrip.image}
-                  alt=""
-                  loading="lazy"
-                  className="hidden sm:block w-16 h-16 object-cover shrink-0"
-                />
+                {prefillTrip.image && (
+                  <img
+                    src={prefillTrip.image}
+                    alt=""
+                    loading="lazy"
+                    className="hidden sm:block w-16 h-16 object-cover shrink-0"
+                  />
+                )}
                 <div className="min-w-0">
                   <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
                     <Compass className="w-3.5 h-3.5" strokeWidth={1.7} />
                     {pick(PREFILL_LABEL, lang)}
                   </span>
                   <p className="font-serif-x text-lg md:text-xl text-[#2C2621] leading-snug mt-1">
-                    <span className="align-middle">{pick(prefillTrip.title, lang)}</span>
-                    <span className="text-[#5C5248] text-sm md:text-base align-middle">
-                      {" · "}{prefillTrip.nights + 1}{" "}{pick({ es: "días", en: "days", fr: "jours" }, lang)}
-                    </span>
+                    <span className="align-middle">{prefillTrip.title}</span>
+                    {prefillTrip.durationLabel && (
+                      <span className="text-[#5C5248] text-sm md:text-base align-middle">
+                        {" · "}{prefillTrip.durationLabel}
+                      </span>
+                    )}
                   </p>
                   <span className="mt-1.5 inline-flex items-center gap-1 text-[10px] tracking-[0.18em] uppercase text-[#C16542] opacity-80 group-hover:opacity-100 transition-opacity">
                     {pick(REVIEW_LABEL, lang)}
