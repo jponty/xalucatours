@@ -3013,6 +3013,7 @@ async def warm_image_cache_status(authorization: str = Header(default="")):
 # slot/gallery reference keeps working. Cached variants are then invalidated +
 # re-warmed. Background + idempotent (skips already-small / non-shrinkable).
 REOPT_SIZE_THRESHOLD = 500 * 1024  # only touch masters larger than ~500 KB
+REOPT_CONCURRENCY = 4  # process up to N masters in parallel (bounded)
 
 _reopt_state = {
     "running": False, "total": 0, "done": 0, "optimized": 0,
@@ -3062,35 +3063,40 @@ async def _run_reoptimize_library():
                 candidates.append(p)
         _reopt_state["total"] = len(candidates)
 
-        for path in candidates:
-            try:
-                data, ctype = await asyncio.to_thread(get_object, path)
-                old_size = len(data)
-                new_data, new_ctype, _ext = await asyncio.to_thread(optimize_image, data, ctype)
-                # Only rewrite when meaningfully smaller (>10% saved).
-                if new_data is data or len(new_data) >= old_size * 0.9:
-                    _reopt_state["skipped"] += 1
-                else:
-                    await asyncio.to_thread(put_object, path, new_data, new_ctype)
-                    await db.files.update_many(
-                        {"storage_path": path},
-                        {"$set": {
-                            "content_type": new_ctype,
-                            "size": len(new_data),
-                            "reoptimized_at": datetime.now(timezone.utc).isoformat(),
-                        }},
-                    )
-                    _invalidate_path_cache(path)
-                    asyncio.create_task(_warm_one_path(path, new_data))
-                    _reopt_state["optimized"] += 1
-                    _reopt_state["saved_bytes"] += (old_size - len(new_data))
-            except Exception as exc:
-                logger.debug("reoptimize failed for %s: %s", path, exc)
-                _reopt_state["errors"] += 1
-            finally:
-                _reopt_state["done"] += 1
-                if _WARM_THROTTLE:
-                    await asyncio.sleep(_WARM_THROTTLE)
+        sem = asyncio.Semaphore(REOPT_CONCURRENCY)
+
+        async def _reopt_one(path):
+            async with sem:
+                try:
+                    data, ctype = await asyncio.to_thread(get_object, path)
+                    old_size = len(data)
+                    new_data, new_ctype, _ext = await asyncio.to_thread(optimize_image, data, ctype)
+                    # Only rewrite when meaningfully smaller (>10% saved).
+                    if new_data is data or len(new_data) >= old_size * 0.9:
+                        _reopt_state["skipped"] += 1
+                    else:
+                        await asyncio.to_thread(put_object, path, new_data, new_ctype)
+                        await db.files.update_many(
+                            {"storage_path": path},
+                            {"$set": {
+                                "content_type": new_ctype,
+                                "size": len(new_data),
+                                "reoptimized_at": datetime.now(timezone.utc).isoformat(),
+                            }},
+                        )
+                        _invalidate_path_cache(path)
+                        asyncio.create_task(_warm_one_path(path, new_data))
+                        _reopt_state["optimized"] += 1
+                        _reopt_state["saved_bytes"] += (old_size - len(new_data))
+                except Exception as exc:
+                    logger.debug("reoptimize failed for %s: %s", path, exc)
+                    _reopt_state["errors"] += 1
+                finally:
+                    _reopt_state["done"] += 1
+                    if _WARM_THROTTLE:
+                        await asyncio.sleep(_WARM_THROTTLE)
+
+        await asyncio.gather(*(_reopt_one(p) for p in candidates))
     except Exception as exc:
         logger.error("library re-optimize failed: %s", exc)
     finally:
