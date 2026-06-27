@@ -114,7 +114,7 @@ const ViewToggleControl = ({ satellite, setSatellite, position }) => {
 };
 
 export const MapBaseLayers = ({ variant = "light", togglePosition = "bottomright" }) => {
-  const [satellite, setSatellite] = useState(false);
+  const [satellite, setSatellite] = useState(true);
   return (
     <>
       {satellite ? <SatelliteTiles /> : <MapTiles variant={variant} />}
