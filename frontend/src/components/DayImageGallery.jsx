@@ -373,6 +373,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
           {/* Main image */}
           <div
             className="relative flex-1 min-h-0 flex items-center justify-center px-4 md:px-20 pb-2"
+            onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false); }}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
