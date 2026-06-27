@@ -1,4 +1,14 @@
 
+## Marca completa en cards + monograma X en heros restantes + WhatsApp en widget (Jun 2026)
+- **NUEVO `components/CardBrandOverlay.jsx`**: overlay de marca reutilizable para imágenes de cards estáticas → logo Xaluca (esquina configurable), X monograma grande integrada en el borde inferior-derecho (opacity .22, z-2, pointer-events-none) y burbuja de cita previa (`ImageContactBubble align="left"`). Props: `slug`, `testid`, `hideBubbleOnMobile`, `showBubble` (def. true), `logoClassName`. NO depende de `BrandedImagesProvider` (renderiza siempre).
+- **Logo + X + widget de cita** añadidos a las cards de: `/viajes/aventura` (8 experiencias; icono movido a top-left), `/viajesamedida` (6 tipos; sólo se añadió la burbuja, ya tenían logo+X), `/quehacemos` (3 pilares; icono a top-left), `/que-ver-en-Marruecos` (17 destinos), `/incentivos` (4 verticales + 3 casos; ubicación de los casos movida al cuerpo de la card), `/cuando-viajar` (4 imágenes destacadas de estación).
+- **HeroMonogram (X grande de hero, desktop-only, esquina inferior-derecha, opacity .18, oculto en móvil)** extendido a los heros de: `/contacto`, `/galeria`, `/cuando-viajar`, `/equipo`, `/quehacemos`, `/que-ver-en-Marruecos`, `/incentivos`, `/planifica-tu-viaje`, `/citaprevia` y `/marruecos` (este resuelve a `MoroccoLandingPage.jsx`, hero `mar-hero`, no a `MarruecosPage.jsx`).
+- **`/juego`**: logo Xaluca (arriba-IZQUIERDA) + X monograma grande en el borde de cada card de lugar, SIN burbuja de contacto (`CardBrandOverlay showBubble={false}`). Logo/X con pointer-events-none para no bloquear el toggle de "visitado".
+- **Botón WhatsApp en `ImageContactBubble`**: panel expandido ahora con DOS botones (flex-col) — cita previa (terracota) + WhatsApp (verde #25D366, icono oficial SVG) que abre `https://wa.me/34629415221` en nueva pestaña. Mismo estilo pill/sombra/animación. testid `image-contact-whatsapp-<slug>`.
+- **Validado**: testing agent iteration_55 (16/17, fix /marruecos) + iteration_56 (4/4, 0 errores de consola).
+
+
+
 ## "El recorrido completo" (TripRouteMap) en TODAS las páginas de viaje (Jun 2026)
 - **User request**: la sección "El recorrido completo / Tu travesía en un solo mapa" (mapa Leaflet de la ruta) debe estar en todas las páginas de viaje, cada una con SU itinerario real, sin reutilizar el mismo mapa entre itinerarios distintos.
 - **Problema previo**: en `ProgramTemplate` la sección sólo se renderizaba si `program.route` existía. Los 23 programas de `programData.js` y los 2 de enduro NO tenían `route` → no mostraban la sección.
