@@ -257,22 +257,6 @@ export default function WorldMapSection() {
                       {pick(o.name, lang)}
                     </span>
                   ))}
-
-                  {/* Morocco label chip (always visible, clickable) */}
-                  {map.morocco && (
-                    <button
-                      type="button"
-                      data-testid="world-map-morocco-label"
-                      onClick={goMorocco}
-                      onMouseEnter={() => setHover(true)}
-                      onMouseLeave={() => setHover(false)}
-                      style={{ left: pct(map.morocco.x, map.morocco.y).left, top: pct(map.morocco.x, map.morocco.y).top }}
-                      className="pointer-events-auto absolute translate-x-2 -translate-y-1/2 whitespace-nowrap bg-[#FDFBF7] border border-[#6E2D17]/25 text-[#2C2621] font-serif-x text-[12px] md:text-sm px-2.5 py-1 shadow-[0_6px_16px_-6px_rgba(44,38,33,0.35)] hover:bg-[#6E2D17] hover:text-[#FDFBF7] transition-colors duration-300 inline-flex items-center gap-1.5"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#6E2D17] inline-block" />
-                      {labelText}
-                    </button>
-                  )}
                 </div>
               )}
 
