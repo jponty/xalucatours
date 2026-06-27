@@ -41,6 +41,8 @@ import monogramaX from "@/assets/monograma-x-crop.png";
 // Total images per day = 1 main + EXTRA_COUNT additional squares.
 const EXTRA_COUNT = 9;
 
+const VER_GALERIA = { es: "Ver galería", en: "View gallery", fr: "Voir la galerie" };
+
 const buildImages = (base, day) => {
   const extras = Array.isArray(day.gallery) ? day.gallery : [];
   const images = [
@@ -83,6 +85,8 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
   // Inline gallery editor (Image Edit Mode) — opens the SAME DayGalleryEditor
   // the Admin uses, on the SAME `day_galleries/{galleryKey}` record.
   const [editorOpen, setEditorOpen] = useState(false);
+  // Fullscreen lightbox (public "Ver galería") — dialog/modal viewer.
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   // Warm the image-slot cache so the editor seed reflects CMS overrides even
   // if the editor is opened before any EditableImage finished hydrating.
   useEffect(() => { ensureSlotsLoaded?.(); }, []);
@@ -168,6 +172,29 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
     if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
     touchX.current = null;
   };
+
+  // Resolve a single displayable URL for the fullscreen lightbox (object-contain).
+  const lightboxSrc = (slide) => {
+    const raw = slide?.url || (slide?.slot ? getSlotUrl(slide.slot) : null) || slide?.fallback;
+    return resolveGalleryUrl(raw);
+  };
+
+  // Lightbox: lock page scroll + keyboard nav (Esc / arrows).
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      else if (e.key === "ArrowRight") go(1);
+      else if (e.key === "ArrowLeft") go(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightboxOpen, total]);
 
   return (
     <EditableGroup id={base} label={`Galería · ${dayLabel} ${dayNum}`}>
@@ -289,7 +316,122 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
             );
           })}
         </div>
+
+        {/* ---- "Ver galería" → fullscreen lightbox ---- */}
+        <div className="mt-3 flex justify-center">
+          <button
+            type="button"
+            data-testid={`day-gallery-open-${day.id}`}
+            onClick={() => setLightboxOpen(true)}
+            className="inline-flex items-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-5 py-2.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
+          >
+            <Images className="w-3.5 h-3.5" strokeWidth={1.6} />
+            {VER_GALERIA[lang] || VER_GALERIA.es}
+          </button>
+        </div>
       </div>
+
+      {/* ---- Fullscreen gallery lightbox (dialog/modal) ---- */}
+      {lightboxOpen && createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${pick(day.title, lang)} · ${dayLabel} ${dayNum}`}
+          data-testid={`day-gallery-lightbox-${day.id}`}
+          className="fixed inset-0 z-[9999] flex flex-col bg-[#0B0A09]/97 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false); }}
+        >
+          {/* Top bar */}
+          <div className="flex items-center justify-between gap-4 px-5 md:px-10 py-4 text-[#FDFBF7] shrink-0">
+            <span className="inline-flex items-center gap-3 min-w-0">
+              <span className="font-serif-x text-lg md:text-xl leading-none" style={{ color: day.accent }}>
+                {dayLabel} {dayNum}
+              </span>
+              <span className="truncate text-[11px] tracking-[0.22em] uppercase text-[#FDFBF7]/70">
+                {pick(day.title, lang)}
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-4 shrink-0">
+              <span
+                data-testid={`day-gallery-lightbox-counter-${day.id}`}
+                className="text-[11px] tracking-[0.25em] uppercase tabular-nums text-[#FDFBF7]/80"
+              >
+                {safeActive + 1} / {total}
+              </span>
+              <button
+                type="button"
+                data-testid={`day-gallery-lightbox-close-${day.id}`}
+                aria-label="Cerrar galería"
+                onClick={() => setLightboxOpen(false)}
+                className="inline-flex items-center justify-center w-10 h-10 border border-[#FDFBF7]/20 text-[#FDFBF7]/80 hover:bg-[#FDFBF7]/10 hover:text-[#FDFBF7] transition-colors"
+              >
+                <X className="w-5 h-5" strokeWidth={1.7} />
+              </button>
+            </span>
+          </div>
+
+          {/* Main image */}
+          <div
+            className="relative flex-1 min-h-0 flex items-center justify-center px-4 md:px-20 pb-2"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <img
+              key={current.id}
+              src={lightboxSrc(current)}
+              alt={current.alt || alt}
+              data-testid={`day-gallery-lightbox-image-${day.id}`}
+              className="max-h-full max-w-full object-contain shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]"
+            />
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  data-testid={`day-gallery-lightbox-prev-${day.id}`}
+                  aria-label="Imagen anterior"
+                  onClick={(e) => { e.stopPropagation(); go(-1); }}
+                  className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 md:w-12 md:h-12 bg-[#FDFBF7]/10 hover:bg-[#FDFBF7]/25 text-[#FDFBF7] backdrop-blur-sm transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6" strokeWidth={1.7} />
+                </button>
+                <button
+                  type="button"
+                  data-testid={`day-gallery-lightbox-next-${day.id}`}
+                  aria-label="Imagen siguiente"
+                  onClick={(e) => { e.stopPropagation(); go(1); }}
+                  className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 md:w-12 md:h-12 bg-[#FDFBF7]/10 hover:bg-[#FDFBF7]/25 text-[#FDFBF7] backdrop-blur-sm transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6" strokeWidth={1.7} />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Thumbnail strip */}
+          <div className="shrink-0 flex gap-2 overflow-x-auto no-scrollbar px-4 md:px-10 py-4 md:justify-center">
+            {slides.map((img, i) => {
+              const on = i === safeActive;
+              return (
+                <button
+                  key={`lb-${img.id}`}
+                  type="button"
+                  data-testid={`day-gallery-lightbox-thumb-${day.id}-${i}`}
+                  aria-label={`Ver imagen ${i + 1}`}
+                  aria-current={on}
+                  onClick={() => setActive(i)}
+                  className={`relative shrink-0 w-[60px] h-[60px] md:w-[72px] md:h-[72px] overflow-hidden bg-[#1A1513] transition-all duration-200 ${
+                    on ? "ring-2 ring-offset-2 ring-offset-[#0B0A09]" : "opacity-50 hover:opacity-90"
+                  }`}
+                  style={on ? { ["--tw-ring-color"]: day.accent } : undefined}
+                >
+                  {renderImg(img, true)}
+                </button>
+              );
+            })}
+          </div>
+        </div>,
+        document.body,
+      )}
 
       {/* Inline gallery editor modal — shared DayGalleryEditor, same record. */}
       {editorOpen && createPortal(
