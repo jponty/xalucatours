@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { geoNaturalEarth1, geoPath, geoGraticule10 } from "d3-geo";
-import { feature } from "topojson-client";
+import { feature, merge } from "topojson-client";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 
@@ -97,18 +97,32 @@ export default function WorldMapSection() {
     const vb = { x: bx0 - PAD, y: by0 - PAD, w: (bx1 - bx0) + PAD * 2, h: (by1 - by0) + PAD * 2 };
 
     const others = feats.filter((f) => !MOROCCO_IDS.has(String(f.id)));
-    const morFeats = feats.filter((f) => MOROCCO_IDS.has(String(f.id)));
+    // Merge Morocco + W. Sahara into ONE outline (no internal white border line).
+    const morGeoms = topo.objects.countries.geometries.filter((g) => MOROCCO_IDS.has(String(g.id)));
+    const moroccoMerged = morGeoms.length ? merge(topo, morGeoms) : null;
     const mor = feats.find((f) => String(f.id) === "504");
     const c = mor ? gp.centroid(mor) : null;
 
-    // Dashed expedition arc from Europe → Morocco.
-    const a = projection([4, 47]);
-    const b = projection([-7, 31.5]);
-    let route = "";
-    if (a && b) {
-      const mx = (a[0] + b[0]) / 2;
-      const my = (a[1] + b[1]) / 2 - Math.abs(a[0] - b[0]) * 0.18 - 18;
-      route = `M ${a[0]} ${a[1]} Q ${mx} ${my} ${b[0]} ${b[1]}`;
+    // Global connection lines converging on Morocco from every continent.
+    const dest = projection([-6, 31.5]);
+    const ORIGINS = [
+      [-100, 42],   // North America
+      [-58, -12],   // South America
+      [12, 49],     // Europe
+      [24, -6],     // Sub-Saharan Africa
+      [88, 36],     // Asia
+      [142, -26],   // Oceania
+    ];
+    const routes = [];
+    if (dest) {
+      for (const o of ORIGINS) {
+        const a = projection(o);
+        if (!a) continue;
+        const len = Math.hypot(dest[0] - a[0], dest[1] - a[1]) || 1;
+        const cx = (a[0] + dest[0]) / 2;
+        const cy = (a[1] + dest[1]) / 2 - len * 0.16;
+        routes.push({ d: `M ${a[0]} ${a[1]} Q ${cx} ${cy} ${dest[0]} ${dest[1]}`, x: a[0], y: a[1] });
+      }
     }
 
     const oceans = OCEANS.map((o) => {
@@ -120,10 +134,10 @@ export default function WorldMapSection() {
       vb,
       graticule: gp(geoGraticule10()),
       countries: others.map((f, i) => ({ key: `c-${i}`, d: gp(f) })),
-      moroccoPath: morFeats.map((f) => gp(f)).join(" "),
+      moroccoPath: moroccoMerged ? gp(moroccoMerged) : "",
       morocco: c && !Number.isNaN(c[0]) ? { x: c[0], y: c[1] } : null,
-      route,
-      routeStart: a ? { x: a[0], y: a[1] } : null,
+      routes,
+      dest: dest ? { x: dest[0], y: dest[1] } : null,
       oceans,
     };
   }, [topo]);
@@ -184,15 +198,20 @@ export default function WorldMapSection() {
                     ))}
                   </g>
 
-                  {/* expedition route */}
-                  {map.route && (
-                    <path d={map.route} fill="none" stroke="#6E2D17" strokeOpacity="0.55" strokeWidth="1.4"
-                      strokeDasharray="1 5" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="pointer-events-none" />
-                  )}
-                  {map.routeStart && (
-                    <circle cx={map.routeStart.x} cy={map.routeStart.y} r="2.4" fill="#6E2D17"
-                      vectorEffect="non-scaling-stroke" className="pointer-events-none" />
-                  )}
+                  {/* global expedition routes converging on Morocco */}
+                  <g className="pointer-events-none">
+                    {map.routes.map((rt, i) => (
+                      <path key={`rt-${i}`} d={rt.d} fill="none" stroke="#6E2D17" strokeOpacity="0.5"
+                        strokeWidth="1.2" strokeDasharray="1 5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+                    ))}
+                    {map.routes.map((rt, i) => (
+                      <g key={`node-${i}`}>
+                        <circle cx={rt.x} cy={rt.y} r="3.4" fill="none" stroke="#6E2D17" strokeOpacity="0.45"
+                          strokeWidth="1" vectorEffect="non-scaling-stroke" />
+                        <circle cx={rt.x} cy={rt.y} r="1.8" fill="#6E2D17" vectorEffect="non-scaling-stroke" />
+                      </g>
+                    ))}
+                  </g>
 
                   {/* Morocco — the only interactive country */}
                   {map.moroccoPath && (
@@ -213,6 +232,14 @@ export default function WorldMapSection() {
                       className="cursor-pointer transition-[fill] duration-300 outline-none"
                       style={{ filter: hover ? "drop-shadow(0 3px 12px rgba(110,45,23,0.5))" : "none" }}
                     />
+                  )}
+
+                  {/* convergence marker on Morocco (light, on top of the country) */}
+                  {map.dest && (
+                    <g className="pointer-events-none">
+                      <circle cx={map.dest.x} cy={map.dest.y} r="6.5" fill="none" stroke="#FDFBF7" strokeOpacity="0.7" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+                      <circle cx={map.dest.x} cy={map.dest.y} r="2.6" fill="#FDFBF7" vectorEffect="non-scaling-stroke" />
+                    </g>
                   )}
                 </svg>
               )}
