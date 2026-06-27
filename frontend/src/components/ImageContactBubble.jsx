@@ -90,11 +90,11 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
         <div className="w-[58vw] max-w-[240px] px-4 py-3">
           <p className="font-serif-x text-sm md:text-base text-[#FDFBF7] leading-tight">{pick(TITLE, lang)}</p>
           <p className="mt-1 text-[11px] md:text-xs text-[#FDFBF7]/85 leading-snug">{pick(BODY, lang)}</p>
-          <div className="mt-2.5 flex flex-col gap-2">
+          <div className="mt-2.5 flex items-center gap-2">
             <Link
               to={pathFor(lang, "appointment")}
               data-testid={`image-contact-cta-${slug}`}
-              className="inline-flex items-center gap-1.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-3.5 py-2 text-[9px] tracking-[0.18em] uppercase transition-colors duration-300 rounded-full shadow-[0_6px_16px_-8px_rgba(0,0,0,0.6)]"
+              className="inline-flex items-center gap-1.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-3.5 py-2 text-[9px] tracking-[0.18em] uppercase transition-colors duration-300 rounded-full"
             >
               {pick(CTA, lang)}
               <ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
@@ -103,11 +103,11 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="WhatsApp"
               data-testid={`image-contact-whatsapp-${slug}`}
-              className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#1EBE5A] text-[#FDFBF7] px-3.5 py-2 text-[9px] tracking-[0.18em] uppercase transition-colors duration-300 rounded-full shadow-[0_6px_16px_-8px_rgba(0,0,0,0.6)]"
+              className="inline-flex items-center justify-center w-8 h-8 shrink-0 bg-[#25D366] hover:bg-[#1EBE5A] text-[#FDFBF7] rounded-full transition-colors duration-300"
             >
-              <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" />
-              WhatsApp
+              <WhatsAppIcon className="w-4 h-4 shrink-0" />
             </a>
           </div>
         </div>
