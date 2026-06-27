@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import EditableImage from "@/components/EditableImage";
+import CardBrandOverlay from "@/components/CardBrandOverlay";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Bike, Mountain, Truck, Tent, Palmtree, Flame, Sparkles, Trophy,
@@ -281,11 +282,12 @@ const ExperiencesGrid = ({ t, lang }) => (
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/45 to-transparent pointer-events-none" />
                 <span
-                  className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/70 backdrop-blur-sm"
+                  className="absolute top-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/70 backdrop-blur-sm"
                   style={{ borderColor: `${e.accent}99`, color: e.accent }}
                 >
                   <Icon className="w-5 h-5" strokeWidth={1.5} />
                 </span>
+                <CardBrandOverlay slug={`aventura-exp-${e.id}`} testid={`aventura-exp-${e.id}`} />
               </div>
 
               <div className="p-6 md:p-7 flex flex-col flex-1">

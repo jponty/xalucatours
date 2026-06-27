@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import xMonogramBorde from "@/assets/monograma-x-borde.png";
 import { Link } from "react-router-dom";
 import {
@@ -406,6 +407,7 @@ const TripTypesGrid = ({ t, lang }) => (
                 >
                   <Icon className="w-5 h-5" strokeWidth={1.5} />
                 </span>
+                <ImageContactBubble slug={`bespoke-type-${tt.id}`} align="left" />
               </div>
               <div className="p-6 md:p-7 flex flex-col flex-1">
                 <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.1] text-[#2C2621]">

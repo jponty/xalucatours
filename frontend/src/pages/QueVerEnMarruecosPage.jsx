@@ -12,6 +12,8 @@ import { pathFor } from "@/lib/routes";
 import { IMG, banner } from "@/lib/imageBank";
 import { REGIONS as CLIMATE_REGIONS } from "@/lib/bestTimeData";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
+import CardBrandOverlay from "@/components/CardBrandOverlay";
 import { SlotScope } from "@/components/slotScope";
 
 /* ============================================================
@@ -531,6 +533,7 @@ const Hero = ({ lang }) => (
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
     <span className="film-grain pointer-events-none" />
+    <HeroMonogram />
 
     <div className="relative z-10 h-full flex flex-col">
       <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
@@ -601,6 +604,7 @@ const DestinationCard = ({ card, sectionAccent, lang }) => (
           <MapPin className="w-3 h-3" strokeWidth={1.6} />
           {pick(card.cat, lang)}
         </span>
+        <CardBrandOverlay slug={`qvm-card-${card.id}`} testid={`qvm-card-${card.id}`} />
       </div>
 
       <div className="p-6 md:p-7 flex flex-col flex-1">

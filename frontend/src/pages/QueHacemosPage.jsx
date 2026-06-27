@@ -11,6 +11,8 @@ import { CONTACT } from "@/lib/data";
 import { IMG, banner } from "@/lib/imageBank";
 import { TESTIMONIALS } from "@/lib/testimonials";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
+import CardBrandOverlay from "@/components/CardBrandOverlay";
 import { SlotScope } from "@/components/slotScope";
 
 const DOC_TITLES = {
@@ -242,6 +244,7 @@ const Hero = ({ lang }) => (
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
     <span className="film-grain pointer-events-none" />
+    <HeroMonogram />
 
     <div className="relative z-10 h-full flex flex-col">
       <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
@@ -344,9 +347,10 @@ const TripPillars = ({ lang }) => (
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 to-transparent pointer-events-none" />
-                    <span className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1A1513]/70 backdrop-blur-sm border border-[#D4A373]/60 text-[#D4A373]">
+                    <span className="absolute top-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1A1513]/70 backdrop-blur-sm border border-[#D4A373]/60 text-[#D4A373]">
                       <Icon className="w-5 h-5" strokeWidth={1.5} />
                     </span>
+                    <CardBrandOverlay slug={`qh-pillar-${p.id}`} testid={`qh-pillar-${p.id}`} />
                   </div>
                   <div className="p-7 md:p-9 flex flex-col flex-1">
                     <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.12] text-[#2C2621]">

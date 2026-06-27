@@ -12,6 +12,7 @@ import React, { useEffect } from "react";
 import { Compass, Calendar, CheckCircle2, Phone, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import ContactForm from "@/components/ContactForm";
@@ -123,6 +124,7 @@ const CitaPreviaPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
           <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
           <span className="film-grain pointer-events-none" />
+          <HeroMonogram />
 
           <div className="relative z-10 h-full flex items-end pt-32 md:pt-44 pb-24 md:pb-28">
             <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">

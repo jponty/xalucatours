@@ -1,0 +1,40 @@
+{
+  "summary": "Verified Xaluca brand overlays (logo + X monogram + appointment bubble) and HeroMonogram on the requested pages. 6/6 card sections (aventura experiences, viajesamedida bespoke types, quehacemos pillars, qvm destination cards, incentivos verticals + cases, cuando-viajar seasons) all expose the correct data-testids and interactive bubble->CTA->/citaprevia flows with NO nested-anchor navigation. 9/10 hero pages render [data-testid=hero-monogram] correctly on desktop and are hidden on mobile (verified hidden md:block). 1 page is missing hero-monogram: /marruecos.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MoroccoLandingPage.jsx (route /marruecos)", "issue": "hero-monogram is MISSING. The /marruecos route resolves to MoroccoLandingPage.jsx (custom Hero with data-testid=\"mar-hero\"), NOT MarruecosPage.jsx (JourneyHero). The custom Hero does not render <HeroMonogram />. Task assumption 'MarruecosPage usa JourneyHero que YA incluye HeroMonogram' is incorrect for this route.", "selector": "[data-testid=hero-monogram]", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "per_page_results": {
+    "/viajes/aventura": {"hero_monogram": "n/a (not in 10-page list)", "cards": "8/8 aventura-exp-* cards have logo+monogram+bubble; toggle works; CTA -> /citaprevia; no nav on bubble click; 0 console errors"},
+    "/viajesamedida": {"cards": "6/6 bespoke-type-* (aventura,pareja,grupo,amigos,familia,deportivo) have logo+monogram+bubble; CTA -> /citaprevia; 0 console errors"},
+    "/quehacemos": {"hero_monogram": "PRESENT (desktop)", "cards": "3/3 qh-pillar-* (experiencias,alojamientos,equipo) full overlay; 0 console errors"},
+    "/que-ver-en-Marruecos": {"hero_monogram": "PRESENT (desktop)", "cards": "17/17 qvm-card-* with logo+monogram+bubble; toggle CTA -> /citaprevia; 0 console errors"},
+    "/incentivos": {"hero_monogram": "PRESENT (desktop)", "cards": "4/4 inc-vertical-* + 3/3 inc-case-* fully branded; CTA -> /citaprevia; 0 console errors"},
+    "/cuando-viajar": {"hero_monogram": "PRESENT (desktop)", "cards": "4/4 when-season-* (spring/summer/autumn/winter) fully branded; CTA -> /citaprevia; 0 console errors"},
+    "/contacto": {"hero_monogram": "PRESENT (desktop), HIDDEN (mobile 390px) - verified"},
+    "/marruecos": {"hero_monogram": "MISSING — route renders MoroccoLandingPage.jsx Hero (data-testid=mar-hero) which does NOT include <HeroMonogram />"},
+    "/galeria": {"hero_monogram": "PRESENT (desktop)"},
+    "/equipo": {"hero_monogram": "PRESENT (desktop)"},
+    "/planifica-tu-viaje": {"hero_monogram": "PRESENT (desktop)"},
+    "/citaprevia": {"hero_monogram": "PRESENT (desktop)"}
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add <HeroMonogram /> inside the Hero section of /app/frontend/src/pages/MoroccoLandingPage.jsx (line ~289, section data-testid=\"mar-hero\"), placed after the gradient/film-grain layers and before the foreground content (same pattern as JourneyPageSections.jsx line 74). The section already is position:relative + overflow-hidden, so no further changes needed."
+  ],
+  "critical_code_review_comments": [
+    "CardBrandOverlay is correctly reused across all 6 card surfaces and renders unconditionally (no provider needed). Good DRY pattern.",
+    "Toggle button on ImageContactBubble does not navigate — confirmed bubble click keeps URL on the same page; only image-contact-cta-<slug> anchor navigates to /citaprevia.",
+    "HeroMonogram correctly uses 'hidden md:block' so it is desktop-only as specified — verified at viewport 390x844 it is not visible.",
+    "Routing inconsistency: /marruecos serves MoroccoLandingPage.jsx but the repo also contains MarruecosPage.jsx which is apparently unused by that route — main agent should confirm whether MarruecosPage.jsx is dead code or should be wired into the router."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "94% (16/17 verified items pass; 1 missing hero-monogram on /marruecos)"},
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Card overlays and hero monograms verified on Spanish public routes. The only remaining issue is /marruecos hero (rendered by MoroccoLandingPage.jsx, not MarruecosPage.jsx). After fix, re-verify [data-testid=hero-monogram] exists on /marruecos at desktop 1920x1080 and is hidden at 390x844."
+}

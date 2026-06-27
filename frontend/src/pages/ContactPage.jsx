@@ -26,6 +26,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { openChatbaseAssistant, CHATBASE_HELP_URL } from "@/lib/chatbase";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
 import FormTabs from "@/components/FormTabs";
@@ -212,6 +213,7 @@ const ContactPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
           <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
           <span className="film-grain pointer-events-none" />
+          <HeroMonogram />
 
           <div className="relative z-10 h-full flex flex-col">
             <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full" />

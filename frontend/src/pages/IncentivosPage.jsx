@@ -10,6 +10,8 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { IMG, banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
+import CardBrandOverlay from "@/components/CardBrandOverlay";
 import { SlotScope } from "@/components/slotScope";
 
 const DOC_TITLES = {
@@ -278,6 +280,7 @@ const Hero = ({ lang }) => (
     <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/55 to-[#1A1513]/35 pointer-events-none" />
     <div className="absolute inset-0 berber-bg-cross opacity-35 pointer-events-none" aria-hidden="true" />
     <span className="film-grain pointer-events-none" />
+    <HeroMonogram />
 
     <div className="relative z-10 h-full flex flex-col">
       <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
@@ -369,6 +372,7 @@ const VerticalRow = ({ item, index, lang }) => {
               <Icon className="w-3 h-3" strokeWidth={1.6} />
               {String(index + 1).padStart(2, "0")} · {pick(item.title, lang)}
             </span>
+            <CardBrandOverlay slug={`inc-vertical-${item.id}`} testid={`inc-vertical-${item.id}`} />
           </div>
         </div>
         <div className="md:col-span-6">
@@ -468,14 +472,16 @@ const Cases = ({ lang }) => (
                   <span className="absolute top-3 left-3 bg-[#FDFBF7] text-[#2C2621] font-serif-x text-base px-3 py-1.5 tracking-tight">
                     {c.brand}
                   </span>
-                  <p className="absolute bottom-3 left-3 right-3 text-[10px] tracking-[0.22em] uppercase text-[#FDFBF7]/90">
-                    {pick(c.location, lang)}
-                  </p>
+                  <CardBrandOverlay slug={`inc-case-${c.id}`} testid={`inc-case-${c.id}`} />
                 </div>
 
                 <div className="p-6 md:p-7 flex flex-col flex-1">
                   <p className="text-[10px] tracking-[0.3em] uppercase text-[#C16542]">
                     {pick(c.event, lang)}
+                  </p>
+                  <p className="mt-1.5 text-[10px] tracking-[0.22em] uppercase text-[#5C5248] inline-flex items-center gap-1.5">
+                    <MapPin className="w-3 h-3" strokeWidth={1.8} />
+                    {pick(c.location, lang)}
                   </p>
                   <p className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1">
                     {pick(c.body, lang)}

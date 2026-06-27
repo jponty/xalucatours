@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 import FormTabs from "@/components/FormTabs";
@@ -41,6 +42,7 @@ export default function PlanificaTuViajePage() {
         />
         <span className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/85 via-[#1A1513]/30 to-transparent pointer-events-none" />
         <span className="film-grain opacity-50" aria-hidden="true" />
+        <HeroMonogram />
         <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-16 md:pb-20">
           <ET k="eyebrow" multiline={false} className="overline text-[#D4A373]" />
           <ET k="title" as="h1" multiline={false} className="font-serif-x text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-5 max-w-3xl text-[#FDFBF7]" />

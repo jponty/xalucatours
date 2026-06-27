@@ -9,6 +9,7 @@ import { tripsForPoi } from "@/lib/poiTripIndex";
 import { pathFor } from "@/lib/routes";
 import { LandmarkCarousel } from "@/components/LandmarkCarousel";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
 import EditableText from "@/components/EditableText";
 import PexelsImageSearch from "@/components/PexelsImageSearch";
 
@@ -273,6 +274,7 @@ export default function GaleriaPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/55 to-[#1A1513]/40 pointer-events-none" />
         <span className="film-grain pointer-events-none" />
+        <HeroMonogram />
         <div className="relative max-w-7xl mx-auto px-6 md:px-12 pt-[120px] md:pt-[150px] pb-16 md:pb-24">
           <EditableText
             slot="galeria.hero.eyebrow"

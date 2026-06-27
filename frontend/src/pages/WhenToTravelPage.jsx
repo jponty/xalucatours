@@ -13,6 +13,8 @@ import {
   HERO, INTRO, SEASONS, REGIONS, TRAVEL_STYLES, MONTHS, FAQ, INTERNAL_LINKS,
 } from "@/lib/bestTimeData";
 import EditableImage from "@/components/EditableImage";
+import HeroMonogram from "@/components/HeroMonogram";
+import CardBrandOverlay from "@/components/CardBrandOverlay";
 import FromPrice from "@/components/FromPrice";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -278,6 +280,7 @@ export default function WhenToTravelPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#1A1513]/55 via-[#1A1513]/15 to-[#1A1513]/85 pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(26,21,19,0.35)_100%)]" />
+        <HeroMonogram />
 
         {/* Breadcrumb chip */}
         <nav
@@ -463,6 +466,7 @@ export default function WhenToTravelPage() {
                         <SeasonIcon className="w-3.5 h-3.5" strokeWidth={1.6} />
                         {pick(season.months, lang)}
                       </span>
+                      <CardBrandOverlay slug={`when-season-${season.id}`} testid={`when-season-${season.id}`} />
                     </div>
                   </div>
 
