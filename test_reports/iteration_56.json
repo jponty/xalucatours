@@ -1,0 +1,50 @@
+{
+  "summary": "Frontend retest of the 3 changes after iteration 55: (1) ImageContactBubble dual-button panel (cita previa + new WhatsApp), (2) /juego card brand overlay without contact bubble, (3) /marruecos hero now includes HeroMonogram. All 4 acceptance criteria from the review request pass on desktop 1920x1080 (with mobile spot-check on /marruecos). 0 console errors across all 3 pages tested.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_checks": {
+    "viajesamedida_bespoke_type_aventura": {
+      "image-contact-toggle-bespoke-type-aventura": "present, click does NOT navigate (url unchanged)",
+      "image-contact-cta-bespoke-type-aventura": "href=/citaprevia, terracota #C16542",
+      "image-contact-whatsapp-bespoke-type-aventura": "href=https://wa.me/34629415221, target=_blank, rel=noopener noreferrer, text='WhatsApp', bg=rgb(37,211,102) (#25D366), contains SVG icon, rounded-full pill matching cita button",
+      "console_errors": 0
+    },
+    "viajes_aventura": {
+      "image-contact-whatsapp-aventura-exp-*": "8 instances found, all href=https://wa.me/34629415221, target=_blank"
+    },
+    "juego": {
+      "cards_sampled": ["juego-item-rg-north", "juego-item-rg-imperial", "juego-item-rg-coast", "juego-item-rg-atlas", "juego-item-rg-sahara"],
+      "juego-item-<id>-logo": "present (count=1), class contains 'top-3 left-3' (upper-LEFT) with pointer-events-none",
+      "juego-item-<id>-monogram": "present (count=1) at bottom-right edge",
+      "image-contact-bubble-juego-item-*": "ABSENT (total count=0) as required",
+      "visited toggle on card click": "aria-pressed flips false -> true, card click still works",
+      "console_errors": 0
+    },
+    "marruecos_hero": {
+      "mar-hero": "present (count=1)",
+      "hero-monogram inside mar-hero": "exactly 1 instance, class contains 'hidden md:block pointer-events-none ... absolute bottom-0 right-0 ... opacity-[0.18]'",
+      "desktop_1920": "visible=True, bbox at right-bottom (x=1191, width=729), opacity=0.18",
+      "mobile_390": "visible=False (hidden md:block working)",
+      "layout broken?": "no, hero renders cleanly with title 'Marruecos.' and CTAs intact",
+      "console_errors": 0
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Phone number is hardcoded twice (constant WHATSAPP_URL in ImageContactBubble.jsx + display number elsewhere). Consider centralising in a single config (e.g. /lib/contact.js) so future updates touch only one file.",
+    "Both inline buttons in the bubble panel share visual weight (px-3.5 py-2 text-[9px]); consider making the WhatsApp button the same visual hierarchy or differentiating with an outline style if cita previa is meant to be the primary CTA — current implementation matches the spec however."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "skipped", "frontend": "100% (4/4 acceptance criteria)" },
+  "test_credentials": "n/a (public routes)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 56 verified: WhatsApp button in ImageContactBubble (verified on /viajesamedida bespoke-type-aventura + /viajes/aventura with 8 exp-* instances), /juego CardBrandOverlay with showBubble={false} (logo top-left, X monogram bottom-right, no bubble, visited toggle still works), and HeroMonogram inside /marruecos mar-hero (desktop-only via hidden md:block). All 3 changes from the review request work as specified. Phone number hardcoded as +34 629 41 52 21 -> wa.me/34629415221 in ImageContactBubble.jsx line 20.",
+  "rca of the issue": "n/a — no issues found"
+}

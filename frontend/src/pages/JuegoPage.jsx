@@ -13,6 +13,7 @@ import {
 } from "@/lib/juegoData";
 import ContactForm from "@/components/ContactForm";
 import EditableImage from "@/components/EditableImage";
+import CardBrandOverlay from "@/components/CardBrandOverlay";
 
 const ICONS = {
   Map: MapIcon, Building2, Castle, Sun, Mountain, Waves, Landmark, Camera,
@@ -444,6 +445,12 @@ export default function JuegoPage() {
                               {t.selectHint}
                             </span>
                           )}
+                          {/* Xaluca brand: logo (top-left) + large "X" border monogram */}
+                          <CardBrandOverlay
+                            testid={`juego-item-${p.id}`}
+                            showBubble={false}
+                            logoClassName="top-3 left-3 w-10 h-10 md:w-12 md:h-12"
+                          />
                         </div>
                         {/* Text */}
                         <div className="p-4">

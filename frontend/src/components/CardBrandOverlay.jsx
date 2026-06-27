@@ -17,10 +17,16 @@ import xMonogramBorde from "@/assets/monograma-x-borde.png";
    hideBubbleOnMobile: when true, the appointment widget is hidden on
    mobile (kept only md+) for small images — avoids clutter on tiny tiles.
 ---------------------------------------------------------------- */
-export const CardBrandOverlay = ({ slug, testid, hideBubbleOnMobile = false }) => (
+export const CardBrandOverlay = ({
+  slug,
+  testid,
+  hideBubbleOnMobile = false,
+  showBubble = true,
+  logoClassName = "top-3 right-3 w-10 h-10 md:w-12 md:h-12",
+}) => (
   <>
     <XalucaLogoBadge
-      className="top-3 right-3 w-10 h-10 md:w-12 md:h-12"
+      className={logoClassName}
       testid={testid ? `${testid}-logo` : undefined}
     />
     <img
@@ -30,13 +36,14 @@ export const CardBrandOverlay = ({ slug, testid, hideBubbleOnMobile = false }) =
       data-testid={testid ? `${testid}-monogram` : undefined}
       className="pointer-events-none select-none absolute bottom-0 right-0 h-[118%] w-auto max-w-none object-contain opacity-[0.22] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] z-[2]"
     />
-    {hideBubbleOnMobile ? (
-      <span className="hidden md:block">
+    {showBubble &&
+      (hideBubbleOnMobile ? (
+        <span className="hidden md:block">
+          <ImageContactBubble slug={slug} align="left" />
+        </span>
+      ) : (
         <ImageContactBubble slug={slug} align="left" />
-      </span>
-    ) : (
-      <ImageContactBubble slug={slug} align="left" />
-    )}
+      ))}
   </>
 );
 
