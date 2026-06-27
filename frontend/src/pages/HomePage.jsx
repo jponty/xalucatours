@@ -4,6 +4,7 @@ import HeroSlider from "@/components/HeroSlider";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
 import EmotionalIntro from "@/components/EmotionalIntro";
+import WorldMapSection from "@/components/WorldMapSection";
 import WhyXaluca from "@/components/WhyXaluca";
 import FeaturedQuote from "@/components/FeaturedQuote";
 import TravelCategories from "@/components/TravelCategories";
@@ -100,6 +101,7 @@ export default function HomePage() {
       <HeroSlider />
       <Marquee />
       <EmotionalIntro />
+      <WorldMapSection />
       <VideoSection {...HOME_VIDEOS.story} testid="home-video-story" />
       <WhyXaluca />
       <FeaturedQuote />

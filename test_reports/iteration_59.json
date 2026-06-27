@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only verification of new WorldMapSection on Home (/). All acceptance criteria met: section renders with title + SVG world map (174 paths), Morocco is the only interactive country (terracotta #6E2D17 → #8A3A1E on hover, cursor:pointer), other countries have pointer-events:none, Morocco label + ocean labels visible, /geo/countries-110m.json returns 200. Clicking the Morocco path, the 'Marruecos' label and the 'Descubrir Marruecos' CTA all navigate to /que-ver-en-Marruecos. Responsive at 1440/768/390 with no overflow. Zero console errors / warnings (no duplicate-key warning).",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "WorldMapSection.jsx: minor — labelW heuristic (length*8.4+26) is brittle for long translations; consider measuring text via getBBox or using a flexbox HTML overlay if labels grow. Currently fine for ES/EN/FR.",
+    "WorldMapSection.jsx: hover state shared between path and label via React state is fine, but the rect/text inside the label group could also reflect hover for stronger affordance.",
+    "Accessibility: the label <g> is clickable but has no role/tabIndex/aria-label — only the path does. Consider mirroring role='button', tabIndex=0 and keyboard handler on the label for parity.",
+    "Performance: 170+ <path> nodes render fine, but `feature(topo, ...)` recomputes on every topo change — acceptable since topo loads once. OK."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a", "frontend": "100%" },
+  "test_credentials": "n/a — public route",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "WorldMapSection lives in HomePage.jsx between <EmotionalIntro/> and <VideoSection ...story/>. Testids: home-world-map, world-map-morocco, world-map-morocco-label, world-map-cta. Topojson at /geo/countries-110m.json. All three click targets navigate via pathFor(lang,'whatToSee') → ES: /que-ver-en-Marruecos.",
+  "rca of the issue": "n/a — no issues found"
+}
