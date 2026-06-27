@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import { Compass, Thermometer, CloudSun, MapPin, Activity, Images } from "lucide-react";
 import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
@@ -287,10 +288,7 @@ export const TripOverview = ({ days }) => {
                 attributionControl={false}
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  subdomains={["a", "b", "c", "d"]}
-                />
+                <MapBaseLayers variant="light" />
                 <FitBoundsCtl bounds={bounds} />
                 {visibleLandmarks.map((l, i) => (
                   <React.Fragment key={`${l.dayIdx}-${l.id}-${i}`}>

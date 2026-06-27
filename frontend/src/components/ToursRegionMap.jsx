@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import { ArrowRight, MapPin, Sparkles, Route, Compass } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -269,8 +270,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
               style={{ height: "100%", width: "100%", minHeight: "440px", background: "#EDE5D5" }}
               attributionControl={false}
             >
-              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" subdomains="abcd" />
-              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png" subdomains="abcd" />
+              <MapBaseLayers variant="labeled" />
               <FlyTo coords={active.coords} />
               {REGIONS.map((r) => {
                 const isActive = r.id === active.id;

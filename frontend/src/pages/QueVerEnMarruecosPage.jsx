@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   Home, ChevronRight, Compass, MapPin, ArrowRight, ArrowUpRight,
@@ -932,7 +933,7 @@ const DestinationsMap = ({ lang }) => {
                 style={{ height: "100%", width: "100%", background: "#1A1513" }}
                 attributionControl={false}
               >
-                <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+                <MapBaseLayers variant="dark" />
 
                 {/* Optional polyline for the selected route */}
                 {activeRoute && activeRouteCoords.length >= 2 && (

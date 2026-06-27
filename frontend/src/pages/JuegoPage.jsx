@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   Map as MapIcon, Building2, Castle, Sun, Mountain, Waves, Landmark, Camera,
@@ -330,8 +331,7 @@ export default function JuegoPage() {
               style={{ height: "520px", width: "100%", background: "#EDE5D5" }}
               attributionControl={false}
             >
-              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" subdomains="abcd" />
-              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png" subdomains="abcd" />
+              <MapBaseLayers variant="labeled" />
               {mapPlaces.map((p) => {
                 const isOn = visited.has(p.id);
                 return (

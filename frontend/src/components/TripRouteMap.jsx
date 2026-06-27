@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
 import TripPackingNotes from "@/components/TripPackingNotes";
@@ -288,10 +289,7 @@ export const TripRouteMap = ({ route, days = [], routeId }) => {
                 attributionControl={false}
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  subdomains={["a", "b", "c", "d"]}
-                />
+                <MapBaseLayers variant="light" />
                 {/* Soft shadow polyline */}
                 <Polyline
                   positions={positions}

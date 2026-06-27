@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Tooltip } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   ChevronRight, ChevronLeft, Home, Sunrise, ArrowRight, Compass, MapPin,
@@ -778,14 +779,7 @@ export default function WhenToTravelPage() {
               style={{ height: "100%", width: "100%" }}
               attributionControl={false}
             >
-              <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-                subdomains="abcd"
-              />
-              <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-                subdomains="abcd"
-              />
+              <MapBaseLayers variant="labeled" />
               {REGIONS.map((r) => {
                 const coords = REGION_COORDS[r.id];
                 if (!coords) return null;

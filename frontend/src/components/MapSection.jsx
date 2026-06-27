@@ -1,5 +1,6 @@
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import L from "leaflet";
 import { Compass } from "lucide-react";
@@ -52,14 +53,7 @@ export const MapSection = () => {
             style={{ height: "100%", width: "100%" }}
             attributionControl={false}
           >
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-              subdomains="abcd"
-            />
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-              subdomains="abcd"
-            />
+            <MapBaseLayers variant="labeled" />
             {MAP_POINTS.map((p) => (
               <Marker key={p.id} position={p.coords} icon={xalucaPin}>
                 <Popup>

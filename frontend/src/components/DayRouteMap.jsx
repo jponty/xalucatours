@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline, useMap } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
 import { MapPin, Navigation, Sparkles, ArrowRight, Home as HomeIcon } from "lucide-react";
@@ -217,10 +218,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
                 attributionControl={false}
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  subdomains={["a", "b", "c", "d"]}
-                />
+                <MapBaseLayers variant="light" />
                 <MapController position={activePos} bounds={bounds} />
                 {landmarks.map((l) => {
                   const kindCfg = LANDMARK_KINDS[l.kind] || { color: accent };
@@ -425,10 +423,7 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
                 attributionControl={false}
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  subdomains={["a", "b", "c", "d"]}
-                />
+                <MapBaseLayers variant="light" />
                 <MapController position={activePos} bounds={bounds} />
                 {/* Soft shadow polyline */}
                 <Polyline
@@ -692,10 +687,7 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
                 attributionControl={false}
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  subdomains={["a", "b", "c", "d"]}
-                />
+                <MapBaseLayers variant="light" />
                 <CircleMarker
                   center={center}
                   radius={open ? 28 : 22}

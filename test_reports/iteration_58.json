@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only validation of the new Mapa/Satélite toggle (MapBaseLayers) across all maps of Xaluca Tours. Tested on /juego, /cuando-viajar, /marruecos, /viajes/atlas_desierto/programa_4n_5d, /que-ver-en-Marruecos, in desktop (1920), tablet (768) and mobile (390). Toggle is present, default state is 'Mapa' (aria-pressed=true), clicking 'Satélite' loads Esri arcgisonline tiles and switches aria-pressed, clicking 'Mapa' returns CartoDB tiles. No console errors, no map pan/zoom on toggle click (propagation disabled), markers/polylines (12 SVG paths on TripRouteMap) persist after each switch. Each map has its own independent toggle (7 toggles on the trip detail page = 1 TripRouteMap + 6 DayRouteMaps). Responsive: toggle remains visible and legible at 390px (124x27px) and 768px (143x29px) without overlapping the top-right Xaluca logo (toggle is at bottom-right).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "MapBaseLayers.jsx: 'satellite' state is local to each <MapBaseLayers/>, which is the intended per-map behaviour. Looks clean (~127 lines).",
+    "Esri labels overlay (Reference/World_Boundaries_and_Places) renders on top of the imagery — fine for current Spanish/English/French use; consider attribution string in DOM is shown only once which is acceptable.",
+    "Toggle uses Spanish labels by default via LanguageContext fallback — English/French translations also available (LABELS dict).",
+    "Tile DOM remains in memory (Leaflet keeps both layers as separate <TileLayer> components when state toggles); this is React-Leaflet's standard behavior and not a leak."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "n/a (public routes)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Mapa/Satélite toggle validated across 5 map-bearing pages with 4 variants (light, labeled, dark, light per-day). Esri tiles confirmed loading (≥24 tiles in the viewport on each switch). Marker/polyline persistence checked via SVG path count (stable at 12 on TripRouteMap before/during/after switch). Pan/zoom suppression verified via .leaflet-map-pane transform stability. No actions needed.",
+  "rca of the issue": "n/a — no issues found"
+}

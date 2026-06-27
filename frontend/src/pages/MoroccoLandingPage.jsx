@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import {
   Home, ChevronRight, Compass, ArrowRight, ArrowUpRight, MapPin,
@@ -523,7 +524,7 @@ const InteractiveMap = ({ lang }) => (
           style={{ height: "100%", width: "100%", background: "#1A1513" }}
           attributionControl={false}
         >
-          <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+          <MapBaseLayers variant="dark" />
           {MAP_POINTS.map((m) => (
             <CircleMarker
               key={m.id}
