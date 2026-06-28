@@ -8,6 +8,7 @@ import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import HeroMonogram from "@/components/HeroMonogram";
+import { preloadImageLink } from "@/lib/imageUrl";
 /* ============================================================
    Hero (formerly HeroSlider)
    ----
@@ -47,6 +48,10 @@ export const HeroSlider = () => {
     const p = v.play();
     if (p && typeof p.catch === "function") p.catch(() => { /* autoplay blocked — poster shows */ });
   }, []);
+
+  /* Preload the video poster (the home LCP element shown before the clip
+     plays) at high priority so it appears as fast as possible. */
+  useEffect(() => preloadImageLink(HERO_VIDEO_POSTER, { width: 1280 }), []);
 
   return (
     <section

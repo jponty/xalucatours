@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { optimizedSrc, buildSrcSet, defaultSizes, isOptimizable, lqipSrc } from "@/lib/imageUrl";
+import { optimizedSrc, buildSrcSet, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -75,6 +75,7 @@ export const Img = ({
   width = 1280,
   sizes,
   priority = false,
+  aspectRatio,
   className = "",
   style,
   onLoad,
@@ -89,11 +90,26 @@ export const Img = ({
     urlMapStore.subs.add(sub);
     return () => urlMapStore.subs.delete(sub);
   }, [src]);
+  // Preload above-the-fold (priority) imagery at high fetch priority so the
+  // browser starts the fetch before paint — improves LCP. No-op otherwise.
+  useEffect(() => {
+    if (!priority || !src) return undefined;
+    const r = resolveCmsUrl(src);
+    const opt = isOptimizable(r);
+    return preloadImageLink(r, {
+      srcSet: opt ? buildSrcSet(r) : undefined,
+      sizes: sizes || defaultSizes(true),
+      width,
+    });
+  }, [priority, src, sizes, width]);
   if (!src) return null;
   const resolved = resolveCmsUrl(src);
   const opt = isOptimizable(resolved);
   const srcSet = opt ? buildSrcSet(resolved) : undefined;
   const lqip = opt ? lqipSrc(resolved) : undefined;
+  // Reserve layout space (prevents CLS) when an aspect ratio is provided and
+  // the element isn't already sized by its container. Opt-in / non-breaking.
+  const ratioStyle = aspectRatio ? { aspectRatio } : undefined;
   const handleLoad = (e) => {
     setLoaded(true);
     if (onLoad) onLoad(e);
@@ -109,7 +125,11 @@ export const Img = ({
       fetchPriority={priority ? "high" : undefined}
       onLoad={handleLoad}
       className={lqip ? `${className} img-blurup${loaded ? " is-loaded" : ""}` : className}
-      style={lqip && !loaded ? { backgroundImage: `url("${lqip}")`, ...style } : style}
+      style={
+        lqip && !loaded
+          ? { backgroundImage: `url("${lqip}")`, ...ratioStyle, ...style }
+          : { ...ratioStyle, ...style }
+      }
       {...rest}
     />
   );

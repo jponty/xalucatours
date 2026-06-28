@@ -13,7 +13,7 @@ import { useSlotId } from "@/components/slotScope";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 import EditableImageMeta from "@/components/EditableImageMeta";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
-import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc } from "@/lib/imageUrl";
+import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -233,6 +233,19 @@ const SmartImage = ({ url, fallback, alt, className, imgProps, aspectRatio, slot
   }, [src, ready]);
 
   const ratioStyle = aspectRatio ? { aspectRatio: parseRatio(aspectRatio) } : undefined;
+
+  // Preload the LCP/hero image at high priority so the browser begins the
+  // fetch before the <img> paints — improves Largest Contentful Paint. Only
+  // for `priority` (above-the-fold) images, once the definitive URL resolves.
+  useEffect(() => {
+    if (!priority || !ready || !currentSrc) return undefined;
+    const opt = isOptimizable(currentSrc);
+    return preloadImageLink(currentSrc, {
+      srcSet: opt ? buildSrcSet(currentSrc) : undefined,
+      sizes: sizes || defaultSizes(true),
+      width: 1920,
+    });
+  }, [priority, ready, currentSrc, sizes]);
 
   // 1) Slot cache still resolving → reserve the box with a shimmer skeleton.
   if (!ready) {

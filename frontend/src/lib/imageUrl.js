@@ -120,3 +120,43 @@ export const prefetchImage = (url, w = 960) => {
   img.decoding = "async";
   img.src = optimizedSrc(url, w);
 };
+
+/* ------------------------------------------------------------------
+   LCP preload — inject a high-priority `<link rel="preload" as="image">`
+   for an above-the-fold (hero/banner) image so the browser starts the
+   fetch as EARLY as possible, before the <img> element even paints.
+   Responsive `imagesrcset` / `imagesizes` make the browser preload the
+   SAME variant the <img> will request → no double download. De-duped &
+   ref-counted by href; returns a cleanup that removes the tag once no
+   mounted image still needs it. No-op on the server / when unsupported. */
+const _preloadRefs = new Map(); // href → { count, link }
+export const preloadImageLink = (url, { srcSet, sizes, width = 1920 } = {}) => {
+  if (typeof document === "undefined" || !url) return () => {};
+  const href = isOptimizable(url) ? optimizedSrc(url, width) : url;
+  let entry = _preloadRefs.get(href);
+  if (entry) {
+    entry.count += 1;
+  } else {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = href;
+    link.setAttribute("fetchpriority", "high");
+    if (srcSet) {
+      link.setAttribute("imagesrcset", srcSet);
+      link.setAttribute("imagesizes", sizes || "100vw");
+    }
+    document.head.appendChild(link);
+    entry = { count: 1, link };
+    _preloadRefs.set(href, entry);
+  }
+  return () => {
+    const e = _preloadRefs.get(href);
+    if (!e) return;
+    e.count -= 1;
+    if (e.count <= 0) {
+      try { e.link.remove(); } catch { /* ignore */ }
+      _preloadRefs.delete(href);
+    }
+  };
+};

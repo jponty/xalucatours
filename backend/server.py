@@ -2807,7 +2807,7 @@ async def download_file(
     # `Vary: Accept` so a shared/CDN cache (Cloudflare) never serves an AVIF
     # variant to a client that only advertised WebP (or vice-versa) on the
     # `fmt=auto` negotiated path. Harmless for explicit `fmt=avif|webp`.
-    long_cache = {"Cache-Control": "public, max-age=31536000, immutable", "Vary": "Accept"}
+    long_cache = {"Cache-Control": "public, max-age=31536000, stale-while-revalidate=604800, immutable", "Vary": "Accept"}
     if cache_file.exists():
         return Response(
             content=cache_file.read_bytes(),

@@ -11,6 +11,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Optimización LCP — preload de imagen above-the-fold + red de resiliencia de caché (jun 2026) — COMPLETADO + VERIFICADO (screenshots + cabeceras + consola)**:
+  - Nuevo helper `lib/imageUrl.js#preloadImageLink(url,{srcSet,sizes,width})`: inyecta `<link rel="preload" as="image" fetchpriority="high">` con `imagesrcset`/`imagesizes` responsive (misma variante que pedirá el `<img>` → sin doble descarga). Ref-contado y deduplicado por href; se limpia al desmontar. No-op en SSR.
+  - Cableado: (1) `EditableImage`/`SmartImage` precarga el héroe cuando `priority` y se resuelve la URL del slot (cubre `ProgramHero` 21/9, `JourneyHero`, todos los hubs). (2) `Img.jsx` precarga cuando `priority`. (3) `HeroSlider` (home) precarga el poster del vídeo Mux (LCP de la home).
+  - `Img.jsx`: nuevo prop opt-in `aspectRatio` (CLS) — reserva caja vía CSS `aspect-ratio` cuando el contenedor no la fija. No-breaking (los héroes ya reservan vía `min-h-svh`, las cards vía wrappers `aspect-[...]`).
+  - Backend (`server.py`): la caché de variantes añade `stale-while-revalidate=604800` al `Cache-Control immutable` (resiliencia de CDN). En PREVIEW el ingress fuerza `no-store`; PRODUCCIÓN/Cloudflare respeta `immutable` + SWR. Confirmado `Vary: Accept`.
+  - Verificado: programa → `<link preload fetchpriority=high imagesrcset imagesizes=100vw>` + héroe `eager`/`fp=high`/`srcset`; home → preload del poster; `/viajes` y `/que-ver-en-Marruecos` sin errores de runtime, 0 imágenes CMS rotas; reparto de carga 111 lazy / 7 eager (off-screen lazy, above-the-fold eager). Pendiente: el héroe de `/que-ver-en-Marruecos` no usa `priority` → no precarga (mejora menor, no regresión).
+
+
 - **/planner — Planificador inteligente de viajes (jun 2026) — COMPLETADO + VERIFICADO (testing_agent 100%, iteration_65)**:
   - Página premium en 6 pasos (llegada · salida [misma/lineal] · días · destinos · estilos · ritmo) con motor 100% DETERMINISTA (sin IA): matriz real curada de distancias/tiempos + haversine fallback, días mínimos recomendados, conexiones naturales.
   - Solo recomienda CIRCUITOS EXISTENTES de Xaluca (19 en `lib/planner/plannerTrips.js`, routeIds reales → página/precio/imagen). NUNCA inventa rutas.
