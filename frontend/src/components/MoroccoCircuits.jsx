@@ -8,6 +8,17 @@ import { CIRCUITS } from "@/lib/data";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import CircuitTestimonials from "@/components/CircuitTestimonials";
+
+const CIRCUIT_ACCENT = {
+  sahara: "#C16542",
+  imperial: "#D97742",
+  atlas: "#5A6B4F",
+  kasbahs: "#A07042",
+  north: "#5A7F9C",
+  short: "#C16542",
+  adventure: "#6E2D17",
+};
 
 // Visual companion for each circuit — short summary + image
 const DETAILS = {
@@ -132,6 +143,10 @@ export const MoroccoCircuits = () => {
             <p className="font-serif-x-italic text-2xl md:text-[26px] mt-5 leading-[1.3] text-[#2C2621]">
               {pick(current.blurb, lang)}
             </p>
+
+            {/* Themed traveller-review carousel — fills the whitespace, refreshes per tab */}
+            <CircuitTestimonials slug={active} accent={CIRCUIT_ACCENT[active] || "#C16542"} />
+
             <div className="mt-auto pt-8">
               <Link
                 to={pathFor(lang, "contact")}
