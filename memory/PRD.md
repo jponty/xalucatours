@@ -11,6 +11,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Carrusel de testimonios contextual por lugar en /que-ver-en-Marruecos (jun 2026) — COMPLETADO + VERIFICADO (self-test: 17 carruseles, quotes contextuales)**:
+  - Debajo de la descripción de CADA lugar (17 cards: marrakech/fez/meknes/rabat, ergchebbi/ouarzazate/aitbenhaddou, altoatlas/imlil/dades-todra, tanger/chefchaouen/asilah, essaouira/casablanca, volubilis/sidiali) se añade el MISMO carrusel `CircuitTestimonials` ("Lo que cuentan los viajeros") usado en las páginas de viaje/home → mismo diseño, tipografía, animación (auto-rotate + dots) y responsive.
+  - Datos NUEVOS y específicos por destino en `lib/placeTestimonials.js` (`PLACE_TESTIMONIALS` keyed por card id, 3 testimonios trilingües c/u, autores de origen mayormente español, rating 5) → contenido contextual, no genérico. Helper `getPlaceTestimonials(id)`.
+  - `CircuitTestimonials.jsx`: nuevo prop opcional `items` (no-breaking; si no se pasa, sigue usando `getCircuitTestimonials(slug)` como en la home). QueVer pasa `slug={`qvm-${card.id}`}`/`qvm-map-${id}` + `items` + `accent` de la sección.
+  - Montado en las 2 representaciones de cada lugar: cards de región y panel del mapa interactivo. Verificado: 17 carruseles, p.ej. Marrakech→"terraza con la Koutoubia", Fez→"callejuelas que no caben en GPS".
+  - **Ajustes (jun 2026)**: (1) Orígenes de los viajeros = SOLO ciudades de España (sustituidos Lyon/París/Berlín/Milán/Ámsterdam/… por Madrid, Bilbao, Granada, Valencia, San Sebastián, Burgos, Cádiz, Tarragona, etc.; nombres extranjeros hispanizados). (2) `CircuitTestimonials` prop nuevo `verifiedBelow` → la etiqueta "Viajero verificado" pasa a su PROPIA fila inferior (con separador) en estas cards verticales para no recortarse/solaparse (en la home sigue inline). (3) prop nuevo `autoRotate` (def true) → en QueVer `autoRotate={false}`: sin avance automático; navegación manual por los dots (verificado: clic en dot cambia el testimonio).
+
+
 - **Bloque "Desde €" extendido a las cards/links de viaje restantes (jun 2026) — COMPLETADO + VERIFICADO (self-test: screenshots + asserts DOM + test de interacción)**:
   - Decisión usuario: añadir "Desde €" SOLO donde hay tarifa real por programa (1a/1b/1c); dejar SIN precio las experiencias/«a medida» (Aventura/enduro y «Viajes a medida») para no mostrar un precio global engañoso.
   - 1a `RelatedJourneys.jsx` (cross-sell "También te puede interesar"): `<FromPrice routeIds={priceRouteIds(hubRouteId)}>` junto al CTA. Verificado: €760 / €1135.

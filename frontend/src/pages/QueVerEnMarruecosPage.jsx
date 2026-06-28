@@ -17,6 +17,8 @@ import HeroMonogram from "@/components/HeroMonogram";
 import CardBrandOverlay from "@/components/CardBrandOverlay";
 import FromPrice from "@/components/FromPrice";
 import { priceRouteIds } from "@/lib/programNav";
+import CircuitTestimonials from "@/components/CircuitTestimonials";
+import { getPlaceTestimonials } from "@/lib/placeTestimonials";
 import { SlotScope } from "@/components/slotScope";
 
 /* ============================================================
@@ -614,9 +616,11 @@ const DestinationCard = ({ card, sectionAccent, lang }) => (
         <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.12] text-[#2C2621]">
           {pick(card.name, lang)}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
+        <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">
           {pick(card.blurb, lang)}
         </p>
+
+        <CircuitTestimonials slug={`qvm-${card.id}`} items={getPlaceTestimonials(card.id)} accent={sectionAccent} autoRotate={false} verifiedBelow />
 
         <div className="mt-6 pt-5 border-t border-[#2C2621]/10">
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
@@ -1045,9 +1049,10 @@ const DestinationsMap = ({ lang }) => {
                   <h3 className="font-serif-x text-2xl md:text-[26px] leading-[1.12]">
                     {pick(active.card.name, lang)}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
+                  <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">
                     {pick(active.card.blurb, lang)}
                   </p>
+                  <CircuitTestimonials slug={`qvm-map-${active.card.id}`} items={getPlaceTestimonials(active.card.id)} accent={active.section.accent} autoRotate={false} verifiedBelow />
                   <div className="mt-5 pt-5 border-t border-[#2C2621]/10">
                     <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
                       {pick(COPY.tripsCta, lang)}

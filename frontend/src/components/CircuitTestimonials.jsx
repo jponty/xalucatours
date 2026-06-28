@@ -30,9 +30,9 @@ const initialsOf = (name) =>
 
 const ROTATE_MS = 6500;
 
-export default function CircuitTestimonials({ slug, accent = "#C16542" }) {
+export default function CircuitTestimonials({ slug, accent = "#C16542", items: itemsProp, autoRotate = true, verifiedBelow = false }) {
   const { lang } = useLanguage();
-  const items = getCircuitTestimonials(slug);
+  const items = itemsProp || getCircuitTestimonials(slug);
   const count = items.length;
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -42,10 +42,10 @@ export default function CircuitTestimonials({ slug, accent = "#C16542" }) {
 
   // Auto-rotate (pauses on hover).
   useEffect(() => {
-    if (count <= 1 || paused) return;
+    if (count <= 1 || paused || !autoRotate) return;
     const id = setInterval(() => setIdx((i) => (i + 1) % count), ROTATE_MS);
     return () => clearInterval(id);
-  }, [count, paused, slug]);
+  }, [count, paused, slug, autoRotate]);
 
   if (!count) return null;
 
@@ -129,11 +129,22 @@ export default function CircuitTestimonials({ slug, accent = "#C16542" }) {
                 {pick(asTri(data.origin), lang)}
               </span>
             </div>
-            <span className="ml-auto inline-flex items-center gap-1 text-[10px] tracking-[0.14em] uppercase shrink-0" style={{ color: accent }}>
-              <BadgeCheck className="w-3.5 h-3.5" strokeWidth={1.7} />
-              <span className="hidden lg:inline">{pick(COPY.verified, lang)}</span>
-            </span>
+            {!verifiedBelow && (
+              <span className="ml-auto inline-flex items-center gap-1 text-[10px] tracking-[0.14em] uppercase shrink-0" style={{ color: accent }}>
+                <BadgeCheck className="w-3.5 h-3.5" strokeWidth={1.7} />
+                <span className="hidden lg:inline">{pick(COPY.verified, lang)}</span>
+              </span>
+            )}
           </div>
+
+          {verifiedBelow && (
+            <div className="relative mt-3 pt-3 border-t border-[#2C2621]/10">
+              <span className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.16em] uppercase" style={{ color: accent }} data-testid={`circuit-testimonial-verified-${slug}`}>
+                <BadgeCheck className="w-3.5 h-3.5" strokeWidth={1.7} />
+                {pick(COPY.verified, lang)}
+              </span>
+            </div>
+          )}
         </div>
       </article>
     </div>
