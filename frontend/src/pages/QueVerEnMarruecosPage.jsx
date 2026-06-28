@@ -531,6 +531,7 @@ const Hero = ({ lang }) => (
       slot="que-ver-en-marruecos.hero"
       fallback={banner("atlasSnowy", 2400)}
       alt=""
+      priority
       aspectRatio="auto"
       imgProps={{ loading: "eager" }}
       className="ken-burns absolute inset-0 w-full h-full object-cover"

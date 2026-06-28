@@ -273,6 +273,7 @@ const Hero = ({ lang }) => (
       slot="incentivos.hero"
       fallback={banner("dunes", 2400)}
       alt=""
+      priority
       aspectRatio="auto"
       imgProps={{ loading: "eager" }}
       className="ken-burns absolute inset-0 w-full h-full object-cover"

@@ -205,6 +205,7 @@ const ContactPage = () => {
             slot="contact.hero"
             fallback={IMG.medinaPeople || IMG.koutoubia}
             alt=""
+            priority
             aspectRatio="auto"
             imgProps={{ loading: "eager" }}
             className="ken-burns absolute inset-0 w-full h-full object-cover"

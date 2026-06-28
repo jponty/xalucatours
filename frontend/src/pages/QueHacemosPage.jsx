@@ -237,6 +237,7 @@ const Hero = ({ lang }) => (
       slot="quehacemos.hero"
       fallback={banner("atlasMisty", 2400)}
       alt=""
+      priority
       aspectRatio="auto"
       imgProps={{ loading: "eager" }}
       className="ken-burns absolute inset-0 w-full h-full object-cover"
