@@ -94,7 +94,7 @@ export const HeroSlider = () => {
       <HeroMonogram zClass="z-[3]" />
 
       {/* ---------- Foreground content ---------- */}
-      <div className="relative z-10 h-full flex flex-col">
+      <div className="relative z-10 min-h-[100svh] flex flex-col">
         <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-3xl">

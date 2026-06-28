@@ -112,7 +112,7 @@ const CitaPreviaPage = () => {
         {/* ============== HERO ============== */}
         <section
           data-testid="citaprevia-hero"
-          className="relative h-[88svh] min-h-[600px] w-full overflow-hidden bg-[#1A1513]"
+          className="relative min-h-[88svh] w-full overflow-hidden bg-[#1A1513]"
         >
           <EditableImage
             slot="citaprevia.hero"
@@ -126,7 +126,7 @@ const CitaPreviaPage = () => {
           <span className="film-grain pointer-events-none" />
           <HeroMonogram />
 
-          <div className="relative z-10 h-full flex items-end pt-32 md:pt-44 pb-24 md:pb-28">
+          <div className="relative z-10 min-h-[88svh] flex items-end pt-32 md:pt-44 pb-24 md:pb-28">
             <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
               <div className="max-w-3xl">
                 <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
@@ -226,3 +226,4 @@ const CitaPreviaPage = () => {
 };
 
 export default CitaPreviaPage;
+ CitaPreviaPage;

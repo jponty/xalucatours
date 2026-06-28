@@ -199,7 +199,7 @@ const ContactPage = () => {
         {/* ============== HERO · same pattern as /quehacemos (image + Ken Burns, no video) ============== */}
         <section
           data-testid="contact-hero"
-          className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#1A1513]"
+          className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]"
         >
           <EditableImage
             slot="contact.hero"
@@ -215,7 +215,7 @@ const ContactPage = () => {
           <span className="film-grain pointer-events-none" />
           <HeroMonogram />
 
-          <div className="relative z-10 h-full flex flex-col">
+          <div className="relative z-10 min-h-[100svh] flex flex-col">
             <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full" />
             <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
               <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">

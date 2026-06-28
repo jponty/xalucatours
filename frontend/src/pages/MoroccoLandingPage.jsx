@@ -288,7 +288,7 @@ const InlineBreadcrumb = ({ lang }) => (
 );
 
 const Hero = ({ lang }) => (
-  <section data-testid="mar-hero" className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-[#1A1513]">
+  <section data-testid="mar-hero" className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]">
     {/* Aurorism layers — mantienen el carácter premium pedido */}
     <span className="aurora-blob a1" aria-hidden="true" />
     <span className="aurora-blob a2" aria-hidden="true" />
@@ -306,7 +306,7 @@ const Hero = ({ lang }) => (
     <span className="film-grain pointer-events-none" />
     <HeroMonogram />
 
-    <div className="relative z-10 h-full flex flex-col">
+    <div className="relative z-10 min-h-[100svh] flex flex-col">
       <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
         <InlineBreadcrumb lang={lang} />
       </div>

@@ -70,7 +70,7 @@ const LABELS = {
 const Hero = ({ data, lang, t, routeId }) => (
   <section
     data-testid="escapada-intro-hero"
-    className="relative w-full h-[88vh] min-h-[640px] overflow-hidden bg-[#1A1513] text-[#FDFBF7]"
+    className="relative w-full min-h-[88svh] overflow-hidden bg-[#1A1513] text-[#FDFBF7]"
   >
     <EditableImage
       slot={tripHeroSlot(routeId)}
@@ -81,7 +81,7 @@ const Hero = ({ data, lang, t, routeId }) => (
       className="absolute inset-0 w-full h-full object-cover opacity-65"
     />
     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70 pointer-events-none" />
-    <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-24">
+    <div className="relative min-h-[88svh] max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-24">
       <span className="overline text-[#FDFBF7]/85">{pick(data.eyebrow, lang)}</span>
       <h1 className="font-serif-x text-5xl sm:text-6xl lg:text-[88px] leading-[0.95] tracking-tight mt-6 max-w-4xl">
         {pick(data.title, lang)}

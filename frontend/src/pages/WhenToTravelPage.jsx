@@ -269,7 +269,7 @@ export default function WhenToTravelPage() {
     <div className="bg-[#FDFBF7] text-[#2C2621]" data-testid="when-to-travel-page">
 
       {/* ======================== HERO ======================== */}
-      <section className="relative h-[88vh] min-h-[640px] w-full overflow-hidden">
+      <section className="relative min-h-[88svh] w-full overflow-hidden">
         <EditableImage
           slot="when-travel.hero.bg"
           fallback={HERO.hero_image}
@@ -310,7 +310,7 @@ export default function WhenToTravelPage() {
           </div>
         </nav>
 
-        <div className="relative z-10 h-full flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
+        <div className="relative z-10 min-h-[88svh] flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
             <div className="max-w-4xl">
               <span

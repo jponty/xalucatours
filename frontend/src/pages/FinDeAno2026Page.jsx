@@ -304,7 +304,7 @@ function Hero({ lang }) {
   return (
     <section
       data-testid="findeano-hero"
-      className="relative min-h-[92vh] flex items-end overflow-hidden"
+      className="relative min-h-[92svh] flex items-end overflow-hidden"
     >
       <EditableImage
         slot="findeano.hero.bg"

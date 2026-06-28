@@ -11,6 +11,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Heroes responsive estandarizados en TODAS las páginas (jun 2026) — COMPLETADO + VERIFICADO (desktop 1440, tablet 820, móvil 390)**:
+  - Problema: varios heroes usaban ALTURA FIJA (`h-[100svh]`/`h-[88vh]`/`h-[88svh]`/`h-[68svh]`) + `overflow-hidden` → recortaban contenido en pantallas cortas; y algunos usaban `vh` (no fiable en móvil por la barra del navegador).
+  - Solución (patrón robusto = el de `ProgramHero`): sección `h-[Xsvh]` → `min-h-[Xsvh]` (crece para encajar el contenido, nunca recorta) y wrapper interno `h-full` → `min-h-[Xsvh]` correspondiente; todas las unidades `vh` → `svh`.
+  - Heroes ajustados: `JourneyHero` (cubre Norte/Sur/Escapadas/Aventura/ViajesAMedida/ProximasSalidas/AtlasDesierto/Marruecos/hubs), `HeroSlider` (home, interno), `ToursLanding`, `QueVerEnMarruecos`, `Equipo`, `QueHacemos`, `MoroccoLanding`, `Incentivos`, `Contact`, `CitaPrevia`, `WhenToTravel` (vh→svh), `EscapadaIntroPage` (vh→svh), `PlanificaTuViaje`, `FinDeAno2026` (vh→svh). `BlogPage`/`StubPage` ya usaban padding flexible (sin altura fija) → correctos.
+  - Verificado: desktop hero = exactamente el viewport (sin regresión); tablet ProgramHero muestra grid de info + 4 botones + scroll-hint sin solapes; móvil muestra título/subtítulo/CTAs completos sin recortes.
+
+
 - **Carrusel de testimonios contextual por lugar en /que-ver-en-Marruecos (jun 2026) — COMPLETADO + VERIFICADO (self-test: 17 carruseles, quotes contextuales)**:
   - Debajo de la descripción de CADA lugar (17 cards: marrakech/fez/meknes/rabat, ergchebbi/ouarzazate/aitbenhaddou, altoatlas/imlil/dades-todra, tanger/chefchaouen/asilah, essaouira/casablanca, volubilis/sidiali) se añade el MISMO carrusel `CircuitTestimonials` ("Lo que cuentan los viajeros") usado en las páginas de viaje/home → mismo diseño, tipografía, animación (auto-rotate + dots) y responsive.
   - Datos NUEVOS y específicos por destino en `lib/placeTestimonials.js` (`PLACE_TESTIMONIALS` keyed por card id, 3 testimonios trilingües c/u, autores de origen mayormente español, rating 5) → contenido contextual, no genérico. Helper `getPlaceTestimonials(id)`.
