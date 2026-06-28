@@ -11,6 +11,15 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **/planner — Planificador inteligente de viajes (jun 2026) — COMPLETADO + VERIFICADO (testing_agent 100%, iteration_65)**:
+  - Página premium en 6 pasos (llegada · salida [misma/lineal] · días · destinos · estilos · ritmo) con motor 100% DETERMINISTA (sin IA): matriz real curada de distancias/tiempos + haversine fallback, días mínimos recomendados, conexiones naturales.
+  - Solo recomienda CIRCUITOS EXISTENTES de Xaluca (19 en `lib/planner/plannerTrips.js`, routeIds reales → página/precio/imagen). NUNCA inventa rutas.
+  - Resultado: viabilidad 🟢🟡🟠🔴 con explicación de "asesor experto" (plantillas), viaje top con % compatibilidad, mapa Leaflet (satélite por defecto, `PlannerMiniMap`), timeline día a día con horas/km por tramo, stats (días/noches/km/conducción/intensidad), destinos incluidos vs descartados con motivo, avisos inteligentes ("con N días más…", "si entras por Errachidia…", "X queda fuera de la ruta"), y lista de otros viajes compatibles con %.
+  - CTA "Solicitar este viaje" → `planTrip?trip=routeId` (prefill del formulario de leads) + "Ver el viaje completo" → página del circuito.
+  - Trilingüe (es/en/fr) con slugs localizados (`/planner`, `/en/trip-planner`, `/fr/planificateur`). Enlazado desde el menú lateral ("Planificador inteligente") y desde un CTA en la Home (`PlannerCta`, tras el mapamundi).
+  - Ficheros nuevos: `lib/planner/{plannerData,plannerTrips,plannerEngine,plannerCopy}.js`, `components/planner/{PlannerMiniMap,PlannerResult}.jsx`, `components/PlannerCta.jsx`, `pages/PlannerPage.jsx`. Cableado en `routes.js`, `routeComponents.js`, `menu.js`, `seoMeta.js`, `HomePage.jsx`.
+
+
 - **Heroes responsive estandarizados en TODAS las páginas (jun 2026) — COMPLETADO + VERIFICADO (desktop 1440, tablet 820, móvil 390)**:
   - Problema: varios heroes usaban ALTURA FIJA (`h-[100svh]`/`h-[88vh]`/`h-[88svh]`/`h-[68svh]`) + `overflow-hidden` → recortaban contenido en pantallas cortas; y algunos usaban `vh` (no fiable en móvil por la barra del navegador).
   - Solución (patrón robusto = el de `ProgramHero`): sección `h-[Xsvh]` → `min-h-[Xsvh]` (crece para encajar el contenido, nunca recorta) y wrapper interno `h-full` → `min-h-[Xsvh]` correspondiente; todas las unidades `vh` → `svh`.
