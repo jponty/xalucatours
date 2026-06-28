@@ -98,6 +98,7 @@ import TangerFez56Page from "@/pages/TangerFez56Page";
 import FezTanger56Page from "@/pages/FezTanger56Page";
 import FezTanger67Page from "@/pages/FezTanger67Page";
 import PlanificaTuViajePage from "@/pages/PlanificaTuViajePage";
+import PlannerPage from "@/pages/PlannerPage";
 import ProximasSalidasPage from "@/pages/ProximasSalidasPage";
 import WhenToTravelPage from "@/pages/WhenToTravelPage";
 import QueVerEnMarruecosPage from "@/pages/QueVerEnMarruecosPage";
@@ -225,6 +226,7 @@ export const ROUTE_COMPONENTS = {
 
   // Editorial / utility
   planTrip:                      PlanificaTuViajePage,
+  planner:                       PlannerPage,
   tourUpcoming:                  ProximasSalidasPage,
   whenToTravel:                  WhenToTravelPage,
   whatToSee:                     QueVerEnMarruecosPage,

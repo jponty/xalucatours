@@ -36,6 +36,15 @@ const withBrand = (label) => ({
 const SEO = {
   home: DEFAULT_SEO,
 
+  planner: {
+    title: withBrand(T("Planificador inteligente de viajes", "Smart Morocco trip planner", "Planificateur de voyage intelligent")),
+    description: T(
+      "Diseña tu viaje por Marruecos en minutos: indica días, llegada, salida e intereses y nuestro planificador te recomienda la mejor ruta entre los circuitos reales de Xaluca Tours.",
+      "Design your Morocco trip in minutes: set your days, arrival, departure and interests and our planner recommends the best route among Xaluca Tours' real circuits.",
+      "Concevez votre voyage au Maroc en quelques minutes : indiquez vos jours, arrivée, départ et envies, notre planificateur recommande le meilleur itinéraire parmi les circuits réels de Xaluca Tours."
+    ),
+  },
+
   appointment: {
     title: withBrand(T("Cita previa · Diseña tu viaje", "Book an appointment · Plan your trip", "Prendre rendez-vous · Planifiez votre voyage")),
     description: T(

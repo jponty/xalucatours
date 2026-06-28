@@ -16,6 +16,12 @@ export const MENU_TREE = [
     icon: "calendar-clock",
   },
   {
+    id: "planner",
+    routeId: "planner",
+    label: { es: "Planificador inteligente", en: "Smart trip planner", fr: "Planificateur intelligent" },
+    icon: "sparkles",
+  },
+  {
     id: "tours",
     label: { es: "Nuestros viajes", en: "Our journeys", fr: "Nos voyages" },
     icon: "compass",
