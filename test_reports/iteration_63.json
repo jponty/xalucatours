@@ -1,0 +1,22 @@
+{
+  "summary": "Verified FromPrice ('Desde €… por persona') block on every card of the 4 home category carousels and confirmed it is NOT present in the 'Próximas salidas' (upcoming) carousel. Popover breakdown opens on hover; clicking on the price does NOT navigate to the trip page. Tested on desktop (1920x4000) and mobile (390x844).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "HomeCategoryCarousel.jsx: FromPrice is correctly rendered only when !compactMeta, using tone={isDark?'light':'dark'} size='md' and routeId={trip.routeId}, matching the catalog formatting requirement.",
+    "FromPrice.jsx: stopPropagation on the trigger span and PopoverContent click prevent unwanted navigation when the trigger lives inside a wrapping <Link>. Verified click on price did not change URL."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Tested 4 home category carousels (home-south-carousel, home-full-carousel, home-short-carousel, home-north-carousel) — each has 5 cards, all with data-testid 'home-trip-from-<id>' rendering 'Desde €… por persona'. The upcoming carousel (home-upcoming-carousel) has 6 cards and NONE include FromPrice — only the legacy inline 'desde N€' beside the CTA arrow. Breakdown popover (home-trip-from-<id>-breakdown) shows on hover. Click on the price node does NOT navigate (stays on /). Mobile viewport tested — FromPrice present on first card of each carousel. No JS console errors observed.",
+  "rca of the issue": "N/A — feature works as specified."
+}

@@ -8,6 +8,7 @@ import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import TripCardActions from "@/components/TripCardActions";
+import FromPrice from "@/components/FromPrice";
 import { tripHeroSlot, tripHeroImage, usesTripMaster, tripTextSlot } from "@/lib/tripHero";
 
 /* ============================================================
@@ -141,9 +142,21 @@ const TripCard = ({ trip, lang, tone, accent, ctaLabel, compactMeta }) => {
             style={{ color: tone.mute }}
           />
 
+          {/* "Desde …" price — identical component/format to the «40 viajes disponibles» catalog */}
+          {!compactMeta && (
+            <div className="mt-auto" data-testid={`home-trip-price-${trip.id}`}>
+              <FromPrice
+                tone={isDark ? "light" : "dark"}
+                size="md"
+                routeId={trip.routeId}
+                testid={`home-trip-from-${trip.id}`}
+              />
+            </div>
+          )}
+
           {/* CTA — text + arrow together (unified with "Ver itinerario" cards) */}
           <div
-            className="mt-auto pt-4 border-t"
+            className={`pt-4 border-t ${compactMeta ? "mt-auto" : ""}`}
             style={{ borderColor: `${tone.border}14` }}
           >
             <span
