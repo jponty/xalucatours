@@ -4,7 +4,8 @@ import { ArrowRight } from "lucide-react";
 import Img from "@/components/Img";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { relatedJourneys, hubLabel, sectionLabel, pickT } from "@/lib/programNav";
+import { relatedJourneys, hubLabel, sectionLabel, pickT, priceRouteIds } from "@/lib/programNav";
+import FromPrice from "@/components/FromPrice";
 
 /* ----------------------------------------------------------------
    <RelatedJourneys routeId={...} />
@@ -72,10 +73,13 @@ export default function RelatedJourneys({ routeId }) {
                   <p className="text-sm md:text-[15px] text-[#FDFBF7]/75 leading-relaxed mt-3 max-w-md line-clamp-2">
                     {pick(hub?.hero?.subtitle, lang)}
                   </p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase font-semibold text-[#FDFBF7] group-hover:gap-4 transition-all duration-300">
-                    {pickT(COPY.cta, lang)}
-                    <ArrowRight className="w-3 h-3" strokeWidth={1.8} />
-                  </span>
+                  <div className="mt-5 flex items-center justify-between gap-3 flex-wrap">
+                    <FromPrice tone="light" size="sm" routeIds={priceRouteIds(hubRouteId)} testid={`related-journey-from-${hubRouteId}`} />
+                    <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase font-semibold text-[#FDFBF7] group-hover:gap-4 transition-all duration-300">
+                      {pickT(COPY.cta, lang)}
+                      <ArrowRight className="w-3 h-3" strokeWidth={1.8} />
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>

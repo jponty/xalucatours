@@ -7,6 +7,8 @@ import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
+import FromPrice from "@/components/FromPrice";
+import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS, SHORT_TRIPS } from "@/lib/homeCarousels";
 
 /* ============================================================
    OurTrips — editorial bento grid of trip categories
@@ -126,6 +128,16 @@ const TRIPS = [
 const FEATURED = TRIPS.find((t) => t.featured);
 const REST     = TRIPS.filter((t) => !t.featured);
 
+/* Lowest real tariff per category → same calc as the trip pages and /precios.
+   Categories without a fixed tariff (adventure = experiences, bespoke = custom)
+   are intentionally absent → no "Desde €" to avoid a misleading generic price. */
+const CATEGORY_ROUTE_IDS = {
+  full:  FULL_TRIPS.map((t) => t.routeId).filter(Boolean),
+  south: SOUTH_TRIPS.map((t) => t.routeId).filter(Boolean),
+  north: NORTH_TRIPS.map((t) => t.routeId).filter(Boolean),
+  short: SHORT_TRIPS.map((t) => t.routeId).filter(Boolean),
+};
+
 /* ============================================================
    Card components
 ============================================================ */
@@ -167,6 +179,11 @@ const FeaturedCard = ({ trip, lang }) => {
         <p className="text-[#FDFBF7]/80 text-base md:text-lg leading-relaxed mt-5 max-w-md">
           {pick(trip.desc, lang)}
         </p>
+        {CATEGORY_ROUTE_IDS[trip.id]?.length ? (
+          <div className="mt-6">
+            <FromPrice tone="light" size="md" routeIds={CATEGORY_ROUTE_IDS[trip.id]} testid={`our-trips-from-${trip.id}`} />
+          </div>
+        ) : null}
         <div className="flex items-end justify-between gap-6 mt-8">
           <span className="text-[11px] tracking-[0.25em] uppercase text-[#FDFBF7]/55">
             {pick(trip.days, lang)}
@@ -227,6 +244,11 @@ const SmallCard = ({ trip, lang }) => {
         <p className="mt-3 text-[14px] text-[#5C5248] leading-[1.7] line-clamp-2">
           {pick(trip.desc, lang)}
         </p>
+        {CATEGORY_ROUTE_IDS[trip.id]?.length ? (
+          <div className="mt-4">
+            <FromPrice tone="dark" size="sm" routeIds={CATEGORY_ROUTE_IDS[trip.id]} testid={`our-trips-from-${trip.id}`} />
+          </div>
+        ) : null}
         <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-4">
           <span className="text-[10px] tracking-[0.25em] uppercase text-[#A07042]">
             {pick(trip.days, lang)}

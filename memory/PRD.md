@@ -11,6 +11,15 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Bloque "Desde €" extendido a las cards/links de viaje restantes (jun 2026) — COMPLETADO + VERIFICADO (self-test: screenshots + asserts DOM + test de interacción)**:
+  - Decisión usuario: añadir "Desde €" SOLO donde hay tarifa real por programa (1a/1b/1c); dejar SIN precio las experiencias/«a medida» (Aventura/enduro y «Viajes a medida») para no mostrar un precio global engañoso.
+  - 1a `RelatedJourneys.jsx` (cross-sell "También te puede interesar"): `<FromPrice routeIds={priceRouteIds(hubRouteId)}>` junto al CTA. Verificado: €760 / €1135.
+  - 1b `OurTrips.jsx` (bento home): `FromPrice` en FeaturedCard + SmallCards por categoría vía nuevo `CATEGORY_ROUTE_IDS` (full/south/north/short → routeIds reales de `homeCarousels`; adventure/bespoke EXCLUIDOS). Verificado: Sur €985, Norte €725.
+  - 1c `QueVerEnMarruecosPage.jsx` (links de viaje en cards de región Y en panel del mapa interactivo): `<FromPrice size="xs" routeIds={priceRouteIds(trip.routeId)}>` bajo cada label. Verificado: 55 precios reales y diferenciados (€310, €990, €270, €760…); el popover de desglose abre sin navegar (preventDefault/stopPropagation de FromPrice).
+  - Helper nuevo `lib/programNav.js#priceRouteIds(routeId)`: resuelve hub routeId → links de sus programas (precio real, espejo de /precios), o leaf routeId → [él mismo]. (Importante: `hubProgramRouteIds` de itineraryHubs está cacheado por hub.id, NO por routeId → no servía aquí.)
+  - Fix colateral: se eliminó un bloque JSX duplicado/basura al final de `QueVerEnMarruecosPage.jsx` (líneas 1283-1289) que rompía la compilación.
+
+
 - **Lote UI/UX multi-tarea (jun 2026) — COMPLETADO + VERIFICADO (screenshots + checks programáticos)**:
   - **T1 Hero móvil**: `ProgramTemplate` ProgramHero — más `padding-bottom` en móvil (`pb-32`) para que el hint "Desplázate" no se solape con los botones (gap 17px→65px).
   - **T2 "Mejor mes para mi viaje"**: NO se añadió sección bajo el mapa. Se mantiene como BOTÓN fijo (no flotante) dentro de la sección "Información rápida / Lo esencial del viaje", bajo las casillas (`program-best-month-trigger`). Al pulsar dispara `window` event `xaluca:open-best-month` que `BestMonthFab` escucha y abre el mismo PANEL LATERAL que en los hubs. El launcher flotante se oculta solo en páginas de viaje (`getTripProgram(routeId)`), se mantiene en hubs. (Componente `BestMonthSection` creado y luego eliminado.)

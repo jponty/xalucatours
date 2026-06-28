@@ -15,6 +15,8 @@ import { REGIONS as CLIMATE_REGIONS } from "@/lib/bestTimeData";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
 import CardBrandOverlay from "@/components/CardBrandOverlay";
+import FromPrice from "@/components/FromPrice";
+import { priceRouteIds } from "@/lib/programNav";
 import { SlotScope } from "@/components/slotScope";
 
 /* ============================================================
@@ -629,8 +631,11 @@ const DestinationCard = ({ card, sectionAccent, lang }) => (
                   className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
                   style={{ borderLeft: `2px solid ${sectionAccent}55` }}
                 >
-                  <span className="text-sm text-[#2C2621] group-hover/link:text-[#C16542] transition-colors">
-                    {pick(trip.label, lang)}
+                  <span className="flex flex-col gap-0.5 min-w-0">
+                    <span className="text-sm text-[#2C2621] group-hover/link:text-[#C16542] transition-colors">
+                      {pick(trip.label, lang)}
+                    </span>
+                    <FromPrice tone="dark" size="xs" routeIds={priceRouteIds(trip.routeId)} testid={`qvm-trip-from-${card.id}-${i}`} />
                   </span>
                   <ArrowUpRight
                     className="w-3.5 h-3.5 text-[#5C5248] group-hover/link:text-[#C16542] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all flex-shrink-0"
@@ -1056,8 +1061,11 @@ const DestinationsMap = ({ lang }) => {
                             className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
                             style={{ borderLeft: `2px solid ${active.section.accent}55` }}
                           >
-                            <span className="text-sm group-hover/link:text-[#C16542] transition-colors">
-                              {pick(trip.label, lang)}
+                            <span className="flex flex-col gap-0.5 min-w-0">
+                              <span className="text-sm group-hover/link:text-[#C16542] transition-colors">
+                                {pick(trip.label, lang)}
+                              </span>
+                              <FromPrice tone="dark" size="xs" routeIds={priceRouteIds(trip.routeId)} testid={`qvm-map-trip-from-${active.card.id}-${i}`} />
                             </span>
                             <ArrowUpRight
                               className="w-3.5 h-3.5 text-[#5C5248] group-hover/link:text-[#C16542] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all flex-shrink-0"

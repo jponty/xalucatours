@@ -156,6 +156,17 @@ export const programLabel = (program, lang) =>
 export const peerPrograms = (hub, currentRouteId) =>
   (hub?.programs || []).filter((p) => p.link && p.link !== currentRouteId);
 
+/* priceRouteIds: the bookable program routeIds whose lowest tariff should
+   drive a card's "Desde €". For a hub routeId → its programs' links (so the
+   price mirrors the trip pages and /precios); for a leaf/program routeId →
+   itself. Feed straight into <FromPrice routeIds={...}>. */
+export const priceRouteIds = (routeId) => {
+  if (!routeId) return [];
+  const entry = HUB_NAV[routeId];
+  const links = entry?.hub?.programs?.map((p) => p.link).filter(Boolean);
+  return links && links.length ? links : [routeId];
+};
+
 /* ----------------------------------------------------------------
    Cross-sell: "También te puede interesar"
    From a short escape (escapada) suggest longer, higher-value
