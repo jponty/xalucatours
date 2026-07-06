@@ -46,11 +46,24 @@ _warm_state = {
 }
 
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
+# Fast-fail timeouts so no DB operation (or the startup path) can hang the
+# process for the default 30s — keeps the app responsive against a slow/cold
+# Atlas connection and never blocks the container's readiness check.
+client = AsyncIOMotorClient(
+    mongo_url,
+    serverSelectionTimeoutMS=8000,
+    connectTimeoutMS=8000,
+)
 db = client[os.environ['DB_NAME']]
 
 app = FastAPI(title="Xaluca Tours API")
 api_router = APIRouter(prefix="/api")
+
+
+@app.get("/")
+async def health():
+    """Root liveness/readiness probe (no DB, always instant)."""
+    return {"service": "Xaluca Tours", "status": "ok"}
 
 
 # ----------------------------------------------------------
@@ -4338,50 +4351,57 @@ async def shutdown_db_client():
 
 @app.on_event("startup")
 async def startup_storage():
-    """Pre-warm the Emergent object storage session at startup."""
+    """Kick off boot-time setup WITHOUT blocking readiness.
+
+    Uvicorn does not serve HTTP (incl. the GET /api/ health check) until the
+    ASGI lifespan 'startup' completes. So this handler must return immediately.
+    All I/O that depends on external services (Emergent object storage, MongoDB
+    Atlas) is done in a DETACHED background task, fully wrapped so it can never
+    crash the app or delay the container from becoming ready — even if a
+    dependency is slow, throttled or temporarily unreachable at boot.
+    """
+    async def _boot_setup():
+        # 1) Pre-warm the object-storage session. init_storage() is a BLOCKING
+        #    requests.post (up to 30s) → run it off the event loop.
+        try:
+            await asyncio.to_thread(init_storage)
+        except Exception as exc:
+            # Uploads will surface an error if storage is down; everything else
+            # keeps working.
+            logger.error("Emergent object storage init failed: %s", exc)
+        # 2) Indexes for fast dedup / listing (never fatal).
+        try:
+            await db.files.create_index("sha256")
+            await db.files.create_index([("is_deleted", 1), ("created_at", -1)])
+            await db.files.create_index("storage_path")
+        except Exception as exc:
+            logger.error("files index creation failed: %s", exc)
+        # 3) Hydrate the editable lead-notification recipient list.
+        try:
+            await load_notify_emails()
+        except Exception as exc:
+            logger.error("notify emails load failed: %s", exc)
+        # 4) Memory-heavy image maintenance (both default OFF — manual-only —
+        #    to avoid OOM on a constrained container). Runs SEQUENTIALLY after a
+        #    boot delay so the two jobs never overlap and can't double peak RAM.
+        try:
+            await asyncio.sleep(25)
+            if REOPT_ON_STARTUP:
+                try:
+                    await _run_reoptimize_library()
+                except Exception as exc:
+                    logger.error("startup re-optimize failed: %s", exc)
+            if WARM_ON_STARTUP:
+                try:
+                    await _run_warm_cache()
+                except Exception as exc:
+                    logger.error("startup warm-up failed: %s", exc)
+            if not (REOPT_ON_STARTUP or WARM_ON_STARTUP):
+                logger.info("startup image maintenance disabled (IMG_REOPT_ON_STARTUP / IMG_WARM_ON_STARTUP)")
+        except Exception as exc:
+            logger.error("startup image maintenance error: %s", exc)
+
     try:
-        init_storage()
+        asyncio.create_task(_boot_setup())
     except Exception as exc:
-        # Don't crash the app — uploads will surface a 502 if storage is down,
-        # but every other endpoint stays available.
-        logger.error("Emergent object storage init failed: %s", exc)
-    # Index for fast duplicate detection on the library/files collection.
-    try:
-        await db.files.create_index("sha256")
-        # Supports the /api/files listing query (filter on is_deleted + sort by
-        # created_at) using an index → no in-memory sort / sort-memory-limit
-        # errors and instant pagination even on a large collection.
-        await db.files.create_index([("is_deleted", 1), ("created_at", -1)])
-        # Speeds up storage_path lookups (dedup, backfill update_many).
-        await db.files.create_index("storage_path")
-    except Exception as exc:
-        logger.error("files index creation failed: %s", exc)
-    # Hydrate the editable lead-notification recipient list.
-    await load_notify_emails()
-    # Background startup maintenance (after a boot delay, all wrapped so it can
-    # NEVER crash the app). Runs SEQUENTIALLY — re-optimize first, then warm-up —
-    # so the two memory-heavy jobs never overlap and can't double peak RAM:
-    #   1) IMG_REOPT_ON_STARTUP (default OFF — manual-only): shrink oversized
-    #      masters in place (one at a time, throttled, idempotent via
-    #      `reoptimized_at`). Run on demand from the Admin panel instead of on
-    #      every boot, so a constrained container is never hammered in a loop.
-    #   2) IMG_WARM_ON_STARTUP (default ON): warm AVIF/WebP variants (skips any
-    #      remaining >WARM_MAX_MASTER_BYTES master, so it can't OOM).
-    async def _startup_maintenance():
-        await asyncio.sleep(25)
-        if REOPT_ON_STARTUP:
-            try:
-                await _run_reoptimize_library()
-            except Exception as exc:
-                logger.error("startup re-optimize failed: %s", exc)
-        if WARM_ON_STARTUP:
-            try:
-                await _run_warm_cache()
-            except Exception as exc:
-                logger.error("startup warm-up failed: %s", exc)
-        if not (REOPT_ON_STARTUP or WARM_ON_STARTUP):
-            logger.info("startup image maintenance disabled (IMG_REOPT_ON_STARTUP / IMG_WARM_ON_STARTUP)")
-    try:
-        asyncio.create_task(_startup_maintenance())
-    except Exception as exc:
-        logger.error("could not schedule startup image maintenance: %s", exc)
+        logger.error("could not schedule boot setup: %s", exc)
