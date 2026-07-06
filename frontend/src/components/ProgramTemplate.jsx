@@ -41,6 +41,7 @@ const CONTACT_LABEL = { es: "Contactar", en: "Contact us", fr: "Contacter" };
 import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
+const EXPERT_LABEL = { es: "Habla con un experto", en: "Talk to an expert", fr: "Parlez à un expert" };
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
@@ -220,7 +221,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
             <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
               <C name="hero.subtitle" defaults={metaAllLangs(program, variant, "subtitle")} />
             </p>
-            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-3xl">
+            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-4xl">
               {[
                 { id: "duration",   Icon: Clock,    label: <L k="eyebrow_duration" />,   value: <C name="hero.q.duration" defaults={program.duration} multiline={false} /> },
                 { id: "airports",   Icon: Plane,    label: <L k="eyebrow_airports" />,   value: <C name="hero.q.airports" defaults={metaAllLangs(program, variant, "airports")} multiline={false} /> },
@@ -245,6 +246,19 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                 </div>
                 <span className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug">
                   <FromPrice tone="light" layout="stacked" routeId={routeId} testid="program-hero-from-price" />
+                </span>
+              </a>
+              {/* Talk to an expert — tap-to-call on supported devices */}
+              <a
+                href={`tel:${CONTACT.phoneRaw}`}
+                data-testid="program-hero-expert"
+                className="group bg-[#1A1513]/80 hover:bg-[#C16542]/90 backdrop-blur-md p-5 flex flex-col gap-2 transition-colors sm:col-span-2 lg:col-span-1"
+              >
+                <div className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:text-[#FDFBF7] transition-colors">
+                  <Phone className="w-3 h-3" strokeWidth={1.6} />{pick(EXPERT_LABEL, lang)}
+                </div>
+                <span dir="ltr" className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug tracking-wide group-hover:text-[#FDFBF7]">
+                  {CONTACT.phone}
                 </span>
               </a>
             </dl>
