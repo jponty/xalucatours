@@ -11,6 +11,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Buscador de viajes en la Home (jul 2026) — COMPLETADO + VERIFICADO (interacción e2e)**:
+  - Nueva sección `TripFinder` (`components/TripFinder.jsx`) justo debajo del hero de la Home (`pages/HomePage.jsx`), con lógica determinista en `lib/tripFinder.js`.
+  - Campos: **Ciudad de origen** (8 ciudades ES de `flights.js` + "Otra ciudad" con input manual), **Destino** fijo Marruecos, **Fecha** (Enero 2026 → Diciembre 2027 + "Soy flexible"), **Duración** (2–3 / 4–5 / 6–7 / 8–10 / 11–14 / 15+ días + "Cualquier duración").
+  - **Ranking determinista** (sin IA) sobre los 19 circuitos reales del planner (`plannerTrips`): duración (peso primario, match exacto +100 / cercano +20), estacionalidad por mes (mapea themes→estilos de `bestTimeData.TRAVEL_STYLES.bestMonths`, +50), y origen (señal ligera de vuelo directo España→aeropuerto marroquí, +20). Auto-filtra al cambiar cualquier campo; muestra top 6, nunca vacío.
+  - Título/eyebrow/subtítulo editables por CMS (`home.finder.*` vía `EditableText`). Tarjetas con imagen (`Img` → pipeline CDN/preload), badge noches·días, chip de motivo ("Ideal en {mes}"/"Duración ideal"/"Fácil desde {ciudad}"), `FromPrice`, enlace a la página del viaje + CTA al `/planner`. Trilingüe (es/en/fr) y responsive.
+  - Verificado e2e: filtrado correcto por duración/mes/origen, "otra ciudad" revela input, enlaces resuelven, sin errores de runtime.
+
+
 - **Optimización LCP — preload de imagen above-the-fold + red de resiliencia de caché (jun 2026) — COMPLETADO + VERIFICADO (screenshots + cabeceras + consola)**:
   - Nuevo helper `lib/imageUrl.js#preloadImageLink(url,{srcSet,sizes,width})`: inyecta `<link rel="preload" as="image" fetchpriority="high">` con `imagesrcset`/`imagesizes` responsive (misma variante que pedirá el `<img>` → sin doble descarga). Ref-contado y deduplicado por href; se limpia al desmontar. No-op en SSR.
   - Cableado: (1) `EditableImage`/`SmartImage` precarga el héroe cuando `priority` y se resuelve la URL del slot (cubre `ProgramHero` 21/9, `JourneyHero`, todos los hubs). (2) `Img.jsx` precarga cuando `priority`. (3) `HeroSlider` (home) precarga el poster del vídeo Mux (LCP de la home).

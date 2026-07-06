@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSlider from "@/components/HeroSlider";
+import TripFinder from "@/components/TripFinder";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
 import EmotionalIntro from "@/components/EmotionalIntro";
@@ -100,6 +101,7 @@ export default function HomePage() {
   return (
     <div data-testid="home-page">
       <HeroSlider />
+      <TripFinder />
       <Marquee />
       <EmotionalIntro />
       <WorldMapSection />
