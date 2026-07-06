@@ -17,6 +17,7 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
   - **Ranking determinista** (sin IA) sobre los 19 circuitos reales del planner (`plannerTrips`): duración (peso primario, match exacto +100 / cercano +20), estacionalidad por mes (mapea themes→estilos de `bestTimeData.TRAVEL_STYLES.bestMonths`, +50), y origen (señal ligera de vuelo directo España→aeropuerto marroquí, +20). Auto-filtra al cambiar cualquier campo; muestra top 6, nunca vacío.
   - Título/eyebrow/subtítulo editables por CMS (`home.finder.*` vía `EditableText`). Tarjetas con imagen (`Img` → pipeline CDN/preload), badge noches·días, chip de motivo ("Ideal en {mes}"/"Duración ideal"/"Fácil desde {ciudad}"), `FromPrice`, enlace a la página del viaje + CTA al `/planner`. Trilingüe (es/en/fr) y responsive.
   - Verificado e2e: filtrado correcto por duración/mes/origen, "otra ciudad" revela input, enlaces resuelven, sin errores de runtime.
+  - Refinamientos (jul 2026): origen por defecto **Barcelona**; chip de origen renombrado a **"RECOMENDADO"**; **logo monograma Xaluca** (badge circular) en la esquina superior derecha de cada tarjeta; precio corregido a `tone="dark" layout="stacked"` (antes `light` = texto blanco invisible sobre la tarjeta crema).
 
 
 - **Optimización LCP — preload de imagen above-the-fold + red de resiliencia de caché (jun 2026) — COMPLETADO + VERIFICADO (screenshots + cabeceras + consola)**:

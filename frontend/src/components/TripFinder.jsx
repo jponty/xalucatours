@@ -8,6 +8,7 @@ import { pathFor } from "@/lib/routes";
 import Img from "@/components/Img";
 import { FromPrice } from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
+import monogramWhite from "@/assets/monograma-x-white.png";
 import {
   ORIGIN_OPTIONS, buildMonthOptions, monthName, FLEXIBLE_LABEL, DURATION_BUCKETS,
   topTrips, tripImage, tt, nodeName,
@@ -36,7 +37,7 @@ const UI = {
   days:     T("días", "days", "jours"),
   reasonSeason:   T("Ideal en", "Great in", "Idéal en"),
   reasonDuration: T("Duración ideal", "Perfect length", "Durée idéale"),
-  reasonOrigin:   T("Fácil desde", "Easy from", "Facile depuis"),
+  reasonOrigin:   T("Recomendado", "Recommended", "Recommandé"),
   plannerLead: T(
     "¿Prefieres que lo diseñemos contigo, día a día?",
     "Prefer us to design it with you, day by day?",
@@ -71,7 +72,7 @@ export const TripFinder = () => {
   const L = (o) => tt(o, lang);
   const monthOptions = useMemo(() => buildMonthOptions(lang), [lang]);
 
-  const [originId, setOriginId] = useState("mad");
+  const [originId, setOriginId] = useState("bcn");
   const [customCity, setCustomCity] = useState("");
   const [monthValue, setMonthValue] = useState("flexible");
   const [durationId, setDurationId] = useState("");
@@ -81,18 +82,12 @@ export const TripFinder = () => {
     [originId, monthValue, durationId],
   );
 
-  const originLabel = () => {
-    if (originId === "otra") return customCity.trim();
-    const o = ORIGIN_OPTIONS.find((x) => x.id === originId);
-    return o ? L(o.name) : "";
-  };
-
   const chipFor = (reasons) => {
     if (reasons.includes("season") && monthValue !== "flexible") {
       return `${L(UI.reasonSeason)} ${monthName(monthValue, lang).toLowerCase()}`;
     }
     if (reasons.includes("duration")) return L(UI.reasonDuration);
-    if (reasons.includes("origin") && originLabel()) return `${L(UI.reasonOrigin)} ${originLabel()}`;
+    if (reasons.includes("origin")) return L(UI.reasonOrigin);
     return null;
   };
 
@@ -249,6 +244,9 @@ export const TripFinder = () => {
                   <span className="absolute bottom-3 right-3 bg-[#1A1513]/80 backdrop-blur-sm text-[#FDFBF7] px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase tabular-nums">
                     {nights} {L(UI.nights)} · {trip.days} {L(UI.days)}
                   </span>
+                  <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
+                    <img src={monogramWhite} alt="Xaluca Tours" className="w-5 h-5 object-contain" loading="lazy" />
+                  </span>
                 </div>
                 <div className="p-5">
                   <h3 className="font-serif-x text-[#2C2621] text-xl leading-snug group-hover:text-[#C16542] transition-colors">
@@ -260,7 +258,7 @@ export const TripFinder = () => {
                     {nodeName(trip.exit, lang)}
                   </p>
                   <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
-                    <FromPrice tone="light" size="sm" routeId={trip.routeId} testid={`trip-finder-price-${trip.routeId}`} />
+                    <FromPrice tone="dark" layout="stacked" routeId={trip.routeId} testid={`trip-finder-price-${trip.routeId}`} />
                     <span className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
                       {L(UI.viewTrip)}
                       <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
