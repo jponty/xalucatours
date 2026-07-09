@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { Heart, ArrowUpRight, Compass, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
-import { resolveTripContext } from "@/lib/tripContext";
+import { resolveTripContext, setTripContext } from "@/lib/tripContext";
 import { pathFor } from "@/lib/routes";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
@@ -21,7 +21,7 @@ const COPY = {
     fr: "Vos itinéraires favoris, réunis en un seul endroit pour y revenir quand vous le souhaitez.",
   },
   count: { es: "guardados", en: "saved", fr: "enregistrés" },
-  planAll: { es: "Planificar con mis favoritos", en: "Plan with my favourites", fr: "Planifier avec mes favoris" },
+  planAll: { es: "Solicitar presupuesto de mis viajes guardados", en: "Request a quote for my saved trips", fr: "Demander un devis pour mes voyages enregistrés" },
   view: { es: "Ver el viaje", en: "View the trip", fr: "Voir le voyage" },
   remove: { es: "Quitar de favoritos", en: "Remove from favourites", fr: "Retirer des favoris" },
   emptyTitle: { es: "Aún no has guardado ningún viaje", en: "You haven't saved any trips yet", fr: "Vous n'avez encore enregistré aucun voyage" },
@@ -97,10 +97,11 @@ export default function FavoritosPage() {
               </p>
               <Link
                 to={`${pathFor(lang, "planTrip")}?trips=${favorites.join(",")}`}
+                onClick={() => setTripContext(favorites)}
                 data-testid="favorites-plan-all"
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors text-left leading-snug"
               >
-                <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
+                <Compass className="w-4 h-4 shrink-0" strokeWidth={1.6} />
                 {pick(COPY.planAll, lang)}
               </Link>
             </div>

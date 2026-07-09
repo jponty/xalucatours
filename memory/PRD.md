@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **CTA de conversión en `/favoritos`: "Solicitar presupuesto de mis viajes guardados" (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - El botón (ya existente como "Planificar con mis favoritos") se reetiquetó al texto de conversión pedido y enlaza a `/planifica-tu-viaje?trips=<fav1,fav2,...>`, pre-rellenando el planificador con TODOS los favoritos de una vez. Añadido `onClick={setTripContext(favorites)}` para fijar también el contexto en sesión.
+  - Verificado e2e: 2 favoritos → botón → navega a `/planifica-tu-viaje?trips=...`, sesión = ambos routeIds, `PlannerForm` muestra los 2 `plan-prefill-item-*`. Trilingüe.
+
+
 - **"Guardar viaje" (favoritos) en el hero de páginas de viaje (jul 2026) — COMPLETADO + VERIFICADO**:
   - 6º indicador en el hero grid del `ProgramTemplate` (`lg:grid-cols-6`), junto a Duración, Aeropuertos, Lugares destacados, Precio y Habla con un experto, con el mismo estilo (icono `Heart`, etiqueta dorada, valor blanco, fondo espresso/terracota en hover y estado guardado).
   - Toggle vía `useFavorites` (FavoritesContext, localStorage `xaluca:favorites`): "Guardar viaje" ↔ "Viaje guardado" (corazón relleno + tarjeta terracota), persiste entre sesiones y pestañas, alimenta la página `/favoritos` y el contador de la cabecera.
