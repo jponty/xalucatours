@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { Compass, ArrowUpRight, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { resolveTripContext, getTripParam } from "@/lib/tripContext";
+import { resolveTripContext, getTripParam, clearTripContext } from "@/lib/tripContext";
 import { optimizedSrc } from "@/lib/imageUrl";
 
 const LABEL = { es: "Viaje en contexto", en: "Trip in context", fr: "Voyage en contexte" };
@@ -60,7 +60,7 @@ export default function TripContextBanner({ className = "" }) {
       </Link>
       <button
         type="button"
-        onClick={() => setDismissed(true)}
+        onClick={() => { setDismissed(true); clearTripContext(); }}
         data-testid="trip-context-dismiss"
         aria-label={pick(DISMISS, lang)}
         title={pick(DISMISS, lang)}

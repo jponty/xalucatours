@@ -7,6 +7,7 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { COPY as BEST_MONTH_COPY } from "@/components/BestMonthFab";
 import { pathFor, resolvePath } from "@/lib/routes";
+import { setTripContext } from "@/lib/tripContext";
 import { CONTACT } from "@/lib/data";
 import { StickyNav } from "@/components/JourneyPageSections";
 import { SHARED_DETAILS } from "@/lib/programData";
@@ -267,7 +268,9 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
               use the full content width and sit on a single row on desktop;
               flex-wrap reflows them cleanly (no clipping/overlap) on tablet/mobile. */}
           <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
-            <Link to={pathFor(lang, "contact")} data-testid="program-hero-cta-primary"
+            <Link to={`${pathFor(lang, "contact")}${routeId ? `?trip=${routeId}` : ""}`}
+               onClick={() => routeId && setTripContext([routeId])}
+               data-testid="program-hero-cta-primary"
                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
               <L k="cta_primary" /><ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             </Link>
@@ -351,6 +354,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
           </Link>
           <Link
             to={`${pathFor(lang, "contact")}${routeId ? `?trip=${routeId}` : ""}`}
+            onClick={() => routeId && setTripContext([routeId])}
             data-testid="desc-cta-contact"
             className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
           >

@@ -20,14 +20,42 @@ import { pick } from "@/contexts/LanguageContext";
 
 const DAYS = { es: "días", en: "days", fr: "jours" };
 
-export const getTripParam = () => {
-  if (typeof window === "undefined") return null;
-  return new URLSearchParams(window.location.search).get("trip");
+/* ------------------------------------------------------------------
+   Session-persisted planning context.
+   The trip a visitor arrives with (from a trip page's "Solicitar
+   información" CTA) is remembered for the WHOLE browser session, so it
+   stays pre-selected in the detailed planner even after they navigate
+   away from the ?trip= URL — until they change/remove it themselves.
+------------------------------------------------------------------ */
+const SESSION_KEY = "xaluca.tripContext";
+
+const readSession = () => {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.sessionStorage.getItem(SESSION_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.filter(Boolean) : [];
+  } catch {
+    return [];
+  }
 };
 
-/* Read one or several routeIds from the URL:
-   ?trips=a,b,c (preferred for collections) or ?trip=a (single). */
-export const getTripParams = () => {
+/* Persist the trip(s) being planned for the rest of the session. An
+   empty list clears the context (equivalent to the user removing it). */
+export const setTripContext = (routeIds) => {
+  if (typeof window === "undefined") return;
+  try {
+    const arr = (Array.isArray(routeIds) ? routeIds : [routeIds]).filter(Boolean);
+    if (arr.length) window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(arr));
+    else window.sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    /* storage unavailable (private mode / quota) — silently ignore */
+  }
+};
+
+export const clearTripContext = () => setTripContext([]);
+
+const readUrlParams = () => {
   if (typeof window === "undefined") return [];
   const sp = new URLSearchParams(window.location.search);
   const multi = sp.get("trips");
@@ -35,6 +63,17 @@ export const getTripParams = () => {
   const single = sp.get("trip");
   return single ? [single] : [];
 };
+
+/* Read one or several routeIds for the current planning context.
+   Priority: a fresh ?trip=/?trips= URL param (arrival from a trip page)
+   wins; otherwise fall back to the session-persisted selection so the
+   choice survives in-site navigation across the whole session. */
+export const getTripParams = () => {
+  const url = readUrlParams();
+  return url.length ? url : readSession();
+};
+
+export const getTripParam = () => getTripParams()[0] || null;
 
 export const resolveTripContext = (routeId, lang) => {
   if (!routeId) return null;

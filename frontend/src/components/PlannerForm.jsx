@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Calendar, CalendarRange, CalendarClock,
@@ -14,7 +14,7 @@ import FromPrice from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
-import { resolveTripContext, getTripParams } from "@/lib/tripContext";
+import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripContext";
 import { optimizedSrc } from "@/lib/imageUrl";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 
@@ -217,6 +217,13 @@ export default function PlannerForm() {
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errMsg, setErrMsg] = useState("");
+
+  // Persist the live trip selection for the whole session so it stays
+  // pre-selected across navigation. Manual add/remove updates it too — a
+  // manual change (or removal) always wins over the arrival context.
+  useEffect(() => {
+    setTripContext(form.selectedTrips);
+  }, [form.selectedTrips]);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const toggleArrayItem = (key) => (id) =>

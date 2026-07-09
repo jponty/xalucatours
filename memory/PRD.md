@@ -11,6 +11,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Contexto de viaje persistente en la sesión (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - Al pulsar "Solicitar información" (CTA hero) o "Contactar" en una página de viaje, se recuerda automáticamente el viaje de origen: navega a `/contacto?trip=<routeId>` **y** persiste en `sessionStorage["xaluca.tripContext"]`.
+  - `lib/tripContext.js`: nuevos `setTripContext()` / `clearTripContext()` + `getTripParams()` con prioridad URL → fallback a sesión, para que el viaje siga preseleccionado durante toda la sesión aunque el usuario navegue sin el parámetro.
+  - `PlannerForm` (formulario de planificación detallada, compartido por `/contacto` y `/planifica-tu-viaje`): efecto que sincroniza `selectedTrips` → sesión, de modo que un cambio/eliminación manual siempre prevalece sobre el contexto de llegada. `TripContextBanner`: la "X" (Quitar viaje) ahora limpia la sesión.
+  - Verificado e2e: click CTA → `?trip=` + sesión; banner + viaje preseleccionado en el form; navegación a `/planifica-tu-viaje` sin parámetro mantiene la preselección; quitar manualmente limpia la sesión.
+
+
 - **Fix de deployment: readiness timeout en producción (jul 2026) — RESUELTO + VERIFICADO**:
   - **Causa raíz:** el handler `@app.on_event("startup")` hacía I/O externo bloqueante/awaited ANTES de completar el lifespan startup: `init_storage()` (llamada **síncrona `requests.post`** al object storage, timeout 30s) + creación de índices y `load_notify_emails()` contra MongoDB. Uvicorn no sirve HTTP (ni el health `/api/`) hasta que el startup termina, así que con object storage/Atlas lentos al arrancar en producción el pod nunca quedaba "ready" → k8s readiness timeout (10 min).
   - **Fix (`backend/server.py`):** el `startup` ahora retorna al instante y difiere TODO el I/O a una tarea en background detached (`init_storage` vía `asyncio.to_thread`, índices, notify emails y mantenimiento de imágenes), cada bloque envuelto en try/except para que nunca crashee ni retrase la readiness. Añadidos timeouts fast-fail al cliente Mongo (`serverSelectionTimeoutMS`/`connectTimeoutMS=8000`) y una ruta `/` de health en el backend (por si el probe no usa prefijo `/api`).
