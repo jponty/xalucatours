@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight, Compass, Mountain, Sparkles, MapPin, Calendar,
   Phone, MessageCircle, Mail, Building2, ChevronDown, BookOpen, Crown, Users,
-  Globe2, Tag, Filter, Clock, Plane, Send, Leaf,
+  Globe2, Tag, Filter, Clock, Plane, Send, Leaf, Heart,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { REGIONS, EXPERIENCES, TRIPS } from "@/lib/tripsData";
@@ -325,6 +326,7 @@ const ExperiencesSection = ({ t, lang }) => (
    5 — Interactive Trip Explorer (filter by region + experience)
 ============================================================ */
 const TripExplorer = ({ t, lang }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [region, setRegion] = useState("all-filter");
   const [experience, setExperience] = useState("all-filter");
 
@@ -424,6 +426,7 @@ const TripExplorer = ({ t, lang }) => {
           ) : filtered.map((trip) => {
             const exps = trip.experiences.map((eid) => EXPERIENCES.find((e) => e.id === eid)).filter(Boolean);
             const reg = REGIONS.find((r) => r.id === trip.region);
+            const fav = isFavorite(trip.id);
             return (
               <article key={trip.id} data-testid={`trip-card-${trip.id}`}
                        className="group relative bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden">
@@ -441,7 +444,21 @@ const TripExplorer = ({ t, lang }) => {
                     <MapPin className="w-3 h-3" strokeWidth={1.6} />
                     {pick(reg?.label, lang)}
                   </span>
-                  <span className="absolute top-3 right-3 inline-flex items-center gap-2 bg-[#1A1513]/65 backdrop-blur-sm text-[#FDFBF7] px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase">
+                  {/* Save to favourites — toggles without leaving the page */}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(trip.id); }}
+                    data-testid={`trip-fav-${trip.id}`}
+                    aria-pressed={fav}
+                    aria-label={fav ? t.fav_remove : t.fav}
+                    title={fav ? t.fav_remove : t.fav}
+                    className={`absolute top-3 right-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full backdrop-blur shadow-md transition-colors ${
+                      fav ? "bg-[#C16542] text-[#FDFBF7]" : "bg-[#FDFBF7]/90 text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
+                    }`}
+                  >
+                    <Heart className="w-4 h-4 transition-transform active:scale-90" strokeWidth={1.7} fill={fav ? "currentColor" : "none"} />
+                  </button>
+                  <span className="absolute bottom-3 right-3 inline-flex items-center gap-2 bg-[#1A1513]/65 backdrop-blur-sm text-[#FDFBF7] px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase">
                     <Clock className="w-3 h-3" strokeWidth={1.6} />
                     {pick(trip.duration, lang)}
                   </span>
@@ -753,6 +770,7 @@ const COPY = {
       empty_title: "No hay viajes con estos filtros.",
       empty_body: "Prueba otra combinación o solicita un viaje a medida — lo diseñaremos exactamente como lo imaginas.",
       from_label: "Desde", cta_card: "Más info",
+      fav: "Guardar en favoritos", fav_remove: "Quitar de favoritos",
     },
     proximas: {
       overline: "Próximas salidas", title: "Próximas salidas a Marruecos.",
@@ -822,6 +840,7 @@ const COPY = {
       empty_title: "No trips with these filters.",
       empty_body: "Try another combination — or request a tailor-made trip and we'll design exactly what you imagine.",
       from_label: "From", cta_card: "Learn more",
+      fav: "Save to favourites", fav_remove: "Remove from favourites",
     },
     proximas: {
       overline: "Upcoming departures", title: "Upcoming Morocco departures.",
@@ -891,6 +910,7 @@ const COPY = {
       empty_title: "Aucun voyage avec ces filtres.",
       empty_body: "Essayez une autre combinaison ou demandez un voyage sur mesure — nous le concevrons exactement comme vous l'imaginez.",
       from_label: "Dès", cta_card: "En savoir plus",
+      fav: "Enregistrer dans mes favoris", fav_remove: "Retirer des favoris",
     },
     proximas: {
       overline: "Prochains départs", title: "Prochains départs au Maroc.",

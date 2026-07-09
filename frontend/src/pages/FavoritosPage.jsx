@@ -35,7 +35,7 @@ const COPY = {
 
 const FavCard = ({ trip, lang, onRemove }) => (
   <div data-testid={`favorite-card-${trip.routeId}`} className="group relative bg-[#FDFBF7] border border-[#2C2621]/10 overflow-hidden">
-    <Link to={pathFor(lang, trip.routeId)} data-testid={`favorite-card-link-${trip.routeId}`} className="block">
+    <Link to={pathFor(lang, trip.linkRouteId || trip.routeId)} data-testid={`favorite-card-link-${trip.routeId}`} className="block">
       <div className="relative h-60 overflow-hidden bg-[#C16542]/5">
         {trip.image && (
           <img

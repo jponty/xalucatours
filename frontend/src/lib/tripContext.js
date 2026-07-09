@@ -16,6 +16,7 @@ import { ALL_TRIPS } from "@/lib/allTripsCatalog";
 import { getTripProgram } from "@/lib/tripPrograms";
 import { metaAllLangs } from "@/lib/programMeta";
 import { tripHeroImage } from "@/lib/tripHero";
+import { TRIPS as EXPLORER_TRIPS } from "@/lib/tripsData";
 import { pick } from "@/contexts/LanguageContext";
 
 const DAYS = { es: "días", en: "days", fr: "jours" };
@@ -100,6 +101,20 @@ export const resolveTripContext = (routeId, lang) => {
       durationLabel: program.duration ? pick(program.duration, lang) : "",
       image: tripHeroImage(routeId) || pick(metaAllLangs(program, variant, "hero_image"), lang) || null,
       region: program.region || null,
+    };
+  }
+
+  // 3 · Curated explorer cards (/viajes "Filtra y descubre"). These are
+  //     marketing entries without their own page — they route to contact.
+  const ex = EXPLORER_TRIPS.find((x) => x.id === routeId);
+  if (ex) {
+    return {
+      routeId,
+      linkRouteId: "contact",
+      title: pick(ex.title, lang),
+      durationLabel: ex.duration ? pick(ex.duration, lang) : "",
+      image: ex.image || null,
+      region: ex.region || null,
     };
   }
 

@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Corazón de favoritos en las tarjetas del explorador "Encuentra tu viaje · Filtra y descubre" de /viajes (jun 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - Añadido botón de favorito (Heart) arriba a la derecha en cada tarjeta del `TripExplorer` (`pages/ToursLandingPage.jsx`), reutilizando `useFavorites()` (localStorage + toast). La insignia de duración se movió de arriba-derecha a abajo-derecha para no solapar con el corazón; insignia de región se mantiene arriba-izquierda. `onClick` con `preventDefault`+`stopPropagation`, `aria-pressed`, `data-testid="trip-fav-{id}"`. Etiquetas trilingües (`fav`/`fav_remove`) en los tres bloques `explorer` del objeto `t`.
+  - Como estas tarjetas son entradas de marketing (id tipo `sahara-soul`, enlazan a /contacto y no tienen página propia), se extendió `lib/tripContext.js` (`resolveTripContext`) con una 3ª rama que resuelve desde el catálogo `TRIPS` de `tripsData.js`, devolviendo `linkRouteId:"contact"`. `FavoritosPage` (`FavCard`) usa ahora `trip.linkRouteId || trip.routeId` para el enlace. Así el favorito aparece correctamente en `/favoritos` y el contador coincide con lo mostrado.
+  - Verificado e2e: 12 corazones en /viajes; clic alterna `aria-pressed false→true` y muestra toast; en `/favoritos` los viajes del explorador guardados se listan (contador "2 GUARDADOS" == 2 tarjetas) y enlazan a /contacto. Sin sistema de auth de usuario final (decisión previa: favoritos locales).
+
 - **Unificación de enlaces de teléfono a `CONTACT.phoneRaw` (jul 2026) — COMPLETADO + VERIFICADO**:
   - Todos los enlaces `tel:` de la empresa usan ahora el formato internacional `+34937268366` desde la única fuente `CONTACT.phoneRaw` (`lib/data`). Corregidos: el botón "Llámanos" de `/viajes` (era `tel:937268366`), literales hardcodeados en `EscapadaIntroPage` y `TopInfoBar`, `CALL_TEL` en `TripCardActions`/`LandmarkCarousel` (ahora `= CONTACT.phoneRaw`), y `FinDeAno2026Page` (`phone.replace` → `phoneRaw`). Se añadió el import de `CONTACT` donde faltaba.
   - El teléfono del lead en el panel Admin (`r.phone`) se deja intacto (dato del usuario). Verificado: 0 literales de teléfono hardcodeados; los "Llámanos" de /viajes resuelven a `tel:+34937268366`.
