@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  MapPin, Plane, CalendarDays, Clock, ChevronDown, ArrowUpRight, ArrowRight, Compass, Sparkles,
+  MapPin, Plane, CalendarDays, Clock, ChevronDown, ArrowUpRight, ArrowRight, Compass, Sparkles, Heart,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { pathFor } from "@/lib/routes";
 import Img from "@/components/Img";
 import { FromPrice } from "@/components/FromPrice";
@@ -33,6 +34,8 @@ const UI = {
   results:  T("viajes recomendados", "recommended trips", "voyages recommandés"),
   result:   T("viaje recomendado", "recommended trip", "voyage recommandé"),
   viewTrip: T("Ver viaje", "View trip", "Voir le voyage"),
+  fav: T("Guardar en favoritos", "Save to favourites", "Enregistrer dans mes favoris"),
+  favRemove: T("Quitar de favoritos", "Remove from favourites", "Retirer des favoris"),
   nights:   T("noches", "nights", "nuits"),
   days:     T("días", "days", "jours"),
   reasonSeason:   T("Ideal en", "Great in", "Idéal en"),
@@ -69,6 +72,7 @@ const SelectShell = ({ children, ...rest }) => (
 
 export const TripFinder = () => {
   const { lang } = useLanguage();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const L = (o) => tt(o, lang);
   const monthOptions = useMemo(() => buildMonthOptions(lang), [lang]);
 
@@ -221,6 +225,7 @@ export const TripFinder = () => {
           {ranked.map(({ trip, reasons }) => {
             const chip = chipFor(reasons);
             const nights = trip.days - 1;
+            const fav = isFavorite(trip.routeId);
             return (
               <Link
                 key={trip.routeId}
@@ -241,10 +246,24 @@ export const TripFinder = () => {
                       <Sparkles className="w-3 h-3" strokeWidth={1.9} />{chip}
                     </span>
                   )}
+                  {/* Save to favourites — toggles without navigating */}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(trip.routeId); }}
+                    data-testid={`trip-finder-fav-${trip.routeId}`}
+                    aria-pressed={fav}
+                    aria-label={L(fav ? UI.favRemove : UI.fav)}
+                    title={L(fav ? UI.favRemove : UI.fav)}
+                    className={`absolute top-3 right-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full backdrop-blur shadow-md transition-colors ${
+                      fav ? "bg-[#C16542] text-[#FDFBF7]" : "bg-[#FDFBF7]/90 text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
+                    }`}
+                  >
+                    <Heart className="w-4 h-4 transition-transform active:scale-90" strokeWidth={1.7} fill={fav ? "currentColor" : "none"} />
+                  </button>
                   <span className="absolute bottom-3 right-3 bg-[#1A1513]/80 backdrop-blur-sm text-[#FDFBF7] px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase tabular-nums">
                     {nights} {L(UI.nights)} · {trip.days} {L(UI.days)}
                   </span>
-                  <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
+                  <span className="absolute bottom-3 left-3 w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
                     <img src={monogramWhite} alt="Xaluca Tours" className="w-5 h-5 object-contain" loading="lazy" />
                   </span>
                 </div>

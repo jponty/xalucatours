@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Favoritos desde el buscador de la Home (TripFinder) (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - Cada tarjeta de resultado del `TripFinder` incluye un botón de corazón (arriba-derecha) que guarda/quita el viaje de favoritos vía `useFavorites`, con `preventDefault`/`stopPropagation` para NO navegar al pulsarlo. Estado visual (corazón relleno + fondo terracota) y `aria-pressed`/`aria-label` accesibles. El logo monograma se reubicó a abajo-izquierda.
+  - Comparte el store local de favoritos → alimenta `/favoritos`, el contador de la cabecera y el CTA "Solicitar presupuesto de mis viajes guardados". El usuario construye su lista de deseos ya desde el descubrimiento inicial.
+  - Verificado e2e: click en el corazón no navega, marca favorito, persiste en localStorage; 6 botones (uno por tarjeta). Trilingüe.
+
+
 - **CTA de conversión en `/favoritos`: "Solicitar presupuesto de mis viajes guardados" (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
   - El botón (ya existente como "Planificar con mis favoritos") se reetiquetó al texto de conversión pedido y enlaza a `/planifica-tu-viaje?trips=<fav1,fav2,...>`, pre-rellenando el planificador con TODOS los favoritos de una vez. Añadido `onClick={setTripContext(favorites)}` para fijar también el contexto en sesión.
   - Verificado e2e: 2 favoritos → botón → navega a `/planifica-tu-viaje?trips=...`, sesión = ambos routeIds, `PlannerForm` muestra los 2 `plan-prefill-item-*`. Trilingüe.
