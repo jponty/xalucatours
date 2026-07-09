@@ -23,6 +23,7 @@ import Testimonials from "@/components/Testimonials";
 import HomeCategoryCarousel from "@/components/HomeCategoryCarousel";
 import PressMentions from "@/components/PressMentions";
 import VideoSection from "@/components/VideoSection";
+import FoundersSection from "@/components/FoundersSection";
 import { HOME_VIDEOS } from "@/lib/sectionVideos";
 import {
   SOUTH_TRIPS,
@@ -107,6 +108,7 @@ export default function HomePage() {
       <WorldMapSection />
       <PlannerCta />
       <VideoSection {...HOME_VIDEOS.story} testid="home-video-story" />
+      <FoundersSection />
       <WhyXaluca />
       <FeaturedQuote />
       <TravelCategories />
