@@ -412,13 +412,109 @@ export const TESTIMONIALS = [
       "Nous ferions de nouveau confiance à Noemi sans hésiter. Elle nous a accompagnés du premier contact jusqu'au retour à la maison, avec un dévouement et un soin exceptionnels.",
     ),
   },
+
+  /* ---- Elena Xaluca · Asesora de viajes ---- */
+  {
+    id: "elena-carla", name: "Carla P.", location: "Valencia, ES", themes: ["elena"], avatar: AVATAR.emma, date: "2025-11",
+    trip: T("Viaje a medida · Marruecos", "Tailor-made · Morocco", "Sur mesure · Maroc"),
+    quote: T(
+      "Elena captó enseguida lo que queríamos y nos preparó un viaje totalmente a nuestra medida. Nada genérico, todo pensado para nosotros.",
+      "Elena immediately grasped what we wanted and put together a trip entirely tailored to us. Nothing generic, everything thought out for us.",
+      "Elena a tout de suite compris ce que nous voulions et nous a préparé un voyage entièrement sur mesure. Rien de générique, tout pensé pour nous.",
+    ),
+  },
+  {
+    id: "elena-marc", name: "Marc D.", location: "Girona, ES", themes: ["elena"], avatar: AVATAR.mathieu, date: "2025-10",
+    trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
+    quote: T(
+      "Cada mensaje tenía respuesta casi al momento. Nos sentimos acompañados en todo el proceso, sin una sola espera.",
+      "Every message got an almost instant reply. We felt supported throughout the whole process, without a single wait.",
+      "Chaque message recevait une réponse presque immédiate. Nous nous sommes sentis accompagnés tout au long, sans la moindre attente.",
+    ),
+  },
+  {
+    id: "elena-andrea", name: "Andrea S.", location: "Zaragoza, ES", themes: ["elena"], avatar: AVATAR.nora, date: "2025-09",
+    trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
+    quote: T(
+      "Organización impecable. Vuelos, hoteles y traslados encajaban a la perfección; se notaba una gran profesional detrás.",
+      "Impeccable organisation. Flights, hotels and transfers fit together perfectly; you could tell there was a great professional behind it.",
+      "Organisation impeccable. Vols, hôtels et transferts s'emboîtaient parfaitement ; on sentait une grande professionnelle derrière.",
+    ),
+  },
+  {
+    id: "elena-lucia", name: "Lucía F.", location: "Bilbao, ES", themes: ["elena"], avatar: AVATAR.claudia, date: "2025-08",
+    trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
+    quote: T(
+      "Elena nos descubrió rincones de Marruecos que no aparecían en ninguna guía. Su conocimiento marcó la diferencia.",
+      "Elena showed us corners of Morocco that weren't in any guidebook. Her knowledge made all the difference.",
+      "Elena nous a fait découvrir des coins du Maroc absents de tout guide. Sa connaissance a fait toute la différence.",
+    ),
+  },
+  {
+    id: "elena-pauline", name: "Pauline R.", location: "Nantes, FR", themes: ["elena"], avatar: AVATAR.laure, date: "2025-07",
+    trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
+    quote: T(
+      "Amable, cercana y siempre con una sonrisa. Nos trató como a amigos desde el primer momento.",
+      "Kind, close and always smiling. She treated us like friends from the very first moment.",
+      "Aimable, proche et toujours souriante. Elle nous a traités comme des amis dès le premier instant.",
+    ),
+  },
+
+  /* ---- Sanaa Xaluca · Asesora de viajes ---- */
+  {
+    id: "sanaa-javier", name: "Javier M.", location: "Madrid, ES", themes: ["sanaa"], avatar: AVATAR.carlos, date: "2025-11",
+    trip: T("Viaje a medida · Sur de Marruecos", "Tailor-made · Southern Morocco", "Sur mesure · Sud du Maroc"),
+    quote: T(
+      "Sanaa entiende Marruecos como nadie. Nos guió con recomendaciones locales que hicieron el viaje auténtico y especial.",
+      "Sanaa understands Morocco like no one else. She guided us with local tips that made the trip authentic and special.",
+      "Sanaa comprend le Maroc comme personne. Elle nous a guidés avec des conseils locaux qui ont rendu le voyage authentique et spécial.",
+    ),
+  },
+  {
+    id: "sanaa-sarah", name: "Sarah K.", location: "Ámsterdam, NL", themes: ["sanaa"], avatar: AVATAR.paula, date: "2025-10",
+    trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
+    quote: T(
+      "Respondía a cualquier hora y resolvía todo al instante. Una tranquilidad enorme antes y durante el viaje.",
+      "She replied at any hour and solved everything instantly. Huge peace of mind before and during the trip.",
+      "Elle répondait à toute heure et réglait tout instantanément. Une grande tranquillité avant et pendant le voyage.",
+    ),
+  },
+  {
+    id: "sanaa-marta", name: "Marta L.", location: "Sevilla, ES", themes: ["sanaa"], avatar: AVATAR.laia, date: "2025-09",
+    trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
+    quote: T(
+      "Todo estuvo perfectamente coordinado sobre el terreno. Profesionalidad y calma en cada detalle.",
+      "Everything was perfectly coordinated on the ground. Professionalism and calm in every detail.",
+      "Tout était parfaitement coordonné sur le terrain. Professionnalisme et sérénité dans chaque détail.",
+    ),
+  },
+  {
+    id: "sanaa-thomas", name: "Thomas V.", location: "Bruselas, BE", themes: ["sanaa"], avatar: AVATAR.oliver, date: "2025-08",
+    trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
+    quote: T(
+      "Nos escuchó de verdad y adaptó el itinerario a nuestro ritmo. Sentimos que el viaje era único.",
+      "She truly listened and adapted the itinerary to our pace. We felt the trip was one of a kind.",
+      "Elle nous a vraiment écoutés et a adapté l'itinéraire à notre rythme. Nous avons senti que le voyage était unique.",
+    ),
+  },
+  {
+    id: "sanaa-elena", name: "Elena G.", location: "Málaga, ES", themes: ["sanaa"], avatar: AVATAR.ines, date: "2025-07",
+    trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
+    quote: T(
+      "El trato de Sanaa fue cálido y humano. Su hospitalidad marroquí se nota desde el primer contacto.",
+      "Sanaa's care was warm and human. Her Moroccan hospitality shows from the very first contact.",
+      "L'accueil de Sanaa était chaleureux et humain. Son hospitalité marocaine se ressent dès le premier contact.",
+    ),
+  },
 ];
 
-// Helper — return testimonials matching any of the given themes,
-// padded with generals if there aren't enough, and de-duplicated.
-export const getTestimonialsForThemes = (themes = [], limit = 3) => {
+// Helper — return testimonials matching any of the given themes.
+// By default pads with generals if there aren't enough; pass { pad: false }
+// to return only exact theme matches (used for per-person review panels).
+export const getTestimonialsForThemes = (themes = [], limit = 3, { pad = true } = {}) => {
   const set = new Set(themes);
   const matches = TESTIMONIALS.filter((t) => t.themes.some((th) => set.has(th)));
+  if (!pad) return matches.slice(0, limit);
   const merged = matches.length >= limit
     ? matches
     : [

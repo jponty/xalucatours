@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
@@ -234,7 +234,7 @@ const COPY = {
       en: "The people who make every journey possible.",
       fr: "Les personnes qui rendent chaque voyage possible.",
     },
-    hint: { es: "Desliza para conocer al equipo", en: "Swipe to meet the team", fr: "Faites glisser pour découvrir l'équipe" },
+    hint: { es: "Toca un perfil para ver sus reseñas", en: "Tap a profile to see their reviews", fr: "Touchez un profil pour voir ses avis" },
   },
   reviews: {
     eyebrow: { es: "Opiniones sobre Noemi", en: "Reviews about Noemi", fr: "Avis sur Noemi" },
@@ -244,9 +244,9 @@ const COPY = {
       fr: "Ce que les voyageurs disent de Noemi.",
     },
     subtitle: {
-      es: "Atención personalizada, respuestas rápidas y un conocimiento profundo de Marruecos — así viven nuestros viajeros el trato de Noemi.",
-      en: "Personalised attention, fast replies and a deep knowledge of Morocco — this is how our travellers experience Noemi's care.",
-      fr: "Attention personnalisée, réponses rapides et une connaissance profonde du Maroc — voilà comment nos voyageurs vivent l'accompagnement de Noemi.",
+      es: "Atención personalizada, respuestas rápidas y un conocimiento profundo de Marruecos — así viven nuestros viajeros el trato de nuestro equipo.",
+      en: "Personalised attention, fast replies and a deep knowledge of Morocco — this is how our travellers experience our team's care.",
+      fr: "Attention personnalisée, réponses rapides et une connaissance profonde du Maroc — voilà comment nos voyageurs vivent l'accompagnement de notre équipe.",
     },
   },
 };
@@ -254,6 +254,8 @@ const COPY = {
 const TEAM = [
   {
     id: "noemi",
+    firstName: "Noemi",
+    reviewTheme: "noemi",
     photo:
       "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/q6kz7ybg_Noemi%20Aparicio.png",
     tilt: "-rotate-2",
@@ -269,6 +271,48 @@ const TEAM = [
       es: "Cada itinerario nace con la voluntad de escuchar, entender y crear experiencias hechas a medida, pensadas para que cada viajero se sienta acompañado desde el primer contacto hasta el regreso a casa.",
       en: "Every itinerary is born from a will to listen, understand and craft tailor-made experiences, designed so that each traveller feels accompanied from the very first contact until the return home.",
       fr: "Chaque itinéraire naît de la volonté d'écouter, de comprendre et de créer des expériences sur mesure, pensées pour que chaque voyageur se sente accompagné du premier contact jusqu'au retour à la maison.",
+    },
+  },
+  {
+    id: "elena",
+    firstName: "Elena",
+    reviewTheme: "elena",
+    photo:
+      "https://images.unsplash.com/photo-1636153279424-cb5d1e00f5a2?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+    tilt: "rotate-2",
+    tapeRotate: "-rotate-6",
+    name: { es: "Elena Xaluca", en: "Elena Xaluca", fr: "Elena Xaluca" },
+    role: { es: "Asesora de viajes", en: "Travel advisor", fr: "Conseillère de voyages" },
+    note1: {
+      es: "Elena acompaña a cada viajero con paciencia y detalle, escuchando lo que buscan para transformarlo en un itinerario a su medida. Su cercanía y su energía hacen que planificar el viaje sea tan agradable como vivirlo.",
+      en: "Elena guides each traveller with patience and attention to detail, listening to what they're looking for and turning it into a tailor-made itinerary. Her warmth and energy make planning the trip as enjoyable as living it.",
+      fr: "Elena accompagne chaque voyageur avec patience et minutie, à l'écoute de ses envies pour les transformer en itinéraire sur mesure. Sa proximité et son énergie rendent la préparation du voyage aussi agréable que le voyage lui-même.",
+    },
+    note2: {
+      es: "Le apasiona descubrir los rincones menos conocidos de Marruecos y compartirlos con quienes confían en ella para su próxima aventura.",
+      en: "She loves discovering Morocco's lesser-known corners and sharing them with those who trust her for their next adventure.",
+      fr: "Elle aime découvrir les coins les moins connus du Maroc et les partager avec ceux qui lui font confiance pour leur prochaine aventure.",
+    },
+  },
+  {
+    id: "sanaa",
+    firstName: "Sanaa",
+    reviewTheme: "sanaa",
+    photo:
+      "https://images.unsplash.com/photo-1619520166328-6eccd4fb8e71?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+    tilt: "-rotate-3",
+    tapeRotate: "rotate-3",
+    name: { es: "Sanaa Xaluca", en: "Sanaa Xaluca", fr: "Sanaa Xaluca" },
+    role: { es: "Asesora de viajes", en: "Travel advisor", fr: "Conseillère de voyages" },
+    note1: {
+      es: "Sanaa conoce Marruecos desde dentro y pone ese conocimiento al servicio de cada propuesta. Atenta, resolutiva y siempre disponible, cuida cada detalle para que el viaje fluya sin sorpresas.",
+      en: "Sanaa knows Morocco from the inside and puts that knowledge at the service of every proposal. Attentive, resourceful and always available, she takes care of every detail so the trip flows without surprises.",
+      fr: "Sanaa connaît le Maroc de l'intérieur et met ce savoir au service de chaque proposition. Attentive, efficace et toujours disponible, elle soigne chaque détail pour que le voyage se déroule sans surprises.",
+    },
+    note2: {
+      es: "Su trato cálido y su dominio del destino convierten cada consulta en el primer paso de un viaje inolvidable.",
+      en: "Her warm manner and command of the destination turn every enquiry into the first step of an unforgettable journey.",
+      fr: "Son accueil chaleureux et sa maîtrise de la destination font de chaque demande le premier pas d'un voyage inoubliable.",
     },
   },
 ];
@@ -338,95 +382,135 @@ const Hero = ({ lang }) => (
   </section>
 );
 
-const TeamScroller = ({ lang }) => (
-  <SlotScope id="team">
-    <div data-testid="eq-team" className="mt-16 md:mt-24 pt-14 md:pt-16 border-t border-[#2C2621]/10">
-      <div className="max-w-2xl">
-        <span className="overline inline-flex items-center gap-2 text-[#C16542]">
-          <Users className="w-3.5 h-3.5" strokeWidth={1.6} />
-          <E name="overline" defaults={COPY.team.overline} multiline={false} />
-        </span>
-        <E name="title" defaults={COPY.team.title} multiline={false} as="h3"
-           className="font-serif-x text-3xl md:text-4xl leading-[1.08] tracking-tight mt-4 text-[#2C2621]" />
-      </div>
+const TeamScroller = ({ lang, selectedId, onSelect }) => {
+  const scrollerRef = useRef(null);
+  const rafRef = useRef(null);
+  const selected = TEAM.find((m) => m.id === selectedId) || TEAM[0];
 
-      <div className="mt-9 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 items-start">
-        {/* Horizontal polaroid scroller */}
-        <div className="lg:col-span-5">
-          <div
-            data-testid="eq-team-scroller"
-            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-5 -mx-6 px-6 md:mx-0 md:px-1 scrollbar-thin"
-          >
-            {TEAM.map((m) => (
-              <SlotScope key={m.id} id={m.id}>
-                <figure
-                  data-testid={`eq-team-card-${m.id}`}
-                  className={`group relative snap-start shrink-0 w-[220px] sm:w-[240px] bg-[#FDFBF7] p-3 pb-2 shadow-[0_34px_66px_-30px_rgba(26,21,19,0.55)] ${m.tilt} hover:rotate-0 transition-transform duration-700 ease-out will-change-transform`}
-                >
-                  <span
-                    className={`postcard-tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 ${m.tapeRotate}`}
-                    aria-hidden="true"
-                  />
-                  <div className="relative overflow-hidden bg-[#EDE4D6]">
-                    <EImg
-                      name="photo"
-                      src={m.photo}
-                      alt={`${m.name.es} · ${pick(m.role, lang)}`}
-                      aspectRatio="4/5"
-                      imgProps={{ loading: "lazy" }}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <figcaption className="pt-3.5 pb-2.5 text-center">
-                    <E name="name" defaults={m.name} multiline={false} noTranslate as="p"
-                       className="font-hand text-[28px] leading-none text-[#2C2621]" />
-                    <E name="role" defaults={m.role} multiline={false} as="p"
-                       className="font-hand text-lg text-[#A07042] mt-1" />
-                  </figcaption>
-                </figure>
-              </SlotScope>
-            ))}
-          </div>
-          <p className={`mt-1 flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64] lg:hidden ${TEAM.length > 1 ? "" : "hidden"}`}>
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-            <E name="hint" defaults={COPY.team.hint} multiline={false} />
-          </p>
+  // Scroll-driven selection: pick the card whose centre is nearest the viewport centre.
+  const handleScroll = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const el = scrollerRef.current;
+      if (!el || el.scrollWidth <= el.clientWidth + 4) return; // no overflow → click only
+      const center = el.scrollLeft + el.clientWidth / 2;
+      let bestId = null;
+      let bestDist = Infinity;
+      el.querySelectorAll("[data-team-card]").forEach((node) => {
+        const c = node.offsetLeft + node.offsetWidth / 2;
+        const d = Math.abs(c - center);
+        if (d < bestDist) { bestDist = d; bestId = node.getAttribute("data-team-card"); }
+      });
+      if (bestId && bestId !== selectedId) onSelect(bestId);
+    });
+  }, [selectedId, onSelect]);
+
+  const selectCard = (id, node) => {
+    onSelect(id);
+    node?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  };
+
+  return (
+    <SlotScope id="team">
+      <div data-testid="eq-team" className="mt-16 md:mt-24 pt-14 md:pt-16 border-t border-[#2C2621]/10">
+        <div className="max-w-2xl">
+          <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+            <Users className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <E name="overline" defaults={COPY.team.overline} multiline={false} />
+          </span>
+          <E name="title" defaults={COPY.team.title} multiline={false} as="h3"
+             className="font-serif-x text-3xl md:text-4xl leading-[1.08] tracking-tight mt-4 text-[#2C2621]" />
         </div>
 
-        {/* Handwritten note — matches the Founders section style */}
-        <div className="lg:col-span-7">
-          {TEAM.map((m) => (
-            <SlotScope key={m.id} id={m.id}>
-              <div
-                data-testid={`eq-team-note-${m.id}`}
-                className="postcard-paper relative border border-[#2C2621]/10 shadow-[0_34px_66px_-38px_rgba(26,21,19,0.5)] px-7 py-9 md:px-11 md:py-12 rotate-[0.5deg]"
-              >
-                <span className="absolute left-4 md:left-6 top-6 bottom-6 w-px bg-[#C16542]/25" aria-hidden="true" />
-                <div className="pl-4 md:pl-6">
-                  <E name="note_name" defaults={m.name} multiline={false} noTranslate as="p"
-                     className="font-hand text-4xl md:text-[42px] leading-none text-[#C16542]" />
-                  <span className="block w-16 h-px bg-[#2C2621]/20 my-5" aria-hidden="true" />
-                  <E name="note1" defaults={m.note1} as="p"
-                     className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B]" />
-                  <E name="note2" defaults={m.note2} as="p"
-                     className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5" />
-                  <div className="mt-8 text-right">
-                    <E name="signature" defaults={m.name} multiline={false} noTranslate as="p"
-                       className="font-hand text-[32px] leading-none text-[#2C2621]" />
-                    <E name="sign_role" defaults={m.role} multiline={false} as="p"
-                       className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]" />
-                  </div>
+        {/* Selectable polaroid carousel */}
+        <div
+          ref={scrollerRef}
+          onScroll={handleScroll}
+          data-testid="eq-team-scroller"
+          className="mt-10 flex gap-6 md:gap-9 overflow-x-auto snap-x snap-mandatory pb-6 -mx-6 px-6 md:mx-0 md:px-1 lg:justify-center scrollbar-thin"
+        >
+          {TEAM.map((m) => {
+            const active = selectedId === m.id;
+            return (
+              <SlotScope key={m.id} id={m.id}>
+                <div
+                  data-team-card={m.id}
+                  data-testid={`eq-team-card-${m.id}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={active}
+                  aria-label={`${m.name.es} — ${pick(m.role, lang)}`}
+                  onClick={(e) => selectCard(m.id, e.currentTarget)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(m.id, e.currentTarget); } }}
+                  className={`snap-center shrink-0 cursor-pointer outline-none transition-opacity duration-500 ${active ? "opacity-100" : "opacity-55 hover:opacity-90"}`}
+                >
+                  <figure
+                    className={`relative w-[200px] sm:w-[224px] bg-[#FDFBF7] p-3 pb-2 transition-all duration-500 ease-out will-change-transform ${
+                      active
+                        ? "rotate-0 scale-[1.05] shadow-[0_46px_84px_-30px_rgba(26,21,19,0.68)] ring-1 ring-[#C16542]"
+                        : `${m.tilt} shadow-[0_30px_60px_-30px_rgba(26,21,19,0.5)]`
+                    }`}
+                  >
+                    <span className={`postcard-tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 ${m.tapeRotate}`} aria-hidden="true" />
+                    <div className="relative overflow-hidden bg-[#EDE4D6]">
+                      <EImg
+                        name="photo"
+                        src={m.photo}
+                        alt={`${m.name.es} · ${pick(m.role, lang)}`}
+                        aspectRatio="4/5"
+                        imgProps={{ loading: "lazy" }}
+                        className="w-full h-full object-cover grayscale"
+                      />
+                    </div>
+                    <figcaption className="pt-3.5 pb-2.5 text-center">
+                      <E name="name" defaults={m.name} multiline={false} noTranslate as="p"
+                         className="font-hand text-[26px] leading-none text-[#2C2621]" />
+                      <E name="role" defaults={m.role} multiline={false} as="p"
+                         className={`font-hand text-lg mt-1 ${active ? "text-[#C16542]" : "text-[#A07042]"}`} />
+                    </figcaption>
+                  </figure>
+                </div>
+              </SlotScope>
+            );
+          })}
+        </div>
+        <p className="mt-1 flex items-center justify-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]">
+          <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+          <E name="hint" defaults={COPY.team.hint} multiline={false} />
+        </p>
+
+        {/* Selected member's handwritten note — matches the Founders section style */}
+        <div key={selected.id} className="fade-up mt-10 md:mt-12 max-w-2xl mx-auto">
+          <SlotScope id={selected.id}>
+            <div
+              data-testid={`eq-team-note-${selected.id}`}
+              className="postcard-paper relative border border-[#2C2621]/10 shadow-[0_34px_66px_-38px_rgba(26,21,19,0.5)] px-7 py-9 md:px-11 md:py-12 rotate-[0.5deg]"
+            >
+              <span className="absolute left-4 md:left-6 top-6 bottom-6 w-px bg-[#C16542]/25" aria-hidden="true" />
+              <div className="pl-4 md:pl-6">
+                <E name="note_name" defaults={selected.name} multiline={false} noTranslate as="p"
+                   className="font-hand text-4xl md:text-[42px] leading-none text-[#C16542]" />
+                <span className="block w-16 h-px bg-[#2C2621]/20 my-5" aria-hidden="true" />
+                <E name="note1" defaults={selected.note1} as="p"
+                   className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B]" />
+                <E name="note2" defaults={selected.note2} as="p"
+                   className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5" />
+                <div className="mt-8 text-right">
+                  <E name="signature" defaults={selected.name} multiline={false} noTranslate as="p"
+                     className="font-hand text-[32px] leading-none text-[#2C2621]" />
+                  <E name="sign_role" defaults={selected.role} multiline={false} as="p"
+                     className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]" />
                 </div>
               </div>
-            </SlotScope>
-          ))}
+            </div>
+          </SlotScope>
         </div>
       </div>
-    </div>
-  </SlotScope>
-);
+    </SlotScope>
+  );
+};
 
-const Intro = ({ lang }) => (
+const Intro = ({ lang, selectedId, onSelect }) => (
   <section data-testid="eq-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
@@ -444,7 +528,7 @@ const Intro = ({ lang }) => (
         </div>
       </div>
 
-      <TeamScroller lang={lang} />
+      <TeamScroller lang={lang} selectedId={selectedId} onSelect={onSelect} />
     </div>
   </section>
 );
@@ -774,6 +858,17 @@ const FinalCta = ({ lang }) => (
 ============================================================ */
 export default function EquipoPage() {
   const { lang } = useLanguage();
+  const [selectedId, setSelectedId] = useState(TEAM[0].id);
+  const selectedMember = TEAM.find((m) => m.id === selectedId) || TEAM[0];
+  const fn = selectedMember.firstName;
+  const reviewEyebrow = {
+    es: `Opiniones sobre ${fn}`, en: `Reviews about ${fn}`, fr: `Avis sur ${fn}`,
+  };
+  const reviewTitle = {
+    es: `Lo que dicen los viajeros de ${fn}.`,
+    en: `What travellers say about ${fn}.`,
+    fr: `Ce que les voyageurs disent de ${fn}.`,
+  };
 
   useEffect(() => {
     document.title = DOC_TITLES[lang] || DOC_TITLES.es;
@@ -782,14 +877,16 @@ export default function EquipoPage() {
   return (
     <div data-testid="eq-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
-      <Intro lang={lang} />
+      <Intro lang={lang} selectedId={selectedId} onSelect={setSelectedId} />
       <Testimonials
-        testid="eq-noemi-reviews"
-        themes={["noemi"]}
+        key={selectedId}
+        testid="eq-team-reviews"
+        themes={[selectedMember.reviewTheme]}
+        pad={false}
         limit={6}
         tone="sand"
-        eyebrow={COPY.reviews.eyebrow}
-        title={COPY.reviews.title}
+        eyebrow={reviewEyebrow}
+        title={reviewTitle}
         subtitle={COPY.reviews.subtitle}
       />
       <Stats lang={lang} />

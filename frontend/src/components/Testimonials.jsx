@@ -127,10 +127,11 @@ export const Testimonials = ({
   testid = "testimonials",
   tone = "cream",
   variant = "full", // "full" | "compact"
+  pad = true,
 }) => {
   const { lang } = useLanguage();
   const palette = TONES[tone] || TONES.cream;
-  const items = getTestimonialsForThemes(themes, limit);
+  const items = getTestimonialsForThemes(themes, limit, { pad });
   if (items.length === 0) return null;
 
   const labels = SECTION_LABELS[lang] || SECTION_LABELS.es;

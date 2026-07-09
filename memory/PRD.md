@@ -11,6 +11,14 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Carrusel de equipo seleccionable + reseñas dinámicas en /equipo (jun 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - `TeamScroller` (en `EquipoPage.jsx`) ahora es un carrusel de polaroids **seleccionable** con 3 perfiles: Noemi Aparicio (Directora), Elena Xaluca y Sanaa Xaluca (Asesoras de viajes). Selección por clic/teclado y por scroll (la tarjeta más centrada se auto-selecciona en móvil/tablet). Estado activo: enderezada, escalada, anillo terracota y opacidad plena; inactivas atenuadas. Fotos en `grayscale` para unificar con el retrato a lápiz de Noemi (Elena/Sanaa usan placeholders editables por CMS).
+  - Estado `selectedId` elevado a `EquipoPage`. La **nota manuscrita** muestra la del perfil seleccionado (fade en cada cambio) y el bloque de **reseñas** (`Testimonials`) se actualiza dinámicamente por tema (`noemi`/`elena`/`sanaa`) con `key={selectedId}` (remonta → re-anima). Eyebrow/título dinámicos con el nombre del perfil.
+  - `getTestimonialsForThemes` acepta `{ pad:false }` y `Testimonials` acepta prop `pad` para mostrar solo coincidencias exactas (Noemi 6, Elena 5, Sanaa 5). Reseñas trilingües en `lib/testimonials.js` (temas `elena`, `sanaa`). Verificado e2e desktop+móvil (cambio de perfil → nota + reseñas correctas, sin errores de consola).
+- **Sección "El ecosistema Xaluca" en /equipo (jun 2026) — COMPLETADO + VERIFICADO**:
+  - Nuevo `XalucaEcosystem` tras `GroupPillars`: cabecera + 7 áreas de especialización (tarjetas numeradas con iconos lucide) + callout oscuro con acento dorado. Editable por CMS (`equipo.ecosystem.*`), trilingüe.
+- **Reseñas sobre Noemi + foto real (jun 2026) — COMPLETADO** (ahora integrado en el carrusel dinámico).
+- **Sección de equipo (polaroid + nota) en /equipo (jun 2026) — COMPLETADO**.
 - **Sección "Nuestros fundadores" en la home (jun 2026) — COMPLETADO + VERIFICADO**:
   - Nuevo componente `components/FoundersSection.jsx` insertado en `HomePage.jsx` justo debajo de "Nuestra historia" (`VideoSection` story). Dos bloques (Lluís Pont · Sabadell; Tayeb Ettaiek · Arfoud): polaroid inclinada con cinta washi + pie manuscrito (nombre/origen) y nota manuscrita en papel cálido con margen tipo carta y firma. Layout alternado en desktop, apilado en móvil, amplio espaciado. Reutiliza clases de marca `.font-hand`, `.postcard-paper`, `.postcard-tape`. Todo editable por CMS (slots `home.founders.*`) y trilingüe. Imágenes de fundadores desde customer-assets. Incluye CTA outline "Conoce al equipo" → `/equipo` (routeId `about`, slot `home.founders.team_cta`). Verificado e2e desktop+móvil y navegación del CTA.
 - **Botón "Ver viajes" en el hero de la home (jun 2026) — COMPLETADO + VERIFICADO**:
