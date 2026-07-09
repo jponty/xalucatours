@@ -10,11 +10,14 @@ import pytest
 import requests
 
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://morocco-trips-2.preview.emergentagent.com").rstrip("/")
-ADMIN_PASSWORD = "xaluca"
+# Admin password comes from the environment only — never hardcode secrets in source.
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 
 @pytest.fixture(scope="module")
 def admin_token():
+    if not ADMIN_PASSWORD:
+        pytest.skip("ADMIN_PASSWORD env var not set")
     resp = requests.post(f"{BASE_URL}/api/admin/login", json={"password": ADMIN_PASSWORD}, timeout=20)
     assert resp.status_code == 200, f"login failed: {resp.status_code} {resp.text}"
     token = resp.json().get("token")

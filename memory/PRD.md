@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Fix de code review: secret hardcodeado en tests (jul 2026) — COMPLETADO**:
+  - `tests/test_reoptimize_library.py` y `tests/test_pricing.py` ahora leen `ADMIN_PASSWORD` solo de env (sin fallback `"xaluca"`), con `pytest.skip` si falta. Verificado: sin literales de contraseña en `tests/`.
+  - **Falso positivo documentado:** los hallazgos `is` vs `==` en `server.py`/`storage.py` son todos `is None`/`is not None` (idioma correcto PEP8) → NO se modifican.
+  - **Pendiente (backlog P2):** refactor de funciones de alta complejidad (`mirror_production`, `create_trip_planner`, `pexels_bulk_fill`, `_build_trips_email_value`, `climate_current_month`, uploads). Deuda real pero son endpoints críticos en producción → requieren refactor con suite de regresión, no reactivo.
+
+
 - **CTA "Ver todos los viajes" en el buscador (TripFinder) (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
   - Botón secundario (estilo outline) **"Ver todos los viajes"** → `/viajes` (`toursLanding`), ubicado en el pie del buscador junto al CTA primario del planificador (dark), complementando sin restarle protagonismo. Responsive: apila en móvil (`flex-col sm:flex-row`), ancho completo en móvil. Trilingüe.
   - Verificado e2e: botón presente con `href="/viajes"`, el clic navega a `/viajes`.

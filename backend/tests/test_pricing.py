@@ -4,12 +4,16 @@ Run: cd /app/backend && python -m pytest tests/test_pricing.py -v
 """
 import os
 import requests
+import pytest
 
 API = os.environ.get("REACT_APP_BACKEND_URL", "http://localhost:8001").rstrip("/") + "/api"
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "xaluca")
+# Admin password comes from the environment only — never hardcode secrets in source.
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 
 def _login_token():
+    if not ADMIN_PASSWORD:
+        pytest.skip("ADMIN_PASSWORD env var not set")
     r = requests.post(f"{API}/admin/login", json={"password": ADMIN_PASSWORD}, timeout=15)
     r.raise_for_status()
     return r.json()["token"]
