@@ -12,7 +12,7 @@ import { IMG, banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
 import { SlotScope } from "@/components/slotScope";
-import { E } from "@/components/EditableSection";
+import { E, EImg } from "@/components/EditableSection";
 
 const DOC_TITLES = {
   es: "Equipo · Conoce Xaluca Tours",
@@ -165,7 +165,38 @@ const COPY = {
     planCta:    { es: "Planifica tu viaje", en: "Plan my journey", fr: "Planifier mon voyage" },
     contactCta: { es: "Escríbenos",         en: "Write to us",     fr: "Nous écrire" },
   },
+  team: {
+    overline: { es: "Nuestro equipo", en: "Our team", fr: "Notre équipe" },
+    title: {
+      es: "Las personas que hacen posible cada viaje.",
+      en: "The people who make every journey possible.",
+      fr: "Les personnes qui rendent chaque voyage possible.",
+    },
+    hint: { es: "Desliza para conocer al equipo", en: "Swipe to meet the team", fr: "Faites glisser pour découvrir l'équipe" },
+  },
 };
+
+const TEAM = [
+  {
+    id: "noemi",
+    photo:
+      "https://images.unsplash.com/photo-1581714161666-dade083654ae?crop=entropy&cs=srgb&fm=jpg&q=85&w=900",
+    tilt: "-rotate-2",
+    tapeRotate: "rotate-6",
+    name: { es: "Noemi Aparicio", en: "Noemi Aparicio", fr: "Noemi Aparicio" },
+    role: { es: "Directora", en: "Director", fr: "Directrice" },
+    note1: {
+      es: "Como directora de Xaluca Tours, Noemi Aparicio representa la cercanía, la experiencia y el cuidado que definen cada viaje. Su papel es acompañar al equipo y a los viajeros con una mirada atenta, asegurando que cada propuesta transmita la esencia del sur de Marruecos y la hospitalidad de Xaluca.",
+      en: "As director of Xaluca Tours, Noemi Aparicio embodies the closeness, experience and care that define every journey. Her role is to guide the team and travellers with an attentive eye, making sure every proposal conveys the essence of southern Morocco and Xaluca's hospitality.",
+      fr: "En tant que directrice de Xaluca Tours, Noemi Aparicio incarne la proximité, l'expérience et le soin qui définissent chaque voyage. Son rôle est d'accompagner l'équipe et les voyageurs avec un regard attentif, en veillant à ce que chaque proposition transmette l'essence du sud du Maroc et l'hospitalité de Xaluca.",
+    },
+    note2: {
+      es: "Cada itinerario nace con la voluntad de escuchar, entender y crear experiencias hechas a medida, pensadas para que cada viajero se sienta acompañado desde el primer contacto hasta el regreso a casa.",
+      en: "Every itinerary is born from a will to listen, understand and craft tailor-made experiences, designed so that each traveller feels accompanied from the very first contact until the return home.",
+      fr: "Chaque itinéraire naît de la volonté d'écouter, de comprendre et de créer des expériences sur mesure, pensées pour que chaque voyageur se sente accompagné du premier contact jusqu'au retour à la maison.",
+    },
+  },
+];
 
 const ICON_MAP = {
   Hotel, Tent, Car, CalendarCheck, Globe2, Compass, Users, Heart, ShieldCheck, Sparkles,
@@ -231,21 +262,113 @@ const Hero = ({ lang }) => (
   </section>
 );
 
+const TeamScroller = ({ lang }) => (
+  <SlotScope id="team">
+    <div data-testid="eq-team" className="mt-16 md:mt-24 pt-14 md:pt-16 border-t border-[#2C2621]/10">
+      <div className="max-w-2xl">
+        <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+          <Users className="w-3.5 h-3.5" strokeWidth={1.6} />
+          <E name="overline" defaults={COPY.team.overline} multiline={false} />
+        </span>
+        <E name="title" defaults={COPY.team.title} multiline={false} as="h3"
+           className="font-serif-x text-3xl md:text-4xl leading-[1.08] tracking-tight mt-4 text-[#2C2621]" />
+      </div>
+
+      <div className="mt-9 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 items-start">
+        {/* Horizontal polaroid scroller */}
+        <div className="lg:col-span-5">
+          <div
+            data-testid="eq-team-scroller"
+            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-5 -mx-6 px-6 md:mx-0 md:px-1 scrollbar-thin"
+          >
+            {TEAM.map((m) => (
+              <SlotScope key={m.id} id={m.id}>
+                <figure
+                  data-testid={`eq-team-card-${m.id}`}
+                  className={`group relative snap-start shrink-0 w-[220px] sm:w-[240px] bg-[#FDFBF7] p-3 pb-2 shadow-[0_34px_66px_-30px_rgba(26,21,19,0.55)] ${m.tilt} hover:rotate-0 transition-transform duration-700 ease-out will-change-transform`}
+                >
+                  <span
+                    className={`postcard-tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 ${m.tapeRotate}`}
+                    aria-hidden="true"
+                  />
+                  <div className="relative overflow-hidden bg-[#EDE4D6]">
+                    <EImg
+                      name="photo"
+                      src={m.photo}
+                      alt={`${m.name.es} · ${pick(m.role, lang)}`}
+                      aspectRatio="4/5"
+                      imgProps={{ loading: "lazy" }}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="pt-3.5 pb-2.5 text-center">
+                    <E name="name" defaults={m.name} multiline={false} noTranslate as="p"
+                       className="font-hand text-[28px] leading-none text-[#2C2621]" />
+                    <E name="role" defaults={m.role} multiline={false} as="p"
+                       className="font-hand text-lg text-[#A07042] mt-1" />
+                  </figcaption>
+                </figure>
+              </SlotScope>
+            ))}
+          </div>
+          <p className={`mt-1 flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64] lg:hidden ${TEAM.length > 1 ? "" : "hidden"}`}>
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <E name="hint" defaults={COPY.team.hint} multiline={false} />
+          </p>
+        </div>
+
+        {/* Handwritten note — matches the Founders section style */}
+        <div className="lg:col-span-7">
+          {TEAM.map((m) => (
+            <SlotScope key={m.id} id={m.id}>
+              <div
+                data-testid={`eq-team-note-${m.id}`}
+                className="postcard-paper relative border border-[#2C2621]/10 shadow-[0_34px_66px_-38px_rgba(26,21,19,0.5)] px-7 py-9 md:px-11 md:py-12 rotate-[0.5deg]"
+              >
+                <span className="absolute left-4 md:left-6 top-6 bottom-6 w-px bg-[#C16542]/25" aria-hidden="true" />
+                <div className="pl-4 md:pl-6">
+                  <E name="note_name" defaults={m.name} multiline={false} noTranslate as="p"
+                     className="font-hand text-4xl md:text-[42px] leading-none text-[#C16542]" />
+                  <span className="block w-16 h-px bg-[#2C2621]/20 my-5" aria-hidden="true" />
+                  <E name="note1" defaults={m.note1} as="p"
+                     className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B]" />
+                  <E name="note2" defaults={m.note2} as="p"
+                     className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5" />
+                  <div className="mt-8 text-right">
+                    <E name="signature" defaults={m.name} multiline={false} noTranslate as="p"
+                       className="font-hand text-[32px] leading-none text-[#2C2621]" />
+                    <E name="sign_role" defaults={m.role} multiline={false} as="p"
+                       className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]" />
+                  </div>
+                </div>
+              </div>
+            </SlotScope>
+          ))}
+        </div>
+      </div>
+    </div>
+  </SlotScope>
+);
+
 const Intro = ({ lang }) => (
   <section data-testid="eq-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
-    <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
-      <div className="md:col-span-5">
-        <span className="overline inline-flex items-center gap-2 text-[#C16542]">
-          <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
-          <E name="intro.overline" defaults={COPY.intro.overline} multiline={false} />
-        </span>
-        <E name="intro.title" defaults={COPY.intro.title} multiline={false} as="h2"
-           className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.06] tracking-tight mt-5 text-[#2C2621]" />
+    <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
+        <div className="md:col-span-5">
+          <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+            <Sparkles className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <E name="intro.overline" defaults={COPY.intro.overline} multiline={false} />
+          </span>
+          <E name="intro.title" defaults={COPY.intro.title} multiline={false} as="h2"
+             className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.06] tracking-tight mt-5 text-[#2C2621]" />
+        </div>
+        <div className="md:col-span-7 md:pt-2 space-y-5">
+          <E name="intro.p1" defaults={COPY.intro.p1} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
+          <E name="intro.p2" defaults={COPY.intro.p2} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
+        </div>
       </div>
-      <div className="md:col-span-7 md:pt-2 space-y-5">
-        <E name="intro.p1" defaults={COPY.intro.p1} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
-        <E name="intro.p2" defaults={COPY.intro.p2} as="p" className="text-base md:text-lg text-[#5C5248] leading-relaxed" />
-      </div>
+
+      <TeamScroller lang={lang} />
     </div>
   </section>
 );
