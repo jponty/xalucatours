@@ -26,6 +26,7 @@ const HERO_VIDEO_POSTER =
   "https://image.mux.com/HlwGpYi2dBcP007P3601vNiRiY9acrPyBB/thumbnail.jpg?width=1280&time=0";
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
+const VIEW_TRIPS_LABEL = { es: "Ver viajes", en: "View trips", fr: "Voir les voyages" };
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
@@ -167,6 +168,18 @@ export const HeroSlider = () => {
                     multiline={false}
                   />
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
+                </Link>
+                <Link
+                  to={pathFor(lang, "toursLanding")}
+                  data-testid="hero-cta-tours"
+                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 whitespace-nowrap"
+                >
+                  <EditableText
+                    slot="home.hero.cta_tours"
+                    defaults={VIEW_TRIPS_LABEL}
+                    multiline={false}
+                  />
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </Link>
                 <a
                   href="#categories"
