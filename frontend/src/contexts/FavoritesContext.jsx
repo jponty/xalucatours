@@ -6,12 +6,15 @@
 ============================================================ */
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 
 const KEY = "xaluca:favorites";
 const TOAST = {
   added: { es: "Añadido a favoritos", en: "Added to favourites", fr: "Ajouté aux favoris" },
   removed: { es: "Quitado de favoritos", en: "Removed from favourites", fr: "Retiré des favoris" },
+  viewFav: { es: "Ver favoritos", en: "View favourites", fr: "Voir les favoris" },
 };
 const FavoritesContext = createContext(null);
 
@@ -27,6 +30,7 @@ const readStore = () => {
 
 export const FavoritesProvider = ({ children }) => {
   const { lang } = useLanguage();
+  const navigate = useNavigate();
   const [favorites, setFavorites] = useState(readStore);
 
   useEffect(() => {
@@ -48,9 +52,18 @@ export const FavoritesProvider = ({ children }) => {
   const notify = useCallback((added) => {
     const m = added ? TOAST.added : TOAST.removed;
     const label = m[lang] || m.es;
-    if (added) toast.success(label, { duration: 2200 });
-    else toast(label, { duration: 2200 });
-  }, [lang]);
+    if (added) {
+      toast.success(label, {
+        duration: 3500,
+        action: {
+          label: TOAST.viewFav[lang] || TOAST.viewFav.es,
+          onClick: () => navigate(pathFor(lang, "favorites")),
+        },
+      });
+    } else {
+      toast(label, { duration: 2200 });
+    }
+  }, [lang, navigate]);
 
   const toggleFavorite = useCallback((id) => {
     if (!id) return;

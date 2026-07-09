@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Acción "Ver favoritos" en el toast de guardado (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - El toast de "Añadido a favoritos" incluye ahora un botón de acción **"Ver favoritos"** (sonner `action`) que navega a `/favoritos` con navegación cliente (`useNavigate` + `pathFor`, el provider está dentro de `BrowserRouter`). Duración ampliada a 3.5s para dar tiempo a pulsarlo. Trilingüe.
+  - Verificado e2e: al guardar aparece "✓ Añadido a favoritos · Ver favoritos"; el clic en la acción lleva a `/favoritos`.
+
+
 - **Toast de confirmación de favoritos (jul 2026) — COMPLETADO + VERIFICADO**:
   - Lógica de toast centralizada en `FavoritesContext` (sonner, ya montado en `Layout`), de modo que TODOS los puntos de guardado (hero de viaje, tarjetas del TripFinder, `FavoriteButton`, `/favoritos`) muestran feedback automático sin tocar cada call-site: `toast.success("Añadido a favoritos")` al guardar y `toast("Quitado de favoritos")` al quitar. Trilingüe (usa `useLanguage`, el provider está dentro de `LanguageProvider`).
   - Verificado: al pulsar guardar aparece "✓ Añadido a favoritos" abajo-derecha; el estado del hero y el badge de cabecera se actualizan en paralelo.
