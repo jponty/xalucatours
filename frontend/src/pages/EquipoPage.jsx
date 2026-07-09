@@ -11,6 +11,7 @@ import { CONTACT } from "@/lib/data";
 import { IMG, banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
+import Testimonials from "@/components/Testimonials";
 import { SlotScope } from "@/components/slotScope";
 import { E, EImg } from "@/components/EditableSection";
 
@@ -174,13 +175,26 @@ const COPY = {
     },
     hint: { es: "Desliza para conocer al equipo", en: "Swipe to meet the team", fr: "Faites glisser pour découvrir l'équipe" },
   },
+  reviews: {
+    eyebrow: { es: "Opiniones sobre Noemi", en: "Reviews about Noemi", fr: "Avis sur Noemi" },
+    title: {
+      es: "Lo que dicen los viajeros de Noemi.",
+      en: "What travellers say about Noemi.",
+      fr: "Ce que les voyageurs disent de Noemi.",
+    },
+    subtitle: {
+      es: "Atención personalizada, respuestas rápidas y un conocimiento profundo de Marruecos — así viven nuestros viajeros el trato de Noemi.",
+      en: "Personalised attention, fast replies and a deep knowledge of Morocco — this is how our travellers experience Noemi's care.",
+      fr: "Attention personnalisée, réponses rapides et une connaissance profonde du Maroc — voilà comment nos voyageurs vivent l'accompagnement de Noemi.",
+    },
+  },
 };
 
 const TEAM = [
   {
     id: "noemi",
     photo:
-      "https://images.unsplash.com/photo-1581714161666-dade083654ae?crop=entropy&cs=srgb&fm=jpg&q=85&w=900",
+      "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/q6kz7ybg_Noemi%20Aparicio.png",
     tilt: "-rotate-2",
     tapeRotate: "rotate-6",
     name: { es: "Noemi Aparicio", en: "Noemi Aparicio", fr: "Noemi Aparicio" },
@@ -635,6 +649,15 @@ export default function EquipoPage() {
     <div data-testid="eq-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
       <Intro lang={lang} />
+      <Testimonials
+        testid="eq-noemi-reviews"
+        themes={["noemi"]}
+        limit={6}
+        tone="sand"
+        eyebrow={COPY.reviews.eyebrow}
+        title={COPY.reviews.title}
+        subtitle={COPY.reviews.subtitle}
+      />
       <Stats lang={lang} />
       <GroupPillars lang={lang} />
       <Bridge lang={lang} />
