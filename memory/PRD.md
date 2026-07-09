@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **CTA "Ver todos los viajes" en el buscador (TripFinder) (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
+  - Botón secundario (estilo outline) **"Ver todos los viajes"** → `/viajes` (`toursLanding`), ubicado en el pie del buscador junto al CTA primario del planificador (dark), complementando sin restarle protagonismo. Responsive: apila en móvil (`flex-col sm:flex-row`), ancho completo en móvil. Trilingüe.
+  - Verificado e2e: botón presente con `href="/viajes"`, el clic navega a `/viajes`.
+
+
 - **Acción "Ver favoritos" en el toast de guardado (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
   - El toast de "Añadido a favoritos" incluye ahora un botón de acción **"Ver favoritos"** (sonner `action`) que navega a `/favoritos` con navegación cliente (`useNavigate` + `pathFor`, el provider está dentro de `BrowserRouter`). Duración ampliada a 3.5s para dar tiempo a pulsarlo. Trilingüe.
   - Verificado e2e: al guardar aparece "✓ Añadido a favoritos · Ver favoritos"; el clic en la acción lleva a `/favoritos`.

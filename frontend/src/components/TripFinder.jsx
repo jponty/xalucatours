@@ -47,6 +47,7 @@ const UI = {
     "Vous préférez qu'on le conçoive avec vous, jour par jour ?",
   ),
   plannerCta: T("Planificador inteligente", "Smart planner", "Planificateur intelligent"),
+  allTrips: T("Ver todos los viajes", "View all trips", "Voir tous les voyages"),
 };
 
 const FieldLabel = ({ Icon, children }) => (
@@ -289,18 +290,28 @@ export const TripFinder = () => {
           })}
         </div>
 
-        {/* Planner CTA */}
-        <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between border-t border-[#2C2621]/10 pt-8">
+        {/* Footer CTAs */}
+        <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between border-t border-[#2C2621]/10 pt-8">
           <p className="text-sm text-[#5C5248]">{L(UI.plannerLead)}</p>
-          <Link
-            to={pathFor(lang, "planner")}
-            data-testid="trip-finder-planner-cta"
-            className="inline-flex items-center gap-2.5 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
-          >
-            <Compass className="w-4 h-4" strokeWidth={1.7} />
-            {L(UI.plannerCta)}
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+            <Link
+              to={pathFor(lang, "toursLanding")}
+              data-testid="trip-finder-all-trips-cta"
+              className="inline-flex items-center justify-center gap-2.5 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] hover:text-[#C16542] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
+            >
+              {L(UI.allTrips)}
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
+            </Link>
+            <Link
+              to={pathFor(lang, "planner")}
+              data-testid="trip-finder-planner-cta"
+              className="inline-flex items-center justify-center gap-2.5 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
+            >
+              <Compass className="w-4 h-4" strokeWidth={1.7} />
+              {L(UI.plannerCta)}
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
