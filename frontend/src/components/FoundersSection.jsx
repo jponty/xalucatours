@@ -1,5 +1,8 @@
 import React from "react";
-import { Compass } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Compass, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
 
@@ -31,6 +34,7 @@ const COPY = {
     "Deux origines, une même passion pour le Maroc. Une histoire familiale, voyageuse et humaine, vivante dans chaque expérience.",
   ),
   role: T("Cofundador · Grup Xaluca · Xaluca Tours", "Co-founder · Grup Xaluca · Xaluca Tours", "Cofondateur · Grup Xaluca · Xaluca Tours"),
+  teamCta: T("Conoce al equipo", "Meet the team", "Découvrir l'équipe"),
 };
 
 const FOUNDERS = [
@@ -170,7 +174,9 @@ const FounderBlock = ({ f, reverse }) => (
   </div>
 );
 
-export const FoundersSection = () => (
+export const FoundersSection = () => {
+  const { lang } = useLanguage();
+  return (
   <section
     data-testid="founders-section"
     className="relative bg-[#F2EBE1] overflow-hidden"
@@ -211,8 +217,26 @@ export const FoundersSection = () => (
           <FounderBlock key={f.id} f={f} reverse={i % 2 === 1} />
         ))}
       </div>
+
+      {/* Meet the team CTA */}
+      <div className="mt-16 md:mt-20 flex justify-center">
+        <Link
+          to={pathFor(lang, "about")}
+          data-testid="founders-team-cta"
+          className="group inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] hover:text-[#C16542] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
+        >
+          <EditableText
+            slot="home.founders.team_cta"
+            defaults={COPY.teamCta}
+            multiline={false}
+            className="leading-none"
+          />
+          <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" strokeWidth={1.7} />
+        </Link>
+      </div>
     </div>
   </section>
-);
+  );
+};
 
 export default FoundersSection;
