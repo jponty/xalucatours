@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Toast de confirmación de favoritos (jul 2026) — COMPLETADO + VERIFICADO**:
+  - Lógica de toast centralizada en `FavoritesContext` (sonner, ya montado en `Layout`), de modo que TODOS los puntos de guardado (hero de viaje, tarjetas del TripFinder, `FavoriteButton`, `/favoritos`) muestran feedback automático sin tocar cada call-site: `toast.success("Añadido a favoritos")` al guardar y `toast("Quitado de favoritos")` al quitar. Trilingüe (usa `useLanguage`, el provider está dentro de `LanguageProvider`).
+  - Verificado: al pulsar guardar aparece "✓ Añadido a favoritos" abajo-derecha; el estado del hero y el badge de cabecera se actualizan en paralelo.
+
+
 - **Favoritos desde el buscador de la Home (TripFinder) (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
   - Cada tarjeta de resultado del `TripFinder` incluye un botón de corazón (arriba-derecha) que guarda/quita el viaje de favoritos vía `useFavorites`, con `preventDefault`/`stopPropagation` para NO navegar al pulsarlo. Estado visual (corazón relleno + fondo terracota) y `aria-pressed`/`aria-label` accesibles. El logo monograma se reubicó a abajo-izquierda.
   - Comparte el store local de favoritos → alimenta `/favoritos`, el contador de la cabecera y el CTA "Solicitar presupuesto de mis viajes guardados". El usuario construye su lista de deseos ya desde el descubrimiento inicial.
