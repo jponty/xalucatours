@@ -278,7 +278,7 @@ const TEAM = [
     firstName: "Elena",
     reviewTheme: "elena",
     photo:
-      "https://images.unsplash.com/photo-1636153279424-cb5d1e00f5a2?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+      "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/2hj3i9n4_Elena%20Xaluca.png",
     tilt: "rotate-2",
     tapeRotate: "-rotate-6",
     name: { es: "Elena Xaluca", en: "Elena Xaluca", fr: "Elena Xaluca" },
@@ -299,7 +299,7 @@ const TEAM = [
     firstName: "Sanaa",
     reviewTheme: "sanaa",
     photo:
-      "https://images.unsplash.com/photo-1619520166328-6eccd4fb8e71?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+      "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/6hdf2a88_Sanaa%20Xaluca.png",
     tilt: "-rotate-3",
     tapeRotate: "rotate-3",
     name: { es: "Sanaa Xaluca", en: "Sanaa Xaluca", fr: "Sanaa Xaluca" },
