@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
-  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset, Sunrise,
+  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset, Sunrise, Heart,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { COPY as BEST_MONTH_COPY } from "@/components/BestMonthFab";
@@ -43,12 +43,16 @@ import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };
 const EXPERT_LABEL = { es: "Habla con un experto", en: "Talk to an expert", fr: "Parlez à un expert" };
+const FAV_LABEL = { es: "Favoritos", en: "Favourites", fr: "Favoris" };
+const FAV_SAVE = { es: "Guardar viaje", en: "Save trip", fr: "Enregistrer" };
+const FAV_SAVED = { es: "Viaje guardado", en: "Trip saved", fr: "Voyage enregistré" };
 
 /* Pull a trilingual field {es,en,fr} out of a program's `meta` override
  * or fall back to the variant copy block. Used to feed defaults={...}
  * to inline <E> editors so editing persists per language. */
 import { metaAllLangs, VARIANT_COPY } from "@/lib/programMeta";
 import FavoriteButton from "@/components/FavoriteButton";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 const LABELS = {
   es: {
@@ -190,6 +194,8 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
   // card/listing of this trip across the site (see lib/tripHero.js), so
   // editing it anywhere updates everywhere automatically.
   const heroSlot = tripHeroSlot(routeId);
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const fav = !!routeId && isFavorite(routeId);
   return (
   <section data-testid="program-hero" className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]">
     <EditableImage
@@ -222,7 +228,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
             <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
               <C name="hero.subtitle" defaults={metaAllLangs(program, variant, "subtitle")} />
             </p>
-            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-4xl">
+            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-4xl">
               {[
                 { id: "duration",   Icon: Clock,    label: <L k="eyebrow_duration" />,   value: <C name="hero.q.duration" defaults={program.duration} multiline={false} /> },
                 { id: "airports",   Icon: Plane,    label: <L k="eyebrow_airports" />,   value: <C name="hero.q.airports" defaults={metaAllLangs(program, variant, "airports")} multiline={false} /> },
@@ -253,7 +259,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
               <a
                 href={`tel:${CONTACT.phoneRaw}`}
                 data-testid="program-hero-expert"
-                className="group bg-[#1A1513]/80 hover:bg-[#C16542]/90 backdrop-blur-md p-5 flex flex-col gap-2 transition-colors sm:col-span-2 lg:col-span-1"
+                className="group bg-[#1A1513]/80 hover:bg-[#C16542]/90 backdrop-blur-md p-5 flex flex-col gap-2 transition-colors"
               >
                 <div className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:text-[#FDFBF7] transition-colors">
                   <Phone className="w-3 h-3" strokeWidth={1.6} />{pick(EXPERT_LABEL, lang)}
@@ -262,6 +268,26 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                   {CONTACT.phone}
                 </span>
               </a>
+              {/* Save trip to favourites (local, cross-session via localStorage) */}
+              <button
+                type="button"
+                onClick={() => routeId && toggleFavorite(routeId)}
+                data-testid={`program-hero-favorite-${routeId}`}
+                aria-pressed={fav}
+                className={`group text-left backdrop-blur-md p-5 flex flex-col gap-2 transition-colors ${
+                  fav ? "bg-[#C16542]/90" : "bg-[#1A1513]/80 hover:bg-[#C16542]/90"
+                }`}
+              >
+                <span className={`inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase transition-colors ${
+                  fav ? "text-[#FDFBF7]" : "text-[#D4A373] group-hover:text-[#FDFBF7]"
+                }`}>
+                  <Heart className="w-3 h-3 transition-transform group-active:scale-90" strokeWidth={1.6} fill={fav ? "#FDFBF7" : "none"} />
+                  {pick(FAV_LABEL, lang)}
+                </span>
+                <span className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug group-hover:text-[#FDFBF7]">
+                  {pick(fav ? FAV_SAVED : FAV_SAVE, lang)}
+                </span>
+              </button>
             </dl>
           </div>
           {/* Action buttons live OUTSIDE the max-w-4xl text column so they can
