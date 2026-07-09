@@ -11,6 +11,13 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **"Guardar viaje" (favoritos) en el hero de páginas de viaje (jul 2026) — COMPLETADO + VERIFICADO**:
+  - 6º indicador en el hero grid del `ProgramTemplate` (`lg:grid-cols-6`), junto a Duración, Aeropuertos, Lugares destacados, Precio y Habla con un experto, con el mismo estilo (icono `Heart`, etiqueta dorada, valor blanco, fondo espresso/terracota en hover y estado guardado).
+  - Toggle vía `useFavorites` (FavoritesContext, localStorage `xaluca:favorites`): "Guardar viaje" ↔ "Viaje guardado" (corazón relleno + tarjeta terracota), persiste entre sesiones y pestañas, alimenta la página `/favoritos` y el contador de la cabecera.
+  - **Decisión de producto (confirmada por el usuario):** favoritos **locales sin cuentas de usuario** (la web no tiene sistema de registro/login de usuario final; solo contraseña de admin). No se construye auth por ahora.
+  - Verificado e2e: 6 items en fila (desktop), toggle actualiza aria-pressed/texto/localStorage y el badge de la cabecera → 1. Nota: mis ediciones en paralelo sobre el MISMO archivo causaron una corrupción/carrera (bloque duplicado + hook perdido → "fav is not defined"); corregido re-aplicando secuencialmente. Lección: no editar el mismo archivo con search_replace en paralelo.
+
+
 - **Contexto de viaje persistente en la sesión (jul 2026) — COMPLETADO + VERIFICADO (e2e)**:
   - Al pulsar "Solicitar información" (CTA hero) o "Contactar" en una página de viaje, se recuerda automáticamente el viaje de origen: navega a `/contacto?trip=<routeId>` **y** persiste en `sessionStorage["xaluca.tripContext"]`.
   - `lib/tripContext.js`: nuevos `setTripContext()` / `clearTripContext()` + `getTripParams()` con prioridad URL → fallback a sesión, para que el viaje siga preseleccionado durante toda la sesión aunque el usuario navegue sin el parámetro.
