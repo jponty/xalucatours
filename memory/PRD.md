@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Botón "Llámanos" en la sección "Por experiencia" de /viajes (jul 2026) — COMPLETADO + VERIFICADO**:
+  - Segundo CTA **"Llámanos"** (`href="tel:937268366"`) junto a "Ver viajes" en las 6 tarjetas de estilos de viaje (`ToursLandingPage`), con estilo idéntico (mismo tamaño, color de acento por experiencia, mayúsculas, subrayado, icono `Phone`) y alineados en un contenedor flex responsive (`flex-wrap gap-x-6`). Trilingüe (Llámanos/Call us/Appelez-nous). `data-testid="experience-call-{id}"`.
+  - Verificado: 6 botones "Ver viajes" + 6 "Llámanos" con `tel:937268366`.
+
+
 - **Fix de code review: secret hardcodeado en tests (jul 2026) — COMPLETADO**:
   - `tests/test_reoptimize_library.py` y `tests/test_pricing.py` ahora leen `ADMIN_PASSWORD` solo de env (sin fallback `"xaluca"`), con `pytest.skip` si falta. Verificado: sin literales de contraseña en `tests/`.
   - **Falso positivo documentado:** los hallazgos `is` vs `==` en `server.py`/`storage.py` son todos `is None`/`is not None` (idioma correcto PEP8) → NO se modifican.

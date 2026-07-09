@@ -296,13 +296,22 @@ const ExperiencesSection = ({ t, lang }) => (
                 <p className="mt-4 text-sm leading-relaxed text-[#FDFBF7]/75 flex-1">
                   {pick(e.blurb, lang)}
                 </p>
-                <a href="#explorer"
-                   data-testid={`experience-explore-${e.id}`}
-                   className="mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 self-start group-hover:gap-3 transition-all duration-300"
-                   style={{ borderColor: `${e.accent}66`, color: e.accent }}>
-                  {t.cta}
-                  <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
-                </a>
+                <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 self-start">
+                  <a href="#explorer"
+                     data-testid={`experience-explore-${e.id}`}
+                     className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
+                     style={{ borderColor: `${e.accent}66`, color: e.accent }}>
+                    {t.cta}
+                    <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                  </a>
+                  <a href="tel:937268366"
+                     data-testid={`experience-call-${e.id}`}
+                     className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
+                     style={{ borderColor: `${e.accent}66`, color: e.accent }}>
+                    {t.cta_call}
+                    <Phone className="w-3 h-3" strokeWidth={1.5} />
+                  </a>
+                </div>
               </div>
             </article>
           );
@@ -734,6 +743,7 @@ const COPY = {
       overline: "Por experiencia", title: "Seis estilos de viaje.",
       body: "Del silencio del desierto a las cumbres del Atlas, de los talleres de artesanos a las salidas en grupo. Encuentra tu manera de viajar.",
       cta: "Ver viajes",
+      cta_call: "Llámanos",
     },
     explorer: {
       overline: "Encuentra tu viaje", title: "Filtra y descubre.",
@@ -802,6 +812,7 @@ const COPY = {
       overline: "By experience", title: "Six travel styles.",
       body: "From desert silence to Atlas summits, from artisan workshops to group departures. Find the way you love to travel.",
       cta: "View trips",
+      cta_call: "Call us",
     },
     explorer: {
       overline: "Find your trip", title: "Filter and discover.",
@@ -870,6 +881,7 @@ const COPY = {
       overline: "Par expérience", title: "Six styles de voyage.",
       body: "Du silence du désert aux sommets de l'Atlas, des ateliers d'artisans aux départs en groupe. Trouvez votre façon de voyager.",
       cta: "Voir les voyages",
+      cta_call: "Appelez-nous",
     },
     explorer: {
       overline: "Trouvez votre voyage", title: "Filtrez et découvrez.",
