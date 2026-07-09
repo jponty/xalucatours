@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
   Hotel, Tent, Car, CalendarCheck, Globe2, Users, Heart, ShieldCheck,
-  Phone, Mail, Clock, MapPin,
+  Phone, Mail, Clock, MapPin, Bus, Plane, PartyPopper, Package,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -87,6 +87,67 @@ const COPY = {
                 en: "Team specialised in national and international events: conventions, incentives, festivals.",
                 fr: "Équipe spécialisée dans les événements nationaux et internationaux : conventions, incentives, festivals." } },
     ],
+  },
+  ecosystem: {
+    overline: { es: "El ecosistema Xaluca", en: "The Xaluca ecosystem", fr: "L'écosystème Xaluca" },
+    title: {
+      es: "Todo bajo un mismo grupo. Una experiencia sin intermediarios.",
+      en: "Everything under one group. An experience with no middlemen.",
+      fr: "Tout au sein d'un même groupe. Une expérience sans intermédiaires.",
+    },
+    intro: {
+      es: "Desde el primer contacto hasta el último día del viaje, Grup Xaluca opera directamente cada parte esencial de la experiencia. Esto nos permite ofrecer un mayor control de la calidad, una coordinación impecable y un conocimiento único del destino.",
+      en: "From the first contact to the last day of the trip, Grup Xaluca directly operates every essential part of the experience. This gives us greater quality control, impeccable coordination and a unique knowledge of the destination.",
+      fr: "Du premier contact au dernier jour du voyage, Grup Xaluca opère directement chaque partie essentielle de l'expérience. Cela nous permet un meilleur contrôle de la qualité, une coordination impeccable et une connaissance unique de la destination.",
+    },
+    areasTitle: { es: "Nuestras áreas de especialización", en: "Our areas of specialisation", fr: "Nos domaines de spécialisation" },
+    areas: [
+      { id: "hotels", icon: "Hotel",
+        title: { es: "Hoteles y alojamientos", en: "Hotels & accommodation", fr: "Hôtels et hébergements" },
+        body: { es: "Una colección de hoteles, riads y alojamientos con identidad propia repartidos por el sur de Marruecos.",
+                en: "A collection of hotels, riads and accommodations with their own identity across southern Morocco.",
+                fr: "Une collection d'hôtels, riads et hébergements à l'identité propre à travers le sud du Maroc." } },
+      { id: "camps", icon: "Tent",
+        title: { es: "Campamentos en el desierto", en: "Desert camps", fr: "Campements dans le désert" },
+        body: { es: "Campamentos exclusivos en Erg Chebbi, diseñados para vivir el Sáhara con comodidad y autenticidad.",
+                en: "Exclusive camps in Erg Chebbi, designed to experience the Sahara with comfort and authenticity.",
+                fr: "Des campements exclusifs à l'Erg Chebbi, conçus pour vivre le Sahara avec confort et authenticité." } },
+      { id: "transport", icon: "Bus",
+        title: { es: "Transporte propio", en: "Own transport fleet", fr: "Transport en propre" },
+        body: { es: "Una flota propia de vehículos 4x4, minibuses, autocares y vehículos privados para garantizar la máxima flexibilidad y seguridad.",
+                en: "Our own fleet of 4x4 vehicles, minibuses, coaches and private cars to ensure maximum flexibility and safety.",
+                fr: "Une flotte propre de véhicules 4x4, minibus, autocars et voitures privées pour garantir un maximum de flexibilité et de sécurité." } },
+      { id: "agency-es", icon: "Plane",
+        title: { es: "Agencia de viajes en España", en: "Travel agency in Spain", fr: "Agence de voyages en Espagne" },
+        body: { es: "Asesoramiento personalizado, atención comercial y diseño de viajes para viajeros y grupos desde España.",
+                en: "Personalised advice, sales support and trip design for travellers and groups from Spain.",
+                fr: "Conseil personnalisé, service commercial et conception de voyages pour voyageurs et groupes depuis l'Espagne." } },
+      { id: "agency-ma", icon: "MapPin",
+        title: { es: "Agencia de viajes en Marruecos", en: "Travel agency in Morocco", fr: "Agence de voyages au Maroc" },
+        body: { es: "Operación local, coordinación de rutas, reservas y asistencia permanente durante todo el viaje.",
+                en: "Local operation, route coordination, bookings and permanent assistance throughout the entire trip.",
+                fr: "Opération locale, coordination des itinéraires, réservations et assistance permanente pendant tout le voyage." } },
+      { id: "events", icon: "PartyPopper",
+        title: { es: "Eventos & Incentivos", en: "Events & Incentives", fr: "Événements & Incentives" },
+        body: { es: "Diseño y producción integral de congresos, viajes de incentivo, eventos corporativos y experiencias a medida para empresas.",
+                en: "End-to-end design and production of conventions, incentive trips, corporate events and tailor-made experiences for companies.",
+                fr: "Conception et production intégrales de congrès, voyages incentives, événements corporatifs et expériences sur mesure pour les entreprises." } },
+      { id: "logistics", icon: "Package",
+        title: { es: "Logística y operaciones", en: "Logistics & operations", fr: "Logistique et opérations" },
+        body: { es: "Un equipo propio especializado en coordinación, producción, montaje y gestión logística para garantizar que cada viaje y evento funcione a la perfección.",
+                en: "A dedicated team specialised in coordination, production, setup and logistics management to ensure every trip and event runs flawlessly.",
+                fr: "Une équipe dédiée spécialisée dans la coordination, la production, le montage et la gestion logistique pour que chaque voyage et événement se déroule parfaitement." } },
+    ],
+    callout: {
+      es: "Una sola filosofía. Siete áreas de especialización. Un mismo compromiso con la excelencia.",
+      en: "One single philosophy. Seven areas of specialisation. One shared commitment to excellence.",
+      fr: "Une seule philosophie. Sept domaines de spécialisation. Un même engagement envers l'excellence.",
+    },
+    calloutSub: {
+      es: "Más que una agencia de viajes: un grupo turístico con infraestructura propia en Marruecos.",
+      en: "More than a travel agency: a tourism group with its own infrastructure in Morocco.",
+      fr: "Plus qu'une agence de voyages : un groupe touristique doté de sa propre infrastructure au Maroc.",
+    },
   },
   stats: {
     overline: { es: "El grupo en cifras", en: "The group in numbers", fr: "Le groupe en chiffres" },
@@ -214,6 +275,7 @@ const TEAM = [
 
 const ICON_MAP = {
   Hotel, Tent, Car, CalendarCheck, Globe2, Compass, Users, Heart, ShieldCheck, Sparkles,
+  Bus, Plane, PartyPopper, Package, MapPin,
 };
 
 /* ============================================================
@@ -470,6 +532,78 @@ const Stats = ({ lang }) => (
   </section>
 );
 
+const XalucaEcosystem = ({ lang }) => (
+  <SlotScope id="ecosystem">
+    <section data-testid="eq-ecosystem" className="relative bg-[#FDFBF7] py-20 md:py-28 border-t border-[#2C2621]/10">
+      <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+        {/* Header */}
+        <div className="max-w-3xl">
+          <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+            <Globe2 className="w-3.5 h-3.5" strokeWidth={1.6} />
+            <E name="overline" defaults={COPY.ecosystem.overline} multiline={false} />
+          </span>
+          <E name="title" defaults={COPY.ecosystem.title} multiline={false} as="h2"
+             className="font-serif-x text-4xl md:text-5xl lg:text-[52px] leading-[1.05] tracking-tight mt-4 text-[#2C2621]" />
+          <E name="intro" defaults={COPY.ecosystem.intro} as="p"
+             className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed" />
+        </div>
+
+        {/* Areas */}
+        <div className="mt-14 md:mt-16">
+          <E name="areasTitle" defaults={COPY.ecosystem.areasTitle} multiline={false} as="h3"
+             className="overline text-[#A07042] mb-7" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10">
+            {COPY.ecosystem.areas.map((a, i) => {
+              const Icon = ICON_MAP[a.icon] || Sparkles;
+              return (
+                <article
+                  key={a.id}
+                  data-testid={`eq-ecosystem-${a.id}`}
+                  className="group bg-[#FDFBF7] p-7 md:p-8 hover:bg-[#F2EBE1] transition-colors flex flex-col"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="font-serif-x text-3xl text-[#C16542]/50 tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="inline-flex items-center justify-center w-12 h-12 bg-[#F2EBE1] text-[#C16542] group-hover:bg-[#C16542] group-hover:text-[#FDFBF7] transition-colors">
+                      <Icon className="w-5 h-5" strokeWidth={1.5} />
+                    </span>
+                  </div>
+                  <E name={`${a.id}.title`} defaults={a.title} multiline={false} as="h4"
+                     className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621] mt-6" />
+                  <E name={`${a.id}.body`} defaults={a.body} as="p"
+                     className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1" />
+                </article>
+              );
+            })}
+            {/* Fill the trailing empty grid cells so the block reads as a clean panel */}
+            <div className="hidden lg:block bg-[#FDFBF7]" aria-hidden="true" />
+            <div className="hidden lg:block bg-[#FDFBF7]" aria-hidden="true" />
+          </div>
+        </div>
+
+        {/* Closing callout */}
+        <div
+          data-testid="eq-ecosystem-callout"
+          className="relative mt-12 md:mt-16 overflow-hidden bg-[#1A1513] px-8 py-12 md:px-16 md:py-16 text-center"
+        >
+          <div className="absolute inset-0 berber-bg-cross opacity-[0.07] pointer-events-none" aria-hidden="true" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A373]/60 to-transparent" aria-hidden="true" />
+          <div className="relative max-w-4xl mx-auto">
+            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-[#D4A373]/50 text-[#D4A373] mb-6">
+              <Sparkles className="w-5 h-5" strokeWidth={1.5} />
+            </span>
+            <E name="callout" defaults={COPY.ecosystem.callout} multiline={false} as="p"
+               className="font-serif-x text-2xl md:text-4xl lg:text-[44px] leading-[1.15] tracking-tight text-[#FDFBF7]" />
+            <E name="calloutSub" defaults={COPY.ecosystem.calloutSub} as="p"
+               className="mt-6 text-sm md:text-base text-[#D4A373] leading-relaxed max-w-2xl mx-auto" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </SlotScope>
+);
+
 const Bridge = ({ lang }) => (
   <section data-testid="eq-bridge" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -660,6 +794,7 @@ export default function EquipoPage() {
       />
       <Stats lang={lang} />
       <GroupPillars lang={lang} />
+      <XalucaEcosystem lang={lang} />
       <Bridge lang={lang} />
       <Values lang={lang} />
       <FinalCta lang={lang} />
