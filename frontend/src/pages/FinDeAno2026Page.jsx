@@ -345,7 +345,7 @@ function Hero({ lang }) {
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
           </a>
           <a
-            href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`}
+            href={`tel:${CONTACT.phoneRaw}`}
             data-testid="findeano-hero-cta-secondary"
             className="inline-flex items-center justify-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
@@ -710,7 +710,7 @@ function ContactBand({ lang }) {
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-10">
           <a
-            href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`}
+            href={`tel:${CONTACT.phoneRaw}`}
             data-testid="findeano-contact-phone"
             className="group inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] px-7 py-3.5 text-[12px] tracking-[0.25em] uppercase transition-colors"
           >

@@ -304,7 +304,7 @@ const ExperiencesSection = ({ t, lang }) => (
                     {t.cta}
                     <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                   </a>
-                  <a href="tel:937268366"
+                  <a href={`tel:${CONTACT.phoneRaw}`}
                      data-testid={`experience-call-${e.id}`}
                      className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
                      style={{ borderColor: `${e.accent}66`, color: e.accent }}>

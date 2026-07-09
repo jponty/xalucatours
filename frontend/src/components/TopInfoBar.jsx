@@ -4,6 +4,7 @@ import { Phone, Clock, Mail, MessageCircle } from "lucide-react";
 import EditableText from "@/components/EditableText";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { CONTACT } from "@/lib/data";
 import { openChatbaseAssistant } from "@/lib/chatbase";
 import BackgroundMusic from "@/components/BackgroundMusic";
 
@@ -34,7 +35,7 @@ export const TopInfoBar = () => {
       <div className="max-w-7xl mx-auto px-5 md:px-12 h-8 md:h-9 flex items-center justify-center md:justify-end gap-4 md:gap-7 text-[10px] md:text-[11px] tracking-[0.1em]">
         {/* Phone */}
         <a
-          href="tel:+34937268366"
+          href={`tel:${CONTACT.phoneRaw}`}
           data-testid="top-info-phone"
           className="inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
         >

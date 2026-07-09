@@ -14,6 +14,7 @@ import { Compass, Headset, Phone, CalendarClock, Heart, Euro, X } from "lucide-r
 import { pick } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { pathFor } from "@/lib/routes";
+import { CONTACT } from "@/lib/data";
 import { openChatbaseAssistant } from "@/lib/chatbase";
 import ShareTripButton from "@/components/ShareTripButton";
 import { usePricing } from "@/lib/pricingStore";
@@ -28,7 +29,7 @@ const CALL_LABEL = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appele
 const APPOINTMENT_LABEL = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
 const FAV_LABEL = { es: "Añadir a favoritos", en: "Add to favourites", fr: "Ajouter aux favoris" };
 const FAV_LABEL_ON = { es: "Quitar de favoritos", en: "Remove from favourites", fr: "Retirer des favoris" };
-const CALL_TEL = "+34937268366";
+const CALL_TEL = CONTACT.phoneRaw;
 
 const SIZES = {
   sm: { btn: "w-9 h-9", icon: "w-4 h-4" },

@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Unificación de enlaces de teléfono a `CONTACT.phoneRaw` (jul 2026) — COMPLETADO + VERIFICADO**:
+  - Todos los enlaces `tel:` de la empresa usan ahora el formato internacional `+34937268366` desde la única fuente `CONTACT.phoneRaw` (`lib/data`). Corregidos: el botón "Llámanos" de `/viajes` (era `tel:937268366`), literales hardcodeados en `EscapadaIntroPage` y `TopInfoBar`, `CALL_TEL` en `TripCardActions`/`LandmarkCarousel` (ahora `= CONTACT.phoneRaw`), y `FinDeAno2026Page` (`phone.replace` → `phoneRaw`). Se añadió el import de `CONTACT` donde faltaba.
+  - El teléfono del lead en el panel Admin (`r.phone`) se deja intacto (dato del usuario). Verificado: 0 literales de teléfono hardcodeados; los "Llámanos" de /viajes resuelven a `tel:+34937268366`.
+
+
 - **Botón "Llámanos" en la sección "Por experiencia" de /viajes (jul 2026) — COMPLETADO + VERIFICADO**:
   - Segundo CTA **"Llámanos"** (`href="tel:937268366"`) junto a "Ver viajes" en las 6 tarjetas de estilos de viaje (`ToursLandingPage`), con estilo idéntico (mismo tamaño, color de acento por experiencia, mayúsculas, subrayado, icono `Phone`) y alineados en un contenedor flex responsive (`flex-wrap gap-x-6`). Trilingüe (Llámanos/Call us/Appelez-nous). `data-testid="experience-call-{id}"`.
   - Verificado: 6 botones "Ver viajes" + 6 "Llámanos" con `tel:937268366`.

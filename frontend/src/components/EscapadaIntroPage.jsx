@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Plane, Mail, Phone } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { CONTACT } from "@/lib/data";
 import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import ContactForm from "@/components/ContactForm";
 import ProgramFlipbook from "@/components/ProgramFlipbook";
@@ -228,7 +229,7 @@ const ContactBand = ({ lang, t, accent = "#C16542" }) => (
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </Link>
         <a
-          href="tel:+34937268366"
+          href={`tel:${CONTACT.phoneRaw}`}
           data-testid="escapada-intro-cta-phone"
           className="inline-flex items-center gap-3 text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
         >

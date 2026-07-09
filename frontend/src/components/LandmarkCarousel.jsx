@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Camera, X, MapPin, Compass, Headset, Phone, 
 import { Link } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
+import { CONTACT } from "@/lib/data";
 import { openChatbaseAssistant } from "@/lib/chatbase";
 import ShareTripButton from "@/components/ShareTripButton";
 import { LANDMARK_GALLERIES } from "@/lib/landmarkGalleries";
@@ -61,7 +62,7 @@ const PLACE_UI = {
 const PLAN_CTA = { es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" };
 const ASSISTANT_CTA = { es: "Asistente virtual", en: "Virtual assistant", fr: "Assistant virtuel" };
 const CALL_CTA = { es: "Llamar por teléfono", en: "Call us", fr: "Nous appeler" };
-const CALL_TEL = "+34937268366";
+const CALL_TEL = CONTACT.phoneRaw;
 const APPOINTMENT_CTA = { es: "Cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" };
 
 const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
