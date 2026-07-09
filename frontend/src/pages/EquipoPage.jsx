@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
@@ -234,7 +234,7 @@ const COPY = {
       en: "The people who make every journey possible.",
       fr: "Les personnes qui rendent chaque voyage possible.",
     },
-    hint: { es: "Toca un perfil para ver sus reseñas", en: "Tap a profile to see their reviews", fr: "Touchez un profil pour voir ses avis" },
+    hint: { es: "Selecciona un perfil del equipo", en: "Select a team profile", fr: "Sélectionnez un profil de l'équipe" },
   },
   reviews: {
     eyebrow: { es: "Opiniones sobre Noemi", en: "Reviews about Noemi", fr: "Avis sur Noemi" },
@@ -382,34 +382,8 @@ const Hero = ({ lang }) => (
   </section>
 );
 
-const TeamScroller = ({ lang, selectedId, onSelect }) => {
-  const scrollerRef = useRef(null);
-  const rafRef = useRef(null);
+const TeamProfiles = ({ lang, selectedId, onSelect }) => {
   const selected = TEAM.find((m) => m.id === selectedId) || TEAM[0];
-
-  // Scroll-driven selection: pick the card whose centre is nearest the viewport centre.
-  const handleScroll = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      const el = scrollerRef.current;
-      if (!el || el.scrollWidth <= el.clientWidth + 4) return; // no overflow → click only
-      const center = el.scrollLeft + el.clientWidth / 2;
-      let bestId = null;
-      let bestDist = Infinity;
-      el.querySelectorAll("[data-team-card]").forEach((node) => {
-        const c = node.offsetLeft + node.offsetWidth / 2;
-        const d = Math.abs(c - center);
-        if (d < bestDist) { bestDist = d; bestId = node.getAttribute("data-team-card"); }
-      });
-      if (bestId && bestId !== selectedId) onSelect(bestId);
-    });
-  }, [selectedId, onSelect]);
-
-  const selectCard = (id, node) => {
-    onSelect(id);
-    node?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  };
-
   return (
     <SlotScope id="team">
       <div data-testid="eq-team" className="mt-16 md:mt-24 pt-14 md:pt-16 border-t border-[#2C2621]/10">
@@ -422,88 +396,87 @@ const TeamScroller = ({ lang, selectedId, onSelect }) => {
              className="font-serif-x text-3xl md:text-4xl leading-[1.08] tracking-tight mt-4 text-[#2C2621]" />
         </div>
 
-        {/* Selectable polaroid carousel */}
-        <div
-          ref={scrollerRef}
-          onScroll={handleScroll}
-          data-testid="eq-team-scroller"
-          className="mt-10 flex gap-6 md:gap-9 overflow-x-auto snap-x snap-mandatory pb-6 -mx-6 px-6 md:mx-0 md:px-1 lg:justify-center scrollbar-thin"
-        >
-          {TEAM.map((m) => {
-            const active = selectedId === m.id;
-            return (
-              <SlotScope key={m.id} id={m.id}>
-                <div
-                  data-team-card={m.id}
-                  data-testid={`eq-team-card-${m.id}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={active}
-                  aria-label={`${m.name.es} — ${pick(m.role, lang)}`}
-                  onClick={(e) => selectCard(m.id, e.currentTarget)}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(m.id, e.currentTarget); } }}
-                  className={`snap-center shrink-0 cursor-pointer outline-none transition-opacity duration-500 ${active ? "opacity-100" : "opacity-55 hover:opacity-90"}`}
-                >
-                  <figure
-                    className={`relative w-[200px] sm:w-[224px] bg-[#FDFBF7] p-3 pb-2 transition-all duration-500 ease-out will-change-transform ${
-                      active
-                        ? "rotate-0 scale-[1.05] shadow-[0_46px_84px_-30px_rgba(26,21,19,0.68)] ring-1 ring-[#C16542]"
-                        : `${m.tilt} shadow-[0_30px_60px_-30px_rgba(26,21,19,0.5)]`
-                    }`}
-                  >
-                    <span className={`postcard-tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 ${m.tapeRotate}`} aria-hidden="true" />
-                    <div className="relative overflow-hidden bg-[#EDE4D6]">
-                      <EImg
-                        name="photo"
-                        src={m.photo}
-                        alt={`${m.name.es} · ${pick(m.role, lang)}`}
-                        aspectRatio="4/5"
-                        imgProps={{ loading: "lazy" }}
-                        className="w-full h-full object-cover grayscale"
-                      />
-                    </div>
-                    <figcaption className="pt-3.5 pb-2.5 text-center">
-                      <E name="name" defaults={m.name} multiline={false} noTranslate as="p"
-                         className="font-hand text-[26px] leading-none text-[#2C2621]" />
-                      <E name="role" defaults={m.role} multiline={false} as="p"
-                         className={`font-hand text-lg mt-1 ${active ? "text-[#C16542]" : "text-[#A07042]"}`} />
-                    </figcaption>
-                  </figure>
+        {/* Single active profile — polaroid + handwritten note. Re-animates on change. */}
+        <div key={selected.id} className="fade-up mt-10 md:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-center">
+          {/* Polaroid */}
+          <div className="lg:col-span-5 flex justify-center">
+            <SlotScope id={selected.id}>
+              <figure
+                data-testid={`eq-team-card-${selected.id}`}
+                className={`group relative w-full max-w-[280px] sm:max-w-[320px] bg-[#FDFBF7] p-3.5 pb-2 shadow-[0_40px_78px_-30px_rgba(26,21,19,0.6)] ${selected.tilt} hover:rotate-0 transition-transform duration-700 ease-out will-change-transform`}
+              >
+                <span className={`postcard-tape absolute -top-3.5 left-1/2 -translate-x-1/2 w-24 h-7 ${selected.tapeRotate}`} aria-hidden="true" />
+                <div className="relative overflow-hidden bg-[#EDE4D6]">
+                  <EImg
+                    name="photo"
+                    src={selected.photo}
+                    alt={`${selected.name.es} · ${pick(selected.role, lang)}`}
+                    aspectRatio="4/5"
+                    imgProps={{ loading: "lazy" }}
+                    className="w-full h-full object-cover grayscale"
+                  />
                 </div>
-              </SlotScope>
-            );
-          })}
-        </div>
-        <p className="mt-1 flex items-center justify-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]">
-          <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
-          <E name="hint" defaults={COPY.team.hint} multiline={false} />
-        </p>
-
-        {/* Selected member's handwritten note — matches the Founders section style */}
-        <div key={selected.id} className="fade-up mt-10 md:mt-12 max-w-2xl mx-auto">
-          <SlotScope id={selected.id}>
-            <div
-              data-testid={`eq-team-note-${selected.id}`}
-              className="postcard-paper relative border border-[#2C2621]/10 shadow-[0_34px_66px_-38px_rgba(26,21,19,0.5)] px-7 py-9 md:px-11 md:py-12 rotate-[0.5deg]"
-            >
-              <span className="absolute left-4 md:left-6 top-6 bottom-6 w-px bg-[#C16542]/25" aria-hidden="true" />
-              <div className="pl-4 md:pl-6">
-                <E name="note_name" defaults={selected.name} multiline={false} noTranslate as="p"
-                   className="font-hand text-4xl md:text-[42px] leading-none text-[#C16542]" />
-                <span className="block w-16 h-px bg-[#2C2621]/20 my-5" aria-hidden="true" />
-                <E name="note1" defaults={selected.note1} as="p"
-                   className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B]" />
-                <E name="note2" defaults={selected.note2} as="p"
-                   className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5" />
-                <div className="mt-8 text-right">
-                  <E name="signature" defaults={selected.name} multiline={false} noTranslate as="p"
+                <figcaption className="pt-4 pb-3 text-center">
+                  <E name="name" defaults={selected.name} multiline={false} noTranslate as="p"
                      className="font-hand text-[32px] leading-none text-[#2C2621]" />
-                  <E name="sign_role" defaults={selected.role} multiline={false} as="p"
-                     className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]" />
+                  <E name="role" defaults={selected.role} multiline={false} as="p"
+                     className="font-hand text-xl text-[#A07042] mt-1.5" />
+                </figcaption>
+              </figure>
+            </SlotScope>
+          </div>
+
+          {/* Handwritten note */}
+          <div className="lg:col-span-7">
+            <SlotScope id={selected.id}>
+              <div
+                data-testid={`eq-team-note-${selected.id}`}
+                className="postcard-paper relative border border-[#2C2621]/10 shadow-[0_34px_66px_-38px_rgba(26,21,19,0.5)] px-7 py-9 md:px-11 md:py-12 rotate-[0.5deg]"
+              >
+                <span className="absolute left-4 md:left-6 top-6 bottom-6 w-px bg-[#C16542]/25" aria-hidden="true" />
+                <div className="pl-4 md:pl-6">
+                  <E name="note_name" defaults={selected.name} multiline={false} noTranslate as="p"
+                     className="font-hand text-4xl md:text-[42px] leading-none text-[#C16542]" />
+                  <span className="block w-16 h-px bg-[#2C2621]/20 my-5" aria-hidden="true" />
+                  <E name="note1" defaults={selected.note1} as="p"
+                     className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B]" />
+                  <E name="note2" defaults={selected.note2} as="p"
+                     className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5" />
+                  <div className="mt-8 text-right">
+                    <E name="signature" defaults={selected.name} multiline={false} noTranslate as="p"
+                       className="font-hand text-[32px] leading-none text-[#2C2621]" />
+                    <E name="sign_role" defaults={selected.role} multiline={false} as="p"
+                       className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </SlotScope>
+            </SlotScope>
+          </div>
+        </div>
+
+        {/* Navigation dots — switch between team members */}
+        <div className="mt-10 md:mt-12 flex flex-col items-center gap-3">
+          <div className="flex items-center justify-center gap-3" role="tablist" aria-label={pick(COPY.team.overline, lang)}>
+            {TEAM.map((m) => {
+              const active = selectedId === m.id;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  aria-label={`${m.name.es} — ${pick(m.role, lang)}`}
+                  data-testid={`eq-team-dot-${m.id}`}
+                  onClick={() => onSelect(m.id)}
+                  className={`h-2.5 rounded-full transition-all duration-400 ease-out ${
+                    active ? "w-8 bg-[#C16542]" : "w-2.5 bg-[#2C2621]/25 hover:bg-[#C16542]/60"
+                  }`}
+                />
+              );
+            })}
+          </div>
+          <E name="hint" defaults={COPY.team.hint} multiline={false}
+             className="flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]" />
         </div>
       </div>
     </SlotScope>
@@ -528,7 +501,7 @@ const Intro = ({ lang, selectedId, onSelect }) => (
         </div>
       </div>
 
-      <TeamScroller lang={lang} selectedId={selectedId} onSelect={onSelect} />
+      <TeamProfiles lang={lang} selectedId={selectedId} onSelect={onSelect} />
     </div>
   </section>
 );
