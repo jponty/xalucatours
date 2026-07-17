@@ -423,6 +423,7 @@ const ContestsPanel = () => {
                   <tr className="bg-white/[0.04] text-[10px] tracking-[0.2em] uppercase text-white/50">
                     <th className="text-left px-3 py-2 font-normal">Fecha</th>
                     <th className="text-left px-3 py-2 font-normal">Nombre</th>
+                    <th className="text-left px-3 py-2 font-normal">Teléfono</th>
                     <th className="text-left px-3 py-2 font-normal">Email</th>
                     <th className="text-left px-3 py-2 font-normal">Idioma</th>
                     <th className="text-left px-3 py-2 font-normal">Premio</th>
@@ -433,6 +434,7 @@ const ContestsPanel = () => {
                     <tr key={r.id} className="border-t border-white/[0.06] hover:bg-white/[0.02]">
                       <td className="px-3 py-2 text-white/60 whitespace-nowrap">{fmtDate(r.created_at)}</td>
                       <td className="px-3 py-2 text-white/85 whitespace-nowrap">{[r.first_name, r.last_name].filter(Boolean).join(" ")}</td>
+                      <td className="px-3 py-2 text-white/60 whitespace-nowrap">{r.phone || "—"}</td>
                       <td className="px-3 py-2 text-white/70">{r.email}</td>
                       <td className="px-3 py-2 text-white/50 uppercase">{r.language}</td>
                       <td className="px-3 py-2 text-[#D4A373]">{typeof r.prize_label === "object" ? (r.prize_label?.es || "—") : (r.prize_label || "—")}</td>

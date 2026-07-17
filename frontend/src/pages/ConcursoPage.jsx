@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
-import { Gift, Mail, User, Loader2, RotateCw, PartyPopper, X, ArrowRight } from "lucide-react";
+import { Gift, Mail, User, Phone, Loader2, RotateCw, PartyPopper, X, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import monogramWhite from "@/assets/monograma-x-white.png";
 
@@ -10,6 +10,9 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const T = (es, en, fr) => ({ es, en, fr });
 const L = (o, lang) => (o && (o[lang] ?? o.es)) || "";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+\d][\d\s().-]{5,}$/;
+const LEGAL_URL = "https://xalucatours.com/";
+const PRIVACY_URL = "https://xalucatours.com/";
 const CONFETTI_COLORS = ["#C16542", "#D4A373", "#B8862F", "#2C2621", "#F2EBE1"];
 
 const UI = {
@@ -21,12 +24,13 @@ const UI = {
     "Renseignez vos coordonnées, tournez la roue et découvrez votre lot. Un petit cadeau de Xaluca Tours pour votre prochaine aventure au Maroc.",
   ),
   steps: [
-    { t: T("Rellena tus datos", "Fill in your details", "Renseignez vos coordonnées"), b: T("Nombre, apellidos y email de contacto.", "Name, surname and contact email.", "Prénom, nom et e-mail de contact.") },
+    { t: T("Rellena tus datos", "Fill in your details", "Renseignez vos coordonnées"), b: T("Nombre, apellidos, teléfono y email de contacto.", "Name, surname, phone and contact email.", "Prénom, nom, téléphone et e-mail de contact.") },
     { t: T("Gira la ruleta", "Spin the wheel", "Tournez la roue"), b: T("Pulsa el botón y deja que la suerte decida.", "Press the button and let luck decide.", "Appuyez sur le bouton et laissez faire la chance.") },
     { t: T("Recibe tu premio", "Get your prize", "Recevez votre lot"), b: T("Te enviamos un email con tu premio y cómo canjearlo.", "We email you your prize and how to redeem it.", "Nous vous envoyons votre lot et comment en profiter.") },
   ],
   firstName: T("Nombre", "First name", "Prénom"),
   lastName: T("Apellidos", "Last name", "Nom"),
+  phone: T("Teléfono", "Phone", "Téléphone"),
   email: T("Email de contacto", "Contact email", "E-mail de contact"),
   participate: T("Participar", "Enter", "Participer"),
   spin: T("¡Girar la ruleta!", "Spin the wheel!", "Tourner la roue !"),
@@ -36,7 +40,14 @@ const UI = {
   prizesTitle: T("Premios en juego", "Prizes up for grabs", "Lots à gagner"),
   errName: T("Indica tu nombre", "Please enter your name", "Indiquez votre prénom"),
   errLast: T("Indica tus apellidos", "Please enter your surname", "Indiquez votre nom"),
+  errPhone: T("Introduce un teléfono válido", "Enter a valid phone number", "Saisissez un numéro de téléphone valide"),
   errEmail: T("Introduce un email válido", "Enter a valid email", "Saisissez un e-mail valide"),
+  errAccept: T("Debes aceptar las bases legales para participar.", "You must accept the legal terms to participate.", "Vous devez accepter les conditions légales pour participer."),
+  legalPre: T("He leído y acepto las ", "I have read and accept the ", "J'ai lu et j'accepte les "),
+  legalBases: T("Bases Legales del Concurso", "Contest Legal Terms", "Conditions Légales du Concours"),
+  legalMid: T(" y la ", " and the ", " et la "),
+  legalPrivacy: T("Política de Privacidad", "Privacy Policy", "Politique de Confidentialité"),
+  legalPost: T(".", ".", "."),
   dupError: T("Este email ya ha participado en el concurso.", "This email has already entered the giveaway.", "Cet e-mail a déjà participé au concours."),
   genericError: T("No se ha podido completar la participación. Inténtalo de nuevo.", "We couldn't complete your entry. Please try again.", "Impossible de finaliser la participation. Réessayez."),
   closedTitle: T("El concurso no está disponible", "The giveaway isn't available", "Le concours n'est pas disponible"),
@@ -130,7 +141,8 @@ export default function ConcursoPage() {
   const [contest, setContest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState("form"); // form | ready | spinning | done
-  const [form, setForm] = useState({ first_name: "", last_name: "", email: "" });
+  const [form, setForm] = useState({ first_name: "", last_name: "", phone: "", email: "" });
+  const [accepted, setAccepted] = useState(false);
   const [errors, setErrors] = useState({});
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState(null); // { prize }
@@ -160,7 +172,9 @@ export default function ConcursoPage() {
     const err = {};
     if (!form.first_name.trim()) err.first_name = L(UI.errName, lang);
     if (!form.last_name.trim()) err.last_name = L(UI.errLast, lang);
+    if (!PHONE_RE.test(form.phone.trim())) err.phone = L(UI.errPhone, lang);
     if (!EMAIL_RE.test(form.email.trim())) err.email = L(UI.errEmail, lang);
+    if (!accepted) err.accepted = L(UI.errAccept, lang);
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -234,7 +248,7 @@ export default function ConcursoPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 berber-bg-cross opacity-[0.06] pointer-events-none" aria-hidden="true" />
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A373]/50 to-transparent" aria-hidden="true" />
-        <div className="relative max-w-3xl mx-auto px-6 pt-20 md:pt-28 pb-6 text-center">
+        <div className="relative max-w-3xl mx-auto px-6 pt-32 md:pt-40 lg:pt-44 pb-6 text-center">
           <span className="inline-flex items-center gap-2.5 text-[#D4A373]">
             <PartyPopper className="w-4 h-4" strokeWidth={1.7} />
             <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">{L(UI.eyebrow, lang)}</span>
@@ -307,12 +321,46 @@ export default function ConcursoPage() {
                     </div>
                     <div>
                       <label className="flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#8A7C64] mb-2">
+                        <Phone className="w-3.5 h-3.5" /> {L(UI.phone, lang)}
+                      </label>
+                      <input data-testid="concurso-phone" type="tel" autoComplete="tel" inputMode="tel" value={form.phone} onChange={set("phone")} className={inputCls("phone")} placeholder="+34 600 000 000" />
+                      {errors.phone && <p className="mt-1 text-xs text-[#C16542]">{errors.phone}</p>}
+                    </div>
+                    <div>
+                      <label className="flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#8A7C64] mb-2">
                         <Mail className="w-3.5 h-3.5" /> {L(UI.email, lang)}
                       </label>
                       <input data-testid="concurso-email" type="email" value={form.email} onChange={set("email")} className={inputCls("email")} placeholder="tucorreo@email.com" />
                       {errors.email && <p className="mt-1 text-xs text-[#C16542]">{errors.email}</p>}
                     </div>
-                    <button data-testid="concurso-participate-btn" type="submit" className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-4 text-[12px] tracking-[0.22em] uppercase transition-colors">
+
+                    <label className="flex items-start gap-3 cursor-pointer pt-1" data-testid="concurso-legal-label">
+                      <input
+                        type="checkbox"
+                        data-testid="concurso-legal-checkbox"
+                        checked={accepted}
+                        onChange={(e) => {
+                          setAccepted(e.target.checked);
+                          if (e.target.checked) setErrors((prev) => { const { accepted, ...rest } = prev; return rest; });
+                        }}
+                        required
+                        className="mt-0.5 w-[18px] h-[18px] shrink-0 cursor-pointer accent-[#C16542]"
+                      />
+                      <span className="text-[13px] leading-snug text-[#2C2621]/80">
+                        {L(UI.legalPre, lang)}
+                        <a href={LEGAL_URL} target="_blank" rel="noopener noreferrer" data-testid="concurso-legal-link" className="text-[#C16542] underline underline-offset-2 hover:text-[#A35133]">
+                          {L(UI.legalBases, lang)}
+                        </a>
+                        {L(UI.legalMid, lang)}
+                        <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" data-testid="concurso-privacy-link" className="text-[#C16542] underline underline-offset-2 hover:text-[#A35133]">
+                          {L(UI.legalPrivacy, lang)}
+                        </a>
+                        {L(UI.legalPost, lang)}
+                      </span>
+                    </label>
+                    {errors.accepted && <p className="text-xs text-[#C16542]">{errors.accepted}</p>}
+
+                    <button data-testid="concurso-participate-btn" type="submit" disabled={!accepted} className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-[#2C2621] hover:bg-[#C16542] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#2C2621] text-[#FDFBF7] px-6 py-4 text-[12px] tracking-[0.22em] uppercase transition-colors">
                       {L(UI.participate, lang)} <ArrowRight className="w-4 h-4" />
                     </button>
                     <p className="text-[11px] text-[#8A7C64] leading-relaxed pt-1">{L(UI.legalNote, lang)}</p>

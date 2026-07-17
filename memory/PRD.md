@@ -11,6 +11,12 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **/concurso · campo Teléfono + casilla legal obligatoria + margen superior (jun 2026) — COMPLETADO + VERIFICADO (screenshot + curl e2e)**:
+  - **Margen superior**: cabecera de `/concurso` de `pt-20 md:pt-28` → `pt-32 md:pt-40 lg:pt-44` para que el eyebrow "Concurso Xaluca" y el título no queden bajo el menú fijo (h1 top ~220px, sin solape).
+  - **Campo Teléfono** (`ConcursoPage.jsx`): nuevo input `type=tel` (icono `Phone`, placeholder `+34 600 000 000`) entre Apellidos y Email. Validación `PHONE_RE` (≥6 dígitos). Trilingüe.
+  - **Casilla legal obligatoria**: checkbox con el texto EXACTO "He leído y acepto las Bases Legales del Concurso y la Política de Privacidad." (los dos términos son enlaces terracota → `LEGAL_URL`/`PRIVACY_URL` = xalucatours.com, misma convención que `DownloadProgramModal`). El botón **"Participar"** queda `disabled` (atenuado, sin hover) hasta marcarla. Estado `accepted` + error `errAccept` en `validate()`.
+  - **Backend** (`server.py`): `ContestSpinPayload` admite `phone` (opcional, ≤40); se persiste en `contest_participants.phone`; se añade "Teléfono" al email de notificación interno y como **columna nueva en el CSV** (`Fecha,Nombre,Apellidos,Teléfono,Email,Idioma,Premio`). El panel admin `ContestsPanel.jsx` muestra la columna Teléfono en la tabla de participantes.
+  - Verificado: spin con teléfono → persiste `+34 600 123 456`, aparece en CSV; UI screenshot confirma margen, campo, casilla con texto exacto y botón disabled→enabled al marcar.
 - **UI de administración del Concurso "Ruleta de la Suerte" (jun 2026) — COMPLETADO + VERIFICADO (self-test: screenshot + curl round-trip)**:
   - Nueva pestaña **"Concursos"** en la barra lateral de `/admin` (icono `Gift`, entre Leads y Notificaciones). Componente dedicado `components/ContestsPanel.jsx` (para NO seguir engordando `AdminPage.jsx`), cableado en `AdminPage.jsx` (import + tab en el nav + rama `tab === "contests"`).
   - Conecta con los endpoints admin ya existentes: `GET /api/admin/contests` (lista), `GET /admin/contests/{id}` (detalle+premios), `PUT /admin/contests/{id}` (guardar config+premios), `GET /admin/contests/{id}/stats`, `/participants`, `/participants.csv`.

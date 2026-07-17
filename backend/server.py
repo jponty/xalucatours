@@ -4530,6 +4530,7 @@ class ContestSpinPayload(BaseModel):
     contest_id: Optional[str] = Field(default=None, max_length=64)
     first_name: str = Field(..., min_length=1, max_length=80)
     last_name: str = Field(..., min_length=1, max_length=80)
+    phone: Optional[str] = Field(default="", max_length=40)
     email: EmailStr
     language: Optional[str] = Field(default="es", max_length=5)
 
@@ -4596,6 +4597,7 @@ async def contest_spin(payload: ContestSpinPayload, background_tasks: Background
         "contest_id": contest["id"],
         "first_name": payload.first_name.strip(),
         "last_name": payload.last_name.strip(),
+        "phone": (payload.phone or "").strip(),
         "email": payload.email.strip(),
         "email_lower": email,
         "language": lang,
@@ -4622,6 +4624,7 @@ async def contest_spin(payload: ContestSpinPayload, background_tasks: Background
             ("Concurso", contest_name_localized),
             ("Nombre", payload.first_name.strip()),
             ("Apellidos", payload.last_name.strip()),
+            ("Teléfono", (payload.phone or "").strip() or "—"),
             ("Email", payload.email.strip()),
             ("Premio ganado", prize_label_localized),
             ("Idioma", lang),
@@ -4726,10 +4729,10 @@ async def admin_contest_participants_csv(contest_id: str, authorization: str = H
     rows = await db.contest_participants.find({"contest_id": contest_id}, {"_id": 0}).sort("created_at", 1).to_list(50000)
     buf = StringIO()
     writer = csv.writer(buf)
-    writer.writerow(["Fecha", "Nombre", "Apellidos", "Email", "Idioma", "Premio (ES)"])
+    writer.writerow(["Fecha", "Nombre", "Apellidos", "Teléfono", "Email", "Idioma", "Premio (ES)"])
     for r in rows:
         label = (r.get("prize_label") or {}).get("es", "") if isinstance(r.get("prize_label"), dict) else (r.get("prize_label") or "")
-        writer.writerow([r.get("created_at", ""), r.get("first_name", ""), r.get("last_name", ""), r.get("email", ""), r.get("language", ""), label])
+        writer.writerow([r.get("created_at", ""), r.get("first_name", ""), r.get("last_name", ""), r.get("phone", ""), r.get("email", ""), r.get("language", ""), label])
     csv_bytes = buf.getvalue()
     return Response(
         content=csv_bytes,
