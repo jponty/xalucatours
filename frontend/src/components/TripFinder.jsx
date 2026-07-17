@@ -6,7 +6,7 @@ import {
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { pathFor } from "@/lib/routes";
-import Img from "@/components/Img";
+import EditableImage from "@/components/EditableImage";
 import { FromPrice } from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import monogramWhite from "@/assets/monograma-x-white.png";
@@ -235,11 +235,13 @@ export const TripFinder = () => {
                 className="group block bg-[#FDFBF7] border border-[#2C2621]/10 overflow-hidden hover:border-[#C16542]/40 hover:shadow-[0_28px_54px_-30px_rgba(26,21,19,0.5)] transition-all duration-300"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
-                  <Img
-                    src={tripImage(trip.routeId)}
+                  <EditableImage
+                    slot={`home.finder.trip.${trip.routeId}`}
+                    fallback={tripImage(trip.routeId)}
                     alt={tt(trip.name, lang)}
-                    width={800}
-                    className="w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-105"
+                    aspectRatio="4/3"
+                    imgProps={{ loading: "lazy" }}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent pointer-events-none" />
                   {chip && (
