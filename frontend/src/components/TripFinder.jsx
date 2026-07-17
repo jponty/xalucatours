@@ -151,7 +151,6 @@ export const TripFinder = () => {
 
   return (
     <section
-      id="buscador"
       data-testid="trip-finder"
       className="relative bg-[#F8F2E6] overflow-hidden"
     >

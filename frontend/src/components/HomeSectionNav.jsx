@@ -31,6 +31,8 @@ export default function HomeSectionNav() {
   const [active, setActive] = useState(SECTIONS[0].id);
   const [vh, setVh] = useState(typeof window !== "undefined" ? window.innerHeight : 800);
   const clickLockRef = useRef(0);
+  const rafRef = useRef(null);
+  const correctTimersRef = useRef([]);
 
   // Measure the header height (constant regardless of its show/hide transform).
   useEffect(() => {
@@ -114,17 +116,70 @@ export default function HomeSectionNav() {
     const el = document.getElementById(id);
     if (!el) return;
     const navH = navRef.current ? navRef.current.offsetHeight : 48;
-    const targetY = el.getBoundingClientRect().top + window.scrollY;
-    // When scrolling DOWN the header auto-hides → rest offset = sub-nav only.
-    // When scrolling UP the header reappears → rest offset = header + sub-nav.
-    // Both keep the section top ABOVE the scan line so it stays active.
-    const goingDown = targetY > window.scrollY;
+    // Direction decides the resting offset: scrolling DOWN the header hides
+    // (offset = sub-nav only); scrolling UP it reappears (header + sub-nav).
+    const goingDown = el.getBoundingClientRect().top > 0;
     const offset = (goingDown ? 0 : headerH) + navH + 16;
-    window.scrollTo({ top: Math.max(0, targetY - offset), behavior: "smooth" });
+    const desired = () => {
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return Math.max(0, Math.min(top, max));
+    };
+
     setActive(id);
-    // Lock the active state briefly so it settles on the clicked tab.
-    clickLockRef.current = Date.now() + 1000;
+    clickLockRef.current = Date.now() + 1400;
+
+    // Cancel any in-flight animation / pending corrections.
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    correctTimersRef.current.forEach((t) => clearTimeout(t));
+    correctTimersRef.current = [];
+
+    // Homing smooth scroll: recompute the LIVE target every frame so that
+    // lazy-loading images shifting the layout never leave us short of the
+    // real section position (the previous one-shot scrollTo bug).
+    const startY = window.scrollY;
+    const startT = performance.now();
+    const DURATION = 700;
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const step = (now) => {
+      const p = Math.min(1, (now - startT) / DURATION);
+      const y = startY + (desired() - startY) * ease(p);
+      window.scrollTo(0, y);
+      if (p < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        rafRef.current = null;
+        window.scrollTo(0, desired());
+        // Correction snaps: images decoding after the animation can still
+        // shift the target; re-align a couple of times (skipped if the user
+        // takes over the scroll).
+        let userTookOver = false;
+        const onUser = () => { userTookOver = true; };
+        window.addEventListener("wheel", onUser, { passive: true, once: true });
+        window.addEventListener("touchmove", onUser, { passive: true, once: true });
+        [180, 480].forEach((d) => {
+          const t = setTimeout(() => {
+            if (!userTookOver && Math.abs(window.scrollY - desired()) > 2) {
+              window.scrollTo({ top: desired(), behavior: "smooth" });
+            }
+          }, d);
+          correctTimersRef.current.push(t);
+        });
+        const cleanup = setTimeout(() => {
+          window.removeEventListener("wheel", onUser);
+          window.removeEventListener("touchmove", onUser);
+        }, 700);
+        correctTimersRef.current.push(cleanup);
+      }
+    };
+    rafRef.current = requestAnimationFrame(step);
   }, [headerH]);
+
+  useEffect(() => () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    correctTimersRef.current.forEach((t) => clearTimeout(t));
+  }, []);
 
   return (
     <nav
