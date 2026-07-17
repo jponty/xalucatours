@@ -209,28 +209,28 @@ const FounderBlock = ({ f, reverse, lang }) => (
             defaults={f.note2}
             className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5"
           />
-          <div className="mt-8 flex items-end justify-between gap-4 flex-wrap-reverse">
-            <FounderAudio
-              src={f.audio}
-              testid={`founder-audio-${f.id}`}
-              playLabel={`${(COPY.audioPlay[lang] ?? COPY.audioPlay.es)} ${f.firstName}`}
-              pauseLabel={COPY.audioPause[lang] ?? COPY.audioPause.es}
+          <div className="mt-8 text-right">
+            <EditableText
+              as="p"
+              slot={`home.founders.${f.id}.signature`}
+              defaults={f.name}
+              multiline={false}
+              noTranslate
+              className="font-hand text-[34px] leading-none text-[#2C2621]"
             />
-            <div className="text-right ml-auto">
-              <EditableText
-                as="p"
-                slot={`home.founders.${f.id}.signature`}
-                defaults={f.name}
-                multiline={false}
-                noTranslate
-                className="font-hand text-[34px] leading-none text-[#2C2621]"
-              />
-              <EditableText
-                as="p"
-                slot={`home.founders.${f.id}.role`}
-                defaults={COPY.role}
-                multiline={false}
-                className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]"
+            <EditableText
+              as="p"
+              slot={`home.founders.${f.id}.role`}
+              defaults={COPY.role}
+              multiline={false}
+              className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]"
+            />
+            <div className="mt-4 flex justify-end">
+              <FounderAudio
+                src={f.audio}
+                testid={`founder-audio-${f.id}`}
+                playLabel={`${(COPY.audioPlay[lang] ?? COPY.audioPlay.es)} ${f.firstName}`}
+                pauseLabel={COPY.audioPause[lang] ?? COPY.audioPause.es}
               />
             </div>
           </div>
