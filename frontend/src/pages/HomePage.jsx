@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSlider from "@/components/HeroSlider";
+import HomeSectionNav from "@/components/HomeSectionNav";
 import TripFinder from "@/components/TripFinder";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
@@ -103,17 +104,28 @@ export default function HomePage() {
   return (
     <div data-testid="home-page">
       <HeroSlider />
-      <TripFinder />
+      <HomeSectionNav />
+      <div id="buscador" className="scroll-mt-[172px]">
+        <TripFinder />
+      </div>
       <Marquee />
       <EmotionalIntro />
-      <WorldMapSection />
-      <RuletaPromo />
+      <div id="destinos" className="scroll-mt-[172px]">
+        <WorldMapSection />
+      </div>
+      <div id="ruleta" className="scroll-mt-[172px]">
+        <RuletaPromo />
+      </div>
       <PlannerCta />
       <VideoSection {...HOME_VIDEOS.story} testid="home-video-story" />
       <FoundersSection />
-      <WhyXaluca />
+      <div id="por-que" className="scroll-mt-[172px]">
+        <WhyXaluca />
+      </div>
       <FeaturedQuote />
-      <TravelCategories />
+      <div id="viajes" className="scroll-mt-[172px]">
+        <TravelCategories />
+      </div>
       <OurTrips />
       <HomeAllTripsCatalog initialLimit={8} />
       <AllTripsCarousel />
@@ -187,14 +199,18 @@ export default function HomePage() {
 
       <StressFreeProcess />
       <WhatJourneysFeelLike />
-      <Testimonials themes={["general"]} limit={3} tone="cream" testid="home-testimonials" />
+      <div id="opiniones" className="scroll-mt-[172px]">
+        <Testimonials themes={["general"]} limit={3} tone="cream" testid="home-testimonials" />
+      </div>
       <PressMentions />
       <MoroccoVideos />
       <MoroccoCircuits />
       <MapSection />
       <PersonalConsultation />
       <CommunityCTA />
-      <ContactForm />
+      <div id="contacto" className="scroll-mt-[172px]">
+        <ContactForm />
+      </div>
     </div>
   );
 }
