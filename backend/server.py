@@ -4382,21 +4382,32 @@ async def ensure_default_contest() -> None:
         logger.error("ensure_default_contest failed: %s", exc)
 
 
+def _parse_dt(value):
+    """Parse an ISO datetime (accepting a trailing 'Z') as timezone-aware UTC."""
+    if not value:
+        return None
+    try:
+        s = value.replace("Z", "+00:00") if isinstance(value, str) else value
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _contest_is_open(contest: dict) -> tuple:
     """Return (open: bool, reason: str|None) honouring active flag + date window
     + global prize cap."""
     if not contest.get("active"):
         return False, "inactive"
     now = datetime.now(timezone.utc)
-    starts = contest.get("starts_at")
-    ends = contest.get("ends_at")
-    try:
-        if starts and datetime.fromisoformat(starts) > now:
-            return False, "not_started"
-        if ends and datetime.fromisoformat(ends) < now:
-            return False, "ended"
-    except Exception:  # noqa: BLE001 — bad date shouldn't break the contest
-        pass
+    starts = _parse_dt(contest.get("starts_at"))
+    ends = _parse_dt(contest.get("ends_at"))
+    if starts and starts > now:
+        return False, "not_started"
+    if ends and ends < now:
+        return False, "ended"
     cap = contest.get("max_prizes_total")
     if cap:
         total = sum(int(p.get("awarded", 0)) for p in contest.get("prizes", []))
