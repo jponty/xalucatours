@@ -4,12 +4,13 @@ import {
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
   MapPin, Languages, Inbox, Mail, Images, Database, Library,
-  ShieldCheck, Layers, Link2, Gauge,
+  ShieldCheck, Layers, Link2, Gauge, Gift,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
 import TextSlotsPanel from "@/components/TextSlotsPanel";
 import LibraryManager from "@/components/LibraryManager";
+import ContestsPanel from "@/components/ContestsPanel";
 import { Img } from "@/components/Img";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
@@ -482,6 +483,7 @@ export default function AdminPage() {
               { id: "galleries", label: "Galerías",   icon: Images },
               { id: "library", label: "Library",     icon: Library },
               { id: "leads",  label: "Leads",         icon: Inbox },
+              { id: "contests", label: "Concursos",   icon: Gift },
               { id: "notify", label: "Notificaciones", icon: Mail },
               { id: "mirror", label: "Mirror DB",      icon: Database },
             ].map((t) => {
@@ -666,6 +668,10 @@ export default function AdminPage() {
         ) : tab === "leads" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <LeadsPanel />
+          </section>
+        ) : tab === "contests" ? (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
+            <ContestsPanel />
           </section>
         ) : tab === "galleries" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-hidden max-h-[calc(100vh-56px)]">
