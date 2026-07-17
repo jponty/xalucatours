@@ -31,6 +31,7 @@ export default function SectionNav({ items = [], testid = "section-nav" }) {
   const [stickyTop, setStickyTop] = useState(116);
   const [vh, setVh] = useState(typeof window !== "undefined" ? window.innerHeight : 800);
   const [active, setActive] = useState(items[0]?.id);
+  const [progress, setProgress] = useState(0);
 
   const idsKey = useMemo(() => items.map((i) => i.id).join("|"), [items]);
   const resolveLabel = (l) => (typeof l === "string" ? l : pick(l, lang));
@@ -68,6 +69,9 @@ export default function SectionNav({ items = [], testid = "section-nav" }) {
         setStickyTop(delta > 0 ? 0 : headerH);
         lastY = y;
       }
+      // Reading progress (0–1) of the whole page.
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docH > 0 ? Math.min(1, Math.max(0, y / docH)) : 0);
       ticking = false;
     };
     const onScroll = () => {
@@ -175,6 +179,13 @@ export default function SectionNav({ items = [], testid = "section-nav" }) {
       style={{ top: stickyTop }}
       className="sticky z-30 bg-[#FDFBF7]/95 backdrop-blur-md border-y border-[#2C2621]/10 shadow-[0_6px_20px_-18px_rgba(26,21,19,0.5)] transition-[top] duration-500 ease-out"
     >
+      {/* Reading-progress line along the top edge of the nav */}
+      <span
+        data-testid={`${testid}-progress`}
+        aria-hidden="true"
+        className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-[#C16542] to-[#D4A373] z-40"
+        style={{ width: `${progress * 100}%` }}
+      />
       <div className="max-w-7xl mx-auto px-4 md:px-12">
         <ul className="flex items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar py-2.5">
           {items.map((s) => {
