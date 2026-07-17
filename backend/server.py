@@ -11,7 +11,9 @@ import logging
 import asyncio
 import httpx
 import hashlib
-from io import BytesIO
+import random
+import csv
+from io import BytesIO, StringIO
 from PIL import Image
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
@@ -4302,6 +4304,450 @@ async def translate_text(body: TranslateBody):
     return {"translations": out}
 
 
+# ==================================================================
+#  CONCURSO · "Ruleta de la Suerte" (Spin Wheel giveaway)
+#  ------------------------------------------------------------------
+#  Scalable, MULTI-CONTEST architecture. Each contest is a single doc
+#  in `contests` (config + embedded prizes). Participations live in
+#  `contest_participants`. The SERVER decides the prize (weighted) so
+#  odds are authoritative and the grand prize stays rare. All admin
+#  endpoints are protected with the existing admin token.
+# ==================================================================
+
+DEFAULT_CONTEST_SLUG = "xaluca-launch"
+_CONTEST_SEG_COLORS = ["#C16542", "#2C2621", "#A07042", "#7A4A32", "#5C5248"]
+
+
+def _lp(es, en, fr):
+    return {"es": es, "en": en, "fr": fr}
+
+
+def _default_contest_prizes() -> list:
+    raw = [
+        (_lp("Masaje gratuito en un hotel Grup Xaluca con Spa", "Free massage at a Grup Xaluca hotel with Spa", "Massage gratuit dans un hôtel Grup Xaluca avec Spa"), _lp("Masaje", "Massage", "Massage"), 5),
+        (_lp("Circuito Spa para dos personas", "Spa circuit for two", "Circuit Spa pour deux personnes"), _lp("Spa x2", "Spa x2", "Spa x2"), 5),
+        (_lp("Té a la menta de cortesía", "Complimentary mint tea", "Thé à la menthe offert"), _lp("Té", "Tea", "Thé"), 20),
+        (_lp("Upgrade de habitación (según disponibilidad)", "Room upgrade (subject to availability)", "Surclassement de chambre (selon disponibilité)"), _lp("Upgrade", "Upgrade", "Surclassement"), 8),
+        (_lp("Excursión en quad para dos personas", "Quad excursion for two", "Excursion en quad pour deux personnes"), _lp("Quad x2", "Quad x2", "Quad x2"), 4),
+        (_lp("Paseo en dromedario para dos personas", "Camel ride for two", "Balade à dos de dromadaire pour deux"), _lp("Dromedario", "Camel ride", "Dromadaire"), 6),
+        (_lp("Cena marroquí tradicional para dos", "Traditional Moroccan dinner for two", "Dîner marocain traditionnel pour deux"), _lp("Cena x2", "Dinner x2", "Dîner x2"), 4),
+        (_lp("Cóctel o bebida de bienvenida", "Welcome cocktail or drink", "Cocktail ou boisson de bienvenue"), _lp("Cóctel", "Cocktail", "Cocktail"), 18),
+        (_lp("10% de descuento en una futura reserva", "10% off a future booking", "10% de réduction sur une future réservation"), _lp("−10%", "−10%", "−10%"), 14),
+        (_lp("15% de descuento en tratamientos de Spa", "15% off Spa treatments", "15% de réduction sur les soins Spa"), _lp("−15% Spa", "−15% Spa", "−15% Spa"), 9),
+        (_lp("Cesta de productos tradicionales marroquíes", "Traditional Moroccan products hamper", "Panier de produits traditionnels marocains"), _lp("Cesta", "Hamper", "Panier"), 6),
+        (_lp("Pack de souvenirs Xaluca", "Xaluca souvenir pack", "Pack de souvenirs Xaluca"), _lp("Souvenirs", "Souvenirs", "Souvenirs"), 10),
+        (_lp("Noche gratuita en un bivouac (según disponibilidad)", "Free night in a bivouac (subject to availability)", "Nuit gratuite en bivouac (selon disponibilité)"), _lp("Bivouac", "Bivouac", "Bivouac"), 2),
+        (_lp("Estancia gratuita de una noche en Grup Xaluca", "Free one-night stay at Grup Xaluca", "Séjour gratuit d'une nuit chez Grup Xaluca"), _lp("1 noche", "1 night", "1 nuit"), 1.5),
+        (_lp("¡Viaje gratuito organizado por Xaluca Tours!", "Free trip organised by Xaluca Tours!", "Voyage gratuit organisé par Xaluca Tours !"), _lp("¡VIAJE!", "TRIP!", "VOYAGE !"), 0.2),
+    ]
+    prizes = []
+    for i, (label, short, weight) in enumerate(raw):
+        is_grand = i == len(raw) - 1
+        prizes.append({
+            "id": str(uuid.uuid4()),
+            "label": label,
+            "short": short,
+            "weight": float(weight),
+            "enabled": True,
+            "color": "#B8862F" if is_grand else _CONTEST_SEG_COLORS[i % len(_CONTEST_SEG_COLORS)],
+            "max_wins": None,   # None = unlimited
+            "awarded": 0,
+            "is_grand": is_grand,
+        })
+    return prizes
+
+
+async def ensure_default_contest() -> None:
+    """Seed a single active contest with the 15 sample prizes on first run."""
+    try:
+        existing = await db.contests.find_one({}, {"_id": 0, "id": 1})
+        if existing:
+            return
+        contest = {
+            "id": str(uuid.uuid4()),
+            "slug": DEFAULT_CONTEST_SLUG,
+            "name": _lp("Ruleta de la Suerte Xaluca", "Xaluca Spin Wheel", "Roue de la Chance Xaluca"),
+            "active": True,
+            "starts_at": None,
+            "ends_at": None,
+            "one_entry_per_email": True,
+            "max_prizes_total": None,   # None = unlimited
+            "prizes": _default_contest_prizes(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.contests.insert_one(contest)
+        await db.contest_participants.create_index([("contest_id", 1), ("email_lower", 1)])
+        logger.info("Seeded default contest '%s'.", DEFAULT_CONTEST_SLUG)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("ensure_default_contest failed: %s", exc)
+
+
+def _contest_is_open(contest: dict) -> tuple:
+    """Return (open: bool, reason: str|None) honouring active flag + date window
+    + global prize cap."""
+    if not contest.get("active"):
+        return False, "inactive"
+    now = datetime.now(timezone.utc)
+    starts = contest.get("starts_at")
+    ends = contest.get("ends_at")
+    try:
+        if starts and datetime.fromisoformat(starts) > now:
+            return False, "not_started"
+        if ends and datetime.fromisoformat(ends) < now:
+            return False, "ended"
+    except Exception:  # noqa: BLE001 — bad date shouldn't break the contest
+        pass
+    cap = contest.get("max_prizes_total")
+    if cap:
+        total = sum(int(p.get("awarded", 0)) for p in contest.get("prizes", []))
+        if total >= cap:
+            return False, "sold_out"
+    return True, None
+
+
+def _enabled_prizes(contest: dict) -> list:
+    """Prizes shown on the wheel (enabled), in stored order."""
+    return [p for p in contest.get("prizes", []) if p.get("enabled")]
+
+
+def _public_contest(contest: dict) -> dict:
+    """Public projection — never leaks weights or award counters."""
+    is_open, reason = _contest_is_open(contest)
+    return {
+        "id": contest["id"],
+        "slug": contest.get("slug"),
+        "name": contest.get("name"),
+        "open": is_open,
+        "closed_reason": reason,
+        "one_entry_per_email": bool(contest.get("one_entry_per_email", True)),
+        "prizes": [
+            {"id": p["id"], "label": p.get("label"), "short": p.get("short") or p.get("label"), "color": p.get("color"), "is_grand": bool(p.get("is_grand"))}
+            for p in _enabled_prizes(contest)
+        ],
+    }
+
+
+def _pick_weighted_prize(contest: dict):
+    """Weighted random over winnable prizes (enabled, weight>0, under max_wins)."""
+    pool = [
+        p for p in _enabled_prizes(contest)
+        if float(p.get("weight", 0)) > 0 and (p.get("max_wins") in (None, 0) or int(p.get("awarded", 0)) < int(p.get("max_wins")))
+    ]
+    if not pool:
+        return None
+    chosen = random.choices(pool, weights=[float(p["weight"]) for p in pool], k=1)[0]
+    return chosen
+
+
+# ---- Prize-confirmation email to the participant (branded, trilingual) ----
+_CONTEST_MAIL = {
+    "es": {
+        "subject": "¡Enhorabuena! Has ganado un premio · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Ruleta de la Suerte",
+        "title": "¡Enhorabuena, {name}!",
+        "intro": "Has participado en nuestro concurso y este es tu premio:",
+        "redeem_title": "Cómo canjear tu premio",
+        "redeem": "Guarda este correo. Para canjearlo, responde a este email o preséntalo en tu próxima estancia o viaje con Grup Xaluca · Xaluca Tours. Nuestro equipo te indicará los pasos y condiciones. Premio sujeto a disponibilidad y a las bases del concurso.",
+        "closing": "¡Nos vemos pronto en Marruecos!",
+        "team": "El equipo de Xaluca Tours",
+    },
+    "en": {
+        "subject": "Congratulations! You've won a prize · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Spin Wheel",
+        "title": "Congratulations, {name}!",
+        "intro": "You took part in our giveaway and here is your prize:",
+        "redeem_title": "How to redeem your prize",
+        "redeem": "Keep this email. To redeem it, reply to this message or present it during your next stay or trip with Grup Xaluca · Xaluca Tours. Our team will guide you through the steps and conditions. Prize subject to availability and to the contest terms.",
+        "closing": "See you soon in Morocco!",
+        "team": "The Xaluca Tours team",
+    },
+    "fr": {
+        "subject": "Félicitations ! Vous avez gagné un prix · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Roue de la Chance",
+        "title": "Félicitations, {name} !",
+        "intro": "Vous avez participé à notre jeu-concours et voici votre prix :",
+        "redeem_title": "Comment récupérer votre prix",
+        "redeem": "Conservez cet e-mail. Pour en profiter, répondez à ce message ou présentez-le lors de votre prochain séjour ou voyage avec Grup Xaluca · Xaluca Tours. Notre équipe vous indiquera les étapes et conditions. Prix soumis à disponibilité et aux conditions du concours.",
+        "closing": "À bientôt au Maroc !",
+        "team": "L'équipe Xaluca Tours",
+    },
+}
+
+
+def send_contest_prize_email(to_email: str, name: str, prize_label: str, lang: str = "es") -> None:
+    """Branded prize confirmation to the participant. Never raises."""
+    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and to_email):
+        return
+    c = _CONTEST_MAIL.get(lang if lang in _CONTEST_MAIL else "es")
+    safe_name = (name or "").strip() or {"es": "viajero/a", "en": "traveller", "fr": "voyageur"}[lang if lang in _CONTEST_MAIL else "es"]
+    html = (
+        '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
+        '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
+        + _email_banner(
+            f'{_email_logo_img(48)}'
+            f'<div style="color:#D4A373;font-size:11px;letter-spacing:3px;text-transform:uppercase">{c["eyebrow"]}</div>'
+            f'<div style="color:#FDFBF7;font-size:24px;margin-top:8px;font-weight:600">{c["title"].format(name=safe_name)}</div>',
+            padding="28px 30px",
+        )
+        + '<tr><td style="padding:30px">'
+        f'<p style="color:#5C5248;font-size:15px;line-height:1.7;margin:0 0 18px">{c["intro"]}</p>'
+        '<div style="background:#faf6ef;border:1px solid #e7ddca;border-radius:10px;padding:22px;text-align:center;margin:0 0 24px">'
+        '<div style="font-size:30px;line-height:1;margin-bottom:10px">🎁</div>'
+        f'<div style="color:#C16542;font-size:20px;font-weight:700;line-height:1.3">{prize_label}</div>'
+        '</div>'
+        f'<p style="color:#2C2621;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:0 0 6px">{c["redeem_title"]}</p>'
+        f'<p style="color:#5C5248;font-size:14px;line-height:1.7;margin:0 0 24px">{c["redeem"]}</p>'
+        f'<p style="color:#2C2621;font-size:15px;margin:0">{c["closing"]}</p>'
+        f'<p style="color:#2C2621;font-size:15px;margin:4px 0 0;font-weight:600">{c["team"]}</p>'
+        '</td></tr>'
+        '</table></div>'
+    )
+    try:
+        params = {"from": LEADS_FROM_EMAIL, "to": [to_email], "subject": c["subject"], "html": html}
+        attachments = _email_attachments()
+        if attachments:
+            params["attachments"] = attachments
+        if NOTIFY_EMAILS:
+            params["reply_to"] = NOTIFY_EMAILS[0]
+        resend.Emails.send(params)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("Contest prize email failed: %s", exc)
+
+
+# ---------- Public contest endpoints ----------
+class ContestSpinPayload(BaseModel):
+    contest_id: Optional[str] = Field(default=None, max_length=64)
+    first_name: str = Field(..., min_length=1, max_length=80)
+    last_name: str = Field(..., min_length=1, max_length=80)
+    email: EmailStr
+    language: Optional[str] = Field(default="es", max_length=5)
+
+
+async def _get_active_contest() -> Optional[dict]:
+    return await db.contests.find_one({"active": True}, {"_id": 0}, sort=[("created_at", -1)])
+
+
+@api_router.get("/contest/active")
+async def contest_active():
+    """Return the active contest (public projection) for the /concurso page."""
+    contest = await _get_active_contest()
+    if not contest:
+        return {"contest": None}
+    return {"contest": _public_contest(contest)}
+
+
+@api_router.post("/contest/spin")
+async def contest_spin(payload: ContestSpinPayload, background_tasks: BackgroundTasks):
+    """Validate the participant, decide the prize (server-side, weighted),
+    persist the entry and email the winner. Returns the prize + its wheel index."""
+    contest = None
+    if payload.contest_id:
+        contest = await db.contests.find_one({"id": payload.contest_id}, {"_id": 0})
+    if not contest:
+        contest = await _get_active_contest()
+    if not contest:
+        raise HTTPException(status_code=404, detail="No hay ningún concurso activo.")
+
+    is_open, reason = _contest_is_open(contest)
+    if not is_open:
+        msgs = {
+            "inactive": "El concurso no está disponible en este momento.",
+            "not_started": "El concurso aún no ha comenzado.",
+            "ended": "El concurso ha finalizado.",
+            "sold_out": "Se han agotado los premios de este concurso.",
+        }
+        raise HTTPException(status_code=403, detail=msgs.get(reason, "El concurso no está disponible."))
+
+    email = payload.email.strip().lower()
+    lang = payload.language if payload.language in ("es", "en", "fr") else "es"
+
+    # One participation per email (when enabled).
+    if contest.get("one_entry_per_email", True):
+        dup = await db.contest_participants.find_one(
+            {"contest_id": contest["id"], "email_lower": email}, {"_id": 0, "id": 1}
+        )
+        if dup:
+            raise HTTPException(status_code=409, detail="Este email ya ha participado en el concurso.")
+
+    prize = _pick_weighted_prize(contest)
+    if not prize:
+        raise HTTPException(status_code=403, detail="Se han agotado los premios de este concurso.")
+
+    enabled = _enabled_prizes(contest)
+    try:
+        prize_index = next(i for i, p in enumerate(enabled) if p["id"] == prize["id"])
+    except StopIteration:
+        prize_index = 0
+
+    name = f"{payload.first_name.strip()} {payload.last_name.strip()}".strip()
+    participant = {
+        "id": str(uuid.uuid4()),
+        "contest_id": contest["id"],
+        "first_name": payload.first_name.strip(),
+        "last_name": payload.last_name.strip(),
+        "email": payload.email.strip(),
+        "email_lower": email,
+        "language": lang,
+        "prize_id": prize["id"],
+        "prize_label": prize.get("label"),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.contest_participants.insert_one(participant)
+    # Increment the awarded counter for the winning prize.
+    await db.contests.update_one(
+        {"id": contest["id"], "prizes.id": prize["id"]},
+        {"$inc": {"prizes.$.awarded": 1}},
+    )
+
+    prize_label_localized = (prize.get("label") or {}).get(lang) or (prize.get("label") or {}).get("es") or ""
+    contest_name_localized = (contest.get("name") or {}).get(lang) or (contest.get("name") or {}).get("es") or "Concurso"
+
+    # Winner confirmation + internal notification (fire-and-forget).
+    background_tasks.add_task(send_contest_prize_email, payload.email.strip(), name, prize_label_localized, lang)
+    notif_html = _lead_email_html(
+        "Nueva participación · Concurso",
+        f"{name} · {payload.email.strip()}",
+        [
+            ("Concurso", contest_name_localized),
+            ("Nombre", payload.first_name.strip()),
+            ("Apellidos", payload.last_name.strip()),
+            ("Email", payload.email.strip()),
+            ("Premio ganado", prize_label_localized),
+            ("Idioma", lang),
+        ],
+        reply_cta=_reply_cta_html(name, payload.email.strip(), f"Concurso · {name}", lang),
+    )
+    background_tasks.add_task(send_lead_notification, f"Concurso · {name} · {prize_label_localized}", notif_html, payload.email.strip())
+
+    return {
+        "participant_id": participant["id"],
+        "prize_index": prize_index,
+        "prize": {"id": prize["id"], "label": prize.get("label"), "color": prize.get("color"), "is_grand": bool(prize.get("is_grand"))},
+    }
+
+
+# ---------- Admin contest endpoints (architecture for the future admin UI) ----------
+def _require_admin(authorization: str) -> None:
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+
+
+class ContestUpdatePayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    name: Optional[Dict[str, Any]] = None
+    active: Optional[bool] = None
+    starts_at: Optional[str] = None
+    ends_at: Optional[str] = None
+    one_entry_per_email: Optional[bool] = None
+    max_prizes_total: Optional[int] = None
+    prizes: Optional[List[Dict[str, Any]]] = None
+
+
+@api_router.get("/admin/contests")
+async def admin_list_contests(authorization: str = Header(default="")):
+    _require_admin(authorization)
+    rows = await db.contests.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    out = []
+    for c in rows:
+        participants = await db.contest_participants.count_documents({"contest_id": c["id"]})
+        is_open, reason = _contest_is_open(c)
+        out.append({
+            "id": c["id"], "slug": c.get("slug"), "name": c.get("name"),
+            "active": c.get("active"), "open": is_open, "closed_reason": reason,
+            "starts_at": c.get("starts_at"), "ends_at": c.get("ends_at"),
+            "one_entry_per_email": c.get("one_entry_per_email", True),
+            "max_prizes_total": c.get("max_prizes_total"),
+            "prize_count": len(c.get("prizes", [])), "participants": participants,
+        })
+    return {"contests": out}
+
+
+@api_router.get("/admin/contests/{contest_id}")
+async def admin_get_contest(contest_id: str, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    c = await db.contests.find_one({"id": contest_id}, {"_id": 0})
+    if not c:
+        raise HTTPException(status_code=404, detail="Concurso no encontrado")
+    return c
+
+
+@api_router.put("/admin/contests/{contest_id}")
+async def admin_update_contest(contest_id: str, payload: ContestUpdatePayload, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    c = await db.contests.find_one({"id": contest_id}, {"_id": 0})
+    if not c:
+        raise HTTPException(status_code=404, detail="Concurso no encontrado")
+    update = {k: v for k, v in payload.model_dump(exclude_none=True).items()}
+    # Normalise prizes (preserve ids + awarded counters where possible).
+    if "prizes" in update and isinstance(update["prizes"], list):
+        by_id = {p.get("id"): p for p in c.get("prizes", [])}
+        norm = []
+        for p in update["prizes"]:
+            pid = p.get("id") or str(uuid.uuid4())
+            prev = by_id.get(pid, {})
+            norm.append({
+                "id": pid,
+                "label": p.get("label") or prev.get("label") or _lp("", "", ""),
+                "short": p.get("short") or prev.get("short") or p.get("label") or _lp("", "", ""),
+                "weight": float(p.get("weight", prev.get("weight", 1))),
+                "enabled": bool(p.get("enabled", prev.get("enabled", True))),
+                "color": p.get("color") or prev.get("color") or "#C16542",
+                "max_wins": p.get("max_wins", prev.get("max_wins")),
+                "awarded": int(prev.get("awarded", 0)),
+                "is_grand": bool(p.get("is_grand", prev.get("is_grand", False))),
+            })
+        update["prizes"] = norm
+    await db.contests.update_one({"id": contest_id}, {"$set": update})
+    return await db.contests.find_one({"id": contest_id}, {"_id": 0})
+
+
+@api_router.get("/admin/contests/{contest_id}/participants")
+async def admin_contest_participants(contest_id: str, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    rows = await db.contest_participants.find({"contest_id": contest_id}, {"_id": 0}).sort("created_at", -1).to_list(20000)
+    return {"participants": rows, "total": len(rows)}
+
+
+@api_router.get("/admin/contests/{contest_id}/participants.csv")
+async def admin_contest_participants_csv(contest_id: str, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    rows = await db.contest_participants.find({"contest_id": contest_id}, {"_id": 0}).sort("created_at", 1).to_list(50000)
+    buf = StringIO()
+    writer = csv.writer(buf)
+    writer.writerow(["Fecha", "Nombre", "Apellidos", "Email", "Idioma", "Premio (ES)"])
+    for r in rows:
+        label = (r.get("prize_label") or {}).get("es", "") if isinstance(r.get("prize_label"), dict) else (r.get("prize_label") or "")
+        writer.writerow([r.get("created_at", ""), r.get("first_name", ""), r.get("last_name", ""), r.get("email", ""), r.get("language", ""), label])
+    csv_bytes = buf.getvalue()
+    return Response(
+        content=csv_bytes,
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="participantes_{contest_id}.csv"'},
+    )
+
+
+@api_router.get("/admin/contests/{contest_id}/stats")
+async def admin_contest_stats(contest_id: str, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    c = await db.contests.find_one({"id": contest_id}, {"_id": 0})
+    if not c:
+        raise HTTPException(status_code=404, detail="Concurso no encontrado")
+    total = await db.contest_participants.count_documents({"contest_id": contest_id})
+    per_prize = []
+    for p in c.get("prizes", []):
+        cnt = await db.contest_participants.count_documents({"contest_id": contest_id, "prize_id": p["id"]})
+        per_prize.append({"id": p["id"], "label": p.get("label"), "awarded": cnt, "enabled": p.get("enabled", True), "weight": p.get("weight")})
+    # Participations grouped by day.
+    pipeline = [
+        {"$match": {"contest_id": contest_id}},
+        {"$group": {"_id": {"$substr": ["$created_at", 0, 10]}, "count": {"$sum": 1}}},
+        {"$sort": {"_id": 1}},
+    ]
+    by_day = [{"date": d["_id"], "count": d["count"]} async for d in db.contest_participants.aggregate(pipeline)]
+    return {"total_participants": total, "per_prize": per_prize, "by_day": by_day}
+
+
 app.include_router(api_router)
 
 # Serve legacy uploaded files under /api/uploads for backward compatibility
@@ -4381,6 +4827,11 @@ async def startup_storage():
             await load_notify_emails()
         except Exception as exc:
             logger.error("notify emails load failed: %s", exc)
+        # 3b) Seed the default giveaway contest (only if none exists yet).
+        try:
+            await ensure_default_contest()
+        except Exception as exc:
+            logger.error("contest seed failed: %s", exc)
         # 4) Memory-heavy image maintenance (both default OFF — manual-only —
         #    to avoid OOM on a constrained container). Runs SEQUENTIALLY after a
         #    boot delay so the two jobs never overlap and can't double peak RAM.

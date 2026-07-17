@@ -111,6 +111,7 @@ import ContactPage from "@/pages/ContactPage";
 import CitaPreviaPage from "@/pages/CitaPreviaPage";
 import CatalogoPage from "@/pages/CatalogoPage";
 import JuegoPage from "@/pages/JuegoPage";
+import ConcursoPage from "@/pages/ConcursoPage";
 import GaleriaPage from "@/pages/GaleriaPage";
 import PreciosPage from "@/pages/PreciosPage";
 import OpinionesPage from "@/pages/OpinionesPage";
@@ -238,6 +239,7 @@ export const ROUTE_COMPONENTS = {
   contact:                       ContactPage,
   appointment:                   CitaPreviaPage,
   juego:                         JuegoPage,
+  concurso:                      ConcursoPage,
   galeria:                       GaleriaPage,
   precios:                       PreciosPage,
   opiniones:                     OpinionesPage,

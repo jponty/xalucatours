@@ -127,6 +127,7 @@ export const ROUTES = {
 
   // Interactive
   juego:              { es: "juego",                     en: "game",                     fr: "jeu" },
+  concurso:           { es: "concurso",                  en: "giveaway",                 fr: "concours" },
   // Editorial guides
   whenToTravel:       { es: "cuando-viajar",             en: "when-to-travel",           fr: "quand-partir" },
   blog:               { es: "blog",                      en: "blog",                     fr: "blog" },
