@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Star, Quote, Heart, ArrowRight, ShieldCheck } from "lucide-react";
@@ -98,7 +99,15 @@ export default function OpinionesPage() {
       </section>
 
       {/* Trust stats */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pb-4" data-testid="opiniones-stats">
+      <SectionNav
+        testid="opiniones-nav"
+        items={[
+          { id: "opiniones-stats", label: { es: "En cifras", en: "In numbers", fr: "En chiffres" } },
+          { id: "opiniones-wall", label: { es: "Opiniones", en: "Reviews", fr: "Avis" } },
+          { id: "opiniones-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
+        ]}
+      />
+      <section id="opiniones-stats" className="max-w-7xl mx-auto px-6 md:px-12 pb-4" data-testid="opiniones-stats">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-7">
           {STATS.map((s, i) => (
             <div key={i} data-testid={`opiniones-stat-${i + 1}`} className="bg-white border border-[#2C2621]/12 p-7 md:p-8">
@@ -122,7 +131,7 @@ export default function OpinionesPage() {
       </section>
 
       {/* Wall of Love — full width */}
-      <section className="w-full py-14 md:py-20" data-testid="opiniones-wall">
+      <section className="w-full py-14 md:py-20" id="opiniones-wall" data-testid="opiniones-wall">
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center gap-4 mb-10">
           <Heart className="w-5 h-5 text-[#C16542]" strokeWidth={1.7} />
           <EditableText
@@ -140,7 +149,7 @@ export default function OpinionesPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#1A1513] text-[#FDFBF7] berber-bg-cross" data-testid="opiniones-cta">
+      <section className="bg-[#1A1513] text-[#FDFBF7] berber-bg-cross" id="opiniones-cta" data-testid="opiniones-cta">
         <div className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24 text-center">
           <Quote className="w-8 h-8 text-[#D4A373] mx-auto" strokeWidth={1.4} />
           <EditableText

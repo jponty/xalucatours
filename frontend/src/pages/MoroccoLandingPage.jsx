@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
@@ -355,7 +356,7 @@ const Hero = ({ lang }) => (
 );
 
 const Why = ({ lang }) => (
-  <section data-testid="mar-why" className="relative bg-[#FDFBF7] py-24 md:py-32">
+  <section id="mar-why" data-testid="mar-why" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-14">
         <div className="md:col-span-7">
@@ -449,7 +450,7 @@ const Experiences = ({ lang }) => {
   );
   return (
     <SlotScope id="experiences">
-      <section data-testid="mar-experiences" className="relative bg-[#F2EBE1] py-24 md:py-32 border-t border-[#2C2621]/10 overflow-hidden">
+      <section id="mar-experiences" data-testid="mar-experiences" className="relative bg-[#F2EBE1] py-24 md:py-32 border-t border-[#2C2621]/10 overflow-hidden">
         <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
         <div className="relative max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-10 md:mb-14">
@@ -500,7 +501,7 @@ const Experiences = ({ lang }) => {
 };
 
 const InteractiveMap = ({ lang }) => (
-  <section data-testid="mar-map" className="relative bg-[#1A1513] py-24 md:py-28 overflow-hidden">
+  <section id="mar-map" data-testid="mar-map" className="relative bg-[#1A1513] py-24 md:py-28 overflow-hidden">
     <div className="absolute inset-0 berber-bg-cross opacity-10 pointer-events-none" aria-hidden="true" />
     <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-10">
@@ -593,7 +594,7 @@ const Profiles = ({ lang }) => (
 );
 
 const Seasons = ({ lang }) => (
-  <section data-testid="mar-seasons" className="relative bg-[#F2EBE1] py-24 md:py-32 border-t border-[#2C2621]/10 overflow-hidden">
+  <section id="mar-seasons" data-testid="mar-seasons" className="relative bg-[#F2EBE1] py-24 md:py-32 border-t border-[#2C2621]/10 overflow-hidden">
     <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
     <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
@@ -649,7 +650,7 @@ const Seasons = ({ lang }) => (
 
 const PopularRoutes = ({ lang }) => (
   <SlotScope id="routes">
-    <section data-testid="mar-routes" className="relative bg-[#FDFBF7] py-24 md:py-32">
+    <section id="mar-routes" data-testid="mar-routes" className="relative bg-[#FDFBF7] py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
           <div className="md:col-span-7">
@@ -789,7 +790,7 @@ const FinalCta = ({ lang }) => (
 );
 
 const FaqSection = ({ lang }) => (
-  <section data-testid="mar-faq" className="relative bg-[#FDFBF7] py-24 md:py-32 border-t border-[#2C2621]/10">
+  <section id="mar-faq" data-testid="mar-faq" className="relative bg-[#FDFBF7] py-24 md:py-32 border-t border-[#2C2621]/10">
     <div className="max-w-4xl mx-auto px-6 md:px-12">
       <div className="mb-12 md:mb-14">
         <span className="overline inline-flex items-center gap-2 text-[#C16542]">
@@ -834,6 +835,17 @@ export default function MoroccoLandingPage() {
   return (
     <div data-testid="mar-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <SectionNav
+        testid="mar-nav"
+        items={[
+          { id: "mar-why", label: { es: "Por qué", en: "Why", fr: "Pourquoi" } },
+          { id: "mar-experiences", label: { es: "Experiencias", en: "Experiences", fr: "Expériences" } },
+          { id: "mar-map", label: { es: "Mapa", en: "Map", fr: "Carte" } },
+          { id: "mar-seasons", label: { es: "Cuándo ir", en: "When to go", fr: "Quand partir" } },
+          { id: "mar-routes", label: { es: "Rutas", en: "Routes", fr: "Itinéraires" } },
+          { id: "mar-faq", label: { es: "Preguntas", en: "FAQ", fr: "FAQ" } },
+        ]}
+      />
       <Why lang={lang} />
       <Experiences lang={lang} />
       <InteractiveMap lang={lang} />

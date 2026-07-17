@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Tooltip } from "react-leaflet";
@@ -340,7 +341,18 @@ export default function WhenToTravelPage() {
       </section>
 
       {/* ======================== INTRO ======================== */}
-      <section className="py-24 md:py-32 border-b border-[#2C2621]/10" data-testid="when-intro">
+      <SectionNav
+        testid="when-nav"
+        items={[
+          { id: "when-intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
+          { id: "when-seasons", label: { es: "Temporadas", en: "Seasons", fr: "Saisons" } },
+          { id: "when-regions", label: { es: "Regiones", en: "Regions", fr: "Régions" } },
+          { id: "when-timeline", label: { es: "Mes a mes", en: "Month by month", fr: "Mois par mois" } },
+          { id: "when-map", label: { es: "Mapa", en: "Map", fr: "Carte" } },
+          { id: "when-faq", label: { es: "Preguntas", en: "FAQ", fr: "FAQ" } },
+        ]}
+      />
+      <section id="when-intro" className="py-24 md:py-32 border-b border-[#2C2621]/10" data-testid="when-intro">
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
           <div className="md:col-span-5">
             <span className="inline-block text-[10px] tracking-[0.35em] uppercase text-[#C16542] mb-6">
@@ -422,7 +434,7 @@ export default function WhenToTravelPage() {
       </section>
 
       {/* ======================== 4 SEASONS ======================== */}
-      <section className="py-24 md:py-32" data-testid="when-seasons">
+      <section className="py-24 md:py-32" id="when-seasons" data-testid="when-seasons">
         <div className="max-w-7xl mx-auto px-6 md:px-12 mb-16">
           <span className="inline-block text-[10px] tracking-[0.35em] uppercase text-[#C16542] mb-4">
             {pick(COPY.sections.seasons, lang)}
@@ -518,7 +530,7 @@ export default function WhenToTravelPage() {
       </section>
 
       {/* ======================== 5 CLIMATE REGIONS ======================== */}
-      <section className="py-24 md:py-32 bg-[#F2EBE1]/55 border-y border-[#2C2621]/10" data-testid="when-regions">
+      <section className="py-24 md:py-32 bg-[#F2EBE1]/55 border-y border-[#2C2621]/10" id="when-regions" data-testid="when-regions">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="mb-16 max-w-3xl">
             <span className="inline-block text-[10px] tracking-[0.35em] uppercase text-[#C16542] mb-4">
@@ -664,7 +676,7 @@ export default function WhenToTravelPage() {
       </section>
 
       {/* ======================== MONTHLY TIMELINE ======================== */}
-      <section className="py-24 md:py-32 bg-[#1A1513] text-[#FDFBF7]" data-testid="when-timeline">
+      <section className="py-24 md:py-32 bg-[#1A1513] text-[#FDFBF7]" id="when-timeline" data-testid="when-timeline">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="mb-14 max-w-3xl">
             <span className="inline-block text-[10px] tracking-[0.35em] uppercase text-[#D4A373] mb-4">
@@ -744,7 +756,7 @@ export default function WhenToTravelPage() {
       </section>
 
       {/* ======================== LEAFLET REGIONAL MAP ======================== */}
-      <section className="py-24 md:py-32" data-testid="when-map">
+      <section className="py-24 md:py-32" id="when-map" data-testid="when-map">
         <div className="max-w-7xl mx-auto px-6 md:px-12 mb-12 grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
           <div className="md:col-span-7">
             <span className="overline inline-flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase text-[#C16542] mb-4">
@@ -834,7 +846,7 @@ export default function WhenToTravelPage() {
       </section>
 
       {/* ======================== FAQ ======================== */}
-      <section className="py-24 md:py-32 bg-[#F2EBE1]/55 border-y border-[#2C2621]/10" data-testid="when-faq">
+      <section className="py-24 md:py-32 bg-[#F2EBE1]/55 border-y border-[#2C2621]/10" id="when-faq" data-testid="when-faq">
         <div className="max-w-4xl mx-auto px-6 md:px-12">
           <div className="mb-12 text-center">
             <span className="inline-block text-[10px] tracking-[0.35em] uppercase text-[#C16542] mb-4">

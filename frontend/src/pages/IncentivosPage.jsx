@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -311,7 +312,7 @@ const Hero = ({ lang }) => (
 
 const TrustBar = ({ lang }) => (
   <section
-    data-testid="inc-trust"
+    id="inc-trust" data-testid="inc-trust"
     className="relative bg-[#FDFBF7] py-16 md:py-20 border-b border-[#2C2621]/10"
   >
     <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -404,7 +405,7 @@ const VerticalRow = ({ item, index, lang }) => {
 const Verticals = ({ lang }) => (
   <SlotScope id="verticals">
     <section
-      data-testid="inc-verticals"
+      id="inc-verticals" data-testid="inc-verticals"
       className="relative bg-[#FDFBF7] py-20 md:py-28"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -431,7 +432,7 @@ const Verticals = ({ lang }) => (
 const Cases = ({ lang }) => (
   <SlotScope id="cases">
     <section
-      data-testid="inc-cases"
+      id="inc-cases" data-testid="inc-cases"
       className="relative bg-[#1A1513] py-20 md:py-28 overflow-hidden border-t border-[#FDFBF7]/10"
     >
       <div className="absolute inset-0 berber-bg-cross opacity-10 pointer-events-none" aria-hidden="true" />
@@ -530,7 +531,7 @@ const Cases = ({ lang }) => (
 const Process = ({ lang }) => (
   <SlotScope id="process">
     <section
-      data-testid="inc-process"
+      id="inc-process" data-testid="inc-process"
       className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10 overflow-hidden"
     >
       <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
@@ -605,7 +606,7 @@ const Process = ({ lang }) => (
 
 const FinalCta = ({ lang }) => (
   <section
-    data-testid="inc-final-cta"
+    id="inc-final-cta" data-testid="inc-final-cta"
     className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden"
   >
     <EditableImage
@@ -709,6 +710,16 @@ export default function IncentivosPage() {
   return (
     <div data-testid="inc-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <SectionNav
+        testid="inc-nav"
+        items={[
+          { id: "inc-trust", label: { es: "Confianza", en: "Trust", fr: "Confiance" } },
+          { id: "inc-verticals", label: { es: "Áreas", en: "Areas", fr: "Domaines" } },
+          { id: "inc-cases", label: { es: "Casos", en: "Cases", fr: "Cas" } },
+          { id: "inc-process", label: { es: "Proceso", en: "Process", fr: "Processus" } },
+          { id: "inc-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
+        ]}
+      />
       <TrustBar lang={lang} />
       <Verticals lang={lang} />
       <Cases lang={lang} />

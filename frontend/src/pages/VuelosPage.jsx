@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Plane, ArrowUpRight, MapPin, Ticket, Briefcase, ArrowRight, Check } from "lucide-react";
@@ -88,7 +89,14 @@ export default function VuelosPage() {
       </section>
 
       {/* Origin selector */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12" data-testid="vuelos-origin-selector">
+      <SectionNav
+        testid="vuelos-nav"
+        items={[
+          { id: "vuelos-origin-selector", label: { es: "Elige origen", en: "Choose origin", fr: "Choisir l'origine" } },
+          { id: "vuelos-options", label: { es: "Opciones de vuelo", en: "Flight options", fr: "Options de vol" } },
+        ]}
+      />
+      <section id="vuelos-origin-selector" className="max-w-7xl mx-auto px-6 md:px-12" data-testid="vuelos-origin-selector">
         <span className="block text-[10px] tracking-[0.3em] uppercase text-[#A07042] mb-3">
           {pick({ es: "Ciudad de salida", en: "Departure city", fr: "Ville de départ" }, lang)}
         </span>
@@ -151,7 +159,7 @@ export default function VuelosPage() {
       </section>
 
       {/* How we organise flights — two options */}
-      <section className="bg-[#1A1513] text-[#FDFBF7] berber-bg-cross" data-testid="vuelos-options">
+      <section className="bg-[#1A1513] text-[#FDFBF7] berber-bg-cross" id="vuelos-options" data-testid="vuelos-options">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-3 text-[11px] tracking-[0.35em] uppercase text-[#D4A373]">

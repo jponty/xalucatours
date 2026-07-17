@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 /* ============================================================
    ContactPage.jsx  ·  /contacto · /en/contact · /fr/contact
    ----
@@ -259,7 +260,17 @@ const ContactPage = () => {
         </section>
 
         {/* ============== DIRECT CONTACT — phone + email cards ============== */}
-        <section data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
+        <SectionNav
+          testid="contact-nav"
+          items={[
+            { id: "contact-direct", label: { es: "Contacto directo", en: "Direct contact", fr: "Contact direct" } },
+            { id: "contact-steps", label: { es: "Cómo funciona", en: "How it works", fr: "Comment ça marche" } },
+            { id: "contact-reasons", label: { es: "Motivos", en: "Reasons", fr: "Motifs" } },
+            { id: "contact-form", label: { es: "Formulario", en: "Form", fr: "Formulaire" } },
+            { id: "contact-location", label: { es: "Oficina", en: "Office", fr: "Bureau" } },
+          ]}
+        />
+        <section id="contact-direct" data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <TripContextBanner className="mb-12 max-w-3xl" />
             <div className="max-w-2xl mb-12">
@@ -365,7 +376,7 @@ const ContactPage = () => {
         </section>
 
         {/* ============== 3 STEPS ============== */}
-        <section data-testid="contact-steps" className="py-20 md:py-28 border-b border-[#2C2621]/10">
+        <section id="contact-steps" data-testid="contact-steps" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-2xl mb-14">
               <E name="steps.eyebrow" defaults={COPY.steps.eyebrow} multiline={false} as="span"
@@ -505,7 +516,7 @@ const ContactPage = () => {
         </section>
 
         {/* ============== WHY US ============== */}
-        <section data-testid="contact-reasons" className="py-20 md:py-28 bg-[#F8F2E6]/40 border-b border-[#2C2621]/10">
+        <section id="contact-reasons" data-testid="contact-reasons" className="py-20 md:py-28 bg-[#F8F2E6]/40 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-3xl mb-14">
               <E name="reasons.eyebrow" defaults={COPY.reasons.eyebrow} multiline={false} as="span"
@@ -584,7 +595,7 @@ const ContactPage = () => {
         </div>
 
         {/* ============== HOW TO REACH US — map + location ============== */}
-        <section data-testid="contact-location" className="py-20 md:py-28 border-t border-[#2C2621]/10">
+        <section id="contact-location" data-testid="contact-location" className="py-20 md:py-28 border-t border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-2xl mb-12">
               <span className="inline-flex items-center gap-3 text-[#C16542] mb-4">

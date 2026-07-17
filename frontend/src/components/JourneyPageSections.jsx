@@ -15,6 +15,7 @@ import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import HeroMonogram from "@/components/HeroMonogram";
 import TripCardActions from "@/components/TripCardActions";
 import { useSlotId } from "@/components/slotScope";
+import SectionNav from "@/components/SectionNav";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
 import { warmTripHero as warmHero } from "@/lib/tripHero";
 
@@ -147,62 +148,13 @@ export const JourneyHero = ({
 };
 
 /* ============================================================
-   StickyNav — anchor chips that follow the user as they scroll
+   StickyNav — reuses the shared robust <SectionNav> so every
+   journey/programme/hub page gets reliable smooth-scroll anchors,
+   drift-proof active highlighting and header-flush stickiness.
 ============================================================ */
-export const StickyNav = ({ items, testid = "journey-sticky-nav" }) => {
-  const [active, setActive] = useState(items[0]?.id);
-  const [pinned, setPinned] = useState(false);
-
-  useEffect(() => {
-    const handler = () => {
-      setPinned(window.scrollY > 600);
-      // detect active section
-      let current = items[0]?.id;
-      for (const item of items) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const top = el.getBoundingClientRect().top;
-          if (top <= 140) current = item.id;
-        }
-      }
-      setActive(current);
-    };
-    window.addEventListener("scroll", handler, { passive: true });
-    handler();
-    return () => window.removeEventListener("scroll", handler);
-  }, [items]);
-
-  return (
-    <nav
-      data-testid={testid}
-      aria-label="Section navigation"
-      className={`sticky top-0 z-30 transition-all duration-500 ${
-        pinned ? "bg-[#1A1513]/90 backdrop-blur-md border-b border-[#FDFBF7]/10" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex items-center gap-2 md:gap-4 overflow-x-auto py-3 md:py-4 no-scrollbar">
-          {items.map((it) => (
-            <a
-              key={it.id}
-              href={`#${it.id}`}
-              data-testid={`${testid}-${it.id}`}
-              className={`shrink-0 text-[10px] md:text-[11px] tracking-[0.25em] uppercase px-3 md:px-4 py-2 border transition-all duration-300 ${
-                active === it.id
-                  ? "bg-[#D4A373] text-[#1A1513] border-[#D4A373]"
-                  : pinned
-                  ? "border-[#FDFBF7]/25 text-[#FDFBF7]/80 hover:text-[#FDFBF7] hover:border-[#FDFBF7]/60"
-                  : "border-[#FDFBF7]/0 text-[#FDFBF7]/0 pointer-events-none"
-              }`}
-            >
-              {it.label}
-            </a>
-          ))}
-        </div>
-      </div>
-    </nav>
-  );
-};
+export const StickyNav = ({ items, testid = "journey-sticky-nav" }) => (
+  <SectionNav items={items} testid={testid} />
+);
 
 /* ============================================================
    ItineraryBlock — one of the editorial routes (alternating layout)

@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline } from "react-leaflet";
@@ -568,7 +569,7 @@ const Hero = ({ lang }) => (
 );
 
 const Intro = ({ lang }) => (
-  <section data-testid="qvm-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
+  <section id="qvm-intro" data-testid="qvm-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
       <div className="md:col-span-5">
         <span className="overline inline-flex items-center gap-2 text-[#C16542]">
@@ -871,7 +872,7 @@ const DestinationsMap = ({ lang }) => {
 
   return (
     <section
-      data-testid="qvm-map-section"
+      id="qvm-map-section" data-testid="qvm-map-section"
       className="relative bg-[#1A1513] py-20 md:py-28 overflow-hidden"
     >
       <div className="absolute inset-0 berber-bg-cross opacity-10 pointer-events-none" aria-hidden="true" />
@@ -1223,7 +1224,7 @@ const DestinationsMap = ({ lang }) => {
 
 const FinalCta = ({ lang }) => (
   <section
-    data-testid="qvm-final-cta"
+    id="qvm-final-cta" data-testid="qvm-final-cta"
     className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden"
   >
     <EditableImage
@@ -1280,6 +1281,14 @@ export default function QueVerEnMarruecosPage() {
   return (
     <div data-testid="qvm-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <SectionNav
+        testid="qvm-nav"
+        items={[
+          { id: "qvm-intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
+          { id: "qvm-map-section", label: { es: "Mapa y lugares", en: "Map & places", fr: "Carte & lieux" } },
+          { id: "qvm-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
+        ]}
+      />
       <Intro lang={lang} />
       {SECTIONS.map((section) => (
         <Section key={section.id} section={section} lang={lang} />

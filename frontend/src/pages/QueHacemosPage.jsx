@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -274,7 +275,7 @@ const Hero = ({ lang }) => (
 );
 
 const Intro = ({ lang }) => (
-  <section data-testid="qh-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
+  <section id="qh-intro" data-testid="qh-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
       <div className="md:col-span-5">
         <span className="overline inline-flex items-center gap-2 text-[#C16542]">
@@ -314,7 +315,7 @@ const Intro = ({ lang }) => (
 const TripPillars = ({ lang }) => (
   <SlotScope id="pillars">
     <section
-      data-testid="qh-pillars"
+      id="qh-pillars" data-testid="qh-pillars"
       className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10"
     >
       <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
@@ -373,7 +374,7 @@ const TripPillars = ({ lang }) => (
 
 const Reasons = ({ lang }) => (
   <section
-    data-testid="qh-reasons"
+    id="qh-reasons" data-testid="qh-reasons"
     className="relative bg-[#FDFBF7] py-20 md:py-28"
   >
     <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -513,7 +514,7 @@ const Testimonials = ({ lang }) => {
 
 const FinalCta = ({ lang }) => (
   <section
-    data-testid="qh-final-cta"
+    id="qh-final-cta" data-testid="qh-final-cta"
     className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden"
   >
     <EditableImage
@@ -618,6 +619,15 @@ export default function QueHacemosPage() {
   return (
     <div data-testid="qh-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <SectionNav
+        testid="qh-nav"
+        items={[
+          { id: "qh-intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
+          { id: "qh-pillars", label: { es: "Qué hacemos", en: "What we do", fr: "Ce que nous faisons" } },
+          { id: "qh-reasons", label: { es: "Por qué Xaluca", en: "Why Xaluca", fr: "Pourquoi Xaluca" } },
+          { id: "qh-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
+        ]}
+      />
       <Intro lang={lang} />
       <TripPillars lang={lang} />
       <Reasons lang={lang} />

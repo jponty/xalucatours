@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -1040,6 +1041,17 @@ export default function ToursLandingPage() {
   return (
     <div data-testid="tours-landing-page">
       <Hero t={t.hero} />
+      <SectionNav
+        testid="viajes-nav"
+        items={[
+          { id: "intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
+          { id: "regions", label: { es: "Regiones", en: "Regions", fr: "Régions" } },
+          { id: "experiences", label: { es: "Experiencias", en: "Experiences", fr: "Expériences" } },
+          { id: "explorer", label: { es: "Explorador", en: "Explorer", fr: "Explorateur" } },
+          { id: "proximas", label: { es: "Próximas salidas", en: "Upcoming", fr: "Prochains départs" } },
+          { id: "asesoramiento", label: { es: "Asesoramiento", en: "Advice", fr: "Conseil" } },
+        ]}
+      />
       <EditorialIntro t={t.intro} postcard={t.postcard} />
       <ToursRegionMap />
       <ToursVideoSection videoId="nzD3e3Qr7g8" />

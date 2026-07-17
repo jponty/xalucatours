@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -484,7 +485,7 @@ const TeamProfiles = ({ lang, selectedId, onSelect }) => {
 };
 
 const Intro = ({ lang, selectedId, onSelect }) => (
-  <section data-testid="eq-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
+  <section id="eq-intro" data-testid="eq-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
         <div className="md:col-span-5">
@@ -508,7 +509,7 @@ const Intro = ({ lang, selectedId, onSelect }) => (
 
 const GroupPillars = ({ lang }) => (
   <SlotScope id="group">
-    <section data-testid="eq-group" className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10 overflow-hidden">
+    <section id="eq-group" data-testid="eq-group" className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10 overflow-hidden">
       <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12 md:mb-16">
@@ -591,7 +592,7 @@ const Stats = ({ lang }) => (
 
 const XalucaEcosystem = ({ lang }) => (
   <SlotScope id="ecosystem">
-    <section data-testid="eq-ecosystem" className="relative bg-[#FDFBF7] py-20 md:py-28 border-t border-[#2C2621]/10">
+    <section id="eq-ecosystem" data-testid="eq-ecosystem" className="relative bg-[#FDFBF7] py-20 md:py-28 border-t border-[#2C2621]/10">
       <div className="relative max-w-7xl mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="max-w-3xl">
@@ -703,7 +704,7 @@ const Bridge = ({ lang }) => (
 );
 
 const Values = ({ lang }) => (
-  <section data-testid="eq-values" className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10 overflow-hidden">
+  <section id="eq-values" data-testid="eq-values" className="relative bg-[#F2EBE1] py-20 md:py-28 border-t border-[#2C2621]/10 overflow-hidden">
     <div className="absolute inset-0 berber-bg-diamond opacity-40 pointer-events-none" aria-hidden="true" />
     <div className="relative max-w-7xl mx-auto px-6 md:px-12">
       <div className="max-w-3xl mb-12 md:mb-16">
@@ -745,7 +746,7 @@ const Values = ({ lang }) => (
 );
 
 const FinalCta = ({ lang }) => (
-  <section data-testid="eq-final-cta" className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden">
+  <section id="eq-final-cta" data-testid="eq-final-cta" className="relative bg-[#1A1513] py-24 md:py-32 overflow-hidden">
     <EditableImage
       slot="equipo.final.bg"
       fallback={banner("medinaPeople", 2400)}
@@ -850,6 +851,16 @@ export default function EquipoPage() {
   return (
     <div data-testid="eq-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <SectionNav
+        testid="eq-nav"
+        items={[
+          { id: "eq-intro", label: { es: "Nosotros", en: "About us", fr: "À propos" } },
+          { id: "eq-group", label: { es: "El equipo", en: "The team", fr: "L'équipe" } },
+          { id: "eq-ecosystem", label: { es: "Ecosistema", en: "Ecosystem", fr: "Écosystème" } },
+          { id: "eq-values", label: { es: "Valores", en: "Values", fr: "Valeurs" } },
+          { id: "eq-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
+        ]}
+      />
       <Intro lang={lang} selectedId={selectedId} onSelect={setSelectedId} />
       <Testimonials
         key={selectedId}

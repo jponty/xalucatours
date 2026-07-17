@@ -1,3 +1,4 @@
+import SectionNav from "@/components/SectionNav";
 /* ============================================================
    CitaPreviaPage.jsx · /citaprevia · /en/book-appointment · /fr/prendre-rendez-vous
    ------------------------------------------------------------
@@ -157,7 +158,15 @@ const CitaPreviaPage = () => {
         </section>
 
         {/* ============== STEPS ============== */}
-        <section data-testid="citaprevia-steps" className="py-20 md:py-28 border-b border-[#2C2621]/10">
+        <SectionNav
+          testid="citaprevia-nav"
+          items={[
+            { id: "citaprevia-steps", label: { es: "Cómo funciona", en: "How it works", fr: "Comment ça marche" } },
+            { id: "booking", label: { es: "Reservar cita", en: "Book", fr: "Réserver" } },
+            { id: "citaprevia-outro", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
+          ]}
+        />
+        <section id="citaprevia-steps" data-testid="citaprevia-steps" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="max-w-2xl mb-14">
               <E name="steps.eyebrow" defaults={COPY.steps.eyebrow} multiline={false} as="span"
@@ -194,7 +203,7 @@ const CitaPreviaPage = () => {
         </section>
 
         {/* ============== OUTRO CTA ============== */}
-        <section data-testid="citaprevia-outro" className="py-16 md:py-20">
+        <section id="citaprevia-outro" data-testid="citaprevia-outro" className="py-16 md:py-20">
           <div className="max-w-4xl mx-auto px-6 md:px-12 text-center">
             <E name="outro.title" defaults={COPY.outro.title} multiline={false} as="h2"
                className="font-serif text-2xl md:text-3xl text-[#2C2621] leading-tight tracking-tight" />
