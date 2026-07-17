@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Compass, ArrowRight } from "lucide-react";
+import { Compass, ArrowRight, Play, Pause } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
@@ -20,6 +20,8 @@ const PONT_IMG =
   "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/qa8e8tkj_Llui%CC%81s%20Pont.jpg";
 const TAYEB_IMG =
   "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/odcogxxd_Tayeb%20Ettaiek.jpg";
+const FOUNDER_AUDIO =
+  "https://customer-assets-lqy194kg.emergentagent.net/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/hglizaom_Grup%20Xaluca.mp3";
 
 const COPY = {
   eyebrow: T("Nuestros fundadores", "Our founders", "Nos fondateurs"),
@@ -35,12 +37,16 @@ const COPY = {
   ),
   role: T("Cofundador · Grup Xaluca · Xaluca Tours", "Co-founder · Grup Xaluca · Xaluca Tours", "Cofondateur · Grup Xaluca · Xaluca Tours"),
   teamCta: T("Conoce al equipo", "Meet the team", "Découvrir l'équipe"),
+  audioPlay: T("Escuchar a", "Listen to", "Écouter"),
+  audioPause: T("Pausar", "Pause", "Pause"),
 };
 
 const FOUNDERS = [
   {
     id: "pont",
     img: PONT_IMG,
+    audio: FOUNDER_AUDIO,
+    firstName: "Lluís",
     tilt: "-rotate-3",
     paperTilt: "rotate-[0.6deg]",
     tapeRotate: "-rotate-6",
@@ -60,6 +66,8 @@ const FOUNDERS = [
   {
     id: "tayeb",
     img: TAYEB_IMG,
+    audio: FOUNDER_AUDIO,
+    firstName: "Tayeb",
     tilt: "rotate-3",
     paperTilt: "-rotate-[0.6deg]",
     tapeRotate: "rotate-6",
@@ -78,7 +86,57 @@ const FOUNDERS = [
   },
 ];
 
-const FounderBlock = ({ f, reverse }) => (
+const FounderAudio = ({ src, playLabel, pauseLabel, testid }) => {
+  const ref = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => {
+    const el = ref.current;
+    if (!el) return;
+    if (el.paused) {
+      // Only one founder audio plays at a time.
+      if (window.__xalucaFounderAudio && window.__xalucaFounderAudio !== el) {
+        try { window.__xalucaFounderAudio.pause(); } catch (_) { /* noop */ }
+      }
+      window.__xalucaFounderAudio = el;
+      el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={toggle}
+        data-testid={testid}
+        aria-pressed={playing}
+        aria-label={playing ? pauseLabel : playLabel}
+        className={`inline-flex items-center gap-2.5 px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase transition-colors ${
+          playing
+            ? "bg-[#C16542] text-[#FDFBF7]"
+            : "border border-[#C16542]/40 text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
+        }`}
+      >
+        <span className="inline-flex items-center justify-center">
+          {playing ? <Pause className="w-4 h-4" strokeWidth={1.8} /> : <Play className="w-4 h-4" strokeWidth={1.8} />}
+        </span>
+        {playing ? pauseLabel : playLabel}
+      </button>
+      <audio
+        ref={ref}
+        src={src}
+        preload="none"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={() => setPlaying(false)}
+      />
+    </>
+  );
+};
+
+const FounderBlock = ({ f, reverse, lang }) => (
   <div
     data-testid={`founder-${f.id}`}
     className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-12 md:gap-16 lg:gap-24`}
@@ -151,22 +209,30 @@ const FounderBlock = ({ f, reverse }) => (
             defaults={f.note2}
             className="font-hand text-[23px] md:text-[26px] leading-[1.55] text-[#3A322B] mt-5"
           />
-          <div className="mt-8 text-right">
-            <EditableText
-              as="p"
-              slot={`home.founders.${f.id}.signature`}
-              defaults={f.name}
-              multiline={false}
-              noTranslate
-              className="font-hand text-[34px] leading-none text-[#2C2621]"
+          <div className="mt-8 flex items-end justify-between gap-4 flex-wrap-reverse">
+            <FounderAudio
+              src={f.audio}
+              testid={`founder-audio-${f.id}`}
+              playLabel={`${(COPY.audioPlay[lang] ?? COPY.audioPlay.es)} ${f.firstName}`}
+              pauseLabel={COPY.audioPause[lang] ?? COPY.audioPause.es}
             />
-            <EditableText
-              as="p"
-              slot={`home.founders.${f.id}.role`}
-              defaults={COPY.role}
-              multiline={false}
-              className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]"
-            />
+            <div className="text-right ml-auto">
+              <EditableText
+                as="p"
+                slot={`home.founders.${f.id}.signature`}
+                defaults={f.name}
+                multiline={false}
+                noTranslate
+                className="font-hand text-[34px] leading-none text-[#2C2621]"
+              />
+              <EditableText
+                as="p"
+                slot={`home.founders.${f.id}.role`}
+                defaults={COPY.role}
+                multiline={false}
+                className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -214,7 +280,7 @@ export const FoundersSection = () => {
       {/* Founder blocks */}
       <div className="mt-16 md:mt-24 space-y-24 md:space-y-32">
         {FOUNDERS.map((f, i) => (
-          <FounderBlock key={f.id} f={f} reverse={i % 2 === 1} />
+          <FounderBlock key={f.id} f={f} reverse={i % 2 === 1} lang={lang} />
         ))}
       </div>
 
