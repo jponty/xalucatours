@@ -13,6 +13,8 @@ import { XALUCA_TRIPS, TRIP_BY_ROUTE, tripImage } from "@/lib/planner/plannerTri
 import { DEST_BY_ID } from "@/lib/planner/plannerData";
 import { SPAIN_ORIGINS } from "@/lib/flights";
 import { TRAVEL_STYLES } from "@/lib/bestTimeData";
+import { getFromPrice } from "@/lib/pricing";
+import { getProgramTiers } from "@/lib/programPricing";
 
 const T = (es, en, fr) => ({ es, en, fr });
 export const tt = (obj, lang) => (obj && (obj[lang] ?? obj.es)) || "";
@@ -85,18 +87,44 @@ const STYLE_MONTHS = TRAVEL_STYLES.reduce((m, s) => ((m[s.id] = s.bestMonths), m
 export const nodeName = (id, lang) => tt(DEST_BY_ID[id]?.name, lang) || id;
 
 /* ------------------------------------------------------------------
+   Price helpers — 100% derived from the REAL configured tariffs.
+   `tripFromPrice` mirrors <FromPrice>: per-program tariff when present,
+   otherwise the live global pricing tiers. Never a hardcoded value.
+------------------------------------------------------------------ */
+export const tripFromPrice = (routeId, pricing) => {
+  const tiers = getProgramTiers(routeId) || (pricing && pricing.tiers) || null;
+  if (!tiers) return null;
+  return getFromPrice({ tiers });
+};
+
+/* Real min/max "from" price across the whole published catalogue, rounded
+   OUTWARD to the nearest 10 so the full range always covers every trip.
+   Recomputed automatically whenever a trip / its price changes. */
+export const priceBounds = (pricing) => {
+  const vals = XALUCA_TRIPS
+    .map((t) => tripFromPrice(t.routeId, pricing))
+    .filter((n) => typeof n === "number" && n > 0);
+  if (!vals.length) return { min: 0, max: 0 };
+  const lo = Math.floor(Math.min(...vals) / 10) * 10;
+  const hi = Math.ceil(Math.max(...vals) / 10) * 10;
+  return { min: lo, max: hi === lo ? lo + 10 : hi };
+};
+
+/* ------------------------------------------------------------------
    Rank every trip against the criteria. Returns [{ trip, score,
    reasons[] }] sorted best-first (stable). Reasons drive the UI chip.
 ------------------------------------------------------------------ */
-export const rankTrips = ({ originId, monthValue, durationId }) => {
+export const rankTrips = ({ originId, monthValue, durationId, priceMin, priceMax, pricing }) => {
   const month = monthValue && monthValue !== "flexible" ? Number(monthValue.split("-")[1]) : null;
   const directSet =
     originId && originId !== "otra" && ORIGIN_DIRECT[originId] ? new Set(ORIGIN_DIRECT[originId]) : null;
   const bucket = durationId ? DURATION_BUCKETS.find((b) => b.id === durationId) : null;
+  const usePriceFilter = typeof priceMin === "number" && typeof priceMax === "number";
 
   return XALUCA_TRIPS.map((trip, idx) => {
     let score = 0;
     const reasons = [];
+    const from = tripFromPrice(trip.routeId, pricing);
 
     // 1) Duration (primary). Exact bucket match dominates; near-miss softens.
     if (bucket) {
@@ -130,8 +158,10 @@ export const rankTrips = ({ originId, monthValue, durationId }) => {
       score += 8;
     }
 
-    return { trip, score, reasons, idx };
-  }).sort((a, b) => b.score - a.score || a.idx - b.idx);
+    return { trip, score, reasons, idx, from };
+  })
+    .filter((r) => !usePriceFilter || (typeof r.from === "number" && r.from >= priceMin && r.from <= priceMax))
+    .sort((a, b) => b.score - a.score || a.idx - b.idx);
 };
 
 export const topTrips = (criteria, limit = 6) => rankTrips(criteria).slice(0, limit);

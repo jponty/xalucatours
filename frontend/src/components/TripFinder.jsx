@@ -1,10 +1,13 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 import {
-  MapPin, Plane, CalendarDays, Clock, ChevronDown, ArrowUpRight, ArrowRight, Compass, Sparkles, Heart,
+  MapPin, Plane, CalendarDays, Clock, ChevronDown, ArrowUpRight, ArrowRight, Compass, Sparkles, Heart, Wallet, RotateCcw, SearchX,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { usePricing } from "@/lib/pricingStore";
+import { fmtEuro } from "@/lib/pricing";
 import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import { FromPrice } from "@/components/FromPrice";
@@ -12,7 +15,7 @@ import EditableText from "@/components/EditableText";
 import monogramWhite from "@/assets/monograma-x-white.png";
 import {
   ORIGIN_OPTIONS, buildMonthOptions, monthName, FLEXIBLE_LABEL, DURATION_BUCKETS,
-  topTrips, tripImage, tt, nodeName,
+  topTrips, tripImage, tt, nodeName, priceBounds,
 } from "@/lib/tripFinder";
 
 const T = (es, en, fr) => ({ es, en, fr });
@@ -48,6 +51,15 @@ const UI = {
   ),
   plannerCta: T("Planificador inteligente", "Smart planner", "Planificateur intelligent"),
   allTrips: T("Ver todos los viajes", "View all trips", "Voir tous les voyages"),
+  priceRange: T("Rango de precio · por persona", "Price range · per person", "Fourchette de prix · par personne"),
+  resetRange: T("Restablecer", "Reset", "Réinitialiser"),
+  emptyTitle: T("Ningún viaje en este rango", "No trips in this range", "Aucun voyage dans cette fourchette"),
+  emptyBody: T(
+    "Prueba a ampliar el rango de precio o ajusta los demás filtros.",
+    "Try widening the price range or adjusting the other filters.",
+    "Essayez d'élargir la fourchette de prix ou d'ajuster les autres filtres.",
+  ),
+  emptyReset: T("Restablecer rango completo", "Reset full range", "Réinitialiser toute la fourchette"),
 };
 
 const FieldLabel = ({ Icon, children }) => (
@@ -71,9 +83,36 @@ const SelectShell = ({ children, ...rest }) => (
   </div>
 );
 
+const PriceRangeSlider = ({ min, max, step, value, onValueChange }) => (
+  <SliderPrimitive.Root
+    className="relative flex w-full touch-none select-none items-center h-6"
+    min={min}
+    max={max}
+    step={step}
+    value={value}
+    onValueChange={onValueChange}
+    minStepsBetweenThumbs={1}
+    data-testid="trip-finder-price-slider"
+    aria-label="price range"
+  >
+    <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-[#2C2621]/15">
+      <SliderPrimitive.Range className="absolute h-full bg-[#C16542]" />
+    </SliderPrimitive.Track>
+    <SliderPrimitive.Thumb
+      data-testid="trip-finder-price-thumb-min"
+      className="block h-5 w-5 rounded-full border-2 border-[#C16542] bg-[#FDFBF7] shadow-md transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#C16542]/40 cursor-grab active:cursor-grabbing"
+    />
+    <SliderPrimitive.Thumb
+      data-testid="trip-finder-price-thumb-max"
+      className="block h-5 w-5 rounded-full border-2 border-[#C16542] bg-[#FDFBF7] shadow-md transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#C16542]/40 cursor-grab active:cursor-grabbing"
+    />
+  </SliderPrimitive.Root>
+);
+
 export const TripFinder = () => {
   const { lang } = useLanguage();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const pricing = usePricing();
   const L = (o) => tt(o, lang);
   const monthOptions = useMemo(() => buildMonthOptions(lang), [lang]);
 
@@ -82,9 +121,23 @@ export const TripFinder = () => {
   const [monthValue, setMonthValue] = useState("flexible");
   const [durationId, setDurationId] = useState("");
 
+  // Real catalogue price bounds — recomputed whenever pricing changes.
+  const bounds = useMemo(() => priceBounds(pricing), [pricing]);
+  // Slider step scales with the span so it always feels smooth.
+  const step = useMemo(() => (bounds.max - bounds.min > 2000 ? 50 : 10), [bounds]);
+  // `range === null` means "full range" (auto-follows bounds); an array means
+  // the user has narrowed it. Clamp to the current bounds defensively.
+  const [range, setRange] = useState(null);
+  const value = useMemo(() => {
+    if (!range) return [bounds.min, bounds.max];
+    return [Math.max(bounds.min, range[0]), Math.min(bounds.max, range[1])];
+  }, [range, bounds]);
+  const [pmin, pmax] = value;
+  const isFiltered = range !== null && (pmin > bounds.min || pmax < bounds.max);
+
   const ranked = useMemo(
-    () => topTrips({ originId, monthValue, durationId }, 6),
-    [originId, monthValue, durationId],
+    () => topTrips({ originId, monthValue, durationId, priceMin: pmin, priceMax: pmax, pricing }, 6),
+    [originId, monthValue, durationId, pmin, pmax, pricing],
   );
 
   const chipFor = (reasons) => {
@@ -207,6 +260,45 @@ export const TripFinder = () => {
               </SelectShell>
             </Field>
           </div>
+
+          {/* Price range — real catalogue bounds, no hardcoded categories */}
+          <div className="mt-6 pt-6 border-t border-[#2C2621]/10">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <FieldLabel Icon={Wallet}>{L(UI.priceRange)}</FieldLabel>
+              {isFiltered && (
+                <button
+                  type="button"
+                  data-testid="trip-finder-price-reset"
+                  onClick={() => setRange(null)}
+                  className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#2C2621] transition-colors"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.8} />
+                  {L(UI.resetRange)}
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-4 md:gap-6">
+              <span
+                data-testid="trip-finder-price-min"
+                className="shrink-0 min-w-[64px] text-sm md:text-[15px] font-medium text-[#2C2621] tabular-nums"
+              >
+                {fmtEuro(pmin)}
+              </span>
+              <PriceRangeSlider
+                min={bounds.min}
+                max={bounds.max}
+                step={step}
+                value={value}
+                onValueChange={(v) => setRange(v)}
+              />
+              <span
+                data-testid="trip-finder-price-max"
+                className="shrink-0 min-w-[64px] text-right text-sm md:text-[15px] font-medium text-[#2C2621] tabular-nums"
+              >
+                {fmtEuro(pmax)}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Results count */}
@@ -292,6 +384,28 @@ export const TripFinder = () => {
           })}
         </div>
 
+        {/* Empty state — shown when no trips fall in the current filters/range */}
+        {ranked.length === 0 && (
+          <div
+            data-testid="trip-finder-empty"
+            className="bg-[#FDFBF7] border border-dashed border-[#2C2621]/20 px-6 py-14 text-center"
+          >
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#F2EBE1] text-[#C16542] mb-5">
+              <SearchX className="w-6 h-6" strokeWidth={1.6} />
+            </span>
+            <h3 className="font-serif-x text-2xl text-[#2C2621]">{L(UI.emptyTitle)}</h3>
+            <p className="mt-3 text-sm text-[#5C5248] max-w-md mx-auto leading-relaxed">{L(UI.emptyBody)}</p>
+            <button
+              type="button"
+              data-testid="trip-finder-empty-reset"
+              onClick={() => setRange(null)}
+              className="mt-6 inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
+            >
+              <RotateCcw className="w-4 h-4" strokeWidth={1.8} />
+              {L(UI.emptyReset)}
+            </button>
+          </div>
+        )}
         {/* Footer CTAs */}
         <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between border-t border-[#2C2621]/10 pt-8">
           <p className="text-sm text-[#5C5248]">{L(UI.plannerLead)}</p>
