@@ -6,6 +6,7 @@ import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
 import EmotionalIntro from "@/components/EmotionalIntro";
 import WorldMapSection from "@/components/WorldMapSection";
+import RuletaPromo from "@/components/RuletaPromo";
 import PlannerCta from "@/components/PlannerCta";
 import WhyXaluca from "@/components/WhyXaluca";
 import FeaturedQuote from "@/components/FeaturedQuote";
@@ -106,6 +107,7 @@ export default function HomePage() {
       <Marquee />
       <EmotionalIntro />
       <WorldMapSection />
+      <RuletaPromo />
       <PlannerCta />
       <VideoSection {...HOME_VIDEOS.story} testid="home-video-story" />
       <FoundersSection />

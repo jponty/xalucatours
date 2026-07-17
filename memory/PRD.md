@@ -11,6 +11,11 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Sección promocional "La Ruleta Xaluca" en la Home (jun 2026) — COMPLETADO + VERIFICADO (screenshot desktop + móvil)**:
+  - Nuevo componente `components/RuletaPromo.jsx` insertado en `HomePage.jsx` **justo debajo de `WorldMapSection`** ("Marruecos, en el corazón del mundo") y antes de `PlannerCta`.
+  - Objetivo: dar visibilidad al concurso `/concurso` e incentivar la participación con una estética de **diversión, sorpresa y recompensa**: banda oscura espresso `#1A1513` con glows dorados/terracota radiales, patrón berber, y una **ruleta de premios decorativa** (SVG, 12 segmentos con la paleta Xaluca) que gira lentamente en bucle (`@keyframes ruleta-spin` 22s), con luces de borde que parpadean (`ruleta-twinkle`), estrellas en segmentos, puntero dorado, hub con monograma Xaluca, e **iconos flotantes** (Gift/Sparkles/Star con `ruleta-float`). Insignia dorada "15 premios" bajo la ruleta.
+  - Texto: eyebrow "La Ruleta Xaluca", título "Gira la ruleta y llévate un premio", copy con la propuesta (masajes, cenas, estancias, descuentos… y viaje gratuito), pasos 1·Gira 2·Sorpréndete 3·Gana, CTA píldora **"Prueba tu suerte"** → `pathFor(lang,"concurso")` + nota "Gratis · Una participación por email". Trilingüe (es/en/fr). Respeta `motion-reduce` (desactiva animaciones).
+  - Layout responsive: 2 columnas en desktop (texto | ruleta), apilado en móvil (ruleta arriba, texto centrado, CTA a ancho completo). Verificado: CTA `href=/concurso`, render correcto en 1920 y 390.
 - **/concurso · campo Teléfono + casilla legal obligatoria + margen superior (jun 2026) — COMPLETADO + VERIFICADO (screenshot + curl e2e)**:
   - **Margen superior**: cabecera de `/concurso` de `pt-20 md:pt-28` → `pt-32 md:pt-40 lg:pt-44` para que el eyebrow "Concurso Xaluca" y el título no queden bajo el menú fijo (h1 top ~220px, sin solape).
   - **Campo Teléfono** (`ConcursoPage.jsx`): nuevo input `type=tel` (icono `Phone`, placeholder `+34 600 000 000`) entre Apellidos y Email. Validación `PHONE_RE` (≥6 dígitos). Trilingüe.
