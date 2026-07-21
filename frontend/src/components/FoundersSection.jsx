@@ -51,6 +51,7 @@ const FOUNDERS = [
     paperTilt: "rotate-[0.6deg]",
     tapeRotate: "-rotate-6",
     name: T("Lluís Pont", "Lluís Pont", "Lluís Pont"),
+    signature: "Lluís Pont",
     origin: T("Sabadell, España", "Sabadell, Spain", "Sabadell, Espagne"),
     note1: T(
       "Desde Sabadell, Lluís Pont impulsó una manera de viajar basada en la confianza, la cercanía y el respeto por el destino. Su visión ayudó a construir el puente entre quienes sueñan con descubrir Marruecos y quienes lo viven desde dentro cada día.",
@@ -72,6 +73,7 @@ const FOUNDERS = [
     paperTilt: "-rotate-[0.6deg]",
     tapeRotate: "rotate-6",
     name: T("Tayeb Ettaiek", "Tayeb Ettaiek", "Tayeb Ettaiek"),
+    signature: "Ettaiek Tayeb",
     origin: T("Arfoud, Marruecos", "Arfoud, Morocco", "Arfoud, Maroc"),
     note1: T(
       "Desde Arfoud, Tayeb Ettaiek representa el alma local, la hospitalidad marroquí y el profundo conocimiento del sur de Marruecos. Su mirada sobre el territorio, sus gentes y sus tradiciones ha sido clave para dar forma a experiencias auténticas, cuidadas y profundamente conectadas con el lugar.",
@@ -169,12 +171,22 @@ const FounderBlock = ({ f, reverse, lang }) => (
             noTranslate
             className="font-hand text-[32px] leading-none text-[#2C2621]"
           />
+          <span
+            data-testid={`founder-${f.id}-signature`}
+            aria-hidden="true"
+            className="relative mx-auto mt-3 block w-fit max-w-full px-3 font-hand text-[25px] sm:text-[27px] leading-none text-[#765438]/70 -rotate-[2deg] select-none"
+          >
+            {f.signature}
+            <span
+              className="absolute -bottom-1 left-[8%] h-px w-[84%] origin-left -rotate-[1deg] bg-[#A07042]/35"
+            />
+          </span>
           <EditableText
             as="p"
             slot={`home.founders.${f.id}.caption_origin`}
             defaults={f.origin}
             multiline={false}
-            className="font-hand text-xl text-[#A07042] mt-1.5"
+            className="font-hand text-xl text-[#A07042] mt-3"
           />
         </figcaption>
       </figure>
