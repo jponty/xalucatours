@@ -19,6 +19,7 @@ import re
 import json
 import asyncio
 import logging
+import requests
 from datetime import datetime, timezone
 
 from storage import get_object
@@ -120,16 +121,21 @@ def ensure_bucket():
 
 
 def upload_object(path: str, data: bytes, content_type: str):
-    c = _sb()
-    c.storage.from_(bucket_name()).upload(
-        path=path,
-        file=data,
-        file_options={
-            "content-type": content_type or "application/octet-stream",
-            "upsert": "true",
-            "cache-control": "31536000",
-        },
-    )
+    # Raw REST upload with `requests` (a fresh connection per call -> thread-safe).
+    # The supabase-py client shares ONE httpx.Client which is NOT safe for the
+    # concurrent worker threads used by the sync; that produced httpx
+    # "Server disconnected" (RemoteProtocolError) failures under load.
+    url = f"{project_url()}/storage/v1/object/{bucket_name()}/{path}"
+    headers = {
+        "apikey": _service_key(),
+        "Authorization": f"Bearer {_service_key()}",
+        "Content-Type": content_type or "application/octet-stream",
+        "x-upsert": "true",
+        "cache-control": "public, max-age=31536000, immutable",
+    }
+    resp = requests.post(url, headers=headers, data=data, timeout=180)
+    if resp.status_code not in (200, 201):
+        raise RuntimeError(f"storage upload {resp.status_code}: {resp.text[:200]}")
 
 
 # ---------------- Supabase Postgres (asyncpg via transaction pooler) ----------------
@@ -272,7 +278,7 @@ async def get_status(db):
 # ---------------- orchestration ----------------
 async def run_sync(db, include_personal=False, do_db=True, do_storage=True, force=False):
     global _JOB
-    concurrency = int(os.environ.get("SUPABASE_SYNC_CONCURRENCY", "4"))
+    concurrency = int(os.environ.get("SUPABASE_SYNC_CONCURRENCY", "8"))
     _JOB = {
         "running": True,
         "phase": "starting",
