@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 # Site content — always mirrored.
 CONTENT_COLLECTIONS = [
     "text_slots", "image_slots", "files", "day_galleries", "contests",
-    "config", "app_settings", "library_locations", "image_slot_registry",
-    "text_slot_registry", "remote_image_registry", "unsplash_locations",
-    "program_downloads",
+    "config", "app_settings", "system_state", "library_locations",
+    "image_slot_registry", "text_slot_registry", "remote_image_registry",
+    "unsplash_locations", "program_downloads",
 ]
 # Personal data — mirrored ONLY when include_personal_data is requested.
 PERSONAL_COLLECTIONS = ["contest_participants", "contact_requests", "trip_planner_requests"]
@@ -175,6 +175,14 @@ async def _mirror_collection(db, coll, job):
     job["db"][coll] = {"total": total, "done": 0}
     async with pool.acquire() as conn:
         await _ensure_table(conn, table)
+        # Personal-data tables (leads, contact/planner forms, contest entrants)
+        # must NOT be readable through the public Data API. Our backend uses the
+        # `postgres` pooler role (bypasses this), so revoking is safe.
+        if coll in PERSONAL_COLLECTIONS:
+            try:
+                await conn.execute(f'REVOKE ALL ON "{table}" FROM anon, authenticated')
+            except Exception as exc:
+                logger.warning("could not restrict %s from public API roles: %s", table, exc)
         batch = []
         async for doc in db[coll].find({}):
             _id = str(doc.get("_id"))
