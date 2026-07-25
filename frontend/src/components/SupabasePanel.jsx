@@ -77,6 +77,8 @@ const SupabasePanel = () => {
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.detail || "No se pudo iniciar la sincronización.");
+      // Optimistically mark running so the button stays disabled until the first poll lands.
+      setStatus((s) => (s ? { ...s, job: { ...(s.job || {}), running: true, phase: "starting" } } : s));
       if (!pollRef.current) pollRef.current = setInterval(pollJob, 2000);
       pollJob();
     } catch (e) { setError(e.message); }
