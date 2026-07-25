@@ -22,6 +22,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 
 from storage import init_storage, put_object, get_object
+import supabase_mirror
 
 
 ROOT_DIR = Path(__file__).parent
@@ -4760,6 +4761,58 @@ async def admin_contest_stats(contest_id: str, authorization: str = Header(defau
     ]
     by_day = [{"date": d["_id"], "count": d["count"]} async for d in db.contest_participants.aggregate(pipeline)]
     return {"total_participants": total, "per_prize": per_prize, "by_day": by_day}
+
+
+# ---------- Supabase mirror (one-way backup: MongoDB + Emergent -> Supabase) ----------
+class SupabaseSyncPayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    include_personal_data: bool = False
+    what: str = "all"          # all | db | storage
+    force: bool = False
+
+
+@api_router.get("/admin/supabase/status")
+async def supabase_status(authorization: str = Header(default="")):
+    _require_admin(authorization)
+    configured = supabase_mirror.is_configured()
+    out = {
+        "configured": configured,
+        "bucket": supabase_mirror.bucket_name(),
+        "project_url": supabase_mirror.project_url(),
+        "collections": supabase_mirror.CONTENT_COLLECTIONS,
+        "personal_collections": supabase_mirror.PERSONAL_COLLECTIONS,
+    }
+    if configured:
+        out["synced_objects"] = await db.supabase_synced_objects.count_documents({})
+        out["total_files"] = await db.files.count_documents({})
+    out["job"] = await supabase_mirror.get_status(db)
+    return out
+
+
+@api_router.post("/admin/supabase/sync")
+async def supabase_sync(payload: SupabaseSyncPayload, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    if not supabase_mirror.is_configured():
+        raise HTTPException(status_code=400, detail="Supabase no está configurado en el backend (.env).")
+    if supabase_mirror.is_running():
+        raise HTTPException(status_code=409, detail="Ya hay una sincronización en curso.")
+    do_db = payload.what in ("all", "db")
+    do_storage = payload.what in ("all", "storage")
+    asyncio.create_task(supabase_mirror.run_sync(
+        db,
+        include_personal=payload.include_personal_data,
+        do_db=do_db, do_storage=do_storage, force=payload.force,
+    ))
+    return {
+        "started": True, "what": payload.what,
+        "include_personal_data": payload.include_personal_data, "force": payload.force,
+    }
+
+
+@api_router.get("/admin/supabase/sync/status")
+async def supabase_sync_status(authorization: str = Header(default="")):
+    _require_admin(authorization)
+    return await supabase_mirror.get_status(db)
 
 
 app.include_router(api_router)

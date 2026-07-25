@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only validation of the new /admin -> Supabase tab. Admin login (password 'xaluca') works; the 'Supabase' tab is present in the left nav with data-testid='admin-tab-supabase' and renders <SupabasePanel/> (data-testid='supabase-panel'). Panel renders the CONFIGURED state: project=vcznwmkvphvkpkucciyw.supabase.co, bucket='xaluca', total_files=4384, synced_objects=0. All option controls render (supabase-what-all/db/storage, supabase-include-personal, supabase-force, supabase-sync-button). DB-only sync flow (selecting 'Solo base de datos' then clicking Sync) works end-to-end: progress area (supabase-progress) appears with phase 'Copiando base de datos…', per-collection bars for all 13 mirror_* collections render, sync button becomes disabled while running, and the job reached 'done' (supabase-done, phase='Completado') in ~14s. Row counts populated correctly (mirror_files 4384/4384, mirror_text_slots 98/98, mirror_image_slots 1655/1655, mirror_day_galleries 487/487, mirror_contests 1/1, mirror_config 1/1, mirror_app_settings 1/1, mirror_library_locations 128/128, mirror_image_slot_registry 2022/2022, mirror_text_slot_registry 6115/6115, mirror_remote_image_registry 133/133, mirror_unsplash_locations 139/139, mirror_program_downloads 0/0).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin Supabase panel", "issues": ["Chat/WhatsApp bienvenida toast overlays the bottom-right of the admin panel; low priority but slightly obscures the last mirror row (mirror_program_downloads) on smaller heights."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SupabasePanel.jsx: polling is stopped when !job.running but if the initial POST /sync response is slow the pollJob() call runs immediately after start — fine, but consider disabling the sync button also via `busy` state visually with a distinct label; today `busy` flips back to false before the poll picks up running=true, creating a brief (<2s) window where the button is enabled between click and first poll (not observed as a bug, just a small UX polish).",
+    "AdminPage.jsx is very large (>3000 lines with many duplicated tokenHeader() closures across sub-components). Recommend extracting a shared adminApi hook to reduce duplication."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not tested)", "frontend": "100%"},
+  "test_credentials": "admin password 'xaluca' (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "None. DB-only sync is idempotent upsert; ran once and it created/updated 13 mirror_* Postgres tables in Supabase.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "The full DB-only Supabase sync path works via the UI. Do NOT click sync while 'Todo' or 'Solo imágenes' is selected and do NOT enable the 'force' checkbox — this would upload ~10GB (4384 images) to Supabase Storage. Login flow: type password char-by-char into data-testid='admin-login-password', click data-testid='admin-login-submit'. Then click data-testid='admin-tab-supabase' and interact with the panel via the documented data-testids.",
+  "rca of the issue": "N/A — all requested scenarios passed."
+}
