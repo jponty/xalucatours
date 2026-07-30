@@ -1,0 +1,15 @@
+{
+  "summary": "Verified new Admin 'Precios prog.' tab end-to-end. Login → tab visible → panel loads → search finds tourMarrakechFez67 → editor prefilled with correct defaults (2pax 1485/1700, 3pax 1250/1400, 4pax 1135/1250, supplement 375/375, child 300/315). Edited 2pax low 1485→1490, saved (success msg + modified dot). Public /viajes/gransur/marrakech_fez/programa_6n_7d Precios section reflected 1490 live. Reset restored default: mod dot gone, tier input back to 1485, and public page shows 1485 again. GET /api/program-pricing returns {programs:{}} — DB left clean.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "Admin /admin password 'xaluca'",
+  "seed_data_creation": "Temporary override on tourMarrakechFez67 (2pax low=1490) created then reset. DB confirmed clean ({programs:{}}) at end.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 7 acceptance criteria passed. Feature is stable. Live pricing store hydration works correctly and updates public PricingSection without reload."
+}

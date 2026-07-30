@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Users, Car, CalendarDays } from "lucide-react";
+import { ArrowRight, Users, Car, CalendarDays, BedSingle, Baby } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
 import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
-import { getProgramTiers } from "@/lib/programPricing";
+import { getProgramTiers, getProgramExtras } from "@/lib/programPricing";
 
 /* ============================================================
    <PricingSection> — dedicated, standardised pricing block for
@@ -29,6 +29,32 @@ export const PricingSection = ({ id = "pricing", testid = "pricing-section", rou
   // tiers; otherwise fall back to the global/admin pricing.
   const tiers = getProgramTiers(routeId) || pricing.tiers;
   const from = getFromPrice({ tiers });
+  // Optional per-program single supplement & child price (trilingual labels).
+  const extras = getProgramExtras(routeId);
+  const EX = {
+    supplement: { es: "Suplemento individual", en: "Single supplement", fr: "Supplément individuel" },
+    child: { es: "Niño", en: "Child", fr: "Enfant" },
+    note: {
+      es: "Suplemento individual y precio por niño (por persona), según temporada.",
+      en: "Single supplement and child price (per person), by season.",
+      fr: "Supplément individuel et prix enfant (par personne), selon la saison.",
+    },
+  };
+  const extraCells = (obj) =>
+    obj.low === obj.high ? (
+      <div className="col-span-2 px-4 md:px-6 py-4 text-center border-l border-[#FDFBF7]/10 font-serif-x text-lg md:text-xl">
+        {fmtEuro(obj.low)}
+      </div>
+    ) : (
+      <>
+        <div className="px-4 md:px-6 py-4 text-right md:text-center border-l border-[#FDFBF7]/10 font-serif-x text-lg md:text-xl">
+          {fmtEuro(obj.low)}
+        </div>
+        <div className="px-4 md:px-6 py-4 text-right md:text-center border-l border-[#FDFBF7]/10 font-serif-x text-lg md:text-xl text-[#E8C9A0]">
+          {fmtEuro(obj.high)}
+        </div>
+      </>
+    );
 
   return (
     <section
@@ -107,6 +133,39 @@ export const PricingSection = ({ id = "pricing", testid = "pricing-section", rou
             </div>
           ))}
         </div>
+
+        {/* Per-program extras: single supplement & child (only when present) */}
+        {extras && (
+          <div data-testid="pricing-extras" className="border border-t-0 border-[#FDFBF7]/15">
+            {extras.supplement && (
+              <div
+                data-testid="pricing-supplement"
+                className="grid grid-cols-3 border-t border-[#FDFBF7]/10 hover:bg-[#221A16] transition-colors"
+              >
+                <div className="px-4 md:px-6 py-4 flex items-center gap-2 text-[11px] md:text-xs tracking-[0.12em] uppercase text-[#FDFBF7]/70">
+                  <BedSingle className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.6} />
+                  {p(EX.supplement)}
+                </div>
+                {extraCells(extras.supplement)}
+              </div>
+            )}
+            {extras.child && (
+              <div
+                data-testid="pricing-child"
+                className="grid grid-cols-3 border-t border-[#FDFBF7]/10 hover:bg-[#221A16] transition-colors"
+              >
+                <div className="px-4 md:px-6 py-4 flex items-center gap-2 text-[11px] md:text-xs tracking-[0.12em] uppercase text-[#FDFBF7]/70">
+                  <Baby className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.6} />
+                  {p(EX.child)}
+                </div>
+                {extraCells(extras.child)}
+              </div>
+            )}
+            <div className="px-4 md:px-6 py-3 border-t border-[#FDFBF7]/10 text-[10px] tracking-[0.1em] text-[#FDFBF7]/45">
+              {p(EX.note)}
+            </div>
+          </div>
+        )}
 
         {/* Occupancy note */}
         <p className="mt-4 text-xs text-[#FDFBF7]/55 leading-relaxed">{p(pricing.note)}</p>

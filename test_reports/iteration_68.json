@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only verification of the new per-program pricing (PROGRAM_PRICING + PricingSection extras). Tested 4 representative program pages via Playwright on the public preview URL. All tier prices (2/3/4 pax x TB/TA) match the official price sheet, extras block appears with correct supplement/child values where expected, and is correctly absent where the program has neither. No React errors in the console (only unrelated 429 responses from external image CDNs and one iframe allow-attribute warning). Data-testids are present: program-pricing, pricing-row-{2|3|4}, pricing-extras, pricing-supplement, pricing-child.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PricingSection.jsx: getProgramExtras returns { supplement, child } even when one is null (line 677-684) — the JSX handles this correctly via truthy checks, no bug. OK.",
+    "programPricing.js is a large flat dictionary (~670 lines). Fine for now but consider grouping by region file if it grows beyond ~100 programs.",
+    "extras single-value branch renders col-span-2; visually centered under both season columns. Verified OK on ergchebbi_marrakech/programa_7n_8d (supplement 495 shown once centered)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "test_credentials": "None required (public pages)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Playwright tested 4 URLs: /viajes/gransur/marrakech_fez/programa_6n_7d, /viajes/marrakech_essaouira/programa_4n_5d, /viajes/ergchebbi_marrakech/programa_4n_5d, /viajes/ergchebbi_marrakech/programa_7n_8d. All numeric assertions passed. Use testid 'program-pricing' (not 'pricing-section') for the itinerary-page instance.",
+  "verified_results": {
+    "gransur/marrakech_fez/programa_6n_7d": {"2pax":"1485/1700 OK","3pax":"1250/1400 OK","4pax":"1135/1250 OK","supplement":"375 OK","child":"300/315 OK"},
+    "marrakech_essaouira/programa_4n_5d": {"2pax":"790 OK","3pax":"710 OK","4pax":"665 OK","extras":"absent as expected OK"},
+    "ergchebbi_marrakech/programa_4n_5d": {"2pax":"1035/1155 OK","3pax":"890/970 OK","4pax":"815/880 OK","supplement":"290 OK","child":"200/210 OK"},
+    "ergchebbi_marrakech/programa_7n_8d": {"2pax":"1560/1720 OK","3pax":"1345/1460 OK","4pax":"1240/1330 OK","supplement":"495 OK","child":"300/315 OK"}
+  }
+}
