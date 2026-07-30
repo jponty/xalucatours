@@ -1,104 +1,83 @@
-"""Emergent Object Storage helper.
+"""Supabase Storage helper used by the operational backend.
 
-A thin synchronous wrapper around the Emergent storage HTTP API. The
-session-scoped `storage_key` is cached at the module level — call
-`init_storage()` once at FastAPI startup and reuse the connection for
-the lifetime of the process.
-
-Path convention used by Xaluca Tours:
-    xaluca/slots/{slot_id_safe}/{uuid}.{ext}
+Object keys intentionally keep their historical ``xaluca/...`` prefix.  With
+the ``xaluca`` bucket this produces public URLs containing
+``/public/xaluca/xaluca/...``.
 """
 
 from __future__ import annotations
 
 import os
-import time
-import logging
 from typing import Tuple
+from urllib.parse import quote
 
 import requests
 
-logger = logging.getLogger(__name__)
 
-STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
-APP_NAME = "xaluca"
+def _config() -> tuple[str, str, str]:
+    project_url = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
+    service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or ""
+    bucket = os.environ.get("SUPABASE_STORAGE_BUCKET", "xaluca")
+    if not project_url or not service_key:
+        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+    return project_url, service_key, bucket
 
-_storage_key: str | None = None
+
+def _encoded(path: str) -> str:
+    return "/".join(quote(part, safe="") for part in path.split("/"))
+
+
+def _headers(content_type: str | None = None) -> dict[str, str]:
+    _, key, _ = _config()
+    headers = {"apikey": key, "Authorization": f"Bearer {key}"}
+    if content_type:
+        headers["Content-Type"] = content_type
+    return headers
 
 
 def init_storage() -> str:
-    """Call once at startup. Returns a session-scoped storage_key."""
-    global _storage_key
-    if _storage_key:
-        return _storage_key
-    emergent_key = os.environ.get("EMERGENT_LLM_KEY")
-    if not emergent_key:
-        raise RuntimeError("EMERGENT_LLM_KEY is not configured")
-    resp = requests.post(
-        f"{STORAGE_URL}/init",
-        json={"emergent_key": emergent_key},
+    """Validate configuration and return the active bucket name."""
+    project_url, _, bucket = _config()
+    response = requests.get(
+        f"{project_url}/storage/v1/bucket/{quote(bucket, safe='')}",
+        headers=_headers(),
         timeout=30,
     )
-    resp.raise_for_status()
-    _storage_key = resp.json()["storage_key"]
-    logger.info("Emergent object storage initialized")
-    return _storage_key
-
-
-def _key_or_init() -> str:
-    return _storage_key or init_storage()
+    response.raise_for_status()
+    return bucket
 
 
 def put_object(path: str, data: bytes, content_type: str) -> dict:
-    """Upload bytes to storage. Returns {"path": str, "size": int, ...}.
-    Retries on transient 5xx errors and refreshes the key on 403."""
-    key = _key_or_init()
-    last_exc: Exception | None = None
-    resp = None
-    for attempt in range(4):
-        resp = requests.put(
-            f"{STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key, "Content-Type": content_type},
-            data=data,
-            timeout=120,
-        )
-        if resp.status_code == 403:
-            # Refresh the key once and retry — handles expired session keys.
-            global _storage_key
-            _storage_key = None
-            key = init_storage()
-            continue
-        if resp.status_code >= 500:
-            # Transient storage error — back off and retry.
-            last_exc = requests.HTTPError(f"{resp.status_code} storage error")
-            time.sleep(0.8 * (attempt + 1))
-            continue
-        resp.raise_for_status()
-        return resp.json()
-    if last_exc:
-        raise last_exc
-    if resp is None:
-        raise RuntimeError("storage upload failed: no response")
-    resp.raise_for_status()
-    return resp.json()
+    """Upload or replace an object at its canonical historical path."""
+    project_url, _, bucket = _config()
+    response = requests.post(
+        f"{project_url}/storage/v1/object/{quote(bucket, safe='')}/{_encoded(path)}",
+        headers={
+            **_headers(content_type or "application/octet-stream"),
+            "x-upsert": "true",
+            "cache-control": "public, max-age=31536000, immutable",
+        },
+        data=data,
+        timeout=180,
+    )
+    response.raise_for_status()
+    payload = response.json() if response.content else {}
+    return {
+        **payload,
+        "path": path,
+        "size": len(data),
+        "content_type": content_type,
+    }
 
 
 def get_object(path: str) -> Tuple[bytes, str]:
-    """Download an object. Returns (bytes, content_type)."""
-    key = _key_or_init()
-    resp = requests.get(
-        f"{STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key},
-        timeout=60,
+    """Download an object with backend credentials."""
+    project_url, _, bucket = _config()
+    response = requests.get(
+        f"{project_url}/storage/v1/object/authenticated/"
+        f"{quote(bucket, safe='')}/{_encoded(path)}",
+        headers=_headers(),
+        timeout=90,
     )
-    if resp.status_code == 403:
-        global _storage_key
-        _storage_key = None
-        key = init_storage()
-        resp = requests.get(
-            f"{STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key},
-            timeout=60,
-        )
-    resp.raise_for_status()
-    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
+    response.raise_for_status()
+    return response.content, response.headers.get("Content-Type", "application/octet-stream")

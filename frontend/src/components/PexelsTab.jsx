@@ -27,8 +27,8 @@ import {
   Search, Loader2, ExternalLink, Check, AlertCircle, Sparkles,
   RotateCcw, X,
 } from "lucide-react";
-import { searchSupabaseStock, stockPhotoAsLibraryItem } from "@/lib/supabaseStock";
 
+const API = process.env.REACT_APP_BACKEND_URL || "";
 const DEBOUNCE_MS = 250;
 const PER_PAGE = 24;
 
@@ -55,7 +55,15 @@ const COPY = {
    environment's fetch monkey-patch tries to postMessage the Request
    and chokes on the non-cloneable AbortSignal. A `cancelled` flag in
    the effect handles race conditions just as well. */
-const fetchPexels = async (_path, params) => searchSupabaseStock("pexels", params);
+const fetchPexels = async (path, params) => {
+  const qs = new URLSearchParams(params).toString();
+  const r = await fetch(`${API}${path}?${qs}`);
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    throw new Error(j.detail || `HTTP ${r.status}`);
+  }
+  return r.json();
+};
 
 export default function PexelsTab({ onSelect, selectionMode = false, selectedKeys, onToggleSelect, initialQuery }) {
   const [query, setQuery]       = useState(() => initialQuery || "");
@@ -164,8 +172,16 @@ export default function PexelsTab({ onSelect, selectionMode = false, selectedKey
     setImpOk(null);
     setError(null);
     try {
+      const r = await fetch(`${API}/api/pexels/import`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pexels_id: photo.id }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.detail || `HTTP ${r.status}`);
+      const absUrl = j.url.startsWith("http") ? j.url : `${API}${j.url}`;
       setImpOk(photo.id);
-      onSelect?.(stockPhotoAsLibraryItem(photo));
+      onSelect?.({ ...j, url: absUrl });
     } catch (e) {
       setError(e.message || COPY.importErr);
     } finally {
@@ -302,7 +318,10 @@ export default function PexelsTab({ onSelect, selectionMode = false, selectedKey
               if (selectionMode) {
                 onToggleSelect?.({
                   _key: selKey,
-                  ...stockPhotoAsLibraryItem(p),
+                  _pexelsId: p.id,
+                  _needsImport: true,
+                  thumb_url: p.thumb_url,
+                  original_filename: p.alt || `Pexels ${p.id}`,
                 });
               } else {
                 importPhoto(p);

@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
+import { supabaseMedia } from "@/lib/supabaseMedia";
 
 /* ============================================================
    FoundersSection — Home, just below "Nuestra historia".
@@ -17,11 +18,11 @@ import EditableImage from "@/components/EditableImage";
 const T = (es, en, fr) => ({ es, en, fr });
 
 const PONT_IMG =
-  "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/qa8e8tkj_Llui%CC%81s%20Pont.jpg";
+  supabaseMedia("xaluca/static/founders/lluis-pont.jpg");
 const TAYEB_IMG =
-  "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/odcogxxd_Tayeb%20Ettaiek.jpg";
+  supabaseMedia("xaluca/static/founders/tayeb-ettaiek.jpg");
 const FOUNDER_AUDIO =
-  "https://customer-assets-lqy194kg.emergentagent.net/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/hglizaom_Grup%20Xaluca.mp3";
+  supabaseMedia("xaluca/static/audio/grup-xaluca.mp3");
 
 const COPY = {
   eyebrow: T("Nuestros fundadores", "Our founders", "Nos fondateurs"),

@@ -6,12 +6,14 @@ import csv
 import json
 import os
 import re
+import httpx
 from pathlib import Path
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env")
-KEY = os.environ["EMERGENT_LLM_KEY"]
+KEY = os.environ["OPENAI_API_KEY"]
+MODEL = os.environ.get("OPENAI_TRANSLATION_MODEL", "gpt-4o-mini")
 CSV_PATH = ROOT / "_poi_cards2.csv"
 OUT_PATH = ROOT.parent / "frontend" / "src" / "lib" / "extraPois.js"
 
@@ -205,14 +207,26 @@ def parse_csv():
 
 
 async def translate_batch(strings):
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
     system = ("You are a professional translator for a premium Moroccan travel agency website. "
               "Translate faithfully from Spanish, preserving marketing tone and proper nouns. Return ONLY strict JSON.")
     prompt = ("Translate each Spanish string in this JSON array into English and French.\n"
               'Return a JSON array of objects in the SAME order, each {"en":"...","fr":"..."}.\n\n'
               + json.dumps(strings, ensure_ascii=False))
-    chat = LlmChat(api_key=KEY, session_id=f"extra-{os.urandom(4).hex()}", system_message=system).with_model("openai", "gpt-4o-mini")
-    resp = await chat.send_message(UserMessage(text=prompt))
+    async with httpx.AsyncClient(timeout=90) as client:
+        response = await client.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={"Authorization": f"Bearer {KEY}"},
+            json={
+                "model": MODEL,
+                "temperature": 0,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": prompt},
+                ],
+            },
+        )
+        response.raise_for_status()
+        resp = response.json()["choices"][0]["message"]["content"]
     data = json.loads(re.search(r"\[.*\]", resp, re.S).group(0))
     if len(data) != len(strings):
         raise ValueError("len mismatch")

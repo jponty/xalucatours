@@ -15,6 +15,7 @@ import HeroMonogram from "@/components/HeroMonogram";
 import Testimonials from "@/components/Testimonials";
 import { SlotScope } from "@/components/slotScope";
 import { E, EImg } from "@/components/EditableSection";
+import { supabaseMedia } from "@/lib/supabaseMedia";
 
 const DOC_TITLES = {
   es: "Equipo · Conoce Xaluca Tours",
@@ -258,7 +259,7 @@ const TEAM = [
     firstName: "Noemi",
     reviewTheme: "noemi",
     photo:
-      "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/q6kz7ybg_Noemi%20Aparicio.png",
+      supabaseMedia("xaluca/static/team/noemi-aparicio.png"),
     tilt: "-rotate-2",
     tapeRotate: "rotate-6",
     name: { es: "Noemi Aparicio", en: "Noemi Aparicio", fr: "Noemi Aparicio" },
@@ -279,7 +280,7 @@ const TEAM = [
     firstName: "Elena",
     reviewTheme: "elena",
     photo:
-      "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/2hj3i9n4_Elena%20Xaluca.png",
+      supabaseMedia("xaluca/static/team/elena-xaluca.png"),
     tilt: "rotate-2",
     tapeRotate: "-rotate-6",
     name: { es: "Elena Xaluca", en: "Elena Xaluca", fr: "Elena Xaluca" },
@@ -300,7 +301,7 @@ const TEAM = [
     firstName: "Sanaa",
     reviewTheme: "sanaa",
     photo:
-      "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/6hdf2a88_Sanaa%20Xaluca.png",
+      supabaseMedia("xaluca/static/team/sanaa-xaluca.png"),
     tilt: "-rotate-3",
     tapeRotate: "rotate-3",
     name: { es: "Sanaa Xaluca", en: "Sanaa Xaluca", fr: "Sanaa Xaluca" },

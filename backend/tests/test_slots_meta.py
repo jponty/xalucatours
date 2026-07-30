@@ -15,10 +15,8 @@ from pathlib import Path
 load_dotenv(Path('/app/frontend/.env'))
 load_dotenv(Path('/app/backend/.env'))
 
-# Public preview URL (what real users see).
-BASE_URL = os.environ['REACT_APP_BACKEND_URL'].rstrip('/')
-MONGO_URL = os.environ['MONGO_URL']
-DB_NAME = os.environ['DB_NAME']
+# Use the configured deployment URL when present, otherwise the local backend.
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://127.0.0.1:8001').rstrip('/')
 
 
 @pytest.fixture(scope="module")
@@ -28,12 +26,20 @@ def slot_id():
 
 @pytest.fixture(scope="module", autouse=True)
 def hard_cleanup(slot_id):
-    """After the whole module finishes, drop the test doc straight from Mongo."""
+    """After the module, remove the test document directly from Supabase."""
     yield
     try:
-        from pymongo import MongoClient
-        with MongoClient(MONGO_URL) as cli:
-            cli[DB_NAME].image_slots.delete_one({"_id": slot_id})
+        import asyncio
+        from supabase_db import SupabaseDatabase
+
+        async def cleanup():
+            database = SupabaseDatabase()
+            try:
+                await database.image_slots.delete_one({"_id": slot_id})
+            finally:
+                await database.close()
+
+        asyncio.run(cleanup())
     except Exception as exc:  # pragma: no cover
         print(f"cleanup failed: {exc}")
 

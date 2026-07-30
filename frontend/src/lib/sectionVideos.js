@@ -10,12 +10,14 @@
 ============================================================ */
 
 const G_CDN = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample";
+const SUPABASE_PUBLIC_BUCKET =
+  "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca";
 
 /* ---------- / (Home — below "Nuestra historia") ---------- */
 export const HOME_VIDEOS = {
   story: {
     src: `${G_CDN}/Sintel.mp4`,
-    audioSrc: "https://customer-assets.emergentagent.com/job_0632360a-eb69-4f78-ae22-95f777acd98d/artifacts/f8xrh60y_Introduccio%CC%81n%20Xaluca%20Tours.mp3",
+    audioSrc: `${SUPABASE_PUBLIC_BUCKET}/xaluca/static/audio/introduccion-xaluca-tours.mp3`,
     poster: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "Nuestra historia · Xaluca Tours", en: "Our story · Xaluca Tours", fr: "Notre histoire · Xaluca Tours" },
     title: {

@@ -2,7 +2,7 @@
    Centralised pricing configuration (single source of truth).
    ------------------------------------------------------------
    • The PRICE NUMBERS (`tiers`) can also be overridden globally
-     from /admin (stored in MongoDB) — see lib/pricingStore.js.
+     from /admin (stored in Supabase) — see lib/pricingStore.js.
      The admin override is merged on top of these defaults.
    • Labels / season definitions / notes live here (trilingual)
      and rarely change.

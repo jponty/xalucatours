@@ -19,8 +19,8 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getDestinationGroups } from "@/lib/destinationKeywords";
-import { searchSupabaseStock, stockPhotoAsLibraryItem } from "@/lib/supabaseStock";
 
+const API = process.env.REACT_APP_BACKEND_URL || "";
 const PER_PAGE = 24;
 
 const COPY = {
@@ -36,7 +36,15 @@ const COPY = {
   more:      "Cargar más resultados",
 };
 
-const fetchPexels = async (_path, params) => searchSupabaseStock("pexels", params);
+const fetchPexels = async (path, params) => {
+  const qs = new URLSearchParams(params).toString();
+  const r = await fetch(`${API}${path}?${qs}`);
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    throw new Error(j.detail || `HTTP ${r.status}`);
+  }
+  return r.json();
+};
 
 export default function PexelsSelectionTab({ onSelect, selectionMode = false, selectedKeys, onToggleSelect }) {
   const { lang } = useLanguage();
@@ -127,8 +135,16 @@ export default function PexelsSelectionTab({ onSelect, selectionMode = false, se
     setImpOk(null);
     setError(null);
     try {
+      const r = await fetch(`${API}/api/pexels/import`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pexels_id: photo.id }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.detail || `HTTP ${r.status}`);
+      const absUrl = j.url.startsWith("http") ? j.url : `${API}${j.url}`;
       setImpOk(photo.id);
-      onSelect?.(stockPhotoAsLibraryItem(photo));
+      onSelect?.({ ...j, url: absUrl });
     } catch (e) {
       setError(e.message || COPY.importErr);
     } finally {
@@ -204,7 +220,10 @@ export default function PexelsSelectionTab({ onSelect, selectionMode = false, se
                 if (selectionMode) {
                   onToggleSelect?.({
                     _key: selKey,
-                    ...stockPhotoAsLibraryItem(p),
+                    _pexelsId: p.id,
+                    _needsImport: true,
+                    thumb_url: p.thumb_url,
+                    original_filename: p.alt || `Pexels ${p.id}`,
                   });
                 } else {
                   importPhoto(p);
