@@ -7,6 +7,11 @@
 ============================================================ */
 import { useEffect, useState } from "react";
 import { DEFAULT_PRICING, mergePricing } from "@/lib/pricing";
+import {
+  ensureProgramPricing,
+  addProgramSubscriber,
+  removeProgramSubscriber,
+} from "@/lib/programPricingStore";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -45,14 +50,21 @@ export const setPricingOverride = (data) => {
   notify();
 };
 
-/* Subscribe a React component to the live merged pricing. */
+/* Subscribe a React component to the live merged pricing (global + per-program). */
 export const usePricing = () => {
   const [, force] = useState(0);
   useEffect(() => {
     const cb = () => force((x) => x + 1);
     store.subscribers.add(cb);
     ensurePricing();
-    return () => { store.subscribers.delete(cb); };
+    // Also hydrate & subscribe to per-program price overrides so the same
+    // components re-render when admin edits land (no per-consumer wiring).
+    addProgramSubscriber(cb);
+    ensureProgramPricing();
+    return () => {
+      store.subscribers.delete(cb);
+      removeProgramSubscriber(cb);
+    };
   }, []);
   return store.ready ? getMergedPricing() : DEFAULT_PRICING;
 };

@@ -668,17 +668,30 @@ export const PROGRAM_PRICING = {
   },
 };
 
+let _override = {};
+
+/* Fed by the program-pricing store (admin overrides from /api/program-pricing).
+   When a routeId has an override it wins over the hardcoded default above. */
+export const setProgramOverride = (map) => {
+  _override = map || {};
+};
+
+const _entry = (routeId) =>
+  (routeId && (_override[routeId] || PROGRAM_PRICING[routeId])) || null;
+
 /* Per-program tier array for a routeId, or null (route uses global pricing). */
-export const getProgramTiers = (routeId) =>
-  (routeId && PROGRAM_PRICING[routeId] && PROGRAM_PRICING[routeId].tiers) || null;
+export const getProgramTiers = (routeId) => {
+  const e = _entry(routeId);
+  return (e && e.tiers) || null;
+};
 
 /* Per-program single-supplement / child prices, or null when the program
    has neither. Shape: { supplement: {low,high}|null, child: {low,high}|null }. */
 export const getProgramExtras = (routeId) => {
-  const p = routeId && PROGRAM_PRICING[routeId];
-  if (!p) return null;
-  const supplement = p.supplement || null;
-  const child = p.child || null;
+  const e = _entry(routeId);
+  if (!e) return null;
+  const supplement = e.supplement || null;
+  const child = e.child || null;
   if (!supplement && !child) return null;
   return { supplement, child };
 };

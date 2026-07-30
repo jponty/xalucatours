@@ -380,6 +380,61 @@ async def put_pricing(payload: PricingPayload, authorization: str = Header(defau
     return doc or {}
 
 
+# ---------- Per-program pricing (admin-editable, overrides code defaults) ----------
+# Stored as {_id:"program_pricing", programs:{ routeId: {tiers, supplement, child} }}
+# in the `config` collection. The frontend lib/programPricing.js holds the same
+# shape as compiled-in defaults; any routeId present here wins over the default.
+class ProgramExtraPrice(BaseModel):
+    low: int = Field(..., ge=0, le=100000)
+    high: int = Field(..., ge=0, le=100000)
+
+
+class ProgramPricingPayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    tiers: List[PricingTier] = Field(..., min_length=1, max_length=6)
+    supplement: Optional[ProgramExtraPrice] = None
+    child: Optional[ProgramExtraPrice] = None
+
+
+@api_router.get("/program-pricing")
+async def get_program_pricing():
+    doc = await db.config.find_one({"_id": "program_pricing"}, {"_id": 0})
+    return doc or {"programs": {}}
+
+
+@api_router.put("/program-pricing/{route_id}")
+async def put_program_pricing(route_id: str, payload: ProgramPricingPayload, authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    if not route_id.isalnum():
+        raise HTTPException(status_code=400, detail="routeId no válido")
+    data = {
+        "tiers": [t.model_dump() for t in payload.tiers],
+        "supplement": payload.supplement.model_dump() if payload.supplement else None,
+        "child": payload.child.model_dump() if payload.child else None,
+    }
+    await db.config.update_one(
+        {"_id": "program_pricing"},
+        {"$set": {f"programs.{route_id}": data, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True,
+    )
+    doc = await db.config.find_one({"_id": "program_pricing"}, {"_id": 0})
+    return doc or {"programs": {}}
+
+
+@api_router.delete("/program-pricing/{route_id}")
+async def delete_program_pricing(route_id: str, authorization: str = Header(default="")):
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
+    if not route_id.isalnum():
+        raise HTTPException(status_code=400, detail="routeId no válido")
+    await db.config.update_one({"_id": "program_pricing"}, {"$unset": {f"programs.{route_id}": ""}})
+    doc = await db.config.find_one({"_id": "program_pricing"}, {"_id": 0})
+    return doc or {"programs": {}}
+
+
 # ---------- CMS export / import (sync content between environments) ----------
 # All editable content (image slots, text slots, global pricing) lives in
 # MongoDB. Image binaries live in the SHARED object storage, so syncing the DB
