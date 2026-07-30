@@ -14,6 +14,7 @@ import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 import EditableImageMeta from "@/components/EditableImageMeta";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
 import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
+import { loadSupabaseImages } from "@/lib/supabaseImages";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -47,9 +48,8 @@ const ensureImgLoaded = () => {
   if (imgCache.loading) return imgCache.loading;
   imgCache.loading = (async () => {
     try {
-      const res = await fetch(`${API}/api/slots`);
-      const data = await res.json();
-      const slots = (data && data.slots) || [];
+      const data = await loadSupabaseImages();
+      const slots = data?.slots || [];
       for (const s of slots) {
         if (!s || !s.slot_id) continue;
         imgCache.values.set(s.slot_id, {
@@ -59,7 +59,7 @@ const ensureImgLoaded = () => {
         });
       }
     } catch {
-      // Network/parse failure — keep cache empty so code fallbacks render.
+      // Manifest failure — keep cache empty so code fallbacks render.
     }
     imgCache.ready = true;
     imgCache.loading = null;

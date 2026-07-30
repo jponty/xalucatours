@@ -2,14 +2,13 @@
    dayGalleryStore — client cache for the dynamic per-day image
    galleries managed from the /admin "Travel Image Library".
 
-   Mirrors the image-slot store: one bulk fetch of /api/day-galleries
+   Mirrors the image-slot store: one bulk fetch of the Supabase image manifest
    hydrates every itinerary gallery, then components subscribe by key
    (`<page-namespace>.day.<dayId>`). The admin can push local updates
    so the editor preview reflects changes instantly.
 ============================================================ */
 import { useEffect, useState } from "react";
-
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { loadSupabaseImages } from "@/lib/supabaseImages";
 
 const store = {
   ready: false,
@@ -26,8 +25,7 @@ const notify = (key) => {
 export const ensureDayGalleries = () => {
   if (store.ready) return Promise.resolve();
   if (store.loading) return store.loading;
-  store.loading = fetch(`${API}/day-galleries`)
-    .then((r) => (r.ok ? r.json() : { galleries: [] }))
+  store.loading = loadSupabaseImages()
     .then((data) => {
       (data.galleries || []).forEach((g) => {
         if (g.key) store.map.set(g.key, g.images || []);
