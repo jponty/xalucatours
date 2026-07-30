@@ -1,0 +1,397 @@
+[
+  {
+    "_id": {
+      "$oid": "6a28108e1072e9c308b6a64d"
+    },
+    "id": "a7b6a7e9-6839-4f13-ab5e-44b4aa9e5764",
+    "full_name": "Joan Pont",
+    "email": "jpontprats@gmail.com",
+    "phone": "+34629415221",
+    "date_mode": "range",
+    "start_date": "2027-02-25",
+    "end_date": "2027-02-27",
+    "flexible_month": null,
+    "travellers_adults": 2,
+    "travellers_children": 2,
+    "accommodation": "premium",
+    "regions": [
+      "sur",
+      "norte",
+      "completo",
+      "escapadas",
+      "aventura",
+      "eventos"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourAtlasDesierto56",
+      "tourAtlasDesierto67",
+      "tourDesiertoAtlas45",
+      "tourDesiertoAtlas67",
+      "tourMarrakechErg45"
+    ],
+    "activities": [],
+    "notes": "Por favor, necesito que me llamen urgente, muchas gracias.",
+    "language": "es",
+    "created_at": "2026-06-09T13:09:34.598122+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a28126c9de6a53a06be98ba"
+    },
+    "id": "6b1f815e-7869-4d59-a25f-e2c7948229b7",
+    "full_name": "Joan Pont",
+    "email": "jpontprats@gmail.com",
+    "phone": "+34629415221",
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "Febrero 2027",
+    "travellers_adults": 2,
+    "travellers_children": 2,
+    "accommodation": "superior",
+    "regions": [
+      "sur",
+      "norte",
+      "completo",
+      "escapadas",
+      "aventura",
+      "eventos"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourAtlasDesierto56",
+      "tourAtlasDesierto67"
+    ],
+    "selected_trips_detail": [],
+    "activities": [
+      "camel",
+      "quad",
+      "hammam",
+      "massage",
+      "cooking",
+      "trekking",
+      "balloon",
+      "surf",
+      "music"
+    ],
+    "notes": "Test",
+    "language": "es",
+    "created_at": "2026-06-09T13:17:32.087008+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a2813bd7c792a40cd49844e"
+    },
+    "id": "629cb8c0-c5b2-494b-9598-ec0c8708ae15",
+    "full_name": "Joan Pont",
+    "email": "jpontprats@gmail.com",
+    "phone": "+34629415221",
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "Febrero",
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "superior",
+    "regions": [
+      "sur",
+      "norte",
+      "completo"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourAtlasDesierto56",
+      "tourAtlasDesierto67"
+    ],
+    "selected_trips_detail": [],
+    "activities": [],
+    "notes": "Test",
+    "language": "es",
+    "created_at": "2026-06-09T13:23:09.820931+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a2815e895a77b94dacdcb13"
+    },
+    "id": "53d1858b-bba2-422f-95a1-9972fb74133a",
+    "full_name": "Joan Pont",
+    "email": "jpontprats@gmail.com",
+    "phone": "+34629415221",
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "Febrero",
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "premium",
+    "regions": [
+      "sur",
+      "norte",
+      "completo"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourAtlasDesierto56",
+      "tourAtlasDesierto67"
+    ],
+    "selected_trips_detail": [],
+    "activities": [],
+    "notes": "Test",
+    "language": "es",
+    "created_at": "2026-06-09T13:32:24.611954+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a2816dcfe33591ca216040b"
+    },
+    "id": "9f25a361-4193-4b4b-95e5-2a980085ac0d",
+    "full_name": "[PRUEBA] Enlaces viajes",
+    "email": "test-xaluca@example.com",
+    "phone": null,
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "octubre",
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "superior",
+    "regions": [
+      "sur"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourAtlasDesierto56",
+      "tourAtlasDesierto67"
+    ],
+    "selected_trips_detail": [],
+    "activities": [],
+    "notes": "Email de prueba para verificar enlaces clicables en Viajes de interes.",
+    "language": "es",
+    "created_at": "2026-06-09T13:36:28.547404+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a2846325b7e6750ea3c705e"
+    },
+    "id": "5ea57b25-0e44-4807-be3e-38ced3632f5c",
+    "full_name": "Joan Pont",
+    "email": "jpontprats@gmail.com",
+    "phone": "+34629415221",
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "Febrero 2027",
+    "travellers_adults": 2,
+    "travellers_children": 2,
+    "accommodation": "premium",
+    "regions": [
+      "sur",
+      "norte",
+      "completo",
+      "escapadas",
+      "aventura",
+      "eventos"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourAtlasDesierto56",
+      "tourAtlasDesierto67"
+    ],
+    "selected_trips_detail": [
+      {
+        "id": "tourAtlasDesierto45",
+        "title": "Atlas \u2192 Desierto \u00b7 4 noches",
+        "url": "https://morocco-trips-2.preview.emergentagent.com/viajes/atlas_desierto/programa_4n_5d"
+      },
+      {
+        "id": "tourAtlasDesierto56",
+        "title": "Atlas \u2192 Desierto \u00b7 5 noches",
+        "url": "https://morocco-trips-2.preview.emergentagent.com/viajes/atlas_desierto/programa_5n_6d"
+      },
+      {
+        "id": "tourAtlasDesierto67",
+        "title": "Atlas \u2192 Desierto \u00b7 6 noches",
+        "url": "https://morocco-trips-2.preview.emergentagent.com/viajes/atlas_desierto/programa_6n_7d"
+      }
+    ],
+    "activities": [
+      "camel",
+      "massage",
+      "balloon",
+      "quad",
+      "cooking",
+      "surf",
+      "hammam",
+      "trekking",
+      "music"
+    ],
+    "notes": "Test",
+    "language": "es",
+    "created_at": "2026-06-09T16:58:26.897619+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a3109be5bb708ecb7ec7ca9"
+    },
+    "id": "c32f741f-5261-4308-9a30-a84777aee097",
+    "full_name": "Test Plan",
+    "email": "testplan@example.com",
+    "phone": null,
+    "date_mode": "range",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": null,
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "superior",
+    "regions": [
+      "sur"
+    ],
+    "selected_trips": [],
+    "selected_trips_detail": [],
+    "activities": [],
+    "notes": null,
+    "preferred_contact": "email",
+    "language": "es",
+    "created_at": "2026-06-16T08:30:54.701968+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a310a325bb708ecb7ec7caa"
+    },
+    "id": "eb1349f2-ce64-40d8-9498-d5b4a83085eb",
+    "full_name": "TEST Validator",
+    "email": "test_validator@example.com",
+    "phone": null,
+    "date_mode": "range",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": null,
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "superior",
+    "regions": [],
+    "selected_trips": [],
+    "selected_trips_detail": [],
+    "activities": [],
+    "notes": null,
+    "preferred_contact": "phone",
+    "language": "es",
+    "created_at": "2026-06-16T08:32:50.857042+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a310c9e6951680e1fd4f1d5"
+    },
+    "id": "ce18fc3c-7e55-4a71-a66c-c6fceb993b28",
+    "full_name": "Multi Plan",
+    "email": "multiplan@example.com",
+    "phone": null,
+    "date_mode": "range",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": null,
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "superior",
+    "regions": [
+      "norte"
+    ],
+    "selected_trips": [],
+    "selected_trips_detail": [],
+    "activities": [],
+    "notes": null,
+    "preferred_contact": [
+      "email"
+    ],
+    "language": "es",
+    "created_at": "2026-06-16T08:43:10.388382+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a3e3c3bf8bdfd6d0c2c0d6f"
+    },
+    "id": "8608fbdf-41b3-495c-b9dc-6eee2debfb0a",
+    "full_name": "Test QA",
+    "email": "qa@example.com",
+    "phone": "600000000",
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "2026-09",
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "superior",
+    "regions": [
+      "sur"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto67",
+      "tourDesiertoAtlas67"
+    ],
+    "selected_trips_detail": [
+      {
+        "id": "tourAtlasDesierto67",
+        "title": "Atlas \u2192 Desierto",
+        "url": "https://x/viajes/atlas_desierto/programa_6n_7d"
+      },
+      {
+        "id": "tourDesiertoAtlas67",
+        "title": "Desierto \u2192 Atlas",
+        "url": "https://x/viajes/desierto_atlas/programa_6n_7d"
+      }
+    ],
+    "activities": [],
+    "notes": "QA test lead",
+    "preferred_contact": [
+      "email"
+    ],
+    "language": "es",
+    "created_at": "2026-06-26T08:45:47.373751+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a3e49523020542658209c62"
+    },
+    "id": "8d2df5c2-442e-49ef-8e92-1e94a69f8257",
+    "full_name": "Ana Garc\u00eda",
+    "email": "ana@example.com",
+    "phone": "600111222",
+    "date_mode": "flexible",
+    "start_date": null,
+    "end_date": null,
+    "flexible_month": "Octubre",
+    "travellers_adults": 2,
+    "travellers_children": 0,
+    "accommodation": "premium",
+    "regions": [
+      "sur"
+    ],
+    "selected_trips": [
+      "tourAtlasDesierto45",
+      "tourMarrakechErg56"
+    ],
+    "selected_trips_detail": [
+      {
+        "id": "tourAtlasDesierto45",
+        "title": "Atlas \u2192 Desierto \u00b7 4 noches",
+        "url": "https://xalucatravel.com/viajes/atlas_desierto/programa_4n_5d",
+        "image": null
+      },
+      {
+        "id": "tourMarrakechErg56",
+        "title": "Marrakech \u2192 Erg Chebbi",
+        "url": null,
+        "image": null
+      }
+    ],
+    "activities": [],
+    "notes": null,
+    "preferred_contact": [
+      "email"
+    ],
+    "language": "es",
+    "created_at": "2026-06-26T09:41:38.781710+00:00"
+  }
+]

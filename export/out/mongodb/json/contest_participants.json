@@ -1,0 +1,79 @@
+[
+  {
+    "_id": {
+      "$oid": "6a5a4a6d9b55c1edda43f378"
+    },
+    "id": "5483bdfe-9c95-46d5-b4d0-1a15e48f96dc",
+    "contest_id": "7a7c3485-a1cb-4192-bd04-3e28dfe7999a",
+    "first_name": "Ana",
+    "last_name": "Garc\u00eda",
+    "email": "e2e1784302189@example.com",
+    "email_lower": "e2e1784302189@example.com",
+    "language": "es",
+    "prize_id": "13b683bc-cb1c-4af5-828b-eb86f0018b39",
+    "prize_label": {
+      "es": "T\u00e9 a la menta de cortes\u00eda",
+      "en": "Complimentary mint tea",
+      "fr": "Th\u00e9 \u00e0 la menthe offert"
+    },
+    "created_at": "2026-07-17T15:29:49.860624+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a5a4a8e9b55c1edda43f379"
+    },
+    "id": "74cc3da4-41e9-4a61-ab1b-f3cf60574b3a",
+    "contest_id": "7a7c3485-a1cb-4192-bd04-3e28dfe7999a",
+    "first_name": "Marc",
+    "last_name": "Puig",
+    "email": "shot1784302222@example.com",
+    "email_lower": "shot1784302222@example.com",
+    "language": "es",
+    "prize_id": "01781a25-7337-4b2e-8167-e7b3257b063a",
+    "prize_label": {
+      "es": "Circuito Spa para dos personas",
+      "en": "Spa circuit for two",
+      "fr": "Circuit Spa pour deux personnes"
+    },
+    "created_at": "2026-07-17T15:30:22.767090+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a5a4a909b55c1edda43f37a"
+    },
+    "id": "33c07130-959e-486c-b82e-b0a0c00830e7",
+    "contest_id": "7a7c3485-a1cb-4192-bd04-3e28dfe7999a",
+    "first_name": "Joan",
+    "last_name": "Pont",
+    "email": "joan@xaluca.com",
+    "email_lower": "joan@xaluca.com",
+    "language": "es",
+    "prize_id": "13b683bc-cb1c-4af5-828b-eb86f0018b39",
+    "prize_label": {
+      "es": "T\u00e9 a la menta de cortes\u00eda",
+      "en": "Complimentary mint tea",
+      "fr": "Th\u00e9 \u00e0 la menthe offert"
+    },
+    "created_at": "2026-07-17T15:30:24.592873+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6a5a4ebafaa642df9d194fb1"
+    },
+    "id": "9e4dce0a-dae8-444d-b651-c50272886c4e",
+    "contest_id": "7a7c3485-a1cb-4192-bd04-3e28dfe7999a",
+    "first_name": "Testfone",
+    "last_name": "Pruebas",
+    "phone": "+34 600 123 456",
+    "email": "testfone_18884@example.com",
+    "email_lower": "testfone_18884@example.com",
+    "language": "es",
+    "prize_id": "68e95630-aef6-40e5-8ff5-b0d67955dbc7",
+    "prize_label": {
+      "es": "Upgrade de habitaci\u00f3n (seg\u00fan disponibilidad)",
+      "en": "Room upgrade (subject to availability)",
+      "fr": "Surclassement de chambre (selon disponibilit\u00e9)"
+    },
+    "created_at": "2026-07-17T15:48:10.439864+00:00"
+  }
+]

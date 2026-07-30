@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"59c623ec7b6e496bbbec9a6070c24018","collectionName":"supabase_sync_state","type":"collection"}

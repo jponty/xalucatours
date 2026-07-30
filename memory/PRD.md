@@ -11,6 +11,15 @@ App full-stack (React + FastAPI + MongoDB) para agencia de viajes a medida por M
 
 
 ## Implementado (jun 2026 — sesión actual)
+- **Exportación / migración verificable a Supabase (jul 2026) — COMPLETADO + VERIFICADO (SHA-256 e2e)**:
+  - Nuevo paquete en `/app/export/`: `migrate_storage.py` (Object Storage→Supabase, hash-aware, reanudable, verificación post-subida, x-upsert=false, sin borrar nada en Emergent), `dump_mongo.py` (mongodump BSON+metadata + JSON por colección + índices + validadores + counts), `sample_check.py`, `retry_corrupt.py`.
+  - Docs en `/app/export/docs/`: ENV_INVENTORY (vars sin valores), DEPLOYMENT (build/start, Node v20.20.2, Python 3.11.15, CORS, proxies, workers, cron), EMERGENT_SERVICES, DATA_OUTSIDE_INVENTORY, SOURCE_CODE (HEAD preview `a7a96724…`, sin remote).
+  - Salidas en `/app/export/out/`: mongodb dump (19 colecciones, 20.955 docs, incl. vacías/personales/internas; 0 validadores definidos), storage_manifest.csv/json (4.480 filas con SHA-256 origen+destino), conflicts.json (0), errors.json (0), storage_report.json.
+  - **Resultado migración binarios**: 4.480/4.480 objetos activos verificados byte a byte (SHA-256 origen=destino, 2,13 GB), **0 conflictos, 0 errores, 0 pendientes**. Destino bucket `xaluca`, key=`storage_path` completo → URL `.../public/xaluca/xaluca/library/…` (doble `xaluca` intencionado). Los 4 "corruptos" iniciales eran timeouts transitorios ya resueltos.
+  - Paquete `xaluca_export_package.tgz` (3,0 MB) SHA-256 `9891404d3c3a7230a8557a671efa2e49b5e262e2b8fea8c9a4c6a5a637b413f2`.
+  - **ALCANCE**: ejecutado desde PREVIEW (MongoDB `test_database`). Los datos de PRODUCCIÓN (`https://trip-curator-8.emergent.host`) son independientes → deben pedirse a Emergent Support (support@emergent.sh). Recomendado rotar credenciales Supabase expuestas en chat.
+
+
 - **Barra de navegación sticky por secciones en TODAS las páginas (jun 2026) — COMPLETADO + VERIFICADO (testing_agent frontend 100%, desktop/tablet/móvil)**:
   - **Componente reutilizable `components/SectionNav.jsx`** (único punto de verdad): sticky que **sigue al header auto-ocultable** (lee `[data-testid="site-header"]`; bajo el header al subir, a top:0 al bajar; sin solaparse); **scroll suave "homing"** que recalcula el destino real en cada frame + snaps de corrección (180/480ms) → fiable con imágenes lazy; **resaltado activo** vía `IntersectionObserver` de línea de escaneo (a prueba de saltos) + pin de última sección al fondo; **móvil**: scroll horizontal (`no-scrollbar`) con auto-centrado del tab activo. Estilo Xaluca (crema `#FDFBF7`, subrayado terracota `#C16542`). Props: `items=[{id,label}]`, `testid`.
   - **`HomeSectionNav.jsx`** refactorizado a wrapper de `SectionNav`.

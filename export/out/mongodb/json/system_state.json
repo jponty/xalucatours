@@ -1,0 +1,15 @@
+[
+  {
+    "_id": "reoptimize_library",
+    "done": 63,
+    "errors": 0,
+    "finished_at": "2026-06-26T11:27:37.420026+00:00",
+    "optimized": 0,
+    "running": false,
+    "saved_bytes": 0,
+    "skipped": 63,
+    "started_at": "2026-06-26T11:26:59.910400+00:00",
+    "total": 63,
+    "updated_at": "2026-06-26T11:27:37.420038+00:00"
+  }
+]

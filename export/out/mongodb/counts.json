@@ -1,0 +1,21 @@
+{
+  "app_settings": 1,
+  "config": 2,
+  "contact_requests": 14,
+  "contest_participants": 4,
+  "contests": 1,
+  "day_galleries": 487,
+  "files": 4480,
+  "image_slot_registry": 2296,
+  "image_slots": 1679,
+  "library_locations": 128,
+  "program_downloads": 0,
+  "remote_image_registry": 136,
+  "supabase_sync_state": 1,
+  "supabase_synced_objects": 4527,
+  "system_state": 1,
+  "text_slot_registry": 6950,
+  "text_slots": 98,
+  "trip_planner_requests": 11,
+  "unsplash_locations": 139
+}

@@ -1,0 +1,817 @@
+[
+  {
+    "_id": "home.hero.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {}
+  },
+  {
+    "_id": "home.intro.overline",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "NUESTRA HISTORIA"
+    }
+  },
+  {
+    "_id": "home.intro.p1",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "En Xaluca Tours nos enamoramos de Marruecos con el primer sorbo de t\u00e9 a la menta servido desde lo alto en un peque\u00f1o caf\u00e9 de Arfoud, conocido como la Puerta del Desierto."
+    }
+  },
+  {
+    "_id": "home.south.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {}
+  },
+  {
+    "_id": "home.contact.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {}
+  },
+  {
+    "_id": "brand.tagline",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ESPECIALISTAS EN VIAJES POR MARRUECOS"
+    }
+  },
+  {
+    "_id": "viajes.marrakech_ergchebbi_marrakech.hero.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {}
+  },
+  {
+    "_id": "hub-ui.cta_primary",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {}
+  },
+  {
+    "_id": "equipo.hero.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {}
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.day.ad-ouarzazate-dades.gallery.1.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "CULTURA"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.day.ad-ouarzazate-dades.gallery.3.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "PAISAJE"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.day.ad-ouarzazate-dades.gallery.5.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ALOJAMIENTO"
+    }
+  },
+  {
+    "_id": "daymap-ui.stay_in",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "EN"
+    }
+  },
+  {
+    "_id": "daymap-ui.kind.market",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "MERCADO"
+    }
+  },
+  {
+    "_id": "test.persist.1780307099",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "HolaES",
+      "en": "HelloEN",
+      "fr": "BonjourFR"
+    }
+  },
+  {
+    "_id": "gallery-ui.day.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "El recorrido en im\u00e1genes.",
+      "en": "The journey in pictures.",
+      "fr": "L'itin\u00e9raire en images."
+    }
+  },
+  {
+    "_id": "test-reset.42aba82324",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Editado",
+      "en": "Edited",
+      "fr": "Modifi\u00e9"
+    }
+  },
+  {
+    "_id": "test-reset.03486251d2",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Solo ES"
+    }
+  },
+  {
+    "_id": "test-reset.822aa1f6d1",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "A",
+      "en": "B"
+    }
+  },
+  {
+    "_id": "test-cms.txt.238f10a6",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "hola",
+      "en": "hi",
+      "fr": "salut"
+    }
+  },
+  {
+    "_id": "test-reset.41b46cb16e",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Editado",
+      "en": "Edited",
+      "fr": "Modifi\u00e9"
+    }
+  },
+  {
+    "_id": "test-reset.5ceba822f5",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Solo ES"
+    }
+  },
+  {
+    "_id": "test-reset.9e4f7b5f16",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "A",
+      "en": "B"
+    }
+  },
+  {
+    "_id": "test-reset.ea721ffc03",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "en": "Edited",
+      "fr": "Modifi\u00e9"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Calles blancas de la medina"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "La arquitectura encalada y los detalles azules convierten cada rinc\u00f3n de Asilah en un paseo lleno de luz y calma atl\u00e1ntica."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Puertas azules de Asilah"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "El contraste entre el blanco de las fachadas y el azul intenso de puertas y ventanas es uno de los s\u00edmbolos m\u00e1s reconocibles de la ciudad."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Murallas frente al Atl\u00e1ntico"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las antiguas fortificaciones portuguesas se asoman al oc\u00e9ano, ofreciendo algunas de las vistas m\u00e1s ic\u00f3nicas de la costa norte de Marruecos."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.0.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ASILAH"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.1.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ASILAH"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-asilah-1.gallery.2.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ASILAH"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-tanger-0.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Gran Zoco",
+      "en": "Grand Souk",
+      "fr": "Grand Souk"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-tanger-0.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Fachadas hist\u00f3ricas, palmeras y el pulso cotidiano de una ciudad donde Europa y \u00c1frica se encuentran frente al Estrecho.",
+      "en": "Historic facades, palm trees, and the everyday pulse of a city where Europe and Africa meet facing the Strait.",
+      "fr": "Fa\u00e7ades historiques, palmiers et le pouls quotidien d'une ville o\u00f9 l'Europe et l'Afrique se rencontrent face au D\u00e9troit."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-tanger-0.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Grutas de H\u00e9rcules",
+      "en": "Hercules Caves",
+      "fr": "Grottes d'Hercule"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-tanger-0.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Formaciones naturales esculpidas por el oc\u00e9ano y la leyenda, con la famosa abertura hacia el mar que recuerda el perfil de \u00c1frica.",
+      "en": "Natural formations sculpted by the ocean and legend, with the famous opening to the sea that resembles the profile of Africa.",
+      "fr": "Formations naturelles sculpt\u00e9es par l'oc\u00e9an et la l\u00e9gende, avec la c\u00e9l\u00e8bre ouverture vers la mer qui \u00e9voque le profil de l'Afrique."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-tanger-0.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Faro de Cap Spartel",
+      "en": "Cape Spartel Lighthouse",
+      "fr": "Phare du Cap Spartel"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tanger-asilah-tanger-0.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Elevado sobre los acantilados del cabo, se\u00f1ala el encuentro entre el Atl\u00e1ntico y el Mediterr\u00e1neo desde el extremo noroeste de \u00c1frica.",
+      "en": "Perched atop the cliffs of the cape, it marks the meeting point between the Atlantic and the Mediterranean from the northwestern tip of Africa.",
+      "fr": "Perch\u00e9 au sommet des falaises du cap, il marque le point de rencontre entre l'Atlantique et la M\u00e9diterran\u00e9e depuis l'extr\u00eame nord-ouest de l'Afrique."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.0.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Faro hist\u00f3rico de Cabo Espartel",
+      "en": "Historic Lighthouse of Cape Espartel",
+      "fr": "Phare historique du Cap Espartel"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.1.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Atardecer sobre la bah\u00eda de T\u00e1nger",
+      "en": "Sunset over the bay of Tangier",
+      "fr": "Coucher de soleil sur la baie de Tanger"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.2.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Jardines y vistas al Estrecho de Gibraltar",
+      "en": "Gardens and views of the Strait of Gibraltar",
+      "fr": "Jardins et vues sur le d\u00e9troit de Gibraltar"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.3.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Elegancia colonial en el coraz\u00f3n de T\u00e1nger",
+      "en": "Colonial elegance in the heart of Tangier",
+      "fr": "\u00c9l\u00e9gance coloniale au c\u0153ur de Tanger"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.4.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Cuevas marinas y acantilados atl\u00e1nticos",
+      "en": "Marine caves and Atlantic cliffs",
+      "fr": "Grottes marines et falaises atlantiques"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.5.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "La silueta africana en las Cuevas de H\u00e9rcules",
+      "en": "The African silhouette at the Hercules Caves",
+      "fr": "La silhouette africaine aux Caves d'Hercule"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.6.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Murallas y horizonte junto al oc\u00e9ano",
+      "en": "Walls and horizon by the ocean",
+      "fr": "Murs et horizon au bord de l'oc\u00e9an"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.7.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Puertas azules y esencia mediterr\u00e1nea",
+      "en": "Blue doors and Mediterranean essence",
+      "fr": "Portes bleues et essence m\u00e9diterran\u00e9enne"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.8.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Calles blancas de la medina de Asilah",
+      "en": "White streets of the medina of Asilah",
+      "fr": "Ruelles blanches de la m\u00e9dina d'Asilah"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.day.tf56-tanger-asilah.gallery.9.caption",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Rincones tranquilos entre arte y tradici\u00f3n",
+      "en": "Quiet corners between art and tradition",
+      "fr": "Coins tranquilles entre art et tradition"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Avenida Mohammed V",
+      "en": "Mohammed V Avenue",
+      "fr": "Avenue Mohammed V"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "La elegante arteria principal de Tetu\u00e1n, flanqueada por palmeras y edificios de influencia hispano-marroqu\u00ed, con las monta\u00f1as del Rif como tel\u00f3n de fondo.",
+      "en": "The elegant main avenue of Tetu\u00e1n, lined with palm trees and buildings of Hispano-Moroccan influence, with the Rif mountains as a backdrop.",
+      "fr": "L'\u00e9l\u00e9gante art\u00e8re principale de T\u00e9touan, bord\u00e9e de palmiers et de b\u00e2timents d'influence hispano-marocaine, avec les montagnes du Rif en toile de fond."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "El coraz\u00f3n institucional de la ciudad, donde la arquitectura monumental marroqu\u00ed y el Palacio Real marcan la transici\u00f3n entre la medina hist\u00f3rica y la ciudad moderna.",
+      "en": "The institutional heart of the city, where Moroccan monumental architecture and the Royal Palace mark the transition between the historic medina and the modern city.",
+      "fr": "Le c\u0153ur institutionnel de la ville, o\u00f9 l'architecture monumentale marocaine et le Palais Royal marquent la transition entre la m\u00e9dina historique et la ville moderne."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Medina Blanca de Tetu\u00e1n",
+      "en": "White Medina of T\u00e9touan",
+      "fr": "M\u00e9dina Blanche de T\u00e9touan"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Un laberinto de casas encaladas y callejuelas declaradas Patrimonio Mundial por la UNESCO, considerado uno de los conjuntos urbanos andalus\u00edes mejor conservados de Marruecos.",
+      "en": "A labyrinth of whitewashed houses and alleyways declared World Heritage by UNESCO, considered one of the best-preserved Andalusian urban ensembles in Morocco.",
+      "fr": "Un labyrinthe de maisons blanchies \u00e0 la chaux et de ruelles d\u00e9clar\u00e9es patrimoine mondial par l'UNESCO, consid\u00e9r\u00e9 comme l'un des ensembles urbains andalous les mieux conserv\u00e9s du Maroc."
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.0.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "TET\u00daAN",
+      "en": "TETOUAN",
+      "fr": "T\u00c9TOUAN"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.1.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "TET\u00daAN",
+      "en": "TETOUAN",
+      "fr": "TETOUAN"
+    }
+  },
+  {
+    "_id": "viajes.norte.tanger_fez.programa_5n_6d.landmark.tf56-tetuan-tetuan-stay.gallery.2.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "TET\u00daAN"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.boutaghrar.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Oasis entre monta\u00f1as",
+      "en": "Oasis among mountains",
+      "fr": "Oasis entre montagnes"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.boutaghrar.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Un contraste sorprendente entre las laderas \u00e1ridas del Alto Atlas y la franja verde que da vida a los pueblos del valle.",
+      "en": "A surprising contrast between the arid slopes of the High Atlas and the green strip that gives life to the villages of the valley.",
+      "fr": "Un contraste surprenant entre les pentes arides du Haut Atlas et la bande verte qui donne vie aux villages de la vall\u00e9e."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.boutaghrar.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Mirador sobre Boutaghrar",
+      "en": "Viewpoint over Boutaghrar",
+      "fr": "Point de vue sur Boutaghrar"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.boutaghrar.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Panor\u00e1mica del oasis de Boutaghrar, donde las aldeas de adobe emergen entre huertos, palmerales y monta\u00f1as esculpidas por el tiempo.",
+      "en": "Panoramic view of the Boutaghrar oasis, where adobe villages emerge among orchards, palm groves, and mountains sculpted by time.",
+      "fr": "Vue panoramique de l'oasis de Boutaghrar, o\u00f9 des villages en adobe \u00e9mergent parmi des vergers, des palmeraies et des montagnes sculpt\u00e9es par le temps."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.boutaghrar.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Carretera del Valle de las Rosas",
+      "en": "Road of the Valley of the Roses",
+      "fr": "Route de la Vall\u00e9e des Roses"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.boutaghrar.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las sinuosas carreteras de Boutaghrar recorren ca\u00f1ones y paisajes minerales, ofreciendo algunas de las vistas m\u00e1s espectaculares de la regi\u00f3n.",
+      "en": "The winding roads of Boutaghrar traverse canyons and mineral landscapes, offering some of the most spectacular views in the region.",
+      "fr": "Les routes sinueuses de Boutaghrar traversent des canyons et des paysages min\u00e9raux, offrant certaines des vues les plus spectaculaires de la r\u00e9gion."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Huellas del Dakar",
+      "en": "Dakar Footprints",
+      "fr": "Les traces du Dakar"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Recorremos pistas que durante a\u00f1os formaron parte del legendario Rally Par\u00eds-Dakar. Entre dunas y llanuras des\u00e9rticas, a\u00fan se percibe el esp\u00edritu de una de las aventuras m\u00e1s m\u00edticas del mundo.",
+      "en": "We traverse tracks that for years were part of the legendary Paris-Dakar Rally. Amidst dunes and desert plains, the spirit of one of the most mythical adventures in the world can still be felt.",
+      "fr": "Nous parcourons des pistes qui ont pendant des ann\u00e9es fait partie du l\u00e9gendaire Rallye Paris-Dakar. Entre dunes et plaines d\u00e9sertiques, l'esprit de l'une des aventures les plus mythiques du monde se fait encore sentir."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las pistas de los campeones",
+      "en": "The tracks of champions",
+      "fr": "Les pistes des champions"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Estas extensas hamadas y caminos de tierra fueron escenario de las etapas marroqu\u00edes del Dakar, donde pilotos y veh\u00edculos desafiaban el desierto en busca de la meta.",
+      "en": "These vast hamadas and dirt roads were the setting for the Moroccan stages of the Dakar, where drivers and vehicles challenged the desert in search of the finish line.",
+      "fr": "Ces vastes hamadas et chemins de terre ont servi de cadre aux \u00e9tapes marocaines du Dakar, o\u00f9 pilotes et v\u00e9hicules d\u00e9fiaient le d\u00e9sert \u00e0 la recherche de la ligne d'arriv\u00e9e."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Siguiendo la ruta del Dakar",
+      "en": "Following the Dakar route",
+      "fr": "Suivant la route du Dakar"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Nuestro recorrido atraviesa algunos de los paisajes que hicieron famoso al Rally Par\u00eds-Dakar en Marruecos, entre dunas, ca\u00f1ones y horizontes infinitos del Sahara.",
+      "en": "Our journey crosses some of the landscapes that made the Paris-Dakar Rally famous in Morocco, among dunes, canyons, and endless horizons of the Sahara.",
+      "fr": "Notre parcours traverse certains des paysages qui ont rendu c\u00e9l\u00e8bre le Rallye Paris-Dakar au Maroc, entre dunes, canyons et horizons infinis du Sahara."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.0.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "PISTAS DEL RALLY DAKAR",
+      "en": "DAKAR RALLY TRACKS",
+      "fr": "PISTES DU RALLYE DAKAR"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.1.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "PISTAS DEL RALLY DAKAR",
+      "en": "DAKAR RALLY TRACKS",
+      "fr": "PISTES DU RALLYE DAKAR"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.dakar-tracks.gallery.2.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "PISTAS DEL RALLY DAKAR",
+      "en": "DAKAR RALLY TRACKS",
+      "fr": "PISTES DU RALLYE DAKAR"
+    }
+  },
+  {
+    "_id": "daymap-ui.kind.hotel",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "HOTEL XALUCA",
+      "en": "XALUCA HOTEL",
+      "fr": "H\u00d4TEL XALUCA"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.canteras-fosiles.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "F\u00f3siles del antiguo oc\u00e9ano",
+      "en": "Fossils of the ancient ocean",
+      "fr": "Fossiles de l'ancien oc\u00e9an"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.canteras-fosiles.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Hace cientos de millones de a\u00f1os, estas tierras estaban cubiertas por un mar tropical. Los f\u00f3siles que encontramos son testigos de aquella \u00e9poca en la que Marruecos se encontraba bajo las aguas.",
+      "en": "Hundreds of millions of years ago, these lands were covered by a tropical sea. The fossils we find are witnesses of that time when Morocco was under the waters.",
+      "fr": "Il y a des centaines de millions d'ann\u00e9es, ces terres \u00e9taient couvertes par une mer tropicale. Les fossiles que nous trouvons sont des t\u00e9moins de cette \u00e9poque o\u00f9 le Maroc \u00e9tait sous les eaux."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.canteras-fosiles.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Tesoros escondidos en la roca",
+      "en": "Hidden treasures in the rock",
+      "fr": "Tr\u00e9sors cach\u00e9s dans la roche"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.canteras-fosiles.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las canteras de la regi\u00f3n revelan restos de criaturas marinas petrificadas que han permanecido ocultas durante millones de a\u00f1os bajo las monta\u00f1as y el desierto.",
+      "en": "The quarries of the region reveal remnants of petrified marine creatures that have remained hidden for millions of years beneath the mountains and the desert.",
+      "fr": "Les carri\u00e8res de la r\u00e9gion r\u00e9v\u00e8lent des restes de cr\u00e9atures marines p\u00e9trifi\u00e9es qui ont \u00e9t\u00e9 cach\u00e9es pendant des millions d'ann\u00e9es sous les montagnes et le d\u00e9sert."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.canteras-fosiles.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Un desierto lleno de historia",
+      "en": "A desert full of history",
+      "fr": "Un d\u00e9sert plein d'histoire"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.canteras-fosiles.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Entre hamadas y paisajes \u00e1ridos aparecen algunos de los yacimientos f\u00f3siles m\u00e1s importantes de Marruecos, donde cada roca puede guardar una ventana al pasado de la Tierra.",
+      "en": "Between hot winds and arid landscapes, some of the most important fossil sites in Morocco appear, where each rock can hold a window to the Earth's past.",
+      "fr": "Entre les vents chauds et les paysages arides, apparaissent certains des sites fossilif\u00e8res les plus importants du Maroc, o\u00f9 chaque roche peut contenir une fen\u00eatre sur le pass\u00e9 de la Terre."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Mar de dunas infinito",
+      "en": "Endless sea of dunes",
+      "fr": "Mer de dunes infinie"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las dunas del Erg Chebbi se extienden hasta donde alcanza la vista, creando uno de los paisajes m\u00e1s espectaculares y emblem\u00e1ticos del Sahara marroqu\u00ed.",
+      "en": "The dunes of Erg Chebbi stretch as far as the eye can see, creating one of the most spectacular and iconic landscapes of the Moroccan Sahara.",
+      "fr": "Les dunes de l'Erg Chebbi s'\u00e9tendent \u00e0 perte de vue, cr\u00e9ant l'un des paysages les plus spectaculaires et embl\u00e9matiques du Sahara marocain."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "El coraz\u00f3n del Sahara",
+      "en": "The heart of the Sahara",
+      "fr": "Le c\u0153ur du Sahara"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Modeladas por el viento durante miles de a\u00f1os, las grandes dunas de Merzouga forman un oc\u00e9ano de arena cambiante que transforma su aspecto con cada luz del d\u00eda.",
+      "en": "Carved by the wind over thousands of years, the great dunes of Merzouga form a changing ocean of sand that transforms its appearance with each light of day.",
+      "fr": "Model\u00e9es par le vent pendant des milliers d'ann\u00e9es, les grandes dunes de Merzouga forment un oc\u00e9an de sable changeant qui transforme son apparence \u00e0 chaque lumi\u00e8re du jour."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Camino entre dunas",
+      "en": "Path among dunes",
+      "fr": "Chemin parmi les dunes"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las caravanas de dromedarios siguen recorriendo las crestas del Erg Chebbi, una experiencia que permite descubrir el desierto al ritmo tradicional de los n\u00f3madas.",
+      "en": "The dromedary caravans continue to traverse the crests of Erg Chebbi, an experience that allows you to discover the desert at the traditional pace of the nomads.",
+      "fr": "Les caravanes de dromadaires continuent de parcourir les cr\u00eates de l'Erg Chebbi, une exp\u00e9rience qui permet de d\u00e9couvrir le d\u00e9sert au rythme traditionnel des nomades."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.3.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Silencio y horizonte",
+      "en": "Silence and horizon",
+      "fr": "Silence et horizon"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.3.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "En la inmensidad de las dunas, el tiempo parece detenerse. Solo el viento y las huellas sobre la arena acompa\u00f1an la traves\u00eda por este paisaje \u00fanico.",
+      "en": "In the vastness of the dunes, time seems to stand still. Only the wind and the footprints on the sand accompany the journey through this unique landscape.",
+      "fr": "Dans l'immensit\u00e9 des dunes, le temps semble s'arr\u00eater. Seul le vent et les traces sur le sable accompagnent le voyage \u00e0 travers ce paysage unique."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.0.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ERG CHEBBI",
+      "en": "ERG CHEBBI",
+      "fr": "ERG CHEBBI"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.1.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ERG CHEBBI",
+      "en": "ERG CHEBBI",
+      "fr": "ERG CHEBBI"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.2.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ERG CHEBBI",
+      "en": "ERG CHEBBI",
+      "fr": "ERG CHEBBI"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.erg-chebbi-duna.gallery.3.kind",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "ERG CHEBBI",
+      "en": "ERG CHEBBI",
+      "fr": "ERG CHEBBI"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.valle-ziz.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "El gran oasis del Ziz",
+      "en": "The great Ziz oasis",
+      "fr": "Le grand oasis de Ziz"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.valle-ziz.gallery.0.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Desde las alturas se aprecia la inmensidad del palmeral del Ziz, un aut\u00e9ntico corredor verde que da vida al desierto y acompa\u00f1a el curso del r\u00edo durante kil\u00f3metros.",
+      "en": "From the heights, one can appreciate the immensity of the Ziz palm grove, a true green corridor that brings life to the desert and follows the course of the river for kilometers.",
+      "fr": "Depuis les hauteurs, on peut appr\u00e9cier l'immensit\u00e9 du palmeraie de Ziz, un v\u00e9ritable corridor vert qui donne vie au d\u00e9sert et accompagne le cours de la rivi\u00e8re sur des kilom\u00e8tres."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.valle-ziz.gallery.1.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Mirador del Valle del Ziz",
+      "en": "Ziz Valley Viewpoint",
+      "fr": "Point de vue de la vall\u00e9e du Ziz"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.valle-ziz.gallery.1.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Uno de los panoramas m\u00e1s impresionantes del sur de Marruecos, donde el contraste entre el oasis y las mesetas des\u00e9rticas crea un paisaje \u00fanico e inolvidable.",
+      "en": "One of the most impressive panoramas in southern Morocco, where the contrast between the oasis and the desert plateaus creates a unique and unforgettable landscape.",
+      "fr": "L'un des panoramas les plus impressionnants du sud du Maroc, o\u00f9 le contraste entre l'oasis et les plateaux d\u00e9sertiques cr\u00e9e un paysage unique et inoubliable."
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.valle-ziz.gallery.2.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Palmeras y d\u00e1tiles",
+      "en": "Palms and dates",
+      "fr": "Palmiers et dates"
+    }
+  },
+  {
+    "_id": "viajes.atlas_desierto.programa_4n_5d.landmark.valle-ziz.gallery.2.desc",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Las palmeras datileras son el coraz\u00f3n del valle. Sus frutos han sustentado durante siglos a las comunidades que habitan este f\u00e9rtil oasis sahariano.",
+      "en": "The date palms are the heart of the valley. Their fruits have sustained the communities inhabiting this fertile Saharan oasis for centuries.",
+      "fr": "Les palmiers dattiers sont le c\u0153ur de la vall\u00e9e. Leurs fruits ont nourri pendant des si\u00e8cles les communaut\u00e9s qui habitent cet oasis saharien fertile."
+    }
+  },
+  {
+    "_id": "poi.ouarzazate.gallery.0.title",
+    "updated_at": "2026-07-30T21:22:29.863009+00:00",
+    "values": {
+      "es": "Kasbah A\u00eft Ben Haddou",
+      "en": "A\u00eft Ben Haddou Kasbah",
+      "fr": "Kasbah A\u00eft Ben Haddou"
+    }
+  }
+]

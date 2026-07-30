@@ -1,0 +1,21 @@
+{
+  "app_settings": {},
+  "config": {},
+  "contact_requests": {},
+  "contest_participants": {},
+  "contests": {},
+  "day_galleries": {},
+  "files": {},
+  "image_slot_registry": {},
+  "image_slots": {},
+  "library_locations": {},
+  "program_downloads": {},
+  "remote_image_registry": {},
+  "supabase_sync_state": {},
+  "supabase_synced_objects": {},
+  "system_state": {},
+  "text_slot_registry": {},
+  "text_slots": {},
+  "trip_planner_requests": {},
+  "unsplash_locations": {}
+}

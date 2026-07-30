@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-07-30T22:17:41.362021+00:00",
+  "bucket": "xaluca",
+  "project": "https://vcznwmkvphvkpkucciyw.supabase.co",
+  "total_objects": 4480,
+  "actions": {
+    "SKIPPED_IDENTICAL": 4480
+  },
+  "src_bytes_total": 2133266684,
+  "verified_dest_bytes_total": 2133266684,
+  "pending": 0,
+  "conflicts": 0,
+  "errors": 0
+}

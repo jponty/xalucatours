@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "pricing",
+    "currency": "EUR",
+    "tiers": [
+      {
+        "people": 2,
+        "low": 1010,
+        "high": 1085
+      },
+      {
+        "people": 3,
+        "low": 865,
+        "high": 920
+      },
+      {
+        "people": 4,
+        "low": 790,
+        "high": 835
+      }
+    ],
+    "updated_at": "2026-07-30T21:22:29.863009+00:00"
+  },
+  {
+    "_id": "program_pricing",
+    "programs": {},
+    "updated_at": "2026-07-30T10:37:12.880932+00:00"
+  }
+]
