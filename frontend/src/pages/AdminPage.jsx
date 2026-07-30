@@ -2116,7 +2116,7 @@ const SyncPanel = () => {
           <input
             value={targetUrl}
             onChange={(e) => setTargetUrl(e.target.value)}
-            placeholder="https://tu-sitio.emergent.host"
+            placeholder="https://tu-sitio.onrender.com"
             data-testid="admin-sync-target"
             className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm text-white outline-none focus:border-[#D4A373]"
           />

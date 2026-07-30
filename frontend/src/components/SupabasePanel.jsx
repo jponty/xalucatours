@@ -106,7 +106,7 @@ const SupabasePanel = () => {
         </div>
         <div>
           <h2 className="text-lg font-semibold">Clonar a Supabase</h2>
-          <p className="text-xs text-white/50">Copia unidireccional de MongoDB + Emergent Storage. El sistema principal no se toca.</p>
+          <p className="text-xs text-white/50">Supabase es la base de datos y el almacenamiento operativos del proyecto.</p>
         </div>
       </div>
 
@@ -128,7 +128,7 @@ const SupabasePanel = () => {
           <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
             <Stat label="Proyecto" value={<span className="text-xs break-all">{(status.project_url || "").replace(/^https?:\/\//, "")}</span>} testid="supabase-project" />
             <Stat label="Bucket" value={<span className="text-sm">{status.bucket}</span>} testid="supabase-bucket" />
-            <Stat label="Imágenes en Emergent" value={status.total_files ?? "—"} testid="supabase-total-files" />
+            <Stat label="Imágenes en Supabase" value={status.total_files ?? "—"} testid="supabase-total-files" />
             <Stat label="Ya subidas a Supabase" value={status.synced_objects ?? 0} testid="supabase-synced-count" />
           </div>
 

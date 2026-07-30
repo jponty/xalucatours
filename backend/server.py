@@ -3,8 +3,6 @@ from fastapi.staticfiles import StaticFiles
 import resend
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import UpdateOne
 import os
 import re
 import logging
@@ -22,7 +20,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 
 from storage import init_storage, put_object, get_object
-import supabase_mirror
+from supabase_db import SupabaseDatabase, UpdateOne
 
 
 ROOT_DIR = Path(__file__).parent
@@ -48,16 +46,7 @@ _warm_state = {
     "started_at": None, "finished_at": None,
 }
 
-mongo_url = os.environ['MONGO_URL']
-# Fast-fail timeouts so no DB operation (or the startup path) can hang the
-# process for the default 30s — keeps the app responsive against a slow/cold
-# Atlas connection and never blocks the container's readiness check.
-client = AsyncIOMotorClient(
-    mongo_url,
-    serverSelectionTimeoutMS=8000,
-    connectTimeoutMS=8000,
-)
-db = client[os.environ['DB_NAME']]
+db = SupabaseDatabase()
 
 app = FastAPI(title="Xaluca Tours API")
 api_router = APIRouter(prefix="/api")
@@ -85,7 +74,8 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 ADMIN_TOKEN_SECRET = os.environ.get("ADMIN_TOKEN_SECRET", "")
 ADMIN_TOKEN_TTL = 7 * 24 * 3600  # 7 days
 
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_TRANSLATION_MODEL = os.environ.get("OPENAI_TRANSLATION_MODEL", "gpt-4o-mini")
 
 
 def _admin_sign(raw: str) -> str:
@@ -436,13 +426,11 @@ async def delete_program_pricing(route_id: str, authorization: str = Header(defa
 
 
 # ---------- CMS export / import (sync content between environments) ----------
-# All editable content (image slots, text slots, global pricing) lives in
-# MongoDB. Image binaries live in the SHARED object storage, so syncing the DB
-# records alone is enough to move edits from preview → production without a
-# database redeploy. Export is read-only/public (content is already public);
-# import WRITES and is admin-protected.
+# All editable content lives in Supabase Postgres and image binaries live in
+# Supabase Storage. Export is read-only/public (content is already public);
+# import writes directly to Supabase and is admin-protected.
 def _jsonable_doc(doc):
-    """Make a Mongo doc JSON-safe: keep the string _id, ISO-format datetimes."""
+    """Make a Supabase JSONB document safe for an API response."""
     if not doc:
         return doc
     out = {}
@@ -520,8 +508,8 @@ async def cms_import(payload: CmsImportPayload, authorization: str = Header(defa
 # Reads ALL editable content from a source environment (default: production)
 # using ONLY the source's PUBLIC GET endpoints — which are already deployed —
 # then OVERWRITES this environment's collections so they become an exact mirror.
-# No redeploy of the source is required. Image binaries live in the SHARED
-# Emergent object storage, so mirroring the DB records is enough. Leads / PII
+# No redeploy of the source is required. Image binaries use canonical Supabase
+# Storage paths, so copying the records is enough. Leads / PII
 # (contact_requests, trip_planner_requests, downloads) are deliberately excluded.
 PRODUCTION_BASE_URL = os.environ.get("PRODUCTION_BASE_URL", "https://xalucatravel.com").rstrip("/")
 
@@ -1623,7 +1611,7 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     try:
         result = await asyncio.to_thread(put_object, storage_path, data, ctype)
     except Exception as exc:
-        logger.exception("Emergent storage upload failed")
+        logger.exception("Supabase Storage upload failed")
         raise HTTPException(status_code=502, detail=f"storage-upload-failed: {exc}")
 
     canonical_path = result.get("path", storage_path)
@@ -1633,7 +1621,7 @@ async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
     doc = {
         "url": public_url,
         "alt": None,
-        "source": "emergent-objstore",
+        "source": "supabase-storage",
         "storage_path": canonical_path,
         "original_filename": file.filename,
         "content_type": ctype,
@@ -1934,7 +1922,7 @@ async def update_file_metadata(file_id: str, payload: FileUpdate):
 
 @api_router.delete("/files/{file_id}")
 async def delete_file(file_id: str):
-    """Soft-delete a library file. The bytes stay in Emergent storage
+    """Soft-delete a library file. The bytes stay in Supabase Storage
     (no delete API) but the record is hidden from listings."""
     res = await db.files.update_one(
         {"id": file_id},
@@ -2439,7 +2427,7 @@ UNSPLASH_LOC_MAX_FETCHES = 6
 async def _attach_locations(summaries: List[Dict], max_fetches: int = UNSPLASH_LOC_MAX_FETCHES) -> None:
     """Attach a display-ready location to each photo.
 
-    Pass 1 (free): serve everything already cached in memory or Mongo.
+    Pass 1 (free): serve everything already cached in memory or Supabase.
     Pass 2 (budgeted): hit the Unsplash single-photo endpoint for at most
     `max_fetches` of the still-missing photos, so a single search can never
     exhaust the hourly rate limit. The rest simply render without a caption
@@ -2820,7 +2808,7 @@ async def download_file(
     fmt: Optional[str] = None,
     accept: str = Header(default=""),
 ):
-    """Public proxy that streams an object from Emergent storage.
+    """Public proxy that streams an object from Supabase Storage.
     Used by <img src="/api/files/..."> tags in the CMS — no auth needed
     because CMS images are part of the public site content.
 
@@ -2841,7 +2829,7 @@ async def download_file(
             # other API calls (e.g. the library search box).
             data, content_type = await asyncio.to_thread(get_object, path)
         except Exception as exc:
-            logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
+            logger.warning("Supabase Storage fetch failed for %s: %s", path, exc)
             raise HTTPException(status_code=404, detail="File not found")
         return Response(
             content=data,
@@ -2890,7 +2878,7 @@ async def download_file(
     try:
         data, content_type = await asyncio.to_thread(get_object, path)
     except Exception as exc:
-        logger.warning("Emergent storage fetch failed for %s: %s", path, exc)
+        logger.warning("Supabase Storage fetch failed for %s: %s", path, exc)
         raise HTTPException(status_code=404, detail="File not found")
 
     result, out_mime, used_ext, cacheable = await asyncio.to_thread(
@@ -3058,7 +3046,7 @@ async def _run_warm_cache():
         if _WARM_WORKERS > 1:
             try:
                 # `spawn` re-imports cleanly (no fork-deadlock with the running
-                # event loop / Mongo sockets); workers only do CPU encoding.
+                # event loop / Postgres pool); workers only do CPU encoding.
                 pool = ProcessPoolExecutor(max_workers=_WARM_WORKERS, mp_context=_mp.get_context("spawn"))
             except Exception as exc:
                 logger.warning("warm-up process pool unavailable (%s); falling back to threads", exc)
@@ -4166,7 +4154,7 @@ async def list_text_slots():
 
 
 # ----------------------------------------------------------
-# CMS autotranslation (ES -> EN/FR) via Emergent LLM key
+# CMS autotranslation (ES -> EN/FR) via the OpenAI API
 # ----------------------------------------------------------
 LANG_NAMES = {"es": "Spanish", "en": "English", "fr": "French"}
 
@@ -4317,10 +4305,8 @@ async def translate_text(body: TranslateBody):
     targets = [t for t in body.targets if t in ("en", "fr", "es") and t != body.source]
     if not text or not targets:
         return {"translations": {}}
-    if not EMERGENT_LLM_KEY:
+    if not OPENAI_API_KEY:
         raise HTTPException(503, "Translation service not configured")
-
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
 
     target_desc = ", ".join(f'"{t}" ({LANG_NAMES[t]})' for t in targets)
     json_shape = ", ".join(f'"{t}": "..."' for t in targets)
@@ -4337,12 +4323,25 @@ async def translate_text(body: TranslateBody):
         f"TEXT:\n{text}"
     )
     try:
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"cms-translate-{uuid.uuid4().hex}",
-            system_message=system,
-        ).with_model("openai", "gpt-4o-mini")
-        resp = await chat.send_message(UserMessage(text=prompt))
+        async with httpx.AsyncClient(timeout=60) as http:
+            response = await http.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {OPENAI_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": OPENAI_TRANSLATION_MODEL,
+                    "temperature": 0,
+                    "response_format": {"type": "json_object"},
+                    "messages": [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": prompt},
+                    ],
+                },
+            )
+            response.raise_for_status()
+            resp = response.json()["choices"][0]["message"]["content"]
     except Exception as e:
         logger.error(f"translate failed: {e}")
         raise HTTPException(502, "Translation provider error")
@@ -4604,6 +4603,97 @@ async def contest_active():
     return {"contest": _public_contest(contest)}
 
 
+def _supabase_public_file_url(value: Optional[str]) -> Optional[str]:
+    if not value or "/api/files/" not in value:
+        return value
+    from urllib.parse import quote
+    path = value.split("/api/files/", 1)[1].split("?", 1)[0]
+    encoded = "/".join(quote(part, safe="") for part in path.split("/"))
+    project = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
+    bucket = quote(os.environ.get("SUPABASE_STORAGE_BUCKET", "xaluca"), safe="")
+    return f"{project}/storage/v1/object/public/{bucket}/{encoded}"
+
+
+@api_router.get("/content-manifest")
+async def content_manifest():
+    """Current public CMS/media state, read live from Supabase.
+
+    The frontend caches this response for the current browser session. Unlike
+    the historical build-time JSON file, CMS edits are visible after reload
+    without rebuilding the static site.
+    """
+    slot_docs, gallery_docs, file_docs = await asyncio.gather(
+        db.image_slots.find({}).to_list(10000),
+        db.day_galleries.find({}).to_list(20000),
+        db.files.find({"is_deleted": {"$ne": True}}).to_list(10000),
+    )
+    contest = await _get_active_contest()
+    slots = [
+        {
+            "slot_id": doc.get("_id"),
+            "url": _supabase_public_file_url(doc.get("url")),
+            "alt": doc.get("alt"),
+            "alt_i18n": doc.get("alt_i18n"),
+            "caption_i18n": doc.get("caption_i18n"),
+            "cleared": bool(doc.get("cleared")),
+            "source": doc.get("source"),
+            "updated_at": doc.get("updated_at"),
+        }
+        for doc in slot_docs
+        if doc.get("_id")
+    ]
+    galleries = [
+        {
+            "key": doc.get("_id"),
+            "images": [
+                {**image, "url": _supabase_public_file_url(image.get("url"))}
+                for image in (doc.get("images") or [])
+                if isinstance(image, dict)
+            ],
+            "updated_at": doc.get("updated_at"),
+        }
+        for doc in gallery_docs
+        if doc.get("_id")
+    ]
+    library = [
+        {
+            "id": doc.get("id") or doc.get("_id"),
+            "url": _supabase_public_file_url(f"/api/files/{doc.get('storage_path')}"),
+            "storage_path": doc.get("storage_path"),
+            "original_filename": doc.get("original_filename"),
+            "content_type": doc.get("content_type"),
+            "size": doc.get("size"),
+            "slot_id": doc.get("slot_id"),
+            "tags": doc.get("tags") or [],
+            "created_at": doc.get("created_at"),
+            "pexels": doc.get("pexels"),
+            "unsplash": doc.get("unsplash"),
+            "search_text": " ".join(
+                str(value or "")
+                for value in (
+                    doc.get("original_filename"),
+                    doc.get("slot_id"),
+                    doc.get("storage_path"),
+                    *(doc.get("tags") or []),
+                )
+            ),
+        }
+        for doc in file_docs
+        if doc.get("storage_path")
+    ]
+    library.sort(key=lambda item: item.get("created_at") or "", reverse=True)
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source": "supabase-live",
+        "project_url": os.environ.get("SUPABASE_URL"),
+        "bucket": os.environ.get("SUPABASE_STORAGE_BUCKET", "xaluca"),
+        "slots": slots,
+        "galleries": galleries,
+        "library": library,
+        "contest": _public_contest(contest) if contest else None,
+    }
+
+
 @api_router.post("/contest/spin")
 async def contest_spin(payload: ContestSpinPayload, background_tasks: BackgroundTasks):
     """Validate the participant, decide the prize (server-side, weighted),
@@ -4818,7 +4908,7 @@ async def admin_contest_stats(contest_id: str, authorization: str = Header(defau
     return {"total_participants": total, "per_prize": per_prize, "by_day": by_day}
 
 
-# ---------- Supabase mirror (one-way backup: MongoDB + Emergent -> Supabase) ----------
+# ---------- Supabase operational status ----------
 class SupabaseSyncPayload(BaseModel):
     model_config = ConfigDict(extra="ignore")
     include_personal_data: bool = False
@@ -4829,51 +4919,45 @@ class SupabaseSyncPayload(BaseModel):
 @api_router.get("/admin/supabase/status")
 async def supabase_status(authorization: str = Header(default="")):
     _require_admin(authorization)
-    configured = supabase_mirror.is_configured()
-    out = {
-        "configured": configured,
-        "bucket": supabase_mirror.bucket_name(),
-        "project_url": supabase_mirror.project_url(),
-        "collections": supabase_mirror.CONTENT_COLLECTIONS,
-        "personal_collections": supabase_mirror.PERSONAL_COLLECTIONS,
+    return {
+        "configured": True,
+        "operational": True,
+        "source": "supabase",
+        "bucket": os.environ.get("SUPABASE_STORAGE_BUCKET", "xaluca"),
+        "project_url": os.environ.get("SUPABASE_URL"),
+        "total_files": await db.files.count_documents({}),
+        "job": {
+            "running": False,
+            "phase": "operational",
+            "message": "Supabase es la base de datos y el almacenamiento principales.",
+        },
     }
-    if configured:
-        out["synced_objects"] = await db.supabase_synced_objects.count_documents({})
-        out["total_files"] = await db.files.count_documents({})
-    out["job"] = await supabase_mirror.get_status(db)
-    return out
 
 
 @api_router.post("/admin/supabase/sync")
 async def supabase_sync(payload: SupabaseSyncPayload, authorization: str = Header(default="")):
     _require_admin(authorization)
-    if not supabase_mirror.is_configured():
-        raise HTTPException(status_code=400, detail="Supabase no está configurado en el backend (.env).")
-    if supabase_mirror.is_running():
-        raise HTTPException(status_code=409, detail="Ya hay una sincronización en curso.")
-    do_db = payload.what in ("all", "db")
-    do_storage = payload.what in ("all", "storage")
-    asyncio.create_task(supabase_mirror.run_sync(
-        db,
-        include_personal=payload.include_personal_data,
-        do_db=do_db, do_storage=do_storage, force=payload.force,
-    ))
     return {
-        "started": True, "what": payload.what,
-        "include_personal_data": payload.include_personal_data, "force": payload.force,
+        "started": False,
+        "operational": True,
+        "message": "No se requiere espejo: el backend ya escribe directamente en Supabase.",
     }
 
 
 @api_router.get("/admin/supabase/sync/status")
 async def supabase_sync_status(authorization: str = Header(default="")):
     _require_admin(authorization)
-    return await supabase_mirror.get_status(db)
+    return {
+        "running": False,
+        "phase": "operational",
+        "message": "Supabase es el origen principal.",
+    }
 
 
 app.include_router(api_router)
 
-# Serve legacy uploaded files under /api/uploads for backward compatibility
-# with images uploaded before the Emergent Object Storage migration. New
+# Serve legacy uploaded files under /api/uploads for backward compatibility.
+# New
 # uploads go straight to object storage and are served via /api/files/.
 UPLOAD_DIR = ROOT_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
@@ -4914,7 +4998,7 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    await db.close()
 
 
 @app.on_event("startup")
@@ -4923,20 +5007,19 @@ async def startup_storage():
 
     Uvicorn does not serve HTTP (incl. the GET /api/ health check) until the
     ASGI lifespan 'startup' completes. So this handler must return immediately.
-    All I/O that depends on external services (Emergent object storage, MongoDB
-    Atlas) is done in a DETACHED background task, fully wrapped so it can never
+    All I/O that depends on external services (Supabase Storage and Postgres)
+    is done in a DETACHED background task, fully wrapped so it can never
     crash the app or delay the container from becoming ready — even if a
     dependency is slow, throttled or temporarily unreachable at boot.
     """
     async def _boot_setup():
-        # 1) Pre-warm the object-storage session. init_storage() is a BLOCKING
-        #    requests.post (up to 30s) → run it off the event loop.
+        # 1) Validate Supabase Storage configuration off the event loop.
         try:
             await asyncio.to_thread(init_storage)
         except Exception as exc:
             # Uploads will surface an error if storage is down; everything else
             # keeps working.
-            logger.error("Emergent object storage init failed: %s", exc)
+            logger.error("Supabase Storage init failed: %s", exc)
         # 2) Indexes for fast dedup / listing (never fatal).
         try:
             await db.files.create_index("sha256")
