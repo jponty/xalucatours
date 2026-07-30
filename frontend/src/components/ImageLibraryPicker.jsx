@@ -7,6 +7,7 @@ import PexelsTab from "@/components/PexelsTab";
 import { Img } from "@/components/Img";
 import UnsplashTab from "@/components/UnsplashTab";
 import PexelsSelectionTab from "@/components/PexelsSelectionTab";
+import { loadSupabaseImages } from "@/lib/supabaseImages";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -40,6 +41,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
     try { localStorage.setItem(TAB_STORAGE_KEY, tab); } catch { /* ignore */ }
   }, [tab]);
   const [items, setItems] = useState([]);
+  const [libraryTotal, setLibraryTotal] = useState(0);
   const [tags, setTags] = useState([]);
   const [activeTag, setActiveTag] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -147,34 +149,52 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
   /* ---- Load list ---- */
   useEffect(() => {
     if (!open) return;
-    const controller = new AbortController();
+    let cancelled = false;
     (async () => {
       setLoading(true);
       setError(null);
       try {
-        const params = new URLSearchParams({ limit: "120" });
-        if (debounced) params.set("q", debounced);
-        if (activeTag) params.set("tag", activeTag);
-        const res = await fetch(`${API}/api/files?${params.toString()}`, { signal: controller.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setItems(data.items || []);
+        const data = await loadSupabaseImages();
+        const query = debounced.toLocaleLowerCase();
+        const filtered = (data.library || []).filter((item) => {
+          const itemTags = item.tags || [];
+          if (activeTag && !itemTags.includes(activeTag)) return false;
+          if (!query) return true;
+          return [
+            item.original_filename,
+            item.slot_id,
+            item.storage_path,
+            ...itemTags,
+          ].some((value) => String(value || "").toLocaleLowerCase().includes(query));
+        });
+        if (cancelled) return;
+        setLibraryTotal(filtered.length);
+        setItems(filtered.slice(0, 120));
         setLoading(false);
       } catch (err) {
-        if (err.name === "AbortError") return; // superseded by a newer search
+        if (cancelled) return;
         setError(err.message || "No se pudo cargar la biblioteca.");
         setLoading(false);
       }
     })();
-    return () => controller.abort();
+    return () => { cancelled = true; };
   }, [open, debounced, activeTag, refreshTick]);
 
   /* ---- Load tag chips ---- */
   useEffect(() => {
     if (!open) return;
-    fetch(`${API}/api/library/tags`)
-      .then((r) => r.json())
-      .then((d) => setTags(d.tags || []))
+    loadSupabaseImages()
+      .then((data) => {
+        const counts = new Map();
+        (data.library || []).forEach((item) => {
+          (item.tags || []).forEach((name) => counts.set(name, (counts.get(name) || 0) + 1));
+        });
+        setTags(
+          Array.from(counts, ([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+            .slice(0, 60)
+        );
+      })
       .catch(() => setTags([]));
   }, [open, refreshTick]);
 
@@ -395,9 +415,9 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
   /* ---- Counter line ---- */
   const counterLine = useMemo(() => {
     if (loading) return "Cargando…";
-    if (activeTag) return `${items.length} foto${items.length === 1 ? "" : "s"} con #${activeTag}`;
-    return `${items.length} foto${items.length === 1 ? "" : "s"} disponibles`;
-  }, [loading, items.length, activeTag]);
+    if (activeTag) return `${libraryTotal} foto${libraryTotal === 1 ? "" : "s"} con #${activeTag}`;
+    return `${libraryTotal} foto${libraryTotal === 1 ? "" : "s"} disponibles`;
+  }, [loading, libraryTotal, activeTag]);
 
   /* ---- ESC also closes confirm dialog ---- */
   useEffect(() => {

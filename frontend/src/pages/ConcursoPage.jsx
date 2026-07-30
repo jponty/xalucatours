@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Gift, Mail, User, Phone, Loader2, RotateCw, PartyPopper, X, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import monogramWhite from "@/assets/monograma-x-white.png";
+import { loadSupabaseImages } from "@/lib/supabaseImages";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const T = (es, en, fr) => ({ es, en, fr });
@@ -155,9 +156,8 @@ export default function ConcursoPage() {
 
   useEffect(() => {
     let alive = true;
-    axios
-      .get(`${API}/contest/active`)
-      .then((r) => { if (alive) setContest(r.data.contest); })
+    loadSupabaseImages()
+      .then((data) => { if (alive) setContest(data.contest || null); })
       .catch(() => { if (alive) setContest(null); })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
