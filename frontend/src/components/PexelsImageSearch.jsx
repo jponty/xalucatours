@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Search, Loader2, X, ImageOff, Sparkles, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { Img } from "@/components/Img";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 const T = {
   es: {

@@ -14,7 +14,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Save, Loader2, Trash2, Check, AlertCircle, Globe } from "lucide-react";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 const LANGS = [
   { code: "es", label: "ES" },
   { code: "en", label: "EN" },

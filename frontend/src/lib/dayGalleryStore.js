@@ -81,7 +81,7 @@ export const useDayGallery = (key) => {
 };
 
 export const resolveGalleryUrl = (url) =>
-  url && url.startsWith("/api/") ? `${process.env.REACT_APP_BACKEND_URL}${url}` : url;
+  url && url.startsWith("/api/") ? `${process.env.REACT_APP_BACKEND_URL || ""}${url}` : url;
 
 /* Build the seed image list for a day that has no managed gallery yet.
    Single source of truth shared by the Admin Gallery tab (GalleryManager)
