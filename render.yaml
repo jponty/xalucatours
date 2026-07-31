@@ -57,7 +57,7 @@ services:
     runtime: static
     name: xaluca-tours-web
     rootDir: frontend
-    buildCommand: corepack enable && yarn install && yarn build
+    buildCommand: npm run build
     staticPublishPath: ./build
     autoDeployTrigger: commit
     envVars:
