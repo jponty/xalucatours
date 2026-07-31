@@ -14,14 +14,10 @@ services:
         value: 3.11.15
       - key: SUPABASE_URL
         sync: false
-      - key: SUPABASE_DB_URL
-        sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: SUPABASE_STORAGE_BUCKET
         value: xaluca
-      - key: SUPABASE_DB_POOL_SIZE
-        value: "4"
       - key: ADMIN_PASSWORD
         sync: false
       - key: ADMIN_TOKEN_SECRET

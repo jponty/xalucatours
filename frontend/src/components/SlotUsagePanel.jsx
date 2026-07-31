@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Eye, ExternalLink, MapPin, Loader2 } from "lucide-react";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 /* =========================================================
    Slot → human-readable page/section mapping
@@ -98,7 +98,10 @@ export default function SlotUsagePanel({ slotId, compact = false }) {
     (async () => {
       try {
         const res = await fetch(`${API}/api/slots/${encodeURIComponent(slotId)}/usage`);
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.detail || `HTTP ${res.status}`);
+        }
         if (!cancelled) {
           setState({ loading: false, count: data.count || 0, slots: data.slots || [], error: false });
         }

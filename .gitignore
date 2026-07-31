@@ -256,6 +256,7 @@ frontend/node_modules/.cache/default-development/21.pack
 .env.*
 *.env
 !backend/.env.example
+!frontend/.env.development
 frontend/node_modules/.cache/default-development/43.pack
 
 # PII / data exports (never commit)

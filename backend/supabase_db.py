@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Any, AsyncIterator
 
-import asyncpg
+import httpx
 
 
 _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
@@ -305,38 +305,40 @@ class SupabaseCollection:
         self.table = f"mirror_{name}"
         self._lock = asyncio.Lock()
 
-    async def _ensure(self, connection) -> None:
-        await connection.execute(
-            f'CREATE TABLE IF NOT EXISTS "{self.table}" ('
-            "id text PRIMARY KEY, data jsonb NOT NULL, "
-            "updated_at timestamptz NOT NULL DEFAULT now())"
-        )
-        await connection.execute(f'ALTER TABLE "{self.table}" ENABLE ROW LEVEL SECURITY')
-
     async def _all(self) -> list[dict]:
-        pool = await self.database.pool()
-        async with pool.acquire() as connection:
-            await self._ensure(connection)
-            rows = await connection.fetch(f'SELECT data FROM "{self.table}"')
-        return [
-            copy.deepcopy(json.loads(row["data"]) if isinstance(row["data"], str) else row["data"])
-            for row in rows
-        ]
+        rows: list[dict] = []
+        offset = 0
+        page_size = 1000
+        while True:
+            response = await self.database.request(
+                "GET",
+                self.table,
+                params={"select": "data", "offset": offset, "limit": page_size},
+            )
+            page = response.json()
+            rows.extend(
+                copy.deepcopy(
+                    json.loads(row["data"]) if isinstance(row.get("data"), str) else row.get("data")
+                )
+                for row in page
+                if row.get("data") is not None
+            )
+            if len(page) < page_size:
+                break
+            offset += page_size
+        return rows
 
     async def _save(self, doc: dict) -> str:
         clean = _safe_json(doc)
         row_id = str(clean.get("_id") or clean.get("id") or uuid.uuid4())
         clean.setdefault("_id", row_id)
-        pool = await self.database.pool()
-        async with pool.acquire() as connection:
-            await self._ensure(connection)
-            await connection.execute(
-                f'INSERT INTO "{self.table}" (id, data, updated_at) '
-                "VALUES ($1, $2::jsonb, now()) "
-                "ON CONFLICT (id) DO UPDATE SET data=excluded.data, updated_at=now()",
-                row_id,
-                json.dumps(clean, ensure_ascii=False, separators=(",", ":")),
-            )
+        await self.database.request(
+            "POST",
+            self.table,
+            params={"on_conflict": "id"},
+            headers={"Prefer": "resolution=merge-duplicates,return=minimal"},
+            json={"id": row_id, "data": clean},
+        )
         return row_id
 
     async def find_one(
@@ -410,9 +412,14 @@ class SupabaseCollection:
         if one:
             ids = ids[:1]
         if ids:
-            pool = await self.database.pool()
-            async with pool.acquire() as connection:
-                await connection.execute(f'DELETE FROM "{self.table}" WHERE id=ANY($1::text[])', ids)
+            for start in range(0, len(ids), 100):
+                chunk = ids[start : start + 100]
+                encoded = ",".join(json.dumps(value) for value in chunk)
+                await self.database.request(
+                    "DELETE",
+                    self.table,
+                    params={"id": f"in.({encoded})"},
+                )
         return DeleteResult(len(ids))
 
     async def count_documents(self, query: dict | None = None, **_kwargs):
@@ -504,22 +511,49 @@ class DeferredCursor(SupabaseCursor):
 
 class SupabaseDatabase:
     def __init__(self, database_url: str | None = None):
-        self.database_url = database_url or os.environ.get("SUPABASE_DB_URL")
-        if not self.database_url:
-            raise RuntimeError("SUPABASE_DB_URL is required")
-        self._pool = None
+        # ``database_url`` remains accepted for compatibility with older test
+        # helpers. Operational access goes through Supabase's authenticated
+        # PostgREST API, so no database password is needed by the application.
+        self.supabase_url = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
+        self.service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or ""
+        if not self.supabase_url or not self.service_key:
+            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+        self._http = httpx.AsyncClient(
+            base_url=f"{self.supabase_url}/rest/v1/",
+            headers={
+                "apikey": self.service_key,
+                "Authorization": f"Bearer {self.service_key}",
+                "Content-Type": "application/json",
+            },
+            timeout=httpx.Timeout(120.0, connect=15.0),
+        )
         self._collections: dict[str, SupabaseCollection] = {}
 
-    async def pool(self):
-        if self._pool is None:
-            self._pool = await asyncpg.create_pool(
-                self.database_url,
-                statement_cache_size=0,
-                min_size=1,
-                max_size=int(os.environ.get("SUPABASE_DB_POOL_SIZE", "4")),
-                command_timeout=120,
-            )
-        return self._pool
+    async def request(self, method: str, table: str, **kwargs):
+        if not _SAFE_NAME.fullmatch(table):
+            raise ValueError(f"Invalid Supabase table name: {table}")
+        last_error = None
+        for attempt in range(2):
+            try:
+                response = await self._http.request(method, table, **kwargs)
+                response.raise_for_status()
+                return response
+            except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+                last_error = exc
+                status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else 0
+                if attempt == 0 and (status == 0 or status >= 500):
+                    await asyncio.sleep(0.2)
+                    continue
+                raise
+        raise last_error
+
+    async def ping(self) -> None:
+        """Fail fast when Supabase credentials or connectivity are invalid."""
+        await self.request(
+            "GET",
+            "mirror_image_slots",
+            params={"select": "id", "limit": 1},
+        )
 
     def __getattr__(self, name: str):
         if name.startswith("_"):
@@ -532,6 +566,4 @@ class SupabaseDatabase:
         return getattr(self, name)
 
     async def close(self):
-        if self._pool is not None:
-            await self._pool.close()
-            self._pool = None
+        await self._http.aclose()

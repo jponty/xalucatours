@@ -16,7 +16,7 @@ import SlotUsagePanel from "@/components/SlotUsagePanel";
 import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 /* Resolve relative API URLs to absolute. External URLs are kept as-is. */
 const resolveUrl = (url) => {
