@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
-  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock, Car, Bus,
+  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock, Car, Bus, Navigation,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -218,7 +218,7 @@ const ContactPage = () => {
           <HeroMonogram />
 
           <div className="relative z-10 min-h-[100svh] flex flex-col">
-            <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full" />
+            <div className="pt-[112px] md:pt-[132px] px-6 md:px-12 max-w-7xl mx-auto w-full" />
             <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
               <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
                 <div className="max-w-3xl">
@@ -646,16 +646,28 @@ const ContactPage = () => {
                     </div>
                   </div>
 
-                  <a
-                    href="https://maps.app.goo.gl/C47Bkt3YEis4VPy47"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-testid="contact-google-maps"
-                    className="mt-6 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors w-fit"
-                  >
-                    <MapPin className="w-3.5 h-3.5" strokeWidth={1.7} />
-                    <E name="location.cta" defaults={{ es: "Abrir en Google Maps", en: "Open in Google Maps", fr: "Ouvrir dans Google Maps" }} multiline={false} />
-                  </a>
+                  <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                    <a
+                      href="https://maps.app.goo.gl/C47Bkt3YEis4VPy47"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-testid="contact-google-maps"
+                      className="inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[10px] tracking-[0.2em] uppercase transition-colors"
+                    >
+                      <MapPin className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
+                      <E name="location.cta" defaults={{ es: "Abrir en Google Maps", en: "Open in Google Maps", fr: "Ouvrir dans Google Maps" }} multiline={false} />
+                    </a>
+                    <a
+                      href="https://www.waze.com/ul?ll=41.5391383%2C2.1110407&navigate=yes&zoom=17"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-testid="contact-waze"
+                      className="inline-flex items-center justify-center gap-3 border border-[#C16542] text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] px-6 py-4 text-[10px] tracking-[0.2em] uppercase transition-colors"
+                    >
+                      <Navigation className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
+                      <E name="location.wazeCta" defaults={{ es: "Abrir en Waze", en: "Open in Waze", fr: "Ouvrir dans Waze" }} multiline={false} />
+                    </a>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">

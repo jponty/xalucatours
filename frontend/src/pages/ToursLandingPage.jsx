@@ -18,6 +18,7 @@ import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
 import ToursVideoSection from "@/components/ToursVideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users, Leaf };
@@ -286,6 +287,7 @@ const ExperiencesSection = ({ t, lang }) => (
                   className="absolute inset-0 w-full h-full object-cover opacity-70 transition-all duration-[1200ms] ease-out group-hover:opacity-100 group-hover:scale-[1.05]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/40 to-transparent pointer-events-none" />
+                <XalucaLogoBadge testid={`experience-logo-${e.id}`} />
                 <span className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/70 backdrop-blur-sm"
                       style={{ borderColor: `${e.accent}99`, color: e.accent }}>
                   <Icon className="w-5 h-5" strokeWidth={1.5} />

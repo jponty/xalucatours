@@ -12,6 +12,7 @@ import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
 import EditableText from "@/components/EditableText";
 import PexelsImageSearch from "@/components/PexelsImageSearch";
+import SectionNav from "@/components/SectionNav";
 
 /* ------------------------------------------------------------
    /galeria — central gallery of every "punto destacado".
@@ -302,29 +303,15 @@ export default function GaleriaPage() {
         </div>
       </section>
 
-      {/* Zone quick-nav — pins to the very top. The site header (z-40) auto-
-          hides on scroll-down, so this nav becomes the fixed region anchor as
-          you browse the zones, and tucks cleanly under the header on scroll-up. */}
-      <nav
-        data-testid="galeria-zone-nav"
-        className="sticky top-0 z-30 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#2C2621]/10 shadow-[0_8px_24px_-18px_rgba(26,21,19,0.4)]"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-3 flex items-center gap-3 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] tracking-[0.22em] uppercase text-[#5C5248] shrink-0 hidden md:inline">
-            {t.zones_nav}
-          </span>
-          {activeZones.map((z) => (
-            <a
-              key={z.id}
-              href={`#zona-${z.id}`}
-              data-testid={`galeria-zone-link-${z.id}`}
-              className="shrink-0 px-3 py-1.5 text-[11px] tracking-[0.12em] uppercase text-[#2C2621] border border-[#2C2621]/15 hover:border-[#C16542] hover:text-[#C16542] transition-colors whitespace-nowrap"
-            >
-              {pick(z.label, lang)} · {(grouped[z.id] || []).length}
-            </a>
-          ))}
-        </div>
-      </nav>
+      {/* Header-aware zone navigation: follows the auto-hiding site header
+          and remains fully visible on desktop, tablet and mobile. */}
+      <SectionNav
+        testid="galeria-zone-nav"
+        items={activeZones.map((z) => ({
+          id: `zona-${z.id}`,
+          label: `${pick(z.label, lang)} · ${(grouped[z.id] || []).length}`,
+        }))}
+      />
 
       {/* Zones */}
       <div className="relative">

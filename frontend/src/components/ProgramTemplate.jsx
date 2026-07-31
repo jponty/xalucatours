@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
@@ -578,18 +578,50 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
 /* Sticky horizontal day timeline — sits right below the tabs nav and stays
    visible while the user scrolls the trip page. Each day jumps to its section. */
 const DayTimeline = ({ days, lang, t }) => {
+  const timelineRef = useRef(null);
+  const [stickyTop, setStickyTop] = useState(174);
+
+  useEffect(() => {
+    const header = document.querySelector('[data-testid="site-header"]');
+    const sectionNav = document.querySelector('[data-testid="program-nav"]');
+    if (!header || !sectionNav) return undefined;
+
+    const measure = () => {
+      const headerVisible = header.getAttribute("aria-hidden") !== "true";
+      setStickyTop((headerVisible ? header.offsetHeight : 0) + sectionNav.offsetHeight);
+    };
+
+    measure();
+    const mutationObserver = new MutationObserver(measure);
+    mutationObserver.observe(header, { attributes: true, attributeFilter: ["aria-hidden"] });
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(header);
+    resizeObserver.observe(sectionNav);
+    window.addEventListener("resize", measure);
+
+    return () => {
+      mutationObserver.disconnect();
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
   if (!Array.isArray(days) || days.length === 0) return null;
   const jump = (e, id) => {
     e.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - 116; // clear sticky bars
+    const timelineH = timelineRef.current?.offsetHeight || 72;
+    const y = el.getBoundingClientRect().top + window.scrollY - stickyTop - timelineH - 16;
     window.scrollTo({ top: y, behavior: "smooth" });
   };
   return (
     <div
+      ref={timelineRef}
       data-testid="program-day-timeline"
-      className="sticky top-[50px] md:top-[58px] z-20 bg-[#1A1513]/95 backdrop-blur-md border-y border-[#FDFBF7]/10"
+      style={{ top: stickyTop }}
+      className="sticky z-20 bg-[#1A1513]/95 backdrop-blur-md border-y border-[#FDFBF7]/10 transition-[top] duration-500 ease-out"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex items-stretch gap-2 md:gap-2.5 overflow-x-auto py-2.5 md:py-3 no-scrollbar">

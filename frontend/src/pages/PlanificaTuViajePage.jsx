@@ -51,7 +51,7 @@ export default function PlanificaTuViajePage() {
       </section>
 
       {/* TABBED FORMS — detailed planner (default) + quick contact */}
-      <FormTabs defaultTab="detailed" />
+      <FormTabs defaultTab="detailed" showOptionsInfo />
     </div>
   );
 }

@@ -26,6 +26,7 @@ import HomeCategoryCarousel from "@/components/HomeCategoryCarousel";
 import PressMentions from "@/components/PressMentions";
 import VideoSection from "@/components/VideoSection";
 import FoundersSection from "@/components/FoundersSection";
+import HomeWelcomeModal from "@/components/HomeWelcomeModal";
 import { HOME_VIDEOS } from "@/lib/sectionVideos";
 import {
   SOUTH_TRIPS,
@@ -103,6 +104,7 @@ export default function HomePage() {
 
   return (
     <div data-testid="home-page">
+      <HomeWelcomeModal />
       <HeroSlider />
       <HomeSectionNav />
       <div id="buscador" className="scroll-mt-[172px]">

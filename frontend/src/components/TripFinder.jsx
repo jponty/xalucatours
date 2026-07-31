@@ -12,6 +12,7 @@ import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import { FromPrice } from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
+import SmartPlannerInfoModal from "@/components/SmartPlannerInfoModal";
 import monogramWhite from "@/assets/monograma-x-white.png";
 import {
   ORIGIN_OPTIONS, buildMonthOptions, monthName, FLEXIBLE_LABEL, DURATION_BUCKETS,
@@ -120,11 +121,13 @@ export const TripFinder = () => {
   const [customCity, setCustomCity] = useState("");
   const [monthValue, setMonthValue] = useState("flexible");
   const [durationId, setDurationId] = useState("");
+  const [plannerInfoOpen, setPlannerInfoOpen] = useState(false);
 
   // Real catalogue price bounds — recomputed whenever pricing changes.
   const bounds = useMemo(() => priceBounds(pricing), [pricing]);
-  // Slider step scales with the span so it always feels smooth.
-  const step = useMemo(() => (bounds.max - bounds.min > 2000 ? 50 : 10), [bounds]);
+  // Current commercial tariffs are configured in €5 increments. Keep those
+  // exact values reachable instead of snapping them to artificial tens.
+  const step = useMemo(() => (bounds.max - bounds.min > 2000 ? 25 : 5), [bounds]);
   // `range === null` means "full range" (auto-follows bounds); an array means
   // the user has narrowed it. Clamp to the current bounds defensively.
   const [range, setRange] = useState(null);
@@ -417,18 +420,21 @@ export const TripFinder = () => {
               {L(UI.allTrips)}
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
             </Link>
-            <Link
-              to={pathFor(lang, "planner")}
+            <button
+              type="button"
+              onClick={() => setPlannerInfoOpen(true)}
               data-testid="trip-finder-planner-cta"
+              aria-haspopup="dialog"
               className="inline-flex items-center justify-center gap-2.5 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
             >
               <Compass className="w-4 h-4" strokeWidth={1.7} />
               {L(UI.plannerCta)}
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+      <SmartPlannerInfoModal open={plannerInfoOpen} onOpenChange={setPlannerInfoOpen} />
     </section>
   );
 };

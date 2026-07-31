@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
 import BestMonthFab from "./BestMonthFab";
 import NarrationMiniPlayer from "./NarrationMiniPlayer";
+import VirtualAssistantInfoModal from "./VirtualAssistantInfoModal";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Layout = ({ children }) => {
@@ -15,6 +16,7 @@ export const Layout = ({ children }) => {
       <Footer />
       <BestMonthFab />
       <NarrationMiniPlayer />
+      <VirtualAssistantInfoModal />
       <Toaster position="bottom-right" />
     </div>
   );

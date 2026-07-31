@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Compass, MessageCircle, Headset, Calendar } from "lucide-react";
+import { Compass, MessageCircle, Headset, Calendar, HelpCircle } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 import PlannerForm from "@/components/PlannerForm";
 import ContactForm from "@/components/ContactForm";
 import BookingSession from "@/components/BookingSession";
+import ContactOptionsInfoModal from "@/components/ContactOptionsInfoModal";
 
 /* ============================================================
    FormTabs — tabbed switcher between the detailed trip planner
@@ -19,6 +20,11 @@ const TABS_COPY = {
   assistant:{ es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" },
   appointment:{ es: "Cita previa", en: "Book appointment", fr: "Prendre rendez-vous" },
   eyebrow:  { es: "Elige cómo contactarnos", en: "Choose how to reach us", fr: "Choisissez comment nous contacter" },
+  help: {
+    es: "¿Qué opción debo elegir?",
+    en: "Which option should I choose?",
+    fr: "Quelle option choisir ?",
+  },
 };
 
 const ASSISTANT_PANEL = {
@@ -48,9 +54,10 @@ const FT = ({ k, defaults, as = "span", className, multiline = false }) => {
   return <EditableText slot={slot} defaults={defaults} as={as} className={className} multiline={multiline} />;
 };
 
-export default function FormTabs({ defaultTab = "detailed" }) {
+export default function FormTabs({ defaultTab = "detailed", showOptionsInfo = false }) {
   const { lang } = useLanguage();
   const [tab, setTab] = useState(defaultTab);
+  const [optionsInfoOpen, setOptionsInfoOpen] = useState(false);
 
   const tabs = [
     { id: "detailed", Icon: Compass,        label: TABS_COPY.detailed },
@@ -89,6 +96,18 @@ export default function FormTabs({ defaultTab = "detailed" }) {
               );
             })}
           </div>
+          {showOptionsInfo && (
+            <button
+              type="button"
+              onClick={() => setOptionsInfoOpen(true)}
+              data-testid="contact-options-info-button"
+              aria-haspopup="dialog"
+              className="mt-6 inline-flex items-center gap-2 border-b border-[#C16542]/45 pb-1 text-[10px] uppercase tracking-[0.22em] text-[#5C5248] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
+            >
+              <HelpCircle className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+              {pick(TABS_COPY.help, lang)}
+            </button>
+          )}
         </div>
       </div>
 
@@ -129,6 +148,13 @@ export default function FormTabs({ defaultTab = "detailed" }) {
         <div className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-appointment" role="tabpanel">
           <BookingSession testid="form-tab-booking-session" />
         </div>
+      )}
+      {showOptionsInfo && (
+        <ContactOptionsInfoModal
+          open={optionsInfoOpen}
+          onOpenChange={setOptionsInfoOpen}
+          onSelect={setTab}
+        />
       )}
     </div>
   );

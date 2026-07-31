@@ -11,11 +11,15 @@ import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 import EditModeFAB from "@/components/EditModeFAB";
 import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
+import AppointmentInfoModal from "@/components/AppointmentInfoModal";
+import PlanTripInfoModal from "@/components/PlanTripInfoModal";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
   const { count: favCount } = useFavorites();
   const [open, setOpen] = useState(false);
+  const [appointmentOpen, setAppointmentOpen] = useState(false);
+  const [planTripOpen, setPlanTripOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
 
@@ -118,19 +122,23 @@ export const Header = () => {
                 </span>
               )}
             </Link>
-            <Link
-              to={pathFor(lang, "appointment")}
+            <button
+              type="button"
+              onClick={() => setAppointmentOpen(true)}
               data-testid="header-appointment-button"
+              aria-haspopup="dialog"
               className="hidden lg:inline-flex items-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
             >
               <CalendarClock className="w-3.5 h-3.5" strokeWidth={1.6} />
               <EditableText slot="header.cta_appointment" defaults={{ es: "Cita previa", en: "Book appointment", fr: "Rendez-vous" }} multiline={false} />
-            </Link>
+            </button>
 
-            <Link
-              to={pathFor(lang, "planTrip")}
+            <button
+              type="button"
+              onClick={() => setPlanTripOpen(true)}
               data-testid="header-enquire-button"
               aria-label={pick(translations.cta_plan, lang)}
+              aria-haspopup="dialog"
               className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               {/* Mobile: compass icon only (frees header space, no overlap) */}
@@ -140,12 +148,14 @@ export const Header = () => {
                 <EditableText slot="header.cta_plan" defaults={translations.cta_plan} multiline={false} />
               </span>
               <ArrowRight className="hidden sm:inline-block w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
 
       <SideMenu open={open} onClose={() => setOpen(false)} />
+      <AppointmentInfoModal open={appointmentOpen} onOpenChange={setAppointmentOpen} />
+      <PlanTripInfoModal open={planTripOpen} onOpenChange={setPlanTripOpen} />
       <EditModeFAB />
     </>
   );
