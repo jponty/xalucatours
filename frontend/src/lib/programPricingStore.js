@@ -8,7 +8,7 @@
 ============================================================ */
 import { setProgramOverride } from "@/lib/programPricing";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 const store = { ready: false, loading: null, programs: {}, subscribers: new Set() };
 const notify = () => store.subscribers.forEach((cb) => cb());

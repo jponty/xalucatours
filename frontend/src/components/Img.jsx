@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { optimizedSrc, buildSrcSet, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 /* ============================================================
    URL → CMS resolution for NON-slot imagery.

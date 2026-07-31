@@ -61,6 +61,10 @@ let webpackConfig = {
 };
 
 webpackConfig.devServer = (devServerConfig) => {
+  // The development server is bound to loopback by the start command. Keep
+  // its host allow-list explicit when CRA's proxy support is enabled.
+  devServerConfig.allowedHosts = ["127.0.0.1", "localhost"];
+
   // Add health check endpoints if enabled
   if (config.enableHealthCheck && setupHealthEndpoints && healthPluginInstance) {
     const originalSetupMiddlewares = devServerConfig.setupMiddlewares;

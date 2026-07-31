@@ -8,7 +8,7 @@ import {
 import { getImageGroup, getGroupSlot } from "@/lib/imageGroups";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 /* =========================================================
    URL contract

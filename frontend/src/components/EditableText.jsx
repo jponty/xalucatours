@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+const API = process.env.REACT_APP_BACKEND_URL || "";
 
 /* ============================================================
    Lightweight in-memory cache + global fetch coordinator.
