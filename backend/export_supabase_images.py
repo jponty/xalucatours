@@ -1,6 +1,6 @@
 """Export the image state stored in Supabase for the static React frontend.
 
-The Supabase service key and database URL stay in ``backend/.env``. The
+The Supabase service key stays in ``backend/.env``. The
 generated manifest contains only public image URLs and CMS metadata, so it is
 safe to serve from ``frontend/public``.
 """
@@ -14,8 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
-import asyncpg
 from dotenv import load_dotenv
+from supabase_db import SupabaseDatabase
 
 
 BACKEND_DIR = Path(__file__).resolve().parent
@@ -93,30 +93,19 @@ def public_contest(data):
 
 
 async def export_images() -> None:
-    db_url = os.environ.get("SUPABASE_DB_URL")
-    if not db_url:
-        raise RuntimeError("SUPABASE_DB_URL is not configured in backend/.env")
-
-    connection = await asyncpg.connect(
-        db_url,
-        statement_cache_size=0,
-        timeout=30,
-    )
+    database = SupabaseDatabase()
     try:
-        slot_rows = await connection.fetch(
-            "SELECT id, data FROM mirror_image_slots ORDER BY id"
-        )
-        gallery_rows = await connection.fetch(
-            "SELECT id, data FROM mirror_day_galleries ORDER BY id"
-        )
-        file_rows = await connection.fetch(
-            "SELECT id, data FROM mirror_files"
-        )
-        contest_rows = await connection.fetch(
-            "SELECT id, data FROM mirror_contests ORDER BY updated_at DESC"
-        )
+        slot_docs = await database.image_slots.find({}).sort("_id", 1).to_list(10000)
+        gallery_docs = await database.day_galleries.find({}).sort("_id", 1).to_list(20000)
+        file_docs = await database.files.find({}).to_list(10000)
+        contest_docs = await database.contests.find({}).sort("updated_at", -1).to_list(1000)
     finally:
-        await connection.close()
+        await database.close()
+
+    slot_rows = [{"id": doc.get("_id"), "data": doc} for doc in slot_docs]
+    gallery_rows = [{"id": doc.get("_id"), "data": doc} for doc in gallery_docs]
+    file_rows = [{"id": doc.get("_id") or doc.get("id"), "data": doc} for doc in file_docs]
+    contest_rows = [{"id": doc.get("_id") or doc.get("id"), "data": doc} for doc in contest_docs]
 
     usage_terms: dict[str, set[str]] = {}
     slots = []

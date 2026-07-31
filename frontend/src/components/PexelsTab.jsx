@@ -177,7 +177,7 @@ export default function PexelsTab({ onSelect, selectionMode = false, selectedKey
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pexels_id: photo.id }),
       });
-      const j = await r.json();
+      const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.detail || `HTTP ${r.status}`);
       const absUrl = j.url.startsWith("http") ? j.url : `${API}${j.url}`;
       setImpOk(photo.id);

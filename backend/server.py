@@ -280,6 +280,17 @@ async def root():
     return {"service": "Xaluca Tours", "status": "ok"}
 
 
+@api_router.get("/ready")
+async def readiness():
+    """Dependency-aware readiness check for deployment diagnostics."""
+    try:
+        await db.ping()
+    except Exception:
+        logger.exception("Supabase Postgres readiness check failed")
+        raise HTTPException(status_code=503, detail="Supabase database unavailable")
+    return {"service": "Xaluca Tours", "status": "ready", "database": "supabase"}
+
+
 class AdminLoginBody(BaseModel):
     password: str = Field(..., max_length=200)
 
@@ -2100,6 +2111,14 @@ async def pexels_import(payload: PexelsImportRequest):
     insert a `db.files` library record with full attribution, and
     return the same shape the bulk-upload endpoint returns so the
     frontend can treat it like any other library asset."""
+    # Fail before downloading/uploading bytes if the database cannot persist
+    # the resulting library record. This prevents orphaned Storage objects.
+    try:
+        await db.ping()
+    except Exception:
+        logger.exception("Pexels import — Supabase Postgres unavailable")
+        raise HTTPException(status_code=503, detail="Supabase database unavailable")
+
     # 1. Get authoritative photo metadata
     photo = await _pexels_get(f"/photos/{payload.pexels_id}")
     src = photo.get("src") or {}
