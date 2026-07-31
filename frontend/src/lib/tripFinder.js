@@ -15,6 +15,7 @@ import { SPAIN_ORIGINS } from "@/lib/flights";
 import { TRAVEL_STYLES } from "@/lib/bestTimeData";
 import { getFromPrice } from "@/lib/pricing";
 import { getProgramTiers } from "@/lib/programPricing";
+import { priceRouteIds } from "@/lib/programNav";
 
 const T = (es, en, fr) => ({ es, en, fr });
 export const tt = (obj, lang) => (obj && (obj[lang] ?? obj.es)) || "";
@@ -92,22 +93,30 @@ export const nodeName = (id, lang) => tt(DEST_BY_ID[id]?.name, lang) || id;
    otherwise the live global pricing tiers. Never a hardcoded value.
 ------------------------------------------------------------------ */
 export const tripFromPrice = (routeId, pricing) => {
-  const tiers = getProgramTiers(routeId) || (pricing && pricing.tiers) || null;
-  if (!tiers) return null;
-  return getFromPrice({ tiers });
+  const routeIds = priceRouteIds(routeId);
+  const fromPrices = routeIds
+    .map((id) => getProgramTiers(id))
+    .filter(Boolean)
+    .map((tiers) => getFromPrice({ tiers }))
+    .filter((value) => typeof value === "number" && value > 0);
+
+  if (fromPrices.length) return Math.min(...fromPrices);
+
+  const globalTiers = (pricing && pricing.tiers) || null;
+  return globalTiers ? getFromPrice({ tiers: globalTiers }) : null;
 };
 
-/* Real min/max "from" price across the whole published catalogue, rounded
-   OUTWARD to the nearest 10 so the full range always covers every trip.
-   Recomputed automatically whenever a trip / its price changes. */
+/* Exact min/max "from" price across the whole published catalogue.
+   These are intentionally not rounded: the slider must show the real
+   configured tariffs and follow admin / per-program price changes live. */
 export const priceBounds = (pricing) => {
   const vals = XALUCA_TRIPS
     .map((t) => tripFromPrice(t.routeId, pricing))
     .filter((n) => typeof n === "number" && n > 0);
   if (!vals.length) return { min: 0, max: 0 };
-  const lo = Math.floor(Math.min(...vals) / 10) * 10;
-  const hi = Math.ceil(Math.max(...vals) / 10) * 10;
-  return { min: lo, max: hi === lo ? lo + 10 : hi };
+  const lo = Math.min(...vals);
+  const hi = Math.max(...vals);
+  return { min: lo, max: hi === lo ? lo + 5 : hi };
 };
 
 /* ------------------------------------------------------------------

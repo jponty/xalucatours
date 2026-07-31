@@ -670,14 +670,31 @@ export const PROGRAM_PRICING = {
 
 let _override = {};
 
+/* Some public catalogue routes are alternate URLs for the exact same
+   bookable programme. Keep their prices tied to the canonical commercial
+   matrix so aliases never fall back to the unrelated global tariff. */
+const PROGRAM_PRICE_ROUTE_ALIASES = {
+  tourEscapadaRakErgRak23: "tourMarrakechLoop23",
+  tourEscapadaRakErgRak34: "tourMarrakechLoop34",
+};
+
 /* Fed by the program-pricing store (admin overrides from /api/program-pricing).
    When a routeId has an override it wins over the hardcoded default above. */
 export const setProgramOverride = (map) => {
   _override = map || {};
 };
 
-const _entry = (routeId) =>
-  (routeId && (_override[routeId] || PROGRAM_PRICING[routeId])) || null;
+const _entry = (routeId) => {
+  if (!routeId) return null;
+  const canonicalRouteId = PROGRAM_PRICE_ROUTE_ALIASES[routeId] || routeId;
+  return (
+    _override[routeId] ||
+    _override[canonicalRouteId] ||
+    PROGRAM_PRICING[routeId] ||
+    PROGRAM_PRICING[canonicalRouteId] ||
+    null
+  );
+};
 
 /* Per-program tier array for a routeId, or null (route uses global pricing). */
 export const getProgramTiers = (routeId) => {

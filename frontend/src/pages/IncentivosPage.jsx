@@ -285,7 +285,7 @@ const Hero = ({ lang }) => (
     <HeroMonogram />
 
     <div className="relative z-10 min-h-[100svh] flex flex-col">
-      <div className="pt-[88px] md:pt-[96px] px-6 md:px-12 max-w-7xl mx-auto w-full">
+      <div className="pt-[112px] md:pt-[132px] px-6 md:px-12 max-w-7xl mx-auto w-full">
         <InlineBreadcrumb lang={lang} />
       </div>
       <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">

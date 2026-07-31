@@ -72,7 +72,7 @@ const InlineBreadcrumb = ({ lang, postTitle }) => (
 );
 
 const Hero = ({ lang, postTitle }) => (
-  <section data-testid="blog-hero" className="relative w-full overflow-hidden bg-[#1A1513] pt-[88px] md:pt-[96px] pb-20 md:pb-28">
+  <section data-testid="blog-hero" className="relative w-full overflow-hidden bg-[#1A1513] pt-[112px] md:pt-[132px] pb-20 md:pb-28">
     <EditableImage
       slot="blog.hero"
       fallback={banner("camelCaravan", 2400)}
@@ -411,7 +411,7 @@ export function BlogPostPage() {
         jsonLd={[articleJsonLd, breadcrumbJsonLd]}
       />
       {/* Hero */}
-      <section className="relative w-full bg-[#1A1513] overflow-hidden pt-[88px] md:pt-[96px]">
+      <section className="relative w-full bg-[#1A1513] overflow-hidden pt-[112px] md:pt-[132px]">
         {/* Page namespace already resolves to `blog.<slug>`, so no SlotScope
             wrapper is needed here — that would duplicate the slug segment.
             Sharing slot id with the listing card means the cover is edited
