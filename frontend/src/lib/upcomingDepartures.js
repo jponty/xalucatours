@@ -3,6 +3,43 @@
 
 export const UPCOMING_DEPARTURES = [
   {
+    id: "nye-2026",
+    featured: true,
+    badge: { es: "Fin de Año 2026", en: "New Year 2026", fr: "Nouvel An 2026" },
+    badgeColor: "#D4A373",
+    title: {
+      es: "Viaje Especial de Fin de Año al Desierto de Marruecos",
+      en: "Special New Year journey to the Moroccan desert",
+      fr: "Voyage spécial du Nouvel An dans le désert marocain",
+    },
+    dates: { es: "27 Dic 2026 – 01 Ene 2027", en: "27 Dec 2026 – 01 Jan 2027", fr: "27 Déc 2026 – 01 Jan 2027" },
+    nights: { es: "5 noches · 6 días", en: "5 nights · 6 days", fr: "5 nuits · 6 jours" },
+    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
+    price: 1980,
+    childPrice: 1540,
+    airportTaxes: 120,
+    singleSupplement: 335,
+    deposit: null,
+    spots: null,
+    capacity: null,
+    route: {
+      es: "Ouarzazate · Aït Ben Haddou · Dades · Alto Atlas · Todra · Erfoud · Erg Chebbi · Rissani · Valle del Ziz · Errachidia",
+      en: "Ouarzazate · Aït Ben Haddou · Dades · High Atlas · Todra · Erfoud · Erg Chebbi · Rissani · Ziz Valley · Errachidia",
+      fr: "Ouarzazate · Aït Ben Haddou · Dadès · Haut Atlas · Todra · Erfoud · Erg Chebbi · Rissani · Vallée du Ziz · Errachidia",
+    },
+    highlights: {
+      es: ["Vuelo especial directo", "Ruta en 4x4 por el Alto Atlas y el Sahara", "Paseo en dromedario al atardecer", "Cena y Fiesta de Fin de Año en Kasbah Xaluca"],
+      en: ["Special direct flight", "4x4 route through the High Atlas and Sahara", "Sunset camel ride", "New Year's Eve dinner and celebration at Kasbah Xaluca"],
+      fr: ["Vol spécial direct", "Circuit en 4x4 dans le Haut Atlas et le Sahara", "Balade à dos de dromadaire au coucher du soleil", "Dîner et fête du Nouvel An à la Kasbah Xaluca"],
+    },
+    flights: {
+      outbound: { es: "Barcelona → Ouarzazate", en: "Barcelona → Ouarzazate", fr: "Barcelone → Ouarzazate" },
+      return: { es: "Errachidia → Barcelona", en: "Errachidia → Barcelona", fr: "Errachidia → Barcelone" },
+    },
+    accommodations: ["Hotel Xaluca Dades 4★", "Kasbah Xaluca · Erfoud", "Bivouac La Belle Étoile"],
+    status: "featured",
+  },
+  {
     id: "easter-2026",
     badge: { es: "Semana Santa", en: "Easter", fr: "Pâques" },
     badgeColor: "#C16542",
@@ -79,32 +116,6 @@ export const UPCOMING_DEPARTURES = [
       fr: ["Kasbah d'Aït Benhaddou (UNESCO)", "Nuit en tente caïdal de luxe", "Tajine dans un village berbère", "Atlas Studios"],
     },
     status: "open",
-  },
-  {
-    id: "nye-2026",
-    badge: { es: "Fin de Año", en: "New Year's Eve", fr: "Nouvel An" },
-    badgeColor: "#D4A373",
-    title: {
-      es: "Fin de Año en el Sahara",
-      en: "New Year's Eve in the Sahara",
-      fr: "Nouvel An au Sahara",
-    },
-    dates: { es: "27 Dic 2026 – 03 Ene 2027", en: "27 Dec 2026 – 03 Jan 2027", fr: "27 Déc 2026 – 03 Jan 2027" },
-    nights: { es: "7 noches · 8 días", en: "7 nights · 8 days", fr: "7 nuits · 8 jours" },
-    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
-    price: 2690,
-    deposit: 500,
-    spots: 2,
-    capacity: 10,
-    route: { es: "Marrakech · Atlas · Erg Chebbi (Bivouac Nochevieja) · Fez",
-             en: "Marrakech · Atlas · Erg Chebbi (NYE Bivouac) · Fez",
-             fr: "Marrakech · Atlas · Erg Chebbi (Bivouac Réveillon) · Fès" },
-    highlights: {
-      es: ["Nochevieja en el desierto con campañadas", "Música en vivo bajo las estrellas", "Cena de gala 7 platos", "Brindis al amanecer"],
-      en: ["NYE in the desert with bell strokes", "Live music under the stars", "7-course gala dinner", "Sunrise toast"],
-      fr: ["Réveillon dans le désert au son des cloches", "Musique live sous les étoiles", "Dîner de gala 7 plats", "Toast au lever du soleil"],
-    },
-    status: "last", // status badge
   },
   {
     id: "carnival-2027",

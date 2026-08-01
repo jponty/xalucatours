@@ -20,6 +20,21 @@ export const RESPONSIVE_WIDTHS = [320, 480, 640, 768, 960, 1280, 1600, 1920];
 const isStorageProxy = (url) => /\/api\/files\//.test(url);
 const isUnsplash = (url) => /images\.unsplash\.com/.test(url);
 const isPexels = (url) => /images\.pexels\.com/.test(url);
+const MEDIA_CDN_URL = (process.env.REACT_APP_MEDIA_CDN_URL || "").replace(/\/$/, "");
+
+/* During the Bunny preview, keep the canonical `/api/files/<storage_path>`
+   relationship in Supabase but deliver the bytes directly from the Pull Zone.
+   Removing REACT_APP_MEDIA_CDN_URL is an instant frontend rollback to the
+   backend proxy; no database URLs need to be rewritten. */
+export const mediaDeliveryUrl = (url) => {
+  if (!MEDIA_CDN_URL || !url || typeof url !== "string") return url;
+  const match = url.match(/\/api\/files\/(.+)$/);
+  if (!match) return url;
+  return `${MEDIA_CDN_URL}/${match[1]}`;
+};
+
+const isBunnyMedia = (url) =>
+  Boolean(MEDIA_CDN_URL) && typeof url === "string" && url.startsWith(`${MEDIA_CDN_URL}/`);
 
 /* ------------------------------------------------------------------
    Browser format support, detected once and persisted. Lets the
@@ -57,7 +72,7 @@ export const isOptimizable = (url) => {
   if (!url || typeof url !== "string") return false;
   if (url.startsWith("data:")) return false;
   if (/\.svg(\?|$)/i.test(url) || /\.gif(\?|$)/i.test(url)) return false;
-  return isStorageProxy(url) || isUnsplash(url) || isPexels(url);
+  return isStorageProxy(url) || isBunnyMedia(mediaDeliveryUrl(url)) || isUnsplash(url) || isPexels(url);
 };
 
 /* Set/override query params, preserving relative vs absolute form. */
@@ -78,16 +93,27 @@ const withParams = (url, params) => {
 /* A single optimized URL at the given width. */
 export const optimizedSrc = (url, w) => {
   if (!isOptimizable(url)) return url;
+  const delivered = mediaDeliveryUrl(url);
   if (isUnsplash(url)) {
     return withParams(url, { auto: "format", fit: "crop", q: 80, w });
   }
   if (isPexels(url)) {
     return withParams(url, { auto: "compress", cs: "tinysrgb", w });
   }
+  if (isBunnyMedia(delivered)) {
+    const format = proxyFormat();
+    return withParams(delivered, {
+      width: w,
+      quality: 80,
+      // While AVIF support is still being detected, omit the format and let
+      // Bunny's automatic optimization negotiate the best supported output.
+      format: format === "auto" ? undefined : format,
+    });
+  }
   // Our storage proxy → backend resize + format negotiation. Request an
   // explicit modern format once detected (CDN-cacheable per format), falling
   // back to server-side Accept negotiation (`auto`) on a first-ever visit.
-  return withParams(url, { w, fmt: proxyFormat() });
+  return withParams(delivered, { w, fmt: proxyFormat() });
 };
 
 /* A srcSet string ("url 320w, url 640w, …") or undefined if not optimizable. */

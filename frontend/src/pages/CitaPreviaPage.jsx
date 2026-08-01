@@ -10,8 +10,9 @@ import SectionNav from "@/components/SectionNav";
    All copy is editable via <E> (SlotScope id="citaprevia").
 ============================================================ */
 import React, { useEffect } from "react";
-import { Compass, Calendar, CheckCircle2, Phone, ArrowRight } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Compass, Calendar, CheckCircle2, Phone, ArrowRight, Users, Building2 } from "lucide-react";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
+import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
 import { E } from "@/components/EditableSection";
@@ -21,6 +22,7 @@ import BookingSession from "@/components/BookingSession";
 import TripContextBanner from "@/components/TripContextBanner";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
+import { TEAM_MEMBERS } from "@/lib/teamMembers";
 
 const COPY = {
   hero: {
@@ -73,6 +75,43 @@ const COPY = {
     // Booking copy now lives in <BookingSession> (BOOKING_COPY) so it can be
     // shared 1:1 with the "Cita previa" tab on /planifica-tu-viaje.
   },
+  team: {
+    eyebrow: {
+      es: "Las personas detrás de tu viaje",
+      en: "The people behind your journey",
+      fr: "Les personnes derrière votre voyage",
+    },
+    title: {
+      es: "Conoce al equipo que te acompañará desde la primera conversación.",
+      en: "Meet the team who will be by your side from the very first conversation.",
+      fr: "Rencontrez l'équipe qui vous accompagnera dès la première conversation.",
+    },
+    body: {
+      es: "Antes de reservar tu sesión, pon cara a las personas que escucharán tus ideas, resolverán tus dudas y convertirán tu manera de imaginar Marruecos en un viaje cuidado a medida.",
+      en: "Before booking your session, meet the people who will listen to your ideas, answer your questions and turn the way you imagine Morocco into a carefully tailored journey.",
+      fr: "Avant de réserver votre séance, découvrez les personnes qui écouteront vos idées, répondront à vos questions et transformeront votre vision du Maroc en un voyage soigneusement conçu sur mesure.",
+    },
+    groupEyebrow: {
+      es: "La fuerza de Grup Xaluca",
+      en: "The strength of Grup Xaluca",
+      fr: "La force de Grup Xaluca",
+    },
+    groupTitle: {
+      es: "Más de 1.600 profesionales, un mismo compromiso con tu viaje.",
+      en: "More than 1,600 professionals, one shared commitment to your journey.",
+      fr: "Plus de 1 600 professionnels, un même engagement pour votre voyage.",
+    },
+    groupBody: {
+      es: "Xaluca Tours forma parte de Grup Xaluca, su empresa matriz. Más de 1.600 profesionales trabajan en las distintas áreas del grupo: hoteles y alojamientos, viajes, transporte, organización de eventos y otros servicios vinculados al turismo en Marruecos. Esta estructura propia nos permite coordinar cada etapa con conocimiento local, atención cercana y un control directo de la experiencia.",
+      en: "Xaluca Tours is part of its parent company, Grup Xaluca. More than 1,600 professionals work across the group's different areas: hotels and accommodation, travel, transport, event organisation and other tourism-related services in Morocco. This in-house structure allows us to coordinate every stage with local knowledge, personal care and direct control over the experience.",
+      fr: "Xaluca Tours fait partie de sa société mère, Grup Xaluca. Plus de 1 600 professionnels travaillent dans les différents domaines du groupe : hôtels et hébergements, voyages, transport, organisation d'événements et autres services liés au tourisme au Maroc. Cette structure intégrée nous permet de coordonner chaque étape avec une connaissance locale, une attention personnalisée et un contrôle direct de l'expérience.",
+    },
+    groupStat: {
+      es: "Profesionales en Grup Xaluca",
+      en: "Professionals at Grup Xaluca",
+      fr: "Professionnels au sein de Grup Xaluca",
+    },
+  },
   outro: {
     title: { es: "¿Prefieres escribirnos?", en: "Prefer to write to us?", fr: "Vous préférez nous écrire ?" },
     body: {
@@ -85,6 +124,124 @@ const COPY = {
 };
 
 const SEO_KEYWORDS = "Viajes a Marruecos, Viajes por Marruecos, Viaje a Marruecos, Viaje por Marruecos, cita previa, sesión informativa";
+
+const TeamPreview = ({ lang }) => (
+  <section
+    id="citaprevia-team"
+    data-testid="citaprevia-team"
+    className="relative overflow-hidden border-b border-[#2C2621]/10 bg-[#EFE4D3] py-20 md:py-28"
+  >
+    <div className="absolute inset-0 berber-bg-diamond opacity-35 pointer-events-none" aria-hidden="true" />
+    <div className="relative max-w-7xl mx-auto px-6 md:px-12">
+      <div className="mx-auto max-w-3xl text-center">
+        <span className="inline-flex items-center gap-2 text-[11px] tracking-[0.36em] uppercase text-[#C16542]">
+          <Users className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          <E name="team.eyebrow" defaults={COPY.team.eyebrow} multiline={false} />
+        </span>
+        <E
+          name="team.title"
+          defaults={COPY.team.title}
+          multiline={false}
+          as="h2"
+          className="mt-5 font-serif-x text-4xl leading-[1.05] tracking-tight text-[#2C2621] md:text-5xl lg:text-6xl"
+        />
+        <E
+          name="team.body"
+          defaults={COPY.team.body}
+          as="p"
+          className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-[#5C5248] md:text-base"
+        />
+      </div>
+
+      <div className="mt-16 grid grid-cols-1 items-start gap-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-9">
+        {TEAM_MEMBERS.map((member) => (
+          <article
+            key={member.id}
+            data-testid={`citaprevia-team-card-${member.id}`}
+            className={`group relative mx-auto w-full max-w-[330px] bg-[#FDFBF7] p-3.5 pb-7 shadow-[0_32px_70px_-32px_rgba(26,21,19,0.62)] transition-transform duration-700 ease-out hover:rotate-0 ${member.tilt}`}
+          >
+            <span
+              className={`postcard-tape absolute left-1/2 top-0 z-10 h-7 w-24 -translate-x-1/2 -translate-y-1/2 ${member.tapeRotate}`}
+              aria-hidden="true"
+            />
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#DED2C1]">
+              <EditableImage
+                slot={`equipo.team.${member.id}.photo`}
+                fallback={member.photo}
+                alt={`${pick(member.name, lang)} · ${pick(member.role, lang)}`}
+                className="h-full w-full object-cover grayscale transition duration-700 group-hover:scale-[1.025] group-hover:grayscale-0"
+                aspectRatio="4/5"
+                imgProps={{ loading: "lazy" }}
+              />
+            </div>
+            <div className="px-3 pt-5 text-center">
+              <EditableText
+                slot={`equipo.team.${member.id}.name`}
+                defaults={member.name}
+                multiline={false}
+                noTranslate
+                as="h3"
+                className="font-hand text-[32px] leading-none text-[#2C2621]"
+              />
+              <EditableText
+                slot={`equipo.team.${member.id}.role`}
+                defaults={member.role}
+                multiline={false}
+                as="p"
+                className="mt-1.5 font-hand text-xl text-[#A07042]"
+              />
+              <span className="mx-auto my-4 block h-px w-12 bg-[#2C2621]/15" aria-hidden="true" />
+              <EditableText
+                slot={`equipo.team.${member.id}.note2`}
+                defaults={member.note2}
+                as="p"
+                className="text-[13px] leading-relaxed text-[#5C5248]"
+              />
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-20 grid overflow-hidden border border-[#2C2621]/10 bg-[#2C2621] text-[#FDFBF7] lg:grid-cols-[0.36fr_0.64fr]">
+        <div className="flex flex-col justify-between border-b border-white/10 p-8 lg:border-b-0 lg:border-r lg:p-10">
+          <Building2 className="h-7 w-7 text-[#D4A373]" strokeWidth={1.4} aria-hidden="true" />
+          <div className="mt-10">
+            <strong className="block font-serif-x text-6xl font-normal leading-none text-[#D4A373] md:text-7xl">1.600+</strong>
+            <E
+              name="team.groupStat"
+              defaults={COPY.team.groupStat}
+              multiline={false}
+              as="span"
+              className="mt-3 block text-[10px] uppercase tracking-[0.28em] text-white/58"
+            />
+          </div>
+        </div>
+        <div className="p-8 lg:p-12">
+          <E
+            name="team.groupEyebrow"
+            defaults={COPY.team.groupEyebrow}
+            multiline={false}
+            as="span"
+            className="text-[10px] uppercase tracking-[0.34em] text-[#D4A373]"
+          />
+          <E
+            name="team.groupTitle"
+            defaults={COPY.team.groupTitle}
+            multiline={false}
+            as="h3"
+            className="mt-5 max-w-2xl font-serif-x text-3xl leading-tight md:text-4xl"
+          />
+          <E
+            name="team.groupBody"
+            defaults={COPY.team.groupBody}
+            as="p"
+            className="mt-6 max-w-3xl text-[14px] leading-relaxed text-white/68 md:text-[15px]"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 const CitaPreviaPage = () => {
   const { lang } = useLanguage();
@@ -163,6 +320,7 @@ const CitaPreviaPage = () => {
           items={[
             { id: "citaprevia-steps", label: { es: "Cómo funciona", en: "How it works", fr: "Comment ça marche" } },
             { id: "booking", label: { es: "Reservar cita", en: "Book", fr: "Réserver" } },
+            { id: "citaprevia-team", label: { es: "El equipo", en: "The team", fr: "L'équipe" } },
             { id: "citaprevia-outro", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
           ]}
         />
@@ -201,6 +359,9 @@ const CitaPreviaPage = () => {
           </div>
           <BookingSession testid="citaprevia-booking-session" />
         </section>
+
+        {/* ============== TEAM PREVIEW ============== */}
+        <TeamPreview lang={lang} />
 
         {/* ============== OUTRO CTA ============== */}
         <section id="citaprevia-outro" data-testid="citaprevia-outro" className="py-16 md:py-20">
