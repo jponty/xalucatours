@@ -18,6 +18,22 @@ services:
         sync: false
       - key: SUPABASE_STORAGE_BUCKET
         value: xaluca
+      - key: BUNNY_STORAGE_ZONE
+        value: xalucatours-media
+      - key: BUNNY_STORAGE_API_KEY
+        sync: false
+      - key: BUNNY_STORAGE_REGION
+        value: de
+      - key: BUNNY_STORAGE_ENDPOINT
+        value: https://storage.bunnycdn.com
+      - key: BUNNY_CDN_URL
+        value: https://xalucatours-media.b-cdn.net
+      - key: BUNNY_PULL_ZONE_NAME
+        value: xalucatours-media
+      - key: MEDIA_STORAGE_PROVIDER
+        # Canary production mode: write to both providers, read Bunny first
+        # with Supabase fallback. Move to `bunny` only after the burn-in audit.
+        value: dual
       - key: ADMIN_PASSWORD
         sync: false
       - key: ADMIN_TOKEN_SECRET
@@ -61,6 +77,8 @@ services:
         value: 20.20.2
       - key: REACT_APP_BACKEND_URL
         sync: false
+      - key: REACT_APP_MEDIA_CDN_URL
+        value: https://xalucatours-media.b-cdn.net
     routes:
       - type: rewrite
         source: /*

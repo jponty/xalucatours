@@ -8,8 +8,6 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
-import { usePricing } from "@/lib/pricingStore";
-import { getFromPrice, fmtEuro } from "@/lib/pricing";
 import {
   JourneyHero,
   StickyNav,
@@ -59,6 +57,9 @@ const COPY = {
       status_open: "Abierta",
       status_last: "Últimas plazas",
       status_sold: "Completa",
+      status_featured: "Salida destacada",
+      child_rate: "Tarifa niño",
+      taxes_short: "Tasas",
       no_results: "No hay salidas para este filtro. Prueba con otra temporada.",
     },
     process: {
@@ -125,6 +126,9 @@ const COPY = {
       status_open: "Open",
       status_last: "Last spots",
       status_sold: "Sold out",
+      status_featured: "Featured departure",
+      child_rate: "Child fare",
+      taxes_short: "Taxes",
       no_results: "No departures match this filter. Try another season.",
     },
     process: {
@@ -188,6 +192,9 @@ const COPY = {
       status_open: "Ouvert",
       status_last: "Dernières places",
       status_sold: "Complet",
+      status_featured: "Départ à la une",
+      child_rate: "Tarif enfant",
+      taxes_short: "Taxes",
       no_results: "Aucun départ pour ce filtre. Essayez une autre saison.",
     },
     process: {
@@ -224,6 +231,12 @@ const COPY = {
 
 const ICONS = { Users, Calendar, ShieldCheck, Flame };
 
+const formatDepartureEuro = (amount, lang) => {
+  if (lang === "en") return `€${Number(amount).toLocaleString("en-GB")}`;
+  if (lang === "fr") return `${Number(amount).toLocaleString("fr-FR")} €`;
+  return `${Number(amount).toLocaleString("de-DE")} €`;
+};
+
 // Filter slug from departure id.
 const seasonOf = (id) => {
   if (id.includes("easter"))    return "easter";
@@ -238,13 +251,13 @@ const seasonOf = (id) => {
    Departure card
 ============================================================ */
 const DepartureCard = ({ dep, t, lang }) => {
-  const pricing = usePricing();
-  const fromPrice = getFromPrice(pricing);
   const statusLabel =
+    dep.status === "featured" ? t.status_featured :
     dep.status === "last" ? t.status_last :
     dep.status === "sold-out" ? t.status_sold :
     t.status_open;
   const statusColor =
+    dep.status === "featured" ? "#D4A373" :
     dep.status === "last" ? "#C16542" :
     dep.status === "sold-out" ? "#8C8C8C" :
     "#5A6B4F";
@@ -254,7 +267,11 @@ const DepartureCard = ({ dep, t, lang }) => {
   return (
     <article
       data-testid={`departure-card-${dep.id}`}
-      className="group grid grid-cols-1 lg:grid-cols-12 gap-px bg-[#2C2621]/10 border border-[#2C2621]/10 overflow-hidden"
+      className={`group grid grid-cols-1 lg:grid-cols-12 gap-px overflow-hidden border bg-[#2C2621]/10 ${
+        dep.featured
+          ? "border-[#D4A373]/80 shadow-[0_24px_70px_-45px_rgba(44,38,33,0.55)]"
+          : "border-[#2C2621]/10"
+      }`}
     >
       {/* Image side */}
       <div className="lg:col-span-5 relative bg-[#1A1513] overflow-hidden min-h-[280px] lg:min-h-[420px]">
@@ -313,11 +330,11 @@ const DepartureCard = ({ dep, t, lang }) => {
           </div>
           <div>
             <p className="text-[#5C5248] mb-1.5 inline-flex items-center gap-2">
-              <Users className="w-3 h-3" strokeWidth={1.6} style={{ color: dep.badgeColor }} />
-              {t.spots_left}
+              {dep.spots == null ? <Sparkles className="w-3 h-3" strokeWidth={1.6} style={{ color: dep.badgeColor }} /> : <Users className="w-3 h-3" strokeWidth={1.6} style={{ color: dep.badgeColor }} />}
+              {dep.spots == null ? t.status_featured : t.spots_left}
             </p>
             <p className="text-[#2C2621] font-serif-x text-sm normal-case tracking-normal">
-              <b style={{ color: dep.spots <= 3 ? "#C16542" : "#2C2621" }}>{dep.spots}</b> {t.capacity} {dep.capacity}
+              {dep.spots == null ? pick(dep.flights?.outbound, lang) : <><b style={{ color: dep.spots <= 3 ? "#C16542" : "#2C2621" }}>{dep.spots}</b> {t.capacity} {dep.capacity}</>}
             </p>
           </div>
           <div>
@@ -326,7 +343,7 @@ const DepartureCard = ({ dep, t, lang }) => {
               {t.from}
             </p>
             <p className="text-[#2C2621] font-serif-x text-base normal-case tracking-normal">
-              {fmtEuro(fromPrice)}
+              {formatDepartureEuro(dep.price, lang)}
               <span className="block text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">{t.per_person}</span>
             </p>
           </div>
@@ -356,10 +373,18 @@ const DepartureCard = ({ dep, t, lang }) => {
 
         {/* Deposit + CTAs */}
         <div className="mt-auto pt-5 border-t border-[#2C2621]/10 flex flex-wrap items-center justify-between gap-3">
-          <div className="text-sm text-[#5C5248]">
-            <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]/80 block mb-0.5">{t.deposit}</span>
-            <span className="font-serif-x text-lg text-[#2C2621]">€{dep.deposit}</span>
-          </div>
+          {dep.deposit == null ? (
+            <div className="text-sm text-[#5C5248]">
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]/80 block mb-0.5">{t.child_rate}</span>
+              <span className="font-serif-x text-lg text-[#2C2621]">{formatDepartureEuro(dep.childPrice, lang)}</span>
+              <span className="ml-2 text-xs">· {t.taxes_short} {formatDepartureEuro(dep.airportTaxes, lang)}</span>
+            </div>
+          ) : (
+            <div className="text-sm text-[#5C5248]">
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]/80 block mb-0.5">{t.deposit}</span>
+              <span className="font-serif-x text-lg text-[#2C2621]">{formatDepartureEuro(dep.deposit, lang)}</span>
+            </div>
+          )}
           <div className="flex flex-wrap gap-3">
             <a
               href="#form"

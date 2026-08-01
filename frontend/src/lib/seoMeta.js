@@ -54,6 +54,15 @@ const SEO = {
     ),
   },
 
+  fastTrack: {
+    title: withBrand(T("Fast Track · Planificación prioritaria", "Fast Track · Planificación prioritaria", "Fast Track · Planificación prioritaria")),
+    description: T(
+      "Activa Fast Track por 150 € y accede a una planificación prioritaria y personalizada. Importe no reembolsable, deducible íntegramente si reservas el viaje.",
+      "Activa Fast Track por 150 € y accede a una planificación prioritaria y personalizada. Importe no reembolsable, deducible íntegramente si reservas el viaje.",
+      "Activa Fast Track por 150 € y accede a una planificación prioritaria y personalizada. Importe no reembolsable, deducible íntegramente si reservas el viaje."
+    ),
+  },
+
   toursLanding: {
     title: withBrand(T("Nuestros viajes por Marruecos", "Our Morocco tours", "Nos voyages au Maroc")),
     description: T(

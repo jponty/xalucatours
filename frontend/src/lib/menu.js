@@ -22,6 +22,12 @@ export const MENU_TREE = [
     icon: "sparkles",
   },
   {
+    id: "fast-track",
+    routeId: "fastTrack",
+    label: { es: "Fast Track", en: "Fast Track", fr: "Fast Track" },
+    icon: "zap",
+  },
+  {
     id: "tours",
     label: { es: "Nuestros viajes", en: "Our journeys", fr: "Nos voyages" },
     icon: "compass",

@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import HeroSlider from "@/components/HeroSlider";
 import HomeSectionNav from "@/components/HomeSectionNav";
 import TripFinder from "@/components/TripFinder";
@@ -94,6 +97,12 @@ const DOC_TITLES = {
   es: "Xaluca Tours · Viajes a medida por Marruecos",
   en: "Xaluca Tours · Tailor-made journeys across Morocco",
   fr: "Xaluca Tours · Voyages sur mesure au Maroc",
+};
+
+const REVIEWS_CTA = {
+  es: "Ver todas las opiniones",
+  en: "View all reviews",
+  fr: "Voir tous les avis",
 };
 
 export default function HomePage() {
@@ -203,6 +212,16 @@ export default function HomePage() {
       <WhatJourneysFeelLike />
       <div id="opiniones" className="scroll-mt-[172px]">
         <Testimonials themes={["general"]} limit={3} tone="cream" testid="home-testimonials" />
+        <div className="-mt-6 bg-[#F9F2E6] px-6 pb-20 text-center md:px-12 md:pb-24">
+          <Link
+            to={pathFor(lang, "opiniones")}
+            data-testid="home-testimonials-all-reviews"
+            className="inline-flex items-center justify-center gap-3 border border-[#2C2621]/25 px-7 py-4 text-[10px] uppercase tracking-[0.24em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-white"
+          >
+            {REVIEWS_CTA[lang] || REVIEWS_CTA.es}
+            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
       <PressMentions />
       <MoroccoVideos />
