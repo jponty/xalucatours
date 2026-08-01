@@ -28,9 +28,13 @@ const MEDIA_CDN_URL = (process.env.REACT_APP_MEDIA_CDN_URL || "").replace(/\/$/,
    backend proxy; no database URLs need to be rewritten. */
 export const mediaDeliveryUrl = (url) => {
   if (!MEDIA_CDN_URL || !url || typeof url !== "string") return url;
-  const match = url.match(/\/api\/files\/(.+)$/);
-  if (!match) return url;
-  return `${MEDIA_CDN_URL}/${match[1]}`;
+  const proxyMatch = url.match(/\/api\/files\/([^?#]+)/);
+  const supabaseMatch = url.match(
+    /\/storage\/v1\/object\/(?:public|authenticated|sign)\/[^/]+\/([^?#]+)/
+  );
+  const storagePath = proxyMatch?.[1] || supabaseMatch?.[1];
+  if (!storagePath) return url;
+  return `${MEDIA_CDN_URL}/${storagePath}`;
 };
 
 const isBunnyMedia = (url) =>
