@@ -281,6 +281,7 @@ export default function FeedbackPage() {
       if (rating) body.append("rating", String(rating));
       body.append("submission_type", mode === "voice" ? "voice" : "text");
       body.append("message", mode === "voice" ? transcript.trim() : message.trim());
+      body.append("language", lang);
       body.append("consent", "true");
       body.append("source_url", window.location.href);
       body.append("website", "");

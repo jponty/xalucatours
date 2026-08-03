@@ -9,6 +9,7 @@ import logging
 import asyncio
 import httpx
 import hashlib
+import html as _html
 import random
 import csv
 from io import BytesIO, StringIO
@@ -1320,6 +1321,7 @@ class FeedbackFields(BaseModel):
     rating: Optional[int] = Field(default=None, ge=1, le=5)
     message: str = Field(min_length=1, max_length=12000)
     transcription_language: Optional[str] = Field(default=None, max_length=20)
+    language: str = Field(default="es", pattern="^(es|en|fr)$")
     source_url: Optional[str] = Field(default=None, max_length=1000)
     consent: bool
 
@@ -1327,6 +1329,147 @@ class FeedbackFields(BaseModel):
 class FeedbackAdminUpdate(BaseModel):
     status: Optional[str] = Field(default=None, pattern="^(new|reviewed|resolved|archived)$")
     admin_notes: Optional[str] = Field(default=None, max_length=6000)
+
+
+FEEDBACK_GOOGLE_REVIEW_URL = "https://g.page/r/CUMF_8B7DWiXEBM/review"
+_FEEDBACK_FOLLOWUP_COPY = {
+    "es": {
+        "subject": "Gracias por compartir tu experiencia · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Tu opinión cuenta",
+        "title": "Gracias por ayudarnos a seguir mejorando.",
+        "greeting": "Hola{name},",
+        "body": (
+            "Nos alegra saber que tu experiencia con Xaluca Tours ha sido positiva. "
+            "Tu opinión ayuda a nuestro equipo a seguir cuidando cada viaje y puede inspirar a otros viajeros."
+        ),
+        "trip": "Viaje o programa",
+        "rating": "Tu valoración",
+        "review": "Tu reseña",
+        "reuse": "Puedes reutilizar exactamente este texto para compartir también tu experiencia públicamente.",
+        "copy_hint": "Selecciona o mantén pulsado el texto para copiarlo antes de abrir Google Reseñas.",
+        "button": "Publicar reseña en Google",
+        "closing": "Gracias por confiar en Xaluca Tours.",
+        "fallback_trip": "Viaje con Xaluca Tours",
+    },
+    "en": {
+        "subject": "Thank you for sharing your experience · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Your opinion matters",
+        "title": "Thank you for helping us keep improving.",
+        "greeting": "Hello{name},",
+        "body": (
+            "We are delighted that your experience with Xaluca Tours was positive. "
+            "Your feedback helps our team care for every journey and can inspire other travellers."
+        ),
+        "trip": "Trip or programme",
+        "rating": "Your rating",
+        "review": "Your review",
+        "reuse": "You can reuse this exact text to share your experience publicly as well.",
+        "copy_hint": "Select or press and hold the text to copy it before opening Google Reviews.",
+        "button": "Post review on Google",
+        "closing": "Thank you for choosing Xaluca Tours.",
+        "fallback_trip": "Trip with Xaluca Tours",
+    },
+    "fr": {
+        "subject": "Merci d'avoir partagé votre expérience · Xaluca Tours",
+        "eyebrow": "Xaluca Tours · Votre avis compte",
+        "title": "Merci de nous aider à continuer à nous améliorer.",
+        "greeting": "Bonjour{name},",
+        "body": (
+            "Nous sommes ravis que votre expérience avec Xaluca Tours ait été positive. "
+            "Votre avis aide notre équipe à prendre soin de chaque voyage et peut inspirer d'autres voyageurs."
+        ),
+        "trip": "Voyage ou programme",
+        "rating": "Votre note",
+        "review": "Votre avis",
+        "reuse": "Vous pouvez réutiliser exactement ce texte pour partager également votre expérience publiquement.",
+        "copy_hint": "Sélectionnez le texte ou maintenez-le appuyé pour le copier avant d'ouvrir Google Avis.",
+        "button": "Publier un avis sur Google",
+        "closing": "Merci de faire confiance à Xaluca Tours.",
+        "fallback_trip": "Voyage avec Xaluca Tours",
+    },
+}
+
+
+def send_feedback_review_followup(
+    to_email: str,
+    name: Optional[str],
+    trip_reference: Optional[str],
+    rating: int,
+    review_text: str,
+    lang: str = "es",
+) -> None:
+    """Send the positive-feedback Google review follow-up. Never raises."""
+    if not (to_email and rating in {4, 5}):
+        return
+    if not (RESEND_API_KEY and LEADS_FROM_EMAIL):
+        logger.warning("Resend not configured; skipping feedback review follow-up.")
+        return
+    safe_lang = lang if lang in _FEEDBACK_FOLLOWUP_COPY else "es"
+    copy = _FEEDBACK_FOLLOWUP_COPY[safe_lang]
+    safe_name = _html.escape((name or "").strip())
+    safe_trip = _html.escape((trip_reference or "").strip() or copy["fallback_trip"])
+    safe_review = _html.escape((review_text or "").strip()).replace("\n", "<br>")
+    greeting_name = f" {safe_name}" if safe_name else ""
+    stars = (
+        f'<span style="color:#E2AE36;font-size:24px;letter-spacing:3px">{"★" * rating}</span>'
+        f'<span style="color:#D8D0C5;font-size:24px;letter-spacing:3px">{"★" * (5 - rating)}</span>'
+    )
+    html = (
+        '<div style="margin:0;background:#F4EFE7;padding:20px 10px;font-family:Arial,Helvetica,sans-serif">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+        'style="max-width:620px;margin:0 auto;background:#FDFBF7;border-collapse:collapse">'
+        + _email_banner(
+            f'{_email_logo_img(48)}'
+            f'<div style="color:#D4A373;font-size:10px;letter-spacing:3px;text-transform:uppercase">{copy["eyebrow"]}</div>'
+            f'<div style="color:#FDFBF7;font-family:Georgia,serif;font-size:27px;line-height:1.2;margin-top:10px">{copy["title"]}</div>',
+            padding="28px 26px",
+        )
+        + '<tr><td style="padding:28px 24px 8px">'
+        f'<p style="color:#2C2621;font-size:16px;margin:0 0 14px">{copy["greeting"].format(name=greeting_name)}</p>'
+        f'<p style="color:#5C5248;font-size:15px;line-height:1.7;margin:0 0 24px">{copy["body"]}</p>'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">'
+        f'<tr><td style="padding:12px 0;border-top:1px solid #E4DDD2;color:#8A6A4A;font-size:11px;text-transform:uppercase;letter-spacing:1.5px">{copy["trip"]}</td>'
+        f'<td style="padding:12px 0;border-top:1px solid #E4DDD2;color:#2C2621;font-size:14px;text-align:right">{safe_trip}</td></tr>'
+        f'<tr><td style="padding:12px 0;border-top:1px solid #E4DDD2;color:#8A6A4A;font-size:11px;text-transform:uppercase;letter-spacing:1.5px">{copy["rating"]}</td>'
+        f'<td style="padding:8px 0;border-top:1px solid #E4DDD2;text-align:right">{stars}</td></tr>'
+        '</table></td></tr>'
+        '<tr><td style="padding:20px 24px">'
+        f'<div style="color:#A07042;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">{copy["review"]}</div>'
+        f'<div style="background:#FFFFFF;border:1px solid #DDD3C5;padding:20px;color:#2C2621;font-family:Georgia,serif;font-size:17px;line-height:1.65;white-space:normal;user-select:all;-webkit-user-select:all">{safe_review}</div>'
+        f'<p style="color:#5C5248;font-size:14px;line-height:1.6;margin:18px 0 4px">{copy["reuse"]}</p>'
+        f'<p style="color:#8A7D6E;font-size:12px;line-height:1.5;margin:0">{copy["copy_hint"]}</p>'
+        '</td></tr>'
+        '<tr><td align="center" style="padding:12px 24px 30px">'
+        f'<a href="{FEEDBACK_GOOGLE_REVIEW_URL}" target="_blank" '
+        'style="display:block;background:#C16542;color:#FFFFFF;text-decoration:none;padding:16px 18px;'
+        'font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase">'
+        f'{copy["button"]}</a></td></tr>'
+        f'<tr><td style="padding:18px 24px;background:#F7F0E4;color:#6F6258;font-size:12px;text-align:center">{copy["closing"]}</td></tr>'
+        '</table></div>'
+    )
+    plain_review = (review_text or "").strip()
+    text = (
+        f'{copy["greeting"].format(name=(" " + (name or "").strip()) if name else "")}\n\n'
+        f'{copy["body"]}\n\n{copy["trip"]}: {(trip_reference or "").strip() or copy["fallback_trip"]}\n'
+        f'{copy["rating"]}: {rating}/5\n\n{copy["review"]}:\n{plain_review}\n\n'
+        f'{copy["reuse"]}\n{copy["button"]}: {FEEDBACK_GOOGLE_REVIEW_URL}\n\n{copy["closing"]}'
+    )
+    try:
+        params = {
+            "from": LEADS_FROM_EMAIL,
+            "to": [to_email],
+            "subject": copy["subject"],
+            "html": html,
+            "text": text,
+        }
+        attachments = _email_attachments()
+        if attachments:
+            params["attachments"] = attachments
+        if NOTIFY_EMAILS:
+            params["reply_to"] = NOTIFY_EMAILS[0]
+        resend.Emails.send(params)
+    except Exception as exc:  # noqa: BLE001 — must never affect feedback submission
+        logger.error("Feedback review follow-up email failed: %s", exc)
 
 
 def _feedback_client_key(request: Request) -> str:
@@ -1478,6 +1621,7 @@ async def preview_feedback_transcription(
 @api_router.post("/feedback", status_code=201)
 async def create_feedback(
     request: Request,
+    background_tasks: BackgroundTasks,
     submission_type: str = Form(default="text"),
     name: Optional[str] = Form(default=None),
     email: Optional[str] = Form(default=None),
@@ -1485,6 +1629,7 @@ async def create_feedback(
     rating: Optional[int] = Form(default=None),
     message: Optional[str] = Form(default=None),
     transcription_language: Optional[str] = Form(default=None),
+    language: str = Form(default="es"),
     source_url: Optional[str] = Form(default=None),
     consent: bool = Form(...),
     website: Optional[str] = Form(default=None),
@@ -1502,6 +1647,7 @@ async def create_feedback(
             rating=rating,
             message=(message or "").strip(),
             transcription_language=(transcription_language or "").strip() or None,
+            language=(language or "es").strip().lower(),
             source_url=(source_url or "").strip() or None,
             consent=consent,
         )
@@ -1538,6 +1684,17 @@ async def create_feedback(
     except Exception as exc:
         logger.exception("Feedback database insert failed")
         raise HTTPException(status_code=503, detail="No se pudo guardar el comentario.") from exc
+
+    if fields.rating in {4, 5} and fields.email:
+        background_tasks.add_task(
+            send_feedback_review_followup,
+            str(fields.email),
+            fields.name,
+            fields.trip_reference,
+            fields.rating,
+            fields.message,
+            fields.language,
+        )
 
     return {
         "ok": True,
