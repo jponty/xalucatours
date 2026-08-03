@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Check, Copy, ExternalLink, Heart, Loader2, MessageSquareText, Mic, Pause,
-  RotateCcw, Send, ShieldCheck, Sparkles, Star, Upload,
+  RotateCcw, Send, ShieldCheck, Sparkles, Star,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 
@@ -36,11 +36,10 @@ const COPY = {
     en: "Read the transcript and make any corrections you need before sending it.",
     fr: "Relisez la transcription et corrigez-la si nécessaire avant de l'envoyer.",
   },
-  upload: { es: "O subir un archivo de audio", en: "Or upload an audio file", fr: "Ou importer un fichier audio" },
   voiceHelp: {
-    es: "Al finalizar, convertiremos automáticamente tu grabación a texto para que puedas revisarla. Máximo 3 minutos y 25 MB.",
-    en: "When you finish, your recording will be automatically converted to text for you to review. Maximum 3 minutes and 25 MB.",
-    fr: "À la fin, votre enregistrement sera automatiquement converti en texte afin que vous puissiez le relire. Maximum 3 minutes et 25 Mo.",
+    es: "La grabación se utiliza únicamente para transcribirla y se elimina inmediatamente. Solo guardaremos el texto que revises. Máximo 3 minutos y 25 MB.",
+    en: "The recording is used only for transcription and deleted immediately. We only save the text you review. Maximum 3 minutes and 25 MB.",
+    fr: "L'enregistrement sert uniquement à la transcription puis est supprimé immédiatement. Seul le texte relu est conservé. Maximum 3 minutes et 25 Mo.",
   },
   rating: { es: "¿Cómo valorarías tu experiencia?", en: "How would you rate your experience?", fr: "Comment évaluez-vous votre expérience ?" },
   name: { es: "Nombre (opcional)", en: "Name (optional)", fr: "Nom (facultatif)" },
@@ -93,6 +92,7 @@ export default function FeedbackPage() {
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioName, setAudioName] = useState("");
   const [transcript, setTranscript] = useState("");
+  const [transcriptionLanguage, setTranscriptionLanguage] = useState("");
   const [transcribing, setTranscribing] = useState(false);
   const [transcriptionAttempt, setTranscriptionAttempt] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -118,8 +118,6 @@ export default function FeedbackPage() {
 
   useEffect(() => {
     if (!audioBlob) {
-      setTranscript("");
-      setTranscribing(false);
       return undefined;
     }
 
@@ -139,6 +137,11 @@ export default function FeedbackPage() {
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.detail || "No se pudo transcribir la grabación.");
         setTranscript(data.text || "");
+        setTranscriptionLanguage(data.language || lang);
+        // The browser no longer needs the recording after transcription. Drop
+        // both references immediately so only the editable text remains.
+        setAudioBlob(null);
+        setAudioName("");
       } catch (err) {
         if (err.name !== "AbortError") {
           const networkError = err instanceof TypeError;
@@ -154,7 +157,7 @@ export default function FeedbackPage() {
     };
     transcribe();
     return () => controller.abort();
-  }, [audioBlob, audioName, transcriptionAttempt]);
+  }, [audioBlob, audioName, lang, transcriptionAttempt]);
 
   const stopRecording = useCallback(() => {
     if (recorderRef.current?.state === "recording") recorderRef.current.stop();
@@ -180,7 +183,7 @@ export default function FeedbackPage() {
   const startRecording = async () => {
     setError("");
     if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-      setError("Este navegador no permite grabar directamente. Puedes subir un archivo de audio.");
+      setError("Este navegador no permite grabar directamente. Prueba con un navegador compatible y permite el acceso al micrófono.");
       return;
     }
     try {
@@ -204,7 +207,7 @@ export default function FeedbackPage() {
       setAudioBlob(null);
       setAudioName("");
     } catch {
-      setError("No hemos podido acceder al micrófono. Revisa el permiso del navegador o sube un audio.");
+      setError("No hemos podido acceder al micrófono. Revisa el permiso del navegador e inténtalo de nuevo.");
     }
   };
 
@@ -213,21 +216,10 @@ export default function FeedbackPage() {
     setAudioBlob(null);
     setAudioName("");
     setTranscript("");
+    setTranscriptionLanguage("");
     setTranscribing(false);
     setTranscriptionAttempt(0);
     setSeconds(0);
-  };
-
-  const onFile = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    if (file.size > 25 * 1024 * 1024) {
-      setError("El audio supera el límite de 25 MB.");
-      return;
-    }
-    setError("");
-    setSeconds(0);
-    adoptAudio(file, file.name);
   };
 
   const resetForm = () => {
@@ -261,9 +253,6 @@ export default function FeedbackPage() {
     if (mode === "text" && !message.trim()) {
       setError("Escribe tu comentario antes de enviarlo."); return;
     }
-    if (mode === "voice" && !audioBlob) {
-      setError("Graba o sube un audio antes de enviarlo."); return;
-    }
     if (mode === "voice" && transcribing) {
       setError("Espera a que termine la transcripción antes de enviarla."); return;
     }
@@ -280,15 +269,12 @@ export default function FeedbackPage() {
       body.append("email", email);
       body.append("trip_reference", tripReference);
       if (rating) body.append("rating", String(rating));
-      if (message.trim()) body.append("message", message.trim());
+      body.append("submission_type", mode === "voice" ? "voice" : "text");
+      body.append("message", mode === "voice" ? transcript.trim() : message.trim());
       body.append("consent", "true");
       body.append("source_url", window.location.href);
       body.append("website", "");
-      if (mode === "voice" && audioBlob) {
-        body.append("audio", audioBlob, audioName || "feedback.webm");
-        body.append("transcript", transcript.trim());
-        if (seconds) body.append("audio_duration_seconds", String(seconds));
-      }
+      if (mode === "voice" && transcriptionLanguage) body.append("transcription_language", transcriptionLanguage);
       const response = await fetch(`${API}/api/feedback`, { method: "POST", body });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.detail || "No se pudo enviar el comentario.");
@@ -397,7 +383,7 @@ export default function FeedbackPage() {
                 </label>
               ) : (
                 <div className="border border-[#2C2621]/12 bg-[#F7F0E4]/65 p-6 md:p-8">
-                  {!audioBlob ? (
+                  {recording || (!audioBlob && !transcript && !transcribing) ? (
                     <div className="text-center">
                       <button type="button" onClick={recording ? stopRecording : startRecording} className={`mx-auto flex h-24 w-24 items-center justify-center rounded-full text-white shadow-xl transition-all ${recording ? "animate-pulse bg-[#A8533A]" : "bg-[#C16542] hover:scale-105"}`} aria-label={pick(recording ? COPY.stop : COPY.record, lang)} data-testid="feedback-record">
                         {recording ? <Pause className="h-9 w-9" fill="currentColor" /> : <Mic className="h-9 w-9" strokeWidth={1.5} />}
@@ -441,12 +427,6 @@ export default function FeedbackPage() {
                       <button type="button" onClick={resetAudio} className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#5C5248] hover:text-[#C16542]"><Mic className="h-3.5 w-3.5" />{pick(COPY.replace, lang)}</button>
                     </div>
                   )}
-                  {!recording && !audioBlob && (
-                    <label className="mx-auto mt-7 flex w-fit cursor-pointer items-center gap-2 border border-[#2C2621]/15 bg-white px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#5C5248] hover:border-[#C16542]">
-                      <Upload className="h-4 w-4" /> {pick(COPY.upload, lang)}
-                      <input type="file" accept="audio/webm,audio/mpeg,audio/mp4,audio/wav,audio/x-m4a,.mp3,.m4a,.wav,.webm" onChange={onFile} className="sr-only" />
-                    </label>
-                  )}
                   <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-[#5C5248]/75">{pick(COPY.voiceHelp, lang)}</p>
                 </div>
               )}
@@ -486,7 +466,7 @@ export default function FeedbackPage() {
             {[
               [Heart, "Escuchamos cada experiencia", "Tu comentario llega directamente al equipo que diseña y acompaña los viajes."],
               [Sparkles, "Mejora continua", "Lo que compartes nos ayuda a ajustar procesos, detalles y nuevas experiencias."],
-              [ShieldCheck, "Tratamiento responsable", "Tu grabación y tus datos se conservan de forma segura y solo se revisan desde el área administrativa."],
+              [ShieldCheck, "Privacidad desde el origen", "La grabación se elimina al terminar la transcripción. En Supabase solo conservamos el texto que hayas revisado y enviado."],
             ].map(([Icon, title, body]) => (
               <div key={title} className="border border-[#2C2621]/10 bg-[#FDFBF7]/70 p-6">
                 <Icon className="h-5 w-5 text-[#C16542]" strokeWidth={1.5} />

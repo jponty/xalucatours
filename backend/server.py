@@ -1297,7 +1297,7 @@ async def delete_program_download(lead_id: str, authorization: str = Header(defa
     return await _delete_lead(db.program_downloads, lead_id, authorization)
 
 
-# ---------- Customer feedback (text + recorded voice) ----------
+# ---------- Customer feedback (text + ephemeral voice transcription) ----------
 FEEDBACK_AUDIO_MAX_BYTES = 25 * 1024 * 1024
 FEEDBACK_AUDIO_MIME = {
     "audio/webm": "webm",
@@ -1313,13 +1313,13 @@ _feedback_transcription_rate: Dict[str, List[float]] = {}
 
 
 class FeedbackFields(BaseModel):
+    submission_type: str = Field(default="text", pattern="^(text|voice)$")
     name: Optional[str] = Field(default=None, max_length=120)
     email: Optional[EmailStr] = None
     trip_reference: Optional[str] = Field(default=None, max_length=200)
     rating: Optional[int] = Field(default=None, ge=1, le=5)
-    message: Optional[str] = Field(default=None, max_length=6000)
-    transcript: Optional[str] = Field(default=None, max_length=12000)
-    audio_duration_seconds: Optional[float] = Field(default=None, ge=0, le=600)
+    message: str = Field(min_length=1, max_length=12000)
+    transcription_language: Optional[str] = Field(default=None, max_length=20)
     source_url: Optional[str] = Field(default=None, max_length=1000)
     consent: bool
 
@@ -1427,12 +1427,18 @@ async def _read_feedback_audio(audio: UploadFile) -> tuple[bytes, str, str]:
             status_code=415,
             detail="Formato no compatible. Utiliza WebM, MP3, M4A, MP4 o WAV.",
         )
-    data = await audio.read()
+    filename = (audio.filename or f"feedback.{FEEDBACK_AUDIO_MIME[content_type]}")[:200]
+    try:
+        data = await audio.read()
+    finally:
+        # UploadFile may spool larger recordings to a temporary file. Closing it
+        # here removes that temporary file immediately; the returned bytes live
+        # only in memory for the duration of the transcription request.
+        await audio.close()
     if not data:
         raise HTTPException(status_code=422, detail="La grabación está vacía.")
     if len(data) > FEEDBACK_AUDIO_MAX_BYTES:
         raise HTTPException(status_code=413, detail="El audio supera el límite de 25 MB.")
-    filename = (audio.filename or f"feedback.{FEEDBACK_AUDIO_MIME[content_type]}")[:200]
     return data, filename, content_type
 
 
@@ -1457,6 +1463,9 @@ async def preview_feedback_transcription(
     except Exception as exc:
         logger.exception("Feedback preview transcription failed")
         raise HTTPException(status_code=502, detail="No se pudo transcribir la grabación.") from exc
+    finally:
+        # Release the only in-process reference as soon as the provider returns.
+        del data
     if not transcribed["text"]:
         raise HTTPException(status_code=422, detail="No se ha detectado voz en la grabación.")
     return {
@@ -1466,72 +1475,33 @@ async def preview_feedback_transcription(
     }
 
 
-async def _feedback_audio_asset(
-    feedback_id: str,
-    data: bytes,
-    filename: str,
-    content_type: str,
-) -> str:
-    sha = hashlib.sha256(data).hexdigest()
-    existing = await db.request(
-        "GET",
-        "media_assets",
-        params={"select": "id", "sha256": f"eq.{sha}", "limit": 1},
-    )
-    rows = existing.json()
-    if rows:
-        return rows[0]["id"]
-
-    asset_id = str(uuid.uuid4())
-    ext = FEEDBACK_AUDIO_MIME[content_type]
-    storage_path = f"xaluca/feedback/{datetime.now(timezone.utc).strftime('%Y/%m')}/{feedback_id}.{ext}"
-    await asyncio.to_thread(put_object, storage_path, data, content_type)
-    await db.request(
-        "POST",
-        "media_assets",
-        headers={"Prefer": "return=minimal"},
-        json={
-            "id": asset_id,
-            "storage_path": storage_path,
-            "sha256": sha,
-            "source": "feedback",
-            "external_id": feedback_id,
-            "original_filename": (filename or f"feedback.{ext}")[:200],
-            "mime_type": content_type,
-            "size_bytes": len(data),
-        },
-    )
-    return asset_id
-
-
 @api_router.post("/feedback", status_code=201)
 async def create_feedback(
     request: Request,
+    submission_type: str = Form(default="text"),
     name: Optional[str] = Form(default=None),
     email: Optional[str] = Form(default=None),
     trip_reference: Optional[str] = Form(default=None),
     rating: Optional[int] = Form(default=None),
     message: Optional[str] = Form(default=None),
-    transcript: Optional[str] = Form(default=None),
-    audio_duration_seconds: Optional[float] = Form(default=None),
+    transcription_language: Optional[str] = Form(default=None),
     source_url: Optional[str] = Form(default=None),
     consent: bool = Form(...),
     website: Optional[str] = Form(default=None),
-    audio: Optional[UploadFile] = File(default=None),
 ):
-    # Honeypot submissions receive a neutral response without consuming storage/API.
+    # Honeypot submissions receive a neutral response without consuming database/API.
     if website:
         return {"ok": True}
     _check_feedback_rate(request)
     try:
         fields = FeedbackFields(
+            submission_type=(submission_type or "text").strip(),
             name=(name or "").strip() or None,
             email=(email or "").strip() or None,
             trip_reference=(trip_reference or "").strip() or None,
             rating=rating,
-            message=(message or "").strip() or None,
-            transcript=(transcript or "").strip() or None,
-            audio_duration_seconds=audio_duration_seconds,
+            message=(message or "").strip(),
+            transcription_language=(transcription_language or "").strip() or None,
             source_url=(source_url or "").strip() or None,
             consent=consent,
         )
@@ -1539,55 +1509,19 @@ async def create_feedback(
         raise HTTPException(status_code=422, detail="Revisa los datos introducidos.") from exc
     if not fields.consent:
         raise HTTPException(status_code=422, detail="Debes aceptar el tratamiento del comentario.")
-    if not fields.message and not audio:
-        raise HTTPException(status_code=422, detail="Escribe un comentario o adjunta una grabación.")
 
     feedback_id = str(uuid.uuid4())
     now_iso = datetime.now(timezone.utc).isoformat()
-    audio_asset_id = None
-    transcript = None
-    transcription_language = None
-    transcription_status = "not_required"
-    submission_type = "text"
-
-    if audio:
-        submission_type = "audio"
-        data, safe_filename, content_type = await _read_feedback_audio(audio)
-        if fields.transcript:
-            transcript = fields.transcript
-            transcription_status = "completed"
-        else:
-            try:
-                transcribed = await _transcribe_feedback_audio(data, safe_filename, content_type)
-                transcript = transcribed["text"] or None
-                transcription_language = transcribed["language"]
-                transcription_status = "completed" if transcript else "failed"
-            except Exception:
-                logger.exception("Automatic feedback transcription failed")
-                transcription_status = "failed"
-
-        try:
-            audio_asset_id = await _feedback_audio_asset(
-                feedback_id, data, safe_filename, content_type
-            )
-        except Exception as exc:
-            logger.exception("Feedback audio storage failed")
-            raise HTTPException(status_code=502, detail="No se pudo guardar la grabación.") from exc
 
     record = {
         "id": feedback_id,
-        "submission_type": submission_type,
+        "submission_type": fields.submission_type,
         "name": fields.name,
         "email": str(fields.email) if fields.email else None,
         "trip_reference": fields.trip_reference,
         "rating": fields.rating,
         "feedback_text": fields.message,
-        "transcript": transcript,
-        "transcription_status": transcription_status,
-        "transcription_model": OPENAI_TRANSCRIPTION_MODEL if audio else None,
-        "transcription_language": transcription_language,
-        "audio_asset_id": audio_asset_id,
-        "audio_duration_seconds": fields.audio_duration_seconds,
+        "transcription_language": fields.transcription_language,
         "status": "new",
         "source_url": fields.source_url,
         "consent": True,
@@ -1608,8 +1542,7 @@ async def create_feedback(
     return {
         "ok": True,
         "id": feedback_id,
-        "submission_type": submission_type,
-        "transcription_status": transcription_status,
+        "submission_type": fields.submission_type,
     }
 
 
@@ -1633,7 +1566,7 @@ async def list_feedback(
             row for row in rows
             if term in " ".join(
                 str(row.get(field) or "")
-                for field in ("name", "email", "trip_reference", "feedback_text", "transcript")
+                for field in ("name", "email", "trip_reference", "feedback_text")
             ).lower()
         ]
     return rows
@@ -1680,47 +1613,6 @@ async def archive_feedback(feedback_id: str, authorization: str = Header(default
     if not rows:
         raise HTTPException(status_code=404, detail="Feedback no encontrado")
     return rows[0]
-
-
-@api_router.get("/admin/feedback/{feedback_id}/audio")
-async def get_feedback_audio(feedback_id: str, authorization: str = Header(default="")):
-    _require_admin(authorization)
-    feedback_response = await db.request(
-        "GET",
-        "feedback",
-        params={"select": "audio_asset_id", "id": f"eq.{feedback_id}", "limit": 1},
-    )
-    feedback_rows = feedback_response.json()
-    if not feedback_rows or not feedback_rows[0].get("audio_asset_id"):
-        raise HTTPException(status_code=404, detail="Este feedback no tiene audio")
-    asset_response = await db.request(
-        "GET",
-        "media_assets",
-        params={
-            "select": "storage_path,mime_type,original_filename",
-            "id": f"eq.{feedback_rows[0]['audio_asset_id']}",
-            "limit": 1,
-        },
-    )
-    assets = asset_response.json()
-    if not assets:
-        raise HTTPException(status_code=404, detail="Audio no encontrado")
-    asset = assets[0]
-    try:
-        data, detected_type = await asyncio.to_thread(get_object, asset["storage_path"])
-    except Exception as exc:
-        logger.exception("Feedback audio fetch failed")
-        raise HTTPException(status_code=404, detail="Audio no encontrado") from exc
-    media_type = asset.get("mime_type") or detected_type or "application/octet-stream"
-    filename = re.sub(r"[^a-zA-Z0-9._-]", "_", asset.get("original_filename") or "feedback-audio")
-    return Response(
-        content=data,
-        media_type=media_type,
-        headers={
-            "Cache-Control": "private, no-store",
-            "Content-Disposition": f'inline; filename="{filename}"',
-        },
-    )
 
 
 # ---------- Climate proxy (Open-Meteo) ----------
