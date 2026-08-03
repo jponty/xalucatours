@@ -14,7 +14,7 @@ import csv
 from io import BytesIO, StringIO
 from PIL import Image
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
+from pydantic import BaseModel, Field, ConfigDict, EmailStr, ValidationError, field_validator
 from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -76,6 +76,7 @@ ADMIN_TOKEN_TTL = 7 * 24 * 3600  # 7 days
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 OPENAI_TRANSLATION_MODEL = os.environ.get("OPENAI_TRANSLATION_MODEL", "gpt-4o-mini")
+OPENAI_TRANSCRIPTION_MODEL = os.environ.get("OPENAI_TRANSCRIPTION_MODEL", "gpt-transcribe")
 
 
 def _admin_sign(raw: str) -> str:
@@ -312,6 +313,13 @@ async def admin_verify(authorization: str = Header(default="")):
     if not verify_admin_token(token):
         raise HTTPException(status_code=401, detail="Sesión no válida")
     return {"ok": True}
+
+
+def _require_admin(authorization: str) -> None:
+    """Reject write access unless a currently valid admin token is supplied."""
+    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Sesión no válida")
 
 
 # ---------- Lead-notification recipients (admin-editable) ----------
@@ -1289,6 +1297,432 @@ async def delete_program_download(lead_id: str, authorization: str = Header(defa
     return await _delete_lead(db.program_downloads, lead_id, authorization)
 
 
+# ---------- Customer feedback (text + recorded voice) ----------
+FEEDBACK_AUDIO_MAX_BYTES = 25 * 1024 * 1024
+FEEDBACK_AUDIO_MIME = {
+    "audio/webm": "webm",
+    "audio/mpeg": "mp3",
+    "audio/mp3": "mp3",
+    "audio/mp4": "m4a",
+    "audio/x-m4a": "m4a",
+    "audio/wav": "wav",
+    "audio/x-wav": "wav",
+}
+_feedback_rate: Dict[str, List[float]] = {}
+_feedback_transcription_rate: Dict[str, List[float]] = {}
+
+
+class FeedbackFields(BaseModel):
+    name: Optional[str] = Field(default=None, max_length=120)
+    email: Optional[EmailStr] = None
+    trip_reference: Optional[str] = Field(default=None, max_length=200)
+    rating: Optional[int] = Field(default=None, ge=1, le=5)
+    message: Optional[str] = Field(default=None, max_length=6000)
+    transcript: Optional[str] = Field(default=None, max_length=12000)
+    audio_duration_seconds: Optional[float] = Field(default=None, ge=0, le=600)
+    source_url: Optional[str] = Field(default=None, max_length=1000)
+    consent: bool
+
+
+class FeedbackAdminUpdate(BaseModel):
+    status: Optional[str] = Field(default=None, pattern="^(new|reviewed|resolved|archived)$")
+    admin_notes: Optional[str] = Field(default=None, max_length=6000)
+
+
+def _feedback_client_key(request: Request) -> str:
+    forwarded = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+    return forwarded or (request.client.host if request.client else "unknown")
+
+
+def _check_feedback_rate(request: Request) -> None:
+    """Small abuse guard for the public feedback submission endpoint (5/hour/IP)."""
+    now = _time.time()
+    key = _feedback_client_key(request)
+    recent = [ts for ts in _feedback_rate.get(key, []) if now - ts < 3600]
+    if len(recent) >= 5:
+        raise HTTPException(status_code=429, detail="Demasiados envíos. Inténtalo de nuevo más tarde.")
+    recent.append(now)
+    _feedback_rate[key] = recent
+
+
+def _check_feedback_transcription_rate(request: Request) -> None:
+    """Limit public preview transcriptions without affecting the final submission quota."""
+    now = _time.time()
+    key = _feedback_client_key(request)
+    recent = [ts for ts in _feedback_transcription_rate.get(key, []) if now - ts < 3600]
+    if len(recent) >= 10:
+        raise HTTPException(status_code=429, detail="Demasiadas transcripciones. Inténtalo de nuevo más tarde.")
+    recent.append(now)
+    _feedback_transcription_rate[key] = recent
+
+
+class FeedbackTranscriptionError(RuntimeError):
+    """Expected provider/configuration failure with a safe public message."""
+
+    def __init__(self, detail: str, status_code: int = 502):
+        super().__init__(detail)
+        self.detail = detail
+        self.status_code = status_code
+
+
+async def _transcribe_feedback_audio(data: bytes, filename: str, content_type: str) -> Dict[str, Any]:
+    if not OPENAI_API_KEY:
+        raise FeedbackTranscriptionError(
+            "La transcripción de voz todavía no está configurada en el servidor.",
+            status_code=503,
+        )
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(120.0, connect=15.0)) as client:
+            response = await client.post(
+                "https://api.openai.com/v1/audio/transcriptions",
+                headers={"Authorization": f"Bearer {OPENAI_API_KEY}"},
+                files={"file": (filename, data, content_type)},
+                data={
+                    "model": OPENAI_TRANSCRIPTION_MODEL,
+                    "prompt": (
+                        "Comentario de un cliente de Xaluca Tours sobre viajes por Marruecos. "
+                        "Conserva el idioma original y escribe correctamente Xaluca Tours, Grup Xaluca, "
+                        "Marrakech, Merzouga, Erg Chebbi, Ouarzazate, Errachidia y Marruecos."
+                    ),
+                },
+            )
+    except httpx.TimeoutException as exc:
+        raise FeedbackTranscriptionError(
+            "La transcripción está tardando más de lo esperado. Inténtalo de nuevo.",
+            status_code=504,
+        ) from exc
+    except httpx.RequestError as exc:
+        raise FeedbackTranscriptionError(
+            "No se pudo conectar con el servicio de transcripción. Inténtalo de nuevo.",
+            status_code=503,
+        ) from exc
+    if response.status_code >= 400:
+        logger.warning("Feedback transcription failed: OpenAI HTTP %s", response.status_code)
+        if response.status_code in {401, 403}:
+            raise FeedbackTranscriptionError(
+                "La credencial del servicio de transcripción no es válida.",
+                status_code=503,
+            )
+        if response.status_code == 429:
+            raise FeedbackTranscriptionError(
+                "El servicio de transcripción ha alcanzado temporalmente su límite. Inténtalo más tarde.",
+                status_code=503,
+            )
+        if response.status_code == 400:
+            raise FeedbackTranscriptionError(
+                "La grabación no pudo procesarse. Vuelve a grabarla o utiliza MP3, M4A, WAV o WebM.",
+                status_code=422,
+            )
+        raise FeedbackTranscriptionError("No se pudo transcribir la grabación.")
+    payload = response.json()
+    languages = payload.get("languages") or []
+    language = languages[0].get("code") if languages and isinstance(languages[0], dict) else None
+    return {"text": (payload.get("text") or "").strip(), "language": language}
+
+
+async def _read_feedback_audio(audio: UploadFile) -> tuple[bytes, str, str]:
+    content_type = (audio.content_type or "").split(";", 1)[0].strip().lower()
+    if content_type not in FEEDBACK_AUDIO_MIME:
+        raise HTTPException(
+            status_code=415,
+            detail="Formato no compatible. Utiliza WebM, MP3, M4A, MP4 o WAV.",
+        )
+    data = await audio.read()
+    if not data:
+        raise HTTPException(status_code=422, detail="La grabación está vacía.")
+    if len(data) > FEEDBACK_AUDIO_MAX_BYTES:
+        raise HTTPException(status_code=413, detail="El audio supera el límite de 25 MB.")
+    filename = (audio.filename or f"feedback.{FEEDBACK_AUDIO_MIME[content_type]}")[:200]
+    return data, filename, content_type
+
+
+@api_router.post("/feedback/transcribe")
+async def preview_feedback_transcription(
+    request: Request,
+    audio: UploadFile = File(...),
+):
+    """Return an editable transcript before the customer submits their feedback."""
+    if not OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="La transcripción de voz todavía no está configurada en el servidor.",
+        )
+    _check_feedback_transcription_rate(request)
+    data, filename, content_type = await _read_feedback_audio(audio)
+    try:
+        transcribed = await _transcribe_feedback_audio(data, filename, content_type)
+    except FeedbackTranscriptionError as exc:
+        logger.warning("Feedback preview transcription unavailable: %s", exc)
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail) from exc
+    except Exception as exc:
+        logger.exception("Feedback preview transcription failed")
+        raise HTTPException(status_code=502, detail="No se pudo transcribir la grabación.") from exc
+    if not transcribed["text"]:
+        raise HTTPException(status_code=422, detail="No se ha detectado voz en la grabación.")
+    return {
+        "text": transcribed["text"],
+        "language": transcribed["language"],
+        "model": OPENAI_TRANSCRIPTION_MODEL,
+    }
+
+
+async def _feedback_audio_asset(
+    feedback_id: str,
+    data: bytes,
+    filename: str,
+    content_type: str,
+) -> str:
+    sha = hashlib.sha256(data).hexdigest()
+    existing = await db.request(
+        "GET",
+        "media_assets",
+        params={"select": "id", "sha256": f"eq.{sha}", "limit": 1},
+    )
+    rows = existing.json()
+    if rows:
+        return rows[0]["id"]
+
+    asset_id = str(uuid.uuid4())
+    ext = FEEDBACK_AUDIO_MIME[content_type]
+    storage_path = f"xaluca/feedback/{datetime.now(timezone.utc).strftime('%Y/%m')}/{feedback_id}.{ext}"
+    await asyncio.to_thread(put_object, storage_path, data, content_type)
+    await db.request(
+        "POST",
+        "media_assets",
+        headers={"Prefer": "return=minimal"},
+        json={
+            "id": asset_id,
+            "storage_path": storage_path,
+            "sha256": sha,
+            "source": "feedback",
+            "external_id": feedback_id,
+            "original_filename": (filename or f"feedback.{ext}")[:200],
+            "mime_type": content_type,
+            "size_bytes": len(data),
+        },
+    )
+    return asset_id
+
+
+@api_router.post("/feedback", status_code=201)
+async def create_feedback(
+    request: Request,
+    name: Optional[str] = Form(default=None),
+    email: Optional[str] = Form(default=None),
+    trip_reference: Optional[str] = Form(default=None),
+    rating: Optional[int] = Form(default=None),
+    message: Optional[str] = Form(default=None),
+    transcript: Optional[str] = Form(default=None),
+    audio_duration_seconds: Optional[float] = Form(default=None),
+    source_url: Optional[str] = Form(default=None),
+    consent: bool = Form(...),
+    website: Optional[str] = Form(default=None),
+    audio: Optional[UploadFile] = File(default=None),
+):
+    # Honeypot submissions receive a neutral response without consuming storage/API.
+    if website:
+        return {"ok": True}
+    _check_feedback_rate(request)
+    try:
+        fields = FeedbackFields(
+            name=(name or "").strip() or None,
+            email=(email or "").strip() or None,
+            trip_reference=(trip_reference or "").strip() or None,
+            rating=rating,
+            message=(message or "").strip() or None,
+            transcript=(transcript or "").strip() or None,
+            audio_duration_seconds=audio_duration_seconds,
+            source_url=(source_url or "").strip() or None,
+            consent=consent,
+        )
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail="Revisa los datos introducidos.") from exc
+    if not fields.consent:
+        raise HTTPException(status_code=422, detail="Debes aceptar el tratamiento del comentario.")
+    if not fields.message and not audio:
+        raise HTTPException(status_code=422, detail="Escribe un comentario o adjunta una grabación.")
+
+    feedback_id = str(uuid.uuid4())
+    now_iso = datetime.now(timezone.utc).isoformat()
+    audio_asset_id = None
+    transcript = None
+    transcription_language = None
+    transcription_status = "not_required"
+    submission_type = "text"
+
+    if audio:
+        submission_type = "audio"
+        data, safe_filename, content_type = await _read_feedback_audio(audio)
+        if fields.transcript:
+            transcript = fields.transcript
+            transcription_status = "completed"
+        else:
+            try:
+                transcribed = await _transcribe_feedback_audio(data, safe_filename, content_type)
+                transcript = transcribed["text"] or None
+                transcription_language = transcribed["language"]
+                transcription_status = "completed" if transcript else "failed"
+            except Exception:
+                logger.exception("Automatic feedback transcription failed")
+                transcription_status = "failed"
+
+        try:
+            audio_asset_id = await _feedback_audio_asset(
+                feedback_id, data, safe_filename, content_type
+            )
+        except Exception as exc:
+            logger.exception("Feedback audio storage failed")
+            raise HTTPException(status_code=502, detail="No se pudo guardar la grabación.") from exc
+
+    record = {
+        "id": feedback_id,
+        "submission_type": submission_type,
+        "name": fields.name,
+        "email": str(fields.email) if fields.email else None,
+        "trip_reference": fields.trip_reference,
+        "rating": fields.rating,
+        "feedback_text": fields.message,
+        "transcript": transcript,
+        "transcription_status": transcription_status,
+        "transcription_model": OPENAI_TRANSCRIPTION_MODEL if audio else None,
+        "transcription_language": transcription_language,
+        "audio_asset_id": audio_asset_id,
+        "audio_duration_seconds": fields.audio_duration_seconds,
+        "status": "new",
+        "source_url": fields.source_url,
+        "consent": True,
+        "created_at": now_iso,
+        "updated_at": now_iso,
+    }
+    try:
+        await db.request(
+            "POST",
+            "feedback",
+            headers={"Prefer": "return=minimal"},
+            json=record,
+        )
+    except Exception as exc:
+        logger.exception("Feedback database insert failed")
+        raise HTTPException(status_code=503, detail="No se pudo guardar el comentario.") from exc
+
+    return {
+        "ok": True,
+        "id": feedback_id,
+        "submission_type": submission_type,
+        "transcription_status": transcription_status,
+    }
+
+
+@api_router.get("/admin/feedback")
+async def list_feedback(
+    authorization: str = Header(default=""),
+    status: Optional[str] = None,
+    q: Optional[str] = None,
+):
+    _require_admin(authorization)
+    params: Dict[str, Any] = {"select": "*", "order": "created_at.desc", "limit": 500}
+    if status and status != "all":
+        if status not in {"new", "reviewed", "resolved", "archived"}:
+            raise HTTPException(status_code=400, detail="Estado no válido")
+        params["status"] = f"eq.{status}"
+    response = await db.request("GET", "feedback", params=params)
+    rows = response.json()
+    term = (q or "").strip().lower()
+    if term:
+        rows = [
+            row for row in rows
+            if term in " ".join(
+                str(row.get(field) or "")
+                for field in ("name", "email", "trip_reference", "feedback_text", "transcript")
+            ).lower()
+        ]
+    return rows
+
+
+@api_router.patch("/admin/feedback/{feedback_id}")
+async def update_feedback(
+    feedback_id: str,
+    payload: FeedbackAdminUpdate,
+    authorization: str = Header(default=""),
+):
+    _require_admin(authorization)
+    update = payload.model_dump(exclude_unset=True)
+    if not update:
+        raise HTTPException(status_code=400, detail="No hay cambios")
+    update["updated_at"] = datetime.now(timezone.utc).isoformat()
+    if update.get("status") == "archived":
+        update["archived_at"] = update["updated_at"]
+    response = await db.request(
+        "PATCH",
+        "feedback",
+        params={"id": f"eq.{feedback_id}", "select": "*"},
+        headers={"Prefer": "return=representation"},
+        json=update,
+    )
+    rows = response.json()
+    if not rows:
+        raise HTTPException(status_code=404, detail="Feedback no encontrado")
+    return rows[0]
+
+
+@api_router.delete("/admin/feedback/{feedback_id}")
+async def archive_feedback(feedback_id: str, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    now_iso = datetime.now(timezone.utc).isoformat()
+    response = await db.request(
+        "PATCH",
+        "feedback",
+        params={"id": f"eq.{feedback_id}", "select": "id,status"},
+        headers={"Prefer": "return=representation"},
+        json={"status": "archived", "archived_at": now_iso, "updated_at": now_iso},
+    )
+    rows = response.json()
+    if not rows:
+        raise HTTPException(status_code=404, detail="Feedback no encontrado")
+    return rows[0]
+
+
+@api_router.get("/admin/feedback/{feedback_id}/audio")
+async def get_feedback_audio(feedback_id: str, authorization: str = Header(default="")):
+    _require_admin(authorization)
+    feedback_response = await db.request(
+        "GET",
+        "feedback",
+        params={"select": "audio_asset_id", "id": f"eq.{feedback_id}", "limit": 1},
+    )
+    feedback_rows = feedback_response.json()
+    if not feedback_rows or not feedback_rows[0].get("audio_asset_id"):
+        raise HTTPException(status_code=404, detail="Este feedback no tiene audio")
+    asset_response = await db.request(
+        "GET",
+        "media_assets",
+        params={
+            "select": "storage_path,mime_type,original_filename",
+            "id": f"eq.{feedback_rows[0]['audio_asset_id']}",
+            "limit": 1,
+        },
+    )
+    assets = asset_response.json()
+    if not assets:
+        raise HTTPException(status_code=404, detail="Audio no encontrado")
+    asset = assets[0]
+    try:
+        data, detected_type = await asyncio.to_thread(get_object, asset["storage_path"])
+    except Exception as exc:
+        logger.exception("Feedback audio fetch failed")
+        raise HTTPException(status_code=404, detail="Audio no encontrado") from exc
+    media_type = asset.get("mime_type") or detected_type or "application/octet-stream"
+    filename = re.sub(r"[^a-zA-Z0-9._-]", "_", asset.get("original_filename") or "feedback-audio")
+    return Response(
+        content=data,
+        media_type=media_type,
+        headers={
+            "Cache-Control": "private, no-store",
+            "Content-Disposition": f'inline; filename="{filename}"',
+        },
+    )
+
+
 # ---------- Climate proxy (Open-Meteo) ----------
 # Lightweight in-process TTL cache; data only changes meaningfully day to day.
 _climate_cache = {"data": None, "ts": None}
@@ -1553,7 +1987,12 @@ async def list_image_slots():
 
 
 @api_router.put("/slots/{slot_id}")
-async def put_slot(slot_id: str, payload: SlotPayload):
+async def put_slot(
+    slot_id: str,
+    payload: SlotPayload,
+    authorization: str = Header(default=""),
+):
+    _require_admin(authorization)
     # Selective update: only fields explicitly provided are written, so
     # editing alt_i18n doesn't blow away the url, and vice versa.
     update: Dict = {"updated_at": datetime.now(timezone.utc).isoformat()}
@@ -1583,11 +2022,12 @@ async def put_slot(slot_id: str, payload: SlotPayload):
 
 
 @api_router.delete("/slots/{slot_id}")
-async def clear_slot(slot_id: str):
+async def clear_slot(slot_id: str, authorization: str = Header(default="")):
     """Mark a slot as explicitly cleared (url=None, cleared=True) so the
     frontend renders the empty placeholder instead of the original fallback.
     The document is preserved so any persisted metadata (alt_i18n, caption_i18n)
     survives a future re-upload."""
+    _require_admin(authorization)
     update = {
         "url": None,
         "cleared": True,
@@ -1602,7 +2042,12 @@ async def clear_slot(slot_id: str):
 
 
 @api_router.post("/slots/{slot_id}/upload")
-async def upload_slot_image(slot_id: str, file: UploadFile = File(...)):
+async def upload_slot_image(
+    slot_id: str,
+    file: UploadFile = File(...),
+    authorization: str = Header(default=""),
+):
+    _require_admin(authorization)
     if file.content_type not in ALLOWED_MIME:
         raise HTTPException(
             status_code=415,
@@ -1801,6 +2246,7 @@ async def upload_day_gallery_image(key: str, file: UploadFile = File(...)):
 async def upload_library_images(
     files: List[UploadFile] = File(...),
     tag: Optional[str] = Form(None),
+    authorization: str = Header(default=""),
 ):
     """Bulk-upload images directly into the CMS library.
     The files are NOT bound to any slot — editors browse them later
@@ -1809,6 +2255,7 @@ async def upload_library_images(
     When `tag` is provided (e.g. a folder name from a folder import),
     every uploaded image is grouped under that normalised tag so the
     whole batch can be filtered together in the library."""
+    _require_admin(authorization)
     if not files:
         raise HTTPException(status_code=400, detail="No files provided.")
     if len(files) > 30:
@@ -1900,8 +2347,13 @@ class FileUpdate(BaseModel):
 
 
 @api_router.patch("/files/{file_id}")
-async def update_file_metadata(file_id: str, payload: FileUpdate):
+async def update_file_metadata(
+    file_id: str,
+    payload: FileUpdate,
+    authorization: str = Header(default=""),
+):
     """Rename + retag a library file. Only mutable fields are accepted."""
+    _require_admin(authorization)
     update: Dict = {}
     if payload.original_filename is not None:
         name = payload.original_filename.strip()[:200]
@@ -1932,9 +2384,10 @@ async def update_file_metadata(file_id: str, payload: FileUpdate):
 
 
 @api_router.delete("/files/{file_id}")
-async def delete_file(file_id: str):
+async def delete_file(file_id: str, authorization: str = Header(default="")):
     """Soft-delete a library file. The bytes stay in Supabase Storage
     (no delete API) but the record is hidden from listings."""
+    _require_admin(authorization)
     res = await db.files.update_one(
         {"id": file_id},
         {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}},
@@ -1945,10 +2398,15 @@ async def delete_file(file_id: str):
 
 
 @api_router.post("/files/{file_id}/replace")
-async def replace_file_bytes(file_id: str, file: UploadFile = File(...)):
+async def replace_file_bytes(
+    file_id: str,
+    file: UploadFile = File(...),
+    authorization: str = Header(default=""),
+):
     """Upload new bytes for an existing library record. The previous
     storage path stays untouched (storage has no delete API) and the
     record is updated to point at the new object."""
+    _require_admin(authorization)
     if file.content_type not in ALLOWED_MIME:
         raise HTTPException(
             status_code=415,
@@ -2106,11 +2564,15 @@ class PexelsImportRequest(BaseModel):
 
 
 @api_router.post("/pexels/import")
-async def pexels_import(payload: PexelsImportRequest):
+async def pexels_import(
+    payload: PexelsImportRequest,
+    authorization: str = Header(default=""),
+):
     """Download the Pexels original, store it in our object storage,
     insert a `db.files` library record with full attribution, and
     return the same shape the bulk-upload endpoint returns so the
     frontend can treat it like any other library asset."""
+    _require_admin(authorization)
     # Fail before downloading/uploading bytes if the database cannot persist
     # the resulting library record. This prevents orphaned Storage objects.
     try:
@@ -2216,8 +2678,12 @@ class BulkFillRequest(BaseModel):
 
 
 @api_router.post("/pexels/bulk-fill")
-async def pexels_bulk_fill(payload: BulkFillRequest):
+async def pexels_bulk_fill(
+    payload: BulkFillRequest,
+    authorization: str = Header(default=""),
+):
     """Batch-import Pexels images into many image slots."""
+    _require_admin(authorization)
     from collections import defaultdict
     by_query: Dict[str, List[BulkFillItem]] = defaultdict(list)
     for it in payload.items:
@@ -2519,10 +2985,14 @@ class UnsplashImportRequest(BaseModel):
 
 
 @api_router.post("/unsplash/import")
-async def unsplash_import(payload: UnsplashImportRequest):
+async def unsplash_import(
+    payload: UnsplashImportRequest,
+    authorization: str = Header(default=""),
+):
     """Download the Unsplash photo, store it locally, and write a
     library record with full attribution. Triggers Unsplash's
     `download_location` endpoint as required by the API guidelines."""
+    _require_admin(authorization)
     # 1. Get the photo (authoritative metadata + download_location link)
     photo = await _unsplash_get(f"/photos/{payload.unsplash_id}")
     urls  = photo.get("urls") or {}
@@ -4119,7 +4589,12 @@ async def get_text_slot(slot_id: str):
 
 
 @api_router.put("/text_slots/{slot_id}")
-async def put_text_slot(slot_id: str, payload: TextSlotPayload):
+async def put_text_slot(
+    slot_id: str,
+    payload: TextSlotPayload,
+    authorization: str = Header(default=""),
+):
+    _require_admin(authorization)
     doc = {
         "values": payload.values,
         "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -4133,7 +4608,11 @@ async def put_text_slot(slot_id: str, payload: TextSlotPayload):
 
 
 @api_router.delete("/text_slots/{slot_id}")
-async def delete_text_slot(slot_id: str, lang: Optional[str] = None):
+async def delete_text_slot(
+    slot_id: str,
+    lang: Optional[str] = None,
+    authorization: str = Header(default=""),
+):
     """Reset a text slot back to its code default.
 
     - With ?lang=<es|en|fr>: removes only that language. If no languages
@@ -4141,6 +4620,7 @@ async def delete_text_slot(slot_id: str, lang: Optional[str] = None):
     - Without lang: removes the whole slot document.
     Always returns the resulting values ({} when the slot no longer exists).
     """
+    _require_admin(authorization)
     if lang:
         doc = await db.text_slots.find_one({"_id": slot_id})
         values = (doc or {}).get("values") or {}
@@ -4316,10 +4796,11 @@ async def update_library_location(location_id: str, payload: LibraryLocationPayl
 
 
 @api_router.post("/translate")
-async def translate_text(body: TranslateBody):
+async def translate_text(body: TranslateBody, authorization: str = Header(default="")):
     """Translate a short CMS string from `source` into each of `targets`.
     Returns { "translations": { "en": "...", "fr": "..." } }. One LLM call
     returns all targets as JSON to keep latency low."""
+    _require_admin(authorization)
     text = (body.text or "").strip()
     targets = [t for t in body.targets if t in ("en", "fr", "es") and t != body.source]
     if not text or not targets:
@@ -4806,12 +5287,6 @@ async def contest_spin(payload: ContestSpinPayload, background_tasks: Background
 
 
 # ---------- Admin contest endpoints (architecture for the future admin UI) ----------
-def _require_admin(authorization: str) -> None:
-    token = authorization[7:].strip() if authorization.startswith("Bearer ") else ""
-    if not verify_admin_token(token):
-        raise HTTPException(status_code=401, detail="Sesión no válida")
-
-
 class ContestUpdatePayload(BaseModel):
     model_config = ConfigDict(extra="ignore")
     name: Optional[Dict[str, Any]] = None
@@ -4925,52 +5400,6 @@ async def admin_contest_stats(contest_id: str, authorization: str = Header(defau
     ]
     by_day = [{"date": d["_id"], "count": d["count"]} async for d in db.contest_participants.aggregate(pipeline)]
     return {"total_participants": total, "per_prize": per_prize, "by_day": by_day}
-
-
-# ---------- Supabase operational status ----------
-class SupabaseSyncPayload(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    include_personal_data: bool = False
-    what: str = "all"          # all | db | storage
-    force: bool = False
-
-
-@api_router.get("/admin/supabase/status")
-async def supabase_status(authorization: str = Header(default="")):
-    _require_admin(authorization)
-    return {
-        "configured": True,
-        "operational": True,
-        "source": "supabase",
-        "bucket": os.environ.get("SUPABASE_STORAGE_BUCKET", "xaluca"),
-        "project_url": os.environ.get("SUPABASE_URL"),
-        "total_files": await db.files.count_documents({}),
-        "job": {
-            "running": False,
-            "phase": "operational",
-            "message": "Supabase es la base de datos y el almacenamiento principales.",
-        },
-    }
-
-
-@api_router.post("/admin/supabase/sync")
-async def supabase_sync(payload: SupabaseSyncPayload, authorization: str = Header(default="")):
-    _require_admin(authorization)
-    return {
-        "started": False,
-        "operational": True,
-        "message": "No se requiere espejo: el backend ya escribe directamente en Supabase.",
-    }
-
-
-@api_router.get("/admin/supabase/sync/status")
-async def supabase_sync_status(authorization: str = Header(default="")):
-    _require_admin(authorization)
-    return {
-        "running": False,
-        "phase": "operational",
-        "message": "Supabase es el origen principal.",
-    }
 
 
 app.include_router(api_router)

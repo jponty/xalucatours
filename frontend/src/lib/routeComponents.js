@@ -119,6 +119,7 @@ import VuelosPage from "@/pages/VuelosPage";
 import AsistentePage from "@/pages/AsistentePage";
 import FavoritosPage from "@/pages/FavoritosPage";
 import FastTrackPage from "@/pages/FastTrackPage";
+import FeedbackPage from "@/pages/FeedbackPage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -248,4 +249,5 @@ export const ROUTE_COMPONENTS = {
   asistente:                     AsistentePage,
   favorites:                     FavoritosPage,
   fastTrack:                     FastTrackPage,
+  feedback:                      FeedbackPage,
 };

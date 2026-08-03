@@ -16,6 +16,7 @@
 ============================================================ */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Img } from "@/components/Img";
+import { adminAuthHeaders } from "@/lib/adminSession";
 import {
   Search, Loader2, ExternalLink, Check, AlertCircle, Sparkles,
   RotateCcw, X, MapPin,
@@ -152,7 +153,7 @@ export default function UnsplashTab({ onSelect }) {
     try {
       const r = await fetch(`${API}/api/unsplash/import`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ unsplash_id: photo.id }),
       });
       const j = await r.json();

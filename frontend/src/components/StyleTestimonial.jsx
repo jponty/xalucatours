@@ -9,10 +9,11 @@
    style. Renders nothing when the slug has no testimonial defined.
 ============================================================ */
 import React from "react";
-import { Quote, Star, BadgeCheck, MapPin } from "lucide-react";
+import { Quote, Star, BadgeCheck, Route } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import { getStyleTestimonial } from "@/lib/styleTestimonials";
+import { testimonialProgramLabel } from "@/lib/testimonialPrograms";
 
 const COPY = {
   eyebrow: { es: "Lo que cuentan los viajeros", en: "What travellers say", fr: "Ce que disent les voyageurs" },
@@ -35,6 +36,7 @@ export default function StyleTestimonial({ slug, accent = "#C16542" }) {
   if (!data) return null;
 
   const rating = data.rating || 5;
+  const programme = testimonialProgramLabel(data.routeId, data.program);
   const slotBase = `home.cat.${slug}.testimonial`;
 
   return (
@@ -98,13 +100,8 @@ export default function StyleTestimonial({ slug, accent = "#C16542" }) {
               className="text-[13px] font-semibold text-[#2C2621] leading-tight"
             />
             <span className="flex items-center gap-1.5 mt-0.5 text-[11px] text-[#5C5248]">
-              <MapPin className="w-3 h-3 shrink-0" style={{ color: accent }} strokeWidth={1.7} />
-              <EditableText
-                slot={`${slotBase}.origin`}
-                defaults={asTri(data.origin)}
-                as="span"
-                multiline={false}
-              />
+              <Route className="w-3 h-3 shrink-0" style={{ color: accent }} strokeWidth={1.7} />
+              <span className="truncate">{pick(programme, lang)}</span>
             </span>
           </div>
           <span className="ml-auto inline-flex items-center gap-1 text-[10px] tracking-[0.14em] uppercase shrink-0" style={{ color: accent }}>

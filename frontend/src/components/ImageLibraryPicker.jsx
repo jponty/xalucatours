@@ -8,6 +8,7 @@ import { Img } from "@/components/Img";
 import UnsplashTab from "@/components/UnsplashTab";
 import PexelsSelectionTab from "@/components/PexelsSelectionTab";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -102,7 +103,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
           try {
             const r = await fetch(`${API}/api/pexels/import`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: adminAuthHeaders({ "Content-Type": "application/json" }),
               body: JSON.stringify({ pexels_id: it._pexelsId }),
             });
             const j = await r.json();
@@ -240,7 +241,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
       const fd = new FormData();
       Array.from(fileList).forEach((f) => fd.append("files", f));
       if (activeTag) fd.append("tag", activeTag);   // join the group being viewed
-      const res = await fetch(`${API}/api/library/upload`, { method: "POST", body: fd });
+      const res = await fetch(`${API}/api/library/upload`, { method: "POST", headers: adminAuthHeaders(), body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.detail || "Error al subir los archivos.");
       setUploadResult({
@@ -312,7 +313,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
         const fd = new FormData();
         batch.forEach((f) => fd.append("files", f));
         fd.append("tag", rawFolder);
-        const res = await fetch(`${API}/api/library/upload`, { method: "POST", body: fd });
+        const res = await fetch(`${API}/api/library/upload`, { method: "POST", headers: adminAuthHeaders(), body: fd });
         const data = await res.json();
         if (!res.ok) throw new Error(data?.detail || "Error al subir la carpeta.");
         uploaded += data.count || 0;
@@ -337,7 +338,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
   const handleDelete = useCallback(async (item) => {
     if (!item?.id) return;
     try {
-      const res = await fetch(`${API}/api/files/${item.id}`, { method: "DELETE" });
+      const res = await fetch(`${API}/api/files/${item.id}`, { method: "DELETE", headers: adminAuthHeaders() });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setItems((arr) => arr.filter((i) => i.id !== item.id));
       setConfirmDelete(null);
@@ -367,7 +368,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch(`${API}/api/files/${id}/replace`, { method: "POST", body: fd });
+      const res = await fetch(`${API}/api/files/${id}/replace`, { method: "POST", headers: adminAuthHeaders(), body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.detail || "Error al reemplazar.");
       setRefreshTick((n) => n + 1);
@@ -384,7 +385,7 @@ export default function ImageLibraryPicker({ open, onClose, onSelect, multiple =
     try {
       const res = await fetch(`${API}/api/files/${editing.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(payload),
       });
       const data = await res.json();

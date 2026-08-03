@@ -15,6 +15,7 @@ import EditableImageMeta from "@/components/EditableImageMeta";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
 import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -730,7 +731,7 @@ const uploadBlobToSlot = async (slot, blob, filename) => {
   fd.append("file", new File([blob], filename, { type: "image/jpeg" }));
   const res = await fetch(
     `${API}/api/slots/${encodeURIComponent(slot)}/upload`,
-    { method: "POST", body: fd },
+    { method: "POST", headers: adminAuthHeaders(), body: fd },
   );
   const data = await res.json();
   if (!res.ok) throw new Error(data?.detail || "Error al subir la imagen.");
@@ -804,7 +805,7 @@ const uploadFileToSlot = async (slot, file) => {
   fd.append("file", new File([blob], `${safeFilename(slot).replace(/\.jpg$/i, "")}.${ext}`, { type }));
   const res = await fetch(
     `${API}/api/slots/${encodeURIComponent(slot)}/upload`,
-    { method: "POST", body: fd },
+    { method: "POST", headers: adminAuthHeaders(), body: fd },
   );
   const data = await res.json();
   if (!res.ok) throw new Error(data?.detail || "Error al subir la imagen.");
@@ -1146,7 +1147,7 @@ const EditModal = ({ initialSlot, singleFallback, group, onClose, onSavedOne, on
       const relUrl = toRelativeUrl(libItem.url);
       const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           url: relUrl,
           alt: libItem.original_filename || null,

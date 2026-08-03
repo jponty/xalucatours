@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getDestinationGroups } from "@/lib/destinationKeywords";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 const PER_PAGE = 24;
@@ -137,7 +138,7 @@ export default function PexelsSelectionTab({ onSelect, selectionMode = false, se
     try {
       const r = await fetch(`${API}/api/pexels/import`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ pexels_id: photo.id }),
       });
       const j = await r.json().catch(() => ({}));

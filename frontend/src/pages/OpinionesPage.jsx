@@ -1,49 +1,31 @@
 import SectionNav from "@/components/SectionNav";
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Star, Quote, Heart, ArrowRight, ShieldCheck } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
+import Testimonials from "@/components/Testimonials";
+import { TESTIMONIALS } from "@/lib/testimonials";
 
-const SENJA_SCRIPT = "https://widget.senja.io/js/iframeResizer.min.js";
-const SENJA_SELECTOR = "#wall-of-love-cLfL-a";
+const FEATURED_REVIEW_IDS = [
+  "laia-bivouac",
+  "sophie-fez",
+  "thomas-mgoun",
+  "paula-essaouira",
+  "marta-haima",
+  "pierre-enduro",
+  "julien-chef",
+  "emma-todra",
+  "carlos-bespoke",
+  "nora-marrakech",
+  "mathieu-fez-escape",
+  "amelie-family",
+];
 
-/* Senja "Wall of Love" — loads the iframe-resizer once and keeps the
-   embedded iframe responsive without scrollbars. */
-const WallOfLove = () => {
-  useEffect(() => {
-    const init = () => {
-      if (typeof window.iFrameResize === "function") {
-        try { window.iFrameResize({ log: false, checkOrigin: false }, SENJA_SELECTOR); } catch (e) { /* noop */ }
-      }
-    };
-    let script = document.querySelector(`script[src="${SENJA_SCRIPT}"]`);
-    if (!script) {
-      script = document.createElement("script");
-      script.src = SENJA_SCRIPT;
-      script.async = true;
-      script.addEventListener("load", init);
-      document.body.appendChild(script);
-    } else {
-      init();
-    }
-    return () => { script && script.removeEventListener("load", init); };
-  }, []);
-
-  return (
-    <div data-testid="wall-of-love" className="senja-embed">
-      <iframe
-        id="wall-of-love-cLfL-a"
-        src="https://senja.io/p/xaluca-tours/cLfL-a?hideNavigation=true&embed=true"
-        title="Wall of Love"
-        frameBorder="0"
-        scrolling="no"
-        style={{ width: "100%", border: "none" }}
-      />
-    </div>
-  );
-};
+const FEATURED_REVIEWS = FEATURED_REVIEW_IDS
+  .map((id) => TESTIMONIALS.find((testimonial) => testimonial.id === id))
+  .filter(Boolean);
 
 const STATS = [
   { value: { es: "4,9 / 5", en: "4.9 / 5", fr: "4,9 / 5" },
@@ -143,9 +125,11 @@ export default function OpinionesPage() {
           />
           <span className="flex-1 h-px bg-gradient-to-r from-[#D4A373]/50 to-transparent" />
         </div>
-        <div className="w-full px-4 sm:px-6 md:px-10">
-          <WallOfLove />
-        </div>
+        <Testimonials
+          items={FEATURED_REVIEWS}
+          tone="cream"
+          testid="opiniones-testimonials"
+        />
       </section>
 
       {/* CTA */}

@@ -9,9 +9,10 @@
    whenever the active circuit (slug) changes.
 ============================================================ */
 import React, { useEffect, useState } from "react";
-import { Quote, Star, BadgeCheck, MapPin } from "lucide-react";
+import { Quote, Star, BadgeCheck, Route } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getCircuitTestimonials } from "@/lib/circuitTestimonials";
+import { circuitTestimonialProgram, testimonialProgramLabel } from "@/lib/testimonialPrograms";
 
 const COPY = {
   eyebrow: { es: "Lo que cuentan los viajeros", en: "What travellers say", fr: "Ce que disent les voyageurs" },
@@ -30,7 +31,7 @@ const initialsOf = (name) =>
 
 const ROTATE_MS = 6500;
 
-export default function CircuitTestimonials({ slug, accent = "#C16542", items: itemsProp, autoRotate = true, verifiedBelow = false }) {
+export default function CircuitTestimonials({ slug, accent = "#C16542", items: itemsProp, autoRotate = true, verifiedBelow = false, programRouteId = null }) {
   const { lang } = useLanguage();
   const items = itemsProp || getCircuitTestimonials(slug);
   const count = items.length;
@@ -51,6 +52,8 @@ export default function CircuitTestimonials({ slug, accent = "#C16542", items: i
 
   const data = items[Math.min(idx, count - 1)];
   const rating = data.rating || 5;
+  const routeId = data.routeId || programRouteId || circuitTestimonialProgram(slug, idx);
+  const programme = testimonialProgramLabel(routeId, data.program);
 
   return (
     <div
@@ -125,8 +128,8 @@ export default function CircuitTestimonials({ slug, accent = "#C16542", items: i
             <div className="min-w-0">
               <p className="text-[13px] font-semibold text-[#2C2621] leading-tight truncate">{data.author}</p>
               <span className="flex items-center gap-1.5 mt-0.5 text-[11px] text-[#5C5248]">
-                <MapPin className="w-3 h-3 shrink-0" style={{ color: accent }} strokeWidth={1.7} />
-                {pick(asTri(data.origin), lang)}
+                <Route className="w-3 h-3 shrink-0" style={{ color: accent }} strokeWidth={1.7} />
+                <span className="truncate">{pick(asTri(programme), lang)}</span>
               </span>
             </div>
             {!verifiedBelow && (

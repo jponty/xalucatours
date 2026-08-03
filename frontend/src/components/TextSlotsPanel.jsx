@@ -4,6 +4,7 @@ import {
   RefreshCw, Loader2, Check, AlertTriangle, Type,
 } from "lucide-react";
 import { describeSlot } from "@/components/SlotUsagePanel";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL + "/api";
 const LANGS = ["es", "en", "fr"];
@@ -116,7 +117,7 @@ export default function TextSlotsPanel() {
     try {
       const res = await fetch(`${API}/text_slots/${encodeURIComponent(id)}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ values: payload }),
       });
       if (!res.ok) throw new Error("save-failed");
@@ -137,7 +138,7 @@ export default function TextSlotsPanel() {
     try {
       const res = await fetch(`${API}/translate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ text: esText, source: "es", targets: ["en", "fr"] }),
       });
       if (res.ok) {

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
   BedDouble, Users, Clock, Wand2, ShieldCheck, BadgeCheck,
-  Phone, Mail, MapPin, Quote, Heart, Briefcase,
+  Phone, Mail, MapPin, Quote, Heart, Briefcase, Route,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -495,9 +495,11 @@ const Testimonials = ({ lang }) => {
                       </div>
                       <div className="min-w-0">
                         <p className="font-serif-x text-base text-[#2C2621] leading-tight">{t.name}</p>
-                        <p className="text-xs text-[#5C5248] mt-1">{t.location}</p>
-                        <p className="text-[10px] tracking-[0.22em] uppercase text-[#C16542]/85 mt-1.5 truncate">
+                        <p className="mt-1.5 flex items-center gap-1.5 text-[10px] tracking-[0.16em] uppercase text-[#C16542]/85">
+                          <Route className="h-3 w-3 shrink-0" strokeWidth={1.7} />
+                          <span className="truncate">
                           {pick(t.trip, lang)}
+                          </span>
                         </p>
                       </div>
                     </div>

@@ -13,6 +13,7 @@
 ============================================================ */
 import React, { useEffect, useState, useCallback } from "react";
 import { Save, Loader2, Trash2, Check, AlertCircle, Globe } from "lucide-react";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 const LANGS = [
@@ -74,7 +75,7 @@ export default function EditableImageMeta({
     try {
       const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ alt_i18n: alt, caption_i18n: caption }),
       });
       if (!res.ok) {
@@ -98,7 +99,10 @@ export default function EditableImageMeta({
     setClearBusy(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`, { method: "DELETE" });
+      const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}`, {
+        method: "DELETE",
+        headers: adminAuthHeaders(),
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.detail || "No se pudo vaciar la imagen.");
