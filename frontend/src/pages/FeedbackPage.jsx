@@ -1,8 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Check, Copy, ExternalLink, Heart, Loader2, MessageSquareText, Mic, Pause,
-  RotateCcw, Send, ShieldCheck, Sparkles, Star,
+  ArrowUpRight, Check, Copy, ExternalLink, Heart, Loader2, MessageSquareText, Mic, Pause,
+  QrCode, RotateCcw, Send, ShieldCheck, Sparkles, Star,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
@@ -84,9 +92,59 @@ const COPY = {
   copyReview: { es: "Copiar reseña", en: "Copy review", fr: "Copier l'avis" },
   copiedReview: { es: "Reseña copiada", en: "Review copied", fr: "Avis copié" },
   publishGoogle: { es: "Publicar en Google Reseñas", en: "Post on Google Reviews", fr: "Publier sur Google" },
+  qrTitle: {
+    es: "Accede desde otro dispositivo",
+    en: "Open on another device",
+    fr: "Accédez depuis un autre appareil",
+  },
+  qrDescription: {
+    es: "Escanea el código QR con tu móvil, tablet u otro dispositivo para abrir directamente la página de Feedback y compartir tu experiencia de forma rápida y sencilla.",
+    en: "Scan the QR code with your phone, tablet or another device to open the Feedback page directly and share your experience quickly and easily.",
+    fr: "Scannez le code QR avec votre téléphone, votre tablette ou un autre appareil pour ouvrir directement la page Feedback et partager facilement votre expérience.",
+  },
+  qrInstruction: {
+    es: "Escanea este código para abrir la página de Feedback.",
+    en: "Scan this code to open the Feedback page.",
+    fr: "Scannez ce code pour ouvrir la page Feedback.",
+  },
+  copyLink: { es: "Copiar enlace", en: "Copy link", fr: "Copier le lien" },
+  linkCopied: { es: "Enlace copiado", en: "Link copied", fr: "Lien copié" },
+  closeModal: { es: "Cerrar", en: "Close", fr: "Fermer" },
 };
 
 const formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+
+const productionOrigin = (value) => {
+  if (!value) return "";
+  try {
+    const url = new URL(value);
+    if (["localhost", "127.0.0.1", "::1"].includes(url.hostname)) return "";
+    return url.origin;
+  } catch {
+    return "";
+  }
+};
+
+const getPublicFeedbackUrl = () => {
+  const activeOrigin = typeof window !== "undefined" ? productionOrigin(window.location.origin) : "";
+  const configuredOrigin = productionOrigin(process.env.REACT_APP_PUBLIC_SITE_URL);
+  return `${activeOrigin || configuredOrigin || "https://xalucatours.com"}/feedback`;
+};
+
+const writeToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+};
 
 export default function FeedbackPage() {
   const { lang } = useLanguage();
@@ -110,6 +168,8 @@ export default function FeedbackPage() {
   const [sent, setSent] = useState(false);
   const [submittedFeedback, setSubmittedFeedback] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
+  const [qrCopied, setQrCopied] = useState(false);
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
   const chunksRef = useRef([]);
@@ -241,20 +301,22 @@ export default function FeedbackPage() {
   const copySubmittedReview = async () => {
     const text = submittedFeedback?.text || "";
     if (!text) return;
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      textarea.remove();
-    }
+    await writeToClipboard(text);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2500);
+  };
+
+  const publicFeedbackUrl = getPublicFeedbackUrl();
+
+  const copyFeedbackLink = async () => {
+    await writeToClipboard(publicFeedbackUrl);
+    setQrCopied(true);
+    window.setTimeout(() => setQrCopied(false), 2500);
+  };
+
+  const handleQrOpenChange = (open) => {
+    setQrOpen(open);
+    if (!open) setQrCopied(false);
   };
 
   const submit = async (event) => {
@@ -501,9 +563,73 @@ export default function FeedbackPage() {
                 <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">{body}</p>
               </div>
             ))}
+
+            <button
+              type="button"
+              onClick={() => setQrOpen(true)}
+              className="group w-full border border-[#2C2621]/10 bg-[#FDFBF7]/70 p-6 text-left transition-all hover:-translate-y-0.5 hover:border-[#C16542]/45 hover:bg-[#FDFBF7] hover:shadow-[0_18px_45px_rgba(44,38,33,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F0E4]"
+              data-testid="feedback-qr-card"
+              aria-haspopup="dialog"
+            >
+              <span className="flex items-start justify-between gap-4">
+                <span className="flex h-10 w-10 items-center justify-center border border-[#C16542]/25 bg-[#F7F0E4] text-[#C16542]">
+                  <QrCode className="h-5 w-5" strokeWidth={1.5} />
+                </span>
+                <ArrowUpRight className="h-4 w-4 text-[#A8533A] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.5} />
+              </span>
+              <h2 className="font-serif-x mt-5 text-2xl">{pick(COPY.qrTitle, lang)}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">{pick(COPY.qrDescription, lang)}</p>
+            </button>
           </aside>
         </div>
       </section>
+
+      <Dialog open={qrOpen} onOpenChange={handleQrOpenChange}>
+        <DialogContent
+          className="max-h-[92svh] w-[calc(100%_-_2rem)] max-w-md overflow-y-auto rounded-none border border-[#2C2621]/15 bg-[#FDFBF7] p-6 text-[#2C2621] shadow-[0_28px_90px_rgba(22,18,15,0.3)] sm:p-8"
+          overlayClassName="bg-[#1F1A17]/75 backdrop-blur-sm"
+          closeLabel={pick(COPY.closeModal, lang)}
+          data-testid="feedback-qr-dialog"
+        >
+          <DialogHeader className="pr-7 text-left">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-[#A8533A]">Xaluca · Feedback</p>
+            <DialogTitle className="font-serif-x pt-2 text-3xl font-normal leading-tight text-[#2C2621]">
+              {pick(COPY.qrTitle, lang)}
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-sm leading-relaxed text-[#5C5248]">
+              {pick(COPY.qrDescription, lang)}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mx-auto mt-2 w-full max-w-[270px] border border-[#2C2621]/12 bg-white p-5 shadow-[0_14px_35px_rgba(44,38,33,0.08)]">
+            <QRCodeSVG
+              value={publicFeedbackUrl}
+              size={230}
+              level="H"
+              bgColor="#FFFFFF"
+              fgColor="#2C2621"
+              className="h-auto w-full"
+              title={pick(COPY.qrInstruction, lang)}
+            />
+          </div>
+
+          <p className="text-center text-sm font-medium text-[#2C2621]">{pick(COPY.qrInstruction, lang)}</p>
+          <p className="break-all border border-[#2C2621]/10 bg-[#F7F0E4] px-4 py-3 text-center text-xs leading-relaxed text-[#5C5248]" data-testid="feedback-public-url">
+            {publicFeedbackUrl}
+          </p>
+
+          <button
+            type="button"
+            onClick={copyFeedbackLink}
+            className="inline-flex w-full items-center justify-center gap-3 bg-[#2C2621] px-5 py-4 text-[10px] uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#C16542] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
+            data-testid="feedback-copy-public-url"
+            aria-live="polite"
+          >
+            {qrCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            {pick(qrCopied ? COPY.linkCopied : COPY.copyLink, lang)}
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
