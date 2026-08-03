@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  Archive, CheckCircle2, Clock3, Download, FileAudio, Inbox,
-  Loader2, Mail, MessageSquareText, Play, RefreshCw, Save, Search,
-  Star, Volume2,
+  Archive, CheckCircle2, Clock3, FileAudio, Inbox,
+  Loader2, Mail, MessageSquareText, RefreshCw, Save, Search, Star,
 } from "lucide-react";
 import { adminAuthHeaders } from "@/lib/adminSession";
 
@@ -19,53 +18,6 @@ const formatDate = (value) => {
     dateStyle: "medium", timeStyle: "short",
   }).format(new Date(value));
 };
-
-function SecureAudio({ feedbackId }) {
-  const [url, setUrl] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
-
-  const load = async () => {
-    setLoading(true); setError("");
-    try {
-      const response = await fetch(`${API}/admin/feedback/${feedbackId}/audio`, {
-        headers: adminAuthHeaders(),
-      });
-      if (!response.ok) throw new Error(String(response.status));
-      const blob = await response.blob();
-      setUrl((previous) => {
-        if (previous) URL.revokeObjectURL(previous);
-        return URL.createObjectURL(blob);
-      });
-    } catch {
-      setError("No se pudo recuperar el audio.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (url) {
-    return (
-      <div className="space-y-3">
-        <audio src={url} controls autoPlay className="w-full" data-testid="admin-feedback-audio" />
-        <a href={url} download={`feedback-${feedbackId}.audio`} className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-[#D4A373] hover:text-white">
-          <Download className="h-3.5 w-3.5" /> Descargar copia
-        </a>
-      </div>
-    );
-  }
-  return (
-    <div>
-      <button type="button" onClick={load} disabled={loading} className="inline-flex items-center gap-2 bg-[#C16542] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-white hover:bg-[#A8533A] disabled:opacity-60">
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" fill="currentColor" />}
-        Reproducir audio
-      </button>
-      {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
-    </div>
-  );
-}
 
 export default function FeedbackPanel() {
   const [rows, setRows] = useState([]);
@@ -103,7 +55,7 @@ export default function FeedbackPanel() {
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
     if (!term) return rows;
-    return rows.filter((row) => [row.name, row.email, row.trip_reference, row.feedback_text, row.transcript]
+    return rows.filter((row) => [row.name, row.email, row.trip_reference, row.feedback_text]
       .filter(Boolean).some((value) => String(value).toLowerCase().includes(term)));
   }, [query, rows]);
 
@@ -186,9 +138,9 @@ export default function FeedbackPanel() {
               <button key={row.id} type="button" onClick={() => setSelectedId(row.id)} className={`w-full border-b border-white/8 px-4 py-4 text-left transition-colors ${selectedId === row.id ? "bg-[#C16542]/18" : "hover:bg-white/5"}`}>
                 <div className="flex items-center justify-between gap-3">
                   <span className="truncate text-sm font-medium">{row.name || row.email || "Cliente anónimo"}</span>
-                  {row.submission_type === "audio" ? <FileAudio className="h-4 w-4 shrink-0 text-[#D4A373]" /> : <MessageSquareText className="h-4 w-4 shrink-0 text-[#D4A373]" />}
+                  {row.submission_type === "voice" || row.submission_type === "audio" ? <FileAudio className="h-4 w-4 shrink-0 text-[#D4A373]" /> : <MessageSquareText className="h-4 w-4 shrink-0 text-[#D4A373]" />}
                 </div>
-                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-white/50">{row.feedback_text || row.transcript || "Audio pendiente de transcripción"}</p>
+                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-white/50">{row.feedback_text || "Sin contenido"}</p>
                 <div className="mt-3 flex items-center justify-between text-[9px] uppercase tracking-[0.15em] text-white/30">
                   <span>{formatDate(row.created_at)}</span><span>{STATUS_LABEL[row.status] || row.status}</span>
                 </div>
@@ -204,7 +156,7 @@ export default function FeedbackPanel() {
             <div className="mx-auto max-w-4xl space-y-6">
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-6">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#D4A373]">{selected.submission_type === "audio" ? "Comentario de voz" : "Comentario escrito"}</p>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#D4A373]">{selected.submission_type === "voice" || selected.submission_type === "audio" ? "Transcripción de voz" : "Comentario escrito"}</p>
                   <h3 className="mt-2 font-serif-x text-3xl">{selected.name || "Cliente anónimo"}</h3>
                   <p className="mt-2 text-xs text-white/40">Recibido el {formatDate(selected.created_at)}</p>
                 </div>
@@ -219,15 +171,16 @@ export default function FeedbackPanel() {
                 <Info icon={Star} label="Valoración" value={selected.rating ? `${selected.rating} / 5` : "Sin valoración"} />
               </div>
 
-              {selected.feedback_text && <ContentBlock label="Comentario" icon={MessageSquareText} text={selected.feedback_text} />}
-              {selected.submission_type === "audio" && (
-                <div className="border border-white/10 bg-white/[0.025] p-5 md:p-6">
-                  <div className="mb-5 flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[#D4A373]"><Volume2 className="h-4 w-4" /> Grabación original</div>
-                  <SecureAudio key={selected.id} feedbackId={selected.id} />
-                  {selected.transcription_status === "failed" && <p className="mt-4 text-xs text-amber-300">La grabación se conservó, pero la transcripción automática no pudo completarse.</p>}
-                </div>
+              {selected.feedback_text && (
+                <ContentBlock
+                  label={selected.submission_type === "voice" || selected.submission_type === "audio" ? "Texto transcrito" : "Comentario"}
+                  icon={selected.submission_type === "voice" || selected.submission_type === "audio" ? FileAudio : MessageSquareText}
+                  text={selected.feedback_text}
+                />
               )}
-              {selected.transcript && <ContentBlock label="Transcripción automática" icon={FileAudio} text={selected.transcript} />}
+              {(selected.submission_type === "voice" || selected.submission_type === "audio") && (
+                <Info icon={FileAudio} label="Idioma detectado" value={selected.transcription_language || "No identificado"} />
+              )}
 
               <div className="border border-white/10 p-5 md:p-6">
                 <label className="block text-[10px] uppercase tracking-[0.22em] text-[#D4A373]">Notas internas</label>
