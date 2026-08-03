@@ -11,6 +11,8 @@
 //                  "4x4" | "enduro" | "expedition" | "adrenaline"
 //                  "family" | "honeymoon" | "wellness" | "luxury" | "short-escape"
 
+import { testimonialProgramLabel } from "@/lib/testimonialPrograms";
+
 const T = (es, en, fr) => ({ es, en, fr });
 
 const AVATAR = {
@@ -36,12 +38,11 @@ const AVATAR = {
   laure:   "https://images.unsplash.com/photo-1521252659862-eec69941b071?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
 };
 
-export const TESTIMONIALS = [
+const RAW_TESTIMONIALS = [
   /* ============ DESERT · DUNES · BIVOUAC · STARS · NOMADS ============ */
   {
     id: "laia-bivouac",
     name: "Laia & Marc",
-    location: "Barcelona, ES",
     themes: ["general", "sur", "marruecos", "desert", "dunes", "bivouac", "stars"],
     avatar: AVATAR.laia,
     date: "2025-11",
@@ -55,7 +56,6 @@ export const TESTIMONIALS = [
   {
     id: "marta-haima",
     name: "Marta Ruiz",
-    location: "Madrid, ES",
     themes: ["escapadas", "desert", "bivouac", "short-escape", "wellness"],
     avatar: AVATAR.marta,
     date: "2025-12",
@@ -69,7 +69,6 @@ export const TESTIMONIALS = [
   {
     id: "ricardo-stars",
     name: "Ricardo & Ana",
-    location: "Lisboa, PT",
     themes: ["desert", "stars", "honeymoon", "general", "marruecos"],
     avatar: AVATAR.ricardo,
     date: "2025-10",
@@ -83,7 +82,6 @@ export const TESTIMONIALS = [
   {
     id: "ines-camel",
     name: "Inés Vega",
-    location: "Sevilla, ES",
     themes: ["desert", "camel", "dunes", "escapadas", "short-escape"],
     avatar: AVATAR.ines,
     date: "2025-09",
@@ -97,7 +95,6 @@ export const TESTIMONIALS = [
   {
     id: "hugo-gnawa",
     name: "Hugo Salinas",
-    location: "Buenos Aires, AR",
     themes: ["desert", "nomads", "gnawa", "general", "marruecos"],
     avatar: AVATAR.hugo,
     date: "2025-08",
@@ -113,7 +110,6 @@ export const TESTIMONIALS = [
   {
     id: "thomas-mgoun",
     name: "Thomas Becker",
-    location: "Berlin, DE",
     themes: ["aventura", "atlas", "mgoun", "trekking", "expedition", "general"],
     avatar: AVATAR.thomas,
     date: "2025-08",
@@ -127,7 +123,6 @@ export const TESTIMONIALS = [
   {
     id: "claudia-berber",
     name: "Claudia & Stefan",
-    location: "Wien, AT",
     themes: ["atlas", "berber-village", "trekking", "general", "marruecos"],
     avatar: AVATAR.claudia,
     date: "2025-05",
@@ -141,7 +136,6 @@ export const TESTIMONIALS = [
   {
     id: "emma-todra",
     name: "Emma & Luca",
-    location: "Milano, IT",
     themes: ["sur", "atlas", "gorges", "marruecos"],
     avatar: AVATAR.emma,
     date: "2025-10",
@@ -155,7 +149,6 @@ export const TESTIMONIALS = [
   {
     id: "oliver-atlas-escape",
     name: "Oliver & Anya",
-    location: "Amsterdam, NL",
     themes: ["escapadas", "atlas", "short-escape", "berber-village"],
     avatar: AVATAR.oliver,
     date: "2025-04",
@@ -171,7 +164,6 @@ export const TESTIMONIALS = [
   {
     id: "sophie-fez",
     name: "Sophie & Antoine",
-    location: "Lyon, FR",
     themes: ["norte", "marruecos", "imperial", "fez", "medina", "general"],
     avatar: AVATAR.sophie,
     date: "2025-09",
@@ -185,7 +177,6 @@ export const TESTIMONIALS = [
   {
     id: "isabel-riad",
     name: "Isabel & Diogo",
-    location: "Porto, PT",
     themes: ["norte", "fez", "riad", "imperial", "gastronomy", "marruecos"],
     avatar: AVATAR.isabel,
     date: "2025-06",
@@ -199,7 +190,6 @@ export const TESTIMONIALS = [
   {
     id: "julien-chef",
     name: "Julien Moreau",
-    location: "Paris, FR",
     themes: ["norte", "marruecos", "chefchaouen", "tangier", "imperial"],
     avatar: AVATAR.julien,
     date: "2025-07",
@@ -213,7 +203,6 @@ export const TESTIMONIALS = [
   {
     id: "nora-marrakech",
     name: "Nora Jansen",
-    location: "Rotterdam, NL",
     themes: ["sur", "marrakech", "imperial", "riad", "gastronomy", "marruecos"],
     avatar: AVATAR.nora,
     date: "2025-03",
@@ -227,7 +216,6 @@ export const TESTIMONIALS = [
   {
     id: "mathieu-fez-escape",
     name: "Mathieu Lambert",
-    location: "Bruxelles, BE",
     themes: ["escapadas", "fez", "medina", "short-escape", "imperial"],
     avatar: AVATAR.mathieu,
     date: "2025-02",
@@ -243,7 +231,6 @@ export const TESTIMONIALS = [
   {
     id: "paula-essaouira",
     name: "Paula & Ben",
-    location: "Hamburg, DE",
     themes: ["sur", "marruecos", "essaouira", "coast", "gastronomy"],
     avatar: AVATAR.paula,
     date: "2025-05",
@@ -257,7 +244,6 @@ export const TESTIMONIALS = [
   {
     id: "laure-tanger",
     name: "Laure Vidal",
-    location: "Marseille, FR",
     themes: ["escapadas", "norte", "tangier", "coast", "short-escape"],
     avatar: AVATAR.laure,
     date: "2025-01",
@@ -273,7 +259,6 @@ export const TESTIMONIALS = [
   {
     id: "david-4x4",
     name: "David Lewis",
-    location: "London, UK",
     themes: ["aventura", "4x4", "expedition", "atlas", "desert", "adrenaline"],
     avatar: AVATAR.david,
     date: "2025-06",
@@ -287,7 +272,6 @@ export const TESTIMONIALS = [
   {
     id: "pierre-enduro",
     name: "Pierre Lacombe",
-    location: "Toulouse, FR",
     themes: ["aventura", "enduro", "expedition", "adrenaline", "atlas"],
     avatar: AVATAR.pierre,
     date: "2025-10",
@@ -303,7 +287,6 @@ export const TESTIMONIALS = [
   {
     id: "carlos-bespoke",
     name: "Carlos Ferrer",
-    location: "Valencia, ES",
     themes: ["bespoke", "marruecos", "luxury", "general"],
     avatar: AVATAR.carlos,
     date: "2025-10",
@@ -316,8 +299,7 @@ export const TESTIMONIALS = [
   },
   {
     id: "amelie-family",
-    name: "Amélie & Famille",
-    location: "Bordeaux, FR",
+    name: "Amélie & Thomas",
     themes: ["bespoke", "family", "marruecos", "general"],
     avatar: AVATAR.amelie,
     date: "2025-04",
@@ -331,7 +313,6 @@ export const TESTIMONIALS = [
   {
     id: "noemi-laura",
     name: "Laura G.",
-    location: "Barcelona, ES",
     themes: ["noemi", "fast-track-planning"],
     avatar: AVATAR.isabel,
     date: "2025-11",
@@ -345,7 +326,6 @@ export const TESTIMONIALS = [
   {
     id: "noemi-david",
     name: "David M.",
-    location: "Madrid, ES",
     themes: ["noemi", "fast-track-planning"],
     avatar: AVATAR.david,
     date: "2025-10",
@@ -359,7 +339,6 @@ export const TESTIMONIALS = [
   {
     id: "noemi-sophie",
     name: "Sophie L.",
-    location: "Lyon, FR",
     themes: ["noemi", "fast-track-planning"],
     avatar: AVATAR.sophie,
     date: "2025-09",
@@ -373,7 +352,6 @@ export const TESTIMONIALS = [
   {
     id: "noemi-thomas",
     name: "Thomas B.",
-    location: "Berlin, DE",
     themes: ["noemi"],
     avatar: AVATAR.thomas,
     date: "2025-08",
@@ -387,7 +365,6 @@ export const TESTIMONIALS = [
   {
     id: "noemi-marta",
     name: "Marta R.",
-    location: "Sevilla, ES",
     themes: ["noemi"],
     avatar: AVATAR.marta,
     date: "2025-07",
@@ -401,7 +378,6 @@ export const TESTIMONIALS = [
   {
     id: "noemi-ricardo",
     name: "Ricardo & Ana",
-    location: "Lisboa, PT",
     themes: ["noemi"],
     avatar: AVATAR.ricardo,
     date: "2025-06",
@@ -415,7 +391,7 @@ export const TESTIMONIALS = [
 
   /* ---- Elena Xaluca · Asesora de viajes ---- */
   {
-    id: "elena-carla", name: "Carla P.", location: "Valencia, ES", themes: ["elena"], avatar: AVATAR.emma, date: "2025-11",
+    id: "elena-carla", name: "Carla P.", themes: ["elena"], avatar: AVATAR.emma, date: "2025-11",
     trip: T("Viaje a medida · Marruecos", "Tailor-made · Morocco", "Sur mesure · Maroc"),
     quote: T(
       "Elena captó enseguida lo que queríamos y nos preparó un viaje totalmente a nuestra medida. Nada genérico, todo pensado para nosotros.",
@@ -424,7 +400,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-marc", name: "Marc D.", location: "Girona, ES", themes: ["elena"], avatar: AVATAR.mathieu, date: "2025-10",
+    id: "elena-marc", name: "Marc D.", themes: ["elena"], avatar: AVATAR.mathieu, date: "2025-10",
     trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
     quote: T(
       "Cada mensaje tenía respuesta casi al momento. Nos sentimos acompañados en todo el proceso, sin una sola espera.",
@@ -433,7 +409,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-andrea", name: "Andrea S.", location: "Zaragoza, ES", themes: ["elena"], avatar: AVATAR.nora, date: "2025-09",
+    id: "elena-andrea", name: "Andrea S.", themes: ["elena"], avatar: AVATAR.nora, date: "2025-09",
     trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
     quote: T(
       "Organización impecable. Vuelos, hoteles y traslados encajaban a la perfección; se notaba una gran profesional detrás.",
@@ -442,7 +418,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-lucia", name: "Lucía F.", location: "Bilbao, ES", themes: ["elena"], avatar: AVATAR.claudia, date: "2025-08",
+    id: "elena-lucia", name: "Lucía F.", themes: ["elena"], avatar: AVATAR.claudia, date: "2025-08",
     trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
     quote: T(
       "Elena nos descubrió rincones de Marruecos que no aparecían en ninguna guía. Su conocimiento marcó la diferencia.",
@@ -451,7 +427,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-pauline", name: "Pauline R.", location: "Nantes, FR", themes: ["elena"], avatar: AVATAR.laure, date: "2025-07",
+    id: "elena-pauline", name: "Pauline R.", themes: ["elena"], avatar: AVATAR.laure, date: "2025-07",
     trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
     quote: T(
       "Amable, cercana y siempre con una sonrisa. Nos trató como a amigos desde el primer momento.",
@@ -462,7 +438,7 @@ export const TESTIMONIALS = [
 
   /* ---- Sanaa Xaluca · Asesora de viajes ---- */
   {
-    id: "sanaa-javier", name: "Javier M.", location: "Madrid, ES", themes: ["sanaa"], avatar: AVATAR.carlos, date: "2025-11",
+    id: "sanaa-javier", name: "Javier M.", themes: ["sanaa"], avatar: AVATAR.carlos, date: "2025-11",
     trip: T("Viaje a medida · Sur de Marruecos", "Tailor-made · Southern Morocco", "Sur mesure · Sud du Maroc"),
     quote: T(
       "Sanaa entiende Marruecos como nadie. Nos guió con recomendaciones locales que hicieron el viaje auténtico y especial.",
@@ -471,7 +447,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-sarah", name: "Sarah K.", location: "Ámsterdam, NL", themes: ["sanaa"], avatar: AVATAR.paula, date: "2025-10",
+    id: "sanaa-sarah", name: "Sarah K.", themes: ["sanaa"], avatar: AVATAR.paula, date: "2025-10",
     trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
     quote: T(
       "Respondía a cualquier hora y resolvía todo al instante. Una tranquilidad enorme antes y durante el viaje.",
@@ -480,7 +456,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-marta", name: "Marta L.", location: "Sevilla, ES", themes: ["sanaa"], avatar: AVATAR.laia, date: "2025-09",
+    id: "sanaa-marta", name: "Marta L.", themes: ["sanaa"], avatar: AVATAR.laia, date: "2025-09",
     trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
     quote: T(
       "Todo estuvo perfectamente coordinado sobre el terreno. Profesionalidad y calma en cada detalle.",
@@ -489,7 +465,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-thomas", name: "Thomas V.", location: "Bruselas, BE", themes: ["sanaa"], avatar: AVATAR.oliver, date: "2025-08",
+    id: "sanaa-thomas", name: "Thomas V.", themes: ["sanaa"], avatar: AVATAR.oliver, date: "2025-08",
     trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
     quote: T(
       "Nos escuchó de verdad y adaptó el itinerario a nuestro ritmo. Sentimos que el viaje era único.",
@@ -498,7 +474,7 @@ export const TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-elena", name: "Elena G.", location: "Málaga, ES", themes: ["sanaa"], avatar: AVATAR.ines, date: "2025-07",
+    id: "sanaa-elena", name: "Elena G.", themes: ["sanaa"], avatar: AVATAR.ines, date: "2025-07",
     trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
     quote: T(
       "El trato de Sanaa fue cálido y humano. Su hospitalidad marroquí se nota desde el primer contacto.",
@@ -507,6 +483,57 @@ export const TESTIMONIALS = [
     ),
   },
 ];
+
+// Every review is assigned to a real, currently available programme.
+// The canonical programme title and duration come from the same registry as
+// the programme pages, so testimonials cannot drift into invented journeys.
+const TESTIMONIAL_ROUTES = {
+  "laia-bivouac": "tourAtlasDesierto67",
+  "marta-haima": "tourEscapadaDesierto34",
+  "ricardo-stars": "tourMarrakechLoop45",
+  "ines-camel": "tourMarrakechErg45",
+  "hugo-gnawa": "tourDesiertoAtlas56",
+  "thomas-mgoun": "tourEnduroAventura67",
+  "claudia-berber": "tourEscapadaAtlas34",
+  "emma-todra": "tourAtlasDesierto56",
+  "oliver-atlas-escape": "tourAtlasDesierto45",
+  "sophie-fez": "tourCiudadesImperiales45",
+  "isabel-riad": "tourCiudadesImperiales67",
+  "julien-chef": "tourTangerFez56",
+  "nora-marrakech": "tourMarrakechEss67",
+  "mathieu-fez-escape": "tourEscapadaFez23",
+  "paula-essaouira": "tourMarrakechEss45",
+  "laure-tanger": "tourTangerFez45",
+  "david-4x4": "tourFezRak89",
+  "pierre-enduro": "tourEnduroAventura45",
+  "carlos-bespoke": "tourMarrakechFez910",
+  "amelie-family": "tourCiudadesImperialesRif78",
+  "noemi-laura": "tourOzzSidialiFez78",
+  "noemi-david": "tourMarrakechErg56",
+  "noemi-sophie": "tourFezTanger67",
+  "noemi-thomas": "tourFezSidialiRak89",
+  "noemi-marta": "tourEscapadaFezSidiali34",
+  "noemi-ricardo": "tourMarrakechSidialiFez89",
+  "elena-carla": "tourTangerRak910",
+  "elena-marc": "tourEscapadaRakAgafay34",
+  "elena-andrea": "tourCiudadesImperialesRif67",
+  "elena-lucia": "tourFezAtlasErr56",
+  "elena-pauline": "tourMarrakechLoop34",
+  "sanaa-javier": "tourFezSidialiOzz78",
+  "sanaa-sarah": "tourFezTanger56",
+  "sanaa-marta": "tourEscapadaFez34",
+  "sanaa-thomas": "tourMarrakechFez78",
+  "sanaa-elena": "tourMarrakechLoop56",
+};
+
+export const TESTIMONIALS = RAW_TESTIMONIALS.map((testimonial) => {
+  const routeId = TESTIMONIAL_ROUTES[testimonial.id];
+  return {
+    ...testimonial,
+    routeId,
+    trip: testimonialProgramLabel(routeId, testimonial.trip),
+  };
+});
 
 // Helper — return testimonials matching any of the given themes.
 // By default pads with generals if there aren't enough; pass { pad: false }

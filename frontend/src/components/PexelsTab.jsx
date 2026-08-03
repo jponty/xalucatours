@@ -23,6 +23,7 @@
 ============================================================ */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Img } from "@/components/Img";
+import { adminAuthHeaders } from "@/lib/adminSession";
 import {
   Search, Loader2, ExternalLink, Check, AlertCircle, Sparkles,
   RotateCcw, X,
@@ -174,7 +175,7 @@ export default function PexelsTab({ onSelect, selectionMode = false, selectedKey
     try {
       const r = await fetch(`${API}/api/pexels/import`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ pexels_id: photo.id }),
       });
       const j = await r.json().catch(() => ({}));

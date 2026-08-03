@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImagePlus, Check, Type, Library } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
+import { useAdminSession } from "@/contexts/AdminSessionContext";
 
 /**
  * Floating CMS edit controls.
@@ -9,8 +10,18 @@ import ImageLibraryPicker from "@/components/ImageLibraryPicker";
  * header toggles, plus an image-library shortcut shown while image edit is on.
  */
 export const EditModeFAB = () => {
-  const { imageEditMode, textEditMode, toggleImage, toggleText } = useEditMode();
+  const { authenticated } = useAdminSession();
+  const { imageEditMode, textEditMode, toggleImage, toggleText, exitAll } = useEditMode();
   const [libraryOpen, setLibraryOpen] = useState(false);
+
+  useEffect(() => {
+    if (!authenticated) {
+      exitAll();
+      setLibraryOpen(false);
+    }
+  }, [authenticated, exitAll]);
+
+  if (!authenticated) return null;
 
   return (
     <>

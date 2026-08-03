@@ -4,19 +4,25 @@ import {
   Monitor, Tablet, Smartphone, ChevronDown, ChevronRight, Filter, Globe, X,
   Lock, LogOut, Wand2, Tag, Plus, Trash2, UploadCloud, Download, CheckCircle2, AlertTriangle, DownloadCloud,
   MapPin, Languages, Inbox, Mail, Images, Database, Library,
-  ShieldCheck, Layers, Link2, Gauge, Gift, Cloud, Coins,
+  ShieldCheck, Layers, Link2, Gauge, Gift, Coins, Eye, MessageSquareText,
 } from "lucide-react";
 import { ROUTES, pathFor } from "@/lib/routes";
 import GalleryManager from "@/components/GalleryManager";
 import TextSlotsPanel from "@/components/TextSlotsPanel";
 import LibraryManager from "@/components/LibraryManager";
 import ContestsPanel from "@/components/ContestsPanel";
-import SupabasePanel from "@/components/SupabasePanel";
 import ProgramPricingPanel from "@/components/ProgramPricingPanel";
+import FeedbackPanel from "@/components/FeedbackPanel";
 import { Img } from "@/components/Img";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
 import { LANDMARK_CATALOG, infoSlots, cardSlots } from "@/lib/dayLandmarkCatalog";
+import {
+  ADMIN_TOKEN_KEY,
+  adminAuthHeaders,
+  notifyAdminSessionChanged,
+} from "@/lib/adminSession";
+import { useAdminSession } from "@/contexts/AdminSessionContext";
 
 const API = process.env.REACT_APP_BACKEND_URL + "/api";
 
@@ -66,6 +72,7 @@ const URL_TAXONOMY = [
       ["Incentivos y eventos", "events"],
       ["Opiniones", "opiniones"],
       ["Contacto", "contact"],
+      ["Feedback", "feedback"],
     ],
   },
   {
@@ -168,6 +175,7 @@ const durationBadge = (key) => {
    - Live preview iframe re-renders on save (refresh trigger).
 ============================================================ */
 export default function AdminPage() {
+  const { refresh: refreshAdminSession } = useAdminSession();
   // ----- Admin password gate -----
   const [authed, setAuthed] = useState(null);   // null = checking, false = locked, true = ok
   const [pw, setPw] = useState("");
@@ -175,7 +183,7 @@ export default function AdminPage() {
   const [authBusy, setAuthBusy] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("xaluca_admin_token");
+    const token = localStorage.getItem(ADMIN_TOKEN_KEY);
     if (!token) { setAuthed(false); return; }
     fetch(`${API}/admin/verify`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => setAuthed(r.ok))
@@ -201,14 +209,20 @@ export default function AdminPage() {
         setAuthBusy(false); return;
       }
       const d = await r.json();
-      localStorage.setItem("xaluca_admin_token", d.token);
+      localStorage.setItem(ADMIN_TOKEN_KEY, d.token);
+      notifyAdminSessionChanged();
+      await refreshAdminSession();
       setAuthed(true);
     } catch {
       setAuthErr("Error de conexión");
     }
     setAuthBusy(false);
   };
-  const logout = () => { localStorage.removeItem("xaluca_admin_token"); setAuthed(false); };
+  const logout = () => {
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    notifyAdminSessionChanged();
+    setAuthed(false);
+  };
 
   const [tab, setTab]            = useState("urls"); // urls | images | texts
   const [query, setQuery]        = useState("");
@@ -291,6 +305,34 @@ export default function AdminPage() {
     return groups;
   }, [query, previewLang, allRoutes]);
 
+  const previewRouteGroups = useMemo(() => {
+    const seen = new Set();
+    const groups = URL_TAXONOMY.map((group) => {
+      const options = [];
+      (group.links || []).forEach(([label, key]) => {
+        if (ROUTES[key] && !seen.has(key)) {
+          seen.add(key);
+          options.push({ key, label });
+        }
+      });
+      (group.routes || []).forEach((route) => {
+        route.keys.forEach((key) => {
+          if (ROUTES[key] && !seen.has(key)) {
+            seen.add(key);
+            options.push({ key, label: `${route.label} · ${durationBadge(key)}` });
+          }
+        });
+      });
+      return { label: group.group, options };
+    }).filter((group) => group.options.length);
+
+    const remaining = allRoutes
+      .filter((key) => !seen.has(key))
+      .map((key) => ({ key, label: key }));
+    if (remaining.length) groups.push({ label: "Otras páginas", options: remaining });
+    return groups;
+  }, [allRoutes]);
+
   // ---- Image / text slot grouping by id prefix (e.g. "home.cat.magic-south.image-0")
   const groupSlots = (slots) => {
     const m = {};
@@ -317,7 +359,7 @@ export default function AdminPage() {
   const saveImage = async (slot_id, url) => {
     await fetch(`${API}/slots/${encodeURIComponent(slot_id)}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: adminAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ url, source: "admin" }),
     });
     bumpPreview((k) => k + 1);
@@ -326,7 +368,7 @@ export default function AdminPage() {
   const saveText = async (slot_id, values) => {
     await fetch(`${API}/text_slots/${encodeURIComponent(slot_id)}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: adminAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ values }),
     });
     bumpPreview((k) => k + 1);
@@ -375,7 +417,7 @@ export default function AdminPage() {
     try {
       const r = await fetch(`${API}/pexels/bulk-fill`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ items, orientation: "landscape", force: true }),
       });
       if (!r.ok) throw new Error(String(r.status));
@@ -481,14 +523,14 @@ export default function AdminPage() {
           <nav className="p-3 flex md:flex-col gap-1">
             {[
               { id: "urls",   label: "URLs",          icon: Globe },
+              { id: "livepreview", label: "Live Preview", icon: Eye },
               { id: "texts",  label: "Textos",        icon: Type },
               { id: "galleries", label: "Galerías",   icon: Images },
               { id: "library", label: "Library",     icon: Library },
               { id: "leads",  label: "Leads",         icon: Inbox },
+              { id: "feedback", label: "Feedback",    icon: MessageSquareText },
               { id: "contests", label: "Concursos",   icon: Gift },
               { id: "notify", label: "Notificaciones", icon: Mail },
-              { id: "mirror", label: "Mirror DB",      icon: Database },
-              { id: "supabase", label: "Supabase",     icon: Cloud },
               { id: "programpricing", label: "Precios prog.", icon: Coins },
             ].map((t) => {
               const Icon = t.icon;
@@ -669,9 +711,130 @@ export default function AdminPage() {
             </div>
           </div>
         </section>
+        ) : tab === "livepreview" ? (
+          <section
+            className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] flex flex-col max-h-[calc(100vh-56px)]"
+            data-testid="admin-live-preview"
+          >
+            <div className="border-b border-white/10 bg-[#14110F] px-4 py-3 space-y-3">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <div className="flex items-center gap-2 text-[#D4A373]">
+                    <Eye className="w-4 h-4" strokeWidth={1.7} />
+                    <h2 className="text-sm tracking-[0.2em] uppercase">Live Preview</h2>
+                  </div>
+                  <p className="mt-1 text-xs text-white/45">
+                    Revisa dentro del dashboard el resultado actual de cualquier página.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => bumpPreview((key) => key + 1)}
+                    data-testid="live-preview-refresh"
+                    className="inline-flex items-center gap-2 border border-white/15 px-3 py-2 text-[10px] tracking-[0.2em] uppercase text-white/75 hover:bg-white/5"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Actualizar
+                  </button>
+                  <a
+                    href={pathFor(previewLang, selectedRoute)}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-testid="live-preview-open"
+                    className="inline-flex items-center gap-2 bg-[#C16542] px-3 py-2 text-[10px] tracking-[0.2em] uppercase text-white hover:bg-[#A8533A]"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" /> Abrir página
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 flex-wrap">
+                <label className="min-w-[260px] flex-1 max-w-2xl">
+                  <span className="sr-only">Página que se desea previsualizar</span>
+                  <select
+                    value={selectedRoute}
+                    onChange={(event) => setRoute(event.target.value)}
+                    data-testid="live-preview-route"
+                    className="w-full bg-white/5 border border-white/15 px-3 py-2 text-xs text-white outline-none focus:border-[#D4A373]"
+                  >
+                    {previewRouteGroups.map((group) => (
+                      <optgroup key={group.label} label={group.label} className="bg-[#14110F]">
+                        {group.options.map((option) => (
+                          <option key={option.key} value={option.key} className="bg-[#14110F]">
+                            {option.label} · {pathFor(previewLang, option.key)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="flex items-center gap-1 bg-white/5 p-1" aria-label="Idioma de previsualización">
+                  {LANGS.map((lang) => (
+                    <button
+                      key={lang}
+                      type="button"
+                      onClick={() => setLang(lang)}
+                      data-testid={`live-preview-lang-${lang}`}
+                      className={`px-3 py-1.5 text-[10px] tracking-[0.18em] uppercase ${
+                        previewLang === lang ? "bg-[#C16542] text-white" : "text-white/55 hover:bg-white/10"
+                      }`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-1 bg-white/5 p-1" aria-label="Dispositivo de previsualización">
+                  {DEVICES.map((item) => {
+                    const DeviceIcon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setDevice(item.id)}
+                        aria-label={item.label}
+                        title={item.label}
+                        data-testid={`live-preview-device-${item.id}`}
+                        className={`p-2 ${device === item.id ? "bg-[#C16542] text-white" : "text-white/55 hover:bg-white/10"}`}
+                      >
+                        <DeviceIcon className="w-4 h-4" strokeWidth={1.7} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-auto bg-[#1A1513] p-3 md:p-5 flex items-start justify-center">
+              <div
+                className="bg-white shadow-2xl transition-[width,height] duration-300 overflow-hidden"
+                style={{
+                  width: dev.w,
+                  maxWidth: "100%",
+                  height: device === "desktop" ? "calc(100vh - 230px)" : dev.h,
+                  minHeight: device === "desktop" ? 620 : undefined,
+                }}
+                data-testid="live-preview-frame"
+              >
+                <iframe
+                  key={`live-${previewKey}-${selectedRoute}-${previewLang}`}
+                  ref={iframeRef}
+                  title={`Live preview · ${selectedRoute}`}
+                  src={previewSrc}
+                  className="w-full h-full border-0"
+                  data-testid="live-preview-iframe"
+                />
+              </div>
+            </div>
+          </section>
         ) : tab === "leads" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <LeadsPanel />
+          </section>
+        ) : tab === "feedback" ? (
+          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-hidden max-h-[calc(100vh-56px)]">
+            <FeedbackPanel />
           </section>
         ) : tab === "contests" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
@@ -701,10 +864,6 @@ export default function AdminPage() {
         ) : tab === "programpricing" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
             <ProgramPricingPanel />
-          </section>
-        ) : tab === "supabase" ? (
-          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
-            <SupabasePanel />
           </section>
         ) : (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
@@ -2408,8 +2567,8 @@ const LandmarkInfoEditor = ({ poi, slots, textMap, onSaveText }) => {
     try {
       const doOne = async (text) => {
         if (!text || !text.trim()) return {};
-        const r = await fetch(`${API}/translate`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
+      const r = await fetch(`${API}/translate`, {
+          method: "POST", headers: adminAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({ text, source: "es", targets: ["en", "fr"] }),
         });
         if (!r.ok) throw new Error(String(r.status));
@@ -2542,7 +2701,11 @@ const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSa
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const r = await fetch(`${API}/slots/${encodeURIComponent(slots.image)}/upload`, { method: "POST", body: fd });
+      const r = await fetch(`${API}/slots/${encodeURIComponent(slots.image)}/upload`, {
+        method: "POST",
+        headers: adminAuthHeaders(),
+        body: fd,
+      });
       if (!r.ok) throw new Error(String(r.status));
       const d = await r.json();
       if (d.url) setImgUrl(d.url);
@@ -2562,7 +2725,7 @@ const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSa
         if (!text || !text.trim()) return { en: "", fr: "" };
         const r = await fetch(`${API}/translate`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: adminAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({ text, source: "es", targets: ["en", "fr"] }),
         });
         if (!r.ok) throw new Error(String(r.status));

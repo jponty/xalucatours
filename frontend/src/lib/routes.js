@@ -16,6 +16,7 @@ export const ROUTES = {
   vuelos:             { es: "vuelos",                     en: "flights",                  fr: "vols" },
   asistente:          { es: "asistente",                  en: "assistant",                fr: "assistant" },
   fastTrack:          { es: "fast-track",                 en: "fast-track",               fr: "fast-track" },
+  feedback:           { es: "feedback",                   en: "feedback",                 fr: "feedback" },
 
   // Catalogue cluster
   toursLanding:       { es: "viajes",                    en: "tours",                    fr: "voyages" },

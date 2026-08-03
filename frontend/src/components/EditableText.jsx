@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -94,7 +95,7 @@ const persistSlot = async (slot, values) => {
   notify(slot);
   const res = await fetch(`${API}/api/text_slots/${encodeURIComponent(slot)}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: adminAuthHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ values }),
   });
   if (!res.ok) throw new Error("save-failed");
@@ -170,7 +171,7 @@ export const EditableText = ({
         try {
           const res = await fetch(`${API}/api/translate`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: adminAuthHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify({ text: newText, source: "es", targets: ["en", "fr"] }),
           });
           if (res.ok) {

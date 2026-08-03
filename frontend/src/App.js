@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { EditModeProvider } from "@/contexts/EditModeContext";
+import { AdminSessionProvider } from "@/contexts/AdminSessionContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import Layout from "@/components/Layout";
 import StubPage from "@/pages/StubPage";
@@ -75,7 +76,8 @@ function App() {
       <BrowserRouter>
         <LanguageProvider>
           <FavoritesProvider>
-            <EditModeProvider>
+            <AdminSessionProvider>
+              <EditModeProvider>
               <Routes>
                 <Route path="/admin" element={<AdminPage />} />
                 <Route
@@ -89,7 +91,8 @@ function App() {
                   }
                 />
               </Routes>
-            </EditModeProvider>
+              </EditModeProvider>
+            </AdminSessionProvider>
           </FavoritesProvider>
         </LanguageProvider>
       </BrowserRouter>

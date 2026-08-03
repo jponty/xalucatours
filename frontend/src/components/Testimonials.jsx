@@ -1,5 +1,5 @@
 import React from "react";
-import { Quote, Star, MapPin } from "lucide-react";
+import { Quote, Star, Route } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getTestimonialsForThemes } from "@/lib/testimonials";
 import EditableImage from "@/components/EditableImage";
@@ -108,9 +108,7 @@ const TestimonialCard = ({ t, tone, lang, idx }) => (
           className="mt-0.5 flex items-center gap-1.5 text-[12px] text-[#5C5248] truncate"
           style={{ fontFamily: INTER_FAMILY, fontWeight: 400 }}
         >
-          <MapPin className="w-3 h-3 shrink-0" style={{ color: tone.quote }} strokeWidth={1.6} />
-          <span className="truncate">{t.location}</span>
-          <span className="opacity-40">·</span>
+          <Route className="w-3 h-3 shrink-0" style={{ color: tone.quote }} strokeWidth={1.6} />
           <span className="truncate">{pick(t.trip, lang)}</span>
         </p>
       </div>
@@ -128,10 +126,11 @@ export const Testimonials = ({
   tone = "cream",
   variant = "full", // "full" | "compact"
   pad = true,
+  items: itemsProp,
 }) => {
   const { lang } = useLanguage();
   const palette = TONES[tone] || TONES.cream;
-  const items = getTestimonialsForThemes(themes, limit, { pad });
+  const items = itemsProp || getTestimonialsForThemes(themes, limit, { pad });
   if (items.length === 0) return null;
 
   const labels = SECTION_LABELS[lang] || SECTION_LABELS.es;

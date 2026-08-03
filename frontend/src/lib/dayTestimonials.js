@@ -14,23 +14,12 @@
        1) we detect the day's highlight (iconic place) or theme
           (arrival, desert, mountain, gorges, city, coast, market,
            oasis, relax, return…), and pick a matching quote;
-       2) we assign a Spanish traveller name + a Spanish city,
+       2) we assign a traveller or couple name,
           chosen DETERMINISTICALLY from the trip+day id (stable
           across renders/sessions, varied across days).
-   • ALL traveller origins are Spanish cities only.
-
-   `author` is a plain name (same in every language); `quote` and
-   `origin` are trilingual. Returns null only when no day is given.
+   `author` is a plain name (same in every language) and `quote` is
+   trilingual. Returns null only when no day is given.
 ============================================================ */
-
-/* ---- Spanish traveller pools (origins are ALWAYS Spanish) ---- */
-const CITIES = [
-  "Madrid", "Barcelona", "Valencia", "Sevilla", "Bilbao", "Zaragoza",
-  "Málaga", "A Coruña", "Palma", "Granada", "Valladolid", "Murcia",
-  "Alicante", "Santander", "Gijón", "Vigo", "Pamplona", "San Sebastián",
-  "Salamanca", "Córdoba", "Tarragona", "Logroño", "Oviedo", "Cádiz",
-  "Toledo", "Girona", "Burgos", "Albacete", "Almería", "Cáceres",
-];
 
 const AUTHORS = [
   "Marta & Javier", "Claudia R.", "Elena M.", "Carlos D.", "Inés & Pablo",
@@ -40,8 +29,6 @@ const AUTHORS = [
   "Óscar & Nuria", "Rocío G.", "Pablo & Marta", "Teresa N.", "Iván S.",
   "Carmen & Ramón",
 ];
-
-const origin = (city) => ({ es: `${city}, España`, en: `${city}, Spain`, fr: `${city}, Espagne` });
 
 /* Deterministic djb2 hash → non-negative int. */
 const hash = (s) => {
@@ -354,56 +341,49 @@ const pickQuotePool = (day) => {
 const OVERRIDES = {
   tourAtlasDesierto67: {
     "dia-1": {
-      rating: 5, author: "Marta & Javier", origin: origin("Madrid"),
-      quote: {
+      rating: 5, author: "Marta & Javier",      quote: {
         es: "Llegamos de noche a Ouarzazate y despertar en el Hotel Xaluca Dades, con el Alto Atlas asomando por la ventana, fue el mejor comienzo posible. El traslado, puntual y todo cuidado al detalle.",
         en: "We arrived in Ouarzazate at night and waking up at Hotel Xaluca Dades, with the High Atlas peeking through the window, was the best possible start. The transfer was on time and every detail taken care of.",
         fr: "Nous sommes arrivés de nuit à Ouarzazate et se réveiller à l'Hotel Xaluca Dades, avec le Haut Atlas par la fenêtre, fut le meilleur des débuts. Transfert ponctuel et tout soigné dans le moindre détail.",
       },
     },
     "dia-atlas-mgoun": {
-      rating: 5, author: "Claudia R.", origin: origin("Barcelona"),
-      quote: {
+      rating: 5, author: "Claudia R.",      quote: {
         es: "El día por el Atlas Central nos dejó sin palabras: aldeas bereberes colgadas de la montaña y el macizo del M'Goun de fondo. Nuestro chófer conocía cada rincón y cada historia.",
         en: "The day through the Central Atlas left us speechless: Berber villages clinging to the mountainside and the M'Goun massif behind. Our driver knew every corner and every story.",
         fr: "La journée dans l'Atlas central nous a laissés sans voix : villages berbères accrochés à la montagne et massif du M'Goun en toile de fond. Notre chauffeur connaissait chaque recoin et chaque histoire.",
       },
     },
     "dia-dades-todra": {
-      rating: 5, author: "Óscar & Nuria", origin: origin("Zaragoza"),
-      quote: {
+      rating: 5, author: "Óscar & Nuria",      quote: {
         es: "Las curvas del Dades y las paredes verticales del Todra son de otro planeta. Paramos donde quisimos para hacer fotos; nunca sentimos prisa.",
         en: "The Dades switchbacks and the vertical walls of the Todra are out of this world. We stopped wherever we liked for photos; we never felt rushed.",
         fr: "Les lacets du Dadès et les parois verticales du Todra sont d'un autre monde. Nous nous arrêtions où nous voulions pour les photos ; jamais pressés.",
       },
     },
     "dia-2": {
-      rating: 5, author: "Elena M.", origin: origin("Valencia"),
-      quote: {
+      rating: 5, author: "Elena M.",      quote: {
         es: "La llegada en dromedario a las dunas de Erg Chebbi y la noche en el campamento, bajo un cielo imposible de estrellas, fue sin duda la noche de nuestras vidas.",
         en: "Riding a camel into the Erg Chebbi dunes and the night at the camp, under an impossible sky full of stars, was without doubt the night of our lives.",
         fr: "L'arrivée à dromadaire dans les dunes de l'Erg Chebbi et la nuit au campement, sous un ciel d'étoiles incroyable, fut sans aucun doute la nuit de notre vie.",
       },
     },
     "dia-3": {
-      rating: 5, author: "Raquel & Hugo", origin: origin("Málaga"),
-      quote: {
+      rating: 5, author: "Raquel & Hugo",      quote: {
         es: "Ver salir el sol sobre el erg y después escuchar la música gnawa en Khamlia fue pura emoción. Un día que mezcla naturaleza y cultura a partes iguales.",
         en: "Watching the sun rise over the erg and then hearing Gnawa music in Khamlia was pure emotion. A day that blends nature and culture in equal measure.",
         fr: "Voir le soleil se lever sur l'erg puis écouter la musique gnawa à Khamlia, pure émotion. Une journée qui mêle nature et culture à parts égales.",
       },
     },
     "dia-4-rissani": {
-      rating: 5, author: "Carlos D.", origin: origin("Sevilla"),
-      quote: {
+      rating: 5, author: "Carlos D.",      quote: {
         es: "El zoco de Rissani es un torbellino de colores y aromas; probamos dátiles recién cogidos. Por la tarde, la piscina del hotel fue el premio perfecto.",
         en: "The Rissani souk is a whirl of colours and aromas; we tasted freshly picked dates. In the afternoon, the hotel pool was the perfect reward.",
         fr: "Le souk de Rissani est un tourbillon de couleurs et d'arômes ; nous avons goûté des dattes fraîchement cueillies. L'après-midi, la piscine de l'hôtel fut la récompense parfaite.",
       },
     },
     "dia-ziz-return": {
-      rating: 5, author: "Inés & Pablo", origin: origin("Bilbao"),
-      quote: {
+      rating: 5, author: "Inés & Pablo",      quote: {
         es: "El palmeral del Ziz es una despedida preciosa. Volvimos a casa con la sensación de haber vivido un viaje redondo, bien organizado de principio a fin.",
         en: "The Ziz palm grove is a beautiful farewell. We came home feeling we'd lived a perfectly rounded trip, well organised from start to finish.",
         fr: "La palmeraie du Ziz est un adieu magnifique. Nous sommes rentrés avec le sentiment d'un voyage parfait, bien organisé du début à la fin.",
@@ -412,19 +392,16 @@ const OVERRIDES = {
   },
 };
 
-/* Auto-derive a stable, day-specific, Spanish-origin testimonial.
-   The quote is keyed to the day's content (place/theme). Author & city
-   are spaced by the day position with steps coprime to each pool size,
-   so every day of a programme gets a DISTINCT Spanish traveller + city
-   (no repeats within the trip), while staying deterministic per trip. */
+/* Auto-derive a stable, day-specific testimonial.
+   The quote is keyed to the day's content (place/theme). Authors are spaced
+   by day position so each programme gets varied, deterministic travellers. */
 const autoTestimonial = (routeId, day, dayIndex = 1) => {
   const seed = `${routeId}|${day.id || ""}`;
   const pool = pickQuotePool(day);
   const quote = pool[hash(seed + "#q") % pool.length];
   const di = (dayIndex | 0) || 1;
   const author = AUTHORS[(hash(routeId + "#a") + di * 11) % AUTHORS.length];
-  const city = CITIES[(hash(routeId + "#c") + di * 7) % CITIES.length];
-  return { rating: 5, author, origin: origin(city), quote };
+  return { rating: 5, author, quote };
 };
 
 /**

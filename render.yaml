@@ -60,6 +60,8 @@ services:
         sync: false
       - key: OPENAI_TRANSLATION_MODEL
         value: gpt-4o-mini
+      - key: OPENAI_TRANSCRIPTION_MODEL
+        value: gpt-transcribe
       - key: IMG_WARM_ON_STARTUP
         value: "false"
       - key: IMG_REOPT_ON_STARTUP

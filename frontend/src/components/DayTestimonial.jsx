@@ -12,10 +12,11 @@
    defined (pilot: only tourAtlasDesierto67 for now).
 ============================================================ */
 import React from "react";
-import { Quote, Star, BadgeCheck, MapPin } from "lucide-react";
+import { Quote, Star, BadgeCheck, Route } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import { getDayTestimonial } from "@/lib/dayTestimonials";
+import { testimonialProgramLabel } from "@/lib/testimonialPrograms";
 
 const COPY = {
   eyebrow: { es: "Lo que cuentan del día", en: "What travellers say about this day", fr: "Ce que disent les voyageurs de cette journée" },
@@ -40,6 +41,7 @@ export default function DayTestimonial({ routeId, day, dayIndex, accent = "#C165
 
   const dayId = day?.id;
   const rating = data.rating || 5;
+  const programme = testimonialProgramLabel(routeId);
   const slotBase = `trip.${routeId}.day.${dayIndex}.testimonial`;
 
   return (
@@ -103,13 +105,8 @@ export default function DayTestimonial({ routeId, day, dayIndex, accent = "#C165
               className="text-[13px] font-semibold text-[#2C2621] leading-tight"
             />
             <span className="flex items-center gap-1.5 mt-0.5 text-[11px] text-[#5C5248]">
-              <MapPin className="w-3 h-3 shrink-0" style={{ color: accent }} strokeWidth={1.7} />
-              <EditableText
-                slot={`${slotBase}.origin`}
-                defaults={asTri(data.origin)}
-                as="span"
-                multiline={false}
-              />
+              <Route className="w-3 h-3 shrink-0" style={{ color: accent }} strokeWidth={1.7} />
+              <span className="truncate">{pick(programme, lang)}</span>
             </span>
           </div>
           <span className="ml-auto inline-flex items-center gap-1 text-[10px] tracking-[0.14em] uppercase shrink-0" style={{ color: accent }}>

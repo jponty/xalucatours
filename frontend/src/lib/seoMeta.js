@@ -63,6 +63,15 @@ const SEO = {
     ),
   },
 
+  feedback: {
+    title: withBrand(T("Comparte tu experiencia", "Share your experience", "Partagez votre expérience")),
+    description: T(
+      "Comparte tu experiencia con Xaluca Tours por escrito o mediante una grabación de voz. Tu opinión nos ayuda a mejorar cada viaje.",
+      "Share your Xaluca Tours experience in writing or with a voice recording. Your feedback helps us improve every journey.",
+      "Partagez votre expérience Xaluca Tours par écrit ou par message vocal. Votre avis nous aide à améliorer chaque voyage."
+    ),
+  },
+
   toursLanding: {
     title: withBrand(T("Nuestros viajes por Marruecos", "Our Morocco tours", "Nos voyages au Maroc")),
     description: T(

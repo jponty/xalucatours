@@ -622,7 +622,7 @@ const DestinationCard = ({ card, sectionAccent, lang }) => (
           {pick(card.blurb, lang)}
         </p>
 
-        <CircuitTestimonials slug={`qvm-${card.id}`} items={getPlaceTestimonials(card.id)} accent={sectionAccent} autoRotate={false} verifiedBelow />
+        <CircuitTestimonials slug={`qvm-${card.id}`} items={getPlaceTestimonials(card.id)} programRouteId={priceRouteIds(card.trips[0]?.routeId)[0]} accent={sectionAccent} autoRotate={false} verifiedBelow />
 
         <div className="mt-6 pt-5 border-t border-[#2C2621]/10">
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
@@ -1054,7 +1054,7 @@ const DestinationsMap = ({ lang }) => {
                   <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">
                     {pick(active.card.blurb, lang)}
                   </p>
-                  <CircuitTestimonials slug={`qvm-map-${active.card.id}`} items={getPlaceTestimonials(active.card.id)} accent={active.section.accent} autoRotate={false} verifiedBelow />
+                  <CircuitTestimonials slug={`qvm-map-${active.card.id}`} items={getPlaceTestimonials(active.card.id)} programRouteId={priceRouteIds(active.card.trips[0]?.routeId)[0]} accent={active.section.accent} autoRotate={false} verifiedBelow />
                   <div className="mt-5 pt-5 border-t border-[#2C2621]/10">
                     <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mb-3">
                       {pick(COPY.tripsCta, lang)}

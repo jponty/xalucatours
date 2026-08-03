@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { getImageGroup, getGroupSlot } from "@/lib/imageGroups";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
+import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -91,7 +92,11 @@ const fileToDataURL = (file) =>
 const uploadBlobToSlot = async (slot, blob, filename) => {
   const fd = new FormData();
   fd.append("file", new File([blob], filename, { type: "image/jpeg" }));
-  const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}/upload`, { method: "POST", body: fd });
+  const res = await fetch(`${API}/api/slots/${encodeURIComponent(slot)}/upload`, {
+    method: "POST",
+    headers: adminAuthHeaders(),
+    body: fd,
+  });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.detail || "Error al subir la imagen.");
   return data.url;
