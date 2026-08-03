@@ -17,6 +17,16 @@ const COPY = {
     en: "Tell us what worked, what we could improve, or which Morocco memory stayed with you. Write it down or tell us in your own voice.",
     fr: "Dites-nous ce qui a fonctionné, ce que nous pouvons améliorer ou quel souvenir du Maroc vous accompagne. Écrivez-le ou racontez-le avec votre voix.",
   },
+  starsTitle: {
+    es: "Tus 5 estrellas nos dan fuerzas para seguir creciendo y mejorando cada día.",
+    en: "Your 5 stars inspire us to keep growing and improving every day.",
+    fr: "Vos 5 étoiles nous donnent la force de continuer à grandir et à nous améliorer chaque jour.",
+  },
+  starsBody: {
+    es: "Valoramos enormemente todos los comentarios que recibimos, tanto las experiencias positivas como el feedback constructivo. Cada opinión nos ayuda a ofrecer una mejor experiencia a nuestros viajeros y huéspedes.",
+    en: "We deeply value every comment we receive, from positive experiences to constructive feedback. Each review helps us offer an even better experience to our travellers and guests.",
+    fr: "Nous accordons une grande importance à chaque commentaire reçu, qu'il s'agisse d'une expérience positive ou d'un avis constructif. Chaque opinion nous aide à offrir une meilleure expérience à nos voyageurs et à nos hôtes.",
+  },
   textTab: { es: "Escribir comentario", en: "Write feedback", fr: "Écrire un commentaire" },
   voiceTab: { es: "Grabar mi voz", en: "Record my voice", fr: "Enregistrer ma voix" },
   textLabel: { es: "Tu comentario", en: "Your feedback", fr: "Votre commentaire" },
@@ -349,14 +359,30 @@ export default function FeedbackPage() {
     <div className="bg-[#F7F0E4] pt-[112px] text-[#2C2621] md:pt-[132px]" data-testid="feedback-page">
       <section className="relative overflow-hidden bg-[#1A1513] px-6 py-20 md:py-28 text-white">
         <div className="absolute inset-0 berber-bg-cross opacity-35" aria-hidden="true" />
-        <div className="absolute -right-20 -top-24 h-80 w-80 rounded-full border border-[#D4A373]/20" aria-hidden="true" />
-        <div className="absolute -right-8 -top-10 h-52 w-52 rounded-full border border-[#D4A373]/15" aria-hidden="true" />
         <div className="relative mx-auto max-w-6xl grid gap-12 md:grid-cols-12 md:items-end">
           <div className="md:col-span-8">
             <p className="overline text-[#D4A373]">{pick(COPY.eyebrow, lang)}</p>
             <h1 className="font-serif-x mt-6 text-5xl leading-[0.98] md:text-7xl lg:text-8xl">{pick(COPY.title, lang)}</h1>
           </div>
           <p className="md:col-span-4 border-l border-[#D4A373]/35 pl-6 text-base leading-relaxed text-white/72">{pick(COPY.intro, lang)}</p>
+        </div>
+      </section>
+
+      <section className="border-b border-[#2C2621]/10 bg-[#FDFBF7] px-5 py-12 md:px-10 md:py-16" data-testid="feedback-stars-message">
+        <div className="mx-auto grid max-w-6xl gap-7 md:grid-cols-[auto_minmax(0,1fr)] md:items-center md:gap-12">
+          <div className="flex items-center gap-2 text-[#E2AE36]" aria-label="5 estrellas">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <Star key={value} className="h-7 w-7 fill-current md:h-8 md:w-8" strokeWidth={1.2} />
+            ))}
+          </div>
+          <div className="max-w-4xl">
+            <h2 className="font-serif-x text-3xl leading-tight text-[#2C2621] md:text-4xl">
+              {pick(COPY.starsTitle, lang)}
+            </h2>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#5C5248] md:text-base">
+              {pick(COPY.starsBody, lang)}
+            </p>
+          </div>
         </div>
       </section>
 
