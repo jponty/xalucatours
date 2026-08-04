@@ -148,7 +148,7 @@ const writeToClipboard = async (text) => {
 
 export default function FeedbackPage() {
   const { lang } = useLanguage();
-  const [mode, setMode] = useState("text");
+  const [mode, setMode] = useState("voice");
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -454,8 +454,8 @@ export default function FeedbackPage() {
           <form onSubmit={submit} className="border border-[#2C2621]/12 bg-[#FDFBF7] shadow-[0_25px_70px_rgba(44,38,33,0.09)]">
             <div className="grid grid-cols-2 border-b border-[#2C2621]/12">
               {[
-                ["text", MessageSquareText, COPY.textTab],
                 ["voice", Mic, COPY.voiceTab],
+                ["text", MessageSquareText, COPY.textTab],
               ].map(([id, Icon, label]) => (
                 <button key={id} type="button" onClick={() => { setMode(id); setError(""); }} className={`flex items-center justify-center gap-2 px-4 py-5 text-[10px] uppercase tracking-[0.2em] transition-colors ${mode === id ? "bg-[#C16542] text-white" : "text-[#5C5248] hover:bg-[#F7F0E4]"}`} data-testid={`feedback-mode-${id}`}>
                   <Icon className="h-4 w-4" strokeWidth={1.6} /> {pick(label, lang)}
