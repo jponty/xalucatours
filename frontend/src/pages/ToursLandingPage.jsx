@@ -19,6 +19,7 @@ import FromPrice from "@/components/FromPrice";
 import ToursVideoSection from "@/components/ToursVideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import ImageContactBubble from "@/components/ImageContactBubble";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users, Leaf };
@@ -206,40 +207,49 @@ const RegionsSection = ({ t, lang }) => (
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {REGIONS.map((r) => (
-          <Link key={r.id} to={pathFor(lang, r.routeId)} data-testid={`region-card-${r.id}`}
-                className="group relative block overflow-hidden h-[60vh] min-h-[420px] max-h-[560px]">
-            <EditableImage
-              slot={`viajes.region.${r.id}`}
-              fallback={r.image}
-              alt={pick(r.label, lang)}
-              aspectRatio="3/4"
-              imgProps={{ loading: "lazy" }}
-              className="ken-burns absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/45 to-[#1A1513]/15 pointer-events-none" />
-            <span className="film-grain" />
+          <article key={r.id} className="relative h-[60vh] min-h-[420px] max-h-[560px]">
+            <Link to={pathFor(lang, r.routeId)} data-testid={`region-card-${r.id}`}
+                  className="group relative block h-full overflow-hidden">
+              <EditableImage
+                slot={`viajes.region.${r.id}`}
+                fallback={r.image}
+                alt={pick(r.label, lang)}
+                aspectRatio="3/4"
+                imgProps={{ loading: "lazy" }}
+                className="ken-burns absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/45 to-[#1A1513]/15 pointer-events-none" />
+              <span className="film-grain" />
+              <XalucaLogoBadge testid={`region-logo-${r.id}`} />
 
-            <div className="absolute inset-0 p-7 md:p-9 flex flex-col justify-end text-[#FDFBF7]">
-              <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase"
-                    style={{ color: r.accent === "#3A4A5F" ? "#D4A373" : r.accent }}>
-                <span className="w-6 h-px" style={{ background: "currentColor" }} />
-                {pick(r.tagline, lang)}
-              </span>
-              <h3 className="font-serif-x text-3xl md:text-[34px] leading-[1.05] mt-3">
-                {pick(r.label, lang)}
-              </h3>
-              <p className="mt-4 text-sm text-[#FDFBF7]/85 leading-relaxed max-w-md">
-                {pick(r.body, lang)}
-              </p>
-              <div className="mt-4">
-                <FromPrice tone="light" size="sm" routeIds={regionRouteIds(r.id)} testid={`region-from-${r.id}`} />
+              <div className="absolute inset-0 p-7 md:p-9 flex flex-col justify-end text-[#FDFBF7]">
+                <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase"
+                      style={{ color: r.accent === "#3A4A5F" ? "#D4A373" : r.accent }}>
+                  <span className="w-6 h-px" style={{ background: "currentColor" }} />
+                  {pick(r.tagline, lang)}
+                </span>
+                <h3 className="font-serif-x text-3xl md:text-[34px] leading-[1.05] mt-3">
+                  {pick(r.label, lang)}
+                </h3>
+                <p className="mt-4 text-sm text-[#FDFBF7]/85 leading-relaxed max-w-md">
+                  {pick(r.body, lang)}
+                </p>
+                <div className="mt-4">
+                  <FromPrice tone="light" size="sm" routeIds={regionRouteIds(r.id)} testid={`region-from-${r.id}`} />
+                </div>
+                <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
+                  {t.cta}
+                  <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                </span>
               </div>
-              <span className="mt-5 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#D4A373] group-hover:gap-4 transition-all duration-300">
-                {t.cta}
-                <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
-              </span>
-            </div>
-          </Link>
+            </Link>
+            <ImageContactBubble
+              slug={`viajes-region-${r.id}`}
+              align="left"
+              vertical="top"
+              zClass="z-[20]"
+            />
+          </article>
         ))}
       </div>
     </div>
@@ -288,6 +298,12 @@ const ExperiencesSection = ({ t, lang }) => (
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513] via-[#1A1513]/40 to-transparent pointer-events-none" />
                 <XalucaLogoBadge testid={`experience-logo-${e.id}`} />
+                <ImageContactBubble
+                  slug={`viajes-experience-${e.id}`}
+                  align="left"
+                  vertical="top"
+                  zClass="z-[20]"
+                />
                 <span className="absolute bottom-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-full border bg-[#1A1513]/70 backdrop-blur-sm"
                       style={{ borderColor: `${e.accent}99`, color: e.accent }}>
                   <Icon className="w-5 h-5" strokeWidth={1.5} />
@@ -461,6 +477,10 @@ const TripExplorer = ({ t, lang }) => {
                   >
                     <Heart className="w-4 h-4 transition-transform active:scale-90" strokeWidth={1.7} fill={fav ? "currentColor" : "none"} />
                   </button>
+                  <XalucaLogoBadge
+                    className="bottom-3 left-3 w-11 h-11"
+                    testid={`trip-logo-${trip.id}`}
+                  />
                   <span className="absolute bottom-3 right-3 inline-flex items-center gap-2 bg-[#1A1513]/65 backdrop-blur-sm text-[#FDFBF7] px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase">
                     <Clock className="w-3 h-3" strokeWidth={1.6} />
                     {pick(trip.duration, lang)}
@@ -568,16 +588,31 @@ const ProximasSalidas = ({ t, lang }) => {
                   imgProps={{ loading: "lazy" }}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                 />
-                <span className="absolute top-4 left-4 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
-                      style={{ color: d.accent }}>
-                  <Calendar className="w-3 h-3" strokeWidth={1.6} />
-                  {pick(d.season, lang)}
-                </span>
-                {d.spots <= 2 && (
-                  <span className="absolute top-4 right-4 bg-[#C16542] text-[#FDFBF7] px-3 py-1.5 text-[9px] tracking-[0.25em] uppercase">
-                    {t.last_spots}
+                <div
+                  data-testid={`proxima-labels-${i}`}
+                  className="absolute inset-x-4 top-4 z-[4] flex flex-wrap items-start gap-2"
+                >
+                  <span
+                    data-testid={`proxima-season-${i}`}
+                    className="inline-flex max-w-full items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase whitespace-nowrap"
+                    style={{ color: d.accent }}
+                  >
+                    <Calendar className="w-3 h-3 shrink-0" strokeWidth={1.6} />
+                    {pick(d.season, lang)}
                   </span>
-                )}
+                  {d.spots <= 2 && (
+                    <span
+                      data-testid={`proxima-last-spots-${i}`}
+                      className="inline-flex bg-[#C16542] text-[#FDFBF7] px-3 py-1.5 text-[9px] tracking-[0.25em] uppercase whitespace-nowrap"
+                    >
+                      {t.last_spots}
+                    </span>
+                  )}
+                </div>
+                <XalucaLogoBadge
+                  className="bottom-3 left-3 w-11 h-11"
+                  testid={`proxima-logo-${i}`}
+                />
               </div>
               <div className="p-6 md:p-7 flex flex-col flex-1">
                 <p className="font-serif-x-italic text-base text-[#5C5248]">{d.dates}</p>
