@@ -65,7 +65,7 @@ const stampDate = (signature, lang) => {
 const PHOTOS = [
   {
     id: "dunes",
-    src: "https://images.pexels.com/photos/8357638/pexels-photo-8357638.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    src: "/api/files/xaluca/external/pexels/8357638-db0e56c5b2389f03.jpg",
     caption: { es: "Caravana en el Erg Chebbi", en: "Caravan in Erg Chebbi", fr: "Caravane à l'Erg Chebbi" },
     signature: { es: "Marta & Javier · Abril 1998", en: "Marta & Javier · April 1998", fr: "Marta & Javier · Avril 1998" },
     author: "Marta & Javier",
@@ -80,7 +80,7 @@ const PHOTOS = [
   },
   {
     id: "tea",
-    src: "https://images.pexels.com/photos/30498764/pexels-photo-30498764.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    src: "/api/files/xaluca/external/pexels/30498764-8bd47b2eafb02f69.jpg",
     caption: { es: "Té a la menta, siempre", en: "Mint tea, always", fr: "Thé à la menthe, toujours" },
     signature: { es: "Elena R. · Septiembre 2007", en: "Elena R. · September 2007", fr: "Elena R. · Septembre 2007" },
     author: "Elena R.",
@@ -95,7 +95,7 @@ const PHOTOS = [
   },
   {
     id: "souk",
-    src: "https://images.pexels.com/photos/36209446/pexels-photo-36209446.jpeg",
+    src: "/api/files/xaluca/external/pexels/36209446-632de4c6d6240150.jpg",
     caption: { es: "Colores del zoco de Marrakech", en: "Colours of the Marrakech souk", fr: "Couleurs du souk de Marrakech" },
     signature: { es: "Carlos D. · Marzo 1992", en: "Carlos D. · March 1992", fr: "Carlos D. · Mars 1992" },
     author: "Carlos D.",
@@ -110,7 +110,7 @@ const PHOTOS = [
   },
   {
     id: "chefchaouen",
-    src: "https://images.pexels.com/photos/5472518/pexels-photo-5472518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    src: "/api/files/xaluca/external/pexels/5472518-415d2c769a40637c.jpg",
     caption: { es: "La perla azul, Chefchaouen", en: "The blue pearl, Chefchaouen", fr: "La perle bleue, Chefchaouen" },
     signature: { es: "Lucía F. · Junio 2015", en: "Lucía F. · June 2015", fr: "Lucía F. · Juin 2015" },
     author: "Lucía F.",
@@ -125,7 +125,7 @@ const PHOTOS = [
   },
   {
     id: "riad",
-    src: "https://images.pexels.com/photos/29125650/pexels-photo-29125650.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    src: "/api/files/xaluca/external/pexels/29125650-75939e49cb43edb0.jpg",
     caption: { es: "Patios de riad al atardecer", en: "Riad courtyards at dusk", fr: "Patios de riad au crépuscule" },
     signature: { es: "Andrés P. · Octubre 2021", en: "Andrés P. · October 2021", fr: "Andrés P. · Octobre 2021" },
     author: "Andrés P.",
