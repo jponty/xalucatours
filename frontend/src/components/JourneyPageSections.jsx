@@ -18,6 +18,7 @@ import { useSlotId } from "@/components/slotScope";
 import SectionNav from "@/components/SectionNav";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
 import { warmTripHero as warmHero } from "@/lib/tripHero";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 
 const PILLAR_ICONS = { Headphones, Pencil, Award, ShieldCheck };
 
@@ -651,12 +652,12 @@ export const CommunityCta = ({ t, lang, testid = "community-cta", image }) => (
           {t.cta_primary}
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </Link>
-        <a href={`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`} target="_blank" rel="noreferrer"
+        <button type="button" onClick={() => requestWhatsAppContact(`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`)}
            data-testid={`${testid}-cta-wa`}
            className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
           <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.6} />
           WhatsApp
-        </a>
+        </button>
       </div>
     </div>
   </section>

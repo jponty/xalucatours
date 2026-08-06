@@ -145,7 +145,7 @@ const KindLabel = ({ kindKey, className = "", style }) => {
 const asTri = (v) => (v && typeof v === "object" ? v : { es: v || "", en: v || "", fr: v || "" });
 
 /* MapController flies to the active landmark when selection changes */
-const MapController = ({ position, bounds }) => {
+const MapController = ({ position, bounds, revision = 0 }) => {
   const map = useMap();
   useEffect(() => {
     if (position) {
@@ -153,7 +153,7 @@ const MapController = ({ position, bounds }) => {
     } else if (bounds) {
       map.flyToBounds(bounds, { padding: [50, 50], duration: 0.9 });
     }
-  }, [position, bounds, map]);
+  }, [position, bounds, map, revision]);
   return null;
 };
 
@@ -193,9 +193,18 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
   const mapBase = useSlotId("daymap");
   // First place (and its image gallery) open by default on every load/refresh.
   const [activeId, setActiveId] = useState(() => landmarks[0]?.id ?? null);
+  const [selectionIntent, setSelectionIntent] = useState({ revision: 0, autoScroll: false });
+  const [mapRevision, setMapRevision] = useState(0);
   const activeLandmark = landmarks.find((l) => l.id === activeId);
   const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
-  const handleSelect = (id) => setActiveId((prev) => (prev === id ? null : id));
+  const handleSelect = (id, source) => {
+    setActiveId(id);
+    setMapRevision((value) => value + 1);
+    setSelectionIntent((intent) => ({
+      revision: intent.revision + 1,
+      autoScroll: source === "map",
+    }));
+  };
   const usedKinds = Array.from(new Set(landmarks.map((l) => l.kind)));
 
   return (
@@ -219,7 +228,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
                 <MapBaseLayers variant="light" />
-                <MapController position={activePos} bounds={bounds} />
+                <MapController position={activePos} bounds={bounds} revision={mapRevision} />
                 {landmarks.map((l) => {
                   const kindCfg = LANDMARK_KINDS[l.kind] || { color: accent };
                   const color = kindCfg.color;
@@ -241,7 +250,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
                           fillColor: color,
                           fillOpacity: 1,
                         }}
-                        eventHandlers={{ click: () => handleSelect(l.id) }}
+                        eventHandlers={{ click: () => handleSelect(l.id, "map") }}
                       >
                         <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
                           <span className="text-[11px] tracking-[0.05em]">{pick(l.name, lang)}</span>
@@ -298,7 +307,7 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
                   <li key={l.id}>
                     <button
                       type="button"
-                      onClick={() => handleSelect(l.id)}
+                      onClick={() => handleSelect(l.id, "list")}
                       data-testid={`day-landmark-btn-${day.route_id}-${l.id}`}
                       aria-pressed={isActive}
                       className={`group w-full text-left flex items-start gap-4 px-4 py-3.5 border transition-all duration-300 ${
@@ -339,6 +348,8 @@ const LandmarkMode = ({ day, idx, total, accent, lang, landmarks }) => {
             landmark={activeLandmark}
             accent={accent}
             onClose={() => setActiveId(null)}
+            autoScroll={selectionIntent.autoScroll}
+            interactionRevision={selectionIntent.revision}
           />
         ) : (
           <LandmarkCarouselHint accent={accent} />
@@ -397,11 +408,18 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
     const first = wpLandmarks.findIndex(Boolean);
     return first >= 0 ? first : null;
   });
+  const [selectionIntent, setSelectionIntent] = useState({ revision: 0, autoScroll: false });
+  const [mapRevision, setMapRevision] = useState(0);
   const activeLandmark = activeIdx != null ? wpLandmarks[activeIdx] : null;
   const activePos = activeLandmark ? [activeLandmark.lat, activeLandmark.lng] : null;
-  const handleSelect = (i) => {
+  const handleSelect = (i, source) => {
     if (!wpLandmarks[i]) return;
-    setActiveIdx((prev) => (prev === i ? null : i));
+    setActiveIdx(i);
+    setMapRevision((value) => value + 1);
+    setSelectionIntent((intent) => ({
+      revision: intent.revision + 1,
+      autoScroll: source === "map",
+    }));
   };
 
   return (
@@ -424,7 +442,7 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
                 <MapBaseLayers variant="light" />
-                <MapController position={activePos} bounds={bounds} />
+                <MapController position={activePos} bounds={bounds} revision={mapRevision} />
                 {/* Soft shadow polyline */}
                 <Polyline
                   positions={positions}
@@ -461,7 +479,7 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
                           fillColor: color,
                           fillOpacity: 1,
                         }}
-                        eventHandlers={hasProfile ? { click: () => handleSelect(i) } : undefined}
+                        eventHandlers={hasProfile ? { click: () => handleSelect(i, "map") } : undefined}
                       >
                         <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
                           <span className="text-[11px] tracking-[0.05em]">{w[0]}</span>
@@ -511,7 +529,7 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
                 const rowProps = lm
                   ? {
                       type: "button",
-                      onClick: () => handleSelect(i),
+                      onClick: () => handleSelect(i, "list"),
                       "aria-pressed": isActive,
                       "data-testid": `day-waypoint-btn-${day.route_id}-${i}`,
                     }
@@ -565,6 +583,8 @@ const WaypointMode = ({ day, idx, total, accent, waypoints }) => {
             landmark={activeLandmark}
             accent={accent}
             onClose={() => setActiveIdx(null)}
+            autoScroll={selectionIntent.autoScroll}
+            interactionRevision={selectionIntent.revision}
           />
         ) : wpLandmarks.some(Boolean) ? (
           <LandmarkCarouselHint accent={accent} />
@@ -656,6 +676,7 @@ const StayCard = ({ day, idx, total, accent, t, lang, anchor }) => {
 const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
   // Open by default on every load/refresh so the place's image gallery shows.
   const [open, setOpen] = useState(true);
+  const [selectionIntent, setSelectionIntent] = useState({ revision: 0, autoScroll: false });
   const mapBase = useSlotId("daymap");
   const center = [landmark.lat, landmark.lng];
   const bounds = useMemo(() => {
@@ -667,6 +688,13 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
   }, [landmark.lat, landmark.lng]);
   const kindCfg = LANDMARK_KINDS[landmark.kind] || { color: accent, label: { es: "", en: "", fr: "" } };
   const color = kindCfg.color;
+  const handleSelect = (source) => {
+    setOpen(true);
+    setSelectionIntent((intent) => ({
+      revision: intent.revision + 1,
+      autoScroll: source === "map",
+    }));
+  };
 
   return (
     <section
@@ -703,7 +731,7 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
                     fillColor: color,
                     fillOpacity: 1,
                   }}
-                  eventHandlers={{ click: () => setOpen((v) => !v) }}
+                  eventHandlers={{ click: () => handleSelect("map") }}
                 >
                   <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
                     <span className="text-[11px] tracking-[0.05em]">{pick(landmark.name, lang)}</span>
@@ -740,7 +768,7 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
 
             <button
               type="button"
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => handleSelect("list")}
               data-testid={`day-stay-btn-${day.route_id}`}
               aria-pressed={open}
               className={`group w-full text-left flex items-start gap-4 px-4 py-3.5 border transition-all duration-300 ${
@@ -775,6 +803,8 @@ const StayInteractive = ({ day, idx, total, accent, lang, landmark }) => {
             landmark={landmark}
             accent={accent}
             onClose={() => setOpen(false)}
+            autoScroll={selectionIntent.autoScroll}
+            interactionRevision={selectionIntent.revision}
           />
         ) : (
           <LandmarkCarouselHint accent={accent} />

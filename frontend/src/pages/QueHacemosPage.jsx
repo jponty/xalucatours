@@ -11,6 +11,7 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import { IMG, banner } from "@/lib/imageBank";
 import { TESTIMONIALS } from "@/lib/testimonials";
+import { TEAM_MEMBERS } from "@/lib/teamMembers";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
 import CardBrandOverlay from "@/components/CardBrandOverlay";
@@ -152,6 +153,33 @@ const COPY = {
         },
       },
     ],
+  },
+  team: {
+    overline: {
+      es: "Las personas detrás de cada viaje",
+      en: "The people behind every journey",
+      fr: "Les personnes derrière chaque voyage",
+    },
+    title: {
+      es: "Conoce al equipo que diseña y acompaña tu experiencia.",
+      en: "Meet the team who designs and supports your experience.",
+      fr: "Rencontrez l'équipe qui conçoit et accompagne votre expérience.",
+    },
+    body: {
+      es: "Un equipo cercano entre Europa y Marruecos, con conocimiento local y una atención muy personal. Escuchamos cómo imaginas tu viaje, cuidamos cada detalle y estamos a tu lado desde la primera conversación hasta tu regreso a casa.",
+      en: "A close-knit team across Europe and Morocco, combining local knowledge with truly personal care. We listen to how you imagine your journey, look after every detail and stay by your side from the first conversation until you return home.",
+      fr: "Une équipe proche, entre l'Europe et le Maroc, qui associe connaissance locale et attention véritablement personnelle. Nous écoutons votre vision du voyage, soignons chaque détail et restons à vos côtés du premier échange jusqu'à votre retour.",
+    },
+    detail: {
+      es: "Especialistas en viajes por Marruecos",
+      en: "Morocco travel specialists",
+      fr: "Spécialistes des voyages au Maroc",
+    },
+    cta: {
+      es: "Conoce a nuestro equipo",
+      en: "Meet our team",
+      fr: "Découvrir notre équipe",
+    },
   },
   testimonials: {
     overline: { es: "Lo que dicen nuestros viajeros", en: "What our travellers say", fr: "Ce que disent nos voyageurs" },
@@ -419,6 +447,79 @@ const Reasons = ({ lang }) => (
   </section>
 );
 
+const TeamSection = ({ lang }) => (
+  <SlotScope id="team">
+    <section
+      id="qh-team"
+      data-testid="qh-team"
+      className="relative overflow-hidden bg-[#1A1513] py-20 text-[#FDFBF7] md:py-28"
+    >
+      <div className="absolute inset-0 berber-bg-cross opacity-25 pointer-events-none" aria-hidden="true" />
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 md:grid-cols-12 md:gap-16 md:px-12">
+        <div className="md:col-span-7">
+          <span className="overline inline-flex items-center gap-2 text-[#D4A373]">
+            <Users className="h-3.5 w-3.5" strokeWidth={1.6} />
+            {pick(COPY.team.overline, lang)}
+          </span>
+          <h2 className="mt-5 max-w-3xl font-serif-x text-4xl leading-[1.06] tracking-tight text-[#FDFBF7] md:text-5xl lg:text-[56px]">
+            {pick(COPY.team.title, lang)}
+          </h2>
+          <p className="mt-7 max-w-2xl text-base leading-relaxed text-[#FDFBF7]/75 md:text-lg">
+            {pick(COPY.team.body, lang)}
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-5">
+            <Link
+              to={pathFor(lang, "about")}
+              data-testid="qh-team-cta"
+              className="inline-flex items-center gap-3 bg-[#C16542] px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] text-[#FDFBF7] transition-colors hover:bg-[#A8533A]"
+            >
+              {pick(COPY.team.cta, lang)}
+              <ArrowRight className="h-4 w-4" strokeWidth={1.7} />
+            </Link>
+            <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-[#D4A373]/85">
+              <MapPin className="h-3.5 w-3.5" strokeWidth={1.6} />
+              {pick(COPY.team.detail, lang)}
+            </span>
+          </div>
+        </div>
+
+        <div className="md:col-span-5">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 md:-rotate-1">
+            {TEAM_MEMBERS.map((member, index) => (
+              <article
+                key={member.id}
+                data-testid={`qh-team-member-${member.id}`}
+                className={`relative bg-[#FDFBF7] p-2 pb-4 shadow-2xl sm:p-3 sm:pb-5 ${index === 1 ? "mt-8" : "mb-8"}`}
+              >
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#2C2621]">
+                  <EditableImage
+                    slot={`equipo.team.${member.id}.photo`}
+                    fallback={member.photo}
+                    alt={pick(member.name, lang)}
+                    aspectRatio="3/4"
+                    imgProps={{ loading: "lazy" }}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/25 to-transparent pointer-events-none" />
+                </div>
+                <div className="pt-3 text-center">
+                  <p className="font-serif-x text-sm leading-tight text-[#2C2621] sm:text-base">
+                    {member.firstName}
+                  </p>
+                  <p className="mt-1 hidden text-[8px] uppercase tracking-[0.18em] text-[#C16542] sm:block">
+                    {pick(member.role, lang)}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </SlotScope>
+);
+
 const Testimonials = ({ lang }) => {
   const cards = FEATURED_TESTIMONIAL_IDS
     .map((id) => {
@@ -627,12 +728,14 @@ export default function QueHacemosPage() {
           { id: "qh-intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
           { id: "qh-pillars", label: { es: "Qué hacemos", en: "What we do", fr: "Ce que nous faisons" } },
           { id: "qh-reasons", label: { es: "Por qué Xaluca", en: "Why Xaluca", fr: "Pourquoi Xaluca" } },
+          { id: "qh-team", label: { es: "Equipo", en: "Team", fr: "Équipe" } },
           { id: "qh-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
         ]}
       />
       <Intro lang={lang} />
       <TripPillars lang={lang} />
       <Reasons lang={lang} />
+      <TeamSection lang={lang} />
       <Testimonials lang={lang} />
       <FinalCta lang={lang} />
     </div>

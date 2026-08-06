@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Compass, Phone, Mail, Headset } from "lucide-react";
+import { ArrowRight, Compass, Phone, Mail, Headset, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
@@ -9,6 +9,7 @@ import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import HeroMonogram from "@/components/HeroMonogram";
 import { preloadImageLink } from "@/lib/imageUrl";
+import { requestIdealTripWizard } from "@/components/IdealTripWizard";
 /* ============================================================
    Hero (formerly HeroSlider)
    ----
@@ -27,6 +28,7 @@ const HERO_VIDEO_POSTER =
 
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 const VIEW_TRIPS_LABEL = { es: "Ver viajes", en: "View trips", fr: "Voir les voyages" };
+const IDEAL_TRIP_LABEL = { es: "Encontrar viaje ideal", en: "Find ideal journey", fr: "Trouver le voyage idéal" };
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
@@ -203,6 +205,19 @@ export const HeroSlider = () => {
                   <EditableText
                     slot="home.hero.cta_assistant"
                     defaults={ASSISTANT_LABEL}
+                    multiline={false}
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={requestIdealTripWizard}
+                  data-testid="hero-cta-ideal-trip"
+                  className="inline-flex items-center gap-3 border border-[#D4A373]/70 bg-[#D4A373]/10 px-7 py-4 text-[11px] uppercase tracking-[0.25em] text-[#FDFBF7] transition-all duration-300 hover:border-[#D4A373] hover:bg-[#D4A373] hover:text-[#1A1513] whitespace-nowrap"
+                >
+                  <Sparkles className="h-3.5 w-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+                  <EditableText
+                    slot="home.hero.cta_ideal_trip"
+                    defaults={IDEAL_TRIP_LABEL}
                     multiline={false}
                   />
                 </button>

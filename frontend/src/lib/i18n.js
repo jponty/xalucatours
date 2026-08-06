@@ -55,6 +55,7 @@ export const translations = {
                      fr: "Pour nous, le Maroc a tout.",
                      es: "Para nosotros, Marruecos lo tiene todo." },
   intro_signature: { en: "— The Xaluca Tours team",  fr: "— L'équipe Xaluca Tours",  es: "— El equipo de Xaluca Tours" },
+  intro_cta:       { en: "Discover what we do", fr: "Découvrir ce que nous faisons", es: "Descubre qué hacemos" },
 
   /* ---------------- Why Xaluca (4 cards) ---------------- */
   why_overline:    { en: "Why Xaluca Tours",  fr: "Pourquoi Xaluca Tours",  es: "Por qué Xaluca Tours" },

@@ -1,7 +1,9 @@
 import React from "react";
-import { Tent, BedDouble, HandHeart } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Tent, BedDouble, HandHeart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
+import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
@@ -34,7 +36,12 @@ const CARDS = [
 ];
 
 export const WhatJourneysFeelLike = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const ctaLabel = {
+    es: "Descubrir viajes",
+    en: "Discover journeys",
+    fr: "Découvrir les voyages",
+  }[lang] || "Descubrir viajes";
 
   return (
     <section
@@ -110,10 +117,16 @@ export const WhatJourneysFeelLike = () => {
                     defaults={translations[c.k_body]}
                     className="mt-4 text-sm leading-relaxed text-[#5C5248] flex-1 block"
                   />
-                  <span
-                    className="mt-6 h-px w-10 transition-all duration-500 group-hover:w-20"
-                    style={{ background: c.accent }}
-                  />
+                  <Link
+                    to={pathFor(lang, "toursLanding")}
+                    data-testid={`feel-cta-${c.slug}`}
+                    className="mt-7 inline-flex w-fit items-center gap-3 border-b pb-2 text-[10px] font-medium uppercase tracking-[0.2em] transition-all duration-300 hover:gap-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
+                    style={{ borderColor: c.accent, color: c.accent }}
+                    aria-label={`${ctaLabel}: ${t(c.k_title)}`}
+                  >
+                    {ctaLabel}
+                    <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
+                  </Link>
                 </div>
               </article>
             );

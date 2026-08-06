@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 
 const COPY = {
   trigger:  { es: "Compartir este viaje", en: "Share this trip", fr: "Partager ce voyage" },
@@ -50,7 +51,8 @@ export default function ShareTripButton({ index, shareUrl, testid, triggerClassN
 
   const onWhatsApp = useCallback(() => {
     const msg = encodeURIComponent(`${text}\n${url}`);
-    window.open(`https://wa.me/?text=${msg}`, "_blank", "noopener,noreferrer");
+    setOpen(false);
+    window.requestAnimationFrame(() => requestWhatsAppContact(`https://wa.me/?text=${msg}`));
   }, [text, url]);
 
   const onEmail = useCallback(() => {

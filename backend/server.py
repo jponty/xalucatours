@@ -15,7 +15,7 @@ import csv
 from io import BytesIO, StringIO
 from PIL import Image
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr, ValidationError, field_validator
+from pydantic import BaseModel, Field, ConfigDict, EmailStr, ValidationError, field_validator, model_validator
 from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -109,7 +109,7 @@ class ContactRequest(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     full_name: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     phone: Optional[str] = None
     travel_dates: Optional[str] = None
     party_size: Optional[str] = None
@@ -134,7 +134,7 @@ class ContactRequest(BaseModel):
 
 class ContactRequestCreate(BaseModel):
     full_name: str = Field(..., min_length=2, max_length=120)
-    email: EmailStr
+    email: Optional[EmailStr] = None
     phone: Optional[str] = Field(default=None, max_length=40)
     travel_dates: Optional[str] = Field(default=None, max_length=120)
     party_size: Optional[str] = Field(default=None, max_length=40)
@@ -154,6 +154,12 @@ class ContactRequestCreate(BaseModel):
         if isinstance(v, str):
             return [v] if v else []
         return v
+
+    @model_validator(mode="after")
+    def _require_email_or_phone(self):
+        if not self.email and not (self.phone or "").strip():
+            raise ValueError("Email or phone is required")
+        return self
 
 
 # ---------- Trip Planner ----------
@@ -1101,9 +1107,10 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.contact_requests.insert_one(doc)
+    contact_summary = obj.email or obj.phone or ""
     html = _lead_email_html(
         "Solicitud de contacto",
-        f"{obj.full_name} · {obj.email}",
+        f"{obj.full_name} · {contact_summary}",
         [
             ("Nombre", obj.full_name),
             ("Email", obj.email),

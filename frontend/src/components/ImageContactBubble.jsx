@@ -12,11 +12,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Phone } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import monogramaX from "@/assets/monograma-x-white.png";
 import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
+import { CLOSE_TRANSIENT_CONTACT_EVENT, requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 
 const TITLE = { es: "¿Necesitas ayuda?", en: "Need a hand?", fr: "Besoin d'aide ?" };
 const BODY = {
@@ -25,14 +26,28 @@ const BODY = {
   fr: "Parlez à un agent et trouvez votre voyage idéal.",
 };
 const CTA = { es: "Solicitar cita", en: "Book a call", fr: "Prendre rendez-vous" };
+const CALL = { es: "Llamar", en: "Call", fr: "Appeler" };
+const PHONE_HREF = "tel:+34937268366";
 const OPEN_LABEL = { es: "Contactar con un agente", en: "Contact an agent", fr: "Contacter un agent" };
 const CLOSE_LABEL = { es: "Cerrar", en: "Close", fr: "Fermer" };
 
-export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", vertical = "bottom" }) => {
+export const ImageContactBubble = ({
+  slug,
+  zClass = "z-[5]",
+  align = "right",
+  vertical = "bottom",
+  modalZClass = "z-[10000]",
+}) => {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const modalRef = useRef(null);
   const triggerRef = useRef(null);
+
+  useEffect(() => {
+    const closeForNextContactStep = () => setOpen(false);
+    window.addEventListener(CLOSE_TRANSIENT_CONTACT_EVENT, closeForNextContactStep);
+    return () => window.removeEventListener(CLOSE_TRANSIENT_CONTACT_EVENT, closeForNextContactStep);
+  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -47,6 +62,7 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
 
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
+        event.stopPropagation();
         setOpen(false);
         return;
       }
@@ -67,9 +83,9 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown, true);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown, true);
       document.body.style.overflow = previousOverflow;
       previouslyFocused?.focus?.();
     };
@@ -111,7 +127,7 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
 
       {open && createPortal(
         <div
-          className="fixed inset-0 z-[10000] flex items-center justify-center bg-[#1A1513]/70 backdrop-blur-sm px-5 py-8"
+          className={`fixed inset-0 ${modalZClass} flex items-center justify-center bg-[#1A1513]/70 backdrop-blur-sm px-5 py-8`}
           data-testid={`image-contact-modal-backdrop-${slug}`}
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setOpen(false);
@@ -155,15 +171,28 @@ export const ImageContactBubble = ({ slug, zClass = "z-[5]", align = "right", ve
                 <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
               </Link>
               <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={PHONE_HREF}
+                onClick={() => setOpen(false)}
+                aria-label={`${pick(CALL, lang)}: 937 268 366`}
+                data-testid={`image-contact-phone-${slug}`}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#FDFBF7]/35 px-4 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:border-[#D4A373] hover:text-[#D4A373] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFBF7]"
+              >
+                <Phone className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
+                {pick(CALL, lang)}
+              </a>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setOpen(false);
+                  requestWhatsAppContact(WHATSAPP_URL);
+                }}
                 aria-label="WhatsApp"
                 data-testid={`image-contact-whatsapp-${slug}`}
                 className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-[#FDFBF7] transition-colors hover:bg-[#1EBE5A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFBF7]"
               >
                 <WhatsAppIcon className="h-4 w-4 shrink-0" />
-              </a>
+              </button>
             </div>
           </div>
         </div>,
