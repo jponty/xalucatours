@@ -27,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import SouthMoroccoVideoCarousel from "@/components/SouthMoroccoVideoCarousel";
+import SouthMoroccoVirtualExperience from "@/components/SouthMoroccoVirtualExperience";
 
 const DOC_TITLES = {
   es: "Marruecos · Tu próxima aventura · Xaluca Tours",
@@ -383,7 +384,7 @@ const MOROCCO_LIGHT_VIDEO_ID = "nzD3e3Qr7g8";
 const MOROCCO_LIGHT_VIDEO_URL = `https://www.youtube.com/watch?v=${MOROCCO_LIGHT_VIDEO_ID}`;
 const MOROCCO_LIGHT_POSTER = `https://i.ytimg.com/vi/${MOROCCO_LIGHT_VIDEO_ID}/maxresdefault.jpg`;
 
-const MoroccoLightFilm = ({ lang }) => {
+export const MoroccoLightFilm = ({ lang }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -391,7 +392,7 @@ const MoroccoLightFilm = ({ lang }) => {
       data-testid="mar-light-film"
       className="relative overflow-hidden bg-[#1A1513] py-16 text-[#FDFBF7] md:py-24"
     >
-      <div className="absolute inset-0 berber-bg-cross opacity-20 pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 md:px-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
         <div className="max-w-xl">
           <span className="inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.32em] text-[#D4A373]">
@@ -966,6 +967,7 @@ export default function MoroccoLandingPage() {
         testid="mar-nav"
         items={[
           { id: "mar-why", label: { es: "Por qué", en: "Why", fr: "Pourquoi" } },
+          { id: "mar-virtual-tour", label: { es: "Experiencia virtual", en: "Virtual journey", fr: "Expérience virtuelle" } },
           { id: "mar-video-regions", label: { es: "Vídeos", en: "Films", fr: "Vidéos" } },
           { id: "mar-experiences", label: { es: "Experiencias", en: "Experiences", fr: "Expériences" } },
           { id: "mar-map", label: { es: "Mapa", en: "Map", fr: "Carte" } },
@@ -975,6 +977,7 @@ export default function MoroccoLandingPage() {
         ]}
       />
       <Why lang={lang} />
+      <SouthMoroccoVirtualExperience />
       <SouthMoroccoVideoCarousel />
       <Experiences lang={lang} />
       <InteractiveMap lang={lang} />
