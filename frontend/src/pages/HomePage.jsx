@@ -6,6 +6,8 @@ import { pathFor } from "@/lib/routes";
 import HeroSlider from "@/components/HeroSlider";
 import HomeSectionNav from "@/components/HomeSectionNav";
 import DualTimezoneClock from "@/components/DualTimezoneClock";
+import SouthMoroccoVirtualExperience from "@/components/SouthMoroccoVirtualExperience";
+import { MoroccoLightFilm } from "@/pages/MoroccoLandingPage";
 import TripFinder from "@/components/TripFinder";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
@@ -119,9 +121,11 @@ export default function HomePage() {
       <HeroSlider />
       <HomeSectionNav />
       <DualTimezoneClock />
+      <MoroccoLightFilm lang={lang} />
       <div id="buscador" className="scroll-mt-[172px]">
         <TripFinder />
       </div>
+      <SouthMoroccoVirtualExperience />
       <Marquee />
       <EmotionalIntro />
       <div id="destinos" className="scroll-mt-[172px]">
