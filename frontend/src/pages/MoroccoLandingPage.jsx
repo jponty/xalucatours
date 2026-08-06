@@ -8,7 +8,7 @@ import {
   Home, ChevronRight, Compass, ArrowRight, ArrowUpRight, MapPin,
   Heart, Users, Users2, User, Briefcase, Sparkles, Star,
   Tent, Mountain, Crown, Utensils, Sun, Snowflake, Leaf, CloudSun,
-  Car, Shield, Hotel, Phone, Compass as CompassIcon,
+  Car, Shield, Hotel, Phone, Compass as CompassIcon, Play, ExternalLink,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -16,9 +16,17 @@ import { IMG, banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
 import { SlotScope } from "@/components/slotScope";
+import Img from "@/components/Img";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import SouthMoroccoVideoCarousel from "@/components/SouthMoroccoVideoCarousel";
 
 const DOC_TITLES = {
   es: "Marruecos · Tu próxima aventura · Xaluca Tours",
@@ -44,6 +52,22 @@ const COPY = {
     },
     cta1: { es: "Diseña tu viaje", en: "Design my trip", fr: "Concevoir mon voyage" },
     cta2: { es: "Ver circuitos",   en: "Browse circuits", fr: "Voir les circuits" },
+  },
+  film: {
+    eyebrow: { es: "Marruecos en imágenes", en: "Morocco on film", fr: "Le Maroc en images" },
+    title: {
+      es: "Marruecos — El Reino de la Luz",
+      en: "Morocco — The Kingdom of Light",
+      fr: "Maroc — Le Royaume de la Lumière",
+    },
+    body: {
+      es: "Un recorrido cinematográfico por la luz, los paisajes y la diversidad cultural que hacen de Marruecos un destino único.",
+      en: "A cinematic journey through the light, landscapes and cultural diversity that make Morocco a unique destination.",
+      fr: "Un voyage cinématographique à travers la lumière, les paysages et la diversité culturelle qui font du Maroc une destination unique.",
+    },
+    play: { es: "Ver el vídeo", en: "Watch the film", fr: "Voir le film" },
+    youtube: { es: "Abrir en YouTube", en: "Open on YouTube", fr: "Ouvrir sur YouTube" },
+    close: { es: "Cerrar vídeo", en: "Close video", fr: "Fermer la vidéo" },
   },
   why: {
     overline: { es: "Por qué Marruecos", en: "Why Morocco", fr: "Pourquoi le Maroc" },
@@ -354,6 +378,108 @@ const Hero = ({ lang }) => (
     </div>
   </section>
 );
+
+const MOROCCO_LIGHT_VIDEO_ID = "nzD3e3Qr7g8";
+const MOROCCO_LIGHT_VIDEO_URL = `https://www.youtube.com/watch?v=${MOROCCO_LIGHT_VIDEO_ID}`;
+const MOROCCO_LIGHT_POSTER = `https://i.ytimg.com/vi/${MOROCCO_LIGHT_VIDEO_ID}/maxresdefault.jpg`;
+
+const MoroccoLightFilm = ({ lang }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <section
+      data-testid="mar-light-film"
+      className="relative overflow-hidden bg-[#1A1513] py-16 text-[#FDFBF7] md:py-24"
+    >
+      <div className="absolute inset-0 berber-bg-cross opacity-20 pointer-events-none" aria-hidden="true" />
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 md:px-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+        <div className="max-w-xl">
+          <span className="inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.32em] text-[#D4A373]">
+            <Sparkles className="h-3.5 w-3.5" strokeWidth={1.6} />
+            {pick(COPY.film.eyebrow, lang)}
+          </span>
+          <h2 className="mt-5 font-serif-x text-4xl font-normal leading-[1.04] tracking-tight sm:text-5xl lg:text-6xl">
+            {pick(COPY.film.title, lang)}
+          </h2>
+          <p className="mt-6 text-sm leading-relaxed text-[#FDFBF7]/72 sm:text-base">
+            {pick(COPY.film.body, lang)}
+          </p>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            data-testid="mar-light-film-cta"
+            className="mt-8 inline-flex items-center gap-3 bg-[#C16542] px-7 py-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition-colors hover:bg-[#A8533A]"
+          >
+            <Play className="h-4 w-4 fill-current" strokeWidth={1.5} />
+            {pick(COPY.film.play, lang)}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          data-testid="mar-light-film-poster"
+          aria-label={pick(COPY.film.play, lang)}
+          className="group relative aspect-video w-full overflow-hidden bg-black shadow-[0_32px_80px_-24px_rgba(0,0,0,.8)]"
+        >
+          <Img
+            src={MOROCCO_LIGHT_POSTER}
+            alt={pick(COPY.film.title, lang)}
+            width={1280}
+            sizes="(max-width: 1024px) 100vw, 760px"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+          />
+          <span className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/25" aria-hidden="true" />
+          <span className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+            <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/50 bg-[#C16542]/95 text-white shadow-2xl transition-transform duration-300 group-hover:scale-110 sm:h-24 sm:w-24">
+              <Play className="ml-1 h-7 w-7 fill-current sm:h-8 sm:w-8" strokeWidth={1.4} />
+            </span>
+          </span>
+          <span className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-5 text-left">
+            <span className="font-serif-x text-xl leading-tight sm:text-2xl">{pick(COPY.film.title, lang)}</span>
+            <span className="hidden shrink-0 text-[9px] uppercase tracking-[0.25em] text-white/70 sm:block">YouTube</span>
+          </span>
+        </button>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent
+          data-testid="mar-light-film-modal"
+          closeLabel={pick(COPY.film.close, lang)}
+          overlayClassName="z-[12100] bg-[#120E0C]/90 backdrop-blur-sm"
+          className="z-[12110] w-[calc(100%-1.25rem)] max-w-6xl gap-0 overflow-hidden border border-white/15 bg-[#120E0C] p-0 text-white shadow-[0_40px_120px_-30px_rgba(0,0,0,.9)] sm:rounded-none [&>button]:right-3 [&>button]:top-3 [&>button]:z-20 [&>button]:bg-black/60 [&>button]:p-2 [&>button]:text-white [&>button]:opacity-100"
+        >
+          <div className="sr-only">
+            <DialogTitle>{pick(COPY.film.title, lang)}</DialogTitle>
+            <DialogDescription>{pick(COPY.film.body, lang)}</DialogDescription>
+          </div>
+          <div className="aspect-video w-full bg-black">
+            <iframe
+              data-testid="mar-light-film-iframe"
+              src={`https://www.youtube-nocookie.com/embed/${MOROCCO_LIGHT_VIDEO_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+              title={pick(COPY.film.title, lang)}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-4 border-t border-white/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+            <p className="font-serif-x text-xl">{pick(COPY.film.title, lang)}</p>
+            <a
+              href={MOROCCO_LIGHT_VIDEO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.24em] text-[#D4A373] hover:text-white"
+            >
+              {pick(COPY.film.youtube, lang)}
+              <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.6} />
+            </a>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+};
 
 const Why = ({ lang }) => (
   <section id="mar-why" data-testid="mar-why" className="relative bg-[#FDFBF7] py-24 md:py-32">
@@ -835,10 +961,12 @@ export default function MoroccoLandingPage() {
   return (
     <div data-testid="mar-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <MoroccoLightFilm lang={lang} />
       <SectionNav
         testid="mar-nav"
         items={[
           { id: "mar-why", label: { es: "Por qué", en: "Why", fr: "Pourquoi" } },
+          { id: "mar-video-regions", label: { es: "Vídeos", en: "Films", fr: "Vidéos" } },
           { id: "mar-experiences", label: { es: "Experiencias", en: "Experiences", fr: "Expériences" } },
           { id: "mar-map", label: { es: "Mapa", en: "Map", fr: "Carte" } },
           { id: "mar-seasons", label: { es: "Cuándo ir", en: "When to go", fr: "Quand partir" } },
@@ -847,6 +975,7 @@ export default function MoroccoLandingPage() {
         ]}
       />
       <Why lang={lang} />
+      <SouthMoroccoVideoCarousel />
       <Experiences lang={lang} />
       <InteractiveMap lang={lang} />
       <Profiles lang={lang} />

@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Compass, ArrowRight, Play, Pause } from "lucide-react";
+import { Compass, ArrowRight, Play, Pause, Send } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
 import { supabaseMedia } from "@/lib/supabaseMedia";
+import FounderContactModal from "@/components/FounderContactModal";
 
 /* ============================================================
    FoundersSection — Home, just below "Nuestra historia".
@@ -40,6 +41,7 @@ const COPY = {
   teamCta: T("Conoce al equipo", "Meet the team", "Découvrir l'équipe"),
   audioPlay: T("Escuchar a", "Listen to", "Écouter"),
   audioPause: T("Pausar", "Pause", "Pause"),
+  contact: T("Contactar con", "Contact", "Contacter"),
 };
 
 const FOUNDERS = [
@@ -137,7 +139,7 @@ const FounderAudio = ({ src, playLabel, pauseLabel, testid }) => {
   );
 };
 
-const FounderBlock = ({ f, reverse, lang }) => (
+const FounderBlock = ({ f, reverse, lang, onContact }) => (
   <div
     data-testid={`founder-${f.id}`}
     className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-12 md:gap-16 lg:gap-24`}
@@ -226,13 +228,22 @@ const FounderBlock = ({ f, reverse, lang }) => (
               multiline={false}
               className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]"
             />
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex flex-wrap justify-end gap-3">
               <FounderAudio
                 src={f.audio}
                 testid={`founder-audio-${f.id}`}
                 playLabel={`${(COPY.audioPlay[lang] ?? COPY.audioPlay.es)} ${f.firstName}`}
                 pauseLabel={COPY.audioPause[lang] ?? COPY.audioPause.es}
               />
+              <button
+                type="button"
+                onClick={() => onContact(f.id === "pont" ? "lluis" : "tayeb")}
+                data-testid={`founder-contact-${f.id}`}
+                className="inline-flex items-center gap-2.5 bg-[#2C2621] px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#C16542]"
+              >
+                <Send className="h-4 w-4" strokeWidth={1.7} />
+                {COPY.contact[lang] ?? COPY.contact.es} {f.firstName}
+              </button>
             </div>
           </div>
         </div>
@@ -243,7 +254,14 @@ const FounderBlock = ({ f, reverse, lang }) => (
 
 export const FoundersSection = () => {
   const { lang } = useLanguage();
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactRecipient, setContactRecipient] = useState("lluis");
+  const openFounderContact = (recipient) => {
+    setContactRecipient(recipient);
+    setContactOpen(true);
+  };
   return (
+  <>
   <section
     data-testid="founders-section"
     className="relative bg-[#F2EBE1] overflow-hidden"
@@ -281,7 +299,7 @@ export const FoundersSection = () => {
       {/* Founder blocks */}
       <div className="mt-16 md:mt-24 space-y-24 md:space-y-32">
         {FOUNDERS.map((f, i) => (
-          <FounderBlock key={f.id} f={f} reverse={i % 2 === 1} lang={lang} />
+          <FounderBlock key={f.id} f={f} reverse={i % 2 === 1} lang={lang} onContact={openFounderContact} />
         ))}
       </div>
 
@@ -303,6 +321,12 @@ export const FoundersSection = () => {
       </div>
     </div>
   </section>
+  <FounderContactModal
+    open={contactOpen}
+    onOpenChange={setContactOpen}
+    initialRecipient={contactRecipient}
+  />
+  </>
   );
 };
 

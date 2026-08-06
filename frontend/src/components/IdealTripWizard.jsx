@@ -11,9 +11,11 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { pathFor } from "@/lib/routes";
-import { ALL_TRIPS } from "@/lib/allTripsCatalog";
+import { ALL_TRIPS, ROUTE_IMAGES } from "@/lib/allTripsCatalog";
 import { setTripContext } from "@/lib/tripContext";
+import { IMG } from "@/lib/imageBank";
 import ImageContactBubble from "@/components/ImageContactBubble";
+import Img from "@/components/Img";
 
 const T = (es, en, fr) => ({ es, en, fr });
 const IDEAL_TRIP_WIZARD_EVENT = "xaluca:open-ideal-trip-wizard";
@@ -169,6 +171,73 @@ const PRIORITY_OPTIONS = [
   { id: "authentic", icon: Gem, label: T("Experiencias auténticas", "Authentic experiences", "Expériences authentiques") },
 ];
 
+/* Curated visual for every choice shown inside the wizard. Reusing the
+   semantic image bank keeps the treatment coherent and routes stock imagery
+   through the same CMS/Bunny optimisation pipeline as the rest of the site. */
+const OPTION_IMAGES = {
+  experiences: {
+    adventure: ROUTE_IMAGES.tourEnduroAventura45,
+    relax: IMG.riadFountain,
+    cultural: ROUTE_IMAGES.tourFezRak67,
+    desert: ROUTE_IMAGES.tourMarrakechLoop45,
+    mountain: ROUTE_IMAGES.tourMarrakechErg67,
+    nature: ROUTE_IMAGES.tourMarrakechLoop67,
+    photography: ROUTE_IMAGES.tourEscapadaFez34,
+    luxury: ROUTE_IMAGES.tourMarrakechFez67,
+    couple: ROUTE_IMAGES.tourMarrakechEss45,
+    family: ROUTE_IMAGES.tourCiudadesImperialesRif67,
+    friends: ROUTE_IMAGES.tourEscapadaRakErgRak23,
+    honeymoon: IMG.riadInterior,
+    combined: ROUTE_IMAGES.tourMarrakechFez910,
+  },
+  duration: {
+    "3-5": ROUTE_IMAGES.tourAtlasDesierto45,
+    "6-8": ROUTE_IMAGES.tourAtlasDesierto56,
+    "9-12": ROUTE_IMAGES.tourTangerRak910,
+    "13-16": ROUTE_IMAGES.tourMarrakechFez89,
+    "16+": ROUTE_IMAGES.tourFinDeAno2025,
+  },
+  pace: {
+    "very-calm": ROUTE_IMAGES.tourEscapadaMarrakech23,
+    balanced: ROUTE_IMAGES.tourDesiertoAtlas45,
+    active: ROUTE_IMAGES.tourAtlasDesierto67,
+    adventurous: ROUTE_IMAGES.tourEnduroAventura67,
+  },
+  places: {
+    marrakech: ROUTE_IMAGES.tourMarrakechErg45,
+    merzouga: ROUTE_IMAGES.tourMarrakechErg56,
+    atlas: ROUTE_IMAGES.tourEscapadaAtlas34,
+    dades: ROUTE_IMAGES.tourDesiertoAtlas67,
+    fez: ROUTE_IMAGES.tourFezRak78,
+    chefchaouen: ROUTE_IMAGES.tourTangerRak89,
+    essaouira: ROUTE_IMAGES.tourMarrakechEss67,
+    imperial: ROUTE_IMAGES.tourCiudadesImperiales45,
+    "full-morocco": ROUTE_IMAGES.tourCiudadesImperiales67,
+  },
+  companions: {
+    solo: ROUTE_IMAGES.tourCiudadesImperialesRif78,
+    couple: IMG.chefAlley,
+    family: ROUTE_IMAGES.tourTangerFez45,
+    friends: IMG.camelCaravan,
+    group: ROUTE_IMAGES.tourTangerFez56,
+  },
+  priorities: {
+    "charming-stays": ROUTE_IMAGES.tourEscapadaFez23,
+    "luxury-hotels": IMG.kasbahGate,
+    "desert-camps": ROUTE_IMAGES.tourEscapadaDesierto34,
+    landscapes: IMG.atlasMisty,
+    gastronomy: IMG.marketBaskets,
+    "local-culture": ROUTE_IMAGES.tourMarrakechLoop34,
+    activities: ROUTE_IMAGES.tourEscapadaRakAgafay34,
+    hiking: ROUTE_IMAGES.tourEscapadaRakErgRak34,
+    camels: IMG.desertWoman,
+    "four-wheel": IMG.dunesRocky,
+    wellness: IMG.essaouiraPort,
+    photography: ROUTE_IMAGES.tourFezTanger67,
+    authentic: ROUTE_IMAGES.tourMarrakechLoop56,
+  },
+};
+
 const STEPS = [
   { id: "experiences", multi: true, title: T("¿Qué tipo de experiencia buscas?", "What kind of experience are you looking for?", "Quel type d'expérience recherchez-vous ?"), options: EXPERIENCE_OPTIONS },
   { id: "duration", multi: true, title: T("¿Cuántos días quieres viajar?", "How many days would you like to travel?", "Combien de jours souhaitez-vous voyager ?"), options: DURATION_OPTIONS },
@@ -301,7 +370,7 @@ const scoreTrips = (answers, lang) => {
   }).sort((a, b) => b.score - a.score || a.nights - b.nights).slice(0, 3);
 };
 
-const OptionCard = ({ option, selected, onClick, lang }) => {
+const OptionCard = ({ option, image, selected, onClick, lang }) => {
   const Icon = option.icon || Sparkles;
   return (
     <button
@@ -309,18 +378,30 @@ const OptionCard = ({ option, selected, onClick, lang }) => {
       onClick={onClick}
       aria-pressed={selected}
       data-testid={`ideal-trip-option-${option.id}`}
-      className={`group relative min-h-[108px] border p-4 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] sm:min-h-[122px] sm:p-5 ${
+      className={`group relative overflow-hidden border text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 ${
         selected
-          ? "border-[#C16542] bg-[#C16542] text-white shadow-[0_16px_30px_-22px_rgba(193,101,66,0.8)]"
-          : "border-[#2C2621]/12 bg-[#FDFBF7] text-[#2C2621] hover:-translate-y-0.5 hover:border-[#C16542]/55"
+          ? "border-[#C16542] bg-[#C16542] text-white shadow-[0_18px_34px_-22px_rgba(193,101,66,0.85)]"
+          : "border-[#2C2621]/12 bg-[#FDFBF7] text-[#2C2621] hover:-translate-y-0.5 hover:border-[#C16542]/55 hover:shadow-[0_18px_34px_-28px_rgba(44,38,33,0.7)]"
       }`}
     >
-      <span className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${selected ? "bg-white/15" : "bg-[#F2EBE1] text-[#C16542]"}`}>
-        <Icon className="h-[18px] w-[18px]" strokeWidth={1.55} />
+      <span className="relative block aspect-[16/10] overflow-hidden bg-[#E8DFD2] sm:aspect-[16/9]">
+        <Img
+          src={image}
+          alt=""
+          width={480}
+          sizes="(max-width: 639px) 46vw, (max-width: 1023px) 30vw, 20vw"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+        />
+        <span className={`absolute inset-0 transition-colors ${selected ? "bg-[#8D3F28]/25" : "bg-gradient-to-t from-[#1A1513]/45 via-transparent to-transparent"}`} aria-hidden="true" />
+        <span className={`absolute bottom-2.5 left-2.5 inline-flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-colors sm:bottom-3 sm:left-3 sm:h-10 sm:w-10 ${selected ? "bg-[#C16542] text-white" : "bg-[#FDFBF7]/95 text-[#C16542]"}`}>
+          <Icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" strokeWidth={1.55} />
+        </span>
       </span>
-      <span className="mt-3 block font-serif-x text-base leading-tight sm:text-lg">{pick(option.label, lang)}</span>
+      <span className="flex min-h-[58px] items-center px-3 py-3 sm:min-h-[64px] sm:px-4">
+        <span className="block font-serif-x text-sm leading-tight sm:text-base lg:text-lg">{pick(option.label, lang)}</span>
+      </span>
       {selected && (
-        <span className="absolute right-3 top-3 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#C16542]">
+        <span className="absolute right-2.5 top-2.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#C16542] shadow-md sm:right-3 sm:top-3">
           <Check className="h-3.5 w-3.5" strokeWidth={2} />
         </span>
       )}
@@ -577,6 +658,7 @@ const WizardModal = ({ open, onClose, lang }) => {
                   <OptionCard
                     key={option.id}
                     option={option}
+                    image={OPTION_IMAGES[step.id]?.[option.id] || IMG.atlasValley}
                     selected={answers[step.id].includes(option.id)}
                     onClick={() => toggle(option.id)}
                     lang={lang}
