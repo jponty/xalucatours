@@ -25,7 +25,7 @@ const i18n = (es, en, fr) => ({ es, en, fr });
 /* Per-route MASTER images (unique, relevant photos sourced from Unsplash by
    destination/title). These are the reference images for each route; the
    Hero and every listing inherit them via lib/tripHero.js. */
-const ROUTE_IMAGES = {
+export const ROUTE_IMAGES = {
   tourAtlasDesierto45: "https://images.unsplash.com/photo-1581080565335-47b4b5e7abf1?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxBaXQlMjBCZW5oYWRkb3UlMjBrYXNiYWglMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MTZ8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourAtlasDesierto56: "https://images.unsplash.com/photo-1527960299979-ae13298358b6?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxrYXNiYWglMjByb2FkJTIwRGFkZXMlMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3MTd8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourAtlasDesierto67: "https://images.unsplash.com/photo-1553523291-8bac4d75344d?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxUb2RyYSUyMGdvcmdlJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzE3fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",

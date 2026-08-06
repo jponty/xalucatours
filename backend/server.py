@@ -119,6 +119,8 @@ class ContactRequest(BaseModel):
     source_route_id: Optional[str] = None
     source_path: Optional[str] = None
     source_label: Optional[str] = None
+    founder_recipient: Optional[str] = None
+    team_recipient: Optional[str] = None
     language: Optional[str] = "en"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -144,6 +146,8 @@ class ContactRequestCreate(BaseModel):
     source_route_id: Optional[str] = Field(default=None, max_length=120)
     source_path: Optional[str] = Field(default=None, max_length=300)
     source_label: Optional[str] = Field(default=None, max_length=300)
+    founder_recipient: Optional[str] = Field(default=None, max_length=20)
+    team_recipient: Optional[str] = Field(default=None, max_length=20)
     language: Optional[str] = "en"
 
     @field_validator("preferred_contact", mode="before")
@@ -159,6 +163,32 @@ class ContactRequestCreate(BaseModel):
     def _require_email_or_phone(self):
         if not self.email and not (self.phone or "").strip():
             raise ValueError("Email or phone is required")
+        return self
+
+    @field_validator("founder_recipient")
+    @classmethod
+    def _validate_founder_recipient(cls, value):
+        if value is None:
+            return None
+        normalized = value.strip().lower()
+        if normalized not in {"lluis", "tayeb", "both"}:
+            raise ValueError("Invalid founder recipient")
+        return normalized
+
+    @field_validator("team_recipient")
+    @classmethod
+    def _validate_team_recipient(cls, value):
+        if value is None:
+            return None
+        normalized = value.strip().lower()
+        if normalized not in {"noemi", "elena", "sanaa"}:
+            raise ValueError("Invalid team recipient")
+        return normalized
+
+    @model_validator(mode="after")
+    def _validate_direct_recipient(self):
+        if self.founder_recipient and self.team_recipient:
+            raise ValueError("Choose either a founder or a team recipient")
         return self
 
 
@@ -686,6 +716,11 @@ async def mirror_production(payload: MirrorPayload, authorization: str = Header(
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 LEADS_FROM_EMAIL = os.environ.get("LEADS_FROM_EMAIL", "").strip()
 LEADS_NOTIFY_EMAILS = [e.strip() for e in os.environ.get("LEADS_NOTIFY_EMAILS", "").split(",") if e.strip()]
+FOUNDER_LLUIS_EMAIL = os.environ.get("FOUNDER_LLUIS_EMAIL", "").strip()
+FOUNDER_TAYEB_EMAIL = os.environ.get("FOUNDER_TAYEB_EMAIL", "").strip()
+TEAM_NOEMI_EMAIL = os.environ.get("TEAM_NOEMI_EMAIL", "").strip()
+TEAM_ELENA_EMAIL = os.environ.get("TEAM_ELENA_EMAIL", "").strip()
+TEAM_SANAA_EMAIL = os.environ.get("TEAM_SANAA_EMAIL", "").strip()
 # Live, DB-backed recipient list (seeded from env). Mutated in place so the
 # fire-and-forget send_* functions always read the latest recipients.
 NOTIFY_EMAILS = list(LEADS_NOTIFY_EMAILS)
@@ -955,15 +990,21 @@ def _lead_email_html(title: str, subtitle: str, rows: List[tuple], reply_cta: st
     )
 
 
-def send_lead_notification(subject: str, html: str, reply_to: Optional[str] = None) -> None:
+def send_lead_notification(
+    subject: str,
+    html: str,
+    reply_to: Optional[str] = None,
+    recipients: Optional[List[str]] = None,
+) -> None:
     """Send a lead notification email. Never raises (logs on failure)."""
-    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and NOTIFY_EMAILS):
+    target_recipients = _clean_emails(recipients if recipients is not None else NOTIFY_EMAILS)
+    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and target_recipients):
         logger.warning("Resend not fully configured; skipping lead notification.")
         return
     try:
         params = {
             "from": LEADS_FROM_EMAIL,
-            "to": list(NOTIFY_EMAILS),
+            "to": target_recipients,
             "subject": subject,
             "html": html,
         }
@@ -1075,6 +1116,50 @@ def _contact_pref_label(value):
     return ", ".join(_CONTACT_PREF_LABELS.get((v or "").strip(), v) for v in ids if v)
 
 
+def _founder_recipient_label(value: Optional[str]) -> str:
+    return {
+        "lluis": "Lluís Pont",
+        "tayeb": "Tayeb Ettaiek",
+        "both": "Lluís Pont y Tayeb Ettaiek",
+    }.get((value or "").strip().lower(), "")
+
+
+def _founder_notification_recipients(value: Optional[str]) -> Optional[List[str]]:
+    selected = (value or "").strip().lower()
+    if not selected:
+        return None
+    configured = {
+        "lluis": FOUNDER_LLUIS_EMAIL,
+        "tayeb": FOUNDER_TAYEB_EMAIL,
+    }
+    ids = ("lluis", "tayeb") if selected == "both" else (selected,)
+    recipients = _clean_emails([configured.get(founder_id, "") for founder_id in ids])
+    # Keep the lead safe in the central inbox until individual addresses exist.
+    return recipients or list(NOTIFY_EMAILS)
+
+
+def _team_recipient_label(value: Optional[str]) -> str:
+    return {
+        "noemi": "Noemi Aparicio",
+        "elena": "Elena Xaluca",
+        "sanaa": "Sanaa Xaluca",
+    }.get((value or "").strip().lower(), "")
+
+
+def _team_notification_recipients(value: Optional[str]) -> Optional[List[str]]:
+    selected = (value or "").strip().lower()
+    if not selected:
+        return None
+    configured = {
+        "noemi": TEAM_NOEMI_EMAIL,
+        "elena": TEAM_ELENA_EMAIL,
+        "sanaa": TEAM_SANAA_EMAIL,
+    }
+    recipients = _clean_emails([configured.get(selected, "")])
+    # Keep the lead safe in the central inbox until individual addresses exist.
+    return recipients or list(NOTIFY_EMAILS)
+
+
 # Short Spanish region labels for the lead email subject summary.
 _REGION_SUBJECT_LABELS = {
     "sur": "Sur",
@@ -1108,8 +1193,20 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
     doc['created_at'] = doc['created_at'].isoformat()
     await db.contact_requests.insert_one(doc)
     contact_summary = obj.email or obj.phone or ""
+    founder_label = _founder_recipient_label(obj.founder_recipient)
+    team_label = _team_recipient_label(obj.team_recipient)
+    direct_label = founder_label or team_label
+    notification_title = (
+        "Contacto directo con fundadores" if founder_label
+        else "Contacto directo con el equipo" if team_label
+        else "Solicitud de contacto"
+    )
+    notification_subject = (
+        f"Consulta para {direct_label} · {obj.full_name}"
+        if direct_label else f"Nuevo contacto · {obj.full_name}"
+    )
     html = _lead_email_html(
-        "Solicitud de contacto",
+        notification_title,
         f"{obj.full_name} · {contact_summary}",
         [
             ("Nombre", obj.full_name),
@@ -1119,17 +1216,23 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
             ("Viajeros", obj.party_size),
             ("Interés", obj.journey_interest),
             ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
+            ("Destinatario", direct_label),
             ("Mensaje", obj.message),
             ("Página origen", obj.source_label or obj.source_path),
             ("Idioma", obj.language),
         ],
-        reply_cta=_reply_cta_html(obj.full_name, obj.email, f"Nuevo contacto · {obj.full_name}", obj.language),
+        reply_cta=_reply_cta_html(obj.full_name, obj.email, notification_subject, obj.language),
     )
     background_tasks.add_task(
         send_lead_notification,
-        f"Nuevo contacto · {obj.full_name}",
+        notification_subject,
         html,
         obj.email,
+        (
+            _founder_notification_recipients(obj.founder_recipient)
+            if founder_label
+            else _team_notification_recipients(obj.team_recipient)
+        ),
     )
     background_tasks.add_task(send_client_confirmation, obj.email, obj.full_name, obj.language)
     return obj

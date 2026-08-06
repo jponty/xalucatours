@@ -5,6 +5,7 @@ import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
   Hotel, Tent, Car, CalendarCheck, Globe2, Users, Heart, ShieldCheck,
   Phone, Mail, Clock, MapPin, Bus, Plane, PartyPopper, Package,
+  Send,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -16,6 +17,7 @@ import Testimonials from "@/components/Testimonials";
 import { SlotScope } from "@/components/slotScope";
 import { E, EImg } from "@/components/EditableSection";
 import { TEAM_MEMBERS as TEAM } from "@/lib/teamMembers";
+import FounderContactModal from "@/components/FounderContactModal";
 
 const DOC_TITLES = {
   es: "Equipo · Conoce Xaluca Tours",
@@ -104,37 +106,37 @@ const COPY = {
     },
     areasTitle: { es: "Nuestras áreas de especialización", en: "Our areas of specialisation", fr: "Nos domaines de spécialisation" },
     areas: [
-      { id: "hotels", icon: "Hotel",
+      { id: "hotels", icon: "Hotel", image: IMG.riadInterior,
         title: { es: "Hoteles y alojamientos", en: "Hotels & accommodation", fr: "Hôtels et hébergements" },
         body: { es: "Una colección de hoteles, riads y alojamientos con identidad propia repartidos por el sur de Marruecos.",
                 en: "A collection of hotels, riads and accommodations with their own identity across southern Morocco.",
                 fr: "Une collection d'hôtels, riads et hébergements à l'identité propre à travers le sud du Maroc." } },
-      { id: "camps", icon: "Tent",
+      { id: "camps", icon: "Tent", image: IMG.camelDunes,
         title: { es: "Campamentos en el desierto", en: "Desert camps", fr: "Campements dans le désert" },
         body: { es: "Campamentos exclusivos en Erg Chebbi, diseñados para vivir el Sáhara con comodidad y autenticidad.",
                 en: "Exclusive camps in Erg Chebbi, designed to experience the Sahara with comfort and authenticity.",
                 fr: "Des campements exclusifs à l'Erg Chebbi, conçus pour vivre le Sahara avec confort et authenticité." } },
-      { id: "transport", icon: "Bus",
+      { id: "transport", icon: "Bus", image: IMG.dunesRocky,
         title: { es: "Transporte propio", en: "Own transport fleet", fr: "Transport en propre" },
         body: { es: "Una flota propia de vehículos 4x4, minibuses, autocares y vehículos privados para garantizar la máxima flexibilidad y seguridad.",
                 en: "Our own fleet of 4x4 vehicles, minibuses, coaches and private cars to ensure maximum flexibility and safety.",
                 fr: "Une flotte propre de véhicules 4x4, minibus, autocars et voitures privées pour garantir un maximum de flexibilité et de sécurité." } },
-      { id: "agency-es", icon: "Plane",
+      { id: "agency-es", icon: "Plane", image: IMG.essaouiraPort,
         title: { es: "Agencia de viajes en España", en: "Travel agency in Spain", fr: "Agence de voyages en Espagne" },
         body: { es: "Asesoramiento personalizado, atención comercial y diseño de viajes para viajeros y grupos desde España.",
                 en: "Personalised advice, sales support and trip design for travellers and groups from Spain.",
                 fr: "Conseil personnalisé, service commercial et conception de voyages pour voyageurs et groupes depuis l'Espagne." } },
-      { id: "agency-ma", icon: "MapPin",
+      { id: "agency-ma", icon: "MapPin", image: IMG.chefBlueCity,
         title: { es: "Agencia de viajes en Marruecos", en: "Travel agency in Morocco", fr: "Agence de voyages au Maroc" },
         body: { es: "Operación local, coordinación de rutas, reservas y asistencia permanente durante todo el viaje.",
                 en: "Local operation, route coordination, bookings and permanent assistance throughout the entire trip.",
                 fr: "Opération locale, coordination des itinéraires, réservations et assistance permanente pendant tout le voyage." } },
-      { id: "events", icon: "PartyPopper",
+      { id: "events", icon: "PartyPopper", image: IMG.marketBaskets,
         title: { es: "Eventos & Incentivos", en: "Events & Incentives", fr: "Événements & Incentives" },
         body: { es: "Diseño y producción integral de congresos, viajes de incentivo, eventos corporativos y experiencias a medida para empresas.",
                 en: "End-to-end design and production of conventions, incentive trips, corporate events and tailor-made experiences for companies.",
                 fr: "Conception et production intégrales de congrès, voyages incentives, événements corporatifs et expériences sur mesure pour les entreprises." } },
-      { id: "logistics", icon: "Package",
+      { id: "logistics", icon: "Package", image: IMG.atlasValley,
         title: { es: "Logística y operaciones", en: "Logistics & operations", fr: "Logistique et opérations" },
         body: { es: "Un equipo propio especializado en coordinación, producción, montaje y gestión logística para garantizar que cada viaje y evento funcione a la perfección.",
                 en: "A dedicated team specialised in coordination, production, setup and logistics management to ensure every trip and event runs flawlessly.",
@@ -318,7 +320,7 @@ const Hero = ({ lang }) => (
   </section>
 );
 
-const TeamProfiles = ({ lang, selectedId, onSelect }) => {
+const TeamProfiles = ({ lang, selectedId, onSelect, onContact }) => {
   const selected = TEAM.find((m) => m.id === selectedId) || TEAM[0];
   return (
     <SlotScope id="team">
@@ -357,6 +359,15 @@ const TeamProfiles = ({ lang, selectedId, onSelect }) => {
                      className="font-hand text-[32px] leading-none text-[#2C2621]" />
                   <E name="role" defaults={selected.role} multiline={false} as="p"
                      className="font-hand text-xl text-[#A07042] mt-1.5" />
+                  <button
+                    type="button"
+                    onClick={() => onContact(selected.id)}
+                    data-testid={`eq-team-contact-${selected.id}`}
+                    className="mx-auto mt-4 inline-flex items-center gap-2 bg-[#2C2621] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#C16542]"
+                  >
+                    <Send className="h-3.5 w-3.5" strokeWidth={1.7} />
+                    {pick({ es: "Contactar", en: "Contact", fr: "Contacter" }, lang)}
+                  </button>
                 </figcaption>
               </figure>
             </SlotScope>
@@ -419,7 +430,7 @@ const TeamProfiles = ({ lang, selectedId, onSelect }) => {
   );
 };
 
-const Intro = ({ lang, selectedId, onSelect }) => (
+const Intro = ({ lang, selectedId, onSelect, onContact }) => (
   <section id="eq-intro" data-testid="eq-intro" className="relative bg-[#FDFBF7] py-24 md:py-32">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
@@ -437,7 +448,7 @@ const Intro = ({ lang, selectedId, onSelect }) => (
         </div>
       </div>
 
-      <TeamProfiles lang={lang} selectedId={selectedId} onSelect={onSelect} />
+      <TeamProfiles lang={lang} selectedId={selectedId} onSelect={onSelect} onContact={onContact} />
     </div>
   </section>
 );
@@ -552,20 +563,31 @@ const XalucaEcosystem = ({ lang }) => (
                 <article
                   key={a.id}
                   data-testid={`eq-ecosystem-${a.id}`}
-                  className="group bg-[#FDFBF7] p-7 md:p-8 hover:bg-[#F2EBE1] transition-colors flex flex-col"
+                  className="group bg-[#FDFBF7] hover:bg-[#F2EBE1] transition-colors overflow-hidden flex flex-col"
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="font-serif-x text-3xl text-[#C16542]/50 tabular-nums">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[#EDE4D6]">
+                    <EImg
+                      name={`${a.id}.image`}
+                      src={a.image}
+                      alt={pick(a.title, lang)}
+                      aspectRatio="16/10"
+                      imgProps={{ loading: "lazy" }}
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1A1513]/55 via-transparent to-transparent" aria-hidden="true" />
+                    <span className="absolute bottom-4 left-4 font-serif-x text-3xl text-white tabular-nums drop-shadow-sm">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="inline-flex items-center justify-center w-12 h-12 bg-[#F2EBE1] text-[#C16542] group-hover:bg-[#C16542] group-hover:text-[#FDFBF7] transition-colors">
+                    <span className="absolute bottom-4 right-4 inline-flex h-11 w-11 items-center justify-center bg-[#FDFBF7] text-[#C16542] shadow-lg transition-colors group-hover:bg-[#C16542] group-hover:text-[#FDFBF7]">
                       <Icon className="w-5 h-5" strokeWidth={1.5} />
                     </span>
                   </div>
-                  <E name={`${a.id}.title`} defaults={a.title} multiline={false} as="h4"
-                     className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621] mt-6" />
-                  <E name={`${a.id}.body`} defaults={a.body} as="p"
-                     className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1" />
+                  <div className="flex flex-1 flex-col p-7 md:p-8">
+                    <E name={`${a.id}.title`} defaults={a.title} multiline={false} as="h4"
+                       className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621]" />
+                    <E name={`${a.id}.body`} defaults={a.body} as="p"
+                       className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1" />
+                  </div>
                 </article>
               );
             })}
@@ -768,6 +790,8 @@ const FinalCta = ({ lang }) => (
 export default function EquipoPage() {
   const { lang } = useLanguage();
   const [selectedId, setSelectedId] = useState(TEAM[0].id);
+  const [teamContactOpen, setTeamContactOpen] = useState(false);
+  const [teamContactRecipient, setTeamContactRecipient] = useState(TEAM[0].id);
   const selectedMember = TEAM.find((m) => m.id === selectedId) || TEAM[0];
   const fn = selectedMember.firstName;
   const reviewEyebrow = {
@@ -783,6 +807,11 @@ export default function EquipoPage() {
     document.title = DOC_TITLES[lang] || DOC_TITLES.es;
   }, [lang]);
 
+  const openTeamContact = (recipient) => {
+    setTeamContactRecipient(recipient);
+    setTeamContactOpen(true);
+  };
+
   return (
     <div data-testid="eq-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
@@ -796,7 +825,7 @@ export default function EquipoPage() {
           { id: "eq-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
         ]}
       />
-      <Intro lang={lang} selectedId={selectedId} onSelect={setSelectedId} />
+      <Intro lang={lang} selectedId={selectedId} onSelect={setSelectedId} onContact={openTeamContact} />
       <Testimonials
         key={selectedId}
         testid="eq-team-reviews"
@@ -814,6 +843,12 @@ export default function EquipoPage() {
       <Bridge lang={lang} />
       <Values lang={lang} />
       <FinalCta lang={lang} />
+      <FounderContactModal
+        open={teamContactOpen}
+        onOpenChange={setTeamContactOpen}
+        initialRecipient={teamContactRecipient}
+        contactType="team"
+      />
     </div>
   );
 }
