@@ -99,6 +99,15 @@ const SEO = {
     ),
   },
 
+  archive: {
+    title: withBrand(T("Archivo completo de viajes", "Complete trip archive", "Archives complètes des voyages")),
+    description: T(
+      "Consulta todos los viajes de Xaluca Tours en una tabla con duración, precios por temporada y acceso directo a cada itinerario.",
+      "Browse every Xaluca Tours journey in one table with duration, seasonal pricing and direct access to each itinerary.",
+      "Consultez tous les voyages Xaluca Tours dans un tableau avec durée, tarifs saisonniers et accès direct à chaque itinéraire."
+    ),
+  },
+
   precios: {
     title: withBrand(T("Precios y tarifas", "Pricing", "Tarifs")),
     description: T(

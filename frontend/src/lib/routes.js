@@ -22,6 +22,7 @@ export const ROUTES = {
   // Catalogue cluster
   toursLanding:       { es: "viajes",                    en: "tours",                    fr: "voyages" },
   catalog:            { es: "catalogo",                  en: "catalogue",                fr: "catalogue" },
+  archive:            { es: "archivo",                   en: "archive",                  fr: "archives" },
   tourSouth:          { es: "viajes/surdemarruecos",     en: "tours/southern-morocco",   fr: "voyages/sud-du-maroc" },
   tourDesiertoAtlas67:{ es: "viajes/desierto_atlas/programa_6n_7d", en: "tours/desert-atlas/program-6n-7d", fr: "voyages/desert-atlas/programme-6n-7j" },
   tourDesiertoAtlas56:{ es: "viajes/desierto_atlas/programa_5n_6d", en: "tours/desert-atlas/program-5n-6d", fr: "voyages/desert-atlas/programme-5n-6j" },

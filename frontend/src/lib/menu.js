@@ -60,6 +60,12 @@ export const MENU_TREE = [
     ],
   },
   {
+    id: "archive",
+    routeId: "archive",
+    label: { es: "Archivo de viajes", en: "Trip archive", fr: "Archives des voyages" },
+    icon: "archive",
+  },
+  {
     id: "about-cluster",
     label: { es: "Sobre nosotros", en: "About us", fr: "À propos" },
     icon: "users",
