@@ -1,9 +1,11 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
 import { Compass, Thermometer, CloudSun, MapPin, Activity, Images } from "lucide-react";
 import { DAY_LANDMARKS, computeLandmarkBounds } from "@/lib/dayLandmarks";
+import { deriveDayPlaces } from "@/lib/dayPlaceGazetteer";
+import { resolveDayRoute } from "@/lib/dayRouteResolver";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { buildRouteGalleryCells } from "@/lib/routeLandmarks";
 import EditableImage from "@/components/EditableImage";
@@ -82,11 +84,59 @@ const MONTH_NAMES = {
   fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
 };
 
-const FitBoundsCtl = ({ bounds }) => {
+const MOROCCO_BOUNDS = [[27.5, -13.5], [36.2, -0.8]];
+
+const waypointToLandmark = (waypoint, index, routeId) => ({
+  id: `${routeId || "route"}-waypoint-${index}`,
+  lat: waypoint[1],
+  lng: waypoint[2],
+  kind: waypoint[3] || "stop",
+  name: waypoint[0],
+});
+
+const dedupeLandmarks = (landmarks) => {
+  const seen = new Set();
+  return landmarks.filter((landmark) => {
+    if (!Number.isFinite(landmark?.lat) || !Number.isFinite(landmark?.lng)) return false;
+    const key = `${landmark.lat.toFixed(5)}|${landmark.lng.toFixed(5)}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
+const MapViewportCtl = ({ landmarks, focusMode, focusLandmarkId, revision }) => {
   const map = useMap();
   useEffect(() => {
-    if (bounds) map.flyToBounds(bounds, { padding: [50, 50], duration: 0.9 });
-  }, [bounds, map]);
+    if (!landmarks.length) return undefined;
+
+    const moveMap = () => {
+      map.invalidateSize({ pan: false });
+      const focused = landmarks.find((landmark) => landmark.mapId === focusLandmarkId);
+      if (focusMode === "point" && focused) {
+        map.flyTo([focused.lat, focused.lng], 11, { animate: true, duration: 0.9 });
+        return;
+      }
+
+      if (landmarks.length === 1) {
+        map.flyTo([landmarks[0].lat, landmarks[0].lng], 10, { animate: true, duration: 0.9 });
+        return;
+      }
+
+      const nextBounds = computeLandmarkBounds(landmarks);
+      if (nextBounds) {
+        map.flyToBounds(nextBounds, {
+          padding: [50, 50],
+          animate: true,
+          duration: 0.9,
+          maxZoom: focusMode === "overview" ? 8 : 10,
+        });
+      }
+    };
+
+    const frame = window.requestAnimationFrame(moveMap);
+    return () => window.cancelAnimationFrame(frame);
+  }, [focusLandmarkId, focusMode, landmarks, map, revision]);
   return null;
 };
 
@@ -190,6 +240,9 @@ export const TripOverview = ({ days }) => {
   const { lang } = useLanguage();
   const t = T[lang] || T.es;
   const [activeDay, setActiveDay] = useState(null); // null = show all
+  const [activeLandmarkId, setActiveLandmarkId] = useState(null);
+  const [focusMode, setFocusMode] = useState("overview");
+  const [viewportRevision, setViewportRevision] = useState(0);
   const [activeSeason, setActiveSeason] = useState("high");
   const [liveData, setLiveData] = useState(null);
   const [liveState, setLiveState] = useState("idle"); // idle | loading | ok | error
@@ -223,26 +276,83 @@ export const TripOverview = ({ days }) => {
   const showingLive = activeSeason === "live" && liveData;
   const climateData = showingLive ? liveData : CLIMATE[activeSeason];
 
-  // Flatten landmarks per day with day metadata
-  const dayBlocks = useMemo(() => days.map((d, i) => {
-    const list = DAY_LANDMARKS[d.route_id] || [];
-    return {
+  // Build one geolocated block per day. The small legacy catalogue is kept as
+  // the first choice, while the shared gazetteer/route resolver covers every
+  // other itinerary in the site. A neighbouring anchor is only used as a last
+  // resort for transfer-only days with no named ground stop.
+  const dayBlocks = useMemo(() => {
+    const resolved = days.map((d, i) => {
+      const curated = DAY_LANDMARKS[d.route_id] || [];
+      const described = deriveDayPlaces(d, lang);
+      const routed = resolveDayRoute(d.route_id).map((waypoint, waypointIndex) =>
+        waypointToLandmark(waypoint, waypointIndex, d.route_id)
+      );
+      const list = dedupeLandmarks(curated.length ? curated : described.length ? described : routed);
+      return {
       idx: i,
       id: d.id,
       route_id: d.route_id,
       accent: d.accent,
       title: d.title,
       landmarks: list,
-    };
-  }), [days]);
+      };
+    });
+
+    return resolved.map((block, index) => {
+      if (block.landmarks.length) return block;
+      const previous = [...resolved.slice(0, index)].reverse().find((item) => item.landmarks.length);
+      const next = resolved.slice(index + 1).find((item) => item.landmarks.length);
+      const previousLandmarks = previous?.landmarks || [];
+      const anchor = previousLandmarks[previousLandmarks.length - 1] || next?.landmarks[0];
+      if (!anchor) return block;
+      return {
+        ...block,
+        landmarks: [{
+          ...anchor,
+          id: `${block.route_id || block.id || index}-transfer-anchor`,
+          name: block.title,
+          isTransferAnchor: true,
+        }],
+      };
+    });
+  }, [days, lang]);
 
   const allLandmarks = useMemo(
-    () => dayBlocks.flatMap((d) => d.landmarks.map((l) => ({ ...l, dayIdx: d.idx, accent: d.accent }))),
+    () => dayBlocks.flatMap((d) => d.landmarks.map((l, landmarkIndex) => ({
+      ...l,
+      dayIdx: d.idx,
+      accent: d.accent,
+      mapId: `${d.idx}-${l.id || landmarkIndex}`,
+    }))),
     [dayBlocks]
   );
-  const visibleLandmarks = activeDay == null ? allLandmarks : allLandmarks.filter((l) => l.dayIdx === activeDay);
+  const visibleLandmarks = useMemo(
+    () => activeDay == null ? allLandmarks : allLandmarks.filter((l) => l.dayIdx === activeDay),
+    [activeDay, allLandmarks]
+  );
+  const bounds = useMemo(() => computeLandmarkBounds(allLandmarks), [allLandmarks]);
 
-  const bounds = useMemo(() => computeLandmarkBounds(visibleLandmarks), [visibleLandmarks]);
+  const showAllDays = () => {
+    setActiveDay(null);
+    setActiveLandmarkId(null);
+    setFocusMode("overview");
+    setViewportRevision((value) => value + 1);
+  };
+
+  const selectDay = (dayIndex) => {
+    const firstLandmark = allLandmarks.find((landmark) => landmark.dayIdx === dayIndex);
+    setActiveDay(dayIndex);
+    setActiveLandmarkId(firstLandmark?.mapId || null);
+    setFocusMode("day");
+    setViewportRevision((value) => value + 1);
+  };
+
+  const selectLandmark = (landmark) => {
+    setActiveDay(landmark.dayIdx);
+    setActiveLandmarkId(landmark.mapId);
+    setFocusMode("point");
+    setViewportRevision((value) => value + 1);
+  };
 
   return (
     <section id="overview" data-testid="trip-overview"
@@ -270,8 +380,9 @@ export const TripOverview = ({ days }) => {
               <span className="overline">{t.map_label}</span>
               <button
                 type="button"
-                onClick={() => setActiveDay(null)}
+                onClick={showAllDays}
                 data-testid="trip-overview-filter-all"
+                aria-pressed={activeDay == null}
                 className={`text-[10px] tracking-[0.3em] uppercase transition-colors ${
                   activeDay == null ? "text-[#C16542]" : "text-[#5C5248] hover:text-[#2C2621]"
                 }`}
@@ -279,9 +390,14 @@ export const TripOverview = ({ days }) => {
                 {t.filter_all}
               </button>
             </div>
-            <div className="relative h-[460px] md:h-[560px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7]">
+            <div
+              className="relative h-[460px] md:h-[560px] overflow-hidden border border-[#2C2621]/15 bg-[#FDFBF7]"
+              data-testid="trip-overview-map"
+              data-active-day={activeDay == null ? "all" : activeDay + 1}
+              data-visible-landmarks={visibleLandmarks.length}
+            >
               <MapContainer
-                bounds={bounds}
+                bounds={bounds || MOROCCO_BOUNDS}
                 boundsOptions={{ padding: [50, 50] }}
                 scrollWheelZoom={false}
                 zoomControl
@@ -289,22 +405,42 @@ export const TripOverview = ({ days }) => {
                 style={{ height: "100%", width: "100%", background: "#F2EBE1" }}
               >
                 <MapBaseLayers variant="light" />
-                <FitBoundsCtl bounds={bounds} />
+                <MapViewportCtl
+                  landmarks={visibleLandmarks}
+                  focusMode={activeDay == null ? "overview" : focusMode}
+                  focusLandmarkId={activeLandmarkId}
+                  revision={viewportRevision}
+                />
                 {visibleLandmarks.map((l, i) => (
                   <React.Fragment key={`${l.dayIdx}-${l.id}-${i}`}>
                     <CircleMarker
                       center={[l.lat, l.lng]}
-                      radius={14}
-                      pathOptions={{ color: l.accent, weight: 0, fillColor: l.accent, fillOpacity: 0.18 }}
+                      radius={activeLandmarkId === l.mapId ? 20 : 14}
+                      pathOptions={{
+                        color: l.accent,
+                        weight: activeLandmarkId === l.mapId ? 2 : 0,
+                        fillColor: l.accent,
+                        fillOpacity: activeLandmarkId === l.mapId ? 0.3 : 0.18,
+                      }}
                       interactive={false}
                     />
                     <CircleMarker
                       center={[l.lat, l.lng]}
-                      radius={8}
-                      pathOptions={{ color: "#FDFBF7", weight: 2, fillColor: l.accent, fillOpacity: 1 }}
-                      eventHandlers={{ click: () => setActiveDay(l.dayIdx) }}
+                      radius={activeLandmarkId === l.mapId ? 11 : 8}
+                      pathOptions={{
+                        color: activeLandmarkId === l.mapId ? "#2C2621" : "#FDFBF7",
+                        weight: activeLandmarkId === l.mapId ? 3 : 2,
+                        fillColor: l.accent,
+                        fillOpacity: 1,
+                      }}
+                      eventHandlers={{ click: () => selectLandmark(l) }}
                     >
-                      <Tooltip direction="top" offset={[0, -8]} opacity={0.95}>
+                      <Tooltip
+                        direction="top"
+                        offset={[0, -8]}
+                        opacity={0.95}
+                        permanent={activeLandmarkId === l.mapId}
+                      >
                         <span className="text-[11px]">
                           <span className="font-semibold">{t.day_short} {String(l.dayIdx + 1).padStart(2, "0")}</span>
                           {" · "}{pick(l.name, lang)}
@@ -328,8 +464,9 @@ export const TripOverview = ({ days }) => {
                   <li key={d.idx}>
                     <button
                       type="button"
-                      onClick={() => setActiveDay((prev) => (prev === d.idx ? null : d.idx))}
+                      onClick={() => selectDay(d.idx)}
                       data-testid={`trip-overview-day-${d.idx + 1}`}
+                      aria-pressed={isActive}
                       className={`group w-full text-left flex items-center gap-4 px-4 py-3.5 border transition-all duration-300 ${
                         isActive
                           ? "bg-[#FDFBF7] border-[#2C2621]"
@@ -369,9 +506,9 @@ export const TripOverview = ({ days }) => {
                   <li key={d.idx} className="relative pt-0 pl-4 lg:pl-0">
                     <button
                       type="button"
-                      onClick={() => setActiveDay((prev) => (prev === d.idx ? null : d.idx))}
-                      onMouseEnter={() => setActiveDay(d.idx)}
+                      onClick={() => selectDay(d.idx)}
                       data-testid={`trip-overview-timeline-${d.idx + 1}`}
+                      aria-pressed={isActive}
                       className="block w-full text-left group"
                     >
                       <span

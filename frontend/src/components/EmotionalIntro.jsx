@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { translations } from "@/lib/i18n";
+import { pathFor } from "@/lib/routes";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
@@ -119,6 +121,14 @@ export const EmotionalIntro = () => {
               multiline={false}
               className="mt-10 text-[10px] tracking-[0.3em] uppercase text-[#5C5248] block"
             />
+            <Link
+              to={pathFor(lang, "whatWeDo")}
+              data-testid="emotional-intro-what-we-do"
+              className="mt-8 inline-flex items-center gap-3 bg-[#C16542] px-6 py-3.5 text-[10px] uppercase tracking-[0.24em] text-[#FDFBF7] transition-all duration-300 hover:gap-4 hover:bg-[#A35133] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
+            >
+              {t("intro_cta")}
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.6} />
+            </Link>
           </div>
 
           {/* Autoplay image carousel */}

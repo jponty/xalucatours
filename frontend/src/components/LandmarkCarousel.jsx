@@ -168,7 +168,13 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
   );
 };
 
-export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
+export const LandmarkCarousel = ({
+  landmark,
+  accent = "#C16542",
+  onClose,
+  autoScroll = true,
+  interactionRevision = 0,
+}) => {
   const { lang } = useLanguage();
   const t = LABELS[lang] || LABELS.es;
   // GLOBAL, page/language-independent slot base. The same point of interest
@@ -206,11 +212,17 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
     : [];
   const cardCopy = copyKeys.map((k) => CARD_COPY[k]).find(Boolean) || null;
 
-  // Auto-scroll into view + reset scroll position when landmark changes
+  // Only map-marker interactions request an automatic scroll. List selections
+  // still update the gallery contents but intentionally keep the user's current
+  // viewport anchored on the map/list block.
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
+    if (!autoScroll || !containerRef.current) return;
+    containerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [autoScroll, interactionRevision, landmark && landmark.id]);
+
+  // Reset the horizontal gallery track whenever its place changes, regardless
+  // of whether the selection came from the map or the adjacent list.
+  useEffect(() => {
     if (trackRef.current) {
       trackRef.current.scrollTo({ left: 0, behavior: "instant" in window ? "instant" : "auto" });
     }
@@ -229,8 +241,9 @@ export const LandmarkCarousel = ({ landmark, accent = "#C16542", onClose }) => {
     <div
       ref={containerRef}
       data-testid={`landmark-carousel-${landmark.id}`}
+      data-auto-scroll={autoScroll ? "true" : "false"}
       key={landmark.id}
-      className="landmark-carousel-enter mt-8 md:mt-10 bg-[#FDFBF7] border border-[#2C2621]/15 overflow-hidden shadow-[0_24px_60px_-30px_rgba(26,21,19,0.35)]"
+      className="landmark-carousel-enter scroll-mt-28 md:scroll-mt-32 mt-8 md:mt-10 bg-[#FDFBF7] border border-[#2C2621]/15 overflow-hidden shadow-[0_24px_60px_-30px_rgba(26,21,19,0.35)]"
     >
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 px-5 md:px-7 py-4 md:py-5 border-b border-[#2C2621]/10 bg-[#FDFBF7]">

@@ -1,10 +1,11 @@
 import SectionNav from "@/components/SectionNav";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Home, ChevronRight, Compass, Sparkles, ArrowRight, ArrowUpRight,
   Briefcase, Trophy, Music2, Heart, Phone, Mail, Clock, MapPin,
   CalendarCheck, Building2, Globe2, Tent, Users, TrendingUp,
+  Film, ChevronLeft, ExternalLink, Play,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -172,6 +173,26 @@ const COPY = {
       },
     ],
   },
+  videos: {
+    overline: {
+      es: "Eventos Grup Xaluca",
+      en: "Grup Xaluca events",
+      fr: "Événements Grup Xaluca",
+    },
+    title: {
+      es: "Momentos que convierten un evento en una experiencia.",
+      en: "Moments that turn an event into an experience.",
+      fr: "Des moments qui transforment un événement en expérience.",
+    },
+    body: {
+      es: "Descubre una selección de eventos realizados con Grup Xaluca y la capacidad de nuestro equipo para transformar cada idea en una puesta en escena única en Marruecos.",
+      en: "Discover a selection of events delivered with Grup Xaluca and our team's ability to turn every idea into a unique production in Morocco.",
+      fr: "Découvrez une sélection d'événements réalisés avec Grup Xaluca et la capacité de notre équipe à transformer chaque idée en une mise en scène unique au Maroc.",
+    },
+    watch: { es: "Reproducir en YouTube", en: "Play on YouTube", fr: "Lire sur YouTube" },
+    previous: { es: "Vídeo anterior", en: "Previous video", fr: "Vidéo précédente" },
+    next: { es: "Vídeo siguiente", en: "Next video", fr: "Vidéo suivante" },
+  },
   process: {
     overline: { es: "Tu viaje 100% a tu medida", en: "Your trip, 100% bespoke", fr: "Votre voyage 100 % sur mesure" },
     title: {
@@ -247,6 +268,36 @@ const COPY = {
 const ICON_MAP = {
   Briefcase, Trophy, Music2, Heart, CalendarCheck, Building2, Globe2, Tent,
 };
+
+const EVENT_VIDEOS = [
+  {
+    id: "IF8TpR0crEA",
+    url: "https://youtu.be/IF8TpR0crEA?si=R_Y2FI3-8T0oxh0a",
+    title: {
+      es: "Desert Women Summit Brasil · Edición 2023",
+      en: "Desert Women Summit Brazil · 2023 Edition",
+      fr: "Desert Women Summit Brésil · Édition 2023",
+    },
+  },
+  {
+    id: "k845U6YUBbE",
+    url: "https://youtu.be/k845U6YUBbE?si=aiy5wqDZY0A-gSjM",
+    title: {
+      es: "Así fue la Desert Women Summit 2022",
+      en: "The Desert Women Summit 2022 experience",
+      fr: "Retour sur le Desert Women Summit 2022",
+    },
+  },
+  {
+    id: "fYQwbUoGkek",
+    url: "https://youtu.be/fYQwbUoGkek?si=g5Q_O0FuomYC-giQ",
+    title: {
+      es: "Una experiencia inolvidable en el Sáhara con Grup Xaluca",
+      en: "An unforgettable experience in the Sahara with Grup Xaluca",
+      fr: "Une expérience inoubliable au Sahara avec Grup Xaluca",
+    },
+  },
+];
 
 /* ============================================================
    Sub-components
@@ -528,6 +579,131 @@ const Cases = ({ lang }) => (
   </SlotScope>
 );
 
+const EventVideos = ({ lang }) => {
+  const railRef = useRef(null);
+
+  const move = (direction) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    rail.scrollBy({
+      left: rail.clientWidth * 0.82 * direction,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <section
+      id="inc-videos"
+      data-testid="inc-videos"
+      className="relative overflow-hidden border-t border-[#2C2621]/10 bg-[#F2EBE1] py-20 md:py-28"
+    >
+      <div className="absolute inset-0 berber-bg-diamond opacity-35 pointer-events-none" aria-hidden="true" />
+      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
+        <div className="mb-12 grid grid-cols-1 items-end gap-8 md:mb-16 md:grid-cols-12">
+          <div className="md:col-span-7">
+            <span className="overline inline-flex items-center gap-2 text-[#C16542]">
+              <Film className="h-3.5 w-3.5" strokeWidth={1.6} />
+              {pick(COPY.videos.overline, lang)}
+            </span>
+            <h2 className="mt-4 font-serif-x text-4xl leading-[1.05] tracking-tight text-[#2C2621] md:text-5xl lg:text-[52px]">
+              {pick(COPY.videos.title, lang)}
+            </h2>
+          </div>
+          <div className="md:col-span-5">
+            <p className="text-base leading-relaxed text-[#5C5248] md:text-lg">
+              {pick(COPY.videos.body, lang)}
+            </p>
+            <div className="mt-7 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => move(-1)}
+                aria-label={pick(COPY.videos.previous, lang)}
+                data-testid="inc-videos-prev"
+                className="inline-flex h-11 w-11 items-center justify-center border border-[#2C2621]/25 text-[#2C2621] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
+              >
+                <ChevronLeft className="h-4 w-4" strokeWidth={1.7} />
+              </button>
+              <button
+                type="button"
+                onClick={() => move(1)}
+                aria-label={pick(COPY.videos.next, lang)}
+                data-testid="inc-videos-next"
+                className="inline-flex h-11 w-11 items-center justify-center border border-[#2C2621]/25 text-[#2C2621] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
+              >
+                <ChevronRight className="h-4 w-4" strokeWidth={1.7} />
+              </button>
+              <span className="ml-2 text-[10px] uppercase tracking-[0.28em] text-[#5C5248]">
+                {String(EVENT_VIDEOS.length).padStart(2, "0")} videos
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          ref={railRef}
+          data-testid="inc-videos-rail"
+          aria-label={pick(COPY.videos.overline, lang)}
+          className="no-scrollbar -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-4 md:-mx-12 md:gap-8 md:px-12"
+        >
+          {EVENT_VIDEOS.map((video, index) => (
+            <article
+              key={video.id}
+              data-testid={`inc-video-${video.id}`}
+              className="min-w-[90%] snap-start overflow-hidden border border-[#2C2621]/10 bg-[#FDFBF7] shadow-[0_24px_60px_-36px_rgba(26,21,19,0.45)] sm:min-w-[78%] lg:min-w-[64%]"
+            >
+              <a
+                href={video.url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${pick(COPY.videos.watch, lang)}: ${pick(video.title, lang)}`}
+                data-testid={`inc-video-play-${video.id}`}
+                className="group/video relative block aspect-video overflow-hidden bg-[#1A1513]"
+              >
+                <img
+                  src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+                  alt=""
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover/video:scale-[1.03]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/75 via-[#1A1513]/15 to-[#1A1513]/10 transition-colors group-hover/video:from-[#1A1513]/65" />
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <span className="inline-flex h-16 w-16 items-center justify-center rounded-full border border-white/55 bg-[#C16542] text-white shadow-2xl transition-transform group-hover/video:scale-110 md:h-20 md:w-20">
+                    <Play className="ml-1 h-6 w-6 fill-current md:h-8 md:w-8" strokeWidth={1.4} />
+                  </span>
+                </span>
+                <span className="absolute bottom-5 left-5 right-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-white md:bottom-6 md:left-6">
+                  <Film className="h-3.5 w-3.5" strokeWidth={1.7} />
+                  {pick(COPY.videos.watch, lang)}
+                </span>
+              </a>
+              <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between md:p-7">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#C16542]">
+                    {pick(COPY.videos.overline, lang)} · {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-2 font-serif-x text-xl text-[#2C2621] md:text-2xl">
+                    {pick(video.title, lang)}
+                  </h3>
+                </div>
+                <a
+                  href={video.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-testid={`inc-video-link-${video.id}`}
+                  className="inline-flex shrink-0 items-center gap-2 self-start border-b border-[#C16542]/35 pb-1 text-[10px] uppercase tracking-[0.22em] text-[#C16542] transition-colors hover:border-[#C16542]"
+                >
+                  {pick(COPY.videos.watch, lang)}
+                  <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.7} />
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Process = ({ lang }) => (
   <SlotScope id="process">
     <section
@@ -716,6 +892,7 @@ export default function IncentivosPage() {
           { id: "inc-trust", label: { es: "Confianza", en: "Trust", fr: "Confiance" } },
           { id: "inc-verticals", label: { es: "Áreas", en: "Areas", fr: "Domaines" } },
           { id: "inc-cases", label: { es: "Casos", en: "Cases", fr: "Cas" } },
+          { id: "inc-videos", label: { es: "Vídeos", en: "Videos", fr: "Vidéos" } },
           { id: "inc-process", label: { es: "Proceso", en: "Process", fr: "Processus" } },
           { id: "inc-final-cta", label: { es: "Contacto", en: "Contact", fr: "Contact" } },
         ]}
@@ -723,6 +900,7 @@ export default function IncentivosPage() {
       <TrustBar lang={lang} />
       <Verticals lang={lang} />
       <Cases lang={lang} />
+      <EventVideos lang={lang} />
       <Process lang={lang} />
       <FinalCta lang={lang} />
     </div>

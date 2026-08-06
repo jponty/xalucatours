@@ -20,6 +20,8 @@ import ToursVideoSection from "@/components/ToursVideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
+import IdealTripWizard from "@/components/IdealTripWizard";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users, Leaf };
@@ -726,11 +728,11 @@ const ContactIntro = ({ t, lang }) => (
                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
               {t.cta_form}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             </Link>
-            <a href={`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`} target="_blank" rel="noreferrer"
+            <button type="button" onClick={() => requestWhatsAppContact(`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`)}
                data-testid="viajes-contact-cta-wa"
                className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
               <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.6} />WhatsApp
-            </a>
+            </button>
           </div>
         </div>
         <div className="md:col-span-5 space-y-4">
@@ -1084,6 +1086,7 @@ export default function ToursLandingPage() {
           { id: "intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
           { id: "regions", label: { es: "Regiones", en: "Regions", fr: "Régions" } },
           { id: "experiences", label: { es: "Experiencias", en: "Experiences", fr: "Expériences" } },
+          { id: "ideal-trip", label: { es: "Tu viaje ideal", en: "Your ideal trip", fr: "Votre voyage idéal" } },
           { id: "explorer", label: { es: "Explorador", en: "Explorer", fr: "Explorateur" } },
           { id: "proximas", label: { es: "Próximas salidas", en: "Upcoming", fr: "Prochains départs" } },
           { id: "asesoramiento", label: { es: "Asesoramiento", en: "Advice", fr: "Conseil" } },
@@ -1094,6 +1097,7 @@ export default function ToursLandingPage() {
       <ToursVideoSection videoId="nzD3e3Qr7g8" />
       <RegionsSection t={t.regions} lang={lang} />
       <ExperiencesSection t={t.experiences} lang={lang} />
+      <IdealTripWizard />
       <TripExplorer t={t.explorer} lang={lang} />
       <HomeAllTripsCatalog initialLimit={12} />
       <ProximasSalidas t={t.proximas} lang={lang} />

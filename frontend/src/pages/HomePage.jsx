@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import HeroSlider from "@/components/HeroSlider";
 import HomeSectionNav from "@/components/HomeSectionNav";
+import DualTimezoneClock from "@/components/DualTimezoneClock";
 import TripFinder from "@/components/TripFinder";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
@@ -15,6 +16,7 @@ import PlannerCta from "@/components/PlannerCta";
 import WhyXaluca from "@/components/WhyXaluca";
 import FeaturedQuote from "@/components/FeaturedQuote";
 import TravelCategories from "@/components/TravelCategories";
+import IdealTripWizard from "@/components/IdealTripWizard";
 import OurTrips from "@/components/OurTrips";
 import AllTripsCarousel from "@/components/AllTripsCarousel";
 import StressFreeProcess from "@/components/StressFreeProcess";
@@ -116,6 +118,7 @@ export default function HomePage() {
       <HomeWelcomeModal />
       <HeroSlider />
       <HomeSectionNav />
+      <DualTimezoneClock />
       <div id="buscador" className="scroll-mt-[172px]">
         <TripFinder />
       </div>
@@ -137,6 +140,7 @@ export default function HomePage() {
       <div id="viajes" className="scroll-mt-[172px]">
         <TravelCategories />
       </div>
+      <IdealTripWizard />
       <OurTrips />
       <HomeAllTripsCatalog initialLimit={8} />
       <AllTripsCarousel />

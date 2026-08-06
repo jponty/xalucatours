@@ -13,6 +13,7 @@ import EditModeFAB from "@/components/EditModeFAB";
 import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
 import AppointmentInfoModal from "@/components/AppointmentInfoModal";
 import PlanTripInfoModal from "@/components/PlanTripInfoModal";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 
 export const Header = () => {
   const { t, lang } = useLanguage();
@@ -96,16 +97,15 @@ export const Header = () => {
           <BrandMark />
 
           <div className="flex items-center gap-2 md:gap-3">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
               aria-label="WhatsApp"
               data-testid="header-whatsapp-button"
               className="inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#25D366] hover:bg-[#1EBE5A] text-[#FDFBF7] transition-colors duration-300 shadow-[0_8px_20px_-10px_rgba(37,211,102,0.8)]"
             >
               <WhatsAppIcon className="w-4 h-4 md:w-[18px] md:h-[18px]" />
-            </a>
+            </button>
             <Link
               to={pathFor(lang, "favorites")}
               data-testid="header-favorites-button"

@@ -32,6 +32,7 @@ import EditableText from "@/components/EditableText";
 import PricingSection from "@/components/PricingSection";
 import FromPrice from "@/components/FromPrice";
 import DownloadProgramModal from "@/components/DownloadProgramModal";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import VideoSection from "@/components/VideoSection";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
@@ -760,11 +761,11 @@ const ContactBand = ({ t, lang }) => (
               className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
           <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} /><L k="cta_appointment" />
         </Link>
-        <a href={`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`} target="_blank" rel="noreferrer"
+        <button type="button" onClick={() => requestWhatsAppContact(`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`)}
            data-testid="program-cta-whatsapp"
            className="inline-flex items-center gap-3 border border-[#25D366]/60 hover:bg-[#25D366] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
           <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.6} />WhatsApp
-        </a>
+        </button>
       </div>
     </div>
   </section>

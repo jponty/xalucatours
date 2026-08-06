@@ -72,6 +72,15 @@ const SEO = {
     ),
   },
 
+  southTimeline: {
+    title: withBrand(T("Mejor época para viajar al sur de Marruecos", "Best time to visit southern Morocco", "Meilleure saison pour le sud du Maroc")),
+    description: T(
+      "Guía mes a mes del clima, las temperaturas y las mejores experiencias para viajar al sur de Marruecos, el Atlas y el desierto.",
+      "A month-by-month guide to climate, temperatures and the best experiences in southern Morocco, the Atlas and the desert.",
+      "Guide mois par mois du climat, des températures et des meilleures expériences dans le sud du Maroc, l’Atlas et le désert."
+    ),
+  },
+
   toursLanding: {
     title: withBrand(T("Nuestros viajes por Marruecos", "Our Morocco tours", "Nos voyages au Maroc")),
     description: T(

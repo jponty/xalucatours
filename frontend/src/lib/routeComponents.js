@@ -120,6 +120,7 @@ import AsistentePage from "@/pages/AsistentePage";
 import FavoritosPage from "@/pages/FavoritosPage";
 import FastTrackPage from "@/pages/FastTrackPage";
 import FeedbackPage from "@/pages/FeedbackPage";
+import SouthTravelTimelinePage from "@/pages/SouthTravelTimelinePage";
 
 export const ROUTE_COMPONENTS = {
   home:                          HomePage,
@@ -250,4 +251,5 @@ export const ROUTE_COMPONENTS = {
   favorites:                     FavoritosPage,
   fastTrack:                     FastTrackPage,
   feedback:                      FeedbackPage,
+  southTimeline:                 SouthTravelTimelinePage,
 };
