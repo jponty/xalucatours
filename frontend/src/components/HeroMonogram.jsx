@@ -8,12 +8,12 @@ import xMonogramBorde from "@/assets/monograma-x-borde.png";
    opacity used across the site (footer / galleries / cards). The parent
    hero must be position:relative + overflow-hidden.
 ============================================================ */
-export const HeroMonogram = ({ className = "", zClass = "z-[1]" }) => (
+export const HeroMonogram = ({ className = "", zClass = "z-[1]", testid = "hero-monogram" }) => (
   <img
     src={xMonogramBorde}
     alt=""
     aria-hidden="true"
-    data-testid="hero-monogram"
+    data-testid={testid}
     className={`hidden md:block pointer-events-none select-none absolute bottom-0 right-0 h-[120%] w-auto max-w-none object-contain opacity-[0.18] ${zClass} ${className}`}
   />
 );

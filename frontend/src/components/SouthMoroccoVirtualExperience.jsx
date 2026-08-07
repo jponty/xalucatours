@@ -11,6 +11,8 @@ import { IMG } from "@/lib/imageBank";
 import Img from "@/components/Img";
 import MapBaseLayers from "@/components/MapBaseLayers";
 import MapLogoBadge from "@/components/MapLogoBadge";
+import HeroMonogram from "@/components/HeroMonogram";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import {
   Dialog, DialogContent, DialogDescription, DialogTitle,
 } from "@/components/ui/dialog";
@@ -144,7 +146,7 @@ const MapFocus = ({ stage }) => {
 };
 
 const JourneyMap = ({ active, onSelect, lang }) => (
-  <div className="relative h-[250px] overflow-hidden border border-white/15 lg:h-[310px]">
+  <div className="relative min-h-0 flex-1 overflow-hidden border border-white/15">
     <MapContainer
       center={active.coords}
       zoom={active.zoom}
@@ -189,7 +191,8 @@ export default function SouthMoroccoVirtualExperience() {
   return (
     <section id="mar-virtual-tour" data-testid="mar-virtual-tour" className="relative overflow-hidden bg-[#1A1513] py-20 text-[#FDFBF7] md:py-28">
       <div className="pointer-events-none absolute inset-0 berber-bg-cross opacity-40" aria-hidden="true" />
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-6 md:px-12 lg:grid-cols-12 lg:items-center">
+      <HeroMonogram zClass="z-[2]" testid="mar-virtual-tour-monogram" />
+      <div className="relative z-[1] mx-auto grid max-w-7xl gap-10 px-6 md:px-12 lg:grid-cols-12 lg:items-center">
         <div className="lg:col-span-5">
           <span className="inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#D4A373]">
             <Compass className="h-4 w-4" strokeWidth={1.5} />
@@ -217,6 +220,9 @@ export default function SouthMoroccoVirtualExperience() {
           aria-label={pick(COPY.open, lang)}
           className="group relative grid h-[430px] grid-cols-2 gap-1 overflow-hidden lg:col-span-7 lg:h-[520px]"
         >
+          <span className="absolute right-4 top-4 z-[3] flex h-14 w-14 items-center justify-center rounded-full border border-white/45 bg-[#F38A00] shadow-[0_10px_28px_rgba(0,0,0,0.28)] sm:right-5 sm:top-5 sm:h-16 sm:w-16">
+            <img src={grupXalucaLogo} alt="Grup Xaluca" className="h-full w-full object-contain" />
+          </span>
           {[IMG.dunes, IMG.atlasVillage, IMG.kasbahArch].map((image, imageIndex) => (
             <span key={image} className={`relative overflow-hidden ${imageIndex === 0 ? "row-span-2" : ""}`}>
               <Img src={image} alt="" sizes="(min-width: 1024px) 28vw, 50vw" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -269,51 +275,50 @@ export default function SouthMoroccoVirtualExperience() {
               </div>
             </header>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              <div className="grid min-h-full lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,.9fr)]">
-                <div className="border-b border-white/10 lg:border-b-0 lg:border-r">
-                  <div className="p-4 md:p-6">
-                    <p className="mb-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.22em] text-[#D4A373]">
-                      <MapPin className="h-3.5 w-3.5" /> {pick(COPY.map, lang)}
-                    </p>
-                    <JourneyMap active={active} onSelect={select} lang={lang} />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-1 px-4 pb-4 md:px-6 md:pb-6">
-                    {active.images.map((image, imageIndex) => (
-                      <div key={image} className={`overflow-hidden ${imageIndex === 0 ? "aspect-[4/3]" : "aspect-[4/3]"}`}>
-                        <Img src={image} alt={`${pick(active.name, lang)} ${imageIndex + 1}`} sizes="(min-width: 1024px) 20vw, 33vw" className="h-full w-full object-cover" />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="px-4 pb-5 md:px-6 md:pb-6">
-                    {showFilm ? (
-                      <div className="relative aspect-video overflow-hidden bg-black">
-                        <iframe
-                          title={`${pick(active.name, lang)} · ${pick(COPY.film, lang)}`}
-                          src={`https://www.youtube-nocookie.com/embed/${active.video}?autoplay=1&rel=0&modestbranding=1`}
-                          allow="autoplay; encrypted-media; picture-in-picture"
-                          allowFullScreen
-                          className="absolute inset-0 h-full w-full border-0"
-                        />
-                      </div>
-                    ) : (
-                      <button type="button" onClick={() => setShowFilm(true)} className="group relative block aspect-video w-full overflow-hidden bg-black text-left">
-                        <img src={youtubePoster(active.video)} alt="" className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-105" />
-                        <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                        <span className="absolute inset-0 flex items-center justify-center"><span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/60 bg-black/45"><Play className="ml-1 h-6 w-6" fill="currentColor" /></span></span>
-                        <span className="absolute bottom-4 left-4 text-[9px] font-semibold uppercase tracking-[0.22em]">{pick(COPY.film, lang)}</span>
-                      </button>
-                    )}
-                  </div>
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <div className="grid h-full min-h-0 grid-rows-[250px_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,.9fr)] lg:grid-rows-1">
+                <div className="flex min-h-0 flex-col border-b border-white/10 p-4 md:p-6 lg:border-b-0 lg:border-r">
+                  <p className="mb-3 flex shrink-0 items-center gap-2 text-[9px] uppercase tracking-[0.22em] text-[#D4A373]">
+                    <MapPin className="h-3.5 w-3.5" /> {pick(COPY.map, lang)}
+                  </p>
+                  <JourneyMap active={active} onSelect={select} lang={lang} />
                 </div>
 
-                <article className="flex flex-col p-6 md:p-9 lg:p-10">
-                  <div className="flex-1">
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-[#C16542]">{String(index + 1).padStart(2, "0")} · {pick(active.kicker, lang)}</p>
-                    <h3 className="mt-4 font-serif-x text-4xl leading-[1.02] md:text-5xl">{pick(active.name, lang)}</h3>
-                    <p className="mt-6 text-sm leading-7 text-white/70 md:text-base">{pick(active.intro, lang)}</p>
+                <article className="min-h-0 overflow-y-auto p-6 md:p-9 lg:p-10">
+                  <div className="flex min-h-full flex-col">
+                    <div className="flex-1">
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-[#C16542]">{String(index + 1).padStart(2, "0")} · {pick(active.kicker, lang)}</p>
+                      <h3 className="mt-4 font-serif-x text-4xl leading-[1.02] md:text-5xl">{pick(active.name, lang)}</h3>
+                      <p className="mt-6 text-sm leading-7 text-white/70 md:text-base">{pick(active.intro, lang)}</p>
+
+                      <div className="mt-8 grid grid-cols-3 gap-1">
+                        {active.images.map((image, imageIndex) => (
+                          <div key={image} className={`overflow-hidden ${imageIndex === 0 ? "aspect-[4/3]" : "aspect-[4/3]"}`}>
+                            <Img src={image} alt={`${pick(active.name, lang)} ${imageIndex + 1}`} sizes="(min-width: 1024px) 20vw, 33vw" className="h-full w-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-4">
+                        {showFilm ? (
+                          <div className="relative aspect-video overflow-hidden bg-black">
+                            <iframe
+                              title={`${pick(active.name, lang)} · ${pick(COPY.film, lang)}`}
+                              src={`https://www.youtube-nocookie.com/embed/${active.video}?autoplay=1&rel=0&modestbranding=1`}
+                              allow="autoplay; encrypted-media; picture-in-picture"
+                              allowFullScreen
+                              className="absolute inset-0 h-full w-full border-0"
+                            />
+                          </div>
+                        ) : (
+                          <button type="button" onClick={() => setShowFilm(true)} className="group relative block aspect-video w-full overflow-hidden bg-black text-left">
+                            <img src={youtubePoster(active.video)} alt="" className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-105" />
+                            <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                            <span className="absolute inset-0 flex items-center justify-center"><span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/60 bg-black/45"><Play className="ml-1 h-6 w-6" fill="currentColor" /></span></span>
+                            <span className="absolute bottom-4 left-4 text-[9px] font-semibold uppercase tracking-[0.22em]">{pick(COPY.film, lang)}</span>
+                          </button>
+                        )}
+                      </div>
 
                     <div className="mt-8 border-t border-white/10 pt-6">
                       <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#D4A373]">{pick(COPY.landmarks, lang)}</p>
@@ -367,15 +372,16 @@ export default function SouthMoroccoVirtualExperience() {
                         {pick(COPY.proposal, lang)} <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                     </div>
-                  </div>
+                    </div>
 
-                  <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-5">
-                    <button type="button" disabled={index === 0} onClick={() => select(index - 1)} className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/70 hover:text-white disabled:cursor-not-allowed disabled:opacity-25">
-                      <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">{pick(COPY.previous, lang)}</span>
-                    </button>
-                    <button type="button" disabled={index === STAGES.length - 1} onClick={() => select(index + 1)} className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/70 hover:text-white disabled:cursor-not-allowed disabled:opacity-25">
-                      <span className="hidden sm:inline">{pick(COPY.next, lang)}</span> <ArrowRight className="h-4 w-4" />
-                    </button>
+                    <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-5">
+                      <button type="button" disabled={index === 0} onClick={() => select(index - 1)} className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/70 hover:text-white disabled:cursor-not-allowed disabled:opacity-25">
+                        <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">{pick(COPY.previous, lang)}</span>
+                      </button>
+                      <button type="button" disabled={index === STAGES.length - 1} onClick={() => select(index + 1)} className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/70 hover:text-white disabled:cursor-not-allowed disabled:opacity-25">
+                        <span className="hidden sm:inline">{pick(COPY.next, lang)}</span> <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </article>
               </div>
