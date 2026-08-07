@@ -919,6 +919,7 @@ def _email_banner(inner_html: str, padding: str = "24px 28px") -> str:
 # Guarantees the lead emails never show raw internal trip ids, even when the
 # frontend payload omits the resolved detail. Regenerate with build_trip_gazetteer.py.
 PUBLIC_SITE_URL = os.environ.get("PUBLIC_SITE_URL", "").strip().rstrip("/")
+_PUBLIC_SITE_FALLBACK = "https://xaluca-tours-web.onrender.com"
 _TRIP_GAZETTEER: Dict[str, dict] = {}
 try:
     _gaz_path = ROOT_DIR / "trip_gazetteer.json"
@@ -1012,6 +1013,17 @@ def _build_trips_email_value(detail: list, ids: list, lang: str, base_url: str =
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
         'style="width:100%;border-collapse:collapse">' + "".join(rows) + '</table>'
     )
+
+
+def _public_site_link(path: str) -> str:
+    """Return a production-safe public URL, never a local development URL."""
+    base = (PUBLIC_SITE_URL or _PUBLIC_SITE_FALLBACK).strip().rstrip("/")
+    if (
+        not re.match(r"^https?://", base, re.I)
+        or re.match(r"^https?://(?:localhost|127\.0\.0\.1|0\.0\.0\.0)(?::\d+)?(?:/|$)", base, re.I)
+    ):
+        base = _PUBLIC_SITE_FALLBACK
+    return f"{base}/{path.lstrip('/')}"
 
 
 
@@ -1116,6 +1128,13 @@ _CONFIRM_COPY = {
         ),
         "closing": "Un cordial saludo,",
         "team": "El equipo de Xaluca Tours",
+        "preparing_title": "Mientras preparamos tu propuesta",
+        "preparing_body": (
+            "Mientras nuestro equipo revisa tu solicitud y prepara una propuesta personalizada, "
+            "puedes seguir descubriendo todos los viajes disponibles de Xaluca Tours."
+        ),
+        "archive_cta": "Explorar todos nuestros viajes",
+        "summary_title": "Resumen de tu solicitud",
         "footer": "Especialistas en viajes a medida por Marruecos.",
     },
     "en": {
@@ -1130,6 +1149,13 @@ _CONFIRM_COPY = {
         ),
         "closing": "Warm regards,",
         "team": "The Xaluca Tours team",
+        "preparing_title": "While we prepare your proposal",
+        "preparing_body": (
+            "While our team reviews your request and prepares a personalised proposal, "
+            "you can continue exploring all available Xaluca Tours journeys."
+        ),
+        "archive_cta": "Explore all our journeys",
+        "summary_title": "Your request summary",
         "footer": "Specialists in tailor-made journeys through Morocco.",
     },
     "fr": {
@@ -1144,9 +1170,49 @@ _CONFIRM_COPY = {
         ),
         "closing": "Cordialement,",
         "team": "L'équipe Xaluca Tours",
+        "preparing_title": "Pendant que nous préparons votre proposition",
+        "preparing_body": (
+            "Pendant que notre équipe étudie votre demande et prépare une proposition personnalisée, "
+            "vous pouvez continuer à découvrir tous les voyages Xaluca Tours."
+        ),
+        "archive_cta": "Découvrir tous nos voyages",
+        "summary_title": "Récapitulatif de votre demande",
         "footer": "Spécialistes du voyage sur mesure au Maroc.",
     },
 }
+
+
+def _client_summary_html(rows: Optional[List[tuple]]) -> str:
+    """Render the customer-facing copy of the internal lead summary safely."""
+    if not rows:
+        return ""
+    body_rows = ""
+    for label, value in rows:
+        if value is None or value == "" or value == []:
+            continue
+        if isinstance(value, list):
+            value = ", ".join(str(item) for item in value)
+        # Server-generated trip values contain links for the internal email.
+        # Preserve their visible text, while never injecting raw HTML here.
+        plain = re.sub(r"</tr\s*>", "\n", str(value), flags=re.I)
+        plain = re.sub(r"<br\s*/?>", "\n", plain, flags=re.I)
+        plain = re.sub(r"<[^>]+>", "", plain)
+        plain = _html.unescape(plain).strip()
+        if not plain:
+            continue
+        safe_label = _html.escape(str(label))
+        safe_value = _html.escape(plain).replace("\n", "<br>")
+        body_rows += (
+            '<tr>'
+            f'<td style="padding:10px 12px;border-bottom:1px solid #eadfd2;color:#8a7d6e;'
+            f'font-size:11px;text-transform:uppercase;letter-spacing:1px;vertical-align:top">{safe_label}</td>'
+            f'<td style="padding:10px 12px;border-bottom:1px solid #eadfd2;color:#2C2621;'
+            f'font-size:14px;line-height:1.5;vertical-align:top">{safe_value}</td>'
+            '</tr>'
+        )
+    if not body_rows:
+        return ""
+    return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">{body_rows}</table>'
 
 
 def send_client_confirmation(
@@ -1154,12 +1220,17 @@ def send_client_confirmation(
     name: str,
     lang: str = "es",
     idempotency_key: Optional[str] = None,
+    *,
+    summary_rows: Optional[List[tuple]] = None,
 ) -> str:
     """Send a branded auto-confirmation and return its Resend id."""
     if not to_email:
         raise EmailDeliveryError("Client confirmation has no recipient")
     c = _CONFIRM_COPY.get(lang if lang in _CONFIRM_COPY else "es")
     safe_name = (name or "").strip() or {"es": "viajero/a", "en": "traveller", "fr": "voyageur"}[lang if lang in _CONFIRM_COPY else "es"]
+    safe_name = _html.escape(safe_name)
+    archive_url = _html.escape(_public_site_link("/archivo"), quote=True)
+    summary_html = _client_summary_html(summary_rows)
     html = (
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
@@ -1175,7 +1246,24 @@ def send_client_confirmation(
         f'<p style="color:#2C2621;font-size:15px;margin:0">{c["closing"]}</p>'
         f'<p style="color:#2C2621;font-size:15px;margin:4px 0 0;font-weight:600">{c["team"]}</p>'
         '</td></tr>'
-        f'<tr><td style="padding:18px 30px;background:#faf6ef;color:#8a7d6e;font-size:12px;text-align:center">{c["footer"]}</td></tr>'
+        '<tr><td style="padding:0 30px"><div style="border-top:1px solid #eadfd2"></div></td></tr>'
+        '<tr><td style="padding:28px 30px">'
+        f'<div style="color:#C86442;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">{c["preparing_title"]}</div>'
+        f'<p style="color:#5C5248;font-size:15px;line-height:1.7;margin:0 0 20px">{c["preparing_body"]}</p>'
+        '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:#C86442;border-radius:2px">'
+        f'<a href="{archive_url}" style="display:inline-block;padding:14px 20px;color:#fff;'
+        f'text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase">{c["archive_cta"]} &nbsp;→</a>'
+        '</td></tr></table>'
+        '</td></tr>'
+        + (
+            '<tr><td style="padding:0 30px"><div style="border-top:1px solid #eadfd2"></div></td></tr>'
+            '<tr><td style="padding:28px 30px">'
+            f'<div style="color:#2C2621;font-size:20px;font-weight:600;margin-bottom:16px">{c["summary_title"]}</div>'
+            f'{summary_html}'
+            '</td></tr>'
+            if summary_html else ""
+        )
+        + f'<tr><td style="padding:18px 30px;background:#faf6ef;color:#8a7d6e;font-size:12px;text-align:center">{c["footer"]}</td></tr>'
         '</table></div>'
     )
     params = {
@@ -1407,24 +1495,25 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
     # titles via the gazetteer — internal ids are never shown in the email.
     trips_value = _build_trips_email_value(selected_trips_detail, selected_trips, obj.language, origin)
     planner_subject = _planner_subject(obj.full_name, len(selected_trips_detail or selected_trips), regions)
+    planner_rows = [
+        ("Nombre", obj.full_name),
+        ("Email", obj.email),
+        ("Teléfono", obj.phone),
+        ("Fechas", dates),
+        ("Adultos", obj.travellers_adults),
+        ("Niños", obj.travellers_children),
+        ("Alojamiento", obj.accommodation),
+        ("Regiones", regions),
+        ("Viajes de interés", trips_value),
+        ("Actividades", activities),
+        ("Notas", obj.notes),
+        ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
+        ("Idioma", obj.language),
+    ]
     html = _lead_email_html(
         "Planifica tu viaje",
         f"{obj.full_name} · {obj.email}",
-        [
-            ("Nombre", obj.full_name),
-            ("Email", obj.email),
-            ("Teléfono", obj.phone),
-            ("Fechas", dates),
-            ("Adultos", obj.travellers_adults),
-            ("Niños", obj.travellers_children),
-            ("Alojamiento", obj.accommodation),
-            ("Regiones", regions),
-            ("Viajes de interés", trips_value),
-            ("Actividades", activities),
-            ("Notas", obj.notes),
-            ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
-            ("Idioma", obj.language),
-        ],
+        planner_rows,
         reply_cta=_reply_cta_html(obj.full_name, obj.email, planner_subject, obj.language),
     )
     try:
@@ -1443,6 +1532,7 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
                 obj.full_name,
                 obj.language,
                 f"planner-{obj.id}-client",
+                summary_rows=planner_rows,
             ),
         )
     except EmailDeliveryError as exc:

@@ -23,8 +23,8 @@ def _accepted_senders(monkeypatch, captured):
         captured.append(("internal", subject, html, reply_to, recipients, idempotency_key))
         return "resend-internal-id"
 
-    def confirmation(to_email, name, lang="es", idempotency_key=None):
-        captured.append(("confirmation", to_email, name, lang, idempotency_key))
+    def confirmation(to_email, name, lang="es", idempotency_key=None, **kwargs):
+        captured.append(("confirmation", to_email, name, lang, idempotency_key, kwargs))
         return "resend-client-id"
 
     monkeypatch.setattr(server, "send_lead_notification", internal)
@@ -120,6 +120,10 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
     planner_html = next(row[2] for row in captured if row[0] == "internal")
     for value in ("Marc Vidal", "+34 611 222 333", "2026-10-10", "2026-10-18", "premium", "Habitación familiar."):
         assert value in planner_html
+    planner_confirmation = next(row for row in captured if row[0] == "confirmation")
+    summary_rows = planner_confirmation[5]["summary_rows"]
+    assert summary_rows
+    assert ("Notas", "Habitación familiar.") in summary_rows
 
     captured.clear()
     download = server.ProgramDownloadCreate(
@@ -153,6 +157,41 @@ def test_resend_acceptance_requires_recipient_and_message_id(monkeypatch):
 
     monkeypatch.setattr(server.resend.Emails, "send", lambda *_args, **_kwargs: {"id": "accepted-id"})
     assert server.send_client_confirmation("ana@example.com", "Ana") == "accepted-id"
+
+
+def test_planner_confirmation_has_public_archive_cta_and_non_empty_summary(monkeypatch):
+    sent = {}
+
+    def accept(params, **_kwargs):
+        sent.update(params)
+        return {"id": "accepted-id"}
+
+    monkeypatch.setattr(server, "RESEND_API_KEY", "re_test")
+    monkeypatch.setattr(server, "LEADS_FROM_EMAIL", "Xaluca Tours <hola@example.com>")
+    monkeypatch.setattr(server, "PUBLIC_SITE_URL", "http://127.0.0.1:3100")
+    monkeypatch.setattr(server.resend.Emails, "send", accept)
+
+    result = server.send_client_confirmation(
+        "joan@example.com",
+        "Joan Pont",
+        summary_rows=[
+            ("Nombre", "Joan Pont"),
+            ("Fechas", "10 → 18 de octubre"),
+            ("Alojamiento", "premium"),
+            ("Notas", ""),
+        ],
+    )
+
+    assert result == "accepted-id"
+    assert sent["subject"] == "Hemos recibido tu solicitud · Xaluca Tours"
+    assert "Mientras preparamos tu propuesta" in sent["html"]
+    assert "Explorar todos nuestros viajes" in sent["html"]
+    assert "https://xaluca-tours-web.onrender.com/archivo" in sent["html"]
+    assert "Resumen de tu solicitud" in sent["html"]
+    assert "10 → 18 de octubre" in sent["html"]
+    assert "premium" in sent["html"]
+    assert "Notas" not in sent["html"]
+    assert "127.0.0.1" not in sent["html"]
 
 
 def test_empty_database_recipients_fall_back_to_render_environment(monkeypatch):
