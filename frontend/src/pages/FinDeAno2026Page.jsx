@@ -172,7 +172,7 @@ const COPY = {
   },
 };
 
-const ITINERARY = [
+export const FIN_DE_ANO_ITINERARY = [
   {
     id: "27-dic",
     dateLabel: { es: "Domingo · 27 de diciembre", en: "Sunday · 27 December", fr: "Dimanche 27 décembre" },
@@ -421,7 +421,7 @@ function Itinerary({ lang }) {
         </h2>
 
         <div className="mt-16 space-y-16 md:space-y-24">
-          {ITINERARY.map((d, i) => (
+          {FIN_DE_ANO_ITINERARY.map((d, i) => (
             <article
               key={d.id}
               data-testid={`findeano-day-${d.id}`}

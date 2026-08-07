@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Archive, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Archive, ChevronLeft, ChevronRight, Images, Search, SlidersHorizontal } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
@@ -7,6 +7,13 @@ import { getProgramTiers } from "@/lib/programPricing";
 import { usePricing } from "@/lib/pricingStore";
 import { TRIP_PROGRAMS } from "@/lib/tripPrograms";
 import { pathFor } from "@/lib/routes";
+import { namespaceForRouteId } from "@/components/slotScope";
+import { dayGallerySegment, resolveGalleryUrl } from "@/lib/dayGalleryStore";
+import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { tripHeroImage, tripHeroSlot } from "@/lib/tripHero";
+import { Img } from "@/components/Img";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
+import { FIN_DE_ANO_ITINERARY } from "@/pages/FinDeAno2026Page";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -25,6 +32,7 @@ const COPY = {
   all: T("Todos los viajes", "All journeys", "Tous les voyages"),
   results: T("viajes disponibles", "journeys available", "voyages disponibles"),
   trip: T("Viaje", "Journey", "Voyage"),
+  images: T("Imágenes", "Images", "Images"),
   collection: T("Colección", "Collection", "Collection"),
   duration: T("Duración", "Duration", "Durée"),
   low: T("Temporada baja", "Low season", "Basse saison"),
@@ -34,6 +42,9 @@ const COPY = {
   view: T("Ver viaje", "View journey", "Voir le voyage"),
   empty: T("No hay viajes que coincidan con la búsqueda.", "No journeys match your search.", "Aucun voyage ne correspond à votre recherche."),
   reset: T("Mostrar todos", "Show all", "Tout afficher"),
+  previousImage: T("Imagen anterior", "Previous image", "Image précédente"),
+  nextImage: T("Imagen siguiente", "Next image", "Image suivante"),
+  imageCount: T("Referencia visual del viaje", "Journey visual preview", "Aperçu visuel du voyage"),
   priceNote: T(
     "Precios desde por persona, calculados con la tarifa más favorable disponible para cada temporada. El precio final depende del número de viajeros y de la disponibilidad.",
     "From prices per person, calculated using the best available rate for each season. The final price depends on party size and availability.",
@@ -111,7 +122,46 @@ const formatPrice = (value, lang) => value == null
       maximumFractionDigits: 0,
     }).format(value);
 
-const buildArchive = (pricing) => {
+const manifestMaps = (manifest) => ({
+  slots: new Map((manifest?.slots || []).filter((slot) => slot?.slot_id).map((slot) => [slot.slot_id, slot.url || null])),
+  galleries: new Map((manifest?.galleries || []).filter((gallery) => gallery?.key).map((gallery) => [gallery.key, gallery.images || []])),
+});
+
+const tripImages = (routeId, program, catalogue, manifest) => {
+  const { slots, galleries } = manifestMaps(manifest);
+  const namespace = namespaceForRouteId(routeId);
+  const days = routeId === "tourFinDeAno2025"
+    ? FIN_DE_ANO_ITINERARY
+    : (program?.days || []);
+  const images = [];
+  const seen = new Set();
+  const add = (value) => {
+    const raw = typeof value === "string" ? value : value?.url;
+    const url = resolveGalleryUrl(raw);
+    if (!url || seen.has(url)) return;
+    seen.add(url);
+    images.push(url);
+  };
+
+  add(slots.get(tripHeroSlot(routeId)) || tripHeroImage(routeId) || catalogue?.image);
+
+  days.forEach((day, dayIndex) => {
+    const legacyBase = `${namespace}.day.${day.id}`;
+    const galleryKey = `${namespace}.${dayGallerySegment(dayIndex + 1, day.id)}`;
+    const managed = galleries.get(galleryKey) || galleries.get(legacyBase);
+    if (managed?.length) {
+      managed.forEach(add);
+      return;
+    }
+    add(slots.get(`${legacyBase}.image`) || day.image);
+    (day.gallery || []).forEach(add);
+    for (let index = 0; index < 9; index += 1) add(slots.get(`${legacyBase}.slide.${index}`));
+  });
+
+  return images.slice(0, 8);
+};
+
+const buildArchive = (pricing, imageManifest) => {
   const catalogueByRoute = new Map(ALL_TRIPS.map((trip) => [trip.routeId, trip]));
   const programmeRows = Object.entries(TRIP_PROGRAMS)
     .filter(([routeId]) => !ROUTE_ALIASES.has(routeId))
@@ -135,8 +185,74 @@ const buildArchive = (pricing) => {
       collection: getCollection(routeId),
       low: getSeasonMinimum(tiers, "low"),
       high: getSeasonMinimum(tiers, "high"),
+      images: tripImages(routeId, program, catalogue, imageManifest),
     };
   });
+};
+
+const TripImageCarousel = ({ images, title, lang }) => {
+  const [active, setActive] = useState(0);
+  const total = images.length;
+  const safeActive = total ? active % total : 0;
+  const move = (event, direction) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setActive((current) => (current + direction + total) % total);
+  };
+
+  useEffect(() => { setActive(0); }, [images]);
+
+  if (!total) {
+    return (
+      <div className="flex aspect-[16/10] items-center justify-center bg-[#EEE4D7] text-[#9A6B4D]" aria-label={pick(COPY.imageCount, lang)}>
+        <Images className="h-6 w-6" strokeWidth={1.3} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="relative aspect-[16/10] overflow-hidden bg-[#E9DED0]"
+      aria-roledescription="carousel"
+      aria-label={`${pick(COPY.imageCount, lang)} · ${title}`}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <Img
+        key={images[safeActive]}
+        src={images[safeActive]}
+        alt={`${title} · ${safeActive + 1}`}
+        width={640}
+        className="h-full w-full object-cover transition-opacity duration-300"
+      />
+      <XalucaLogoBadge
+        className="right-2 top-2 h-8 w-8 md:h-9 md:w-9"
+        testid={`archivo-carousel-logo-${title}`}
+      />
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-[#1A1513]/75 via-[#1A1513]/15 to-transparent px-2.5 pb-2 pt-8">
+        <span className="text-[9px] font-semibold tracking-[0.16em] text-white">{safeActive + 1} / {total}</span>
+        {total > 1 && (
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={(event) => move(event, -1)}
+              aria-label={pick(COPY.previousImage, lang)}
+              className="flex h-8 w-8 items-center justify-center border border-white/55 bg-[#1A1513]/45 text-white backdrop-blur-sm transition-colors hover:bg-[#C16542]"
+            >
+              <ChevronLeft className="h-4 w-4" strokeWidth={1.7} />
+            </button>
+            <button
+              type="button"
+              onClick={(event) => move(event, 1)}
+              aria-label={pick(COPY.nextImage, lang)}
+              className="flex h-8 w-8 items-center justify-center border border-white/55 bg-[#1A1513]/45 text-white backdrop-blur-sm transition-colors hover:bg-[#C16542]"
+            >
+              <ChevronRight className="h-4 w-4" strokeWidth={1.7} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 const PriceCell = ({ value, lang }) => (
@@ -153,12 +269,21 @@ export default function ArchivoPage() {
   const pricing = usePricing();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
+  const [imageManifest, setImageManifest] = useState(null);
 
   useEffect(() => {
     document.title = pick(T("Archivo de viajes · Xaluca Tours", "Trip archive · Xaluca Tours", "Archives des voyages · Xaluca Tours"), lang);
   }, [lang]);
 
-  const archive = buildArchive(pricing);
+  useEffect(() => {
+    let active = true;
+    loadSupabaseImages()
+      .then((manifest) => { if (active) setImageManifest(manifest); })
+      .catch(() => { if (active) setImageManifest({ slots: [], galleries: [] }); });
+    return () => { active = false; };
+  }, []);
+
+  const archive = useMemo(() => buildArchive(pricing, imageManifest), [pricing, imageManifest]);
   const visible = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase(lang);
     return archive
@@ -247,7 +372,7 @@ export default function ArchivoPage() {
             <table className="block w-full border-collapse md:table" data-testid="archivo-table">
               <thead className="hidden bg-[#2C2621] text-[#FDFBF7] md:table-header-group">
                 <tr>
-                  {[COPY.trip, COPY.collection, COPY.duration, COPY.low, COPY.high].map((label, index) => (
+                  {[COPY.trip, COPY.images, COPY.collection, COPY.duration, COPY.low, COPY.high].map((label, index) => (
                     <th key={index} scope="col" className="px-5 py-4 text-left text-[9px] font-semibold uppercase tracking-[0.22em] lg:px-6">{pick(label, lang)}</th>
                   ))}
                   <th scope="col" className="px-5 py-4 text-right text-[9px] font-semibold uppercase tracking-[0.22em] lg:px-6">
@@ -268,7 +393,7 @@ export default function ArchivoPage() {
                       data-testid={`archivo-row-${trip.routeId}`}
                       className="group grid cursor-pointer grid-cols-2 gap-x-4 gap-y-5 p-5 outline-none transition-colors hover:bg-[#F3E9DB] focus-visible:bg-[#F3E9DB] md:table-row md:p-0"
                     >
-                      <td className="col-span-2 md:w-[34%] md:px-5 md:py-5 lg:px-6">
+                      <td className="col-span-2 md:w-[24%] md:px-5 md:py-5 lg:px-6">
                         <div className="flex items-start gap-4">
                           <span className="mt-0.5 font-serif-x text-lg tabular-nums text-[#C16542]/60">{String(index + 1).padStart(2, "0")}</span>
                           <div>
@@ -277,23 +402,26 @@ export default function ArchivoPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="col-span-2 md:w-[16%] md:px-5 md:py-5 lg:px-6">
+                      <td className="col-span-2 md:w-[20%] md:px-3 md:py-3 lg:px-4">
+                        <TripImageCarousel images={trip.images} title={pick(trip.title, lang)} lang={lang} />
+                      </td>
+                      <td className="col-span-2 md:w-[13%] md:px-4 md:py-5 lg:px-5">
                         <span className="mb-1.5 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9A6B4D] md:hidden">{pick(COPY.collection, lang)}</span>
                         <span className="inline-flex border border-[#C16542]/25 bg-[#C16542]/5 px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-[#9B563C]">{pick(COLLECTIONS[trip.collection], lang)}</span>
                       </td>
-                      <td className="col-span-2 md:w-[14%] md:px-5 md:py-5 lg:px-6">
+                      <td className="col-span-2 md:w-[11%] md:px-4 md:py-5 lg:px-5">
                         <span className="mb-1.5 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9A6B4D] md:hidden">{pick(COPY.duration, lang)}</span>
                         <span className="text-sm text-[#5F564E]">{pick(trip.duration, lang)}</span>
                       </td>
-                      <td className="md:w-[12%] md:px-5 md:py-5 lg:px-6">
+                      <td className="md:w-[10%] md:px-4 md:py-5 lg:px-5">
                         <span className="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9A6B4D] md:hidden">{pick(COPY.low, lang)}</span>
                         <PriceCell value={trip.low} lang={lang} />
                       </td>
-                      <td className="md:w-[12%] md:px-5 md:py-5 lg:px-6">
+                      <td className="md:w-[10%] md:px-4 md:py-5 lg:px-5">
                         <span className="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9A6B4D] md:hidden">{pick(COPY.high, lang)}</span>
                         <PriceCell value={trip.high} lang={lang} />
                       </td>
-                      <td className="col-span-2 md:w-[12%] md:px-5 md:py-5 md:text-right lg:px-6">
+                      <td className="col-span-2 md:w-[12%] md:px-4 md:py-5 md:text-right lg:px-5">
                         <Link
                           to={href}
                           onClick={(event) => event.stopPropagation()}
