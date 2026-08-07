@@ -14,6 +14,7 @@ import { FromPrice } from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import SmartPlannerInfoModal from "@/components/SmartPlannerInfoModal";
 import monogramWhite from "@/assets/monograma-x-white.png";
+import monogramBorder from "@/assets/monograma-x-borde.png";
 import {
   ORIGIN_OPTIONS, buildMonthOptions, monthName, FLEXIBLE_LABEL, DURATION_BUCKETS,
   topTrips, tripImage, tt, nodeName, priceBounds,
@@ -338,8 +339,15 @@ export const TripFinder = () => {
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent pointer-events-none" />
+                  <img
+                    src={monogramBorder}
+                    alt=""
+                    aria-hidden="true"
+                    data-testid={`trip-finder-monogram-${trip.routeId}`}
+                    className="pointer-events-none absolute bottom-0 right-0 z-[2] h-[118%] w-auto max-w-none select-none object-contain opacity-[0.22] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                  />
                   {chip && (
-                    <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#C16542] text-[#FDFBF7] px-2.5 py-1.5 text-[9px] tracking-[0.2em] uppercase shadow-md">
+                    <span className="absolute top-3 left-3 z-[4] inline-flex items-center gap-1.5 bg-[#C16542] text-[#FDFBF7] px-2.5 py-1.5 text-[9px] tracking-[0.2em] uppercase shadow-md">
                       <Sparkles className="w-3 h-3" strokeWidth={1.9} />{chip}
                     </span>
                   )}
@@ -357,10 +365,10 @@ export const TripFinder = () => {
                   >
                     <Heart className="w-4 h-4 transition-transform active:scale-90" strokeWidth={1.7} fill={fav ? "currentColor" : "none"} />
                   </button>
-                  <span className="absolute bottom-3 right-3 bg-[#1A1513]/80 backdrop-blur-sm text-[#FDFBF7] px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase tabular-nums">
+                  <span className="absolute bottom-3 right-3 z-[4] bg-[#1A1513]/80 backdrop-blur-sm text-[#FDFBF7] px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase tabular-nums">
                     {nights} {L(UI.nights)} · {trip.days} {L(UI.days)}
                   </span>
-                  <span className="absolute bottom-3 left-3 w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
+                  <span className="absolute bottom-3 left-3 z-[4] w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
                     <img src={monogramWhite} alt="Xaluca Tours" className="w-5 h-5 object-contain" loading="lazy" />
                   </span>
                 </div>

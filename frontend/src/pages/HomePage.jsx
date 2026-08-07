@@ -120,8 +120,8 @@ export default function HomePage() {
       <HomeWelcomeModal />
       <HeroSlider />
       <HomeSectionNav />
-      <DualTimezoneClock />
       <MoroccoLightFilm lang={lang} />
+      <DualTimezoneClock />
       <div id="buscador" className="scroll-mt-[172px]">
         <TripFinder />
       </div>
