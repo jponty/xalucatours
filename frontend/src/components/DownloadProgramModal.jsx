@@ -111,8 +111,8 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
         window.open(url, "_blank", "noopener,noreferrer");
         onClose();
       }, 900);
-    } catch {
-      toast.error(L("required"));
+    } catch (error) {
+      toast.error(error?.response?.data?.detail || L("required"));
       setSending(false);
     }
   };

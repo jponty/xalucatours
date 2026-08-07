@@ -64,8 +64,8 @@ export const ContactForm = () => {
       setDone(true);
       toast.success(t("form_success"));
       setForm(initialState);
-    } catch {
-      toast.error(t("form_error"));
+    } catch (error) {
+      toast.error(error?.response?.data?.detail || t("form_error"));
     } finally {
       setSending(false);
     }

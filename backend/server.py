@@ -711,7 +711,9 @@ async def mirror_production(payload: MirrorPayload, authorization: str = Header(
 
 # ============================================================
 #  LEAD EMAIL NOTIFICATIONS (Resend)
-#  Fire-and-forget: a failed email must never break lead creation.
+#  Public form endpoints wait for Resend to accept every required message.
+#  A lead may already be safely stored when delivery fails, but the API never
+#  reports success unless Resend returns a message id.
 # ============================================================
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 LEADS_FROM_EMAIL = os.environ.get("LEADS_FROM_EMAIL", "").strip()
@@ -721,11 +723,77 @@ FOUNDER_TAYEB_EMAIL = os.environ.get("FOUNDER_TAYEB_EMAIL", "").strip()
 TEAM_NOEMI_EMAIL = os.environ.get("TEAM_NOEMI_EMAIL", "").strip()
 TEAM_ELENA_EMAIL = os.environ.get("TEAM_ELENA_EMAIL", "").strip()
 TEAM_SANAA_EMAIL = os.environ.get("TEAM_SANAA_EMAIL", "").strip()
-# Live, DB-backed recipient list (seeded from env). Mutated in place so the
-# fire-and-forget send_* functions always read the latest recipients.
+# Live, DB-backed recipient list (seeded from env). Mutated in place so every
+# form submission reads the latest recipients.
 NOTIFY_EMAILS = list(LEADS_NOTIFY_EMAILS)
 NOTIFY_SETTINGS_KEY = "notify_emails"
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+class EmailDeliveryError(RuntimeError):
+    """A required email was not accepted by Resend."""
+
+
+def _resend_message_id(response: Any) -> str:
+    if isinstance(response, dict):
+        return str(response.get("id") or "").strip()
+    return str(getattr(response, "id", "") or "").strip()
+
+
+def _send_resend_email(
+    params: Dict[str, Any],
+    *,
+    delivery_name: str,
+    idempotency_key: Optional[str] = None,
+) -> str:
+    """Send one email and require Resend's acceptance id.
+
+    The id proves that Resend processed the API request. Final mailbox delivery
+    (delivered, bounced, complained) remains observable through Resend events.
+    """
+    if not RESEND_API_KEY:
+        raise EmailDeliveryError("RESEND_API_KEY is not configured")
+    if not LEADS_FROM_EMAIL:
+        raise EmailDeliveryError("LEADS_FROM_EMAIL is not configured")
+    try:
+        options = {"idempotency_key": idempotency_key} if idempotency_key else None
+        response = resend.Emails.send(params, options) if options else resend.Emails.send(params)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("%s failed: %s", delivery_name, exc)
+        raise EmailDeliveryError(f"{delivery_name} was rejected by Resend") from exc
+    message_id = _resend_message_id(response)
+    if not message_id:
+        logger.error("%s returned no Resend message id", delivery_name)
+        raise EmailDeliveryError(f"{delivery_name} returned no message id")
+    logger.info("%s accepted by Resend: %s", delivery_name, message_id)
+    return message_id
+
+
+def _email_delivery_http_error() -> HTTPException:
+    return HTTPException(
+        status_code=502,
+        detail=(
+            "La solicitud se ha guardado, pero el servicio de correo no ha confirmado el envío. "
+            "No mostraremos una confirmación hasta que puedas volver a intentarlo."
+        ),
+    )
+
+
+async def _record_lead_email_delivery(collection, lead_id: str, status: str, **details) -> None:
+    """Best-effort delivery audit kept alongside the stored lead."""
+    try:
+        await collection.update_one(
+            {"id": lead_id},
+            {"$set": {
+                "email_delivery": {
+                    "status": status,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                    **details,
+                }
+            }},
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not persist email delivery status for lead %s: %s", lead_id, exc)
 
 
 def _clean_emails(raw_list) -> List[str]:
@@ -741,16 +809,30 @@ def _clean_emails(raw_list) -> List[str]:
 
 
 async def load_notify_emails() -> None:
-    """Hydrate NOTIFY_EMAILS from app_settings (seed with env list on first run)."""
+    """Hydrate recipients from app_settings, with Render/env as safe fallback.
+
+    An empty database setting must not silently disable every public form. If
+    LEADS_NOTIFY_EMAILS is configured, it remains the required central inbox
+    and is used to repair an empty setting during startup.
+    """
     try:
         doc = await db.app_settings.find_one({"key": NOTIFY_SETTINGS_KEY})
-        if doc and isinstance(doc.get("emails"), list):
-            NOTIFY_EMAILS[:] = [e for e in doc["emails"] if e]
-        else:
+        stored = _clean_emails(doc.get("emails", [])) if doc else []
+        fallback = _clean_emails(LEADS_NOTIFY_EMAILS)
+        if stored:
+            NOTIFY_EMAILS[:] = stored
+        elif fallback:
+            NOTIFY_EMAILS[:] = fallback
             await db.app_settings.update_one(
                 {"key": NOTIFY_SETTINGS_KEY},
                 {"$set": {"key": NOTIFY_SETTINGS_KEY, "emails": NOTIFY_EMAILS}},
                 upsert=True,
+            )
+        else:
+            NOTIFY_EMAILS[:] = []
+            logger.error(
+                "No lead notification recipients are configured. Set LEADS_NOTIFY_EMAILS "
+                "or add at least one recipient in /admin."
             )
     except Exception as exc:  # noqa: BLE001
         logger.warning("Could not load notify emails: %s", exc)
@@ -995,27 +1077,29 @@ def send_lead_notification(
     html: str,
     reply_to: Optional[str] = None,
     recipients: Optional[List[str]] = None,
-) -> None:
-    """Send a lead notification email. Never raises (logs on failure)."""
+    idempotency_key: Optional[str] = None,
+) -> str:
+    """Send the internal lead notification and return its Resend id."""
     target_recipients = _clean_emails(recipients if recipients is not None else NOTIFY_EMAILS)
-    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and target_recipients):
-        logger.warning("Resend not fully configured; skipping lead notification.")
-        return
-    try:
-        params = {
-            "from": LEADS_FROM_EMAIL,
-            "to": target_recipients,
-            "subject": subject,
-            "html": html,
-        }
-        attachments = _email_attachments()
-        if attachments:
-            params["attachments"] = attachments
-        if reply_to:
-            params["reply_to"] = reply_to
-        resend.Emails.send(params)
-    except Exception as exc:  # noqa: BLE001 — must never break lead creation
-        logger.error("Lead notification email failed: %s", exc)
+    if not target_recipients:
+        raise EmailDeliveryError("No internal notification recipients are configured")
+    params = {
+        "from": LEADS_FROM_EMAIL,
+        "to": target_recipients,
+        "subject": subject,
+        "html": html,
+        "tags": [{"name": "flow", "value": "lead-notification"}],
+    }
+    attachments = _email_attachments()
+    if attachments:
+        params["attachments"] = attachments
+    if reply_to:
+        params["reply_to"] = reply_to
+    return _send_resend_email(
+        params,
+        delivery_name="Lead notification email",
+        idempotency_key=idempotency_key,
+    )
 
 
 # --- Client confirmation (auto-reply to the lead) ---
@@ -1065,10 +1149,15 @@ _CONFIRM_COPY = {
 }
 
 
-def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None:
-    """Send a branded auto-confirmation to the lead. Never raises."""
-    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and to_email):
-        return
+def send_client_confirmation(
+    to_email: str,
+    name: str,
+    lang: str = "es",
+    idempotency_key: Optional[str] = None,
+) -> str:
+    """Send a branded auto-confirmation and return its Resend id."""
+    if not to_email:
+        raise EmailDeliveryError("Client confirmation has no recipient")
     c = _CONFIRM_COPY.get(lang if lang in _CONFIRM_COPY else "es")
     safe_name = (name or "").strip() or {"es": "viajero/a", "en": "traveller", "fr": "voyageur"}[lang if lang in _CONFIRM_COPY else "es"]
     html = (
@@ -1089,21 +1178,23 @@ def send_client_confirmation(to_email: str, name: str, lang: str = "es") -> None
         f'<tr><td style="padding:18px 30px;background:#faf6ef;color:#8a7d6e;font-size:12px;text-align:center">{c["footer"]}</td></tr>'
         '</table></div>'
     )
-    try:
-        params = {
-            "from": LEADS_FROM_EMAIL,
-            "to": [to_email],
-            "subject": c["subject"],
-            "html": html,
-        }
-        attachments = _email_attachments()
-        if attachments:
-            params["attachments"] = attachments
-        if NOTIFY_EMAILS:
-            params["reply_to"] = NOTIFY_EMAILS[0]
-        resend.Emails.send(params)
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Client confirmation email failed: %s", exc)
+    params = {
+        "from": LEADS_FROM_EMAIL,
+        "to": [to_email],
+        "subject": c["subject"],
+        "html": html,
+        "tags": [{"name": "flow", "value": "client-confirmation"}],
+    }
+    attachments = _email_attachments()
+    if attachments:
+        params["attachments"] = attachments
+    if NOTIFY_EMAILS:
+        params["reply_to"] = NOTIFY_EMAILS[0]
+    return _send_resend_email(
+        params,
+        delivery_name="Client confirmation email",
+        idempotency_key=idempotency_key,
+    )
 
 
 _CONTACT_PREF_LABELS = {"phone": "Llamada telefónica", "email": "Correo electrónico"}
@@ -1187,7 +1278,7 @@ def _planner_subject(name: str, n_trips: int, regions: list) -> str:
 
 
 @api_router.post("/contact-requests", response_model=ContactRequest)
-async def create_contact_request(payload: ContactRequestCreate, background_tasks: BackgroundTasks):
+async def create_contact_request(payload: ContactRequestCreate):
     obj = ContactRequest(**payload.model_dump())
     doc = obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
@@ -1223,18 +1314,43 @@ async def create_contact_request(payload: ContactRequestCreate, background_tasks
         ],
         reply_cta=_reply_cta_html(obj.full_name, obj.email, notification_subject, obj.language),
     )
-    background_tasks.add_task(
-        send_lead_notification,
-        notification_subject,
-        html,
-        obj.email,
-        (
-            _founder_notification_recipients(obj.founder_recipient)
-            if founder_label
-            else _team_notification_recipients(obj.team_recipient)
-        ),
+    recipients = (
+        _founder_notification_recipients(obj.founder_recipient)
+        if founder_label
+        else _team_notification_recipients(obj.team_recipient)
+        if team_label
+        else None
     )
-    background_tasks.add_task(send_client_confirmation, obj.email, obj.full_name, obj.language)
+    deliveries = [
+        asyncio.to_thread(
+            send_lead_notification,
+            notification_subject,
+            html,
+            str(obj.email) if obj.email else None,
+            recipients,
+            f"contact-{obj.id}-internal",
+        )
+    ]
+    if obj.email:
+        deliveries.append(asyncio.to_thread(
+            send_client_confirmation,
+            str(obj.email),
+            obj.full_name,
+            obj.language,
+            f"contact-{obj.id}-client",
+        ))
+    try:
+        message_ids = await asyncio.gather(*deliveries)
+    except EmailDeliveryError as exc:
+        await _record_lead_email_delivery(db.contact_requests, obj.id, "failed", error=str(exc))
+        raise _email_delivery_http_error() from exc
+    await _record_lead_email_delivery(
+        db.contact_requests,
+        obj.id,
+        "accepted",
+        notification_id=message_ids[0],
+        confirmation_id=message_ids[1] if len(message_ids) > 1 else None,
+    )
     return obj
 
 
@@ -1254,7 +1370,7 @@ async def list_contact_requests(authorization: str = Header(default="")):
 
 
 @api_router.post("/trip-planner", response_model=TripPlannerRequest)
-async def create_trip_planner(payload: TripPlannerCreate, background_tasks: BackgroundTasks, request: Request):
+async def create_trip_planner(payload: TripPlannerCreate, request: Request):
     # Resolve the site origin from the request so trip links in the email point
     # to the exact domain the form was submitted from (preview or production).
     origin = (request.headers.get("origin") or "").strip().rstrip("/")
@@ -1311,13 +1427,34 @@ async def create_trip_planner(payload: TripPlannerCreate, background_tasks: Back
         ],
         reply_cta=_reply_cta_html(obj.full_name, obj.email, planner_subject, obj.language),
     )
-    background_tasks.add_task(
-        send_lead_notification,
-        planner_subject,
-        html,
-        obj.email,
+    try:
+        notification_id, confirmation_id = await asyncio.gather(
+            asyncio.to_thread(
+                send_lead_notification,
+                planner_subject,
+                html,
+                str(obj.email),
+                None,
+                f"planner-{obj.id}-internal",
+            ),
+            asyncio.to_thread(
+                send_client_confirmation,
+                str(obj.email),
+                obj.full_name,
+                obj.language,
+                f"planner-{obj.id}-client",
+            ),
+        )
+    except EmailDeliveryError as exc:
+        await _record_lead_email_delivery(db.trip_planner_requests, obj.id, "failed", error=str(exc))
+        raise _email_delivery_http_error() from exc
+    await _record_lead_email_delivery(
+        db.trip_planner_requests,
+        obj.id,
+        "accepted",
+        notification_id=notification_id,
+        confirmation_id=confirmation_id,
     )
-    background_tasks.add_task(send_client_confirmation, obj.email, obj.full_name, obj.language)
     return obj
 
 
@@ -1337,7 +1474,7 @@ async def list_trip_planner(authorization: str = Header(default="")):
 
 
 @api_router.post("/program-downloads", response_model=ProgramDownloadRequest)
-async def create_program_download(payload: ProgramDownloadCreate, background_tasks: BackgroundTasks):
+async def create_program_download(payload: ProgramDownloadCreate):
     url = resolve_program_download_url(payload.route_id)
     obj = ProgramDownloadRequest(**payload.model_dump(), download_url=url)
     doc = obj.model_dump()
@@ -1355,14 +1492,33 @@ async def create_program_download(payload: ProgramDownloadCreate, background_tas
             ("Idioma", obj.language),
         ],
     )
-    background_tasks.add_task(
-        send_lead_notification,
-        f"Nueva descarga de programa · {obj.first_name} {obj.last_name}",
-        html,
-        obj.email,
-    )
-    background_tasks.add_task(
-        send_client_confirmation, obj.email, f"{obj.first_name} {obj.last_name}".strip(), obj.language
+    try:
+        notification_id, confirmation_id = await asyncio.gather(
+            asyncio.to_thread(
+                send_lead_notification,
+                f"Nueva descarga de programa · {obj.first_name} {obj.last_name}",
+                html,
+                str(obj.email),
+                None,
+                f"program-{obj.id}-internal",
+            ),
+            asyncio.to_thread(
+                send_client_confirmation,
+                str(obj.email),
+                f"{obj.first_name} {obj.last_name}".strip(),
+                obj.language,
+                f"program-{obj.id}-client",
+            ),
+        )
+    except EmailDeliveryError as exc:
+        await _record_lead_email_delivery(db.program_downloads, obj.id, "failed", error=str(exc))
+        raise _email_delivery_http_error() from exc
+    await _record_lead_email_delivery(
+        db.program_downloads,
+        obj.id,
+        "accepted",
+        notification_id=notification_id,
+        confirmation_id=confirmation_id,
     )
     return obj
 
@@ -1507,13 +1663,11 @@ def send_feedback_review_followup(
     rating: int,
     review_text: str,
     lang: str = "es",
-) -> None:
-    """Send the positive-feedback Google review follow-up. Never raises."""
+    idempotency_key: Optional[str] = None,
+) -> str:
+    """Send the positive-feedback Google review follow-up."""
     if not (to_email and rating in {4, 5}):
-        return
-    if not (RESEND_API_KEY and LEADS_FROM_EMAIL):
-        logger.warning("Resend not configured; skipping feedback review follow-up.")
-        return
+        raise EmailDeliveryError("Positive feedback follow-up requirements are not met")
     safe_lang = lang if lang in _FEEDBACK_FOLLOWUP_COPY else "es"
     copy = _FEEDBACK_FOLLOWUP_COPY[safe_lang]
     safe_name = _html.escape((name or "").strip())
@@ -1564,22 +1718,24 @@ def send_feedback_review_followup(
         f'{copy["rating"]}: {rating}/5\n\n{copy["review"]}:\n{plain_review}\n\n'
         f'{copy["reuse"]}\n{copy["button"]}: {FEEDBACK_GOOGLE_REVIEW_URL}\n\n{copy["closing"]}'
     )
-    try:
-        params = {
-            "from": LEADS_FROM_EMAIL,
-            "to": [to_email],
-            "subject": copy["subject"],
-            "html": html,
-            "text": text,
-        }
-        attachments = _email_attachments()
-        if attachments:
-            params["attachments"] = attachments
-        if NOTIFY_EMAILS:
-            params["reply_to"] = NOTIFY_EMAILS[0]
-        resend.Emails.send(params)
-    except Exception as exc:  # noqa: BLE001 — must never affect feedback submission
-        logger.error("Feedback review follow-up email failed: %s", exc)
+    params = {
+        "from": LEADS_FROM_EMAIL,
+        "to": [to_email],
+        "subject": copy["subject"],
+        "html": html,
+        "text": text,
+        "tags": [{"name": "flow", "value": "feedback-followup"}],
+    }
+    attachments = _email_attachments()
+    if attachments:
+        params["attachments"] = attachments
+    if NOTIFY_EMAILS:
+        params["reply_to"] = NOTIFY_EMAILS[0]
+    return _send_resend_email(
+        params,
+        delivery_name="Feedback review follow-up email",
+        idempotency_key=idempotency_key,
+    )
 
 
 def _feedback_client_key(request: Request) -> str:
@@ -1731,7 +1887,6 @@ async def preview_feedback_transcription(
 @api_router.post("/feedback", status_code=201)
 async def create_feedback(
     request: Request,
-    background_tasks: BackgroundTasks,
     submission_type: str = Form(default="text"),
     name: Optional[str] = Form(default=None),
     email: Optional[str] = Form(default=None),
@@ -1795,8 +1950,40 @@ async def create_feedback(
         logger.exception("Feedback database insert failed")
         raise HTTPException(status_code=503, detail="No se pudo guardar el comentario.") from exc
 
+    feedback_subject = f"Nuevo feedback · {fields.rating or 'Sin valoración'}/5 · {fields.name or 'Anónimo'}"
+    feedback_html = _lead_email_html(
+        "Nuevo feedback de viaje",
+        f"{fields.name or 'Anónimo'} · {fields.trip_reference or 'Viaje no indicado'}",
+        [
+            ("Nombre", fields.name or "Anónimo"),
+            ("Email", str(fields.email) if fields.email else None),
+            ("Viaje o programa", fields.trip_reference),
+            ("Valoración", f"{fields.rating}/5" if fields.rating else "Sin valoración"),
+            ("Tipo", "Voz transcrita" if fields.submission_type == "voice" else "Texto"),
+            ("Comentario", fields.message),
+            ("Idioma transcripción", fields.transcription_language),
+            ("Página origen", fields.source_url),
+            ("Idioma", fields.language),
+        ],
+        reply_cta=_reply_cta_html(
+            fields.name or "Cliente",
+            str(fields.email) if fields.email else "",
+            feedback_subject,
+            fields.language,
+        ),
+    )
+    deliveries = [
+        asyncio.to_thread(
+            send_lead_notification,
+            feedback_subject,
+            feedback_html,
+            str(fields.email) if fields.email else None,
+            None,
+            f"feedback-{feedback_id}-internal",
+        )
+    ]
     if fields.rating in {4, 5} and fields.email:
-        background_tasks.add_task(
+        deliveries.append(asyncio.to_thread(
             send_feedback_review_followup,
             str(fields.email),
             fields.name,
@@ -1804,12 +1991,23 @@ async def create_feedback(
             fields.rating,
             fields.message,
             fields.language,
-        )
+            f"feedback-{feedback_id}-client",
+        ))
+    try:
+        message_ids = await asyncio.gather(*deliveries)
+    except EmailDeliveryError as exc:
+        logger.error("Feedback %s stored but email delivery failed: %s", feedback_id, exc)
+        raise _email_delivery_http_error() from exc
 
     return {
         "ok": True,
         "id": feedback_id,
         "submission_type": fields.submission_type,
+        "email_delivery": {
+            "status": "accepted",
+            "notification_id": message_ids[0],
+            "confirmation_id": message_ids[1] if len(message_ids) > 1 else None,
+        },
     }
 
 
@@ -5199,10 +5397,16 @@ _CONTEST_MAIL = {
 }
 
 
-def send_contest_prize_email(to_email: str, name: str, prize_label: str, lang: str = "es") -> None:
-    """Branded prize confirmation to the participant. Never raises."""
-    if not (RESEND_API_KEY and LEADS_FROM_EMAIL and to_email):
-        return
+def send_contest_prize_email(
+    to_email: str,
+    name: str,
+    prize_label: str,
+    lang: str = "es",
+    idempotency_key: Optional[str] = None,
+) -> str:
+    """Send the branded prize confirmation and return its Resend id."""
+    if not to_email:
+        raise EmailDeliveryError("Contest confirmation has no recipient")
     c = _CONTEST_MAIL.get(lang if lang in _CONTEST_MAIL else "es")
     safe_name = (name or "").strip() or {"es": "viajero/a", "en": "traveller", "fr": "voyageur"}[lang if lang in _CONTEST_MAIL else "es"]
     html = (
@@ -5227,16 +5431,23 @@ def send_contest_prize_email(to_email: str, name: str, prize_label: str, lang: s
         '</td></tr>'
         '</table></div>'
     )
-    try:
-        params = {"from": LEADS_FROM_EMAIL, "to": [to_email], "subject": c["subject"], "html": html}
-        attachments = _email_attachments()
-        if attachments:
-            params["attachments"] = attachments
-        if NOTIFY_EMAILS:
-            params["reply_to"] = NOTIFY_EMAILS[0]
-        resend.Emails.send(params)
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Contest prize email failed: %s", exc)
+    params = {
+        "from": LEADS_FROM_EMAIL,
+        "to": [to_email],
+        "subject": c["subject"],
+        "html": html,
+        "tags": [{"name": "flow", "value": "contest-prize"}],
+    }
+    attachments = _email_attachments()
+    if attachments:
+        params["attachments"] = attachments
+    if NOTIFY_EMAILS:
+        params["reply_to"] = NOTIFY_EMAILS[0]
+    return _send_resend_email(
+        params,
+        delivery_name="Contest prize email",
+        idempotency_key=idempotency_key,
+    )
 
 
 # ---------- Public contest endpoints ----------
@@ -5354,7 +5565,7 @@ async def content_manifest():
 
 
 @api_router.post("/contest/spin")
-async def contest_spin(payload: ContestSpinPayload, background_tasks: BackgroundTasks):
+async def contest_spin(payload: ContestSpinPayload):
     """Validate the participant, decide the prize (server-side, weighted),
     persist the entry and email the winner. Returns the prize + its wheel index."""
     contest = None
@@ -5420,8 +5631,8 @@ async def contest_spin(payload: ContestSpinPayload, background_tasks: Background
     prize_label_localized = (prize.get("label") or {}).get(lang) or (prize.get("label") or {}).get("es") or ""
     contest_name_localized = (contest.get("name") or {}).get(lang) or (contest.get("name") or {}).get("es") or "Concurso"
 
-    # Winner confirmation + internal notification (fire-and-forget).
-    background_tasks.add_task(send_contest_prize_email, payload.email.strip(), name, prize_label_localized, lang)
+    # Winner confirmation + internal notification. The frontend receives the
+    # prize only after Resend has accepted both messages.
     notif_html = _lead_email_html(
         "Nueva participación · Concurso",
         f"{name} · {payload.email.strip()}",
@@ -5436,10 +5647,39 @@ async def contest_spin(payload: ContestSpinPayload, background_tasks: Background
         ],
         reply_cta=_reply_cta_html(name, payload.email.strip(), f"Concurso · {name}", lang),
     )
-    background_tasks.add_task(send_lead_notification, f"Concurso · {name} · {prize_label_localized}", notif_html, payload.email.strip())
+    try:
+        prize_email_id, notification_id = await asyncio.gather(
+            asyncio.to_thread(
+                send_contest_prize_email,
+                payload.email.strip(),
+                name,
+                prize_label_localized,
+                lang,
+                f"contest-{participant['id']}-client",
+            ),
+            asyncio.to_thread(
+                send_lead_notification,
+                f"Concurso · {name} · {prize_label_localized}",
+                notif_html,
+                payload.email.strip(),
+                None,
+                f"contest-{participant['id']}-internal",
+            ),
+        )
+    except EmailDeliveryError as exc:
+        await _record_lead_email_delivery(db.contest_participants, participant["id"], "failed", error=str(exc))
+        raise _email_delivery_http_error() from exc
+    await _record_lead_email_delivery(
+        db.contest_participants,
+        participant["id"],
+        "accepted",
+        notification_id=notification_id,
+        confirmation_id=prize_email_id,
+    )
 
     return {
         "participant_id": participant["id"],
+        "email_delivery": {"status": "accepted"},
         "prize_index": prize_index,
         "prize": {"id": prize["id"], "label": prize.get("label"), "color": prize.get("color"), "is_grand": bool(prize.get("is_grand"))},
     }

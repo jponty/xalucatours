@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import HeroSlider from "@/components/HeroSlider";
+import HomeTrustStrip from "@/components/HomeTrustStrip";
 import HomeSectionNav from "@/components/HomeSectionNav";
 import DualTimezoneClock from "@/components/DualTimezoneClock";
 import SouthMoroccoVirtualExperience from "@/components/SouthMoroccoVirtualExperience";
@@ -119,6 +120,7 @@ export default function HomePage() {
     <div data-testid="home-page">
       <HomeWelcomeModal />
       <HeroSlider />
+      <HomeTrustStrip />
       <HomeSectionNav />
       <MoroccoLightFilm lang={lang} />
       <DualTimezoneClock />

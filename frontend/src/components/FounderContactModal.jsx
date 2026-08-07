@@ -177,8 +177,8 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
       });
       setSuccess(true);
       toast.success(pick(COPY.successTitle, lang));
-    } catch (_) {
-      toast.error(pick(COPY.error, lang));
+    } catch (error) {
+      toast.error(error?.response?.data?.detail || pick(COPY.error, lang));
     } finally {
       setSending(false);
     }

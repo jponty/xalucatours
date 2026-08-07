@@ -3,7 +3,8 @@
 import asyncio
 from tempfile import SpooledTemporaryFile
 
-from fastapi import BackgroundTasks, UploadFile
+import pytest
+from fastapi import UploadFile
 from starlette.datastructures import Headers
 from starlette.requests import Request
 
@@ -35,6 +36,7 @@ def test_voice_feedback_persists_only_reviewed_text(monkeypatch):
         captured.update({"method": method, "table": table, **kwargs})
 
     monkeypatch.setattr(server.db, "request", fake_request)
+    monkeypatch.setattr(server, "send_lead_notification", lambda *args, **kwargs: "notif-id")
     server._feedback_rate.clear()
     request = Request({
         "type": "http",
@@ -46,7 +48,6 @@ def test_voice_feedback_persists_only_reviewed_text(monkeypatch):
 
     result = asyncio.run(server.create_feedback(
         request=request,
-        background_tasks=BackgroundTasks(),
         submission_type="voice",
         name="Cliente",
         email=None,
@@ -68,13 +69,15 @@ def test_voice_feedback_persists_only_reviewed_text(monkeypatch):
     assert not any("audio" in key or key == "transcript" for key in stored)
 
 
-def test_positive_feedback_with_email_schedules_followup(monkeypatch):
+def test_positive_feedback_with_email_waits_for_both_emails(monkeypatch):
     async def fake_request(*args, **kwargs):
         return None
 
     monkeypatch.setattr(server.db, "request", fake_request)
+    calls = []
+    monkeypatch.setattr(server, "send_lead_notification", lambda *args, **kwargs: calls.append("internal") or "notif-id")
+    monkeypatch.setattr(server, "send_feedback_review_followup", lambda *args, **kwargs: calls.append("followup") or "followup-id")
     server._feedback_rate.clear()
-    tasks = BackgroundTasks()
     request = Request({
         "type": "http",
         "method": "POST",
@@ -85,7 +88,6 @@ def test_positive_feedback_with_email_schedules_followup(monkeypatch):
 
     asyncio.run(server.create_feedback(
         request=request,
-        background_tasks=tasks,
         submission_type="text",
         name="Ana",
         email="ana@example.com",
@@ -99,31 +101,23 @@ def test_positive_feedback_with_email_schedules_followup(monkeypatch):
         website=None,
     ))
 
-    assert len(tasks.tasks) == 1
-    task = tasks.tasks[0]
-    assert task.func is server.send_feedback_review_followup
-    assert task.args == (
-        "ana@example.com",
-        "Ana",
-        "Gran Sur",
-        5,
-        "Una experiencia excelente.",
-        "es",
-    )
+    assert calls == ["internal", "followup"]
 
 
-def test_followup_is_not_scheduled_without_both_conditions(monkeypatch):
+def test_followup_is_not_sent_without_both_conditions(monkeypatch):
     async def fake_request(*args, **kwargs):
         return None
 
     monkeypatch.setattr(server.db, "request", fake_request)
+    calls = []
+    monkeypatch.setattr(server, "send_lead_notification", lambda *args, **kwargs: calls.append("internal") or "notif-id")
+    monkeypatch.setattr(server, "send_feedback_review_followup", lambda *args, **kwargs: calls.append("followup") or "followup-id")
     cases = [
         {"rating": 3, "email": "ana@example.com"},
         {"rating": 5, "email": None},
     ]
     for index, case in enumerate(cases):
         server._feedback_rate.clear()
-        tasks = BackgroundTasks()
         request = Request({
             "type": "http",
             "method": "POST",
@@ -133,7 +127,6 @@ def test_followup_is_not_scheduled_without_both_conditions(monkeypatch):
         })
         asyncio.run(server.create_feedback(
             request=request,
-            background_tasks=tasks,
             submission_type="text",
             name="Ana",
             email=case["email"],
@@ -146,18 +139,18 @@ def test_followup_is_not_scheduled_without_both_conditions(monkeypatch):
             consent=True,
             website=None,
         ))
-        assert tasks.tasks == []
+    assert calls == ["internal", "internal"]
 
 
-def test_followup_email_contains_review_and_never_raises(monkeypatch):
+def test_followup_email_contains_review_and_propagates_failure(monkeypatch):
     sent = []
     monkeypatch.setattr(server, "RESEND_API_KEY", "test-key")
     monkeypatch.setattr(server, "LEADS_FROM_EMAIL", "Xaluca Tours <hola@example.com>")
     monkeypatch.setattr(server, "NOTIFY_EMAILS", [])
     monkeypatch.setattr(server, "_email_attachments", lambda: [])
-    monkeypatch.setattr(server.resend.Emails, "send", lambda params: sent.append(params))
+    monkeypatch.setattr(server.resend.Emails, "send", lambda params: sent.append(params) or {"id": "feedback-id"})
 
-    server.send_feedback_review_followup(
+    message_id = server.send_feedback_review_followup(
         "ana@example.com",
         "Ana",
         "Gran Sur",
@@ -166,6 +159,7 @@ def test_followup_email_contains_review_and_never_raises(monkeypatch):
         "es",
     )
 
+    assert message_id == "feedback-id"
     assert len(sent) == 1
     params = sent[0]
     assert params["to"] == ["ana@example.com"]
@@ -179,6 +173,7 @@ def test_followup_email_contains_review_and_never_raises(monkeypatch):
         raise RuntimeError("Resend unavailable")
 
     monkeypatch.setattr(server.resend.Emails, "send", fail_send)
-    server.send_feedback_review_followup(
-        "ana@example.com", "Ana", "Gran Sur", 5, "Excelente", "es"
-    )
+    with pytest.raises(server.EmailDeliveryError):
+        server.send_feedback_review_followup(
+            "ana@example.com", "Ana", "Gran Sur", 5, "Excelente", "es"
+        )
