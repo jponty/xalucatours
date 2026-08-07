@@ -202,8 +202,8 @@ export default function ExitIntentModal() {
       safeSet(window.localStorage, CONVERTED_KEY, "1");
       window.dispatchEvent(new CustomEvent("xaluca:lead-submitted"));
       setSuccess(true);
-    } catch {
-      setError(pick(COPY.genericError, lang));
+    } catch (error) {
+      setError(error?.response?.data?.detail || pick(COPY.genericError, lang));
     } finally {
       setSending(false);
     }

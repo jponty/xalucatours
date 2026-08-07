@@ -202,6 +202,7 @@ export default function ConcursoPage() {
         contest_id: contest.id,
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
+        phone: form.phone.trim(),
         email: form.email.trim(),
         language: lang,
       });
@@ -225,7 +226,7 @@ export default function ConcursoPage() {
         setContest((c) => (c ? { ...c, open: false } : c));
         toast.error(err?.response?.data?.detail || L(UI.genericError, lang));
       } else {
-        toast.error(L(UI.genericError, lang));
+        toast.error(err?.response?.data?.detail || L(UI.genericError, lang));
         setPhase("ready");
       }
     }

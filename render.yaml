@@ -50,6 +50,16 @@ services:
         sync: false
       - key: LEADS_NOTIFY_EMAILS
         sync: false
+      - key: FOUNDER_LLUIS_EMAIL
+        sync: false
+      - key: FOUNDER_TAYEB_EMAIL
+        sync: false
+      - key: TEAM_NOEMI_EMAIL
+        sync: false
+      - key: TEAM_ELENA_EMAIL
+        sync: false
+      - key: TEAM_SANAA_EMAIL
+        sync: false
       - key: PEXELS_API_KEY
         sync: false
       - key: UNSPLASH_ACCESS_KEY

@@ -188,8 +188,8 @@ export default function WhatsAppContactModal() {
       });
       setEmailSuccess(true);
       setEmailForm(initialEmailForm);
-    } catch (_) {
-      setEmailError(pick(COPY.emailError, lang));
+    } catch (error) {
+      setEmailError(error?.response?.data?.detail || pick(COPY.emailError, lang));
     } finally {
       setEmailSending(false);
     }

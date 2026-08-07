@@ -192,8 +192,8 @@ export default function FastTrackPage() {
       setDone(true);
       setForm(EMPTY_FORM);
       toast.success("Solicitud Fast Track enviada correctamente");
-    } catch {
-      toast.error("No se pudo enviar la solicitud. Inténtalo de nuevo o contacta con nuestro equipo.");
+    } catch (error) {
+      toast.error(error?.response?.data?.detail || "No se pudo enviar la solicitud. Inténtalo de nuevo o contacta con nuestro equipo.");
     } finally {
       setSending(false);
     }

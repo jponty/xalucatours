@@ -293,13 +293,13 @@ export default function PlannerForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
       setStatus("success");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setStatus("error");
-      setErrMsg(err.message || "Unknown error");
+      setErrMsg(err.message || "No se pudo confirmar el envío por correo.");
     }
   };
 
