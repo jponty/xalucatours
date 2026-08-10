@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, History, MapPin } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
 import { useSlotId } from "@/components/slotScope";
 import { getSlotUrl } from "@/components/EditableImage";
@@ -44,6 +44,7 @@ const COPY = {
     day: "Día",
     explore: "Ver esta jornada",
     swipe: "Desliza para recorrer los días",
+    returnToChronology: "Volver a la cronología",
   },
   en: {
     eyebrow: "Journey timeline",
@@ -78,6 +79,7 @@ const COPY = {
     day: "Day",
     explore: "View this day",
     swipe: "Swipe to explore each day",
+    returnToChronology: "Back to the timeline",
   },
   fr: {
     eyebrow: "Chronologie du voyage",
@@ -112,6 +114,7 @@ const COPY = {
     day: "Jour",
     explore: "Voir cette journée",
     swipe: "Faites glisser pour parcourir les jours",
+    returnToChronology: "Revenir à la chronologie",
   },
 };
 
@@ -155,6 +158,17 @@ const jumpToDay = (event, id) => {
   const offset = (header?.offsetHeight || 0) + (programNav?.offsetHeight || 0) + (dayNav?.offsetHeight || 0) + 20;
   const top = target.getBoundingClientRect().top + window.scrollY - offset;
   window.scrollTo({ top, behavior: "smooth" });
+};
+
+const jumpToChronology = () => {
+  const target = document.getElementById("journey-chronology");
+  if (!target) return;
+  const header = document.querySelector('[data-testid="site-header"]');
+  const programNav = document.querySelector('[data-testid="program-nav"]');
+  const offset = (header?.offsetHeight || 0) + (programNav?.offsetHeight || 0) + 16;
+  const top = target.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  target.focus({ preventScroll: true });
 };
 
 const ChronologyDayCard = ({ day, index, lang, t }) => {
@@ -233,59 +247,77 @@ export default function JourneyChronology({ days, lang = "es", variant = "ad" })
   const title = chronologyTitle(lang, days.length);
 
   return (
-    <section
-      id="journey-chronology"
-      data-testid="journey-chronology"
-      className="relative overflow-hidden bg-[#201A17] py-20 md:py-28"
-    >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage: "radial-gradient(circle at center, #D4A373 1px, transparent 1px)",
-          backgroundSize: "22px 22px",
-        }}
-      />
+    <>
+      <section
+        id="journey-chronology"
+        data-testid="journey-chronology"
+        tabIndex={-1}
+        className="relative overflow-hidden bg-[#201A17] py-20 outline-none md:py-28"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: "radial-gradient(circle at center, #D4A373 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+        />
 
-      <div className="relative mx-auto max-w-[1480px] px-5 md:px-10 xl:px-12">
-        <div className="mb-12 grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.55fr)] lg:items-end md:mb-16">
-          <div>
-            <p className="flex items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-[#D4A373]">
-              <span className="h-px w-8 bg-current" />
-              {t.eyebrow}
+        <div className="relative mx-auto max-w-[1480px] px-5 md:px-10 xl:px-12">
+          <div className="mb-12 grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.55fr)] lg:items-end md:mb-16">
+            <div>
+              <p className="flex items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-[#D4A373]">
+                <span className="h-px w-8 bg-current" />
+                {t.eyebrow}
+              </p>
+              <h2 className="mt-5 max-w-3xl font-serif-x text-4xl leading-[1.04] text-[#FDFBF7] md:text-5xl lg:text-[58px]">
+                {title}
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-7 text-[#FDFBF7]/70 md:text-base">
+              {t.body[variant] || t.body.ad}
             </p>
-            <h2 className="mt-5 max-w-3xl font-serif-x text-4xl leading-[1.04] text-[#FDFBF7] md:text-5xl lg:text-[58px]">
-              {title}
-            </h2>
           </div>
-          <p className="max-w-xl text-sm leading-7 text-[#FDFBF7]/70 md:text-base">
-            {t.body[variant] || t.body.ad}
+
+          <div className="relative">
+            <div aria-hidden="true" className="absolute left-6 right-6 top-[18px] hidden h-px bg-[#D4A373]/35 md:block" />
+            <div
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 md:grid md:gap-3 md:overflow-visible md:pb-0 xl:gap-4"
+              data-testid="journey-chronology-track"
+              style={{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }}
+            >
+              {days.map((day, index) => (
+                <ChronologyDayCard
+                  key={`${day.id}-${index}`}
+                  day={day}
+                  index={index}
+                  lang={lang}
+                  t={t}
+                />
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-5 text-center text-[9px] uppercase tracking-[0.25em] text-[#FDFBF7]/40 md:hidden">
+            {t.swipe}
           </p>
         </div>
+      </section>
 
-        <div className="relative">
-          <div aria-hidden="true" className="absolute left-6 right-6 top-[18px] hidden h-px bg-[#D4A373]/35 md:block" />
-          <div
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 md:grid md:gap-3 md:overflow-visible md:pb-0 xl:gap-4"
-            data-testid="journey-chronology-track"
-            style={{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }}
-          >
-            {days.map((day, index) => (
-              <ChronologyDayCard
-                key={`${day.id}-${index}`}
-                day={day}
-                index={index}
-                lang={lang}
-                t={t}
-              />
-            ))}
-          </div>
-        </div>
-
-        <p className="mt-5 text-center text-[9px] uppercase tracking-[0.25em] text-[#FDFBF7]/40 md:hidden">
-          {t.swipe}
-        </p>
-      </div>
-    </section>
+      <button
+        type="button"
+        onClick={jumpToChronology}
+        data-testid="journey-chronology-fab"
+        aria-label={t.returnToChronology}
+        className="fixed bottom-24 right-4 z-30 inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-[#D4A373]/45 bg-[#201A17] px-3 text-[#FDFBF7] shadow-[0_16px_36px_-16px_rgba(26,21,19,0.75)] transition duration-300 hover:-translate-y-0.5 hover:border-[#D4A373] hover:bg-[#2A221E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFBF7] sm:right-6 sm:px-4 print:hidden"
+      >
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C16542]">
+          <History className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
+        </span>
+        <span className="hidden text-[9px] font-medium uppercase tracking-[0.2em] sm:inline">
+          {t.returnToChronology}
+        </span>
+      </button>
+    </>
   );
 }
