@@ -11,6 +11,11 @@ export const DAY_CIRF_TANGER_TETUAN = {
     "Tangier · Cape Spartel · Tetouan",
     "Tanger · Cap Spartel · Tétouan",
   ),
+  chronologySummary: T(
+    "Llegada a Tánger, encuentro entre Atlántico y Mediterráneo en Cabo Espartel, Grutas de Hércules y primera inmersión en la medina de Tetuán.",
+    "Arrival in Tangier, the Atlantic and Mediterranean meeting at Cape Spartel, the Caves of Hercules and a first immersion in Tetouan medina.",
+    "Arrivée à Tanger, rencontre de l’Atlantique et de la Méditerranée au Cap Spartel, Grottes d’Hercule et première immersion dans la médina de Tétouan.",
+  ),
   body: {
     es: "Llegada por la mañana a Tánger. Dependiendo de la época del año puede existir diferencia horaria. Tras el control de pasaportes y la recogida de equipajes, encuentro con el chófer que acompañará al grupo durante todo el recorrido. Comenzaremos visitando Cabo Espartel, el lugar donde convergen las aguas del océano Atlántico y el mar Mediterráneo. A continuación visitaremos las famosas Grutas de Hércules. Seguiremos hacia Tetuán, conocida como «La Paloma Blanca» por el color predominante de sus casas y su luminosidad. Visita guiada de la medina de Tetuán, declarada Patrimonio de la Humanidad por la UNESCO, donde todavía se aprecia una fuerte influencia andalusí heredada de la época del Protectorado español. Cena y alojamiento en riad dentro de la medina o hotel 4★. Nota: dependiendo del horario de llegada del vuelo, la visita de Tetuán podría trasladarse a la mañana siguiente.",
     en: "Morning arrival in Tangier (time difference depending on the season). After passport control and luggage pickup we meet the driver who will accompany the group throughout the route. We start with Cape Spartel, where the Atlantic Ocean meets the Mediterranean Sea, followed by the famous Caves of Hercules. We then continue to Tetouan, known as «the White Dove» for the predominant colour of its houses and its luminous light. Guided visit to the Tetouan medina — a UNESCO World Heritage site that still keeps a strong Andalusian influence inherited from the Spanish Protectorate era. Dinner and overnight in a medina riad or 4★ hotel. Note: depending on the flight schedule, the Tetouan tour may be moved to the following morning.",
@@ -38,6 +43,11 @@ export const DAY_CIRF_CHEFCHAOUEN = {
     "Chefchaouen and the Rif mountains",
     "Chefchaouen et les montagnes du Rif",
   ),
+  chronologySummary: T(
+    "Atravesamos las montañas del Rif y las cascadas de Akchour para recorrer las plazas, callejuelas azules y rincones históricos de Chefchaouen.",
+    "We cross the Rif Mountains and Akchour waterfalls to explore Chefchaouen’s blue alleys, squares and historic landmarks.",
+    "Nous traversons le Rif et les cascades d’Akchour pour parcourir les ruelles bleues, les places et les sites historiques de Chefchaouen.",
+  ),
   body: {
     es: "Salida hacia Chefchaouen, situada entre las montañas Tisouka y Megou, en plena cordillera del Rif. Durante el trayecto realizaremos una parada en las Cascadas de Akchour para disfrutar del paisaje y realizar fotografías. Llegada a Chefchaouen, el famoso «pueblo azul», donde realizaremos una visita guiada recorriendo sus callejuelas y plazas más emblemáticas: Plaza Uta el-Hammam, Gran Mezquita, Kasbah del siglo XVII y sus jardines, Plaza Makhzen, Bab el-Ansar y Fuente Ras el-Maa. Por la tarde tiempo libre para descubrir la ciudad a vuestro ritmo, pasear junto al riachuelo y conocer el barrio de los lavaderos tradicionales de Sebbanin. Cena y alojamiento en riad dentro de la medina.",
     en: "Departure for Chefchaouen, set between the Tisouka and Megou mountains in the heart of the Rif range. On the way we stop at the Akchour Waterfalls to enjoy the landscape and take photos. We arrive in Chefchaouen, the famous «blue town», for a guided walk through its most emblematic alleys and squares: Uta el-Hammam square, the Grand Mosque, the 17th-century Kasbah and its gardens, Makhzen square, Bab el-Ansar and the Ras el-Maa fountain. Free time in the afternoon to explore at your own pace, stroll along the stream and discover the traditional Sebbanin laundry quarter. Dinner and overnight in a medina riad.",
@@ -64,6 +74,11 @@ const DAY_03 = {
     "Chefchaouen · Volubilis · Moulay Idriss · Meknes · Fez",
     "Chefchaouen · Volubilis · Moulay Idriss · Meknes · Fez",
     "Chefchaouen · Volubilis · Moulay Idriss · Meknès · Fès",
+  ),
+  chronologySummary: T(
+    "De Chefchaouen viajamos a las ruinas romanas de Volubilis y la ciudad santa de Moulay Idriss, visitamos Meknes y terminamos en Fez.",
+    "From Chefchaouen we travel to Roman Volubilis and holy Moulay Idriss, visit imperial Meknes and finish the day in Fez.",
+    "De Chefchaouen, nous rejoignons Volubilis et Moulay Idriss, visitons la cité impériale de Meknès puis terminons la journée à Fès.",
   ),
   body: {
     es: "Salida temprano en dirección Meknes. Durante la ruta visitaremos Volubilis, el yacimiento arqueológico romano más importante de Marruecos. Entre sus principales monumentos destacan el arco de triunfo, el capitolio, la Casa de Baco y antiguos mosaicos romanos. De camino pasaremos por Moulay Idriss, ciudad santa y centro espiritual del país. Llegada a Meknes, una de las ciudades imperiales más monumentales de Marruecos. Visita guiada de la ciudad y de sus monumentos más importantes: Bab al Mansour, Mausoleo de Moulay Ismail, graneros y establos «Heri es Souani» y prisión subterránea «Habs Qara». Tras la visita continuación hacia Fez. Cena y alojamiento en riad dentro de la medina o hotel 4★.",
@@ -100,6 +115,11 @@ export const DAY_CIRF_FEZ_MEDINA = {
     "Fez · Morocco's cultural capital",
     "Fès · capitale culturelle du Maroc",
   ),
+  chronologySummary: T(
+    "Recorremos a pie Fez el-Bali, sus zocos, escuelas coránicas, talleres y tenerías tradicionales, con panorámicas de la ciudad imperial.",
+    "We explore Fez el-Bali on foot, including its souks, Koranic schools, workshops and traditional tanneries, with city panoramas.",
+    "Nous parcourons Fès el-Bali à pied, avec ses souks, écoles coraniques, ateliers et tanneries, puis admirons la ville depuis ses belvédères.",
+  ),
   body: {
     es: "Hoy descubriremos Fez el-Bali, la antigua medina de Fez y una de las más auténticas y mejor conservadas del mundo árabe. Acompañados por un guía local recorreremos sus laberínticas callejuelas medievales repletas de talleres artesanales, mezquitas, palacios, escuelas coránicas y zocos tradicionales. Fez es considerada la ciudad imperial más espiritual y cultural de Marruecos. La visita se realiza completamente a pie, ya que en esta medina declarada Patrimonio de la Humanidad por la UNESCO está prohibido el acceso de vehículos. También visitaremos las tenerías tradicionales, miradores panorámicos y diferentes barrios históricos organizados alrededor de mezquitas, fuentes, hornos y hammams. Cena y alojamiento en riad dentro de la medina o hotel 4★.",
     en: "Today we discover Fez el-Bali, the ancient medina of Fez — one of the most authentic and best-preserved in the Arab world. With a local guide we walk through medieval alleys packed with artisan workshops, mosques, palaces, Koranic schools and traditional souks. Fez is considered the country's most spiritual and cultural imperial city. The visit is entirely on foot — vehicles are forbidden in this UNESCO-listed medina. We also visit the traditional tanneries, panoramic viewpoints and several historic neighbourhoods organised around mosques, fountains, ovens and hammams. Dinner and overnight in a medina riad or 4★ hotel.",
@@ -135,6 +155,11 @@ export const DAY_CIRF_FEZ_MARRAKECH = {
     "Fez · Middle Atlas · Marrakech",
     "Fès · Moyen Atlas · Marrakech",
   ),
+  chronologySummary: T(
+    "Cruzamos el Medio Atlas por Ifrane, los bosques de cedros, Khenifra y Beni Mellal antes de llegar al ambiente de Jemaa el-Fna.",
+    "We cross the Middle Atlas via Ifrane, the cedar forests, Khenifra and Beni Mellal before reaching the atmosphere of Jemaa el-Fna.",
+    "Nous traversons le Moyen Atlas par Ifrane, les forêts de cèdres, Khénifra et Beni Mellal avant de rejoindre l’ambiance de Jemaa el-Fna.",
+  ),
   body: {
     es: "Hoy nos espera una larga jornada atravesando algunos de los paisajes más variados del país. Recorreremos la cordillera del Medio Atlas en dirección Marrakech. Durante la ruta pasaremos por Ifrane, conocida como «la pequeña Suiza»; los bosques de cedros gigantes donde habitan macacos de Berbería; Azrou, Khenifra, pueblos bereberes del Atlas y Beni Mellal. Llegada a Marrakech. Alojamiento en riad dentro de la medina u hotel 5★. Existe la posibilidad de realizar este trayecto en avión o de añadir una noche adicional en el lago Bin el Ouidane para dividir la ruta en dos jornadas. Se recomienda visitar la Plaza Jemaa el-Fna al atardecer, cuando se llena de narradores, acróbatas, encantadores de serpientes, puestos de comida callejera, músicos y artistas. Una experiencia imprescindible. El servicio de vehículo con chófer finaliza este día.",
     en: "A long day across some of Morocco's most varied landscapes. We cross the Middle Atlas range towards Marrakech. Along the way we drive through Ifrane — known as «little Switzerland» —, the giant cedar forests home to Barbary macaques, Azrou, Khenifra, Berber Atlas villages and Beni Mellal. Arrival in Marrakech. Accommodation in a medina riad or 5★ hotel. The route can also be done by plane, or split into two days with an extra night at the Bin el Ouidane lake. We recommend visiting Jemaa el-Fna square at sunset, when it fills with storytellers, acrobats, snake charmers, street-food stalls, musicians and street artists — an unmissable experience. The driver service ends today.",
@@ -162,6 +187,11 @@ export const DAY_CIRF_MARRAKECH_MEDINA = {
     "Marrakech · medina, souks and Jemaa el-Fna",
     "Marrakech · médina, souks et Jemaa el-Fna",
   ),
+  chronologySummary: T(
+    "Visita guiada por la Koutoubia, el Palacio de la Bahía, los talleres de los zocos y Jemaa el-Fna, con tarde libre en la medina.",
+    "A guided visit to the Koutoubia, Bahia Palace, souk workshops and Jemaa el-Fna, with free time in the medina.",
+    "Visite guidée de la Koutoubia, du Palais de la Bahia, des ateliers des souks et de Jemaa el-Fna, puis temps libre dans la médina.",
+  ),
   body: {
     es: "Por la mañana visita guiada a pie por la medina de Marrakech. Descubriremos la Koutoubia, el Palacio Bahía, los zocos y talleres artesanales, y una farmacia bereber tradicional. Durante la visita veremos artesanos trabajando cuero, alfombras, cerámica y babuchas tradicionales. Regreso a la Plaza Jemaa el-Fna y tarde libre para disfrutar de la ciudad, practicar el regateo o perderse por la medina. La visita guiada puede ampliarse para incluir la Madraza Ben Youssef, el Museo Ben Youssef, las Tumbas Saadíes y los Jardines Majorelle. Alojamiento en riad dentro de la medina u hotel 5★.",
     en: "Morning guided walking tour of the Marrakech medina. We discover the Koutoubia, the Bahia Palace, the souks and artisan workshops, and a traditional Berber pharmacy. Along the way we see artisans working leather, carpets, ceramics and traditional babouches. Back to Jemaa el-Fna square and free afternoon to enjoy the city, bargain in the souks or get lost in the medina. The tour can be extended to include the Ben Youssef Madrasa, the Ben Youssef Museum, the Saadian Tombs and the Majorelle Gardens. Overnight in a medina riad or 5★ hotel.",
@@ -185,6 +215,11 @@ export const DAY_CIRF_RETURN_MARRAKECH = {
   image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Marrakech", "Return from Marrakech", "Retour depuis Marrakech"),
+  chronologySummary: T(
+    "Últimos momentos en Marrakech y traslado desde el alojamiento hasta el aeropuerto para tomar el vuelo de regreso al punto de origen.",
+    "Final moments in Marrakech and transfer from the accommodation to the airport for the return flight home.",
+    "Derniers instants à Marrakech puis transfert de l’hébergement à l’aéroport pour prendre le vol retour.",
+  ),
   body: {
     es: "A la hora acordada, traslado al aeropuerto de Marrakech para tomar el vuelo de regreso.",
     en: "At the agreed time, transfer to Marrakech airport for the return flight.",
@@ -195,6 +230,7 @@ export const DAY_CIRF_RETURN_MARRAKECH = {
 
 export const PROGRAM_CI_RIF_67 = {
   routeId: "tourCiudadesImperialesRif67",
+  chronologyVariant: "cirf",
   duration_key: "cirf6n7d",
   duration: T("6 noches / 7 días", "6 nights / 7 days", "6 nuits / 7 jours"),
   prices: { low: 1290, mid: 1490, high: 1690, premium: 1890 },

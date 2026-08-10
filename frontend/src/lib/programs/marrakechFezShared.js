@@ -49,6 +49,11 @@ export const DAY_FRM_MARRAKECH_MEDINA = {
     en: "Morning guided walking tour of the Marrakech medina with a local guide. We start admiring the Koutoubia minaret — twin sister of Seville's Giralda — and continue with the Bahia Palace, one of the finest examples of 19th-century Moroccan architecture. We enter the narrow souk alleys to see artisans at work — carpet weavers, babouche makers, leather, wood and metal workshops — discovering a wide variety of high-quality traditional crafts. Visit to a Berber pharmacy where we discover herbal remedies and ancestral «secrets». We end at Jemaa el-Fna square, with a daytime atmosphere completely different from the previous night. Free afternoon to haggle or explore the most authentic, hidden corners of the medina at your own pace. Overnight in a Medina riad or 5★ hotel.",
     fr: "Matin : visite guidée à pied de la médina de Marrakech avec guide local. Nous commençons par le minaret de la Koutoubia — sœur jumelle de la Giralda — et continuons par le palais de la Bahia, l'un des plus beaux exemples de l'architecture marocaine du XIXe siècle. Plongée dans les ruelles du souk pour voir les artisans à l'œuvre — tisserands de tapis, babouchiers, ateliers de cuir, bois et métaux — découvrant une grande variété d'artisanat traditionnel de haute qualité. Visite d'une pharmacie berbère et de ses « secrets » naturels. Nous terminons à Jemaa el-Fna, dont l'ambiance diurne contraste radicalement avec la veille. Après-midi libre pour le marchandage ou pour explorer la médina à votre rythme. Nuit en riad de la médina ou hôtel 5★.",
   },
+  chronologySummary: T(
+    "Visita guiada por la Medina de Marrakech, la Koutoubia, el Palacio de la Bahía y los zocos, con tiempo libre para recorrer Djemaa el-Fna.",
+    "Guided visit to Marrakech's Medina, the Koutoubia, Bahia Palace and the souks, with free time to explore Djemaa el-Fna.",
+    "Visite guidée de la Médina de Marrakech, de la Koutoubia, du Palais de la Bahia et des souks, avec temps libre à Djemaa el-Fna.",
+  ),
   culture: [
     {
       title: T("Koutoubia · hermana gemela de la Giralda", "Koutoubia · twin sister of the Giralda", "Koutoubia · sœur jumelle de la Giralda"),
@@ -123,6 +128,11 @@ export const DAY_FRM_DADES_TODRA_ERFOUD_LIGHT = {
     en: "Morning drive up the Dades Valley to its famous gorges and tea-stop at a panoramic viewpoint. Brief stop along the way at the curious «Monkey Fingers» rock formations. Continuation to Tinerhir, a small thriving town of pink houses among palm groves and the ideal gateway to the Todra Gorges. Walk along the river between the high walls of these spectacular gorges. Later, drive to Erfoud, «the gateway to the desert». Dinner and overnight at Kasbah Hotel Xaluca, a one-of-a-kind property in Morocco for its architecture.",
     fr: "Le matin, remontée de la vallée du Dadès jusqu'à ses célèbres gorges et arrêt-thé au mirador panoramique. Arrêt aux curieuses formations rocheuses dites « Doigts de Singe ». Continuation vers Tinerhir, petite ville prospère aux maisons roses parmi les palmeraies et point d'entrée idéal des Gorges du Todra. Marche le long de la rivière entre les hautes parois de ces gorges spectaculaires. Plus tard, route vers Erfoud, « la porte du désert ». Dîner et nuit à la Kasbah Hôtel Xaluca.",
   },
+  chronologySummary: T(
+    "Recorrido por el Valle y las Gargantas del Dadès, las formaciones «Patas de Mono» y las Gargantas del Todra antes de llegar a Erfoud.",
+    "Route through the Dades Valley and Gorges, the Monkey Fingers formations and the Todra Gorges before reaching Erfoud.",
+    "Parcours dans la vallée et les gorges du Dadès, les formations des Doigts de Singe et les gorges du Todra avant Erfoud.",
+  ),
   culture: [
     {
       title: T("Gargantas del Todra · 160 m de pared vertical", "Todra Gorges · 160 m vertical walls", "Gorges du Todra · 160 m de parois verticales"),
@@ -186,6 +196,11 @@ export const DAY_FRM_RISSANI_RELAX_ONLY = {
     en: "Drive by desert tracks to Rissani to visit some of its centuries-old kasbahs. We continue with a visit to the Rissani traditional market — unique in the region and a supply point for desert tribes and nomads. Its curious «donkey parking» is particularly memorable. Back to Kasbah Xaluca, with the rest of the day free to enjoy the hotel: heated pool, jacuzzi, tennis or mini-golf, optional traditional hammam or massage, optional quad rides in the nearby dunes, visits to surrounding kasbahs. In the afternoon, the 4x4 with driver remains available to keep exploring or stroll around Erfoud. Dinner and overnight at Kasbah Xaluca. Note: Rissani market runs Tuesday, Thursday and Sunday; if it doesn't coincide with the route we'll try to relocate the visit.",
     fr: "Départ par les pistes vers Rissani pour visiter ses kasbahs centenaires. Continuation par le marché traditionnel de Rissani — unique dans la région et point d'approvisionnement des tribus et nomades du désert. Son curieux « parking d'ânes » est particulièrement marquant. Retour à la Kasbah Xaluca et après-midi libre : piscine chauffée, jacuzzi, tennis ou mini-golf, hammam traditionnel ou massage (option), quads en option dans les dunes voisines, visite des kasbahs voisines. Les 4x4 avec chauffeur restent à disposition pour explorer la zone ou flâner dans Erfoud. Dîner et nuit à la Kasbah Xaluca. Note : le marché de Rissani a lieu mardi, jeudi et dimanche.",
   },
+  chronologySummary: T(
+    "Ruta por las kasbahs y el mercado tradicional de Rissani, seguida de una tarde libre para disfrutar de Kasbah Xaluca y explorar Erfoud.",
+    "Route through Rissani's kasbahs and traditional market, followed by a free afternoon at Kasbah Xaluca and time to explore Erfoud.",
+    "Parcours des kasbahs et du marché traditionnel de Rissani, puis après-midi libre à la Kasbah Xaluca et découverte d'Erfoud.",
+  ),
   wellness: [
     { es: "Piscina climatizada", en: "Heated pool", fr: "Piscine chauffée" },
     { es: "Jacuzzi", en: "Jacuzzi", fr: "Jacuzzi" },

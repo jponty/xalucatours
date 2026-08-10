@@ -92,6 +92,11 @@ export const DAY_03_ERFOUD_ERG_BIVOUAC = {
     en: "Today we live a day of total desert. We will drive an old Dakar Rally track, crossing villages and meeting desert nomads. Stop at the marine fossil quarries (over 360 million years old) and picnic in an authentic oasis. We continue to the great Erg Chebbi, the famous desert of ultra-fine dunes. We swap 4x4 for camels and enter the heart of the dunes for an unforgettable sunset. Arrival at the Bivouac de Luxe (Kamkamia Luxury Desert Camp), traditional Berber tents like those used by nomads. Dinner and overnight — sleeping under the stars is a spectacular experience.",
     fr: "Aujourd'hui, journée désert total. Nous parcourons une ancienne piste du Rallye Dakar, à la rencontre des villages et des nomades. Arrêt aux carrières de fossiles marins (plus de 360 millions d'années) et pique-nique dans une oasis authentique. Poursuite vers le grand Erg Chebbi, désert de dunes à sable très fin. Nous échangeons le 4x4 contre des dromadaires pour rejoindre le cœur des dunes et admirer un coucher de soleil inoubliable. Arrivée au Bivouac de Luxe (Kamkamia Luxury Desert Camp), tentes berbères traditionnelles. Dîner et nuit sous les étoiles — une expérience spectaculaire.",
   },
+  chronologySummary: T(
+    "Pistas del Rally Dakar, fósiles y picnic en un oasis antes de recorrer el Erg Chebbi en dromedario y dormir bajo las estrellas.",
+    "Dakar Rally tracks, fossils and an oasis picnic before crossing Erg Chebbi by camel and sleeping beneath the stars.",
+    "Pistes du Rallye Dakar, fossiles et pique-nique dans une oasis avant de parcourir l’Erg Chebbi à dos de dromadaire et dormir sous les étoiles.",
+  ),
   culture: [
     {
       title: T("Kamkamia Luxury Desert Camp", "Kamkamia Luxury Desert Camp", "Kamkamia Luxury Desert Camp"),
@@ -203,6 +208,11 @@ export const DAY_06_TODRA_DADES = {
     en: "Drive on asphalt to Tinerhir, a small thriving town offering a beautiful panorama of contrasts — pink houses set among green palm groves. From here we enter the spectacular Todra Gorges for a walk along the river between impressive rock walls. Continue to Boumalne Dades, 1,612 m above sea level in the High Atlas, known as the Valley of the Birds. Afternoon drive up the Dades Valley to its gorges and tea-stop at a panoramic viewpoint. On the way back, stop at the curious «Monkey Fingers» rock formations. Dinner and overnight at Hotel Xaluca Dades.",
     fr: "Route asphaltée vers Tinerhir, petite ville prospère offrant une magnifique panoramique de contrastes — maisons roses au milieu de palmeraies vertes. Nous entrons dans les spectaculaires Gorges du Todra pour une marche le long de la rivière entre des parois impressionnantes. Continuation vers Boumalne Dadès, à 1 612 m d'altitude dans le Haut Atlas, appelée la Vallée des Oiseaux. L'après-midi, parcours de la vallée du Dadès jusqu'à ses gorges et arrêt-thé au mirador panoramique. Retour avec arrêt aux formations rocheuses curieuses dites « Doigts de Singe ». Dîner et nuit à l'Hôtel Xaluca Dadès.",
   },
+  chronologySummary: T(
+    "Ruta entre los palmerales de Tinerhir, las Gargantas del Todra y el Valle del Dadès, con llegada y alojamiento en Boumalne Dades.",
+    "Route through Tinerhir's palm groves, the Todra Gorges and the Dades Valley, arriving for an overnight stay in Boumalne Dades.",
+    "Route entre les palmeraies de Tinerhir, les gorges du Todra et la vallée du Dadès, avec nuit à Boumalne Dadès.",
+  ),
   culture: [
     {
       title: T("Gargantas del Todra · 160 m de pared vertical", "Todra Gorges · 160 m vertical walls", "Gorges du Todra · 160 m de parois verticales"),
@@ -232,6 +242,11 @@ export const DAY_07_MGOUN_ATLAS = {
     "Alto Atlas Central · Boutaghrar · Amskar · Gargantas del M'Goun · Dadès",
     "Central High Atlas · Boutaghrar · Amskar · M'Goun Gorges · Dades",
     "Haut Atlas Central · Boutaghrar · Amskar · Gorges du M'Goun · Dadès",
+  ),
+  chronologySummary: T(
+    "Pistas del Alto Atlas Central entre Boutaghrar y Amskar, aldeas bereberes y paseo por las remotas Gargantas del M’Goun.",
+    "Central High Atlas tracks through Boutaghrar and Amskar, Berber villages and a walk in the remote M’Goun Gorges.",
+    "Pistes du Haut Atlas central par Boutaghrar et Amskar, villages berbères et marche dans les lointaines gorges du M’Goun.",
   ),
   body: {
     es: "Hoy nos adentraremos por pistas de montaña en lo más profundo del Alto Atlas Central, atravesando paisajes espectaculares. Visitaremos poblados bereberes como Boutaghrar y Amskar, donde el tiempo parece haberse detenido. En el camino descubriremos montañas, cañones, valles y grutas en las que aún viven familias nómadas. Recorreremos las impresionantes Gargantas del M'Goun, disfrutando de un paseo inolvidable por uno de los parajes más remotos del sur de Marruecos. El almuerzo será en ruta, en una «Gîte d'Étape», alojamiento rural tradicional de montaña. Cena y alojamiento en Hotel Xaluca Dadès.",
@@ -267,6 +282,11 @@ export const DAY_08_AITBENHADDOU_MARRAKECH = {
     "Dadès · Aït Ben Haddou · Tizi n'Tichka · Marrakech",
     "Dades · Aït Ben Haddou · Tizi n'Tichka · Marrakech",
     "Dadès · Aït Ben Haddou · Tizi n'Tichka · Marrakech",
+  ),
+  chronologySummary: T(
+    "Visita de la kasbah de Aït Ben Haddou, cruce del puerto Tizi n’Tichka y llegada a Marrakech para vivir Djemaa el-Fna al anochecer.",
+    "Visit Aït Ben Haddou kasbah, cross the Tizi n’Tichka pass and arrive in Marrakech to experience Djemaa el-Fna at dusk.",
+    "Visite de la kasbah d’Aït Ben Haddou, passage du Tizi n’Tichka et arrivée à Marrakech pour découvrir Djemaa el-Fna au crépuscule.",
   ),
   body: {
     es: "Etapa de unos 310 km, ampliamente recompensados por la espectacularidad de los paisajes. Salida hacia Marrakech. En ruta, visitaremos la emblemática Kasbah de Aït Ben Haddou, Patrimonio de la Humanidad UNESCO y escenario de numerosas producciones cinematográficas. Cruzaremos el Tizi n'Tichka, el puerto de montaña más alto de Marruecos, donde dejaremos atrás el paisaje lunar del sur para adentrarnos en los colores verdes y ocres del norte. Llegada a Marrakech por la tarde — recomendamos aprovechar esta primera toma de contacto para visitar la mítica Plaza Djemaa el-Fna, que a estas horas se llena de recitadores, adivinadores, encantadores de serpientes, danzantes, sacamuelas, malabaristas y mucho más. Al caer la noche, la plaza se transforma en un gran mercado gastronómico al aire libre, con puestos de comida tradicional iluminados bajo las estrellas. Cena y alojamiento en Riad en la Medina o Hotel 5★. Nota: este es el último día del recorrido en vehículo 4x4.",
@@ -308,6 +328,11 @@ export const DAY_09_MARRAKECH_MEDINA = {
     en: "Morning guided walking tour of the Marrakech medina with a local guide. We start admiring the Koutoubia minaret — considered the «twin sister» of Seville's Giralda. We visit the Bahia Palace, one of the finest examples of Moroccan architecture. We enter the narrow alleys of the souk to see artisans at work: carpet weavers, babouche makers and an endless variety of quality traditional crafts. Visit to a Berber pharmacy and its herbal «secrets». We return to Jemaa el-Fna square, where the daytime atmosphere is very different from the previous night. Free afternoon to explore the medina at your own pace or master the art of haggling. Dinner and overnight in a Medina riad or 5★ hotel.",
     fr: "Le matin, visite guidée à pied de la médina de Marrakech avec guide local. Nous commençons par admirer le minaret de la Koutoubia — sœur jumelle de la Giralda de Séville. Visite du palais de la Bahia, l'un des plus beaux exemples de l'architecture marocaine. Plongée dans les ruelles du souk pour voir les artisans à l'œuvre : tisserands de tapis, babouchiers et une infinité d'artisanat traditionnel de qualité. Visite d'une pharmacie berbère et de ses « secrets » à base de plantes. Retour à la place Jemaa el-Fna, dont l'ambiance diurne diffère radicalement de la veille. Après-midi libre pour explorer la médina à votre rythme ou pratiquer l'art du marchandage. Dîner et nuit en riad de la médina ou hôtel 5★.",
   },
+  chronologySummary: T(
+    "Visita guiada por la Medina de Marrakech, la Koutoubia, el Palacio de la Bahía y los zocos, con tarde libre en Djemaa el-Fna.",
+    "Guided visit to Marrakech's Medina, the Koutoubia, Bahia Palace and the souks, followed by a free afternoon in Djemaa el-Fna.",
+    "Visite guidée de la Médina de Marrakech, de la Koutoubia, du Palais de la Bahia et des souks, puis après-midi libre à Djemaa el-Fna.",
+  ),
   culture: [
     {
       title: T("Koutoubia · hermana gemela de la Giralda", "Koutoubia · twin sister of the Giralda", "Koutoubia · sœur jumelle de la Giralda"),
@@ -343,6 +368,11 @@ export const DAY_10_MARRAKECH_RETURN = {
     en: "At the agreed time, transfer to Marrakech airport for the return flight.",
     fr: "À l'heure convenue, transfert à l'aéroport de Marrakech pour le vol retour.",
   },
+  chronologySummary: T(
+    "Últimas horas libres en Marrakech y traslado al aeropuerto a la hora convenida para tomar el vuelo de regreso.",
+    "Final free time in Marrakech before the scheduled transfer to the airport for the return flight.",
+    "Derniers moments libres à Marrakech avant le transfert prévu vers l’aéroport pour le vol retour.",
+  ),
   culture: [],
 };
 

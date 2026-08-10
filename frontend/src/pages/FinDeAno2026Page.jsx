@@ -10,6 +10,7 @@ import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 import ContactForm from "@/components/ContactForm";
 import VideoSection from "@/components/VideoSection";
+import JourneyChronology from "@/components/JourneyChronology";
 
 /* ============================================================
    FIN DE AÑO 2026 EN EL DESIERTO DE MARRUECOS
@@ -183,6 +184,11 @@ export const FIN_DE_ANO_ITINERARY = [
       en: "Departure at 09:00 on a direct flight from Barcelona to Ouarzazate (arrival 11:20). Immigration and pickup in 4x4 vehicles with driver. Lunch in Ouarzazate. In the afternoon, visit to Aït Ben Haddou, UNESCO World Heritage ksar — location for «Gladiator» and «Lawrence of Arabia». We continue to Boumalne Dades, in the Valley of Birds at 1,612 m. Dinner and accommodation at Hotel Xaluca Dades 4*.",
       fr: "Départ à 09h00 sur vol direct Barcelone-Ouarzazate (arrivée 11h20). Formalités d'entrée et accueil en 4x4 avec chauffeur. Déjeuner à Ouarzazate. L'après-midi, visite d'Aït Ben Haddou, ksar inscrit à l'UNESCO — décor de « Gladiator » et « Lawrence d'Arabie ». Route vers Boumalne Dadès, dans la Vallée des Oiseaux à 1 612 m. Dîner et hébergement à l'Hôtel Xaluca Dadès 4*.",
     },
+    chronologySummary: {
+      es: "Vuelo directo a Ouarzazate, visita del ksar de Aït Ben Haddou y llegada a Boumalne Dadès para la primera noche en el Alto Atlas.",
+      en: "Direct flight to Ouarzazate, visit to Aït Ben Haddou and arrival in Boumalne Dades for the first night in the High Atlas.",
+      fr: "Vol direct vers Ouarzazate, visite d’Aït Ben Haddou et arrivée à Boumalne Dadès pour la première nuit dans le Haut Atlas.",
+    },
     footnote: {
       es: "Los horarios de vuelo pueden sufrir ligeras modificaciones y se reconfirmarán 21 días antes de la salida.",
       en: "Flight times are subject to minor changes and will be re-confirmed 21 days before departure.",
@@ -198,6 +204,11 @@ export const FIN_DE_ANO_ITINERARY = [
       es: "Nos adentramos por pistas en lo más profundo del Alto Atlas Central. Visitamos poblados bereberes como Boutaghrar y Amskar, donde se conserva intacta la vida tradicional de montaña. Contemplaremos montañas, cañones, valles y grutas donde aún viven familias nómadas. Recorreremos las impresionantes Gargantas del M'Goun. Comida picnic durante la excursión. Cena y alojamiento en Hotel Xaluca Dades 4*.",
       en: "We head deep into the Central High Atlas on mountain tracks. We visit Berber villages like Boutaghrar and Amskar, where traditional mountain life is preserved. Mountains, canyons, valleys and caves where nomadic families still live. The spectacular M'Goun gorges. Picnic lunch on the excursion. Dinner and accommodation at Hotel Xaluca Dades 4*.",
       fr: "Nous entrons par pistes au cœur du Haut Atlas Central. Visite de villages berbères comme Boutaghrar et Amskar, où la vie traditionnelle de montagne est intacte. Montagnes, canyons, vallées et grottes où vivent encore des familles nomades. Spectaculaires gorges du M'Goun. Pique-nique pendant l'excursion. Dîner et hébergement à l'Hôtel Xaluca Dadès 4*.",
+    },
+    chronologySummary: {
+      es: "Pistas del Alto Atlas Central entre Boutaghrar, Amskar y las gargantas del M’Goun, con picnic y encuentro con la vida bereber.",
+      en: "Central High Atlas tracks through Boutaghrar, Amskar and the M’Goun Gorges, with a picnic and an encounter with Berber life.",
+      fr: "Pistes du Haut Atlas Central par Boutaghrar, Amskar et les gorges du M’Goun, avec pique-nique et rencontre avec la vie berbère.",
     },
     callout: {
       label: { es: "Acción solidaria", en: "Solidarity action", fr: "Action solidaire" },
@@ -218,6 +229,11 @@ export const FIN_DE_ANO_ITINERARY = [
       en: "We follow the Dades Valley up to the end of the gorges and have tea at a spectacular viewpoint. On the way back we visit the famous «Monkey Paws» rock formations. Lunch at the hotel. Afternoon transfer to Erfoud through southern Morocco's most iconic landscapes. We pass Tinerhir and visit the impressive Todra gorges. Arrival in Erfoud, «the Gate of the Desert». Dinner and accommodation at Kasbah Xaluca.",
       fr: "Vallée du Dadès jusqu'à la fin des gorges, thé sur un mirador spectaculaire. Retour par les formations rocheuses « Pattes de Singe ». Déjeuner à l'hôtel. L'après-midi, route vers Erfoud à travers les paysages emblématiques du sud marocain. Passage à Tinerhir et visite des gorges du Todra. Arrivée à Erfoud, « la porte du désert ». Dîner et hébergement à la Kasbah Xaluca.",
     },
+    chronologySummary: {
+      es: "Recorrido por el Valle del Dadès, las formaciones Patas de Mono y las gargantas del Todra antes de alcanzar Erfoud, puerta del desierto.",
+      en: "Journey through the Dades Valley, Monkey Paws formations and Todra Gorges before reaching Erfoud, the gateway to the desert.",
+      fr: "Parcours dans la vallée du Dadès, les Pattes de Singe et les gorges du Todra avant de rejoindre Erfoud, porte du désert.",
+    },
   },
   {
     id: "30-dic",
@@ -228,6 +244,11 @@ export const FIN_DE_ANO_ITINERARY = [
       es: "Jornada de desierto total. Recorremos pistas del Rally Dakar y visitamos pequeños poblados y familias nómadas. Parada en impresionantes canteras de fósiles marinos de más de 360 millones de años. Comida picnic en un oasis. Continuamos hasta el Gran Erg Chebbi, famoso por sus dunas doradas. Cambiamos los 4x4 por dromedarios para adentrarnos lentamente en las dunas y disfrutar de una inolvidable puesta de sol. Llegada al Bivouac La Belle Étoile, donde dormimos en auténticas haimas bereberes. Cena tradicional con folklore local bajo el cielo estrellado del Sahara.",
       en: "Full day of desert. We ride Rally Dakar tracks and visit small villages and nomadic families. Stop at impressive marine-fossil quarries over 360 million years old. Picnic lunch in an oasis. We continue to the Great Erg Chebbi, famous for its golden dunes. We swap the 4x4 for camels and slowly enter the dunes to enjoy an unforgettable sunset. Arrival at La Belle Étoile bivouac for the night in authentic Berber tents. Traditional dinner with local folklore under the starry Saharan sky.",
       fr: "Journée de désert total. Pistes du Rallye Dakar, petits villages et familles nomades. Arrêt aux impressionnantes carrières de fossiles marins de plus de 360 millions d'années. Pique-nique dans un oasis. Route vers le Grand Erg Chebbi et ses dunes dorées. Nous laissons les 4x4 pour les dromadaires et entrons lentement dans les dunes pour un coucher de soleil inoubliable. Arrivée au bivouac La Belle Étoile, nuit en authentiques tentes berbères. Dîner traditionnel avec folklore local sous le ciel étoilé du Sahara.",
+    },
+    chronologySummary: {
+      es: "Pistas del Dakar, fósiles y picnic en un oasis antes de entrar en Erg Chebbi en dromedario y dormir en haimas bajo las estrellas.",
+      en: "Dakar tracks, fossils and an oasis picnic before entering Erg Chebbi by camel and sleeping in Berber tents beneath the stars.",
+      fr: "Pistes du Dakar, fossiles et pique-nique dans une oasis avant d’entrer dans l’Erg Chebbi à dromadaire et dormir sous les étoiles.",
     },
   },
   {
@@ -240,6 +261,11 @@ export const FIN_DE_ANO_ITINERARY = [
       en: "An authentic «Date with Dawn» — we recommend rising early to watch the sun over the Saharan dunes. 4x4 ride around the Great Erg Chebbi to the abandoned village of Merdani. We continue to Khamlia, a village of Malian origin with traditional African music and dances accompanied by mint tea. Visit to Rissani's traditional market. Lunch at the genuine Berber pizzeria «Des Dunes» in Erfoud. Afternoon back at Kasbah Xaluca: heated pool, jacuzzi, optional hammam, massages or quad tours. 13th edition of the San Silvestre run. At night, the great New Year's Eve dinner and party in the heart of the desert.",
       fr: "Une véritable « rencontre avec l'aube » — nous conseillons de se lever tôt pour contempler le soleil sur les dunes du Sahara. Sortie en 4x4 autour du Grand Erg Chebbi jusqu'au village abandonné de Merdani. Continuation vers Khamlia, village d'origine malienne avec musiques et danses africaines traditionnelles et thé à la menthe. Visite du marché de Rissani. Déjeuner à l'authentique pizzeria berbère « Des Dunes », à Erfoud. L'après-midi, retour à la Kasbah Xaluca : piscine chauffée, jacuzzi, hammam en option, massages ou excursions en quad. 13ᵉ édition de la San Silvestre. Le soir, grand dîner et fête du Nouvel An au cœur du désert.",
     },
+    chronologySummary: {
+      es: "Amanecer en las dunas, música Gnawa en Khamlia y mercado de Rissani antes de la gran cena y fiesta de Fin de Año en el desierto.",
+      en: "Sunrise in the dunes, Gnawa music in Khamlia and Rissani market before the great New Year’s Eve dinner and desert celebration.",
+      fr: "Lever du soleil sur les dunes, musique Gnawa à Khamlia et marché de Rissani avant le grand dîner et la fête du Nouvel An.",
+    },
   },
   {
     id: "1-ene",
@@ -250,6 +276,11 @@ export const FIN_DE_ANO_ITINERARY = [
       es: "Subimos a un espectacular mirador natural para despedirnos del desierto con una última panorámica del Erg Chebbi. Regreso a Erfoud para visitar una auténtica kasbah centenaria y un museo de artesanía bereber. Comida en Kasbah Xaluca. Traslado al aeropuerto de Errachidia atravesando el impresionante Valle del Ziz, uno de los oasis más grandes de Marruecos. Salida del vuelo de regreso a las 18:00h. Llegada prevista a Barcelona sobre las 20:35h.",
       en: "We climb to a spectacular natural viewpoint to bid farewell to the desert with a final panorama of the Erg Chebbi. Back in Erfoud we visit a century-old kasbah and a Berber craft museum. Lunch at Kasbah Xaluca. Transfer to Errachidia airport through the impressive Ziz Valley, one of Morocco's largest oases. Return flight at 18:00. Arrival in Barcelona around 20:35.",
       fr: "Montée à un spectaculaire mirador naturel pour dire au revoir au désert sur une dernière vue de l'Erg Chebbi. Retour à Erfoud pour visiter une kasbah centenaire et un musée de l'artisanat berbère. Déjeuner à la Kasbah Xaluca. Transfert à l'aéroport d'Errachidia par la spectaculaire vallée du Ziz, l'une des plus grandes oasis du Maroc. Vol retour à 18h00. Arrivée à Barcelone vers 20h35.",
+    },
+    chronologySummary: {
+      es: "Última panorámica del Erg Chebbi, visita de una kasbah en Erfoud y travesía del Valle del Ziz camino del aeropuerto de Errachidia.",
+      en: "Final panorama of Erg Chebbi, visit to an Erfoud kasbah and journey through the Ziz Valley on the way to Errachidia airport.",
+      fr: "Dernier panorama de l’Erg Chebbi, visite d’une kasbah à Erfoud et traversée de la vallée du Ziz vers l’aéroport d’Errachidia.",
     },
   },
 ];
@@ -284,6 +315,7 @@ export default function FinDeAno2026Page() {
   return (
     <div data-testid="findeano-2026-page" className="bg-[#FDFBF7]">
       <Hero lang={lang} />
+      <JourneyChronology days={FIN_DE_ANO_ITINERARY} lang={lang} variant="newYear" />
       <Overview lang={lang} />
       <VideoSection {...VIDEO} testid="findeano-video" />
       <Itinerary lang={lang} />
@@ -424,6 +456,7 @@ function Itinerary({ lang }) {
           {FIN_DE_ANO_ITINERARY.map((d, i) => (
             <article
               key={d.id}
+              id={d.id}
               data-testid={`findeano-day-${d.id}`}
               className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start ${i % 2 === 1 ? "lg:[direction:rtl]" : ""}`}
             >

@@ -30,6 +30,11 @@ export const DAY_TRK_TANGER_CHEFCHAOUEN = {
     "Tangier · Cape Spartel · Hercules' Caves · Chefchaouen",
     "Tanger · Cap Spartel · Grottes d'Hercule · Chefchaouen",
   ),
+  chronologySummary: T(
+    "Llegada a Tánger, encuentro del Atlántico y el Mediterráneo en Cabo Espartel, Grutas de Hércules y primera noche en la azul Chefchaouen.",
+    "Arrival in Tangier, the Atlantic and Mediterranean meeting at Cape Spartel, Hercules’ Caves and a first night in blue Chefchaouen.",
+    "Arrivée à Tanger, rencontre de l’Atlantique et de la Méditerranée au Cap Spartel, Grottes d’Hercule et première nuit à Chefchaouen.",
+  ),
   body: {
     es: "Llegada a Tánger y encuentro con el chófer. Visitamos el Cabo Espartel, punto donde el Atlántico se encuentra con el Mediterráneo, y las legendarias Grutas de Hércules con su famosa abertura con forma de mapa de África. Continuación hacia Chefchaouen, «el pueblo azul» del Rif. Visita guiada por la Plaza Uta el-Hammam, la Gran Mezquita, la Kasbah del siglo XVII, la Plaza de Makhzen, la fuente Ras el-Maa, el barrio de los lavaderos y la Plaza de Sebbanin. Cena y alojamiento en riad en la Medina.",
     en: "Arrival in Tangier and meeting with the driver. We visit Cape Spartel — where the Atlantic meets the Mediterranean — and the legendary Hercules' Caves with their famous opening shaped like the map of Africa. We continue to Chefchaouen, the «blue town» of the Rif. Guided tour of Uta el-Hammam Square, the Grand Mosque, the 17th-century Kasbah, Makhzen Square, the Ras el-Maa fountain, the laundry quarter and Sebbanin Square. Dinner and overnight at a Medina riad.",
@@ -73,6 +78,11 @@ export const DAY_TRK_VOLUBILIS_MEKNES_FEZ = {
     "Chefchaouen · Volubilis · Moulay Idriss · Meknes · Fez",
     "Chefchaouen · Volubilis · Moulay Idriss · Meknès · Fès",
   ),
+  chronologySummary: T(
+    "Ruta por las ruinas romanas de Volubilis, la ciudad santa de Moulay Idriss y la imperial Meknes antes de continuar hasta Fez.",
+    "Route through Roman Volubilis, the holy city of Moulay Idriss and imperial Meknes before continuing to Fez.",
+    "Route par les ruines romaines de Volubilis, la ville sainte de Moulay Idriss et l’impériale Meknès avant de rejoindre Fès.",
+  ),
   body: {
     es: "Salida hacia Meknes haciendo parada en las ruinas romanas de Volubilis — el yacimiento arqueológico más importante de Marruecos, con su Arco de Triunfo, el Capitolio y la famosa Casa de Baco. Pasaremos por Moulay Idriss, la ciudad santa más venerada del país. Llegada a Meknes, antigua capital imperial del sultán Moulay Ismaïl, donde haremos una visita guiada por su medina, la monumental puerta Bab al Mansour, sus murallas y mezquitas. Continuamos hasta Fez. Cena y alojamiento en Riad en la Medina o Hotel 4★.",
     en: "Departure for Meknes with a stop at the Roman ruins of Volubilis — Morocco's most important archaeological site, with its Triumphal Arch, the Capitol and the famous House of Bacchus. We pass through Moulay Idriss, the country's most venerated holy city. Arrival in Meknes, former imperial capital of Sultan Moulay Ismail, where we tour its medina, the monumental Bab al Mansour gate, its ramparts and mosques. We continue to Fez. Dinner and overnight at a Medina riad or 4★ hotel.",
@@ -112,6 +122,11 @@ export const DAY_TRK_FEZ_DISCOVER = {
   image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T("Día completo en Fez", "A full day in Fez", "Journée complète à Fès"),
+  chronologySummary: T(
+    "Jornada guiada por Fez-el Bali entre callejuelas medievales, mezquitas, madrazas, talleres artesanos y las históricas tenerías de Chouara.",
+    "Guided day through Fez-el Bali among medieval alleys, mosques, madrasas, artisan workshops and the historic Chouara tanneries.",
+    "Journée guidée dans Fès-el Bali entre ruelles médiévales, mosquées, médersas, ateliers d’artisans et tanneries historiques de Chouara.",
+  ),
   body: {
     es: "Día dedicado a descubrir Fez-el Bali, la antigua Medina de Fez — una de las más auténticas y mejor conservadas del mundo árabe. Acompañados de guía local, recorreremos sus laberínticas callejuelas medievales descubriendo centros artesanales, mezquitas, palacios, tenerías y miradores panorámicos. Observaremos la vida cotidiana alrededor de mezquitas, fuentes, hornos, baños y escuelas coránicas. Cena y alojamiento en Riad en la Medina o Hotel 4★.",
     en: "A full day discovering Fez-el Bali — Morocco's old medina — one of the most authentic and best-preserved in the Arab world. With a local guide we thread its labyrinthine medieval alleys, discovering artisan workshops, mosques, palaces, tanneries and panoramic viewpoints. We observe daily life around mosques, fountains, ovens, hammams and Quranic schools. Dinner and overnight at a Medina riad or 4★ hotel.",
@@ -154,6 +169,11 @@ export const DAY_TRK_FEZ_ATLAS_ERFOUD = {
     "Fez · Medio Atlas · cedros · Valle del Ziz · Erfoud",
     "Fez · Middle Atlas · cedars · Ziz Valley · Erfoud",
     "Fès · Moyen Atlas · cèdres · Vallée du Ziz · Erfoud",
+  ),
+  chronologySummary: T(
+    "Cruce del Medio Atlas por Ifrane y los bosques de cedros, descenso entre los palmerales del valle del Ziz y llegada a Erfoud.",
+    "Cross the Middle Atlas through Ifrane and cedar forests, descend among the Ziz Valley palm groves and arrive in Erfoud.",
+    "Traversée du Moyen Atlas par Ifrane et les forêts de cèdres, descente entre les palmeraies de la vallée du Ziz et arrivée à Erfoud.",
   ),
   body: {
     es: "Por la mañana salida en vehículo 4x4 con chófer en dirección sur para cruzar el Medio Atlas hasta Ifrane, conocida como «la pequeña Suiza». Continuaremos atravesando los Bosques de Cedros Gigantes — con suerte, podremos alimentar a la colonia de monos magot que habita en lo alto de la montaña. La ruta sigue por el Valle del Ziz, hogar de más de diez millones de palmeras, hasta llegar a Erfoud, «la Puerta del Desierto». Cena y alojamiento en Kasbah Hotel Xaluca, un establecimiento único en Marruecos.",

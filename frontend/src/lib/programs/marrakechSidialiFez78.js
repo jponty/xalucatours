@@ -33,6 +33,11 @@ export const DAY_MSF_ZIZ_SIDIALI = {
     "Erfoud · Ziz Valley · Midelt · Aguelmane Sidi Ali",
     "Erfoud · Vallée du Ziz · Midelt · Aguelmane Sidi Ali",
   ),
+  chronologySummary: T(
+    "Atravesamos el palmeral del Ziz y Midelt hasta el lago Aguelmame Sidi Ali, con tiempo para pasear y disfrutar del entorno volcánico.",
+    "We cross the Ziz palm grove and Midelt to Lake Aguelmame Sidi Ali, with time to walk and enjoy its volcanic surroundings.",
+    "Nous traversons la palmeraie du Ziz et Midelt jusqu’au lac Aguelmame Sidi Ali, avec du temps pour profiter du paysage volcanique.",
+  ),
   body: {
     es: "Salida temprano hacia el norte para una jornada de gran belleza paisajística. Atravesaremos el impresionante Valle del Ziz, que alberga más de diez millones de palmeras — uno de los palmerales más extensos del país. Seguiremos camino por la cordillera del Atlas pasando por Midelt hasta llegar a Aguelmane Sidi Ali, situado a 2.200 metros de altitud junto al lago natural más profundo de Marruecos, formado en el cráter de un volcán extinto. Comida en el Hotel Xaluca Spa Aguelmane Sidi Ali. Por la tarde, tiempo para disfrutar del entorno y de las instalaciones del hotel: paseo alrededor del lago, subida opcional al cráter del volcán cercano, visita a una familia nómada Aït Atta, piscina climatizada, spa y hammam. Cena y alojamiento en Xaluca Spa Aguelmane Sidi Ali, antiguo refugio de caza y pesca construido en 1935 y recientemente restaurado.",
     en: "Early start heading north for a day of great scenic beauty. We cross the impressive Ziz Valley — home to more than ten million date palms — one of the largest palm groves in the country. We continue along the Atlas range via Midelt to Aguelmane Sidi Ali, set at 2,200 m altitude next to Morocco's deepest natural lake, formed in the crater of an extinct volcano. Lunch at Hotel Xaluca Spa Aguelmane Sidi Ali. In the afternoon, time to enjoy the surroundings and the hotel's facilities: a walk around the lake, optional climb to the nearby volcanic crater, visit to an Aït Atta nomadic family, heated pool, spa and hammam. Dinner and overnight at Xaluca Spa Aguelmane Sidi Ali, a former hunting and fishing lodge built in 1935 and recently restored.",
@@ -82,6 +87,11 @@ export const DAY_MSF_SIDIALI_IFRANE_FEZ_RETURN = {
     "Sidi Ali · Ifrane · cedros · Fez · regreso",
     "Sidi Ali · Ifrane · cedars · Fez · return",
     "Sidi Ali · Ifrane · cèdres · Fès · retour",
+  ),
+  chronologySummary: T(
+    "Cruzamos Ifrane y los bosques de cedros antes de descubrir la medina y sus curtidurías, terminando con el traslado al aeropuerto de Fez.",
+    "We cross Ifrane and the cedar forests before exploring Fez medina and its tanneries, ending with the transfer to the airport.",
+    "Nous traversons Ifrane et les forêts de cèdres avant de découvrir la médina de Fès et ses tanneries, puis rejoignons l’aéroport.",
   ),
   body: {
     es: "Salida temprano hacia Fez atravesando la ciudad de Ifrane — conocida como «la pequeña Suiza» por su sorprendente parecido con los paisajes y la arquitectura alpina — y los famosos Bosques de Cedros Gigantes, hogar de una colonia de monos magot que, con suerte, podremos alimentar en plena naturaleza. Llegada a Fez al mediodía. Visita guiada a pie por la antigua Medina de Fez — Patrimonio de la Humanidad UNESCO desde 1981 — recorriendo sus callejuelas medievales, centros artesanales, mezquitas y palacios. Visita a una curtiduría tradicional, donde conoceremos de cerca el proceso de trabajo del cuero, uno de los oficios más emblemáticos de la ciudad. A la hora acordada, traslado al aeropuerto de Fez para tomar el vuelo de regreso. Nota: hoy es el último día con vehículo 4x4.",

@@ -7,6 +7,11 @@ export const DAY_CI_CASA_RABAT = {
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: T("Casablanca · Mezquita Hassan II · Rabat", "Casablanca · Hassan II Mosque · Rabat", "Casablanca · mosquée Hassan II · Rabat"),
+  chronologySummary: T(
+    "Llegada a Casablanca, visita panorámica y entrada a la Mezquita Hassan II antes de continuar por la costa atlántica hasta Rabat.",
+    "Arrival in Casablanca, a panoramic tour and the Hassan II Mosque before continuing along the Atlantic coast to Rabat.",
+    "Arrivée à Casablanca, visite panoramique et mosquée Hassan II avant de poursuivre le long de la côte atlantique vers Rabat.",
+  ),
   body: {
     es: "Llegada por la mañana al aeropuerto de Casablanca. Dependiendo de la época del año puede existir diferencia horaria. Tras los trámites de pasaporte y recogida de equipajes, encuentro con el chófer que acompañará al grupo durante todo el recorrido. Comenzaremos con una visita panorámica de Casablanca, capital económica del país: restos de la muralla, Ciudad Nueva, la Corniche y visita guiada de la Mezquita Hassan II, famosa por poseer el minarete más alto del mundo. El chófer recomendará algún restaurante frente al mar para degustar pescado fresco. Tras la comida, salida hacia Rabat por autopista (aprox. 100 km). Cena y alojamiento en hotel 4★ o riad en Rabat.",
     en: "Morning arrival at Casablanca airport (time difference depending on the season). After passport control and baggage collection we meet the driver who will accompany the group throughout the route. We start with a panoramic tour of Casablanca — Morocco's economic capital: old city walls, the new city, the Corniche promenade and a guided visit to the Hassan II Mosque, famed for the world's tallest minaret. The driver will recommend a seafront restaurant for fresh fish. After lunch, transfer to Rabat by motorway (approx. 100 km). Dinner and overnight in a 4★ hotel or riad in Rabat.",
@@ -30,6 +35,11 @@ export const DAY_CI_VOLUBILIS_MEKNES = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A6B4F",
   title: T("Rabat · Volubilis · Moulay Idriss · Meknes", "Rabat · Volubilis · Moulay Idriss · Meknes", "Rabat · Volubilis · Moulay Idriss · Meknès"),
+  chronologySummary: T(
+    "Descubrimos Rabat, las ruinas romanas de Volubilis y la ciudad santa de Moulay Idriss antes de llegar a la ciudad imperial de Meknes.",
+    "We discover Rabat, the Roman ruins of Volubilis and holy Moulay Idriss before reaching the imperial city of Meknes.",
+    "Nous découvrons Rabat, les ruines romaines de Volubilis et la ville sainte de Moulay Idriss avant de rejoindre Meknès.",
+  ),
   body: {
     es: "Por la mañana, visita guiada de Rabat, capital administrativa de Marruecos: la Kasbah des Oudaias, la Torre Hassan, el Mausoleo de Mohammed V y el Chellah, antigua ciudad romana convertida en necrópolis. Por la tarde, salida hacia las ruinas romanas de Volubilis, el yacimiento arqueológico romano más importante de Marruecos. Descubriremos el arco de triunfo, el capitolio, la Casa de Baco y antiguos mosaicos y restos romanos. De camino a Meknes pasaremos por Moulay Idriss, ciudad santa considerada uno de los principales centros espirituales del país. Llegada a Meknes. Cena y alojamiento en hotel 4★ o riad.",
     en: "Morning guided tour of Rabat, Morocco's administrative capital: the Kasbah des Oudaias, the Hassan Tower, the Mausoleum of Mohammed V and the Chellah — an ancient Roman city turned necropolis. Afternoon drive to the Roman ruins of Volubilis, Morocco's most important Roman archaeological site: triumphal arch, capitolium, House of Bacchus and Roman mosaics and remains. On the way to Meknes we pass through Moulay Idriss, a holy city considered one of the country's main spiritual centres. Arrival in Meknes. Dinner and overnight in a 4★ hotel or riad.",
@@ -61,6 +71,11 @@ export const DAY_CI_MEKNES_FEZ = {
   image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
   accent: "#D4A373",
   title: T("Meknes · Bab al Mansour · Heri es Souani · Fez", "Meknes · Bab al Mansour · Heri es Souani · Fez", "Meknès · Bab al Mansour · Heri es Souani · Fès"),
+  chronologySummary: T(
+    "Visitamos Bab al Mansour, el mausoleo de Moulay Ismail y los establos reales de Meknes antes de continuar hacia la medina de Fez.",
+    "We visit Bab al Mansour, Moulay Ismail’s mausoleum and the royal stables of Meknes before continuing to Fez medina.",
+    "Nous visitons Bab al Mansour, le mausolée de Moulay Ismaïl et les écuries royales de Meknès avant de poursuivre vers Fès.",
+  ),
   body: {
     es: "Por la mañana, visita guiada de Meknes, una de las ciudades imperiales más elegantes de Marruecos. Su medina, más tranquila que la de Fez, forma también parte del Patrimonio Mundial UNESCO. Visitaremos Bab al Mansour — una de las puertas monumentales más bellas del país —, el Mausoleo de Moulay Ismail, los graneros y establos reales «Heri es Souani» y la prisión subterránea «Habs Qara». Meknes es conocida como «la ciudad de los cien alminares» gracias a la gran cantidad de mezquitas y monumentos religiosos que alberga. Por la tarde, continuación hacia Fez. Cena y alojamiento en riad dentro de la medina o hotel 4★.",
     en: "Morning guided tour of Meknes, one of Morocco's most elegant imperial cities. Its medina — quieter than Fez — is also UNESCO World Heritage. We visit Bab al Mansour — one of the country's most beautiful monumental gates —, the Mausoleum of Moulay Ismail, the royal granaries and stables «Heri es Souani», and the underground prison «Habs Qara». Meknes is known as «the city of a hundred minarets». Afternoon drive to Fez. Dinner and overnight in a medina riad or 4★ hotel.",
@@ -84,6 +99,11 @@ export const DAY_CI_FEZ_MEDINA = {
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T("Fez · la capital cultural de Marruecos", "Fez · Morocco's cultural capital", "Fès · capitale culturelle du Maroc"),
+  chronologySummary: T(
+    "Recorremos a pie Fez el-Bali, sus zocos, escuelas coránicas, talleres y tenerías tradicionales, con panorámicas de la ciudad imperial.",
+    "We explore Fez el-Bali on foot, including its souks, Koranic schools, workshops and traditional tanneries, with city panoramas.",
+    "Nous parcourons Fès el-Bali à pied, avec ses souks, écoles coraniques, ateliers et tanneries, puis admirons la ville depuis ses belvédères.",
+  ),
   body: {
     es: "Hoy descubriremos Fez el-Bali, la antigua medina de Fez y una de las más auténticas y mejor conservadas del mundo árabe. Acompañados por un guía local, recorreremos sus laberínticas callejuelas medievales repletas de talleres artesanales, mezquitas, palacios, zocos tradicionales y escuelas coránicas. Fez es considerada la ciudad imperial más espiritual y cultural del país. La visita se realiza completamente a pie, ya que en esta medina UNESCO está prohibido el acceso de vehículos. Durante la jornada veremos cómo se organizan los diferentes barrios alrededor de elementos esenciales de la vida cotidiana — mezquita, fuente, horno, hammam, escuela coránica. También visitaremos las famosas tenerías tradicionales donde todavía se curten pieles artesanalmente y subiremos a alguno de los miradores panorámicos de la ciudad. Cena y alojamiento en riad dentro de la medina o hotel 4★.",
     en: "Today we discover Fez el-Bali, the ancient medina of Fez and one of the most authentic and best-preserved in the Arab world. With a local guide we walk the medieval alleys packed with artisan workshops, mosques, palaces, traditional souks and Koranic schools. Fez is considered the country's most spiritual and cultural imperial city. The visit is entirely on foot — vehicles are not allowed in this UNESCO medina. We see how each neighbourhood is organised around the essentials of daily life — mosque, fountain, oven, hammam, Koranic school. We also visit the famous traditional tanneries where leather is still cured by hand, and climb to one of the city's panoramic viewpoints. Dinner and overnight in a medina riad or 4★ hotel.",
@@ -115,6 +135,11 @@ const DAY_05 = {
   image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Fez", "Return from Fez", "Retour depuis Fès"),
+  chronologySummary: T(
+    "Últimos momentos en Fez y traslado desde el riad hasta el aeropuerto para tomar el vuelo de regreso al punto de origen.",
+    "Final moments in Fez and transfer from the riad to the airport for the return flight home.",
+    "Derniers instants à Fès puis transfert du riad à l’aéroport pour prendre le vol retour.",
+  ),
   body: {
     es: "A la hora convenida, recogida en el riad y traslado al aeropuerto de Fez para tomar el vuelo de regreso.",
     en: "At the agreed time, pick-up at the riad and transfer to Fez airport for the return flight.",

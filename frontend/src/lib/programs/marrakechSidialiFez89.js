@@ -32,6 +32,11 @@ export const DAY_MSF_SIDIALI_FEZ_MEDINA = {
     "Sidi Ali · Ifrane · cedars · Fez · medina tour",
     "Sidi Ali · Ifrane · cèdres · Fès · visite de la médina",
   ),
+  chronologySummary: T(
+    "Viajamos por Ifrane y los bosques de cedros hasta Fez, donde recorremos la medina, sus talleres artesanos y una curtiduría tradicional.",
+    "We travel through Ifrane and the cedar forests to Fez, exploring the medina, its artisan workshops and a traditional tannery.",
+    "Nous passons par Ifrane et les forêts de cèdres jusqu’à Fès, puis découvrons la médina, ses artisans et une tannerie traditionnelle.",
+  ),
   body: {
     es: "Salida hacia Fez atravesando Ifrane — conocida como «la pequeña Suiza» por su sorprendente parecido con los paisajes y la arquitectura alpina — y los famosos Bosques de Cedros Gigantes, hogar de una colonia de monos magot que, con suerte, podremos alimentar en plena naturaleza. Llegada a Fez al mediodía y comienzo de la visita guiada a pie por la antigua Medina de Fez — Patrimonio de la Humanidad UNESCO desde 1981 — recorriendo sus laberínticas callejuelas medievales, centros artesanales, mezquitas y palacios. Visita a una curtiduría tradicional para descubrir uno de los oficios más emblemáticos de la ciudad. Cena y alojamiento en Riad en la Medina o Hotel 4★. Nota: hoy es el último día con vehículo 4x4.",
     en: "We head to Fez crossing Ifrane — known as «little Switzerland» for its striking Alpine architecture — and the famous Giant Cedar Forests, home to a colony of Barbary macaques we may be lucky enough to feed in the wild. Midday arrival in Fez and start of the guided walking tour of the ancient Fez medina — UNESCO World Heritage since 1981 — threading its labyrinthine medieval alleys, artisan workshops, mosques and palaces. Visit to a traditional tannery to discover one of the city's most emblematic trades. Dinner and overnight in a Medina riad or 4★ hotel. Note: this is the last day in 4x4.",
@@ -74,6 +79,11 @@ export const DAY_MSF_FEZ_RETURN = {
     "Fez · regreso",
     "Fez · return",
     "Fès · retour",
+  ),
+  chronologySummary: T(
+    "Últimas horas para pasear por Fez o completar la visita de la medina antes del traslado al aeropuerto y el vuelo de regreso.",
+    "Final hours to stroll through Fez or complete the medina visit before the airport transfer and return flight.",
+    "Dernières heures pour flâner à Fès ou compléter la visite de la médina avant le transfert à l’aéroport et le vol retour.",
   ),
   body: {
     es: "A la hora acordada, traslado al aeropuerto de Fez para tomar el vuelo de regreso. Nota: cuando los vuelos salen por la tarde, la mañana puede dedicarse a un paseo libre por la medina o a completar la visita guiada iniciada el día anterior; en ocasiones la visita de Fez se realiza íntegramente esta jornada.",

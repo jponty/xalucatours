@@ -23,6 +23,11 @@ const DAY_AGAFAY = {
     en: "At the agreed time, pick-up in a 4x4 with driver to head south-west. We cross the Kik Plateau down to the Lalla Takerkoust dam, a turquoise reservoir surrounded by arid landscapes leading to the Atlas. Along the way (≈ 40 km) we cross sparse vegetation, Berber villages and — if it coincides with the market day — one of the most authentic rural souks in the area. Arrival at the Agafay Desert — known as «the Marrakchi desert» —, set at the foot of the Atlas. Without the Sahara's sand dunes, Agafay is a sea of rocky hills and golden dust, ideal for a first desert encounter only an hour from Marrakech. Free time to rest or book optional activities: quad, buggy or ATVs along the tracks. In the afternoon, camel ride to a natural viewpoint to watch the sunset over the Atlas — in the background, snow-capped Toubkal (4,167 m). Arrival at the luxury Berber-tent camp, where a traditional dinner and a night under a sky thick with stars await us. Dinner and overnight at the luxury Agafay bivouac.",
     fr: "À l'heure convenue, prise en charge en 4x4 avec chauffeur pour partir vers le sud-ouest. Nous traversons le plateau du Kik jusqu'au lac de Lalla Takerkoust, un réservoir turquoise entouré de paysages arides qui mènent à l'Atlas. En chemin (≈ 40 km), nous traversons des zones à végétation rare, des villages berbères et — si la date coïncide — l'un des souks ruraux les plus authentiques de la région. Arrivée au désert d'Agafay — surnommé « le désert marrakchi » —, situé au pied de l'Atlas. Sans les dunes de sable du Sahara, Agafay est une mer de collines rocheuses et de poussière dorée, idéale pour une première expérience désertique à une heure à peine de Marrakech. Temps libre pour se reposer ou réserver des activités en option : quad, buggy ou ATV sur les pistes. L'après-midi, balade à dromadaire vers un mirador naturel pour contempler le coucher de soleil sur l'Atlas — en arrière-plan, le Toubkal (4 167 m) enneigé. Arrivée au camp de luxe en tentes berbères, où nous attendent un dîner traditionnel et une nuit sous un ciel chargé d'étoiles. Dîner et nuit au bivouac de luxe d'Agafay.",
   },
+  chronologySummary: T(
+    "Ruta por la Meseta del Kik y el lago Lalla Takerkoust hasta Agafay, con paseo en dromedario, puesta de sol y noche bajo las estrellas.",
+    "Route through the Kik Plateau and Lake Lalla Takerkoust to Agafay, with a camel ride, sunset and a night beneath the stars.",
+    "Route par le plateau du Kik et le lac Lalla Takerkoust jusqu’à Agafay, avec dromadaire, coucher de soleil et nuit sous les étoiles.",
+  ),
   wellness: [
     { es: "Paseo en dromedario · puesta de sol", en: "Camel ride · sunset", fr: "Balade à dromadaire · coucher de soleil" },
     { es: "Bivouac de lujo · haimas bereberes", en: "Luxury bivouac · Berber tents", fr: "Bivouac de luxe · tentes berbères" },
@@ -68,6 +73,11 @@ const DAY_RETURN = {
     en: "After breakfast at the camp — we recommend rising early to catch the sunrise over the Agafay hills —, pick-up and direct transfer to Marrakech airport for the return flight.",
     fr: "Après le petit-déjeuner au campement — nous recommandons un lever matinal pour le lever du soleil sur les collines d'Agafay —, prise en charge et transfert direct à l'aéroport de Marrakech pour le vol retour.",
   },
+  chronologySummary: T(
+    "Amanecer sobre las colinas de Agafay y desayuno en el campamento antes del traslado directo al aeropuerto de Marrakech para el regreso.",
+    "Sunrise over the Agafay hills and breakfast at camp before the direct transfer to Marrakech airport for the journey home.",
+    "Lever du soleil sur les collines d’Agafay et petit-déjeuner au camp avant le transfert direct à l’aéroport de Marrakech pour le retour.",
+  ),
 };
 
 export const PROGRAM_ESCAPADA_RAK_AGAFAY_34 = {

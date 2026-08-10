@@ -23,6 +23,11 @@ const DAY_CHEFCHAOUEN_RABAT = {
     "Chefchaouen · transfer to Rabat · guided tour",
     "Chefchaouen · transfert vers Rabat · visite guidée",
   ),
+  chronologySummary: T(
+    "De Chefchaouen descendemos por la costa atlántica hasta Rabat para descubrir la Kasbah de los Oudaias, la Torre Hassan y el Chellah.",
+    "From Chefchaouen we follow the Atlantic coast to Rabat to discover the Kasbah of the Oudaias, Hassan Tower and Chellah.",
+    "De Chefchaouen, nous longeons la côte atlantique jusqu’à Rabat pour découvrir la Kasbah des Oudaïas, la tour Hassan et le Chellah.",
+  ),
   body: {
     es: "Salida temprano en dirección Rabat, una mañana íntegra dedicada al traslado por la costa atlántica con paisajes cambiantes entre el Rif y el océano. A primera hora de la tarde, visita guiada de Rabat, la capital del país, con un guía local. Recorreremos sus joyas más emblemáticas: la Kasbah des Oudaias — barrio fortificado magníficamente conservado, construido sobre un acantilado desde donde se contempla la ciudad vecina de Salé al otro lado del Bou Regreg —, la Torre Hassan y el Mausoleo de Mohammed V, y el Chellah, antigua ciudad romana y medieval reconvertida en necrópolis merení. Cena y alojamiento en Hotel 4★ o Riad en Rabat.",
     en: "Early departure to Rabat — a morning dedicated to the transfer along the Atlantic coast, with shifting landscapes between the Rif and the ocean. Early afternoon guided tour of Rabat, the country's capital, with a local guide. We cover its most emblematic gems: the Kasbah des Oudaias — a beautifully preserved fortified neighbourhood built on a cliff overlooking the neighbouring city of Salé across the Bou Regreg —, Hassan Tower and the Mausoleum of Mohammed V, and Chellah, an ancient Roman and medieval city reborn as a Merinid necropolis. Dinner and overnight in a 4★ hotel or riad in Rabat.",
@@ -58,6 +63,11 @@ const DAY_VOLUBILIS_MEKNES_FEZ = {
     "Rabat · Volubilis · Moulay Idriss · Meknès · Fez",
     "Rabat · Volubilis · Moulay Idriss · Meknès · Fès",
   ),
+  chronologySummary: T(
+    "Visitamos las ruinas romanas de Volubilis, la ciudad santa de Moulay Idriss y los monumentos imperiales de Meknes antes de llegar a Fez.",
+    "We visit Roman Volubilis, holy Moulay Idriss and the imperial monuments of Meknes before reaching Fez for the evening.",
+    "Nous visitons Volubilis, la ville sainte de Moulay Idriss et les monuments impériaux de Meknès avant de rejoindre Fès en soirée.",
+  ),
   body: {
     es: "Salida temprano hacia Meknès. Durante la ruta visitaremos Volubilis, el yacimiento arqueológico romano más grande de Marruecos — Arco de Triunfo de Caracalla, Capitolio, Casa de Baco y los espectaculares mosaicos in situ forman este tesoro al aire libre. Pasaremos también por Moulay Idriss, ciudad santa donde el fundador de Fez convirtió al Islam a la población bereber local — sus casas blancas escalonadas alrededor del mausoleo crean uno de los lugares más espirituales del país. Llegada a Meknès, una de las ciudades imperiales más hermosas y poderosas de Marruecos. Visita guiada con guía local. Su medina, más pequeña y tranquila que la de Fez, conserva una importancia histórica enorme: fundada en el siglo X por una tribu bereber, se convirtió en capital del país en el siglo XVII y forma parte del Patrimonio UNESCO. La ciudad está protegida por más de 40 km de murallas; destaca especialmente la monumental Bab al Mansour. Visitaremos el Mausoleo de Moulay Ismaïl, los graneros y caballerizas «Heri es Souani» y la prisión subterránea «Habs Qara». Tras la visita, continuación hacia Fez (≈ 60 km). Cena y alojamiento en riad dentro de la medina o hotel 4★.",
     en: "Early departure to Meknès. On the way we visit Volubilis, Morocco's largest Roman archaeological site — Caracalla's Triumphal Arch, the Capitol, the House of Bacchus and the spectacular in-situ mosaics make up this open-air treasure. We then pass through Moulay Idriss, holy city where the founder of Fez converted the local Berber population to Islam — its white houses cascading around the mausoleum make it one of the most spiritual sites in the country. We arrive in Meknès, one of Morocco's most beautiful and powerful imperial cities. Guided tour with a local guide. Its medina — smaller and quieter than Fez — holds enormous historical weight: founded by a Berber tribe in the 10th century, it became the country's capital in the 17th and is UNESCO listed. The city is wrapped in over 40 km of ramparts; the monumental Bab al Mansour stands out. We visit the Mausoleum of Moulay Ismaïl, the «Heri es Souani» granaries and royal stables, and the underground «Habs Qara» prison. Onwards to Fez (≈ 60 km). Dinner and overnight in a medina riad or 4★ hotel.",
@@ -85,6 +95,7 @@ const DAY_VOLUBILIS_MEKNES_FEZ = {
 
 export const PROGRAM_CI_RIF_78 = {
   routeId: "tourCiudadesImperialesRif78",
+  chronologyVariant: "cirf",
   duration_key: "cirf7n8d",
   duration: T("7 noches / 8 días", "7 nights / 8 days", "7 nuits / 8 jours"),
   prices: { low: 1490, mid: 1690, high: 1890, premium: 2090 },

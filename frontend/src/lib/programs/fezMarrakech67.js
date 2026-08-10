@@ -70,6 +70,11 @@ export const DAY_04_AMANECER_KHAMLIA_RISSANI_RELAX = {
     "Sunrise · Khamlia · Rissani · relax at the Kasbah",
     "Lever du soleil · Khamlia · Rissani · détente à la Kasbah",
   ),
+  chronologySummary: T(
+    "Amanecer sobre las dunas, música Gnawa en Khamlia y mercado tradicional de Rissani antes de una tarde de descanso en Kasbah Xaluca.",
+    "Sunrise over the dunes, Gnawa music in Khamlia and Rissani’s traditional market before a relaxing afternoon at Kasbah Xaluca.",
+    "Lever du soleil sur les dunes, musique Gnawa à Khamlia et marché traditionnel de Rissani avant une après-midi de détente à la Kasbah Xaluca.",
+  ),
   body: {
     es: "«Cita con el Amanecer»: recomendable madrugar para caminar hasta lo alto de las dunas y disfrutar de la salida del sol, una experiencia mágica. Después, desayuno beduino en el campamento. Salida en vehículo 4x4 para rodear el Erg hasta llegar al pueblo abandonado de Merdani. Continuaremos hacia el poblado de origen sudanés Khamlia, donde sus habitantes nos recibirán con danzas tradicionales y un té a la menta. Más tarde, nos dirigiremos a Rissani para visitar su mercado tradicional, uno de los más auténticos de la región — curiosamente con un «parking de burros» donde aparcan los nómadas. Finalizaremos la mañana subiendo a un mirador natural desde donde nos despediremos del desierto. Tarde libre en Kasbah Xaluca: piscina climatizada, jacuzzi, tenis, minigolf. Opcionalmente, hammam, masaje o excursión en quads por las dunas. Cena y alojamiento en Kasbah Xaluca. Nota: el mercado de Rissani se celebra los martes, jueves y domingos.",
     en: "«A date with the sunrise»: an early climb to the top of the dunes for the sunrise — a magical experience. Bedouin breakfast at the camp. We then drive around the Erg to the abandoned village of Merdani. We continue to Khamlia, a village of Sudanese origin, where its inhabitants welcome us with traditional dances and mint tea. Later, we head to Rissani's traditional market — one of the most authentic in the region, with its curious «donkey parking» where the nomads tie up their animals. We end the morning by climbing to a natural viewpoint for a farewell to the desert. Free afternoon at Kasbah Xaluca: heated pool, jacuzzi, tennis, mini-golf. Optional hammam, massage or quad ride in the dunes. Dinner and overnight at Kasbah Xaluca. Note: the Rissani market runs on Tuesdays, Thursdays and Sundays.",
@@ -125,6 +130,11 @@ export const DAY_07_MARRAKECH_MEDINA_RETURN = {
     en: "In the morning, guided walking tour of the Marrakech Medina with a local guide. We start admiring the Koutoubia minaret — considered the «twin sister» of Seville's Giralda. We visit the Bahia Palace, one of the finest examples of Moroccan architecture. We enter the narrow alleys of the souk to see artisans at work: carpet weavers, babouche makers and an endless variety of quality traditional crafts. We also stop at a Berber pharmacy and its herbal «secrets». Free afternoon to explore the medina at your own pace, master the art of haggling or enjoy a last mint tea on a panoramic terrace. At the agreed time, transfer to Marrakech airport for the return flight.",
     fr: "Le matin, visite guidée à pied de la Médina de Marrakech avec un guide local. Nous commençons par admirer le minaret de la Koutoubia — sœur jumelle de la Giralda de Séville. Visite du Palais de la Bahia, l'un des plus beaux exemples de l'architecture marocaine. Plongée dans les ruelles du souk pour voir les artisans à l'œuvre : tisserands de tapis, babouchiers et une infinité d'artisanat traditionnel. Halte dans une pharmacie berbère et ses « secrets » à base de plantes. Après-midi libre pour explorer la médina à votre rythme, pratiquer l'art du marchandage ou savourer un dernier thé sur une terrasse panoramique. À l'heure convenue, transfert à l'aéroport de Marrakech pour le vol retour.",
   },
+  chronologySummary: T(
+    "Visita de la Medina de Marrakech, la Koutoubia, el Palacio de la Bahía y los zocos antes del traslado al aeropuerto para el regreso.",
+    "Visit Marrakech's Medina, the Koutoubia, Bahia Palace and the souks before the airport transfer for the return journey.",
+    "Visite de la Médina de Marrakech, de la Koutoubia, du Palais de la Bahia et des souks avant le transfert à l’aéroport.",
+  ),
   culture: [
     {
       title: T("Koutoubia · hermana gemela de la Giralda", "Koutoubia · twin of the Giralda", "Koutoubia · sœur jumelle de la Giralda"),

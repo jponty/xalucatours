@@ -16,6 +16,11 @@ export const DAY_RAK_ARRIVAL = {
     en: "Arrival in Marrakech according to your chosen flight (time difference depending on the season). After passport control and baggage collection, meeting with our transfer and check-in at a Medina riad or selected hotel. We recommend a first encounter with the Medina by visiting the legendary Jemaa el-Fna square, one of the most vibrant squares in the world. At dusk it fills with storytellers, fortune-tellers, jugglers, snake charmers, dancers and tooth-pullers; at nightfall, the traditional food stalls light up and turn the square into a living theatre. Overnight in a Medina riad or hotel.",
     fr: "Arrivée à Marrakech selon le vol et l'horaire choisis (décalage horaire possible selon la saison). Après le contrôle des passeports et la récupération des bagages, accueil et transfert vers le riad de la médina ou l'hôtel sélectionné. Nous recommandons une première rencontre avec la médina sur la mythique place Jemaa el-Fna, l'une des places les plus vivantes au monde. À la tombée du jour, elle se remplit de conteurs, devins, jongleurs, charmeurs de serpents, danseurs et arracheurs de dents ; à la nuit tombée, les échoppes de cuisine traditionnelle s'illuminent et transforment la place en un théâtre vivant. Nuit en riad de la médina ou hôtel.",
   },
+  chronologySummary: T(
+    "Llegada a Marrakech y traslado a la medina para una primera inmersión entre las luces, aromas y personajes de la plaza Djemaa el-Fna.",
+    "Arrival in Marrakech and transfer to the medina for a first immersion among the lights, aromas and characters of Jemaa el-Fna square.",
+    "Arrivée à Marrakech et transfert dans la médina pour une première immersion parmi les lumières, parfums et personnages de Jemaa el-Fna.",
+  ),
   culture: [
     {
       title: T("Djemaa el-Fna · obra maestra UNESCO", "Jemaa el-Fna · UNESCO masterpiece", "Jemaa el-Fna · chef-d'œuvre UNESCO"),
@@ -43,6 +48,11 @@ export const DAY_RAK_MEDINA = {
     en: "At 9:30 am, meeting with our local guide to start the guided walking tour of the Marrakech medina. We cover the essentials: the Koutoubia minaret — twin sister of Seville's Giralda — and the Bahia Palace, one of the finest examples of 19th-century Moroccan architecture. We enter the narrow souk alleys to see artisans at work — carpet weavers, babouche makers, leather, wood and metal workshops — and we visit a Berber pharmacy where we discover herbal remedies and ancestral «secrets». The tour ends again at Jemaa el-Fna square, whose daytime atmosphere is completely different from the previous night. Free afternoon to haggle or explore the most authentic corners of the medina at your own pace. Optional extension with modern Marrakech (Majorelle gardens, Gueliz). Overnight in a Medina riad or hotel.",
     fr: "À 9 h 30, rencontre avec notre guide local pour la visite guidée à pied de la médina de Marrakech. Nous parcourons les incontournables : le minaret de la Koutoubia — sœur jumelle de la Giralda — et le Palais de la Bahia, l'un des plus beaux exemples de l'architecture marocaine du XIXe siècle. Plongée dans les ruelles du souk pour voir les artisans à l'œuvre — tisserands de tapis, babouchiers, ateliers de cuir, bois et métaux — et visite d'une pharmacie berbère et de ses « secrets » naturels. La visite se termine à nouveau sur Jemaa el-Fna, dont l'ambiance diurne contraste avec la nuit. Après-midi libre pour le marchandage ou pour explorer la médina à votre rythme. Extension optionnelle Marrakech moderne (jardins Majorelle, Gueliz). Nuit en riad de la médina ou hôtel.",
   },
+  chronologySummary: T(
+    "Visita guiada por la Koutoubia, el Palacio de la Bahía y los talleres del zoco, seguida de una tarde libre para explorar la medina.",
+    "Guided visit to the Koutoubia, Bahia Palace and souk workshops, followed by a free afternoon to explore the medina.",
+    "Visite guidée de la Koutoubia, du palais de la Bahia et des ateliers du souk, suivie d’un après-midi libre dans la médina.",
+  ),
   culture: [
     {
       title: T("Koutoubia · hermana gemela de la Giralda", "Koutoubia · twin sister of the Giralda", "Koutoubia · sœur jumelle de la Giralda"),
@@ -74,6 +84,11 @@ const DAY_03 = {
     en: "Free day to keep exploring the Medina and haggle in the souks. At the agreed time, pick-up at the riad or hotel and transfer to Marrakech airport for the return flight.",
     fr: "Journée libre pour continuer à explorer la médina et marchander dans les souks. À l'heure convenue, prise en charge au riad ou à l'hôtel et transfert à l'aéroport de Marrakech pour le vol retour.",
   },
+  chronologySummary: T(
+    "Tiempo libre para una última mirada a los zocos y rincones de la medina antes del traslado al aeropuerto de Marrakech para el regreso.",
+    "Free time for one last look at the medina’s souks and hidden corners before transferring to Marrakech airport for the journey home.",
+    "Temps libre pour un dernier regard sur les souks et recoins de la médina avant le transfert à l’aéroport de Marrakech pour le retour.",
+  ),
 };
 
 export const PROGRAM_ESCAPADA_MARRAKECH_23 = {

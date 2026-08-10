@@ -7,6 +7,11 @@ const DAY_01 = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#C16542",
   title: T("Llegada a Fez", "Arrival in Fez", "Arrivée à Fès"),
+  chronologySummary: T(
+    "Llegada al aeropuerto de Fez, bienvenida y traslado al alojamiento en la medina para iniciar el recorrido por el norte de Marruecos.",
+    "Arrival at Fez airport, welcome and transfer to the medina accommodation to begin the journey through northern Morocco.",
+    "Arrivée à l’aéroport de Fès, accueil et transfert vers l’hébergement dans la médina pour commencer le voyage dans le nord du Maroc.",
+  ),
   body: {
     es: "Llegada por la tarde-noche al aeropuerto de Fez. Dependiendo de la época del año puede existir diferencia horaria. Tras el control de pasaportes y recogida de equipajes, encuentro con el transfer que realizará el traslado hasta el hotel o riad. Cena y alojamiento en riad dentro de la medina u hotel 4★.",
     en: "Late afternoon / evening arrival at Fez airport (time difference depending on the season). After passport control and luggage pickup, we meet the transfer driver for the ride to the hotel or riad. Dinner and overnight in a medina riad or 4★ hotel.",
@@ -24,6 +29,11 @@ const DAY_02 = {
     "Fez · la capital cultural de Marruecos",
     "Fez · Morocco's cultural capital",
     "Fès · capitale culturelle du Maroc",
+  ),
+  chronologySummary: T(
+    "Recorremos a pie Fez el-Bali, sus zocos, escuelas coránicas, talleres y tenerías tradicionales, con panorámicas de la ciudad imperial.",
+    "We explore Fez el-Bali on foot, including its souks, Koranic schools, workshops and traditional tanneries, with city panoramas.",
+    "Nous parcourons Fès el-Bali à pied, avec ses souks, écoles coraniques, ateliers et tanneries, puis admirons la ville depuis ses belvédères.",
   ),
   body: {
     es: "Hoy descubriremos Fez el-Bali, la antigua medina de Fez y una de las mejor conservadas del mundo árabe. Acompañados por un guía local recorreremos sus laberínticas callejuelas medievales repletas de talleres artesanales, mezquitas, palacios, escuelas coránicas y zocos tradicionales. Fez es considerada la ciudad imperial más espiritual y cultural de Marruecos. La visita se realiza completamente a pie, ya que en esta medina declarada Patrimonio de la Humanidad por la UNESCO está prohibido el acceso de vehículos. Durante la jornada conoceremos cómo se organizan sus barrios alrededor de mezquita, fuente, hammam, horno y escuela coránica. También visitaremos las famosas tenerías tradicionales y algunos miradores panorámicos de la ciudad. Cena y alojamiento en riad dentro de la medina u hotel 4★.",
@@ -52,6 +62,11 @@ const DAY_03 = {
     "Meknes · Volubilis · Moulay Idriss · Chefchaouen",
     "Meknès · Volubilis · Moulay Idriss · Chefchaouen",
   ),
+  chronologySummary: T(
+    "Visitamos la ciudad imperial de Meknes, las ruinas romanas de Volubilis y Moulay Idriss antes de llegar a las calles azules de Chefchaouen.",
+    "We visit imperial Meknes, Roman Volubilis and holy Moulay Idriss before reaching the blue streets of Chefchaouen in the Rif.",
+    "Nous visitons la cité impériale de Meknès, Volubilis et Moulay Idriss avant de rejoindre les ruelles bleues de Chefchaouen dans le Rif.",
+  ),
   body: {
     es: "Salida temprano hacia Meknes, una de las ciudades imperiales más monumentales de Marruecos. Visita guiada de la ciudad y de sus principales monumentos: Bab al Mansour, Mausoleo de Moulay Ismail, graneros y establos «Heri es Souani» y prisión subterránea «Habs Qara». Tras la visita continuaremos hacia Volubilis, el yacimiento arqueológico romano más importante de Marruecos: arco de triunfo, capitolio, Casa de Baco y antiguos mosaicos romanos. También pasaremos por Moulay Idriss, ciudad santa y centro espiritual del país. Continuación hacia Chefchaouen, el famoso «pueblo azul» de la cordillera del Rif. Cena y alojamiento en riad dentro de la medina.",
     en: "Early departure to Meknes, one of Morocco's most monumental imperial cities. Guided tour of its main monuments: Bab al Mansour, the Mausoleum of Moulay Ismail, the royal granaries and stables «Heri es Souani» and the underground prison «Habs Qara». We continue to Volubilis, Morocco's most important Roman archaeological site — triumphal arch, capitolium, House of Bacchus and ancient Roman mosaics. We also pass through Moulay Idriss, a holy city and major spiritual centre. We continue to Chefchaouen, the famous «blue town» of the Rif. Dinner and overnight in a medina riad.",
@@ -78,6 +93,11 @@ const DAY_04 = {
     "Chefchaouen · Akchour · Tetuán",
     "Chefchaouen · Akchour · Tetouan",
     "Chefchaouen · Akchour · Tétouan",
+  ),
+  chronologySummary: T(
+    "Descubrimos Chefchaouen y sus rincones históricos, hacemos una parada en las cascadas de Akchour y continuamos entre montañas hasta Tetuán.",
+    "We explore Chefchaouen’s historic landmarks, stop at Akchour waterfalls and continue through the Rif Mountains to Tetouan.",
+    "Nous découvrons les sites historiques de Chefchaouen, faisons halte aux cascades d’Akchour puis traversons le Rif jusqu’à Tétouan.",
   ),
   body: {
     es: "Por la mañana visita guiada de Chefchaouen. La ciudad se encuentra situada entre las montañas Tisouka y Megou, y su nombre en bereber significa «Mira los Cuernos». Durante la visita recorreremos Plaza Uta el-Hammam, la Gran Mezquita, la Kasbah del siglo XVII y sus jardines, la Plaza Makhzen, Bab el-Ansar y la Fuente Ras el-Maa. Por la tarde tiempo libre para pasear junto al riachuelo y descubrir el barrio tradicional de los lavaderos de Sebbanin. Posteriormente salida hacia Tetuán. Durante el trayecto realizaremos una parada en las Cascadas de Akchour para disfrutar del paisaje y realizar fotografías. Llegada a Tetuán. Cena y alojamiento en riad dentro de la medina u hotel 4★.",
@@ -106,6 +126,11 @@ const DAY_05 = {
     "Tetouan · Asilah · Portuguese ramparts",
     "Tétouan · Asilah · remparts portugais",
   ),
+  chronologySummary: T(
+    "Visitamos la medina andalusí de Tetuán y continuamos por la costa atlántica hasta las murallas portuguesas y los murales de Asilah.",
+    "We visit Tetouan’s Andalusian medina and continue along the Atlantic coast to Asilah’s Portuguese ramparts and artistic murals.",
+    "Nous visitons la médina andalouse de Tétouan puis longeons l’Atlantique jusqu’aux remparts portugais et aux fresques d’Asilah.",
+  ),
   body: {
     es: "Por la mañana visita guiada de Tetuán, conocida como «La Paloma Blanca». Su medina, declarada Patrimonio de la Humanidad por la UNESCO, conserva una fuerte influencia andalusí heredada de la época del Protectorado español. Posteriormente continuación hacia Asilah, una de las ciudades costeras más encantadoras del norte de Marruecos. La medina de Asilah está rodeada por murallas construidas por los portugueses en el siglo XV. Sus calles blancas decoradas con murales artísticos y sus puertas históricas convierten la ciudad en un destino ideal para amantes de la fotografía y la cultura. Durante el paseo libre por la medina podremos descubrir Bab Homar («Puerta Tierra»), Bab el Bahar («Puerta del Mar»), Bab Kasbah, las murallas portuguesas y el cementerio musulmán frente al océano. También existe la posibilidad de disfrutar de la puesta de sol en alguna de las playas cercanas. Alojamiento en riad dentro de la medina.",
     en: "Morning guided tour of Tetouan, known as «the White Dove». Its UNESCO medina still keeps a strong Andalusian influence inherited from the Spanish Protectorate. We then continue to Asilah, one of the most charming coastal towns in northern Morocco. The Asilah medina is surrounded by 15th-century Portuguese ramparts. Its white-washed streets adorned with artistic murals and its historic gates make Asilah an ideal destination for photography and culture lovers. On a free walk through the medina we discover Bab Homar (the «Land Gate»), Bab el Bahar (the «Sea Gate»), Bab Kasbah, the Portuguese ramparts and the Muslim cemetery overlooking the ocean. Optional: enjoy the sunset on a nearby beach. Overnight in a medina riad.",
@@ -133,6 +158,11 @@ const DAY_06 = {
     "Cape Spartel · Caves of Hercules · Tangier",
     "Cap Spartel · Grottes d'Hercule · Tanger",
   ),
+  chronologySummary: T(
+    "De Asilah seguimos hacia las Grutas de Hércules y Cabo Espartel, donde se encuentran dos mares, antes de disfrutar del ambiente de Tánger.",
+    "From Asilah we continue to the Caves of Hercules and Cape Spartel, where two seas meet, before enjoying the atmosphere of Tangier.",
+    "D’Asilah, nous rejoignons les Grottes d’Hercule et le Cap Spartel, où deux mers se rencontrent, avant de profiter de l’ambiance de Tanger.",
+  ),
   body: {
     es: "A la hora convenida salida en dirección Tánger. Durante el recorrido visitaremos las Grutas de Hércules y Cabo Espartel, donde convergen las aguas del Atlántico y el Mediterráneo. Llegada a Tánger y tiempo libre para descubrir la ciudad a vuestro aire. Cena y alojamiento en riad u hotel 5★. Este es el último día de vehículo con chófer.",
     en: "At the agreed time, drive toward Tangier. We visit the Caves of Hercules and Cape Spartel — where the Atlantic Ocean meets the Mediterranean Sea. Arrival in Tangier and free time to explore the city at your own pace. Dinner and overnight in a riad or 5★ hotel. This is the last day of driver service.",
@@ -147,6 +177,11 @@ const DAY_07 = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Tánger", "Return from Tangier", "Retour depuis Tanger"),
+  chronologySummary: T(
+    "Últimos momentos en Tánger y traslado desde el alojamiento hasta el aeropuerto para tomar el vuelo de regreso al punto de origen.",
+    "Final moments in Tangier and transfer from the accommodation to the airport for the return flight home.",
+    "Derniers instants à Tanger puis transfert de l’hébergement à l’aéroport pour prendre le vol retour.",
+  ),
   body: {
     es: "A la hora acordada, recogida en el riad u hotel y traslado al aeropuerto de Tánger para tomar el vuelo de regreso.",
     en: "At the agreed time, pick-up at the riad or hotel and transfer to Tangier airport for the return flight.",
@@ -157,6 +192,7 @@ const DAY_07 = {
 
 export const PROGRAM_FT_67 = {
   routeId: "tourFezTanger67",
+  chronologyVariant: "ft",
   duration_key: "ft6n7d",
   duration: T("6 noches / 7 días", "6 nights / 7 days", "6 nuits / 7 jours"),
   prices: { low: 1290, mid: 1490, high: 1690, premium: 1890 },

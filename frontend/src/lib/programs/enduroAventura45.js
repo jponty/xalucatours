@@ -1,6 +1,8 @@
 // Enduro · 4 noches / 5 días — Aventura por el sur de Marruecos
 // Trilingual program data consumed by ProgramTemplate via variant="enduro".
 
+const T = (es, en, fr) => ({ es, en, fr });
+
 const DAY_ENDURO_1_ARRIVAL = {
   route_id: "enduro-d1-arrival",
   id: "dia-1",
@@ -11,6 +13,11 @@ const DAY_ENDURO_1_ARRIVAL = {
     en: "Arrival in Morocco",
     fr: "Arrivée au Maroc",
   },
+  chronologySummary: T(
+    "Llegada por Casablanca y traslado nocturno a Erfoud, puerta del desierto y base de la aventura en la tradicional Kasbah Xaluca.",
+    "Arrival via Casablanca and night transfer to Erfoud, gateway to the desert and base for the adventure at traditional Kasbah Xaluca.",
+    "Arrivée via Casablanca et transfert nocturne à Erfoud, porte du désert et base de l’aventure dans la traditionnelle Kasbah Xaluca.",
+  ),
   body: {
     es: "Salida desde Barcelona a las 19:40h en vuelo con destino Casablanca. Llegada prevista sobre las 20:55h, dependiendo de la época del año y del posible cambio horario. Conexión con el vuelo Casablanca – Errachidia a las 23:30h. Llegada a Errachidia sobre las 00:30h. Recepción en el aeropuerto y traslado hasta Erfoud, conocida como «La Puerta del Desierto». Alojamiento en Kasbah Xaluca, considerada una de las kasbahs más singulares de Marruecos por su arquitectura y características únicas.",
     en: "Departure from Barcelona at 19:40 on a flight to Casablanca. Arrival expected around 20:55, depending on the season and any time change. Connection with the Casablanca – Errachidia flight at 23:30. Arrival in Errachidia around 00:30. Airport pickup and transfer to Erfoud, known as «The Gate of the Desert». Accommodation at Kasbah Xaluca, considered one of Morocco's most singular kasbahs.",
@@ -46,6 +53,11 @@ const DAY_ENDURO_2_OASIS = {
     en: "Oasis route · Erfoud – Tisserdimine – Hassilabied",
     fr: "Route des Oasis · Erfoud – Tisserdimine – Hassilabied",
   },
+  chronologySummary: T(
+    "Primera jornada sobre la moto entre pistas, ríos de arena y oasis de Tisserdimine, con prácticas de conducción junto al Erg Chebbi.",
+    "First riding day across tracks, sand rivers and Tisserdimine oasis, with sand-riding practice beside Erg Chebbi.",
+    "Première journée à moto entre pistes, rivières de sable et oasis de Tisserdimine, avec pratique sur sable près de l’Erg Chebbi.",
+  ),
   body: {
     es: "Después del desayuno, encuentro con el guía y primera toma de contacto con las motos y el terreno. Comenzaremos la ruta atravesando pistas desérticas, ríos de arena y diferentes tipos de terrenos ideales para disfrutar de la conducción off-road. La ruta nos llevará hasta el norte del Erg Chebbi, donde haremos una parada para disfrutar de un tradicional té marroquí. Comida picnic en Merzouga. Por la tarde continuaremos pilotando alrededor del mar de dunas mientras el guía nos enseñará técnicas e instrucciones para familiarizarnos con la conducción en arena. Regreso a Erfoud. Cena y alojamiento en Kasbah Xaluca.",
     en: "After breakfast, meet your guide and first contact with the bikes and the terrain. We start the route across desert tracks, sand rivers and varied terrains ideal for off-road riding. The route takes us to the north of the Erg Chebbi where we stop for traditional Moroccan tea. Picnic lunch in Merzouga. In the afternoon we ride around the sea of dunes while the guide teaches techniques and instructions to become familiar with sand riding. Return to Erfoud. Dinner and accommodation at Kasbah Xaluca.",
@@ -81,6 +93,11 @@ const DAY_ENDURO_3_MOMIA = {
     en: "Mummy route · Erfoud – El Jorf – Rissani – Erg Chebbi",
     fr: "Route de la Momie · Erfoud – El Jorf – Rissani – Erg Chebbi",
   },
+  chronologySummary: T(
+    "Ruta por los monumentos de Hannsjörg Voth, las khettaras de Jorf y el mercado de Rissani antes de dormir bajo las estrellas del Erg Chebbi.",
+    "Route through Hannsjörg Voth’s monuments, the Jorf khettaras and Rissani market before sleeping under the Erg Chebbi stars.",
+    "Route par les monuments de Hannsjörg Voth, les khettaras de Jorf et le marché de Rissani avant une nuit étoilée à l’Erg Chebbi.",
+  ),
   body: {
     es: "Tras el desayuno retomaremos nuestra aventura en moto para seguir descubriendo los diferentes paisajes del desierto. Visitaremos los conocidos «Monumentos del Alemán», obras del artista Hannsjörg Voth, integradas en plena naturaleza desértica. Continuaremos hacia los históricos Pozos de Jorf, un antiguo sistema de irrigación persa donde podremos explorar sus túneles subterráneos. La ruta seguirá hasta la montaña conocida como «La Momia». Comida picnic en Rissani. Recomendamos visitar su mercado tradicional, uno de los más auténticos del sur de Marruecos, donde se abastecen tribus y nómadas del desierto. Resulta especialmente curioso su famoso «parking de burros». Por la tarde continuaremos hacia el Erg Chebbi para pasar la noche en un auténtico bivouac de haimas, confeccionadas con pelo de dromedario al estilo tradicional nómada. Cena y noche en el desierto al ritmo de los tam-tam bajo las estrellas.",
     en: "After breakfast we resume our motorbike adventure to keep discovering desert landscapes. We visit the famous «German Monuments», works by artist Hannsjörg Voth set in raw desert. We then continue to the historic Jorf wells — an ancient Persian irrigation system whose underground tunnels can be explored. The route continues to the «Mummy mountain». Picnic lunch in Rissani — we recommend visiting its traditional market, one of the most authentic in southern Morocco, where desert tribes and nomads come to stock up. The famous «donkey parking» is a curious sight. In the afternoon we continue to the Erg Chebbi for a night in an authentic bivouac of camel-hair tents in the nomadic style. Dinner and night under the stars to the rhythm of the tam-tam.",
@@ -116,6 +133,11 @@ const DAY_ENDURO_4_DUNAS = {
     en: "Great dunes route · Erg Chebbi – Merzouga – Erfoud",
     fr: "Route des Grandes Dunes · Erg Chebbi – Merzouga – Erfoud",
   },
+  chronologySummary: T(
+    "Jornada dakariana entre las grandes dunas, oasis ocultos y el chott de Merzouga, seguida de descanso y bienestar al regresar a Erfoud.",
+    "Dakar-style day among great dunes, hidden oases and the Merzouga salt flat, followed by rest and wellness on returning to Erfoud.",
+    "Journée façon Dakar entre grandes dunes, oasis cachées et chott de Merzouga, suivie d’un moment de détente au retour à Erfoud.",
+  ),
   body: {
     es: "Hoy viviremos una auténtica jornada dakariana. Arena, dunas y más dunas nos acompañarán durante toda la ruta mientras atravesamos algunos oasis escondidos en pleno corazón del Erg Chebbi. Llegada a Merzouga y comida picnic en Kasbah Tombouctou. Por la tarde seguiremos pilotando por el chott de Merzouga hasta regresar a Erfoud. Tiempo libre para relajarse después de varios días de aventura en moto. Podrás disfrutar de la piscina, relajarte en el jacuzzi o realizar opcionalmente un hammam tradicional marroquí acompañado de un masaje. Cena y alojamiento en Kasbah Xaluca.",
     en: "Today is a true Dakar-style day. Sand, dunes and more dunes accompany us all the way as we cross hidden oases in the heart of the Erg Chebbi. Arrival in Merzouga and picnic lunch at Kasbah Tombouctou. In the afternoon we keep riding on the Merzouga salt flat until returning to Erfoud. Free time to relax after several days of motorbike adventure. Enjoy the pool, the jacuzzi, or an optional traditional Moroccan hammam with massage. Dinner and accommodation at Kasbah Xaluca.",
@@ -143,6 +165,11 @@ const DAY_ENDURO_5_RETURN = {
     en: "Return",
     fr: "Retour",
   },
+  chronologySummary: T(
+    "Traslado temprano de Erfoud a Errachidia y vuelos de regreso vía Casablanca, cerrando cinco días de aventura por el Sáhara.",
+    "Early transfer from Erfoud to Errachidia and return flights via Casablanca, closing five days of adventure through the Sahara.",
+    "Transfert matinal d’Erfoud à Errachidia et vols retour via Casablanca, pour conclure cinq jours d’aventure dans le Sahara.",
+  ),
   body: {
     es: "A la hora convenida, traslado al aeropuerto de Errachidia para tomar el vuelo de regreso Errachidia – Casablanca a las 07:30h. Llegada prevista a Casablanca sobre las 08:30h y conexión con el vuelo Casablanca – Barcelona a las 09:40h. Llegada a Barcelona sobre las 12:40h.",
     en: "At the agreed time, transfer to Errachidia airport for the return flight Errachidia – Casablanca at 07:30. Arrival expected in Casablanca around 08:30 and connection with the Casablanca – Barcelona flight at 09:40. Arrival in Barcelona around 12:40.",

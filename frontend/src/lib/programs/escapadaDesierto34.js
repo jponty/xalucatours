@@ -16,6 +16,11 @@ const DAY_01 = {
     en: "Departure from your home airport bound for Casablanca (time difference depending on the season). Connection to Errachidia. Arrival, passport control and baggage collection. Transfer to Erfoud, known as «the gate of the desert», about 70 km from the airport. Dinner and overnight at Kasbah Hotel Xaluca — one of the most singular hotel buildings in Morocco.",
     fr: "Départ depuis votre aéroport d'origine pour Casablanca (décalage horaire possible selon la saison). Correspondance Casablanca–Errachidia. Arrivée, contrôle des passeports et bagages. Transfert vers Erfoud, « porte du désert », à environ 70 km de l'aéroport. Dîner et nuit à la Kasbah Hôtel Xaluca — l'une des constructions hôtelières les plus singulières du Maroc.",
   },
+  chronologySummary: T(
+    "Llegada a Errachidia y traslado hacia Erfoud, la puerta del desierto, para instalarse y cenar en la singular Kasbah Hotel Xaluca.",
+    "Arrival in Errachidia and transfer to Erfoud, the gateway to the desert, to settle in and dine at the distinctive Kasbah Hotel Xaluca.",
+    "Arrivée à Errachidia et transfert vers Erfoud, porte du désert, pour s’installer et dîner à la singulière Kasbah Hôtel Xaluca.",
+  ),
   culture: [
     {
       title: T("Kasbah Hotel Xaluca", "Kasbah Hotel Xaluca", "Kasbah Hôtel Xaluca"),
@@ -43,6 +48,11 @@ const DAY_02 = {
     en: "Today we live an authentic day of total desert. We drive an old Dakar Rally track, crossing villages and nomad settlements. Stop at the marine fossil quarries (over 360 million years old) and picnic in an oasis. We continue to the great Erg Chebbi, an impressive sea of fine, golden dunes. We swap the 4x4 for camels to enter the heart of the desert at the slow pace of a caravan, watching an unforgettable sunset. Arrival at the luxury desert camp — traditional Berber tents like those used by nomads. Dinner and overnight under the stars.",
     fr: "Aujourd'hui, journée désert total. Nous parcourons une ancienne piste du Rallye Dakar, à la rencontre des villages et nomades. Arrêt aux carrières de fossiles marins (plus de 360 millions d'années) et pique-nique dans une oasis. Poursuite vers le grand Erg Chebbi, mer impressionnante de dunes au sable fin et doré. Nous échangeons le 4x4 contre des dromadaires pour entrer au cœur du désert au pas de la caravane et admirer un coucher de soleil inoubliable. Arrivée au camp de luxe — tentes berbères traditionnelles. Dîner et nuit sous les étoiles.",
   },
+  chronologySummary: T(
+    "Pistas del antiguo Dakar, fósiles y picnic en un oasis antes de alcanzar Erg Chebbi en dromedario y dormir bajo las estrellas.",
+    "Old Dakar tracks, fossils and an oasis picnic before reaching Erg Chebbi by camel and sleeping beneath the desert stars.",
+    "Anciennes pistes du Dakar, fossiles et pique-nique dans une oasis avant de rejoindre l’Erg Chebbi à dos de dromadaire et dormir sous les étoiles.",
+  ),
   culture: [
     {
       title: T("Fósiles marinos de 360 millones de años", "360-million-year-old marine fossils", "Fossiles marins de 360 millions d'années"),
@@ -78,6 +88,11 @@ const DAY_03 = {
     en: "We recommend an early walk to the top of the dunes for the sunrise over the Sahara. Bedouin breakfast and 4x4 loop around the Erg Chebbi to the abandoned village of Merdani. Continuation to Khamlia, a Sudanese-origin hamlet known for its Gnawa music — locals welcome us with traditional dances and mint tea. Later, Rissani: one of southern Morocco's most authentic markets where desert tribes and nomads still stock up, with its curious «donkey parking». Then drive up to a natural viewpoint to farewell the desert with a spectacular panorama. Lunch at the authentic «Pizzeria Des Dunes» in Erfoud. Back to Kasbah Hotel Xaluca, free afternoon: heated pool, jacuzzi, tennis, mini-golf, optional hammam, massages and optional quad rides in the nearby dunes. Dinner and overnight at Kasbah Hotel Xaluca.",
     fr: "Nous recommandons une marche matinale au sommet des dunes pour le lever du soleil sur le Sahara. Petit-déjeuner bédouin et départ en 4x4 pour contourner l'Erg Chebbi jusqu'au village abandonné de Merdani. Continuation vers Khamlia, hameau d'origine soudanaise connu pour sa musique Gnawa — accueil avec danses et thé à la menthe. Plus tard, Rissani : l'un des marchés les plus authentiques du sud où s'approvisionnent encore les tribus et nomades du désert — son « parking d'ânes » est particulièrement marquant. Montée à un mirador naturel pour saluer le désert. Déjeuner à l'authentique « Pizzeria Des Dunes » d'Erfoud. Retour à la Kasbah Hôtel Xaluca, après-midi libre : piscine chauffée, jacuzzi, tennis, mini-golf, hammam, massages et quads en option. Dîner et nuit à la Kasbah Hôtel Xaluca.",
   },
+  chronologySummary: T(
+    "Amanecer en las dunas, música Gnawa en Khamlia y mercado de Rissani antes de regresar a Erfoud para una tarde de descanso.",
+    "Sunrise in the dunes, Gnawa music in Khamlia and Rissani market before returning to Erfoud for a relaxing afternoon.",
+    "Lever du soleil sur les dunes, musique Gnawa à Khamlia et marché de Rissani avant de revenir à Erfoud pour un après-midi de détente.",
+  ),
   wellness: [
     { es: "Piscina climatizada", en: "Heated pool", fr: "Piscine chauffée" },
     { es: "Jacuzzi", en: "Jacuzzi", fr: "Jacuzzi" },
@@ -113,6 +128,11 @@ const DAY_04 = {
     en: "Transfer to Errachidia airport for the return flight. On the way we stop at the Ziz Valley viewpoint — one of Morocco's most impressive oases, with millions of palm trees stretching along the valley. Flight Errachidia–Casablanca and connection to the return flight.",
     fr: "Transfert à l'aéroport d'Errachidia pour le vol retour. En chemin, arrêt au mirador de la vallée du Ziz — l'une des plus impressionnantes oasis du Maroc, avec des millions de palmiers s'étendant le long de la vallée. Vol Errachidia–Casablanca et correspondance retour.",
   },
+  chronologySummary: T(
+    "Despedida del sur con una panorámica sobre el inmenso palmeral del Valle del Ziz antes del traslado al aeropuerto de Errachidia.",
+    "Farewell to the south with a panorama over the vast Ziz Valley palm grove before transferring to Errachidia airport.",
+    "Adieux au sud avec une vue panoramique sur l’immense palmeraie de la vallée du Ziz avant le transfert à l’aéroport d’Errachidia.",
+  ),
   culture: [
     {
       title: T("Valle del Ziz · 280 km de oasis", "Ziz Valley · 280 km of oasis", "Vallée du Ziz · 280 km d'oasis"),

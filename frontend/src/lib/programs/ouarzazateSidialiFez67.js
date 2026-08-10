@@ -24,6 +24,11 @@ export const DAY_OZF_ZIZ_SIDIALI = {
     "Erfoud · Ziz Valley · Midelt · Aguelmane Sidi Ali",
     "Erfoud · Vallée du Ziz · Midelt · Aguelmane Sidi Ali",
   ),
+  chronologySummary: T(
+    "Mañana de descanso en Kasbah Xaluca y ruta por el palmeral del Ziz y Midelt hasta el lago volcánico Aguelmame Sidi Ali.",
+    "A relaxing morning at Kasbah Xaluca followed by the Ziz palm grove and Midelt en route to volcanic Lake Aguelmame Sidi Ali.",
+    "Matinée de détente à la Kasbah Xaluca puis route par la palmeraie du Ziz et Midelt jusqu’au lac volcanique Aguelmame Sidi Ali.",
+  ),
   body: {
     es: "Mañana libre en la Kasbah Xaluca para disfrutar de las instalaciones — piscina climatizada, hammam o jacuzzi — antes de la jornada larga. Salida al mediodía hacia el norte recorriendo aproximadamente 330 km. Atravesaremos el Valle del Ziz — hogar de más de diez millones de palmeras — Midelt y la cordillera del Atlas hasta llegar al lago Aguelmane Sidi Ali, situado a 2.200 metros de altitud, en la falda de un volcán y junto al lago natural más profundo del país. Cena y alojamiento en Xaluca Spa Aguelmane Sidi Ali, antiguo refugio de caza y pesca reconvertido en hotel boutique de alta montaña.",
     en: "Free morning at Kasbah Xaluca to enjoy the facilities — heated pool, hammam or jacuzzi — before the long drive. Departure around midday heading north for some 330 km. We cross the Ziz Valley — home to more than ten million palm trees — Midelt and the Atlas range to reach the Aguelmane Sidi Ali lake, set at 2,200 m altitude on the flank of a volcano, next to Morocco's deepest natural lake. Dinner and overnight at Xaluca Spa Aguelmane Sidi Ali — a former hunting and fishing lodge reconverted into a high-altitude boutique hotel.",

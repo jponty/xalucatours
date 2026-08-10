@@ -57,6 +57,11 @@ export const DAY_02_TICHKA_AITBENHADDOU_DADES = {
     en: "Early start by 4x4 with driver heading to the Central High Atlas. About 310 km of driving, generously rewarded by spectacular landscapes. We cross the Tizi n'Tichka, Morocco's highest road pass, where the green and ochre tones give way to an almost lunar landscape. On the way we visit the iconic Aït Ben Haddou kasbah — UNESCO World Heritage and set for many films. We continue through Ouarzazate to Boumalne Dades, in the Valley of the Birds at 1,612 m in the heart of the High Atlas. Dinner and overnight at Hotel Xaluca Dades.",
     fr: "Départ matinal en 4x4 avec chauffeur en direction du Haut Atlas Central. Étape de 310 km largement récompensée par la beauté des paysages. Nous traversons le Tizi n'Tichka, le plus haut col routier du Maroc, où les tons verts et ocres laissent place à un paysage presque lunaire. En route, visite de l'emblématique kasbah d'Aït Ben Haddou — UNESCO et décor de nombreux films. Poursuite vers Ouarzazate puis Boumalne Dadès, dans la Vallée des Oiseaux à 1 612 m d'altitude au cœur du Haut Atlas. Dîner et nuit à l'Hôtel Xaluca Dadès.",
   },
+  chronologySummary: T(
+    "Cruce del Alto Atlas por el Tizi n'Tichka, visita de Aït Ben Haddou y ruta por Ouarzazate hasta Boumalne Dades.",
+    "Cross the High Atlas via Tizi n'Tichka, visit Aït Ben Haddou and continue through Ouarzazate to Boumalne Dades.",
+    "Traversée du Haut Atlas par le Tizi n'Tichka, visite d'Aït Ben Haddou puis route via Ouarzazate jusqu'à Boumalne Dadès.",
+  ),
   culture: [
     {
       title: T("Aït Ben Haddou · escenario de Gladiator y Juego de Tronos", "Aït Ben Haddou · set of Gladiator and Game of Thrones", "Aït Ben Haddou · décor de Gladiator et Game of Thrones"),
@@ -127,6 +132,11 @@ export const DAY_04_DESERT_BIVOUAC = {
     en: "Today we live a day of total desert. We drive an old Dakar Rally track, crossing remote villages and nomad settlements. Stop at the impressive marine fossil quarries (over 360 million years old) and picnic in an authentic oasis — a pocket of coolness amid the arid vastness. We continue to the great Erg Chebbi, the «ultra-fine dune desert». We swap 4x4 for camels and ride into the heart of the desert to watch an unforgettable sunset from the top of the dunes. At dusk, caravan arrival at the Bivouac de Luxe (Kamkamia Luxury Desert Camp), traditional Berber tents like those used by nomads. Dinner and overnight under a starlit sky — a unique experience.",
     fr: "Aujourd'hui, journée désert total. Nous parcourons une ancienne piste du Rallye Dakar, à la rencontre de villages reculés et de nomades. Arrêt aux impressionnantes carrières de fossiles marins (plus de 360 millions d'années) et pique-nique dans une oasis authentique — un îlot de fraîcheur dans l'immensité aride. Poursuite vers le majestueux Erg Chebbi, « désert de dunes au sable très fin ». Nous échangeons le 4x4 contre des dromadaires pour entrer au cœur du désert et admirer un coucher de soleil inoubliable au sommet des dunes. Arrivée au Bivouac de Luxe (Kamkamia Luxury Desert Camp), tentes berbères traditionnelles. Dîner et nuit sous un ciel étoilé — une expérience unique.",
   },
+  chronologySummary: T(
+    "Jornada por las pistas del Rally Dakar, aldeas nómadas, fósiles y oasis, con dromedarios al atardecer y noche en el bivouac de Erg Chebbi.",
+    "A day on Dakar Rally tracks through nomad villages, fossils and an oasis, with a sunset camel ride and overnight in an Erg Chebbi bivouac.",
+    "Journée sur les pistes du Rallye Dakar, entre villages nomades, fossiles et oasis, puis dromadaires au coucher du soleil et nuit à Erg Chebbi.",
+  ),
   culture: [
     {
       title: T("Kamkamia Luxury Desert Camp", "Kamkamia Luxury Desert Camp", "Kamkamia Luxury Desert Camp"),

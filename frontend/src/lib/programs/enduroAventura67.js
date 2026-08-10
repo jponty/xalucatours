@@ -1,6 +1,8 @@
 // Enduro · 6 noches / 7 días — Aventura por el sur de Marruecos
 // Trilingual program data consumed by ProgramTemplate via variant="enduro".
 
+const T = (es, en, fr) => ({ es, en, fr });
+
 const DAY_ENDURO67_1_ARRIVAL = {
   route_id: "enduro67-d1-arrival",
   id: "dia-1",
@@ -11,6 +13,11 @@ const DAY_ENDURO67_1_ARRIVAL = {
     en: "Arrival in Morocco",
     fr: "Arrivée au Maroc",
   },
+  chronologySummary: T(
+    "Llegada por Casablanca y traslado nocturno a Erfoud, puerta del desierto y punto de partida de la gran travesía en moto.",
+    "Arrival via Casablanca and night transfer to Erfoud, gateway to the desert and starting point of the great motorbike crossing.",
+    "Arrivée via Casablanca et transfert nocturne à Erfoud, porte du désert et point de départ de la grande traversée à moto.",
+  ),
   body: {
     es: "Salida desde Barcelona a las 19:40h en vuelo con destino Casablanca. Llegada prevista sobre las 20:55h, dependiendo de la época del año y del posible cambio horario. Conexión con el vuelo Casablanca – Errachidia a las 23:30h. Llegada a Errachidia sobre las 00:30h. Recepción en el aeropuerto y traslado hasta Erfoud, conocida como «La Puerta del Desierto». Alojamiento en Kasbah Xaluca, considerada una de las kasbahs más singulares de Marruecos.",
     en: "Departure from Barcelona at 19:40 on a flight to Casablanca. Arrival expected around 20:55, depending on the season and any time change. Connection with the Casablanca – Errachidia flight at 23:30. Arrival in Errachidia around 00:30. Airport pickup and transfer to Erfoud, known as «The Gate of the Desert». Accommodation at Kasbah Xaluca, one of Morocco's most singular kasbahs.",
@@ -29,6 +36,11 @@ const DAY_ENDURO67_2_KEMKEM = {
     en: "Kemkem route · Erfoud – Alnif",
     fr: "Route du Kemkem · Erfoud – Alnif",
   },
+  chronologySummary: T(
+    "Primera etapa de pilotaje por chotts, ríos de arena y pistas abiertas del Kemkem, con parada en Fezzou y llegada a Alnif.",
+    "First riding stage across salt flats, sand rivers and open Kemkem tracks, with a stop in Fezzou and arrival in Alnif.",
+    "Première étape sur les chotts, rivières de sable et pistes ouvertes du Kemkem, avec halte à Fezzou et arrivée à Alnif.",
+  ),
   body: {
     es: "Después del desayuno, encuentro con el guía para comenzar la primera jornada de pilotaje y la toma de contacto con las motos y el terreno. Saldremos en dirección sur atravesando pistas desérticas, chotts, ríos de arena y grandes espacios abiertos. Parada en el mirador de Fezzou y en el oasis. Comida picnic en Fezzou. Por la tarde continuaremos por pistas de navegación y pilotaje hasta llegar a Alnif. Cena y alojamiento en Kasbah Hotel Meteorite.",
     en: "After breakfast, meet your guide for the first riding day and first contact with the bikes and the terrain. We head south across desert tracks, salt flats, sand rivers and huge open spaces. Stop at the Fezzou viewpoint and the oasis. Picnic lunch in Fezzou. In the afternoon we continue on navigation and riding tracks until reaching Alnif. Dinner and accommodation at Kasbah Hotel Meteorite.",
@@ -56,6 +68,11 @@ const DAY_ENDURO67_3_SAGHRO = {
     en: "Saghro route · Alnif – Boumalne Dades",
     fr: "Route du Saghro · Alnif – Boumalne Dadès",
   },
+  chronologySummary: T(
+    "Ascenso por las pistas técnicas del macizo del Saghro, picnic en Aknioun y llegada entre panorámicas de montaña a Boumalne Dades.",
+    "Climb along the technical tracks of the Saghro massif, picnic in Aknioun and arrival amid mountain panoramas in Boumalne Dades.",
+    "Montée par les pistes techniques du massif du Saghro, pique-nique à Aknioun et arrivée au cœur des panoramas de Boumalne Dadès.",
+  ),
   body: {
     es: "Hoy dejaremos atrás el desierto para adentrarnos en las montañas del Saghro. Disfrutaremos de pistas técnicas y divertidas con suaves desniveles que irán ganando altura progresivamente hasta alcanzar los 2.000 metros. Las vistas panorámicas sobre las montañas serán espectaculares. Comida picnic en el pueblo de Aknioun. Después de comer continuaremos atravesando senderos y pistas de montaña hasta llegar a Boumalne Dades, situada en el Alto Atlas Central a 1.612 metros de altitud. Cena y alojamiento en el hotel Xaluca Dades 4*.",
     en: "Today we leave the desert to enter the Saghro mountains. We enjoy technical, fun tracks with gentle climbs that progressively reach 2,000 metres. Panoramic mountain views are spectacular. Picnic lunch in the village of Aknioun. After lunch we keep riding mountain tracks until Boumalne Dades, in the Central High Atlas at 1,612 metres. Dinner and accommodation at hotel Xaluca Dades 4*.",
@@ -83,6 +100,11 @@ const DAY_ENDURO67_4_GARGANTAS = {
     en: "Atlas route · Boumalne Dades – Gorges – Boumalne Dades",
     fr: "Route de l'Atlas · Boumalne Dadès – Gorges – Boumalne Dadès",
   },
+  chronologySummary: T(
+    "Circuito por el Alto Atlas Central entre gargantas, ríos, ramblas pedregosas y aldeas bereberes antes de regresar a Boumalne Dades.",
+    "Circuit through the Central High Atlas among gorges, rivers, rocky wadis and Berber villages before returning to Boumalne Dades.",
+    "Circuit dans le Haut Atlas central entre gorges, rivières, oueds pierreux et villages berbères avant le retour à Boumalne Dadès.",
+  ),
   body: {
     es: "La etapa de hoy nos llevará a descubrir el Alto Atlas Central. Rodaremos por diferentes terrenos de montaña, gargantas y cañones escondidos. Atravesaremos ríos, pistas pedregosas, ramblas secas y pequeños pueblos bereberes aislados entre las montañas. Comida picnic en ruta. Por la tarde regreso a Boumalne Dades. Cena y alojamiento en el hotel Xaluca Dades 4*.",
     en: "Today's stage takes us to discover the Central High Atlas. We ride varied mountain terrain, gorges and hidden canyons. We cross rivers, stony tracks, dry riverbeds and small Berber villages isolated in the mountains. Picnic lunch on the route. Return to Boumalne Dades in the afternoon. Dinner and accommodation at hotel Xaluca Dades 4*.",
@@ -110,6 +132,11 @@ const DAY_ENDURO67_5_ANTI_ATLAS = {
     en: "Anti-Atlas route · Boumalne Dades – Zagora",
     fr: "Route de l'Anti-Atlas · Boumalne Dadès – Zagora",
   },
+  chronologySummary: T(
+    "Cruce del Anti Atlas por pistas que alcanzan los 2.300 metros, descenso hacia Nkob y tramo rápido entre valles agrícolas hasta Zagora.",
+    "Crossing the Anti-Atlas on tracks reaching 2,300 metres, descent to Nkob and a fast stretch through farming valleys to Zagora.",
+    "Traversée de l’Anti-Atlas sur des pistes à 2 300 mètres, descente vers Nkob puis étape rapide dans les vallées jusqu’à Zagora.",
+  ),
   body: {
     es: "Tras el desayuno comenzaremos una de las etapas más espectaculares del recorrido. Cruzaremos la cordillera del Anti Atlas ascendiendo hasta los 2.300 metros por pistas de montaña de gran belleza. El descenso nos llevará por trazados sinuosos hacia valles cada vez más habitados y zonas agrícolas. Llegada a Nkob, parada para descansar y disfrutar del picnic. Por la tarde nos espera una ruta rápida y divertida hasta llegar a Zagora. Cena y alojamiento en riad u hotel.",
     en: "After breakfast we begin one of the route's most spectacular stages. We cross the Anti-Atlas range climbing up to 2,300 metres on stunning mountain tracks. The descent leads us through winding paths to increasingly inhabited valleys and farmland. Arrival in Nkob to rest and enjoy a picnic. In the afternoon a fast and fun route awaits until Zagora. Dinner and accommodation at riad or hotel.",
@@ -137,6 +164,11 @@ const DAY_ENDURO67_6_BEREBERES = {
     en: "Berber route · Zagora – Merzouga – Erfoud",
     fr: "Route des Berbères · Zagora – Merzouga – Erfoud",
   },
+  chronologySummary: T(
+    "Gran etapa sahariana por el plateau de Rekam, Lac Maider, Oued Remlia y Ouzina, enlazando dunas y pistas hasta Merzouga y Erfoud.",
+    "Great Saharan stage across the Rekam plateau, Lac Maider, Oued Remlia and Ouzina, linking dunes and tracks to Merzouga and Erfoud.",
+    "Grande étape saharienne par le plateau de Rekam, Lac Maider, Oued Remlia et Ouzina, entre dunes et pistes jusqu’à Merzouga et Erfoud.",
+  ),
   body: {
     es: "Hoy viviremos una auténtica jornada de desierto total. Recorreremos pistas infinitas atravesando el plateau de Rekam hasta llegar al Chott de Lac Maider. Pasaremos por Tafraoute y ascenderemos una gran pendiente de arena de 3 kilómetros. La etapa estará llena de contrastes: grandes valles desérticos, pistas rápidas, arena, chotts y el paso por el Oued de Remlia. Llegada a Ouzina, donde aprovecharemos para adentrarnos en las dunas. Comida picnic durante la ruta. Continuaremos hacia Merzouga disfrutando de arena, arena y más arena como auténticos pilotos dakarianos. Al finalizar la jornada, regreso a Erfoud. Cena y alojamiento en Kasbah Xaluca.",
     en: "A true day of total desert. We ride infinite tracks across the Rekam plateau to the Lac Maider salt flat. We pass through Tafraoute and climb a 3-kilometre sand slope. The stage is full of contrasts: vast desert valleys, fast tracks, sand, salt flats and the crossing of Oued Remlia. Arrival in Ouzina, where we head into the dunes. Picnic lunch on the route. We continue to Merzouga enjoying sand, sand and more sand like true Dakar riders. End of the day in Erfoud. Dinner and accommodation at Kasbah Xaluca.",
@@ -164,6 +196,11 @@ const DAY_ENDURO67_7_RETURN = {
     en: "Return",
     fr: "Retour",
   },
+  chronologySummary: T(
+    "Traslado temprano desde Erfoud al aeropuerto de Errachidia y vuelos vía Casablanca para concluir siete días de enduro por el sur.",
+    "Early transfer from Erfoud to Errachidia airport and flights via Casablanca to conclude seven days of enduro through the south.",
+    "Transfert matinal d’Erfoud à l’aéroport d’Errachidia et vols via Casablanca pour conclure sept jours d’enduro dans le sud.",
+  ),
   body: {
     es: "A la hora convenida, traslado al aeropuerto de Errachidia para tomar el vuelo Errachidia – Casablanca a las 07:30h. Llegada prevista a Casablanca sobre las 08:30h y conexión con el vuelo Casablanca – Barcelona a las 09:40h. Llegada a Barcelona sobre las 12:40h.",
     en: "At the agreed time, transfer to Errachidia airport for the Errachidia – Casablanca flight at 07:30. Arrival expected in Casablanca around 08:30 and connection with the Casablanca – Barcelona flight at 09:40. Arrival in Barcelona around 12:40.",

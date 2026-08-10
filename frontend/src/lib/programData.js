@@ -12,6 +12,11 @@ export const DAY_ERFOUD_ARRIVAL = {
     en: "Departure from your home airport with a connection via Casablanca to Errachidia. Night arrival and transfer to Erfoud, known as «The Gate of the Desert». Accommodation and dinner at Kasbah Hotel Xaluca, an emblematic hotel of southern Morocco.",
     fr: "Départ de votre aéroport d'origine avec correspondance via Casablanca jusqu'à Errachidia. Arrivée de nuit et transfert vers Erfoud, « la porte du désert ». Hébergement et dîner au Kasbah Hotel Xaluca, hôtel emblématique du sud du Maroc.",
   },
+  chronologySummary: {
+    es: "Vuelo a Errachidia vía Casablanca, llegada nocturna y traslado a Erfoud, la Puerta del Desierto, para alojarse en Kasbah Hotel Xaluca.",
+    en: "Fly to Errachidia via Casablanca, arrive at night and transfer to Erfoud, the Gateway to the Desert, for a stay at Kasbah Hotel Xaluca.",
+    fr: "Vol vers Errachidia via Casablanca, arrivée nocturne et transfert à Erfoud, la Porte du Désert, pour séjourner au Kasbah Hotel Xaluca.",
+  },
   culture: [
     {
       title: { es: "Errachidia y su antiguo aeropuerto militar", en: "Errachidia and its former military airport", fr: "Errachidia et son ancien aéroport militaire" },
@@ -122,6 +127,11 @@ export const DAY_KHAMLIA_RISSANI = {
     en: "«A date with the Sunrise»: we recommend an early walk to the top of the dunes for sunrise. Bedouin breakfast and drive around the Erg to the abandoned village of Merdani. We continue to Khamlia, a village of Sudanese origin, where its inhabitants offer traditional dances and mint tea. Later we head to Rissani's market (Tues, Thurs and Sun), unique in these latitudes, where desert tribes and nomads come to stock up — curious to see the famous «donkey parking». We climb to a natural viewpoint for a final desert farewell. Lunch at Des Dunes, Erfoud's most authentic Berber pizzeria. Return to Kasbah Xaluca with the rest of the day free: heated pool, jacuzzi, tennis, minigolf, optional hammam, massage or quad ride. Dinner and overnight at Kasbah Xaluca.",
     fr: "« Rendez-vous avec l'aube » : il est recommandé de se lever tôt pour monter au sommet des dunes voir le lever de soleil. Petit déjeuner bédouin et route en contournant l'Erg jusqu'au village abandonné de Merdani. Poursuite vers Khamlia, village d'origine soudanaise, où ses habitants offrent danses traditionnelles et thé à la menthe. Plus tard, marché de Rissani (mardi, jeudi et dimanche), unique sous ces latitudes, où s'approvisionnent tribus et nomades — curieux « parking d'ânes ». Montée à un mirador naturel pour faire ses adieux au désert. Déjeuner chez Des Dunes, la pizzeria berbère la plus authentique d'Erfoud. Retour à la Kasbah Xaluca, après-midi libre : piscine chauffée, jacuzzi, tennis, mini-golf, hammam, massage ou quad en option. Dîner et nuit à la Kasbah Xaluca.",
   },
+  chronologySummary: {
+    es: "Amanecer en Erg Chebbi, música Gnawa en Khamlia, visita al mercado de Rissani y tarde libre para descansar en Kasbah Xaluca.",
+    en: "Sunrise at Erg Chebbi, Gnawa music in Khamlia, a visit to Rissani market and a free afternoon at Kasbah Xaluca.",
+    fr: "Lever du soleil sur l’Erg Chebbi, musique Gnawa à Khamlia, marché de Rissani et après-midi libre à la Kasbah Xaluca.",
+  },
   wellness: [
     { es: "Piscina climatizada", en: "Heated pool", fr: "Piscine chauffée" },
     { es: "Hammam & Jacuzzi", en: "Hammam & Jacuzzi", fr: "Hammam & Jacuzzi" },
@@ -201,6 +211,11 @@ export const DAY_TODRA_DADES = {
     en: "Drive to Tinerhir and the famous Todra Gorges. Continue to Boumalne Dades with accommodation at Hotel Xaluca Dades. Visit to the Dades Valley and stop at the «Monkey Paws» geological formations.",
     fr: "Route vers Tinerhir et les célèbres Gorges du Todra. Poursuite vers Boumalne Dadès avec hébergement à l'Hôtel Xaluca Dadès. Visite de la Vallée du Dadès et arrêt aux formations géologiques des « Pattes de Singe ».",
   },
+  chronologySummary: {
+    es: "Ruta hacia Tinerhir y las Gargantas del Todra, continuación por el Valle del Dades y alojamiento en Hotel Xaluca Dades.",
+    en: "Travel to Tinerhir and the Todra Gorges, continue through the Dades Valley and stay overnight at Hotel Xaluca Dades.",
+    fr: "Route vers Tinerhir et les gorges du Todra, puis traversée de la vallée du Dadès et nuit à l’Hôtel Xaluca Dadès.",
+  },
   culture: [
     {
       title: { es: "Las «Patas de Mono»", en: "The «Monkey Paws»", fr: "Les « Pattes de Singe »" },
@@ -271,6 +286,11 @@ export const DAY_OUARZAZATE_RETURN = {
     es: "Salida hacia Ouarzazate para tomar el vuelo de regreso vía Casablanca.",
     en: "Drive to Ouarzazate to catch the return flight via Casablanca.",
     fr: "Route vers Ouarzazate pour le vol de retour via Casablanca.",
+  },
+  chronologySummary: {
+    es: "Traslado por carretera hasta Ouarzazate para tomar el vuelo de regreso con conexión en Casablanca hacia el aeropuerto de origen.",
+    en: "Road transfer to Ouarzazate to take the return flight, connecting in Casablanca for the journey back to your home airport.",
+    fr: "Transfert par route à Ouarzazate pour prendre le vol retour avec correspondance à Casablanca vers l’aéroport d’origine.",
   },
   culture: [
     {
@@ -460,6 +480,11 @@ const DAY_AD_TODRA_ERFOUD = {
     en: "In the morning we head off-road into the heart of the Central High Atlas. We visit Berber villages such as Boutaghrar where time seems to have stopped, and discover mountains, canyons, valleys and caves still inhabited by nomad families. Lunch at Hotel Xaluca Dades. We continue to Tinerhir, with its pink houses and palm groves, to enter the famous Todra Gorges along the riverbed. Then on to Erfoud, «the Gateway to the Desert». Dinner and accommodation at Kasbah Hotel Xaluca, listed as unique in Morocco for its singular character.",
     fr: "Le matin, nous nous enfonçons sur pistes dans le cœur du Haut Atlas Central. Visite de villages berbères comme Boutaghrar où le temps semble s'être arrêté, et découverte des montagnes, canyons, vallées et grottes encore habitées par des familles nomades. Déjeuner à l'Hôtel Xaluca Dadès. Poursuite vers Tinerhir, ses maisons roses et sa palmeraie, pour pénétrer dans les célèbres Gorges du Todra. Continuation vers Erfoud, « la Porte du Désert ». Dîner et hébergement à la Kasbah Hôtel Xaluca, classée unique au Maroc.",
   },
+  chronologySummary: {
+    es: "Travesía por el Alto Atlas Central y sus poblados bereberes, paseo por las Gargantas del Todra y llegada a Erfoud.",
+    en: "Cross the Central High Atlas and its Berber villages, walk through the Todra Gorges and continue towards Erfoud.",
+    fr: "Traversée du Haut Atlas central et de ses villages berbères, promenade dans les gorges du Todra et arrivée à Erfoud.",
+  },
   culture: [
     {
       title: { es: "Boutaghrar y el Valle de las Rosas", en: "Boutaghrar and the Rose Valley", fr: "Boutaghrar et la Vallée des Roses" },
@@ -624,6 +649,11 @@ export const DAY_ME_MARRAKECH = {
     en: "Departure from your home airport to Marrakech. Arrival (mind the seasonal time difference), pick-up and transfer to a Riad in the Medina or 5* Hotel. In the morning we walk the Medina with a local guide: we start at the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We enter the alleys of the souk, where we watch carpet weavers, babouche makers and a vast range of artisans at work. We visit a Berber pharmacy and step out into Djemaa el-Fna, whose daytime atmosphere is completely different from the night. Free afternoon for haggling or to explore the Medina's hidden corners. Overnight at a Riad in the Medina or 5* Hotel.",
     fr: "Départ de votre aéroport d'origine vers Marrakech. Arrivée (attention au décalage horaire selon la saison), accueil et transfert vers un Riad dans la Médina ou un Hôtel 5*. Le matin, nous parcourons la Médina à pied avec un guide local : minaret de la Koutoubia — jumeau de la Giralda de Séville — puis Palais de la Bahia. Nous entrons dans les ruelles du souk, où nous observons tisserands de tapis, fabricants de babouches et une infinité d'artisans. Visite d'une pharmacie berbère, puis sortie sur la place Djemaa el-Fna, dont l'ambiance diurne est totalement différente de celle de la nuit. Après-midi libre pour le marchandage ou pour découvrir les recoins cachés de la Médina. Hébergement en Riad dans la Médina ou Hôtel 5*.",
   },
+  chronologySummary: {
+    es: "Llegada a Marrakech, traslado al alojamiento y recorrido guiado por la Koutoubia, el Palacio de la Bahía, los zocos y Djemaa el-Fna.",
+    en: "Arrive in Marrakech, transfer to the accommodation and take a guided tour of the Koutoubia, Bahia Palace, the souks and Djemaa el-Fna.",
+    fr: "Arrivée à Marrakech, transfert à l'hébergement et visite guidée de la Koutoubia, du Palais de la Bahia, des souks et de Djemaa el-Fna.",
+  },
   culture: [
     {
       title: { es: "La Koutoubia: el alminar que inspiró a la Giralda", en: "Koutoubia: the minaret that inspired the Giralda", fr: "La Koutoubia : le minaret qui inspira la Giralda" },
@@ -663,6 +693,11 @@ export const DAY_ME_ATLAS_AITBENHADDOU = {
     en: "We set off in a 4x4 with driver for the Central High Atlas. About 310 km lie ahead, generously rewarded by the landscape. We cross the Tizi n'Tichka — the highest tarmac mountain pass in the country — where the greens and ochres of the north give way to a lunar scenery. We visit the Aït Ben Haddou Kasbah, UNESCO World Heritage and backdrop for countless films. We pass through Ouarzazate and continue along the Valley of the Roses to Boumalne Dades, perched at 1,612 m. Dinner and overnight at Hotel Xaluca Dades.",
     fr: "Départ en 4x4 avec chauffeur vers le Haut Atlas Central. Environ 310 km nous attendent, largement récompensés par le paysage. Nous franchissons le Tizi n'Tichka — col routier asphalté le plus haut du pays — où les verts et ocres du nord laissent place à un paysage lunaire. Visite de la Kasbah d'Aït Ben Haddou, Patrimoine de l'Humanité et décor d'innombrables films. Passage par Ouarzazate et remontée de la Vallée des Roses jusqu'à Boumalne Dadès, à 1 612 m d'altitude. Dîner et nuit à l'Hotel Xaluca Dades.",
   },
+  chronologySummary: {
+    es: "Cruce del Alto Atlas por el Tizi n'Tichka, visita de Aït Ben Haddou y ruta por Ouarzazate y el Valle de las Rosas hasta Boumalne Dades.",
+    en: "Cross the High Atlas via Tizi n'Tichka, visit Aït Ben Haddou and continue through Ouarzazate and the Valley of the Roses to Boumalne Dades.",
+    fr: "Traversée du Haut Atlas par le Tizi n'Tichka, visite d'Aït Ben Haddou puis route par Ouarzazate et la Vallée des Roses jusqu'à Boumalne Dadès.",
+  },
   culture: [
     {
       title: { es: "Tizi n'Tichka: el paso asfaltado más alto de Marruecos", en: "Tizi n'Tichka: Morocco's highest tarmac pass", fr: "Tizi n'Tichka : le col asphalté le plus haut du Maroc" },
@@ -701,6 +736,11 @@ export const DAY_ME_TODRA_ERGCHEBBI = {
     es: "Saldremos temprano hacia Tinerhir para visitar las famosas Gargantas del Todra. Continuamos hacia Erfoud por pistas que en su día utilizó el Rally Dakar, visitando poblados y nómadas del desierto. Parada en las Canteras de Fósiles Marinos y picnic en un auténtico oasis. Llegada al Gran Erg Chebbi: cambiamos el 4x4 por dromedarios para entrar en el corazón de las dunas y contemplar la puesta de sol. Llegada al Bivouac de Luxe; cena y alojamiento en haimas, bajo las estrellas.",
     en: "Early start towards Tinerhir to visit the famous Todra Gorges. We continue to Erfoud along tracks once used by the Dakar Rally, visiting villages and desert nomads. Stop at the Marine Fossil Quarries and picnic in a real oasis. Arrival at the great Erg Chebbi: we swap the 4x4 for camels and ride into the heart of the dunes to watch the sunset. Arrival at the Bivouac de Luxe; dinner and overnight in jaimas, under the stars.",
     fr: "Départ matinal vers Tinerhir pour visiter les célèbres Gorges du Todra. Nous poursuivons vers Erfoud par des pistes autrefois empruntées par le Rallye Dakar, à la rencontre de villages et de nomades du désert. Halte aux Carrières de Fossiles Marins et pique-nique dans une véritable oasis. Arrivée au grand Erg Chebbi : nous échangeons le 4x4 contre des dromadaires pour pénétrer au cœur des dunes et admirer le coucher de soleil. Arrivée au Bivouac de Luxe ; dîner et nuit en jaimas, sous les étoiles.",
+  },
+  chronologySummary: {
+    es: "Visita de las Gargantas del Todra, pistas del Dakar y oasis camino del Erg Chebbi, con dromedarios al atardecer y noche en el bivouac.",
+    en: "Visit the Todra Gorges, Dakar tracks and an oasis en route to Erg Chebbi, followed by a sunset camel ride and a night at the bivouac.",
+    fr: "Visite des Gorges du Todra, pistes du Dakar et oasis vers l'Erg Chebbi, puis dromadaires au coucher du soleil et nuit au bivouac.",
   },
   culture: [
     {
@@ -775,6 +815,11 @@ export const DAY_ME_ZIZ_ERRACHIDIA = {
   image: "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?auto=format&fit=crop&w=2000&q=85",
   accent: "#3A4A5F",
   title: { es: "Valle del Ziz · Errachidia · regreso", en: "Ziz Valley · Errachidia · return", fr: "Vallée du Ziz · Errachidia · retour" },
+  chronologySummary: {
+    es: "Recorremos el palmeral y el mirador del Valle del Ziz antes del traslado al aeropuerto de Errachidia y el vuelo de regreso.",
+    en: "We travel through the Ziz palm grove and viewpoint before the transfer to Errachidia airport and the return flight.",
+    fr: "Nous parcourons la palmeraie et le belvédère de la vallée du Ziz avant le transfert à l’aéroport d’Errachidia et le vol retour.",
+  },
   body: {
     es: "Traslado al aeropuerto de Errachidia con parada en el mirador del Valle del Ziz, uno de los mayores oasis del norte de África. Vuelo Errachidia → Casablanca y enlace con vuelo de regreso al punto de origen.",
     en: "Transfer to Errachidia airport with a stop at the Ziz Valley viewpoint — one of North Africa's largest oases. Flight Errachidia → Casablanca and connection to your home airport.",
@@ -881,6 +926,11 @@ export const DAY_ME67_MEDINA = {
     es: "Día completo para descubrir Marrakech. Visita guiada a pie por la Medina con un guía local. Visitaremos el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y el Palacio de la Bahía. Recorreremos los zocos tradicionales viendo en acción a tejedores de alfombras, fabricantes de babuchas, tintoreros y joyeros. Visita a una farmacia bereber y regreso a Djemaa el-Fna. Tarde libre para descubrir la Medina a nuestro aire o hacer compras. Alojamiento en Riad en la Medina u Hotel 5*.",
     en: "A full day to discover Marrakech. Guided walking tour of the Medina with a local guide. We visit the Koutoubia minaret — twin of Seville's Giralda — and the Bahia Palace. We wander the traditional souks watching carpet weavers, babouche makers, dyers and jewellers at work. We visit a Berber pharmacy and return to Djemaa el-Fna. Free afternoon to explore the Medina at your own pace or shop. Overnight in a Riad in the Medina or 5* Hotel.",
     fr: "Journée complète pour découvrir Marrakech. Visite guidée à pied de la Médina avec un guide local. Nous visitons le minaret de la Koutoubia — jumeau de la Giralda de Séville — et le Palais de la Bahia. Nous parcourons les souks traditionnels en observant tisserands de tapis, fabricants de babouches, teinturiers et bijoutiers. Visite d'une pharmacie berbère et retour à Djemaa el-Fna. Après-midi libre pour explorer la Médina à votre rythme ou faire des achats. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  chronologySummary: {
+    es: "Día guiado por la Medina de Marrakech, la Koutoubia, el Palacio de la Bahía y los zocos, con tiempo libre para recorrer Djemaa el-Fna.",
+    en: "Guided day through Marrakech's Medina, the Koutoubia, Bahia Palace and the souks, with free time to explore Djemaa el-Fna.",
+    fr: "Journée guidée dans la Médina de Marrakech, la Koutoubia, le Palais de la Bahia et les souks, avec temps libre à Djemaa el-Fna.",
   },
   culture: [
     {
@@ -1023,6 +1073,11 @@ export const DAY_ME78_BOUTAGHRAR_MGOUN = {
     es: "Día completo por las pistas del Alto Atlas Central. Visitaremos poblados bereberes como Boutaghrar y Amskar y descubriremos grutas donde todavía viven familias nómadas. Recorreremos las espectaculares Gargantas del M'Goun, esculpidas durante millones de años por el río que les da nombre. Comida en ruta en una «Gite d'Etape» — refugio tradicional para senderistas y conductores. Regreso al Hotel Xaluca Dades para cena y alojamiento.",
     en: "Full day on the tracks of the Central High Atlas. We visit Berber villages such as Boutaghrar and Amskar and discover caves still inhabited by nomadic families. We drive the spectacular M'Goun Gorges, carved over millions of years by the river that gives them their name. Lunch en route at a «Gite d'Etape» — a traditional refuge for hikers and drivers. Return to Hotel Xaluca Dades for dinner and overnight.",
     fr: "Journée complète sur les pistes du Haut Atlas Central. Nous visitons des villages berbères comme Boutaghrar et Amskar et découvrons des grottes encore habitées par des familles nomades. Nous parcourons les spectaculaires Gorges du M'Goun, sculptées par la rivière du même nom au fil de millions d'années. Déjeuner en route dans une « Gite d'Étape » — refuge traditionnel des randonneurs et chauffeurs. Retour à l'Hotel Xaluca Dades pour le dîner et la nuit.",
+  },
+  chronologySummary: {
+    es: "Jornada por las pistas del Alto Atlas entre Boutaghrar y Amskar, encuentro con familias nómadas y recorrido por las Gargantas del M'Goun.",
+    en: "A day on the High Atlas tracks between Boutaghrar and Amskar, meeting nomadic families and exploring the M'Goun Gorges.",
+    fr: "Journée sur les pistes du Haut Atlas entre Boutaghrar et Amskar, rencontre de familles nomades et parcours des Gorges du M'Goun.",
   },
   culture: [
     {
@@ -1167,6 +1222,11 @@ export const DAY_EM_AITBEN_MARRAKECH = {
     en: "Drive to Marrakech across the High Atlas. Along the way, visit the Aït Ben Haddou Kasbah — UNESCO World Heritage and one of the most famous film sets in Africa. We cross the Tizi n'Tichka, Morocco's highest tarmac road pass at 2,260 metres. Arrival in Marrakech, check-in at the riad or hotel and a first encounter with Djemaa el-Fna Square — UNESCO Intangible Cultural Heritage — especially vibrant at nightfall. Overnight at a Riad in the Medina or 5* Hotel.",
     fr: "Route vers Marrakech à travers le Haut Atlas. En chemin, visite de la Kasbah d'Aït Ben Haddou — Patrimoine de l'Humanité et l'un des décors de cinéma les plus célèbres d'Afrique. Franchissement du Tizi n'Tichka, le col routier asphalté le plus haut du Maroc, à 2 260 mètres. Arrivée à Marrakech, accueil au riad ou à l'hôtel et première rencontre avec la place Djemaa el-Fna — Patrimoine Culturel Immatériel de l'UNESCO — particulièrement vibrante à la nuit tombée. Nuit en Riad dans la Médina ou Hôtel 5*.",
   },
+  chronologySummary: {
+    es: "Cruce del Alto Atlas hacia Marrakech, con visita de Aït Ben Haddou, paso por el Tizi n'Tichka y llegada a la animada plaza Djemaa el-Fna.",
+    en: "Cross the High Atlas towards Marrakech, visiting Aït Ben Haddou, travelling over Tizi n'Tichka and arriving at lively Djemaa el-Fna.",
+    fr: "Traversée du Haut Atlas vers Marrakech, visite d'Aït Ben Haddou, passage du Tizi n'Tichka et arrivée sur l'animée place Djemaa el-Fna.",
+  },
   culture: [
     {
       title: { es: "Aït Ben Haddou: ksar milenario y plató de cine", en: "Aït Ben Haddou: ancient ksar and film set", fr: "Aït Ben Haddou : ksar millénaire et plateau de cinéma" },
@@ -1205,6 +1265,11 @@ export const DAY_EM_MARRAKECH_VISIT = {
     es: "Día dedicado a descubrir Marrakech con visita guiada a pie por la Medina con un guía local. Empezaremos admirando el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y seguiremos con el Palacio de la Bahía. Recorreremos los zocos tradicionales viendo en acción a tejedores de alfombras, fabricantes de babuchas y una infinita variedad de artesanos. Visita a una farmacia bereber y regreso a Djemaa el-Fna. Tiempo libre para el arte del regateo o para descubrir los rincones más recónditos de la Medina. Traslado al aeropuerto de Marrakech para coger el vuelo de regreso.",
     en: "A full day to discover Marrakech with a guided walking tour of the Medina led by a local guide. We start with the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We wander the traditional souks watching carpet weavers, babouche makers and a vast range of artisans at work. Visit a Berber pharmacy and return to Djemaa el-Fna. Free time for the art of bargaining or to discover the Medina's hidden corners. Transfer to Marrakech airport for the return flight.",
     fr: "Journée dédiée à la découverte de Marrakech avec visite guidée à pied de la Médina par un guide local. Nous commençons par le minaret de la Koutoubia — jumeau de la Giralda de Séville — puis le Palais de la Bahia. Nous parcourons les souks traditionnels en observant tisserands de tapis, fabricants de babouches et une infinité d'artisans. Visite d'une pharmacie berbère et retour à Djemaa el-Fna. Temps libre pour l'art du marchandage ou pour découvrir les recoins cachés de la Médina. Transfert à l'aéroport de Marrakech pour le vol de retour.",
+  },
+  chronologySummary: {
+    es: "Visita guiada por la Medina, la Koutoubia, el Palacio de la Bahía y los zocos, con tiempo libre antes del traslado al aeropuerto.",
+    en: "Guided visit to the Medina, the Koutoubia, Bahia Palace and the souks, with free time before the airport transfer.",
+    fr: "Visite guidée de la Médina, de la Koutoubia, du Palais de la Bahia et des souks, avec temps libre avant le transfert à l'aéroport.",
   },
   culture: [
     {
@@ -1735,6 +1800,11 @@ export const DAY_EM78_MEDINA = {
     en: "A full day in Marrakech. Guided walking tour of the Medina with a local guide. We start at the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We dive into the alleys of the souk to watch different artisans at work: carpet weavers, babouche makers and a vast range of quality crafts. We visit a Berber pharmacy where they share their «little secrets». We return to Djemaa el-Fna Square, whose daytime atmosphere is completely different from the night. Free afternoon to practise the art of bargaining or to discover the Medina's hidden corners on your own. Overnight in a Riad in the Medina or 5* Hotel.",
     fr: "Journée complète dédiée à Marrakech. Visite guidée à pied de la Médina avec un guide local. Nous commençons par le minaret de la Koutoubia — jumeau de la Giralda de Séville — puis le Palais de la Bahia. Nous nous enfonçons dans les ruelles du souk pour observer différents artisans à l'œuvre : tisserands de tapis, fabricants de babouches et une infinité d'artisanat de qualité. Visite d'une pharmacie berbère, où l'on partage ses « petits secrets ». Retour à la place Djemaa el-Fna, dont l'ambiance diurne est totalement différente de celle de la nuit. Après-midi libre pour pratiquer l'art du marchandage ou découvrir les recoins cachés de la Médina à votre rythme. Nuit en Riad dans la Médina ou Hôtel 5*.",
   },
+  chronologySummary: {
+    es: "Día guiado por la Medina de Marrakech, la Koutoubia, el Palacio de la Bahía y los zocos, con una tarde libre para explorar Djemaa el-Fna.",
+    en: "Guided day through Marrakech's Medina, the Koutoubia, Bahia Palace and the souks, with a free afternoon to explore Djemaa el-Fna.",
+    fr: "Journée guidée dans la Médina de Marrakech, la Koutoubia, le Palais de la Bahia et les souks, avec après-midi libre à Djemaa el-Fna.",
+  },
   culture: [
     {
       title: { es: "La Koutoubia: el alminar que inspiró a la Giralda", en: "Koutoubia: the minaret that inspired the Giralda", fr: "La Koutoubia : le minaret qui inspira la Giralda" },
@@ -1773,6 +1843,11 @@ export const DAY_EM78_DEPARTURE = {
     es: "A la hora convenida, traslado al aeropuerto de Marrakech para coger el vuelo de regreso al punto de origen, llevándonos con nosotros los aromas, los colores y la calidez de la hospitalidad marroquí.",
     en: "At the agreed time, transfer to Marrakech airport for the return flight home, carrying with us the aromas, colours and warmth of Moroccan hospitality.",
     fr: "À l'heure convenue, transfert à l'aéroport de Marrakech pour le vol de retour, emportant avec nous les arômes, les couleurs et la chaleur de l'hospitalité marocaine.",
+  },
+  chronologySummary: {
+    es: "Traslado al aeropuerto de Marrakech para tomar el vuelo de regreso y despedir el viaje con los colores, aromas y recuerdos de Marruecos.",
+    en: "Transfer to Marrakech airport for the flight home, ending the journey with the colours, aromas and memories of Morocco.",
+    fr: "Transfert à l'aéroport de Marrakech pour le vol retour et fin du voyage avec les couleurs, les parfums et les souvenirs du Maroc.",
   },
   culture: [
     {
@@ -2024,6 +2099,11 @@ export const DAY_MEM23_TODRA_BIVOUAC = {
     es: "Salida temprano en dirección a Tinerhir, pequeña y próspera población que ofrece una bella panorámica de contrastes con sus casas rosas y palmerales, punto de partida ideal para adentrarnos en las famosas Gargantas del Todra, donde podremos caminar siguiendo el curso del río. Dejaremos atrás las montañas y seguiremos hasta Erfoud, donde cogeremos pista para vivir un día de Desierto Total. Recorreremos una de las pistas del Rally Dakar visitando poblados y nómadas, parada en las Canteras de Fósiles Marinos (360 millones de años) y picnic en un auténtico oasis. Continuaremos hasta el Gran Erg Chebbi, donde cambiaremos el 4x4 por dromedarios para entrar en el corazón de las dunas y contemplar una puesta de sol inolvidable. Llegada al Bivouac, alojamiento en haimas como las de los nómadas. Cena y noche bajo las estrellas.",
     en: "Early departure towards Tinerhir, a small and prosperous town with pink houses and palm groves — the ideal starting point to enter the famous Todra Gorges, where we walk along the riverbed. Leaving the mountains behind, we continue to Erfoud, where we take the desert track for a day of Total Desert. We follow one of the Dakar Rally tracks visiting villages and nomads, stop at the Marine Fossil Quarries (360 million years old) and picnic at a real oasis. We continue to the great Erg Chebbi, where we swap the 4x4 for camels and ride into the heart of the dunes for an unforgettable sunset. Arrival at the bivouac, accommodation in nomad-style jaimas. Dinner and overnight under the stars.",
     fr: "Départ matinal vers Tinerhir, petite ville prospère aux maisons roses et palmeraies — point de départ idéal pour les célèbres Gorges du Todra, où nous marchons en suivant le cours de la rivière. En quittant les montagnes, nous continuons vers Erfoud, où nous prenons la piste pour une journée de Désert Total. Nous suivons l'une des pistes du Rallye Dakar à la rencontre de villages et nomades, halte aux Carrières de Fossiles Marins (360 millions d'années) et pique-nique dans une véritable oasis. Continuation vers le grand Erg Chebbi, où nous échangeons le 4x4 contre des dromadaires pour pénétrer au cœur des dunes et admirer un coucher de soleil inoubliable. Arrivée au bivouac, hébergement en jaimas comme celles des nomades. Dîner et nuit sous les étoiles.",
+  },
+  chronologySummary: {
+    es: "Ruta por Tinerhir y las Gargantas del Todra hasta las pistas del desierto, con dromedarios al atardecer y noche bajo las estrellas en Erg Chebbi.",
+    en: "Travel through Tinerhir and the Todra Gorges to the desert tracks, then ride camels at sunset and sleep under the stars at Erg Chebbi.",
+    fr: "Route par Tinerhir et les Gorges du Todra jusqu'aux pistes du désert, puis dromadaires au coucher du soleil et nuit sous les étoiles à l'Erg Chebbi.",
   },
   culture: [
     {
@@ -2297,6 +2377,11 @@ export const DAY_MEM34_RETURN_MARRAKECH = {
     es: "Hoy emprenderemos nuestro camino de regreso a Marrakech, pasando por la localidad de Alnif y disfrutando de una gran variedad de paisajes que enlazan el Anti-Atlas con la llanura del Haouz. Será un día de traslado largo pero escénico. Llegada a Marrakech y fin de nuestros servicios.",
     en: "Today we make our way back to Marrakech, passing through the town of Alnif and enjoying a wide variety of landscapes that link the Anti-Atlas with the Haouz plain. A long but scenic transfer day. Arrival in Marrakech and end of our services.",
     fr: "Aujourd'hui, route du retour vers Marrakech en passant par la ville d'Alnif et en profitant d'une grande variété de paysages qui relient l'Anti-Atlas à la plaine du Haouz. Une journée de transfert longue mais scénique. Arrivée à Marrakech et fin de nos services.",
+  },
+  chronologySummary: {
+    es: "Regreso a Marrakech por Alnif, atravesando los paisajes del Anti-Atlas y la llanura del Haouz hasta completar el circuito.",
+    en: "Return to Marrakech via Alnif, crossing the landscapes of the Anti-Atlas and the Haouz plain to complete the circuit.",
+    fr: "Retour à Marrakech par Alnif, à travers les paysages de l'Anti-Atlas et la plaine du Haouz pour achever le circuit.",
   },
   culture: [
     {
@@ -2733,6 +2818,11 @@ export const DAY_MEM56_ARRIVAL_MARRAKECH = {
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Llegada a Marrakech", en: "Arrival in Marrakech", fr: "Arrivée à Marrakech" },
+  chronologySummary: {
+    es: "Llegada a Marrakech, traslado al alojamiento y primera toma de contacto con la Medina y la animada plaza Djemaa el-Fna al atardecer.",
+    en: "Arrival in Marrakech, transfer to the accommodation and a first encounter with the Medina and lively Djemaa el-Fna at sunset.",
+    fr: "Arrivée à Marrakech, transfert à l’hébergement et première découverte de la Médina et de l’animée place Djemaa el-Fna au coucher du soleil.",
+  },
   body: {
     es: "Vuelo desde el aeropuerto de origen hacia Marrakech. Llegada y traslado al Riad en la Medina u Hotel 5*. Alojamiento. Dependiendo de la hora de llegada, se recomienda una primera toma de contacto con la Medina y la famosa Plaza Djemaa el-Fna, que al caer la tarde y la noche se llena de recitadores, adivinadores, malabaristas, encantadores de serpientes y puestos de comida tradicional al aire libre.",
     en: "Flight from your home airport to Marrakech. Arrival and transfer to a Riad in the Medina or 5* Hotel. Overnight. Depending on your arrival time, we recommend a first contact with the Medina and the famous Djemaa el-Fna Square — which at dusk and after dark fills with storytellers, fortune-tellers, jugglers, snake charmers and traditional open-air food stalls.",
@@ -2776,6 +2866,11 @@ export const DAY_MEM56_MARRAKECH_VISIT = {
     es: "Visita guiada a pie por la Medina de Marrakech con un guía local. Empezaremos admirando el Alminar de la Koutoubia, gemela de la Giralda de Sevilla, y seguiremos con el Palacio de la Bahía. Recorreremos los zocos tradicionales viendo a tejedores de alfombras, fabricantes de babuchas y una infinita variedad de artesanos. Visita a una farmacia bereber, donde nos enseñarán sus «secretillos». Por la tarde: tiempo libre, compras, paseo por la Medina y práctica del arte del regateo. Alojamiento en Riad en la Medina u Hotel 5*.",
     en: "Guided walking tour of the Marrakech Medina with a local guide. We start at the Koutoubia minaret — twin of Seville's Giralda — and continue to the Bahia Palace. We wander the traditional souks watching carpet weavers, babouche makers and a vast range of artisans at work. Visit to a Berber pharmacy where they share their «little secrets». In the afternoon: free time, shopping, a Medina stroll and the art of bargaining. Overnight in a Riad in the Medina or 5* Hotel.",
     fr: "Visite guidée à pied de la Médina de Marrakech avec un guide local. Nous commençons par le minaret de la Koutoubia — jumeau de la Giralda de Séville — puis le Palais de la Bahia. Nous parcourons les souks traditionnels en observant tisserands de tapis, fabricants de babouches et une infinité d'artisans. Visite d'une pharmacie berbère, où l'on partage ses « petits secrets ». L'après-midi : temps libre, shopping, balade dans la Médina et art du marchandage. Nuit en Riad dans la Médina ou Hôtel 5*.",
+  },
+  chronologySummary: {
+    es: "Visita guiada por la Medina de Marrakech, la Koutoubia, el Palacio de la Bahía y sus zocos, seguida de una tarde libre para explorar y comprar.",
+    en: "Guided visit to Marrakech's Medina, the Koutoubia, Bahia Palace and its souks, followed by a free afternoon to explore and shop.",
+    fr: "Visite guidée de la Médina de Marrakech, de la Koutoubia, du Palais de la Bahia et des souks, puis après-midi libre pour explorer et faire des achats.",
   },
   culture: [
     {
@@ -3448,6 +3543,11 @@ export const DAY_MES_MARRAKECH_ESSAOUIRA = {
   image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: { es: "Marrakech → Essaouira", en: "Marrakech → Essaouira", fr: "Marrakech → Essaouira" },
+  chronologySummary: {
+    es: "Ruta desde Marrakech hasta Essaouira para descubrir su puerto pesquero, la medina amurallada, las galerías y el ambiente de la costa atlántica.",
+    en: "Journey from Marrakech to Essaouira to discover its fishing port, walled medina, art galleries and distinctive Atlantic atmosphere.",
+    fr: "Route de Marrakech à Essaouira pour découvrir son port de pêche, sa médina fortifiée, ses galeries et son atmosphère atlantique.",
+  },
   body: {
     es: "Salida hacia las 09:30 h con vehículo y chófer hacia Essaouira (aproximadamente 190 km de carretera). Llegada y tiempo libre para disfrutar de la ciudad: el puerto pesquero y sus gaviotas, las galerías de arte, los estudios de pintura, el ambiente bohemio y la música callejera. Recomendable comer pescado fresco junto al puerto, pasear por la medina amurallada y descubrir el ambiente atlántico tan especial que dio nombre a la «Perla del Atlántico». Cena y noche en Riad en la Medina u Hotel 5*.",
     en: "Departure around 09:30 by vehicle and driver to Essaouira (approximately 190 km on the road). Arrival and free time to enjoy the city: the fishing port and its seagulls, art galleries, painters' studios, the bohemian vibe and street music. We recommend a fresh-fish lunch by the harbour, a stroll through the walled medina and discovering the very particular Atlantic atmosphere that earned the «Pearl of the Atlantic» its nickname. Dinner and overnight at a Riad in the Medina or 5* Hotel.",
@@ -3487,6 +3587,11 @@ export const DAY_MES_ESSAOUIRA_FREE = {
   image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#3A4A5F",
   title: { es: "Día libre en Essaouira", en: "Free day in Essaouira", fr: "Journée libre à Essaouira" },
+  chronologySummary: {
+    es: "Jornada libre entre la playa, la Skala, el puerto y las calles de la medina, con opciones de surf, kitesurf y descanso frente al Atlántico.",
+    en: "Free day among the beach, Skala, harbour and medina streets, with options for surfing, kitesurfing and relaxing by the Atlantic.",
+    fr: "Journée libre entre la plage, la Skala, le port et les ruelles de la médina, avec surf, kitesurf ou détente face à l’Atlantique.",
+  },
   body: {
     es: "Jornada libre para disfrutar de la ciudad a tu ritmo: pasear por la playa, relajarse frente al Atlántico, descubrir las galerías, recorrer las murallas (skala), perderse en la medina o tomar un té en una terraza con vistas al océano. Para quienes buscan algo más activo, Essaouira es uno de los mejores destinos del mundo para surf, kitesurf y windsurf gracias a los famosos alisios. Cena y noche en Riad en la Medina u Hotel 5*.",
     en: "A free day to enjoy the city at your own pace: walk on the beach, relax facing the Atlantic, discover the galleries, walk the ramparts (skala), get lost in the medina or have tea on a terrace overlooking the ocean. For those after something more active, Essaouira is one of the world's best destinations for surfing, kitesurfing and windsurfing thanks to the famous trade winds. Dinner and overnight at a Riad in the Medina or 5* Hotel.",
@@ -3705,6 +3810,11 @@ export const DAY_MES67_FREE_MARRAKECH = {
   image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Día libre en Marrakech", en: "Free day in Marrakech", fr: "Journée libre à Marrakech" },
+  chronologySummary: {
+    es: "Día libre para recorrer zocos, jardines y museos de Marrakech o realizar una excursión al valle de Ourika, Ouzoud, el Atlas o Agafay.",
+    en: "Free day to explore Marrakech’s souks, gardens and museums or take an excursion to Ourika, Ouzoud, the Atlas or Agafay.",
+    fr: "Journée libre dans les souks, jardins et musées de Marrakech ou excursion vers l’Ourika, Ouzoud, l’Atlas ou Agafay.",
+  },
   body: {
     es: "Jornada libre para descubrir Marrakech a tu ritmo: practicar el arte del regateo en los zocos, perderse por la Medina y descubrir rincones menos turísticos como el barrio de los curtidores, los jardines Majorelle o el Museo Yves Saint Laurent. También existe la posibilidad de contratar excursiones facultativas a media jornada o día completo — Valle de Ourika, Cascadas de Ouzoud, Tres Valles del Atlas o, con pernoctación, una incursión al desierto de Agafay. Alojamiento en Riad en la Medina u Hotel 4* / 5*.",
     en: "A free day to discover Marrakech at your own pace: practise the art of haggling in the souks, get lost in the Medina and explore less touristy corners such as the tanners' quarter, the Majorelle Gardens or the Yves Saint Laurent Museum. You can also book optional half- or full-day excursions — Ourika Valley, Ouzoud Waterfalls, Atlas Three Valleys or, with an overnight, an Agafay desert escape. Overnight in a Riad in the Medina or 4* / 5* Hotel.",
@@ -3744,6 +3854,11 @@ export const DAY_MES67_ESSAOUIRA_FREE_2 = {
   image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2000&q=85",
   accent: "#3A4A5F",
   title: { es: "Segundo día libre en Essaouira", en: "Second free day in Essaouira", fr: "Deuxième journée libre à Essaouira" },
+  chronologySummary: {
+    es: "Segunda jornada junto al océano para navegar hacia las islas Purpurarias, practicar deportes acuáticos o descubrir la cocina atlántica local.",
+    en: "A second day by the ocean to sail towards the Purpuraires Islands, enjoy water sports or discover the local Atlantic cuisine.",
+    fr: "Deuxième journée face à l’océan pour rejoindre les îles Purpuraires, pratiquer des sports nautiques ou découvrir la cuisine atlantique.",
+  },
   body: {
     es: "Nueva jornada libre para seguir disfrutando del ambiente costero a tu aire: playa, paseos por el puerto y la medina, sesiones de surf o kitesurf, relax frente al Atlántico o una visita a las pequeñas islas Purpurarias en barca privada. Buen momento también para una clase de cocina marroquí o un té con dulces en una azotea con vistas al océano. Cena y noche en Riad en la Medina u Hotel 5*.",
     en: "Another free day to enjoy the coastal vibe your way: beach, walks around the harbour and medina, surf or kitesurf sessions, relaxing facing the Atlantic, or a private boat trip to the small Purpuraires Islands. A great moment too for a Moroccan cooking class or tea and pastries on a rooftop overlooking the ocean. Dinner and overnight at a Riad in the Medina or 5* Hotel.",
@@ -3967,6 +4082,11 @@ export const DAY_FAE_ARRIVAL_FEZ = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: { es: "Llegada a Fez", en: "Arrival in Fez", fr: "Arrivée à Fès" },
+  chronologySummary: {
+    es: "Llegada a Fez, traslado al alojamiento y primer contacto con la ciudad imperial mediante un paseo por la medina si el horario lo permite.",
+    en: "Arrival in Fez, transfer to the accommodation and a first encounter with the imperial city through the medina if time allows.",
+    fr: "Arrivée à Fès, transfert à l’hébergement et premier contact avec la ville impériale dans la médina si l’horaire le permet.",
+  },
   body: {
     es: "Vuelo desde el aeropuerto de origen hacia Fez. Recepción en el aeropuerto y traslado al Riad en la Medina o Hotel 4*. Cena y alojamiento. Dependiendo de la hora de llegada, la visita guiada de Fez puede adelantarse a este mismo día — un primer paseo nocturno por la Medina, la mejor manera de adentrarse en una de las ciudades imperiales más fascinantes del Magreb.",
     en: "Flight from your home airport to Fez. Reception at the airport and transfer to a Riad in the Medina or 4* Hotel. Dinner and overnight. Depending on your arrival time, the guided tour of Fez can be brought forward to this day — a first evening walk through the Medina, the best way to step into one of the Maghreb's most fascinating imperial cities.",
@@ -4006,6 +4126,11 @@ export const DAY_FAE_FEZ_SIDIALI = {
   image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?auto=format&fit=crop&w=2000&q=85",
   accent: "#7C8B5C",
   title: { es: "Fez · Medio Atlas · Aguelmame Sidi Ali", en: "Fez · Middle Atlas · Aguelmame Sidi Ali", fr: "Fès · Moyen Atlas · Aguelmame Sidi Ali" },
+  chronologySummary: {
+    es: "Visita de la medina de Fez y ruta por Ifrane y los bosques de cedros del Medio Atlas hasta el lago Aguelmame Sidi Ali.",
+    en: "A tour of Fez medina followed by Ifrane and the Middle Atlas cedar forests en route to Lake Aguelmame Sidi Ali.",
+    fr: "Visite de la médina de Fès puis route par Ifrane et les forêts de cèdres du Moyen Atlas jusqu’au lac Aguelmame Sidi Ali.",
+  },
   body: {
     es: "Por la mañana visita guiada a pie por la Medina de Fez: zocos, centros artesanales, mezquitas y palacios históricos. Visitaremos el barrio de los curtidores Chouara, la Madrasa Bou Inania, la Fuente Nejjarine y la puerta azul de Bab Boujloud. Por la tarde salida en vehículo 4x4 con chófer atravesando el Medio Atlas: paso por Ifrane, la «pequeña Suiza» marroquí, bosques de cedros gigantes donde con suerte avistaremos monos magot en libertad. Llegada a Aguelmame Sidi Ali, a 2.200 m de altitud, junto al lago natural más profundo de Marruecos. Cena y noche en Xaluca Lake Sidi Ali, antiguo refugio de caza y pesca reconvertido en hotel boutique de montaña.",
     en: "Morning guided walking tour of the Fez Medina: souks, artisan workshops, mosques and historic palaces. We visit the Chouara tanners' quarter, the Bou Inania Madrasa, the Nejjarine fountain and the blue gate of Bab Boujloud. In the afternoon departure by 4x4 with driver across the Middle Atlas: passing through Ifrane, Morocco's «little Switzerland», and the giant cedar forests where we may spot free-roaming Barbary macaques. Arrival at Aguelmame Sidi Ali, at 2,200 m altitude, beside Morocco's deepest natural lake. Dinner and overnight at Xaluca Lake Sidi Ali — a former hunting and fishing lodge turned mountain boutique hotel.",
@@ -4045,6 +4170,11 @@ export const DAY_FAE_SIDIALI_ERFOUD = {
   image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
   accent: "#A07042",
   title: { es: "Aguelmame Sidi Ali · Valle del Ziz · Erfoud", en: "Aguelmame Sidi Ali · Ziz Valley · Erfoud", fr: "Aguelmame Sidi Ali · Vallée du Ziz · Erfoud" },
+  chronologySummary: {
+    es: "Mañana junto al lago y travesía por los pasos del Atlas y el palmeral del Valle del Ziz hasta Erfoud, puerta del desierto.",
+    en: "A morning by the lake followed by the Atlas passes and the Ziz Valley palm grove to Erfoud, gateway to the desert.",
+    fr: "Matinée au bord du lac puis traversée des cols de l’Atlas et de la palmeraie du Ziz jusqu’à Erfoud, porte du désert.",
+  },
   body: {
     es: "Mañana libre para disfrutar del entorno natural: caminata por las orillas del lago, observación de aves migratorias, paseos por el Parque Nacional de Khenifra o simplemente desconectar entre las montañas. Comida incluida en el hotel. Por la tarde retomamos el 4x4 hacia el sur, atravesando los pasos del Alto Atlas y descendiendo por el espectacular Valle del Ziz, una cinta verde de más de diez millones de palmeras encajada entre paredes rocosas. Llegada a Erfoud, «la Puerta del Desierto». Cena y noche en Kasbah Xaluca, hotel emblemático del sur de Marruecos.",
     en: "Free morning to enjoy the natural surroundings: lakeside walks, migratory bird watching, hikes in the Khenifra National Park or simply unwinding among the mountains. Lunch included at the hotel. In the afternoon we hit the 4x4 again heading south, crossing the High Atlas passes and descending into the spectacular Ziz Valley — a green ribbon of more than ten million palm trees set between rock walls. Arrival in Erfoud, «the Gate of the Desert». Dinner and overnight at Kasbah Xaluca, an emblematic hotel of southern Morocco.",

@@ -35,6 +35,11 @@ export const DAY_FZS_FEZ_ATLAS_SIDIALI = {
     en: "In the morning, guided walking tour of the Fez Medina — one of the most authentic and best-preserved in the Arab world. We thread its labyrinthine medieval alleys, discovering artisan workshops, mosques and palaces amid the bustle of its people. Early afternoon, departure in a 4x4 with driver heading south across the Middle Atlas to Ifrane, known as «little Switzerland». We continue through the Giant Cedar Forests — with a bit of luck we may feed the colony of wild macaques that lives in the highlands. We then reach Aguelmane Sidi Ali lake, set at 2,200 m altitude on one of the Atlas's extinct volcanoes. Dinner and overnight at Hotel Xaluca Spa Aguelmane Sidi Ali, a former hunting and fishing lodge built in 1935 and recently restored.",
     fr: "Le matin, visite guidée à pied de la médina de Fès — l'une des plus authentiques et les mieux conservées du monde arabe. Nous parcourons ses ruelles médiévales labyrinthiques, à la découverte des ateliers d'artisans, mosquées et palais. En début d'après-midi, départ en 4x4 avec chauffeur vers le sud pour traverser le Moyen Atlas jusqu'à Ifrane, surnommée « la petite Suisse ». Continuation à travers les Forêts de Cèdres Géants — avec un peu de chance, nous nourrirons la colonie de macaques sauvages qui habite la montagne. Arrivée au lac Aguelmane Sidi Ali, perché à 2 200 m d'altitude sur l'un des volcans éteints de l'Atlas. Dîner et nuit à l'Hôtel Xaluca Spa Aguelmane Sidi Ali, ancien relais de chasse et de pêche construit en 1935 et récemment restauré.",
   },
+  chronologySummary: T(
+    "Visita guiada por la Medina de Fez y cruce del Medio Atlas entre Ifrane y los cedros hasta el lago volcánico Aguelmame Sidi Ali.",
+    "Guided visit to Fez's Medina and a Middle Atlas crossing via Ifrane and the cedar forests to volcanic Lake Aguelmame Sidi Ali.",
+    "Visite guidée de la Médina de Fès puis traversée du Moyen Atlas par Ifrane et les cèdres jusqu’au lac volcanique Aguelmame Sidi Ali.",
+  ),
   culture: [
     {
       title: T("Ifrane · la pequeña Suiza", "Ifrane · little Switzerland", "Ifrane · la petite Suisse"),
@@ -78,6 +83,11 @@ export const DAY_FZS_SIDIALI_ZIZ_ERFOUD = {
     en: "We wake up at 2,200 m next to Morocco's deepest natural lake. In the morning we can walk around the lake, climb to the nearby volcanic crater or visit a Aït Atta nomadic family. The hotel also offers heated pool, spa and hammam (optional). Lunch at Xaluca Spa Aguelmane Sidi Ali. In the afternoon, we head south by 4x4 along the Ziz Valley — home to more than ten million palms — down to Erfoud, «the Gate of the Desert». Dinner and overnight at Kasbah Hotel Xaluca.",
     fr: "Réveil à 2 200 m au bord du lac naturel le plus profond du Maroc. Le matin, possibilité de promenade autour du lac, ascension du cratère volcanique voisin ou visite d'une famille nomade Aït Atta. L'hôtel dispose également d'une piscine chauffée, d'un spa et d'un hammam (en option). Déjeuner au Xaluca Spa Aguelmane Sidi Ali. L'après-midi, descente en 4x4 vers le sud par la Vallée du Ziz — abritant plus de dix millions de palmiers — jusqu'à Erfoud, « la Porte du Désert ». Dîner et nuit à la Kasbah Hôtel Xaluca.",
   },
+  chronologySummary: T(
+    "Mañana junto al lago Aguelmame Sidi Ali, encuentro con la cultura nómada y ruta por el Valle del Ziz hasta Kasbah Xaluca en Erfoud.",
+    "A morning by Lake Aguelmame Sidi Ali, an encounter with nomadic culture and a route through the Ziz Valley to Kasbah Xaluca in Erfoud.",
+    "Matinée au lac Aguelmame Sidi Ali, rencontre avec la culture nomade puis route par la vallée du Ziz jusqu’à la Kasbah Xaluca à Erfoud.",
+  ),
   wellness: [
     { es: "Paseo lacustre · 4 km", en: "Lake walk · 4 km", fr: "Promenade lacustre · 4 km" },
     { es: "Cráter volcánico", en: "Volcanic crater", fr: "Cratère volcanique" },

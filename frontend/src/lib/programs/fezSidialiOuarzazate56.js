@@ -26,6 +26,11 @@ export const DAY_FOZ_KHENIFRA_ZIZ_ERFOUD = {
     "Khenifra National Park · Ziz Valley · Erfoud",
     "Parc National de Khénifra · Vallée du Ziz · Erfoud",
   ),
+  chronologySummary: T(
+    "Exploramos los cedros del Parque Nacional de Khenifra y descendemos por el palmeral del Ziz hasta Erfoud, puerta del desierto.",
+    "We explore Khenifra National Park’s cedar forests and descend through the Ziz palm grove to Erfoud, gateway to the desert.",
+    "Nous explorons les cèdres du Parc National de Khénifra puis descendons par la palmeraie du Ziz jusqu’à Erfoud, porte du désert.",
+  ),
   body: {
     es: "Mañana en plena naturaleza dentro del Parque Nacional de Khenifra, en pleno corazón del Medio Atlas. Podremos descubrir el ecosistema único de cedros gigantes, atalayas naturales sobre el lago y senderos por la sabana alpina. Comida en el Hotel Xaluca Spa Aguelmane Sidi Ali. Por la tarde, ruta en 4x4 hacia el sur por el Valle del Ziz — hogar de más de diez millones de palmeras — hasta llegar a Erfoud, «la Puerta del Desierto». Cena y alojamiento en Kasbah Hotel Xaluca.",
     en: "A morning immersed in nature inside the Khenifra National Park, in the heart of the Middle Atlas. We discover the unique ecosystem of giant cedars, natural watchtowers over the lake, and footpaths across the alpine savanna. Lunch at Hotel Xaluca Spa Aguelmane Sidi Ali. In the afternoon, 4x4 ride south down the Ziz Valley — home to more than ten million palm trees — to Erfoud, «the Gate of the Desert». Dinner and overnight at Kasbah Hotel Xaluca.",
@@ -68,6 +73,11 @@ export const DAY_FOZ_OUARZAZATE_RETURN = {
     "Ouarzazate · regreso",
     "Ouarzazate · return",
     "Ouarzazate · retour",
+  ),
+  chronologySummary: T(
+    "Traslado al aeropuerto de Ouarzazate, con tiempo para descubrir Atlas Studios o pasear por la histórica Kasbah de Taourirt si el vuelo lo permite.",
+    "Transfer to Ouarzazate airport, with time for Atlas Studios or the historic Taourirt Kasbah if the flight schedule allows.",
+    "Transfert à l’aéroport d’Ouarzazate, avec une visite d’Atlas Studios ou de la Kasbah de Taourirt si l’horaire du vol le permet.",
   ),
   body: {
     es: "Tras el desayuno, traslado al aeropuerto de Ouarzazate para tomar el vuelo de regreso. Si la hora del vuelo lo permite, parada técnica en los estudios cinematográficos de Atlas Studios o paseo por la Kasbah de Taourirt — antigua residencia del Glaoui y uno de los conjuntos arquitectónicos preislámicos mejor conservados del país.",

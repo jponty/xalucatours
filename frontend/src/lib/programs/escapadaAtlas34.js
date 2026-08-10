@@ -16,6 +16,11 @@ const DAY_01 = {
     en: "Departure from your home airport bound for Casablanca. Time difference depending on the season. Connection to Ouarzazate. Arrival, passport control and baggage collection. Transfer to Boumalne Dades, 1,612 m above sea level in the heart of the High Atlas (approx. 110 km). Check-in and overnight at Hotel Xaluca Dades.",
     fr: "Départ depuis votre aéroport d'origine pour Casablanca (décalage horaire possible selon la saison). Correspondance Casablanca–Ouarzazate. Arrivée, contrôle des passeports et récupération des bagages. Transfert vers Boumalne Dadès, à 1 612 m d'altitude au cœur du Haut Atlas (env. 110 km). Installation et nuit à l'Hôtel Xaluca Dadès.",
   },
+  chronologySummary: T(
+    "Llegada a Ouarzazate y traslado entre paisajes del Alto Atlas hasta Boumalne Dadès para instalarse en el Hotel Xaluca Dadès.",
+    "Arrival in Ouarzazate and transfer through High Atlas landscapes to Boumalne Dades to settle in at Hotel Xaluca Dades.",
+    "Arrivée à Ouarzazate et transfert à travers les paysages du Haut Atlas vers Boumalne Dadès pour s’installer à l’Hôtel Xaluca Dadès.",
+  ),
   culture: [
     {
       title: T("Valle de los Pájaros", "Valley of the Birds", "Vallée des Oiseaux"),
@@ -43,6 +48,11 @@ const DAY_02 = {
     en: "Today we head into the Central High Atlas on 4x4 tracks with a local driver. We discover spectacular landscapes and Berber villages such as Boutaghrar and Amskar, where life still keeps its traditional rhythm. Mountains, valleys and canyons unfold along the day, and we visit the caves where nomadic families still live. The route continues through the M'Goun Gorges — one of the most impressive natural settings in the region. Lunch in route at a traditional «Gîte d'Étape». Dinner and overnight at Hotel Xaluca Dades.",
     fr: "Aujourd'hui, nous nous enfonçons en 4x4 dans les pistes du Haut Atlas Central avec un chauffeur local. Nous découvrons des paysages spectaculaires et les villages berbères tels que Boutaghrar et Amskar, où la vie conserve un rythme traditionnel. La journée déroule montagnes, vallées et canyons, et nous visitons les grottes où vivent encore des familles nomades. La route continue par les Gorges du M'Goun — l'un des cadres naturels les plus impressionnants de la région. Déjeuner en route dans une « Gîte d'Étape » traditionnelle. Dîner et nuit à l'Hôtel Xaluca Dadès.",
   },
+  chronologySummary: T(
+    "Ruta en 4x4 por Boutaghrar, Amskar y las gargantas del M’Goun, entre aldeas bereberes, cañones y familias nómadas del Atlas.",
+    "A 4x4 route through Boutaghrar, Amskar and the M’Goun Gorges, among Berber villages, canyons and nomadic Atlas families.",
+    "Parcours en 4x4 par Boutaghrar, Amskar et les gorges du M’Goun, entre villages berbères, canyons et familles nomades de l’Atlas.",
+  ),
   culture: [
     {
       title: T("M'Goun · 4.071 m", "M'Goun · 4,071 m", "M'Goun · 4 071 m"),
@@ -78,6 +88,11 @@ const DAY_03 = {
     en: "We head south across the Anti-Atlas, also known as «the little Atlas». Along the way we admire the surprising formations of the Djebel Saghro, a massif that reaches 2,712 m at its highest point. The arid, lunar landscape leads us to N'Kob, cradle of the Aït Atta — one of the most important ancestral tribes of southern Morocco. We enjoy the contrast between the ochre adobe kasbahs and the intense green of the palm groves before entering the Drâa Valley, which we drive towards Ouarzazate. Dinner and overnight in a medina riad or 4★ hotel.",
     fr: "Départ vers le sud à travers l'Anti-Atlas, aussi appelé « le petit Atlas ». En chemin, nous admirons les surprenantes formations du Djebel Saghro, massif culminant à 2 712 m. Le paysage aride et lunaire nous conduit à N'Kob, berceau des Aït Atta — l'une des plus importantes tribus ancestrales du sud du Maroc. Nous savourons le contraste entre l'ocre des kasbahs en pisé et le vert intense des palmeraies avant d'entrer dans la vallée du Drâa, que nous parcourons vers Ouarzazate. Dîner et nuit en riad dans la médina ou hôtel 4★.",
   },
+  chronologySummary: T(
+    "Travesía del Anti-Atlas por el Djebel Saghro y N’Kob, siguiendo kasbahs y palmerales del Valle del Drâa hasta Ouarzazate.",
+    "Cross the Anti-Atlas through Djebel Saghro and N’Kob, following kasbahs and Drâa Valley palm groves to Ouarzazate.",
+    "Traversée de l’Anti-Atlas par le Djebel Saghro et N’Kob, entre kasbahs et palmeraies de la vallée du Drâa jusqu’à Ouarzazate.",
+  ),
   culture: [
     {
       title: T("Aït Atta · los señores del desierto", "Aït Atta · lords of the desert", "Aït Atta · seigneurs du désert"),
@@ -109,6 +124,11 @@ const DAY_04 = {
     en: "At the agreed time, transfer to Ouarzazate airport for the return flight.",
     fr: "À l'heure convenue, transfert à l'aéroport de Ouarzazate pour le vol retour.",
   },
+  chronologySummary: T(
+    "Últimos momentos en Ouarzazate y traslado al aeropuerto a la hora acordada para iniciar el vuelo de regreso al punto de origen.",
+    "Final moments in Ouarzazate and transfer to the airport at the agreed time to begin the flight back home.",
+    "Derniers instants à Ouarzazate et transfert à l’aéroport à l’heure convenue pour prendre le vol de retour.",
+  ),
   culture: [],
 };
 

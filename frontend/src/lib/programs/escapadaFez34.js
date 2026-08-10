@@ -20,6 +20,11 @@ export const DAY_MEKNES = {
     en: "Morning departure to Meknès, one of Morocco's four Imperial Cities. Guided walking tour of its Medina with a local guide — smaller and quieter than Fez but historically immense: founded by a Berber tribe in the 10th century, it was the country's capital under Sultan Moulay Ismaïl in the 17th century and is UNESCO listed. The city is wrapped in over 40 km of ramparts; the monumental Bab el-Mansour gate stands out as one of the most beautiful and best preserved in Morocco. Meknès is known as «the city of a hundred minarets». After the visit, we head to the Roman ruins of Volubilis, the largest Roman site in Morocco, where we admire the Triumphal Arch of Caracalla, the Capitol and the spectacular mosaics of the House of Bacchus. Continuation to Moulay Idriss, holy city founded by Idris I — the same who would later found Fez — where he converted the local Berber population to Islam. Its white houses cascading around the mausoleum make this one of the most spiritual sites in the country. Return to Fez. Dinner and overnight in a Medina riad or 4★ hotel.",
     fr: "Départ matinal vers Meknès, l'une des quatre Cités Impériales du Maroc. Visite guidée à pied de sa médina avec un guide local — plus petite et plus tranquille que celle de Fès mais d'une importance historique immense : fondée par une tribu berbère au Xe siècle, elle fut la capitale du pays sous le sultan Moulay Ismaïl au XVIIe siècle et est inscrite au Patrimoine UNESCO. La ville est ceinte par plus de 40 km de remparts ; la monumentale porte Bab el-Mansour est l'une des plus belles et mieux conservées du Maroc. Meknès est surnommée « la ville aux cent minarets ». Au terme de la visite, route vers les ruines romaines de Volubilis, le plus grand site romain du Maroc, où nous admirons l'arc de triomphe de Caracalla, le Capitole et les spectaculaires mosaïques de la Maison de Bacchus. Continuation vers Moulay Idriss, ville sainte fondée par Idriss Ier — celui-là même qui fondera plus tard Fès — où il convertit la population berbère locale à l'islam. Ses maisons blanches étagées autour du mausolée font de ce lieu l'un des sites spirituels les plus marquants du pays. Retour à Fès. Dîner et nuit en riad de la médina ou hôtel 4★.",
   },
+  chronologySummary: T(
+    "Excursión a la ciudad imperial de Meknès, las ruinas romanas de Volubilis y la ciudad santa de Moulay Idriss antes de volver a Fez.",
+    "Excursion to imperial Meknès, the Roman ruins of Volubilis and the holy town of Moulay Idriss before returning to Fez.",
+    "Excursion vers la cité impériale de Meknès, les ruines romaines de Volubilis et la ville sainte de Moulay Idriss avant le retour à Fès.",
+  ),
   culture: [
     {
       title: T("Bab el-Mansour · puerta imperial", "Bab el-Mansour · imperial gate", "Bab el-Mansour · porte impériale"),
@@ -59,6 +64,11 @@ const DAY_RETURN = {
     en: "Breakfast at the riad and free time to keep exploring the Medina on your own — one last walk to wander among the souks, buy spices or a clay tagine, or simply watch the artisans at work. At the agreed time, transfer to Fez airport for the return flight.",
     fr: "Petit-déjeuner au riad et temps libre pour continuer à explorer la médina à votre rythme. À l'heure convenue, transfert à l'aéroport de Fès pour le vol retour.",
   },
+  chronologySummary: T(
+    "Tiempo libre para una última mirada a los zocos y artesanos de la medina antes del traslado al aeropuerto de Fez para el regreso.",
+    "Free time for one last look at the medina’s souks and artisans before transferring to Fez airport for the journey home.",
+    "Temps libre pour un dernier regard sur les souks et artisans de la médina avant le transfert à l’aéroport de Fès pour le retour.",
+  ),
 };
 
 export const PROGRAM_ESCAPADA_FEZ_34 = {

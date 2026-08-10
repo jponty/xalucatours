@@ -20,6 +20,11 @@ export const DAY_OZF_OUARZA_AITBEN_DADES = {
     "Arrival in Ouarzazate · Aït Ben Haddou · Boumalne Dades",
     "Arrivée à Ouarzazate · Aït Ben Haddou · Boumalne Dadès",
   ),
+  chronologySummary: T(
+    "Llegada a Ouarzazate, visita del ksar de Aït Ben Haddou y ruta por los paisajes del sur hasta Boumalne Dadès y Hotel Xaluca.",
+    "Arrival in Ouarzazate, visit to Aït Ben Haddou and a scenic journey through the south to Boumalne Dades and Hotel Xaluca.",
+    "Arrivée à Ouarzazate, visite d’Aït Ben Haddou puis route à travers les paysages du sud jusqu’à Boumalne Dadès et l’Hôtel Xaluca.",
+  ),
   body: {
     es: "Llegada al aeropuerto de Ouarzazate y recogida en vehículo 4x4 con chófer. Visita a Aït Ben Haddou, ksar Patrimonio de la Humanidad por la UNESCO — escenario de películas como Gladiator o Lawrence de Arabia. Opcionalmente podemos visitar los Estudios de cine Atlas y la Kasbah de Taourirt. Continuación hacia Boumalne Dades, situada en el Valle de los Pájaros, a 1.612 metros de altitud. Cena y alojamiento en Hotel Xaluca Dades 4★.",
     en: "Arrival at Ouarzazate airport and pickup in a 4x4 with driver. Visit to Aït Ben Haddou — a UNESCO World Heritage ksar, set of films like Gladiator and Lawrence of Arabia. Optional stops at the Atlas Film Studios and the Taourirt Kasbah. Continuation to Boumalne Dades, in the Valley of Birds at 1,612 m altitude. Dinner and overnight at Hotel Xaluca Dades 4★.",
@@ -55,6 +60,11 @@ export const DAY_OZF_DADES_TODRA_ERFOUD = {
     "Dades Valley · Todra Gorges · Erfoud",
     "Vallée du Dadès · Gorges du Todra · Erfoud",
   ),
+  chronologySummary: T(
+    "Recorremos el Valle y las Gargantas del Dadès, paseamos junto al río en las Gargantas del Todra y continuamos hasta Erfoud.",
+    "We explore the Dades Valley and gorges, walk beside the river in the Todra Gorges and continue to Erfoud.",
+    "Nous parcourons la vallée et les gorges du Dadès, marchons au bord de la rivière dans les gorges du Todra puis rejoignons Erfoud.",
+  ),
   body: {
     es: "Ruta por el Alto Atlas Central atravesando paisajes llenos de contrastes — Boutaghrar, el Valle del Dadès, las Gargantas del Dadès con su mirador panorámico, montañas, cañones, valles y grutas habitadas por nómadas. Por la tarde, llegada a Tinerhir y visita a las Gargantas del Todra con un paseo junto al río — paredes verticales que alcanzan los 160 metros de altura. Continuación hacia Erfoud, «la Puerta del Desierto». Cena y alojamiento en Kasbah Xaluca.",
     en: "Route through the High Atlas Central crossing contrast-filled landscapes — Boutaghrar, the Dades Valley, the Dades Gorges with their panoramic viewpoint, mountains, canyons, valleys and caves inhabited by nomads. In the afternoon, arrival in Tinerhir and visit to the Todra Gorges with a walk along the river — vertical walls reaching 160 m high. Continuation to Erfoud, «the Gate of the Desert». Dinner and overnight at Kasbah Xaluca.",
@@ -71,6 +81,11 @@ const DAY_OZF_DUNES_KHAMLIA_SIDIALI = {
     "Amanecer en las dunas · Khamlia · Rissani · Valle del Ziz · Sidi Ali",
     "Sunrise · Khamlia · Rissani · Ziz Valley · Sidi Ali",
     "Lever du soleil · Khamlia · Rissani · Vallée du Ziz · Sidi Ali",
+  ),
+  chronologySummary: T(
+    "Amanecer en las dunas, música Gnawa en Khamlia y mercado de Rissani antes de cruzar el palmeral del Ziz hacia el lago Sidi Ali.",
+    "Sunrise in the dunes, Gnawa music in Khamlia and Rissani market before crossing the Ziz palm grove towards Lake Sidi Ali.",
+    "Lever du soleil dans les dunes, musique Gnawa à Khamlia et marché de Rissani avant de traverser la palmeraie du Ziz vers Sidi Ali.",
   ),
   body: {
     es: "«Cita con el Amanecer»: caminata hasta las dunas para ver la salida del sol — una experiencia mágica. Desayuno beduino en el campamento. Ruta en 4x4 hacia Merdani, Khamlia (música tradicional y té a la menta), el mercado de Rissani y un mirador natural sobre el desierto. Por la tarde, ruta hacia el norte (aproximadamente 330 km) por el Valle del Ziz — más de diez millones de palmeras — y cruce de la cordillera del Atlas hasta llegar a Aguelmane Sidi Ali, a 2.200 m sobre uno de los volcanes extintos del Atlas. Cena y alojamiento en Xaluca Spa Aguelmane Sidi Ali. Nota: el mercado de Rissani se celebra martes, jueves y domingos.",
@@ -107,6 +122,11 @@ export const DAY_OZF_SIDIALI_IFRANE_FEZ = {
     "Sidi Ali · cedars · Ifrane · Fez",
     "Sidi Ali · cèdres · Ifrane · Fès",
   ),
+  chronologySummary: T(
+    "Paseamos junto al lago Sidi Ali y cruzamos los bosques de cedros e Ifrane antes de descender por el Medio Atlas hasta Fez.",
+    "We walk beside Lake Sidi Ali and cross the cedar forests and Ifrane before descending through the Middle Atlas to Fez.",
+    "Nous longeons le lac Sidi Ali puis traversons les forêts de cèdres et Ifrane avant de descendre du Moyen Atlas vers Fès.",
+  ),
   body: {
     es: "Por la mañana, paseo alrededor del lago Aguelmane Sidi Ali, con la posibilidad de subir hasta el cráter del volcán cercano. Comida en el hotel. Ruta hacia el norte atravesando los Bosques de Cedros Gigantes, donde con suerte podremos alimentar a los monos magot, y la ciudad de Ifrane — la «pequeña Suiza» marroquí, sorprendentemente alpina. Cruce final del Medio Atlas hasta llegar a Fez. Cena y alojamiento en Riad en la Medina o Hotel 4★. Nota: fin del recorrido en vehículo 4x4.",
     en: "Morning walk around Aguelmane Sidi Ali lake, with the option to climb to the nearby volcanic crater. Lunch at the hotel. We then head north through the Giant Cedar Forests, where with luck we can feed the Barbary macaques, and the city of Ifrane — Morocco's «little Switzerland», surprisingly alpine. Final crossing of the Middle Atlas down to Fez. Dinner and overnight at a Medina riad or 4★ hotel. Note: end of the 4x4 portion.",
@@ -123,6 +143,11 @@ export const DAY_OZF_FEZ_MEDINA_RETURN = {
     "Medina de Fez · Madraza · regreso",
     "Fez Medina · Madrasa · return",
     "Médina de Fès · Médersa · retour",
+  ),
+  chronologySummary: T(
+    "Descubrimos la medina de Fez, sus talleres, las tenerías de Chouara y la Madraza Bou Inania antes del traslado al aeropuerto.",
+    "We discover Fez medina, its workshops, the Chouara tanneries and Bou Inania Madrasa before the airport transfer.",
+    "Nous découvrons la médina de Fès, ses ateliers, les tanneries de Chouara et la Médersa Bou Inania avant le transfert à l’aéroport.",
   ),
   body: {
     es: "Visita guiada a pie por la antigua Medina de Fez — una de las más auténticas y mejor conservadas del mundo árabe. Recorreremos sus callejuelas medievales descubriendo centros artesanales, mezquitas, palacios, las famosas tenerías de Chouara y la Madraza Bou Inania. Traslado al aeropuerto de Fez para tomar el vuelo de regreso.",

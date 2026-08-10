@@ -845,7 +845,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
           <>
             {descSection}
             {showJourneyChronology && (
-              <JourneyChronology days={program.days} lang={lang} />
+              <JourneyChronology days={program.days} lang={lang} variant={program.chronologyVariant || variant} />
             )}
             {quickSection}
             {audioSection}

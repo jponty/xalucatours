@@ -19,10 +19,16 @@ const DAY_RETURN = {
     en: "After breakfast at the hotel — we recommend an early start to enjoy the sunrise over the lake and, weather permitting, a peek at the nearby volcanic crater —, transfer through the Middle Atlas to Fez airport for the return flight. Note: this day includes a 2 h 30 min road transfer.",
     fr: "Après le petit-déjeuner à l'hôtel — nous recommandons un lever matinal pour profiter du lever du soleil sur le lac et, si le temps le permet, jeter un œil au cratère volcanique voisin —, transfert à travers le Moyen Atlas jusqu'à l'aéroport de Fès pour le vol retour. Note : la journée inclut un transfert routier d'environ 2 h 30.",
   },
+  chronologySummary: T(
+    "Amanecer junto al lago y último recorrido por las montañas del Medio Atlas antes del traslado al aeropuerto de Fez para el regreso.",
+    "Sunrise beside the lake and a final journey through the Middle Atlas mountains before transferring to Fez airport for the flight home.",
+    "Lever du soleil au bord du lac et dernier parcours dans le Moyen Atlas avant le transfert à l’aéroport de Fès pour le retour.",
+  ),
 };
 
 export const PROGRAM_ESCAPADA_FEZ_SIDIALI_45 = {
   routeId: "tourEscapadaFezSidiali45",
+  chronologyVariant: "fezSidiAli",
   duration_key: "fs4n5d",
   duration: T("4 noches / 5 días", "4 nights / 5 days", "4 nuits / 5 jours"),
   prices: { low: 890, mid: 990, high: 1090, premium: 1190 },

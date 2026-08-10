@@ -21,6 +21,11 @@ const DAY_05 = {
     "Fez · Ifrane · cedars · Beni Mellal · Marrakech",
     "Fès · Ifrane · cèdres · Beni Mellal · Marrakech",
   ),
+  chronologySummary: T(
+    "Cruzamos el Medio Atlas por Ifrane, los bosques de cedros, Khenifra y Beni Mellal antes de llegar al ambiente de Djemaa el-Fna.",
+    "We cross the Middle Atlas via Ifrane, the cedar forests, Khenifra and Beni Mellal before reaching Jemaa el-Fna.",
+    "Nous traversons le Moyen Atlas par Ifrane, les forêts de cèdres, Khénifra et Beni Mellal avant de rejoindre Jemaa el-Fna.",
+  ),
   body: {
     es: "Hoy nos espera una larga jornada con kilómetros por delante, pero nos compensará la variedad y el contraste de paisajes. Recorreremos la Cordillera del Medio Atlas en dirección a Marrakech. Primera parada en Ifrane — «la pequeña Suiza» — con su sorprendente arquitectura alpina y, con suerte, podremos ver a los macacos de Berbería que habitan en sus bosques de cedros gigantes. Continuaremos por Azrou, Khenifra y los pueblos bereberes que dejaremos a nuestro paso. Beni Mellal — uno de los lugares poblados más antiguos del norte de África — será nuestra siguiente parada antes de llegar a Marrakech, capital turística por excelencia. Recomendamos una primera toma de contacto con la mítica Plaza Djemaa el-Fna: al atardecer la plaza se llena de recitadores, adivinadores, malabaristas, sacamuelas, danzantes y encantadores de serpientes; al caer la noche se montan los puestos tradicionales de comida iluminados al aire libre. Alojamiento en Riad en la Medina de Marrakech u Hotel 5★. Nota: consultar alternativas opcionales para hacer este trayecto en avión o bien ampliar una noche pasándola en el Lago Bin el Ouidane, repartiendo los kilómetros en dos jornadas.",
     en: "A long day with many kilometres ahead — repaid by the sheer variety and contrast of landscapes. We cross the Middle Atlas range heading to Marrakech. First stop at Ifrane — «little Switzerland» — with its striking Alpine architecture, where, with luck, we may spot the Barbary macaques living in the giant cedar forests. Onwards through Azrou, Khenifra and the Berber villages along the way. Beni Mellal — one of the oldest inhabited places in North Africa — is our next stop before reaching Marrakech, the country's most touristed capital. We recommend a first encounter with the legendary Jemaa el-Fna square: at dusk it fills with storytellers, fortune-tellers, jugglers, snake charmers and dancers; at nightfall the traditional food stalls light up. Overnight in a Medina riad or 5★ hotel. Note: alternatives include doing this leg by plane or adding an extra night at Bin el Ouidane Lake to split the drive in two.",
@@ -64,6 +69,11 @@ const DAY_06 = {
     "Marrakech · Koutoubia · Bahia Palace · souks",
     "Marrakech · Koutoubia · Palais de la Bahia · souks",
   ),
+  chronologySummary: T(
+    "Visita guiada por la Koutoubia, el Palacio de la Bahía, los talleres de los zocos y Djemaa el-Fna, con tarde libre en la medina.",
+    "A guided visit to the Koutoubia, Bahia Palace, souk workshops and Jemaa el-Fna, with free time in the medina.",
+    "Visite guidée de la Koutoubia, du Palais de la Bahia, des ateliers des souks et de Jemaa el-Fna, puis temps libre dans la médina.",
+  ),
   body: {
     es: "Esta mañana visitaremos a pie la Medina de Marrakech con un guía local. Empezaremos admirando el Alminar de la Koutoubia — hermana gemela de la Giralda de Sevilla — y seguiremos visitando el Palacio de la Bahía, uno de los ejemplos más destacados de la arquitectura marroquí del siglo XIX. Nos adentraremos por las callejuelas del Zoco, donde podremos ver a los artesanos en acción — tejedores de alfombras, fabricantes de babuchas, talleres de cuero, madera y metales — y visitaremos una farmacia bereber donde nos enseñarán sus «secretillos» naturales. Saldremos nuevamente a la Plaza Djemaa el-Fna, donde el ambiente diurno es totalmente distinto al de la noche anterior. Por la tarde, tiempo libre para practicar el arte del regateo o descubrir los rincones más recónditos de la Medina a nuestro aire. Alojamiento en Riad en la Medina u Hotel 5★. Nota: la visita guiada se puede ampliar bajo petición para incluir la Madraza Ben Youssef, las Tumbas Saadíes o los Jardines Majorelle.",
     en: "This morning we walk through the Marrakech medina with a local guide. We begin admiring the Koutoubia minaret — twin sister of Seville's Giralda — and continue to the Bahia Palace, one of the finest examples of 19th-century Moroccan architecture. We enter the narrow alleys of the souk to see artisans in action — carpet weavers, babouche makers, leather, wood and metal workshops — and visit a Berber pharmacy where we discover their natural «secrets». We return to Jemaa el-Fna square, where the daytime atmosphere is completely different from the previous night. In the afternoon, free time to haggle or explore the most hidden corners of the medina at your own pace. Overnight in a Medina riad or 5★ hotel. Note: the guided tour can be extended on request to include the Ben Youssef Madrasa, the Saadian Tombs or the Majorelle Gardens.",
@@ -95,6 +105,11 @@ const DAY_07 = {
   image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Marrakech", "Return from Marrakech", "Retour depuis Marrakech"),
+  chronologySummary: T(
+    "Últimos momentos en Marrakech y traslado desde el riad hasta el aeropuerto para tomar el vuelo de regreso al punto de origen.",
+    "Final moments in Marrakech and transfer from the riad to the airport for the return flight home.",
+    "Derniers instants à Marrakech puis transfert du riad à l’aéroport pour prendre le vol retour.",
+  ),
   body: {
     es: "A la hora convenida, recogida en el riad y traslado al aeropuerto de Marrakech para tomar el vuelo de regreso.",
     en: "At the agreed time, pick-up at the riad and transfer to Marrakech airport for the return flight.",

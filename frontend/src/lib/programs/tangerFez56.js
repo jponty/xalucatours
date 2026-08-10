@@ -11,6 +11,11 @@ const DAY_01 = {
     "Tangier · Cape Spartel · Caves of Hercules · Asilah",
     "Tanger · Cap Spartel · Grottes d'Hercule · Asilah",
   ),
+  chronologySummary: T(
+    "Llegada a Tánger, visita de Cabo Espartel y las Grutas de Hércules, y continuación por la costa atlántica hasta la medina blanca de Asilah.",
+    "Arrival in Tangier, Cape Spartel and the Caves of Hercules, followed by the Atlantic coast to the white medina of Asilah.",
+    "Arrivée à Tanger, visite du Cap Spartel et des Grottes d’Hercule, puis route par la côte atlantique jusqu’à la médina blanche d’Asilah.",
+  ),
   body: {
     es: "Llegada por la mañana a Tánger. Dependiendo de la época del año puede existir diferencia horaria. Tras el control de pasaportes y la recogida de equipajes, encuentro con el chófer que acompañará al grupo durante el recorrido. La ruta comienza en Cabo Espartel, el punto donde convergen las aguas del mar Mediterráneo y el océano Atlántico. Posteriormente visitaremos las famosas Grutas de Hércules. Continuación hacia Asilah, una de las poblaciones costeras más encantadoras del norte de Marruecos. La medina de Asilah está rodeada por murallas construidas por los portugueses en el siglo XV. Sus calles blancas decoradas con murales artísticos y sus puertas históricas convierten la ciudad en un destino ideal para amantes de la fotografía y la cultura. Durante el paseo libre podremos descubrir Bab Homar («Puerta Tierra»), Bab el Bahar («Puerta del Mar»), Bab Kasbah, las murallas portuguesas y playas y rincones históricos junto al Atlántico. Alojamiento en riad dentro de la medina.",
     en: "Morning arrival in Tangier (time difference depending on the season). After passport control and luggage pickup, we meet the driver who will accompany the group throughout the route. We start at Cape Spartel, where the Mediterranean and the Atlantic meet, followed by the famous Caves of Hercules. We continue to Asilah, one of the most charming coastal towns in northern Morocco. The Asilah medina is surrounded by 15th-century Portuguese ramparts. Its white-washed streets adorned with artistic murals and its historic gates make Asilah an ideal destination for photography and culture lovers. On a free walk we discover Bab Homar (the «Land Gate»), Bab el Bahar (the «Sea Gate»), Bab Kasbah, the Portuguese ramparts, and historic spots along the Atlantic. Overnight in a medina riad.",
@@ -34,6 +39,11 @@ const DAY_02 = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#3A4A5F",
   title: T("Tetuán · La Paloma Blanca", "Tetouan · the White Dove", "Tétouan · la Colombe Blanche"),
+  chronologySummary: T(
+    "De Asilah viajamos a Tetuán para descubrir con un guía su medina UNESCO, sus barrios blancos y la herencia andalusí del norte de Marruecos.",
+    "From Asilah we travel to Tetouan to explore its UNESCO medina, white neighbourhoods and northern Morocco’s Andalusian heritage.",
+    "D’Asilah, nous rejoignons Tétouan pour découvrir sa médina UNESCO, ses quartiers blancs et l’héritage andalou du nord du Maroc.",
+  ),
   body: {
     es: "Después del desayuno salida hacia Tetuán, conocida como «La Paloma Blanca». Visita guiada de la medina, declarada Patrimonio de la Humanidad por la UNESCO. Durante el recorrido podremos apreciar la fuerte influencia andalusí heredada de la época del Protectorado español. Cena y alojamiento en riad dentro de la medina u hotel 4★.",
     en: "After breakfast, drive to Tetouan, known as «the White Dove». Guided tour of the UNESCO-listed medina, where we can appreciate the strong Andalusian influence inherited from the Spanish Protectorate. Dinner and overnight in a medina riad or 4★ hotel.",
@@ -57,6 +67,11 @@ const DAY_03 = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: T("Chefchaouen · Akchour", "Chefchaouen · Akchour", "Chefchaouen · Akchour"),
+  chronologySummary: T(
+    "Atravesamos las montañas del Rif y las cascadas de Akchour para recorrer las plazas, callejuelas azules y rincones históricos de Chefchaouen.",
+    "We cross the Rif Mountains and Akchour waterfalls to explore Chefchaouen’s blue alleys, squares and historic landmarks.",
+    "Nous traversons le Rif et les cascades d’Akchour pour parcourir les ruelles bleues, les places et les sites historiques de Chefchaouen.",
+  ),
   body: {
     es: "Salida hacia Chefchaouen, situada entre las montañas Tisouka y Megou, en plena cordillera del Rif. Durante el trayecto realizaremos una parada en las Cascadas de Akchour para disfrutar del paisaje y realizar fotografías. Llegada a Chefchaouen, el famoso «pueblo azul», donde realizaremos una visita guiada recorriendo sus lugares más emblemáticos: Plaza Uta el-Hammam, Gran Mezquita, Kasbah del siglo XVII y sus jardines, Plaza Makhzen, Bab el-Ansar y Fuente Ras el-Maa. Por la tarde tiempo libre para pasear junto al riachuelo y descubrir el barrio tradicional de los lavaderos de Sebbanin. Cena y alojamiento en riad dentro de la medina.",
     en: "Departure for Chefchaouen, set between the Tisouka and Megou mountains in the heart of the Rif. On the way we stop at the Akchour Waterfalls to enjoy the landscape and take photos. Arrival in Chefchaouen, the famous «blue town», for a guided walk through its most emblematic places: Uta el-Hammam square, Grand Mosque, 17th-century Kasbah and its gardens, Makhzen square, Bab el-Ansar and Ras el-Maa fountain. Free time in the afternoon to stroll along the stream and discover the traditional Sebbanin laundry quarter. Dinner and overnight in a medina riad.",
@@ -83,6 +98,11 @@ const DAY_04 = {
     "Volubilis · Moulay Idriss · Meknes · Fez",
     "Volubilis · Moulay Idriss · Meknes · Fez",
     "Volubilis · Moulay Idriss · Meknès · Fès",
+  ),
+  chronologySummary: T(
+    "Visitamos las ruinas romanas de Volubilis, la ciudad santa de Moulay Idriss y los monumentos imperiales de Meknes antes de llegar a Fez.",
+    "We visit Roman Volubilis, holy Moulay Idriss and the imperial monuments of Meknes before reaching Fez for the evening.",
+    "Nous visitons Volubilis, la ville sainte de Moulay Idriss et les monuments impériaux de Meknès avant de rejoindre Fès en soirée.",
   ),
   body: {
     es: "Salida temprano hacia Meknes. Durante el trayecto visitaremos Volubilis, el yacimiento arqueológico romano más importante de Marruecos: arco de triunfo, capitolio, Casa de Baco y antiguos mosaicos romanos. También pasaremos por Moulay Idriss, ciudad santa y centro espiritual del país. Llegada a Meknes, una de las ciudades imperiales más monumentales de Marruecos. Visita guiada de la ciudad y de sus principales monumentos: Bab al Mansour, medina histórica, murallas imperiales y monumentos religiosos. Tras la visita continuación hacia Fez. Cena y alojamiento en riad dentro de la medina u hotel 4★. Este es el último día de vehículo con chófer.",
@@ -111,6 +131,11 @@ const DAY_05 = {
     "Fez · Morocco's cultural capital",
     "Fès · capitale culturelle du Maroc",
   ),
+  chronologySummary: T(
+    "Recorremos a pie Fez el-Bali, sus zocos, escuelas coránicas, talleres y tenerías tradicionales, con panorámicas de la ciudad imperial.",
+    "We explore Fez el-Bali on foot, including its souks, Koranic schools, workshops and traditional tanneries, with city panoramas.",
+    "Nous parcourons Fès el-Bali à pied, avec ses souks, écoles coraniques, ateliers et tanneries, puis admirons la ville depuis ses belvédères.",
+  ),
   body: {
     es: "Hoy descubriremos Fez el-Bali, la antigua medina de Fez y una de las mejor conservadas del mundo árabe. Acompañados por un guía local recorreremos sus laberínticas callejuelas medievales repletas de talleres artesanales, mezquitas, palacios, escuelas coránicas y zocos tradicionales. Fez es considerada la ciudad imperial más espiritual y cultural de Marruecos. La visita se realiza completamente a pie, ya que en esta medina declarada Patrimonio de la Humanidad por la UNESCO está prohibido el acceso de vehículos. Durante la jornada conoceremos cómo se organizan sus barrios tradicionales alrededor de mezquita, fuente, hammam, horno y escuela coránica. También visitaremos las famosas tenerías tradicionales y algunos miradores panorámicos de la ciudad. Cena y alojamiento en riad dentro de la medina u hotel 4★.",
     en: "Today we discover Fez el-Bali, the ancient medina of Fez — one of the best-preserved in the Arab world. With a local guide we walk medieval alleys packed with artisan workshops, mosques, palaces, Koranic schools and traditional souks. Fez is the country's most spiritual and cultural imperial city. The visit is entirely on foot — vehicles are forbidden in this UNESCO medina. We see how traditional neighbourhoods are organised around mosque, fountain, hammam, oven and Koranic school. We also visit the traditional tanneries and climb to a panoramic viewpoint. Dinner and overnight in a medina riad or 4★ hotel.",
@@ -134,6 +159,11 @@ const DAY_06 = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5C5248",
   title: T("Regreso desde Fez", "Return from Fez", "Retour depuis Fès"),
+  chronologySummary: T(
+    "Últimos momentos en Fez y traslado desde el alojamiento hasta el aeropuerto para tomar el vuelo de regreso al punto de origen.",
+    "Final moments in Fez and transfer from the accommodation to the airport for the return flight home.",
+    "Derniers instants à Fès puis transfert de l’hébergement à l’aéroport pour prendre le vol retour.",
+  ),
   body: {
     es: "A la hora acordada, recogida en el riad u hotel y traslado al aeropuerto de Fez para tomar el vuelo de regreso.",
     en: "At the agreed time, pick-up at the riad or hotel and transfer to Fez airport for the return flight.",
@@ -144,6 +174,7 @@ const DAY_06 = {
 
 export const PROGRAM_TF_56 = {
   routeId: "tourTangerFez56",
+  chronologyVariant: "tf",
   duration_key: "tf5n6d",
   duration: T("5 noches / 6 días", "5 nights / 6 days", "5 nuits / 6 jours"),
   prices: { low: 1090, mid: 1290, high: 1490, premium: 1690 },

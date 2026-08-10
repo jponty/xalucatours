@@ -16,6 +16,11 @@ export const DAY_FEZ_ARRIVAL = {
     en: "Late afternoon or evening arrival at Fez airport (time difference depending on the season). After passport control and baggage collection, meeting with our transfer and check-in at a 4★ hotel or a Medina riad. Dinner and overnight. For seasoned travellers, we recommend a first stroll along the Medina gates at nightfall, when the last call to prayer mingles with the aroma of cumin, saffron and freshly-baked bread.",
     fr: "Arrivée en fin d'après-midi à l'aéroport de Fès (décalage horaire possible selon la saison). Après le contrôle des passeports et la récupération des bagages, accueil et transfert vers l'hôtel 4★ ou riad de la médina. Dîner et nuit. Pour les voyageurs avertis, nous recommandons une première promenade aux portes de la médina à la tombée du jour, quand le dernier appel à la prière se mêle aux parfums de cumin, de safran et de pain tout juste sorti du four.",
   },
+  chronologySummary: T(
+    "Llegada a Fez y traslado a la medina, con una primera inmersión nocturna entre puertas históricas, aromas y llamadas a la oración.",
+    "Arrival in Fez and transfer to the medina for a first evening immersion among historic gates, aromas and calls to prayer.",
+    "Arrivée à Fès et transfert dans la médina pour une première immersion nocturne entre portes historiques, parfums et appels à la prière.",
+  ),
   culture: [
     {
       title: T("Fez · capital espiritual de Marruecos", "Fez · spiritual capital of Morocco", "Fès · capitale spirituelle du Maroc"),
@@ -43,6 +48,11 @@ export const DAY_FEZ_MEDINA = {
     en: "Today we enter Fez-el Bali, regarded as one of the most authentic and best-preserved medinas in the Arab world. With a local guide we walk its labyrinthine medieval alleys — the only way to visit it, since UNESCO bans motor traffic inside. Amid the bustle we discover artisan workshops, ancient mosques and palaces. In the afternoon we dig deeper into the traditional fabric of the neighbourhoods, organised around the mosque, the fountain, the communal oven, the hammam and the Qur'anic school. We visit the famous traditional tanneries — the world's oldest still in operation — and climb a panoramic viewpoint to watch the city lit by the last call to prayer. Dinner and overnight in a Medina riad or 4★ hotel.",
     fr: "Aujourd'hui, plongée dans Fès-el Bali, considérée comme l'une des médinas les plus authentiques et les mieux conservées du monde arabe. Avec un guide local, nous parcourons à pied ses ruelles médiévales — seule manière de la visiter, l'UNESCO ayant interdit les véhicules à moteur. Dans l'effervescence, nous découvrons ateliers d'artisans, anciennes mosquées et palais. L'après-midi, nous explorons l'organisation traditionnelle des quartiers, articulés autour de la mosquée, la fontaine, le four communal, le hammam et l'école coranique. Nous visitons les célèbres tanneries traditionnelles — les plus anciennes au monde encore en activité — et montons à un mirador panoramique pour contempler la ville illuminée par le dernier appel à la prière. Dîner et nuit en riad de la médina ou hôtel 4★.",
   },
+  chronologySummary: T(
+    "Visita guiada por Fez-el Bali entre callejones medievales, talleres artesanos, madrazas y las históricas tenerías de Chouara.",
+    "Guided visit through Fez-el Bali among medieval alleys, artisan workshops, madrasas and the historic Chouara tanneries.",
+    "Visite guidée de Fès-el Bali entre ruelles médiévales, ateliers d’artisans, médersas et les tanneries historiques de Chouara.",
+  ),
   culture: [
     {
       title: T("Patrimonio UNESCO desde 1981", "UNESCO World Heritage since 1981", "Patrimoine UNESCO depuis 1981"),
@@ -90,6 +100,11 @@ const DAY_03 = {
     en: "Breakfast at the riad and free time to keep exploring the Medina on your own — one last walk to wander among the souks, buy spices or a clay tagine, or simply watch the artisans at work. At the agreed time, transfer to Fez airport for the return flight.",
     fr: "Petit-déjeuner au riad et temps libre pour continuer à explorer la médina à votre rythme — une dernière promenade pour se perdre dans les souks, acheter des épices ou un tajine en terre cuite, ou observer les artisans. À l'heure convenue, transfert à l'aéroport de Fès pour le vol retour.",
   },
+  chronologySummary: T(
+    "Tiempo libre para una última mirada a los zocos y artesanos de la medina antes del traslado al aeropuerto de Fez para el regreso.",
+    "Free time for one last look at the medina’s souks and artisans before transferring to Fez airport for the journey home.",
+    "Temps libre pour un dernier regard sur les souks et artisans de la médina avant le transfert à l’aéroport de Fès pour le retour.",
+  ),
 };
 
 export const PROGRAM_ESCAPADA_FEZ_23 = {
