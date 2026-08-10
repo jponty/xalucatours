@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Archive, ChevronLeft, ChevronRight, Images, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Archive, Search, SlidersHorizontal } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
@@ -7,13 +7,9 @@ import { getProgramTiers } from "@/lib/programPricing";
 import { usePricing } from "@/lib/pricingStore";
 import { TRIP_PROGRAMS } from "@/lib/tripPrograms";
 import { pathFor } from "@/lib/routes";
-import { namespaceForRouteId } from "@/components/slotScope";
-import { dayGallerySegment, resolveGalleryUrl } from "@/lib/dayGalleryStore";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
-import { tripHeroImage, tripHeroSlot } from "@/lib/tripHero";
-import { Img } from "@/components/Img";
-import XalucaLogoBadge from "@/components/XalucaLogoBadge";
-import { FIN_DE_ANO_ITINERARY } from "@/pages/FinDeAno2026Page";
+import { tripImages } from "@/lib/tripImageGallery";
+import TripImageCarousel from "@/components/TripImageCarousel";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -122,45 +118,6 @@ const formatPrice = (value, lang) => value == null
       maximumFractionDigits: 0,
     }).format(value);
 
-const manifestMaps = (manifest) => ({
-  slots: new Map((manifest?.slots || []).filter((slot) => slot?.slot_id).map((slot) => [slot.slot_id, slot.url || null])),
-  galleries: new Map((manifest?.galleries || []).filter((gallery) => gallery?.key).map((gallery) => [gallery.key, gallery.images || []])),
-});
-
-const tripImages = (routeId, program, catalogue, manifest) => {
-  const { slots, galleries } = manifestMaps(manifest);
-  const namespace = namespaceForRouteId(routeId);
-  const days = routeId === "tourFinDeAno2025"
-    ? FIN_DE_ANO_ITINERARY
-    : (program?.days || []);
-  const images = [];
-  const seen = new Set();
-  const add = (value) => {
-    const raw = typeof value === "string" ? value : value?.url;
-    const url = resolveGalleryUrl(raw);
-    if (!url || seen.has(url)) return;
-    seen.add(url);
-    images.push(url);
-  };
-
-  add(slots.get(tripHeroSlot(routeId)) || tripHeroImage(routeId) || catalogue?.image);
-
-  days.forEach((day, dayIndex) => {
-    const legacyBase = `${namespace}.day.${day.id}`;
-    const galleryKey = `${namespace}.${dayGallerySegment(dayIndex + 1, day.id)}`;
-    const managed = galleries.get(galleryKey) || galleries.get(legacyBase);
-    if (managed?.length) {
-      managed.forEach(add);
-      return;
-    }
-    add(slots.get(`${legacyBase}.image`) || day.image);
-    (day.gallery || []).forEach(add);
-    for (let index = 0; index < 9; index += 1) add(slots.get(`${legacyBase}.slide.${index}`));
-  });
-
-  return images.slice(0, 8);
-};
-
 const buildArchive = (pricing, imageManifest) => {
   const catalogueByRoute = new Map(ALL_TRIPS.map((trip) => [trip.routeId, trip]));
   const programmeRows = Object.entries(TRIP_PROGRAMS)
@@ -188,71 +145,6 @@ const buildArchive = (pricing, imageManifest) => {
       images: tripImages(routeId, program, catalogue, imageManifest),
     };
   });
-};
-
-const TripImageCarousel = ({ images, title, lang }) => {
-  const [active, setActive] = useState(0);
-  const total = images.length;
-  const safeActive = total ? active % total : 0;
-  const move = (event, direction) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setActive((current) => (current + direction + total) % total);
-  };
-
-  useEffect(() => { setActive(0); }, [images]);
-
-  if (!total) {
-    return (
-      <div className="flex aspect-[16/10] items-center justify-center bg-[#EEE4D7] text-[#9A6B4D]" aria-label={pick(COPY.imageCount, lang)}>
-        <Images className="h-6 w-6" strokeWidth={1.3} />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="relative aspect-[16/10] overflow-hidden bg-[#E9DED0]"
-      aria-roledescription="carousel"
-      aria-label={`${pick(COPY.imageCount, lang)} · ${title}`}
-      onClick={(event) => event.stopPropagation()}
-    >
-      <Img
-        key={images[safeActive]}
-        src={images[safeActive]}
-        alt={`${title} · ${safeActive + 1}`}
-        width={640}
-        className="h-full w-full object-cover transition-opacity duration-300"
-      />
-      <XalucaLogoBadge
-        className="right-2 top-2 h-8 w-8 md:h-9 md:w-9"
-        testid={`archivo-carousel-logo-${title}`}
-      />
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-[#1A1513]/75 via-[#1A1513]/15 to-transparent px-2.5 pb-2 pt-8">
-        <span className="text-[9px] font-semibold tracking-[0.16em] text-white">{safeActive + 1} / {total}</span>
-        {total > 1 && (
-          <div className="flex gap-1.5">
-            <button
-              type="button"
-              onClick={(event) => move(event, -1)}
-              aria-label={pick(COPY.previousImage, lang)}
-              className="flex h-8 w-8 items-center justify-center border border-white/55 bg-[#1A1513]/45 text-white backdrop-blur-sm transition-colors hover:bg-[#C16542]"
-            >
-              <ChevronLeft className="h-4 w-4" strokeWidth={1.7} />
-            </button>
-            <button
-              type="button"
-              onClick={(event) => move(event, 1)}
-              aria-label={pick(COPY.nextImage, lang)}
-              className="flex h-8 w-8 items-center justify-center border border-white/55 bg-[#1A1513]/45 text-white backdrop-blur-sm transition-colors hover:bg-[#C16542]"
-            >
-              <ChevronRight className="h-4 w-4" strokeWidth={1.7} />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
 };
 
 const PriceCell = ({ value, lang }) => (

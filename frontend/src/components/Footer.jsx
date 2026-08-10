@@ -28,7 +28,7 @@ export const Footer = () => {
   };
 
   const exploreLinks = [
-    { routeId: "tourAll",       k: "menu_all" },
+    { routeId: "toursLanding",  k: "menu_all" },
     { routeId: "tourSouth",     k: "menu_south" },
     { routeId: "tourFull",      k: "menu_full" },
     { routeId: "tourShort",     k: "menu_short" },

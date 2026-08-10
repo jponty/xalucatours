@@ -34,6 +34,7 @@ import FromPrice from "@/components/FromPrice";
 import DownloadProgramModal from "@/components/DownloadProgramModal";
 import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import VideoSection from "@/components/VideoSection";
+import JourneyChronology from "@/components/JourneyChronology";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
@@ -774,7 +775,7 @@ const ContactBand = ({ t, lang }) => (
 /* ============================================================
    Default export — universal Program page template
 ============================================================ */
-export default function ProgramTemplate({ program, variant = "da", flipbookSrc }) {
+export default function ProgramTemplate({ program, variant = "da", flipbookSrc, showJourneyChronology = false }) {
   const { lang } = useLanguage();
   const location = useLocation();
   const { routeId } = resolvePath(location.pathname);
@@ -843,6 +844,9 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc }
         return (
           <>
             {descSection}
+            {showJourneyChronology && (
+              <JourneyChronology days={program.days} lang={lang} />
+            )}
             {quickSection}
             {audioSection}
             {mapSection}

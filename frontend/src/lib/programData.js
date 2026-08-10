@@ -45,6 +45,11 @@ export const DAY_DESERT_BIVOUAC = {
     en: "A day of Total Desert. We drive one of the historic Dakar Rally tracks, visiting villages and desert nomads. Stop at the Marine Fossil Quarries — 360 million years old — and picnic in an authentic oasis. We continue to the great Erg Chebbi, the «desert of fine-sand dunes», where we swap the 4x4 for camels and ride into the heart of the dunes to witness an unforgettable sunset. We arrive on camelback at the Bivouac de Luxe and sleep in nomad-style jaimas. Dinner and overnight — spectacular under the stars.",
     fr: "Une journée de Désert Total. Nous parcourons l'une des pistes historiques du Rallye Dakar, à la rencontre de villages et de nomades. Halte aux Carrières de Fossiles Marins — 360 millions d'années — et pique-nique dans une oasis authentique. Poursuite vers le grand Erg Chebbi, le « désert de dunes de sable très fin », où nous échangeons le 4x4 contre des dromadaires pour pénétrer au cœur des dunes et admirer un coucher de soleil inoubliable. Arrivée à dos de dromadaire au Bivouac de Luxe, hébergement en jaimas comme les nomades. Dîner sous les étoiles.",
   },
+  chronologySummary: {
+    es: "Jornada por antiguas pistas del Rally Dakar, oasis y fósiles, seguida de un paseo en dromedario y una noche bajo las estrellas.",
+    en: "A day on old Dakar Rally tracks, among oases and fossils, followed by a camel ride and a night beneath the stars.",
+    fr: "Journée sur les anciennes pistes du Rallye Dakar, entre oasis et fossiles, puis balade en dromadaire et nuit sous les étoiles.",
+  },
   culture: [
     {
       title: { es: "Las pistas históricas del Rally Dakar", en: "The historic Dakar Rally tracks", fr: "Les pistes historiques du Rallye Dakar" },
@@ -77,6 +82,11 @@ export const DAY_KHAMLIA_MERDANI = {
     es: "Amanecer en las dunas del Erg Chebbi. Visita al pueblo abandonado de Merdani y a las Minas de M'Fis. Parada en Khamlia para disfrutar de música Gnawa y té tradicional. Llegada a Kasbah Hotel Tombouctou y tarde libre entre dunas y hammam.",
     en: "Sunrise over the Erg Chebbi dunes. Visit to the abandoned village of Merdani and the M'Fis mines. Stop in Khamlia for Gnawa music and traditional tea. Arrival at Kasbah Hotel Tombouctou with a free afternoon between dunes and hammam.",
     fr: "Lever de soleil sur les dunes de l'Erg Chebbi. Visite du village abandonné de Merdani et des mines de M'Fis. Halte à Khamlia pour la musique Gnawa et le thé traditionnel. Arrivée au Kasbah Hotel Tombouctou avec après-midi libre entre dunes et hammam.",
+  },
+  chronologySummary: {
+    es: "Amanecer en Erg Chebbi, visita a Merdani y las minas de M’Fis, música Gnawa en Khamlia y tarde libre entre las dunas.",
+    en: "Sunrise at Erg Chebbi, a visit to Merdani and the M’Fis mines, Gnawa music in Khamlia and free time among the dunes.",
+    fr: "Lever du soleil sur l’Erg Chebbi, visite de Merdani et des mines de M’Fis, musique Gnawa à Khamlia et temps libre dans les dunes.",
   },
   culture: [
     {
@@ -152,6 +162,11 @@ export const DAY_RISSANI_RELAX = {
     en: "Drive to Rissani to visit historic kasbahs and its famous traditional market. Lunch at the Berber Des Dunes pizzeria. Return to Kasbah Hotel Xaluca for free time and wellness services.",
     fr: "Route vers Rissani pour visiter les kasbahs historiques et son célèbre marché. Déjeuner à la pizzeria berbère Des Dunes. Retour au Kasbah Hotel Xaluca pour temps libre et services bien-être.",
   },
+  chronologySummary: {
+    es: "Visita a las kasbahs y al mercado tradicional de Rissani, comida bereber y tarde de descanso y bienestar en Kasbah Xaluca.",
+    en: "Visit Rissani’s kasbahs and traditional market, enjoy a Berber lunch and relax during a wellness afternoon at Kasbah Xaluca.",
+    fr: "Visite des kasbahs et du marché traditionnel de Rissani, déjeuner berbère et après-midi de détente à la Kasbah Xaluca.",
+  },
   wellness: [
     { es: "Piscina climatizada", en: "Heated pool", fr: "Piscine chauffée" },
     { es: "Hammam", en: "Hammam", fr: "Hammam" },
@@ -218,6 +233,11 @@ export const DAY_ATLAS_MGOUN = {
     es: "Ruta por pistas del Alto Atlas Central descubriendo poblados como Boutaghrar y Amskar. Visita a grutas habitadas por familias nómadas. Paseo por las Gargantas del M'Goun y comida en una Gîte d'Étape tradicional. Alojamiento y cena en Hotel Xaluca Dades.",
     en: "Off-road journey through the Central High Atlas, discovering villages like Boutaghrar and Amskar. Visit caves still inhabited by nomad families. Walk through the M'Goun Gorges and lunch at a traditional Gîte d'Étape. Dinner and accommodation at Hotel Xaluca Dades.",
     fr: "Parcours tout-terrain dans le Haut Atlas central à la découverte de villages comme Boutaghrar et Amskar. Visite de grottes encore habitées par des familles nomades. Promenade dans les Gorges du M'Goun et déjeuner dans une Gîte d'Étape traditionnelle. Dîner et hébergement à l'Hôtel Xaluca Dadès.",
+  },
+  chronologySummary: {
+    es: "Ruta por las pistas del Alto Atlas Central, con poblados bereberes, familias nómadas y un paseo por las Gargantas del M’Goun.",
+    en: "Travel the Central High Atlas tracks, discovering Berber villages, nomad families and a walk through the M’Goun Gorges.",
+    fr: "Parcours sur les pistes du Haut Atlas central, entre villages berbères, familles nomades et promenade dans les gorges du M’Goun.",
   },
   culture: [
     {
@@ -402,6 +422,11 @@ const DAY_AD_OUARZAZATE_DADES = {
     en: "Departure from your home airport toward Casablanca and onward connection with the 23:20 Casablanca – Ouarzazate flight, arriving Ouarzazate at 01:10. Airport pick-up and asphalt transfer (110 km) to Boumalne Dades, at 1,612 m in the High Atlas range. Accommodation at Hotel Xaluca Dades 4★. 📌 Flight options vary by departure city.",
     fr: "Départ depuis votre aéroport d'origine vers Casablanca et correspondance avec le vol Casablanca – Ouarzazate de 23h20, arrivée à Ouarzazate à 01h10. Accueil à l'aéroport et transfert sur asphalte (110 km) jusqu'à Boumalne Dadès, à 1 612 m d'altitude dans le Haut Atlas. Hébergement à l'Hôtel Xaluca Dadès 4★. 📌 Options de vol selon ville de départ.",
   },
+  chronologySummary: {
+    es: "Llegada a Ouarzazate y traslado nocturno hasta Boumalne Dades, en el Alto Atlas, para alojarse en el Hotel Xaluca Dades.",
+    en: "Arrival in Ouarzazate and night transfer to Boumalne Dades, in the High Atlas, for accommodation at Hotel Xaluca Dades.",
+    fr: "Arrivée à Ouarzazate et transfert nocturne vers Boumalne Dadès, dans le Haut Atlas, pour séjourner à l’Hôtel Xaluca Dadès.",
+  },
   culture: [
     {
       title: { es: "Altitud y paisaje únicos", en: "Unique altitude and landscape", fr: "Altitude et paysage uniques" },
@@ -468,6 +493,11 @@ const DAY_AD_DADES_TODRA_ERFOUD = {
     en: "Drive through the Dades Valley to its famous gorges and panoramic viewpoint. Stop at the geological formations known as the «Monkey Paws». Continue to Tinerhir and the Todra Gorges. Arrival in Erfoud, accommodation at Kasbah Hotel Xaluca.",
     fr: "Parcours dans la Vallée du Dadès jusqu'à ses célèbres gorges et au mirador panoramique. Arrêt aux formations géologiques dites des « Pattes de Singe ». Poursuite vers Tinerhir et les Gorges du Todra. Arrivée à Erfoud, hébergement au Kasbah Hotel Xaluca.",
   },
+  chronologySummary: {
+    es: "Recorrido por el Valle del Dades, las formaciones de las Patas de Mono y las Gargantas del Todra antes de llegar a Erfoud.",
+    en: "Journey through the Dades Valley, the Monkey Paws formations and the Todra Gorges before arriving in Erfoud.",
+    fr: "Parcours dans la vallée du Dadès, les Pattes de Singe et les gorges du Todra avant l’arrivée à Erfoud.",
+  },
   culture: [
     {
       title: { es: "El mirador del Dadès", en: "Dades viewpoint", fr: "Mirador du Dadès" },
@@ -500,6 +530,11 @@ const DAY_AD_ZIZ_RETURN = {
     es: "Traslado al aeropuerto de Errachidia para coger el vuelo de regreso al punto de origen. Por el camino, pararemos en el mirador del Valle del Ziz, con más de diez millones de palmeras en su interior. Salida del vuelo de Errachidia a las 07:15 h en dirección Casablanca, donde se llega a las 08:30 h. Enlace con el vuelo al punto de origen.",
     en: "Transfer to Errachidia airport for the return flight home. Along the way, stop at the Ziz Valley viewpoint, home to more than ten million palm trees. Flight departs Errachidia at 07:15 toward Casablanca, arriving at 08:30 to connect with your onward flight.",
     fr: "Transfert à l'aéroport d'Errachidia pour le vol de retour. En chemin, halte au mirador de la Vallée du Ziz, qui abrite plus de dix millions de palmiers. Départ du vol d'Errachidia à 07h15 en direction de Casablanca, arrivée à 08h30 pour la correspondance vers la ville d'origine.",
+  },
+  chronologySummary: {
+    es: "Traslado hacia Errachidia con parada en el mirador del Valle del Ziz y conexión en Casablanca para el vuelo de regreso.",
+    en: "Transfer to Errachidia with a stop at the Ziz Valley viewpoint and a connection in Casablanca for the return flight.",
+    fr: "Transfert vers Errachidia avec arrêt au belvédère de la vallée du Ziz et correspondance à Casablanca pour le retour.",
   },
   culture: [
     {
@@ -4414,4 +4449,3 @@ export const PROGRAM_ME_56 = {
     },
   },
 };
-

@@ -43,6 +43,8 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
         party_size="4",
         journey_interest="Gran Sur",
         preferred_contact=["email", "phone"],
+        preferred_contact_email="respuesta.ana@example.com",
+        preferred_contact_phone="+34 699 555 444",
         message="Queremos una propuesta familiar completa.",
         source_path="/contacto",
         source_label="Contacto",
@@ -53,12 +55,33 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
 
     internal = captured[0]
     assert result.full_name == "Ana García"
+    stored_contact = collection.insert_one.await_args.args[0]
+    assert stored_contact["preferred_contact_email"] == "respuesta.ana@example.com"
+    assert stored_contact["preferred_contact_phone"] == "+34 699 555 444"
     for value in (
         "Ana García", "ana@example.com", "+34 600 111 222", "Octubre 2026",
-        "4", "Gran Sur", "Queremos una propuesta familiar completa.", "Contacto",
+        "4", "Gran Sur", "respuesta.ana@example.com", "+34 699 555 444",
+        "Queremos una propuesta familiar completa.", "Contacto",
     ):
         assert value in internal[2]
+    assert internal[3] == "respuesta.ana@example.com"
     assert captured[1][0] == "confirmation"
+    confirmation_rows = captured[1][5]["summary_rows"]
+    assert confirmation_rows == [
+        ("Nombre", "Ana García"),
+        ("Email", "ana@example.com"),
+        ("Teléfono", "+34 600 111 222"),
+        ("Fechas", "Octubre 2026"),
+        ("Viajeros", "4"),
+        ("Interés", "Gran Sur"),
+        ("Canal preferido", "Correo electrónico, Teléfono / WhatsApp"),
+        ("Email preferido de contacto", "respuesta.ana@example.com"),
+        ("Teléfono / WhatsApp preferido", "+34 699 555 444"),
+        ("Destinatario", ""),
+        ("Mensaje", "Queremos una propuesta familiar completa."),
+        ("Página origen", "Contacto"),
+        ("Idioma", "es"),
+    ]
     delivery = collection.update_one.await_args_list[-1].args[1]["$set"]["email_delivery"]
     assert delivery["status"] == "accepted"
     assert delivery["notification_id"] == "resend-internal-id"
@@ -88,7 +111,7 @@ def test_contact_never_returns_success_when_resend_rejects(monkeypatch):
 
 
 def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
-    _collection(monkeypatch, "trip_planner_requests")
+    planner_collection = _collection(monkeypatch, "trip_planner_requests")
     _collection(monkeypatch, "program_downloads")
     captured = []
     _accepted_senders(monkeypatch, captured)
@@ -114,9 +137,13 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
         activities=["desierto", "fotografía"],
         notes="Habitación familiar.",
         preferred_contact=["email"],
+        preferred_contact_email="viajes.marc@example.com",
         language="es",
     )
     asyncio.run(server.create_trip_planner(planner, request))
+    stored_planner = planner_collection.insert_one.await_args.args[0]
+    assert stored_planner["preferred_contact_email"] == "viajes.marc@example.com"
+    assert stored_planner["preferred_contact_phone"] is None
     planner_html = next(row[2] for row in captured if row[0] == "internal")
     for value in ("Marc Vidal", "+34 611 222 333", "2026-10-10", "2026-10-18", "premium", "Habitación familiar."):
         assert value in planner_html
@@ -124,6 +151,8 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
     summary_rows = planner_confirmation[5]["summary_rows"]
     assert summary_rows
     assert ("Notas", "Habitación familiar.") in summary_rows
+    assert ("Email preferido de contacto", "viajes.marc@example.com") in summary_rows
+    assert next(row for row in captured if row[0] == "internal")[3] == "viajes.marc@example.com"
 
     captured.clear()
     download = server.ProgramDownloadCreate(
@@ -157,6 +186,23 @@ def test_resend_acceptance_requires_recipient_and_message_id(monkeypatch):
 
     monkeypatch.setattr(server.resend.Emails, "send", lambda *_args, **_kwargs: {"id": "accepted-id"})
     assert server.send_client_confirmation("ana@example.com", "Ana") == "accepted-id"
+
+
+def test_selected_contact_methods_require_their_own_details():
+    with pytest.raises(ValueError, match="Preferred contact email is required"):
+        server.ContactRequestCreate(
+            full_name="Ana García",
+            email="ana@example.com",
+            preferred_contact=["email"],
+            message="Necesito información del viaje.",
+        )
+
+    with pytest.raises(ValueError, match="Preferred contact phone is required"):
+        server.TripPlannerCreate(
+            full_name="Marc Vidal",
+            email="marc@example.com",
+            preferred_contact=["phone"],
+        )
 
 
 def test_planner_confirmation_has_public_archive_cta_and_non_empty_summary(monkeypatch):

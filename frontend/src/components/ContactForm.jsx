@@ -20,6 +20,8 @@ const initialState = {
   party_size: "",
   journey_interest: "",
   preferred_contact: [],
+  preferred_contact_email: "",
+  preferred_contact_phone: "",
   message: "",
 };
 
@@ -30,15 +32,24 @@ export const ContactForm = () => {
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [prefError, setPrefError] = useState("");
+  const [prefDetailErrors, setPrefDetailErrors] = useState({});
 
   const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
-  const togglePref = (id) =>
-    setForm((p) => ({
+  const togglePref = (id) => setForm((p) => {
+    const removing = p.preferred_contact.includes(id);
+    return {
       ...p,
-      preferred_contact: p.preferred_contact.includes(id)
+      preferred_contact: removing
         ? p.preferred_contact.filter((x) => x !== id)
         : [...p.preferred_contact, id],
-    }));
+      ...(removing ? { [`preferred_contact_${id}`]: "" } : {}),
+    };
+  });
+
+  const changePrefDetail = (id, value) => {
+    setForm((p) => ({ ...p, [`preferred_contact_${id}`]: value }));
+    setPrefDetailErrors((p) => ({ ...p, [id]: "" }));
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +60,21 @@ export const ContactForm = () => {
       toast.error(t("form_error"));
       return;
     }
+    const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
+    const detailErrors = {};
+    if (form.preferred_contact.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.preferred_contact_email.trim())) {
+      detailErrors.email = required;
+    }
+    if (form.preferred_contact.includes("phone") && !form.preferred_contact_phone.trim()) {
+      detailErrors.phone = required;
+    }
+    if (Object.keys(detailErrors).length) {
+      setPrefDetailErrors(detailErrors);
+      toast.error(t("form_error"));
+      return;
+    }
     setPrefError("");
+    setPrefDetailErrors({});
     setSending(true);
     try {
       let routeId = null;
@@ -147,13 +172,13 @@ export const ContactForm = () => {
                 className="bg-[#FDFBF7]/[0.04] border border-[#FDFBF7]/15 p-8 md:p-12 backdrop-blur-sm"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Field labelSlot="home.contact.form_name" labelDefaults={translations.form_name} testId="form-name">
-                    <input required name="full_name" value={form.full_name} onChange={onChange}
+                  <Field labelSlot="home.contact.form_name" labelDefaults={translations.form_name} testId="form-name" required>
+                    <input required aria-required="true" name="full_name" value={form.full_name} onChange={onChange}
                       data-testid="contact-input-name" className="form-input" />
                   </Field>
 
-                  <Field labelSlot="home.contact.form_email" labelDefaults={translations.form_email} testId="form-email">
-                    <input required type="email" name="email" value={form.email} onChange={onChange}
+                  <Field labelSlot="home.contact.form_email" labelDefaults={translations.form_email} testId="form-email" required>
+                    <input required aria-required="true" type="email" name="email" value={form.email} onChange={onChange}
                       data-testid="contact-input-email" className="form-input" />
                   </Field>
 
@@ -186,8 +211,8 @@ export const ContactForm = () => {
                 </div>
 
                 <div className="mt-6">
-                  <Field labelSlot="home.contact.form_message" labelDefaults={translations.form_message} testId="form-message">
-                    <textarea required name="message" value={form.message} onChange={onChange} rows={5}
+                  <Field labelSlot="home.contact.form_message" labelDefaults={translations.form_message} testId="form-message" required>
+                    <textarea required aria-required="true" name="message" value={form.message} onChange={onChange} rows={5}
                       data-testid="contact-input-message" className="form-input resize-none" />
                   </Field>
                 </div>
@@ -199,6 +224,12 @@ export const ContactForm = () => {
                     value={form.preferred_contact}
                     onToggle={(id) => { togglePref(id); setPrefError(""); }}
                     error={prefError}
+                    details={{
+                      email: form.preferred_contact_email,
+                      phone: form.preferred_contact_phone,
+                    }}
+                    onDetailChange={changePrefDetail}
+                    detailErrors={prefDetailErrors}
                     testidPrefix="contact-pref"
                   />
                 </div>
@@ -250,14 +281,12 @@ export const ContactForm = () => {
   );
 };
 
-const Field = ({ labelSlot, labelDefaults, testId, children }) => (
+const Field = ({ labelSlot, labelDefaults, testId, required = false, children }) => (
   <label className="block" data-testid={`${testId}-field`}>
-    <EditableText
-      slot={labelSlot}
-      defaults={labelDefaults}
-      multiline={false}
-      className="block text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2"
-    />
+    <span className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2">
+      <EditableText slot={labelSlot} defaults={labelDefaults} multiline={false} />
+      {required && <span className="text-[#D4A373]" aria-hidden="true">*</span>}
+    </span>
     {children}
   </label>
 );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import {
@@ -9,15 +9,17 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 import { usePricing } from "@/lib/pricingStore";
 import { fmtEuro } from "@/lib/pricing";
 import { pathFor } from "@/lib/routes";
-import EditableImage from "@/components/EditableImage";
 import { FromPrice } from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import SmartPlannerInfoModal from "@/components/SmartPlannerInfoModal";
+import TripImageCarousel from "@/components/TripImageCarousel";
+import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { tripImagesForRoute } from "@/lib/tripImageGallery";
 import monogramWhite from "@/assets/monograma-x-white.png";
 import monogramBorder from "@/assets/monograma-x-borde.png";
 import {
   ORIGIN_OPTIONS, buildMonthOptions, monthName, FLEXIBLE_LABEL, DURATION_BUCKETS,
-  topTrips, tripImage, tt, nodeName, priceBounds,
+  topTrips, tt, nodeName, priceBounds,
 } from "@/lib/tripFinder";
 
 const T = (es, en, fr) => ({ es, en, fr });
@@ -123,6 +125,15 @@ export const TripFinder = () => {
   const [monthValue, setMonthValue] = useState("flexible");
   const [durationId, setDurationId] = useState("");
   const [plannerInfoOpen, setPlannerInfoOpen] = useState(false);
+  const [imageManifest, setImageManifest] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    loadSupabaseImages()
+      .then((manifest) => { if (active) setImageManifest(manifest); })
+      .catch(() => { if (active) setImageManifest({ slots: [], galleries: [] }); });
+    return () => { active = false; };
+  }, []);
 
   // Real catalogue price bounds — recomputed whenever pricing changes.
   const bounds = useMemo(() => priceBounds(pricing), [pricing]);
@@ -142,6 +153,18 @@ export const TripFinder = () => {
   const ranked = useMemo(
     () => topTrips({ originId, monthValue, durationId, priceMin: pmin, priceMax: pmax, pricing }, 6),
     [originId, monthValue, durationId, pmin, pmax, pricing],
+  );
+  const rankedWithImages = useMemo(
+    () => ranked.map((result) => ({
+      ...result,
+      // Home result cards keep a compact carousel, but always reserve at
+      // least one real image for every day of the recommended itinerary.
+      images: tripImagesForRoute(result.trip.routeId, imageManifest, {
+        representEveryDay: true,
+        maxImages: 12,
+      }),
+    })),
+    [ranked, imageManifest],
   );
 
   const chipFor = (reasons) => {
@@ -318,7 +341,7 @@ export const TripFinder = () => {
           data-testid="trip-finder-results"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {ranked.map(({ trip, reasons }) => {
+          {rankedWithImages.map(({ trip, reasons, images }) => {
             const chip = chipFor(reasons);
             const nights = trip.days - 1;
             const fav = isFavorite(trip.routeId);
@@ -329,15 +352,17 @@ export const TripFinder = () => {
                 data-testid={`trip-finder-card-${trip.routeId}`}
                 className="group block bg-[#FDFBF7] border border-[#2C2621]/10 overflow-hidden hover:border-[#C16542]/40 hover:shadow-[0_28px_54px_-30px_rgba(26,21,19,0.5)] transition-all duration-300"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
-                  <EditableImage
-                    slot={`home.finder.trip.${trip.routeId}`}
-                    fallback={tripImage(trip.routeId)}
-                    alt={tt(trip.name, lang)}
-                    aspectRatio="4/3"
-                    imgProps={{ loading: "lazy" }}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-105"
-                  />
+                <TripImageCarousel
+                  images={images}
+                  title={tt(trip.name, lang)}
+                  lang={lang}
+                  className="aspect-[4/3] bg-[#1A1513]"
+                  imageClassName="transition-transform duration-[900ms] group-hover:scale-105"
+                  priorityFirst
+                  showBadge={false}
+                  showCount={false}
+                  testidPrefix={`trip-finder-carousel-${trip.routeId}`}
+                >
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent pointer-events-none" />
                   <img
                     src={monogramBorder}
@@ -371,7 +396,7 @@ export const TripFinder = () => {
                   <span className="absolute bottom-3 left-3 z-[4] w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
                     <img src={monogramWhite} alt="Xaluca Tours" className="w-5 h-5 object-contain" loading="lazy" />
                   </span>
-                </div>
+                </TripImageCarousel>
                 <div className="p-5">
                   <h3 className="font-serif-x text-[#2C2621] text-xl leading-snug group-hover:text-[#C16542] transition-colors">
                     {tt(trip.name, lang)}

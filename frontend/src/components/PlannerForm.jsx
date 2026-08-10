@@ -213,6 +213,7 @@ export default function PlannerForm() {
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
     preferredContact: [],
+    preferredContactEmail: "", preferredContactPhone: "",
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
@@ -234,7 +235,16 @@ export default function PlannerForm() {
   const toggleRegion   = toggleArrayItem("regions");
   const toggleActivity = toggleArrayItem("activities");
   const toggleTrip     = toggleArrayItem("selectedTrips");
-  const togglePref     = toggleArrayItem("preferredContact");
+  const togglePref = (id) => setForm((f) => {
+    const removing = f.preferredContact.includes(id);
+    return {
+      ...f,
+      preferredContact: removing
+        ? f.preferredContact.filter((x) => x !== id)
+        : [...f.preferredContact, id],
+      ...(removing ? { [id === "email" ? "preferredContactEmail" : "preferredContactPhone"]: "" } : {}),
+    };
+  });
 
   // Banner reflects the LIVE selection: every selected itinerary,
   // resolved (catalog + program registry) and updated on add/remove.
@@ -250,6 +260,12 @@ export default function PlannerForm() {
     if (!form.fullName || form.fullName.trim().length < 2) e.fullName = tr("required");
     if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = tr("required");
     if (!form.preferredContact.length) e.preferredContact = tr("required");
+    if (form.preferredContact.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.preferredContactEmail.trim())) {
+      e.preferredContactEmail = tr("required");
+    }
+    if (form.preferredContact.includes("phone") && !form.preferredContactPhone.trim()) {
+      e.preferredContactPhone = tr("required");
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -286,6 +302,8 @@ export default function PlannerForm() {
         activities: form.activities,
         notes: form.notes.trim() || null,
         preferred_contact: form.preferredContact,
+        preferred_contact_email: form.preferredContact.includes("email") ? form.preferredContactEmail.trim() : null,
+        preferred_contact_phone: form.preferredContact.includes("phone") ? form.preferredContactPhone.trim() : null,
         language: lang,
       };
       const res = await fetch(API_URL, {
@@ -653,6 +671,8 @@ export default function PlannerForm() {
                 <input
                   type="text"
                   data-testid="full-name"
+                  required
+                  aria-required="true"
                   autoComplete="name"
                   maxLength={120}
                   className={inputCls}
@@ -664,6 +684,8 @@ export default function PlannerForm() {
                 <input
                   type="email"
                   data-testid="email"
+                  required
+                  aria-required="true"
                   autoComplete="email"
                   maxLength={120}
                   className={inputCls}
@@ -704,6 +726,18 @@ export default function PlannerForm() {
                 value={form.preferredContact}
                 onToggle={(id) => togglePref(id)}
                 error={errors.preferredContact}
+                details={{ email: form.preferredContactEmail, phone: form.preferredContactPhone }}
+                onDetailChange={(id, value) => {
+                  set(id === "email" ? "preferredContactEmail" : "preferredContactPhone", value);
+                  setErrors((current) => ({
+                    ...current,
+                    [id === "email" ? "preferredContactEmail" : "preferredContactPhone"]: "",
+                  }));
+                }}
+                detailErrors={{
+                  email: errors.preferredContactEmail,
+                  phone: errors.preferredContactPhone,
+                }}
                 testidPrefix="planner-pref"
               />
             </div>

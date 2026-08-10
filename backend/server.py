@@ -115,6 +115,8 @@ class ContactRequest(BaseModel):
     party_size: Optional[str] = None
     journey_interest: Optional[str] = None
     preferred_contact: Optional[List[str]] = None
+    preferred_contact_email: Optional[EmailStr] = None
+    preferred_contact_phone: Optional[str] = None
     message: str
     source_route_id: Optional[str] = None
     source_path: Optional[str] = None
@@ -142,6 +144,8 @@ class ContactRequestCreate(BaseModel):
     party_size: Optional[str] = Field(default=None, max_length=40)
     journey_interest: Optional[str] = Field(default=None, max_length=120)
     preferred_contact: Optional[List[str]] = Field(default=None, max_length=4)
+    preferred_contact_email: Optional[EmailStr] = None
+    preferred_contact_phone: Optional[str] = Field(default=None, max_length=40)
     message: str = Field(..., min_length=4, max_length=4000)
     source_route_id: Optional[str] = Field(default=None, max_length=120)
     source_path: Optional[str] = Field(default=None, max_length=300)
@@ -163,6 +167,17 @@ class ContactRequestCreate(BaseModel):
     def _require_email_or_phone(self):
         if not self.email and not (self.phone or "").strip():
             raise ValueError("Email or phone is required")
+        return self
+
+    @model_validator(mode="after")
+    def _require_preferred_contact_details(self):
+        selected = set(self.preferred_contact or [])
+        if selected - {"email", "phone"}:
+            raise ValueError("Invalid preferred contact method")
+        if "email" in selected and not self.preferred_contact_email:
+            raise ValueError("Preferred contact email is required")
+        if "phone" in selected and not (self.preferred_contact_phone or "").strip():
+            raise ValueError("Preferred contact phone is required")
         return self
 
     @field_validator("founder_recipient")
@@ -222,6 +237,8 @@ class TripPlannerRequest(BaseModel):
     activities: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
     preferred_contact: Optional[List[str]] = None
+    preferred_contact_email: Optional[EmailStr] = None
+    preferred_contact_phone: Optional[str] = None
     language: Optional[str] = "es"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -252,6 +269,8 @@ class TripPlannerCreate(BaseModel):
     activities: List[str] = Field(default_factory=list, max_length=20)
     notes: Optional[str] = Field(default=None, max_length=4000)
     preferred_contact: Optional[List[str]] = Field(default=None, max_length=4)
+    preferred_contact_email: Optional[EmailStr] = None
+    preferred_contact_phone: Optional[str] = Field(default=None, max_length=40)
     language: Optional[str] = "es"
 
     @field_validator("preferred_contact", mode="before")
@@ -262,6 +281,17 @@ class TripPlannerCreate(BaseModel):
         if isinstance(v, str):
             return [v] if v else []
         return v
+
+    @model_validator(mode="after")
+    def _require_preferred_contact_details(self):
+        selected = set(self.preferred_contact or [])
+        if selected - {"email", "phone"}:
+            raise ValueError("Invalid preferred contact method")
+        if "email" in selected and not self.preferred_contact_email:
+            raise ValueError("Preferred contact email is required")
+        if "phone" in selected and not (self.preferred_contact_phone or "").strip():
+            raise ValueError("Preferred contact phone is required")
+        return self
 
 
 # ---------- Program brochure download (lead-gated) ----------
@@ -1285,7 +1315,7 @@ def send_client_confirmation(
     )
 
 
-_CONTACT_PREF_LABELS = {"phone": "Llamada telefónica", "email": "Correo electrónico"}
+_CONTACT_PREF_LABELS = {"phone": "Teléfono / WhatsApp", "email": "Correo electrónico"}
 
 
 def _contact_pref_label(value):
@@ -1384,23 +1414,31 @@ async def create_contact_request(payload: ContactRequestCreate):
         f"Consulta para {direct_label} · {obj.full_name}"
         if direct_label else f"Nuevo contacto · {obj.full_name}"
     )
+    summary_rows = [
+        ("Nombre", obj.full_name),
+        ("Email", obj.email),
+        ("Teléfono", obj.phone),
+        ("Fechas", obj.travel_dates),
+        ("Viajeros", obj.party_size),
+        ("Interés", obj.journey_interest),
+        ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
+        ("Email preferido de contacto", obj.preferred_contact_email),
+        ("Teléfono / WhatsApp preferido", obj.preferred_contact_phone),
+        ("Destinatario", direct_label),
+        ("Mensaje", obj.message),
+        ("Página origen", obj.source_label or obj.source_path),
+        ("Idioma", obj.language),
+    ]
     html = _lead_email_html(
         notification_title,
         f"{obj.full_name} · {contact_summary}",
-        [
-            ("Nombre", obj.full_name),
-            ("Email", obj.email),
-            ("Teléfono", obj.phone),
-            ("Fechas", obj.travel_dates),
-            ("Viajeros", obj.party_size),
-            ("Interés", obj.journey_interest),
-            ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
-            ("Destinatario", direct_label),
-            ("Mensaje", obj.message),
-            ("Página origen", obj.source_label or obj.source_path),
-            ("Idioma", obj.language),
-        ],
-        reply_cta=_reply_cta_html(obj.full_name, obj.email, notification_subject, obj.language),
+        summary_rows,
+        reply_cta=_reply_cta_html(
+            obj.full_name,
+            obj.preferred_contact_email or obj.email,
+            notification_subject,
+            obj.language,
+        ),
     )
     recipients = (
         _founder_notification_recipients(obj.founder_recipient)
@@ -1414,7 +1452,7 @@ async def create_contact_request(payload: ContactRequestCreate):
             send_lead_notification,
             notification_subject,
             html,
-            str(obj.email) if obj.email else None,
+            str(obj.preferred_contact_email or obj.email) if (obj.preferred_contact_email or obj.email) else None,
             recipients,
             f"contact-{obj.id}-internal",
         )
@@ -1426,6 +1464,7 @@ async def create_contact_request(payload: ContactRequestCreate):
             obj.full_name,
             obj.language,
             f"contact-{obj.id}-client",
+            summary_rows=summary_rows,
         ))
     try:
         message_ids = await asyncio.gather(*deliveries)
@@ -1508,13 +1547,20 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
         ("Actividades", activities),
         ("Notas", obj.notes),
         ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
+        ("Email preferido de contacto", obj.preferred_contact_email),
+        ("Teléfono / WhatsApp preferido", obj.preferred_contact_phone),
         ("Idioma", obj.language),
     ]
     html = _lead_email_html(
         "Planifica tu viaje",
         f"{obj.full_name} · {obj.email}",
         planner_rows,
-        reply_cta=_reply_cta_html(obj.full_name, obj.email, planner_subject, obj.language),
+        reply_cta=_reply_cta_html(
+            obj.full_name,
+            obj.preferred_contact_email or obj.email,
+            planner_subject,
+            obj.language,
+        ),
     )
     try:
         notification_id, confirmation_id = await asyncio.gather(
@@ -1522,7 +1568,7 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
                 send_lead_notification,
                 planner_subject,
                 html,
-                str(obj.email),
+                str(obj.preferred_contact_email or obj.email),
                 None,
                 f"planner-{obj.id}-internal",
             ),
