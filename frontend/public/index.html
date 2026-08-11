@@ -7,11 +7,10 @@
 
         <!-- ============================================================
              SEO + Social sharing (Open Graph / Twitter) — STATIC defaults.
-             These live in the served HTML so non-JS social crawlers
-             (WhatsApp, Facebook, LinkedIn, Telegram, iMessage, X) read a
-             consistent, branded preview for every shared link. Per-page
-             titles/descriptions are refined client-side by SeoHead.jsx
-             (picked up by Google, which renders JS).
+             The Home defaults live here. The post-build social-page generator
+             creates a real HTML entry for every public URL, so non-JS crawlers
+             (WhatsApp, Facebook, LinkedIn, Telegram, iMessage, X) receive the
+             correct page-specific image instead of a generic SPA fallback.
              ============================================================ -->
         <title>Xaluca Tours · Viajes a medida por Marruecos</title>
         <meta name="description" content="Viaja de otra manera. Más de 30 años creando viajes personalizados y experiencias inolvidables por todo Marruecos — del desierto del Sáhara a las ciudades imperiales." />
@@ -23,8 +22,8 @@
         <meta property="og:title" content="Xaluca Tours · Viajes a medida por Marruecos" />
         <meta property="og:description" content="Viaja de otra manera. Más de 30 años creando viajes personalizados y experiencias inolvidables por todo Marruecos — del desierto del Sáhara a las ciudades imperiales." />
         <meta property="og:url" content="https://xalucatravel.com/" />
-        <meta property="og:image" content="https://xalucatravel.com/og-image.jpg" />
-        <meta property="og:image:secure_url" content="https://xalucatravel.com/og-image.jpg" />
+        <meta property="og:image" content="https://xalucatravel.com/og-image.jpg?v=20260811" />
+        <meta property="og:image:secure_url" content="https://xalucatravel.com/og-image.jpg?v=20260811" />
         <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
@@ -37,7 +36,7 @@
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Xaluca Tours · Viajes a medida por Marruecos" />
         <meta name="twitter:description" content="Viaja de otra manera. Más de 30 años creando viajes personalizados y experiencias inolvidables por todo Marruecos — del desierto del Sáhara a las ciudades imperiales." />
-        <meta name="twitter:image" content="https://xalucatravel.com/og-image.jpg" />
+        <meta name="twitter:image" content="https://xalucatravel.com/og-image.jpg?v=20260811" />
         <meta name="twitter:image:alt" content="Xaluca Tours · Viajes a medida por Marruecos" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />

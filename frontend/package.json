@@ -63,7 +63,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "craco build && node scripts/generate-social-pages.cjs",
     "test": "craco test"
   },
   "browserslist": {

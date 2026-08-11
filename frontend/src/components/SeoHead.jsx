@@ -15,6 +15,8 @@
    (e.g. the static <meta charset>, viewport, etc. from index.html).
 ============================================================ */
 import { useEffect } from "react";
+import { resolvePath } from "@/lib/routes";
+import { seoImageForBlogPost, seoImageForRoute } from "@/lib/seoImages";
 
 const SEO_FLAG = "data-seo";
 const SEO_FLAG_VAL = "dynamic";
@@ -79,7 +81,17 @@ export default function SeoHead({
       typeof window !== "undefined" && window.location ? window.location.origin : "";
     const currentUrl =
       typeof window !== "undefined" && window.location ? window.location.href : "";
-    const absImage = absolutize(image, origin);
+    const pathname =
+      typeof window !== "undefined" && window.location ? window.location.pathname : "";
+    const blogMatch = pathname.match(/^\/(?:en\/|fr\/)?blog\/([^/?#]+)\/?$/);
+    const { routeId } = resolvePath(pathname || "/");
+    // Always use the controlled Grup Xaluca composition for public pages.
+    // This also prevents a nested page-level SeoHead from replacing it with
+    // an unbranded remote Unsplash/Pexels URL.
+    const controlledImage = blogMatch
+      ? seoImageForBlogPost(blogMatch[1])
+      : seoImageForRoute(routeId);
+    const absImage = absolutize(controlledImage || image, origin);
 
     // 1. <title> and <html lang>
     if (title) document.title = title;
@@ -100,6 +112,10 @@ export default function SeoHead({
     ensureMeta(head, "property", "og:locale", OG_LOCALE[lang] || OG_LOCALE.es);
     if (absImage) {
       ensureMeta(head, "property", "og:image", absImage);
+      ensureMeta(head, "property", "og:image:secure_url", absImage);
+      ensureMeta(head, "property", "og:image:type", "image/jpeg");
+      ensureMeta(head, "property", "og:image:width", "1200");
+      ensureMeta(head, "property", "og:image:height", "630");
       ensureMeta(head, "property", "og:image:alt", title || siteName);
     }
 
@@ -107,7 +123,10 @@ export default function SeoHead({
     ensureMeta(head, "name", "twitter:card", twitterCard);
     if (title)       ensureMeta(head, "name", "twitter:title", title);
     if (description) ensureMeta(head, "name", "twitter:description", description);
-    if (absImage)    ensureMeta(head, "name", "twitter:image", absImage);
+    if (absImage) {
+      ensureMeta(head, "name", "twitter:image", absImage);
+      ensureMeta(head, "name", "twitter:image:alt", title || siteName);
+    }
 
     // 6. Canonical + hreflang
     if (currentUrl) ensureLink(head, "canonical", currentUrl);

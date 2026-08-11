@@ -19,6 +19,7 @@ import { resolvePath, pathFor } from "@/lib/routes";
 import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
 import SeoHead from "@/components/SeoHead";
 import { getSeoMeta } from "@/lib/seoMeta";
+import { seoImageForRoute } from "@/lib/seoImages";
 
 /**
  * Single resolver — reads the current pathname and renders the right page.
@@ -48,9 +49,8 @@ const LocalizedRouter = () => {
     return <Navigate to={pathFor(lang, "home")} replace />;
   }
 
-  // Per-page SEO: title + description + canonical + hreflang for every
-  // resolved page. Social crawlers (no JS) read the static defaults in
-  // public/index.html; this refines what Google (which renders JS) sees.
+  // Per-page SEO: title + description + canonical + hreflang + a branded,
+  // content-specific 1200x630 social image for every resolved page.
   const meta = getSeoMeta(routeId, lang);
   const hreflang = routeId
     ? { es: pathFor("es", routeId), en: pathFor("en", routeId), fr: pathFor("fr", routeId) }
@@ -61,7 +61,7 @@ const LocalizedRouter = () => {
       <SeoHead
         title={meta.title}
         description={meta.description}
-        image="/og-image.jpg"
+        image={seoImageForRoute(routeId)}
         lang={lang}
         hreflang={hreflang}
       />
