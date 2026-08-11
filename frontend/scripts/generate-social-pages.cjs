@@ -9,7 +9,7 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const BUILD = path.join(ROOT, "build");
 const SITE = "https://xalucatravel.com";
-const IMAGE_VERSION = "20260811";
+const IMAGE_VERSION = "20260811-2";
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const template = read("build/index.html");

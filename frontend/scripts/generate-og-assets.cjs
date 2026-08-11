@@ -91,7 +91,11 @@ for (const m of blogSource.matchAll(/\{\s*\n\s*id:\s*"[^"]+",\s*\n\s*slug:\s*"([
 }
 
 const logoPath = path.join(ROOT, "src/assets/grup-xaluca-logo.webp");
-const monogramPath = path.join(ROOT, "src/assets/monograma-x-white.png");
+// Use the same edge-integrated monogram asset as the journey cards. Unlike
+// the square watermark, this artwork is designed to be cropped by the image
+// boundary so the X reads as part of the composition rather than a floating
+// icon.
+const monogramPath = path.join(ROOT, "src/assets/monograma-x-crop.png");
 const homeSource = path.join(ROOT, "scripts/assets/home-erg-chebbi.png");
 const outRoutes = path.join(ROOT, "public/og/routes");
 const outBlog = path.join(ROOT, "public/og/blog");
@@ -132,9 +136,18 @@ const brandAsset = async (source, output) => {
     input = await fetchImage(bank.dunes);
   }
 
-  const logo = await sharp(logoPath).resize(176, 176, { fit: "contain" }).png().toBuffer();
-  const monogram = await sharp(monogramPath).resize(470, 470, { fit: "contain" }).png().toBuffer();
-  const monogramSvg = Buffer.from(`<svg width="470" height="470" xmlns="http://www.w3.org/2000/svg"><image width="470" height="470" opacity="0.43" href="data:image/png;base64,${monogram.toString("base64")}"/></svg>`);
+  const logo = await sharp(logoPath).resize(238, 238, { fit: "contain" }).png().toBuffer();
+  const oversizedMonogram = await sharp(monogramPath).resize({ height: 760, fit: "contain" }).png().toBuffer();
+  const oversizedMeta = await sharp(oversizedMonogram).metadata();
+  // Crop the oversized artwork before compositing: this recreates the cards'
+  // overflow-hidden edge treatment while keeping Sharp's overlay within the
+  // 1200x630 social canvas.
+  const monogram = await sharp(oversizedMonogram)
+    .extract({ left: 0, top: 65, width: oversizedMeta.width, height: 630 })
+    .png()
+    .toBuffer();
+  const monogramMeta = await sharp(monogram).metadata();
+  const monogramSvg = Buffer.from(`<svg width="${monogramMeta.width}" height="${monogramMeta.height}" xmlns="http://www.w3.org/2000/svg"><image width="${monogramMeta.width}" height="${monogramMeta.height}" opacity="0.34" href="data:image/png;base64,${monogram.toString("base64")}"/></svg>`);
 
   await sharp(input)
     .rotate()
@@ -142,8 +155,12 @@ const brandAsset = async (source, output) => {
     .modulate({ brightness: 0.82, saturation: 0.94 })
     .composite([
       { input: overlaySvg, left: 0, top: 0 },
-      { input: monogramSvg, left: 930, top: 82 },
-      { input: logo, left: 512, top: 227 },
+      {
+        input: monogramSvg,
+        left: 1200 - monogramMeta.width,
+        top: 0,
+      },
+      { input: logo, left: 481, top: 196 },
     ])
     .jpeg({ quality: 87, progressive: true, chromaSubsampling: "4:4:4" })
     .toFile(output);

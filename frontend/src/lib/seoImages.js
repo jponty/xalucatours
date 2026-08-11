@@ -3,7 +3,7 @@
  * Keeping the URL derivation here means every React-rendered page and the
  * build-time static social pages use the exact same asset convention.
  */
-export const SEO_IMAGE_VERSION = "20260811";
+export const SEO_IMAGE_VERSION = "20260811-2";
 
 export const seoImageForRoute = (routeId) =>
   routeId === "home" || !routeId

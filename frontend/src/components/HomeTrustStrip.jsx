@@ -1,7 +1,10 @@
 import React from "react";
-import { Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Compass, Star } from "lucide-react";
 import EditableText from "@/components/EditableText";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
+import { HOME_HELP_COPY, HOME_HELP_OPTIONS } from "@/lib/homeHelpOptions";
 
 const COPY = {
   eyebrow: {
@@ -187,6 +190,70 @@ export default function HomeTrustStrip() {
             </div>
           </StatCell>
 
+        </div>
+
+        <div
+          data-testid="home-help-options"
+          className="mt-6 overflow-hidden border border-[#2C2621]/12 bg-[#211A16] text-white shadow-[0_22px_65px_rgba(44,38,33,0.09)]"
+        >
+          <div className="grid border-b border-white/12 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="px-6 py-7 sm:px-8 md:py-8 lg:px-10">
+              <div className="inline-flex items-center gap-2 text-[#DDA27F]">
+                <Compass className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                <span className="text-[9px] font-semibold uppercase tracking-[0.3em] sm:text-[10px]">
+                  {pick(HOME_HELP_COPY.eyebrow, lang)}
+                </span>
+              </div>
+              <h3 className="mt-3 max-w-xl font-serif-x text-[clamp(2rem,4vw,3.35rem)] font-normal leading-[1.03] tracking-[-0.025em]">
+                {pick(HOME_HELP_COPY.title, lang)}
+              </h3>
+            </div>
+            <div className="flex items-center border-t border-white/12 px-6 py-6 sm:px-8 lg:border-l lg:border-t-0 lg:px-10">
+              <p className="max-w-2xl text-[13px] leading-[1.75] text-white/65 sm:text-[15px]">
+                {pick(HOME_HELP_COPY.intro, lang)}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5">
+            {HOME_HELP_OPTIONS.map((option, index) => (
+              <Link
+                key={option.routeId}
+                to={pathFor(lang, option.routeId)}
+                data-testid={`home-trust-help-${option.routeId}`}
+                className="group relative isolate flex min-h-[210px] overflow-hidden border-b border-white/12 text-white focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#DDA27F] sm:min-h-[235px] sm:border-r lg:min-h-[270px] lg:border-b-0 last:sm:border-r-0"
+              >
+                <img
+                  src={option.image}
+                  alt=""
+                  aria-hidden="true"
+                  loading={index < 2 ? "eager" : "lazy"}
+                  className="absolute inset-0 -z-20 h-full w-full object-cover opacity-48 transition duration-[900ms] ease-out group-hover:scale-[1.055] group-hover:opacity-60"
+                />
+                <span className="absolute inset-0 -z-10 bg-gradient-to-t from-[#17120F]/95 via-[#17120F]/46 to-[#17120F]/12" />
+
+                <span className="flex w-full flex-col justify-between p-5 sm:p-6">
+                  <span className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-semibold tracking-[0.28em] text-[#E8B493]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="flex h-8 w-8 items-center justify-center border border-white/38 bg-[#17120F]/18 transition-all duration-300 group-hover:border-[#DDA27F] group-hover:bg-[#C16542]">
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.6} aria-hidden="true" />
+                    </span>
+                  </span>
+
+                  <span>
+                    <span className="block font-serif-x text-[1.45rem] leading-[1.08] sm:text-[1.55rem]">
+                      {pick(option.label, lang)}
+                    </span>
+                    <span className="mt-2 block text-[11px] leading-[1.55] text-white/68 sm:text-xs">
+                      {pick(option.detail, lang)}
+                    </span>
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>

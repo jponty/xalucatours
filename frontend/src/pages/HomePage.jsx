@@ -118,7 +118,10 @@ export default function HomePage() {
 
   return (
     <div data-testid="home-page">
-      <HomeWelcomeModal />
+      {/* The modal remains implemented and reusable; its automatic Home
+          trigger is intentionally disabled while the choices are displayed
+          permanently inside HomeTrustStrip. */}
+      <HomeWelcomeModal autoOpen={false} />
       <HeroSlider />
       <HomeTrustStrip />
       <HomeSectionNav />

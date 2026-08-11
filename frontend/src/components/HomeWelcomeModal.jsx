@@ -10,27 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { IMG } from "@/lib/imageBank";
+import { HOME_HELP_COPY, HOME_HELP_OPTIONS } from "@/lib/homeHelpOptions";
 
 const STORAGE_KEY = "xaluca-home-welcome-seen-2026-07";
 let shownWithoutStorage = false;
 
 const COPY = {
-  eyebrow: {
-    es: "Encuentra tu viaje",
-    en: "Find your journey",
-    fr: "Trouvez votre voyage",
-  },
-  title: {
-    es: "¿En qué podemos ayudarte?",
-    en: "How can we help you?",
-    fr: "Comment pouvons-nous vous aider ?",
-  },
-  intro: {
-    es: "Elige la forma en que te gustaría descubrir Marruecos y te llevaremos directamente a los viajes que mejor encajan contigo.",
-    en: "Choose how you would like to discover Morocco and we will take you straight to the journeys that best suit you.",
-    fr: "Choisissez comment vous souhaitez découvrir le Maroc et accédez directement aux voyages qui vous correspondent.",
-  },
+  ...HOME_HELP_COPY,
   skip: {
     es: "Continuar explorando la Home",
     en: "Continue exploring the Home page",
@@ -43,84 +29,13 @@ const COPY = {
   },
 };
 
-const OPTIONS = [
-  {
-    routeId: "tourSouth",
-    image: IMG.dunes,
-    label: {
-      es: "Descubrir el Sur de Marruecos",
-      en: "Discover Southern Morocco",
-      fr: "Découvrir le Sud du Maroc",
-    },
-    detail: {
-      es: "Sáhara, kasbahs y Alto Atlas",
-      en: "Sahara, kasbahs and High Atlas",
-      fr: "Sahara, kasbahs et Haut Atlas",
-    },
-  },
-  {
-    routeId: "tourNorth",
-    image: IMG.chefBlueCity,
-    label: {
-      es: "Descubrir el Norte de Marruecos",
-      en: "Discover Northern Morocco",
-      fr: "Découvrir le Nord du Maroc",
-    },
-    detail: {
-      es: "Ciudades imperiales, Rif y Mediterráneo",
-      en: "Imperial cities, the Rif and the Mediterranean",
-      fr: "Villes impériales, Rif et Méditerranée",
-    },
-  },
-  {
-    routeId: "tourFull",
-    image: IMG.atlasSnowy,
-    label: {
-      es: "Recorrer Marruecos de norte a sur",
-      en: "Travel across Morocco from north to south",
-      fr: "Parcourir le Maroc du nord au sud",
-    },
-    detail: {
-      es: "Los grandes circuitos por todo el país",
-      en: "Grand tours across the whole country",
-      fr: "Les grands circuits à travers tout le pays",
-    },
-  },
-  {
-    routeId: "tourShort",
-    image: IMG.koutoubia,
-    label: {
-      es: "Ver las Escapadas",
-      en: "View short escapes",
-      fr: "Voir les escapades",
-    },
-    detail: {
-      es: "Marruecos en pocos días, sin renunciar a lo esencial",
-      en: "Morocco in a few days, without missing the essentials",
-      fr: "Le Maroc en quelques jours, sans renoncer à l'essentiel",
-    },
-  },
-  {
-    routeId: "toursLanding",
-    image: IMG.riadFountain,
-    label: {
-      es: "Explorar Todos los viajes",
-      en: "Explore all journeys",
-      fr: "Explorer tous les voyages",
-    },
-    detail: {
-      es: "Compara todas las rutas y encuentra la tuya",
-      en: "Compare every route and find yours",
-      fr: "Comparez tous les itinéraires et trouvez le vôtre",
-    },
-  },
-];
-
-export default function HomeWelcomeModal() {
+export default function HomeWelcomeModal({ autoOpen = false }) {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!autoOpen) return undefined;
+
     let shouldShow = false;
     let storageAvailable = true;
 
@@ -142,7 +57,7 @@ export default function HomeWelcomeModal() {
       setOpen(true);
     }, 450);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [autoOpen]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -169,12 +84,12 @@ export default function HomeWelcomeModal() {
 
         <div className="p-4 sm:p-6 lg:p-8">
           <div className="grid gap-3 sm:grid-cols-2">
-            {OPTIONS.map((option, index) => (
+            {HOME_HELP_OPTIONS.map((option, index) => (
               <DialogClose asChild key={option.routeId}>
                 <Link
                   to={pathFor(lang, option.routeId)}
                   data-testid={`home-welcome-${option.routeId}`}
-                  className={`group relative min-h-[132px] overflow-hidden bg-[#2C2621] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 ${index === OPTIONS.length - 1 ? "sm:col-span-2 sm:min-h-[116px]" : ""}`}
+                  className={`group relative min-h-[132px] overflow-hidden bg-[#2C2621] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 ${index === HOME_HELP_OPTIONS.length - 1 ? "sm:col-span-2 sm:min-h-[116px]" : ""}`}
                 >
                   <img
                     src={option.image}
