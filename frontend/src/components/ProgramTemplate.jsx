@@ -35,6 +35,8 @@ import DownloadProgramModal from "@/components/DownloadProgramModal";
 import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import VideoSection from "@/components/VideoSection";
 import JourneyChronology from "@/components/JourneyChronology";
+import JourneyStoryPostcard from "@/components/JourneyStoryPostcard";
+import { journeyPostcardFor } from "@/lib/journeyPostcards";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
@@ -800,6 +802,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
     () => (program.route && program.route.length >= 2 ? program.route : deriveTripRoute(program)),
     [program]
   );
+  const journeyPostcard = journeyPostcardFor(routeId);
 
   const navItems = [
     { id: "description", label: t.nav_description },
@@ -844,6 +847,14 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
         return (
           <>
             {descSection}
+            {journeyPostcard && (
+              <JourneyStoryPostcard
+                content={journeyPostcard}
+                image={tripHeroImage(routeId) || program.days?.[1]?.image || program.days?.[0]?.image}
+                tripTitle={vt.title}
+                duration={program.duration}
+              />
+            )}
             {showJourneyChronology && (
               <JourneyChronology days={program.days} lang={lang} variant={program.chronologyVariant || variant} />
             )}

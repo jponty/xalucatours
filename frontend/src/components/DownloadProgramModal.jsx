@@ -36,6 +36,26 @@ const COPY = {
     fr: "Merci ! Ouverture de votre programme…",
   },
   required: { es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" },
+  invalid_fields: {
+    es: "Revisa los campos obligatorios antes de continuar.",
+    en: "Please check the required fields before continuing.",
+    fr: "Vérifiez les champs obligatoires avant de continuer.",
+  },
+  network_error: {
+    es: "No se puede conectar con el servidor. Comprueba que esté disponible e inténtalo de nuevo.",
+    en: "We cannot connect to the server. Please check that it is available and try again.",
+    fr: "Impossible de se connecter au serveur. Vérifiez qu’il est disponible et réessayez.",
+  },
+  server_error: {
+    es: "El servidor no ha podido procesar la descarga. Inténtalo de nuevo en unos instantes.",
+    en: "The server could not process the download. Please try again in a few moments.",
+    fr: "Le serveur n’a pas pu traiter le téléchargement. Réessayez dans quelques instants.",
+  },
+  request_error: {
+    es: "No se pudo completar la solicitud. Revisa los datos e inténtalo de nuevo.",
+    en: "The request could not be completed. Please check your details and try again.",
+    fr: "La demande n’a pas pu être traitée. Vérifiez vos informations et réessayez.",
+  },
 };
 
 const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -90,7 +110,11 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!isValid || sending) return;
+    if (!isValid) {
+      toast.error(L("invalid_fields"));
+      return;
+    }
+    if (sending) return;
     setSending(true);
     try {
       const { data } = await axios.post(`${API}/program-downloads`, {
@@ -112,7 +136,18 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
         onClose();
       }, 900);
     } catch (error) {
-      toast.error(error?.response?.data?.detail || L("required"));
+      const detail = error?.response?.data?.detail;
+      if (typeof detail === "string" && detail.trim()) {
+        toast.error(detail);
+      } else if (Array.isArray(detail)) {
+        toast.error(L("invalid_fields"));
+      } else if (!error?.response) {
+        toast.error(L("network_error"));
+      } else if (error.response.status >= 500) {
+        toast.error(L("server_error"));
+      } else {
+        toast.error(L("request_error"));
+      }
       setSending(false);
     }
   };
@@ -157,19 +192,19 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
           ) : (
             <form onSubmit={onSubmit} data-testid="download-program-form" className="mt-7 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <DLField label={L("first_name")} testId="dl-first-name">
+                <DLField label={L("first_name")} testId="dl-first-name" required>
                   <input required name="first_name" value={form.first_name} onChange={onField}
                     data-testid="download-input-first-name" className="dl-input" autoComplete="given-name" />
                 </DLField>
-                <DLField label={L("last_name")} testId="dl-last-name">
+                <DLField label={L("last_name")} testId="dl-last-name" required>
                   <input required name="last_name" value={form.last_name} onChange={onField}
                     data-testid="download-input-last-name" className="dl-input" autoComplete="family-name" />
                 </DLField>
-                <DLField label={L("email")} testId="dl-email">
+                <DLField label={L("email")} testId="dl-email" required>
                   <input required type="email" name="email" value={form.email} onChange={onField}
                     data-testid="download-input-email" className="dl-input" autoComplete="email" />
                 </DLField>
-                <DLField label={L("phone")} testId="dl-phone">
+                <DLField label={L("phone")} testId="dl-phone" required>
                   <input required name="phone" value={form.phone} onChange={onField}
                     data-testid="download-input-phone" className="dl-input" autoComplete="tel" inputMode="tel" />
                 </DLField>
@@ -233,9 +268,11 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
   );
 };
 
-const DLField = ({ label, testId, children }) => (
+const DLField = ({ label, testId, children, required = false }) => (
   <label className="block" data-testid={`${testId}-field`}>
-    <span className="block text-[10px] tracking-[0.3em] uppercase text-[#2C2621]/55 mb-2">{label}</span>
+    <span className="block text-[10px] tracking-[0.3em] uppercase text-[#2C2621]/55 mb-2">
+      {label}{required ? <span className="text-[#C16542]" aria-hidden="true"> *</span> : null}
+    </span>
     {children}
   </label>
 );
