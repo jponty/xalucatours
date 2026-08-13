@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Archive, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Archive, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
