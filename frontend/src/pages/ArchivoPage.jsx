@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Archive, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Archive, ChevronRight, Headphones, Pause, Play, Search, SlidersHorizontal } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
@@ -9,6 +9,8 @@ import { TRIP_PROGRAMS } from "@/lib/tripPrograms";
 import { pathFor } from "@/lib/routes";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
 import { tripImages } from "@/lib/tripImageGallery";
+import { programAudioGuideForRoute } from "@/lib/programAudioGuides";
+import { getNarrationState, subscribeNarration, toggleNarration } from "@/lib/narrationStore";
 import TripImageCarousel from "@/components/TripImageCarousel";
 
 const T = (es, en, fr) => ({ es, en, fr });
@@ -41,6 +43,9 @@ const COPY = {
   previousImage: T("Imagen anterior", "Previous image", "Image précédente"),
   nextImage: T("Imagen siguiente", "Next image", "Image suivante"),
   imageCount: T("Referencia visual del viaje", "Journey visual preview", "Aperçu visuel du voyage"),
+  audioGuide: T("Audioguía", "Audio guide", "Audioguide"),
+  playAudioGuide: T("Escuchar audioguía", "Play audio guide", "Écouter l’audioguide"),
+  pauseAudioGuide: T("Pausar audioguía", "Pause audio guide", "Mettre l’audioguide en pause"),
   priceNote: T(
     "Precios desde por persona, calculados con la tarifa más favorable disponible para cada temporada. El precio final depende del número de viajeros y de la disponibilidad.",
     "From prices per person, calculated using the best available rate for each season. The final price depends on party size and availability.",
@@ -162,6 +167,7 @@ export default function ArchivoPage() {
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
   const [imageManifest, setImageManifest] = useState(null);
+  const [narration, setNarration] = useState(getNarrationState());
 
   useEffect(() => {
     document.title = pick(T("Archivo de viajes · Xaluca Tours", "Trip archive · Xaluca Tours", "Archives des voyages · Xaluca Tours"), lang);
@@ -174,6 +180,8 @@ export default function ArchivoPage() {
       .catch(() => { if (active) setImageManifest({ slots: [], galleries: [] }); });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => subscribeNarration(setNarration), []);
 
   const archive = useMemo(() => buildArchive(pricing, imageManifest), [pricing, imageManifest]);
   const visible = useMemo(() => {
@@ -275,6 +283,15 @@ export default function ArchivoPage() {
               <tbody className="block divide-y divide-[#2C2621]/10 md:table-row-group">
                 {visible.map((trip, index) => {
                   const href = pathFor(lang, trip.routeId);
+                  // Resolve the recording through the same central registry as
+                  // the specific programme page. The archive never owns a
+                  // second audio URL or an independent route-to-file mapping.
+                  const audioSrc = programAudioGuideForRoute(trip.routeId, lang);
+                  const isCurrentAudio = Boolean(audioSrc) && narration.src === audioSrc;
+                  const isAudioPlaying = isCurrentAudio && narration.playing;
+                  const audioLabel = [pick(trip.title, lang), pick(trip.duration, lang)]
+                    .filter(Boolean)
+                    .join(" · ");
                   return (
                     <tr
                       key={trip.routeId}
@@ -291,6 +308,31 @@ export default function ArchivoPage() {
                           <div>
                             <span className="font-serif-x text-xl leading-tight text-[#2C2621] transition-colors group-hover:text-[#A95436] lg:text-[22px]">{pick(trip.title, lang)}</span>
                             <span className="mt-1.5 block break-all text-[9px] tracking-[0.08em] text-[#897E75]">{href}</span>
+                            {audioSrc ? (
+                              <button
+                                type="button"
+                                data-testid={`archivo-audio-${trip.routeId}`}
+                                aria-label={`${pick(isAudioPlaying ? COPY.pauseAudioGuide : COPY.playAudioGuide, lang)}: ${audioLabel}`}
+                                aria-pressed={isAudioPlaying}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  toggleNarration(audioSrc, {
+                                    title: audioLabel,
+                                    eyebrow: audioLabel,
+                                    sectionTestId: null,
+                                  });
+                                }}
+                                className="mt-3 inline-flex items-center gap-2 border border-[#C16542]/30 bg-[#C16542]/5 px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-[#9B563C] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
+                              >
+                                <Headphones className="h-3.5 w-3.5" strokeWidth={1.7} aria-hidden="true" />
+                                {pick(COPY.audioGuide, lang)}
+                                {isAudioPlaying ? (
+                                  <Pause className="h-3 w-3" strokeWidth={1.8} fill="currentColor" aria-hidden="true" />
+                                ) : (
+                                  <Play className="h-3 w-3" strokeWidth={1.8} fill="currentColor" aria-hidden="true" />
+                                )}
+                              </button>
+                            ) : null}
                           </div>
                         </div>
                       </td>
