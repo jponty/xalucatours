@@ -37,10 +37,51 @@ import VideoSection from "@/components/VideoSection";
 import JourneyChronology from "@/components/JourneyChronology";
 import JourneyStoryPostcard from "@/components/JourneyStoryPostcard";
 import { journeyPostcardFor } from "@/lib/journeyPostcards";
+import { programAudioGuideForRoute } from "@/lib/programAudioGuides";
 
 const DOWNLOAD_LABEL = { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" };
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 const CONTACT_LABEL = { es: "Contactar", en: "Contact us", fr: "Contacter" };
+const AUDIO_PENDING = {
+  es: {
+    eyebrow: "Audioguía del viaje",
+    title: "Estamos preparando esta narración.",
+    body: "La audioguía específica de este itinerario estará disponible próximamente.",
+  },
+  en: {
+    eyebrow: "Journey audio guide",
+    title: "We are preparing this narration.",
+    body: "The dedicated audio guide for this itinerary will be available soon.",
+  },
+  fr: {
+    eyebrow: "Audioguide du voyage",
+    title: "Nous préparons cette narration.",
+    body: "L’audioguide consacré à cet itinéraire sera bientôt disponible.",
+  },
+};
+
+const PendingAudioGuide = ({ routeId, lang }) => {
+  const copy = AUDIO_PENDING[lang] || AUDIO_PENDING.es;
+  return (
+    <section
+      data-testid={`program-audio-pending-${routeId}`}
+      className="bg-[#1A1513] py-12 md:py-16"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="flex items-start gap-5 border border-[#FDFBF7]/12 bg-[#2C2621]/55 p-7 md:p-9">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#D4A373]/45 text-[#D4A373]">
+            <Headset className="h-5 w-5" strokeWidth={1.5} />
+          </span>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-[#D4A373]">{copy.eyebrow}</p>
+            <h3 className="mt-3 font-serif-x text-2xl text-[#FDFBF7] md:text-3xl">{copy.title}</h3>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#FDFBF7]/70 md:text-base">{copy.body}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
@@ -803,6 +844,10 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
     [program]
   );
   const journeyPostcard = journeyPostcardFor(routeId);
+  const programAudioSrc = programAudioGuideForRoute(routeId, lang);
+  const programAudioLabel = [vt.title, pick(program.duration, lang)]
+    .filter(Boolean)
+    .join(" · ");
 
   const navItems = [
     { id: "description", label: t.nav_description },
@@ -816,11 +861,12 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
 
   // Section order applied to ALL programs:
   // Description → Quick → Audio → Map.
-  const audioSection = (
+  const audioSection = programAudioSrc ? (
     <VideoSection
       testid={`program-audio-${routeId || program.duration_key}`}
+      audioSrc={programAudioSrc}
       poster="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85"
-      eyebrow={{ es: "Escucha este viaje", en: "Listen to this journey", fr: "Écoutez ce voyage" }}
+      eyebrow={programAudioLabel}
       title={{
         es: "Deja que te contemos la ruta.",
         en: "Let us tell you the route.",
@@ -832,6 +878,8 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
         fr: "Une narration pour imaginer chaque étape avant le départ.",
       }}
     />
+  ) : (
+    <PendingAudioGuide routeId={routeId || program.duration_key} lang={lang} />
   );
 
   return (
