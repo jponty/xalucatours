@@ -2,7 +2,6 @@ import React from "react";
 import { Quote, Star, Route } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { getTestimonialsForThemes } from "@/lib/testimonials";
-import EditableImage from "@/components/EditableImage";
 
 /* ============================================================
    Testimonials — minimalist editorial section
@@ -39,32 +38,27 @@ const SECTION_LABELS = {
 
 const INTER_FAMILY = "Inter, -apple-system, BlinkMacSystemFont, sans-serif";
 
-const Avatar = ({ src, name, tone, slot }) => {
-  const initials = name
-    .split(/\s+/)
+const Avatar = ({ name, tone }) => {
+  const initials = String(name || "")
+    .split(/[\s&·]+/)
+    .filter((word) => /[a-zA-ZÀ-ÿ]/.test(word))
     .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+    .map((word) => word[0].toUpperCase())
+    .join("") || "X";
+
   return (
     <span
-      className="relative inline-flex items-center justify-center w-12 h-12 rounded-full overflow-hidden shrink-0"
-      style={{ background: tone.bg, color: tone.quote, boxShadow: `inset 0 0 0 1px ${tone.border}22` }}
+      role="img"
+      aria-label={"Avatar de " + (name || "viajero") + ": " + initials}
+      title={name || undefined}
+      className="inline-flex h-12 w-12 shrink-0 select-none items-center justify-center overflow-hidden rounded-full text-[13px] font-semibold tracking-[0.06em]"
+      style={{
+        background: tone.bg,
+        color: tone.quote,
+        boxShadow: "inset 0 0 0 1px " + tone.border + "22",
+      }}
     >
-      {src ? (
-        <EditableImage
-          slot={slot}
-          fallback={src}
-          alt={name}
-          aspectRatio={1}
-          className="w-full h-full object-cover"
-          imgProps={{ loading: "lazy" }}
-        />
-      ) : (
-        <span className="text-[12px] tracking-[0.06em]" style={{ fontFamily: INTER_FAMILY, fontWeight: 600 }}>
-          {initials}
-        </span>
-      )}
+      <span aria-hidden="true">{initials}</span>
     </span>
   );
 };
@@ -99,7 +93,7 @@ const TestimonialCard = ({ t, tone, lang, idx }) => (
     </p>
 
     <div className="mt-auto pt-5 flex items-center gap-4 border-t" style={{ borderColor: `${tone.border}14` }}>
-      <Avatar src={t.avatar} name={t.name} tone={tone} slot={`testimonial.${t.id}.avatar`} />
+      <Avatar name={t.name} tone={tone} />
       <div className="min-w-0">
         <p className="text-[14.5px] text-[#2C2621] truncate" style={{ fontFamily: INTER_FAMILY, fontWeight: 600 }}>
           {t.name}

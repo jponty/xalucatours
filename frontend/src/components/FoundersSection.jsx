@@ -7,6 +7,7 @@ import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
 import { supabaseMedia } from "@/lib/supabaseMedia";
 import FounderContactModal from "@/components/FounderContactModal";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 /* ============================================================
    FoundersSection — Home, just below "Nuestra historia".
@@ -161,6 +162,10 @@ const FounderBlock = ({ f, reverse, lang, onContact }) => (
             aspectRatio="4/5"
             imgProps={{ loading: "lazy" }}
             className="w-full h-full object-cover"
+          />
+          <XalucaLogoBadge
+            className="right-3 top-3 h-11 w-11 sm:right-4 sm:top-4 sm:h-12 sm:w-12"
+            testid={`founder-logo-${f.id}`}
           />
         </div>
         <figcaption className="pt-4 pb-3 text-center">

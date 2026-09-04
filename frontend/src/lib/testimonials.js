@@ -15,28 +15,6 @@ import { testimonialProgramLabel } from "@/lib/testimonialPrograms";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
-const AVATAR = {
-  laia:    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  carlos:  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  sophie:  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  thomas:  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  marta:   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  julien:  "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  emma:    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  david:   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  amelie:  "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  hugo:    "https://images.unsplash.com/photo-1463453091185-61582044d556?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  isabel:  "https://images.unsplash.com/photo-1496440737103-cd596325d314?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  pierre:  "https://images.unsplash.com/photo-1542178243-bc20204b769f?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  claudia: "https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  ricardo: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  ines:    "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  mathieu: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  paula:   "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  nora:    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  oliver:  "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-  laure:   "https://images.unsplash.com/photo-1521252659862-eec69941b071?auto=format&fit=facearea&facepad=2.6&w=240&h=240&q=85",
-};
 
 const RAW_TESTIMONIALS = [
   /* ============ DESERT · DUNES · BIVOUAC · STARS · NOMADS ============ */
@@ -44,7 +22,6 @@ const RAW_TESTIMONIALS = [
     id: "laia-bivouac",
     name: "Laia & Marc",
     themes: ["general", "sur", "marruecos", "desert", "dunes", "bivouac", "stars"],
-    avatar: AVATAR.laia,
     date: "2025-11",
     trip: T("Atlas + Erg Chebbi · 7 días", "Atlas + Erg Chebbi · 7 days", "Atlas + Erg Chebbi · 7 jours"),
     quote: T(
@@ -57,7 +34,6 @@ const RAW_TESTIMONIALS = [
     id: "marta-haima",
     name: "Marta Ruiz",
     themes: ["escapadas", "desert", "bivouac", "short-escape", "wellness"],
-    avatar: AVATAR.marta,
     date: "2025-12",
     trip: T("Escapada al desierto · 3 días", "Desert escape · 3 days", "Escapade au désert · 3 jours"),
     quote: T(
@@ -70,7 +46,6 @@ const RAW_TESTIMONIALS = [
     id: "ricardo-stars",
     name: "Ricardo & Ana",
     themes: ["desert", "stars", "honeymoon", "general", "marruecos"],
-    avatar: AVATAR.ricardo,
     date: "2025-10",
     trip: T("Luna de miel en el Sahara · 5 días", "Sahara honeymoon · 5 days", "Lune de miel au Sahara · 5 jours"),
     quote: T(
@@ -83,7 +58,6 @@ const RAW_TESTIMONIALS = [
     id: "ines-camel",
     name: "Inés Vega",
     themes: ["desert", "camel", "dunes", "escapadas", "short-escape"],
-    avatar: AVATAR.ines,
     date: "2025-09",
     trip: T("Erg Chebbi en dromedario · 4 días", "Erg Chebbi by camel · 4 days", "Erg Chebbi à dos de dromadaire · 4 jours"),
     quote: T(
@@ -96,7 +70,6 @@ const RAW_TESTIMONIALS = [
     id: "hugo-gnawa",
     name: "Hugo Salinas",
     themes: ["desert", "nomads", "gnawa", "general", "marruecos"],
-    avatar: AVATAR.hugo,
     date: "2025-08",
     trip: T("Sahara y cultura amazigh · 6 días", "Sahara & Amazigh culture · 6 days", "Sahara et culture amazighe · 6 jours"),
     quote: T(
@@ -111,7 +84,6 @@ const RAW_TESTIMONIALS = [
     id: "thomas-mgoun",
     name: "Thomas Becker",
     themes: ["aventura", "atlas", "mgoun", "trekking", "expedition", "general"],
-    avatar: AVATAR.thomas,
     date: "2025-08",
     trip: T("Trekking M'Goun · 6 días", "M'Goun trekking · 6 days", "Trekking M'Goun · 6 jours"),
     quote: T(
@@ -124,7 +96,6 @@ const RAW_TESTIMONIALS = [
     id: "claudia-berber",
     name: "Claudia & Stefan",
     themes: ["atlas", "berber-village", "trekking", "general", "marruecos"],
-    avatar: AVATAR.claudia,
     date: "2025-05",
     trip: T("Pueblos bereberes del Alto Atlas · 4 días", "High Atlas Berber villages · 4 days", "Villages berbères du Haut Atlas · 4 jours"),
     quote: T(
@@ -137,7 +108,6 @@ const RAW_TESTIMONIALS = [
     id: "emma-todra",
     name: "Emma & Luca",
     themes: ["sur", "atlas", "gorges", "marruecos"],
-    avatar: AVATAR.emma,
     date: "2025-10",
     trip: T("Gargantas del Dadès y Todra · 5 días", "Dades & Todra Gorges · 5 days", "Gorges du Dadès et Todra · 5 jours"),
     quote: T(
@@ -150,7 +120,6 @@ const RAW_TESTIMONIALS = [
     id: "oliver-atlas-escape",
     name: "Oliver & Anya",
     themes: ["escapadas", "atlas", "short-escape", "berber-village"],
-    avatar: AVATAR.oliver,
     date: "2025-04",
     trip: T("Escapada al Alto Atlas · 3 días", "High Atlas escape · 3 days", "Escapade au Haut Atlas · 3 jours"),
     quote: T(
@@ -165,7 +134,6 @@ const RAW_TESTIMONIALS = [
     id: "sophie-fez",
     name: "Sophie & Antoine",
     themes: ["norte", "marruecos", "imperial", "fez", "medina", "general"],
-    avatar: AVATAR.sophie,
     date: "2025-09",
     trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
     quote: T(
@@ -178,7 +146,6 @@ const RAW_TESTIMONIALS = [
     id: "isabel-riad",
     name: "Isabel & Diogo",
     themes: ["norte", "fez", "riad", "imperial", "gastronomy", "marruecos"],
-    avatar: AVATAR.isabel,
     date: "2025-06",
     trip: T("Fez · Meknes · Volubilis · 5 días", "Fez · Meknes · Volubilis · 5 days", "Fès · Meknès · Volubilis · 5 jours"),
     quote: T(
@@ -191,7 +158,6 @@ const RAW_TESTIMONIALS = [
     id: "julien-chef",
     name: "Julien Moreau",
     themes: ["norte", "marruecos", "chefchaouen", "tangier", "imperial"],
-    avatar: AVATAR.julien,
     date: "2025-07",
     trip: T("Tánger · Chefchaouen · Fez · 6 días", "Tangier · Chefchaouen · Fez · 6 days", "Tanger · Chefchaouen · Fès · 6 jours"),
     quote: T(
@@ -204,7 +170,6 @@ const RAW_TESTIMONIALS = [
     id: "nora-marrakech",
     name: "Nora Jansen",
     themes: ["sur", "marrakech", "imperial", "riad", "gastronomy", "marruecos"],
-    avatar: AVATAR.nora,
     date: "2025-03",
     trip: T("Marrakech & Atlas · 6 días", "Marrakech & Atlas · 6 days", "Marrakech & Atlas · 6 jours"),
     quote: T(
@@ -217,7 +182,6 @@ const RAW_TESTIMONIALS = [
     id: "mathieu-fez-escape",
     name: "Mathieu Lambert",
     themes: ["escapadas", "fez", "medina", "short-escape", "imperial"],
-    avatar: AVATAR.mathieu,
     date: "2025-02",
     trip: T("Escapada a Fez · 3 días", "Fez escape · 3 days", "Escapade à Fès · 3 jours"),
     quote: T(
@@ -232,7 +196,6 @@ const RAW_TESTIMONIALS = [
     id: "paula-essaouira",
     name: "Paula & Ben",
     themes: ["sur", "marruecos", "essaouira", "coast", "gastronomy"],
-    avatar: AVATAR.paula,
     date: "2025-05",
     trip: T("Marrakech & Essaouira · 5 días", "Marrakech & Essaouira · 5 days", "Marrakech & Essaouira · 5 jours"),
     quote: T(
@@ -245,7 +208,6 @@ const RAW_TESTIMONIALS = [
     id: "laure-tanger",
     name: "Laure Vidal",
     themes: ["escapadas", "norte", "tangier", "coast", "short-escape"],
-    avatar: AVATAR.laure,
     date: "2025-01",
     trip: T("Escapada a Tánger · 3 días", "Tangier escape · 3 days", "Escapade à Tanger · 3 jours"),
     quote: T(
@@ -260,7 +222,6 @@ const RAW_TESTIMONIALS = [
     id: "david-4x4",
     name: "David Lewis",
     themes: ["aventura", "4x4", "expedition", "atlas", "desert", "adrenaline"],
-    avatar: AVATAR.david,
     date: "2025-06",
     trip: T("Atlas + Sahara en 4x4 · 8 días", "Atlas + Sahara 4x4 · 8 days", "Atlas + Sahara en 4x4 · 8 jours"),
     quote: T(
@@ -273,7 +234,6 @@ const RAW_TESTIMONIALS = [
     id: "pierre-enduro",
     name: "Pierre Lacombe",
     themes: ["aventura", "enduro", "expedition", "adrenaline", "atlas"],
-    avatar: AVATAR.pierre,
     date: "2025-10",
     trip: T("Raid enduro · Atlas y Sahara · 7 días", "Enduro raid · Atlas & Sahara · 7 days", "Raid enduro · Atlas & Sahara · 7 jours"),
     quote: T(
@@ -288,7 +248,6 @@ const RAW_TESTIMONIALS = [
     id: "carlos-bespoke",
     name: "Carlos Ferrer",
     themes: ["bespoke", "marruecos", "luxury", "general"],
-    avatar: AVATAR.carlos,
     date: "2025-10",
     trip: T("Viaje a medida · 10 días", "Tailor-made · 10 days", "Sur mesure · 10 jours"),
     quote: T(
@@ -301,7 +260,6 @@ const RAW_TESTIMONIALS = [
     id: "amelie-family",
     name: "Amélie & Thomas",
     themes: ["bespoke", "family", "marruecos", "general"],
-    avatar: AVATAR.amelie,
     date: "2025-04",
     trip: T("Viaje en familia a medida · 9 días", "Family tailor-made · 9 days", "Famille sur mesure · 9 jours"),
     quote: T(
@@ -314,7 +272,6 @@ const RAW_TESTIMONIALS = [
     id: "noemi-laura",
     name: "Laura G.",
     themes: ["noemi", "fast-track-planning"],
-    avatar: AVATAR.isabel,
     date: "2025-11",
     trip: T("Viaje a medida · Sur de Marruecos", "Tailor-made · Southern Morocco", "Sur mesure · Sud du Maroc"),
     quote: T(
@@ -327,7 +284,6 @@ const RAW_TESTIMONIALS = [
     id: "noemi-david",
     name: "David M.",
     themes: ["noemi", "fast-track-planning"],
-    avatar: AVATAR.david,
     date: "2025-10",
     trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
     quote: T(
@@ -340,7 +296,6 @@ const RAW_TESTIMONIALS = [
     id: "noemi-sophie",
     name: "Sophie L.",
     themes: ["noemi", "fast-track-planning"],
-    avatar: AVATAR.sophie,
     date: "2025-09",
     trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
     quote: T(
@@ -353,7 +308,6 @@ const RAW_TESTIMONIALS = [
     id: "noemi-thomas",
     name: "Thomas B.",
     themes: ["noemi"],
-    avatar: AVATAR.thomas,
     date: "2025-08",
     trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
     quote: T(
@@ -366,7 +320,6 @@ const RAW_TESTIMONIALS = [
     id: "noemi-marta",
     name: "Marta R.",
     themes: ["noemi"],
-    avatar: AVATAR.marta,
     date: "2025-07",
     trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
     quote: T(
@@ -379,7 +332,6 @@ const RAW_TESTIMONIALS = [
     id: "noemi-ricardo",
     name: "Ricardo & Ana",
     themes: ["noemi"],
-    avatar: AVATAR.ricardo,
     date: "2025-06",
     trip: T("Luna de miel · 8 días", "Honeymoon · 8 days", "Lune de miel · 8 jours"),
     quote: T(
@@ -391,7 +343,7 @@ const RAW_TESTIMONIALS = [
 
   /* ---- Elena Xaluca · Asesora de viajes ---- */
   {
-    id: "elena-carla", name: "Carla P.", themes: ["elena"], avatar: AVATAR.emma, date: "2025-11",
+    id: "elena-carla", name: "Carla P.", themes: ["elena"], date: "2025-11",
     trip: T("Viaje a medida · Marruecos", "Tailor-made · Morocco", "Sur mesure · Maroc"),
     quote: T(
       "Elena captó enseguida lo que queríamos y nos preparó un viaje totalmente a nuestra medida. Nada genérico, todo pensado para nosotros.",
@@ -400,7 +352,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-marc", name: "Marc D.", themes: ["elena"], avatar: AVATAR.mathieu, date: "2025-10",
+    id: "elena-marc", name: "Marc D.", themes: ["elena"], date: "2025-10",
     trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
     quote: T(
       "Cada mensaje tenía respuesta casi al momento. Nos sentimos acompañados en todo el proceso, sin una sola espera.",
@@ -409,7 +361,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-andrea", name: "Andrea S.", themes: ["elena"], avatar: AVATAR.nora, date: "2025-09",
+    id: "elena-andrea", name: "Andrea S.", themes: ["elena"], date: "2025-09",
     trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
     quote: T(
       "Organización impecable. Vuelos, hoteles y traslados encajaban a la perfección; se notaba una gran profesional detrás.",
@@ -418,7 +370,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-lucia", name: "Lucía F.", themes: ["elena"], avatar: AVATAR.claudia, date: "2025-08",
+    id: "elena-lucia", name: "Lucía F.", themes: ["elena"], date: "2025-08",
     trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
     quote: T(
       "Elena nos descubrió rincones de Marruecos que no aparecían en ninguna guía. Su conocimiento marcó la diferencia.",
@@ -427,7 +379,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "elena-pauline", name: "Pauline R.", themes: ["elena"], avatar: AVATAR.laure, date: "2025-07",
+    id: "elena-pauline", name: "Pauline R.", themes: ["elena"], date: "2025-07",
     trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
     quote: T(
       "Amable, cercana y siempre con una sonrisa. Nos trató como a amigos desde el primer momento.",
@@ -438,7 +390,7 @@ const RAW_TESTIMONIALS = [
 
   /* ---- Sanaa Xaluca · Asesora de viajes ---- */
   {
-    id: "sanaa-javier", name: "Javier M.", themes: ["sanaa"], avatar: AVATAR.carlos, date: "2025-11",
+    id: "sanaa-javier", name: "Javier M.", themes: ["sanaa"], date: "2025-11",
     trip: T("Viaje a medida · Sur de Marruecos", "Tailor-made · Southern Morocco", "Sur mesure · Sud du Maroc"),
     quote: T(
       "Sanaa entiende Marruecos como nadie. Nos guió con recomendaciones locales que hicieron el viaje auténtico y especial.",
@@ -447,7 +399,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-sarah", name: "Sarah K.", themes: ["sanaa"], avatar: AVATAR.paula, date: "2025-10",
+    id: "sanaa-sarah", name: "Sarah K.", themes: ["sanaa"], date: "2025-10",
     trip: T("Ciudades imperiales · 5 días", "Imperial cities · 5 days", "Villes impériales · 5 jours"),
     quote: T(
       "Respondía a cualquier hora y resolvía todo al instante. Una tranquilidad enorme antes y durante el viaje.",
@@ -456,7 +408,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-marta", name: "Marta L.", themes: ["sanaa"], avatar: AVATAR.laia, date: "2025-09",
+    id: "sanaa-marta", name: "Marta L.", themes: ["sanaa"], date: "2025-09",
     trip: T("Escapada al desierto · 4 días", "Desert escape · 4 days", "Escapade au désert · 4 jours"),
     quote: T(
       "Todo estuvo perfectamente coordinado sobre el terreno. Profesionalidad y calma en cada detalle.",
@@ -465,7 +417,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-thomas", name: "Thomas V.", themes: ["sanaa"], avatar: AVATAR.oliver, date: "2025-08",
+    id: "sanaa-thomas", name: "Thomas V.", themes: ["sanaa"], date: "2025-08",
     trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
     quote: T(
       "Nos escuchó de verdad y adaptó el itinerario a nuestro ritmo. Sentimos que el viaje era único.",
@@ -474,7 +426,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
   {
-    id: "sanaa-elena", name: "Elena G.", themes: ["sanaa"], avatar: AVATAR.ines, date: "2025-07",
+    id: "sanaa-elena", name: "Elena G.", themes: ["sanaa"], date: "2025-07",
     trip: T("Marrakech y desierto · 6 días", "Marrakech & desert · 6 days", "Marrakech & désert · 6 jours"),
     quote: T(
       "El trato de Sanaa fue cálido y humano. Su hospitalidad marroquí se nota desde el primer contacto.",

@@ -584,16 +584,21 @@ const Testimonials = ({ lang }) => {
                     </p>
 
                     <div className="mt-7 pt-5 border-t border-[#2C2621]/10 flex items-center gap-4">
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#1A1513]">
-                        <EditableImage
-                          name="avatar"
-                          fallback={t.avatar}
-                          alt={t.name}
-                          aspectRatio="1/1"
-                          imgProps={{ loading: "lazy" }}
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      </div>
+                      <span
+                        role="img"
+                        aria-label={"Avatar de " + t.name}
+                        title={t.name}
+                        className="inline-flex h-14 w-14 flex-shrink-0 select-none items-center justify-center rounded-full bg-[#1A1513] font-serif-x text-base font-medium tracking-[0.04em] text-[#FDFBF7] shadow-[inset_0_0_0_1px_rgba(193,101,66,0.4)]"
+                      >
+                        <span aria-hidden="true">
+                          {String(t.name || "")
+                            .split(/[\s&·]+/)
+                            .filter((word) => /[a-zA-ZÀ-ÿ]/.test(word))
+                            .slice(0, 2)
+                            .map((word) => word[0].toUpperCase())
+                            .join("") || "X"}
+                        </span>
+                      </span>
                       <div className="min-w-0">
                         <p className="font-serif-x text-base text-[#2C2621] leading-tight">{t.name}</p>
                         <p className="mt-1.5 flex items-center gap-1.5 text-[10px] tracking-[0.16em] uppercase text-[#C16542]/85">
