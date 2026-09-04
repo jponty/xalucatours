@@ -8,8 +8,9 @@
    each form's background.
 ============================================================ */
 import React from "react";
-import { Phone, Mail, Check, Clock } from "lucide-react";
+import { Phone, Mail, Check, Clock, CalendarDays } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
+import { calculateInclusiveTripDays } from "@/lib/utils";
 import EditableText from "@/components/EditableText";
 import InternationalPhoneInput from "@/components/InternationalPhoneInput";
 
@@ -63,6 +64,47 @@ const CONTACT_PREF_DETAIL = {
     "These details can be different from those provided above.",
     "Ces coordonnées peuvent être différentes de celles indiquées précédemment.",
   ),
+};
+
+const TRIP_DURATION_LABELS = {
+  es: (days) => String(days) + " " + (days === 1 ? "día" : "días") + " de viaje",
+  en: (days) => String(days) + " travel " + (days === 1 ? "day" : "days"),
+  fr: (days) => String(days) + " " + (days === 1 ? "jour" : "jours") + " de voyage",
+};
+
+export const TripDurationSummary = ({
+  startDate,
+  endDate,
+  lang = "es",
+  tone = "light",
+  className = "",
+  testid = "trip-duration",
+}) => {
+  const days = calculateInclusiveTripDays(startDate, endDate);
+  if (!days) return null;
+  const language = String(lang || "es").toLowerCase().startsWith("en")
+    ? "en"
+    : String(lang || "es").toLowerCase().startsWith("fr") ? "fr" : "es";
+  const dark = tone === "dark";
+  const appearance = dark
+    ? "border-[#D4A373] bg-white/[0.05] text-[#FDFBF7]"
+    : "border-[#C16542] bg-[#C16542]/[0.06] text-[#2C2621]";
+
+  return (
+    <p
+      role="status"
+      aria-live="polite"
+      data-testid={testid}
+      className={"flex items-center gap-2 border-l-2 px-4 py-3 text-sm " + appearance + (className ? " " + className : "")}
+    >
+      <CalendarDays
+        className={"h-4 w-4 shrink-0 " + (dark ? "text-[#D4A373]" : "text-[#C16542]")}
+        strokeWidth={1.7}
+        aria-hidden="true"
+      />
+      <strong className="font-medium">{TRIP_DURATION_LABELS[language](days)}</strong>
+    </p>
+  );
 };
 
 /* Human-readable label(s) for stored value(s). Accepts a string or an

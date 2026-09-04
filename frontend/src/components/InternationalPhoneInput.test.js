@@ -18,6 +18,7 @@ import {
   normalizeIncompleteInternationalPhone,
   normalizeInternationalPhone,
 } from "./InternationalPhoneInput";
+import { calculateInclusiveTripDays } from "../lib/utils";
 
 describe("international phone helpers", () => {
   test("normalizes formatted international numbers to E.164", () => {
@@ -39,5 +40,16 @@ describe("international phone helpers", () => {
   test("requires an international calling code", () => {
     expect(isValidInternationalPhone("+33 6 12 34 56 78")).toBe(true);
     expect(isValidInternationalPhone("612 345 678")).toBe(false);
+  });
+});
+describe("travel duration helpers", () => {
+  test("counts both the departure and return dates", () => {
+    expect(calculateInclusiveTripDays("2026-10-12", "2026-10-18")).toBe(7);
+    expect(calculateInclusiveTripDays("2026-10-12", "2026-10-12")).toBe(1);
+  });
+
+  test("does not report incomplete or reversed ranges", () => {
+    expect(calculateInclusiveTripDays("2026-10-12", "")).toBeNull();
+    expect(calculateInclusiveTripDays("2026-10-18", "2026-10-12")).toBeNull();
   });
 });

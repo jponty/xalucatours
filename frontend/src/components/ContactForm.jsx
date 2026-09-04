@@ -8,7 +8,7 @@ import { translations } from "@/lib/i18n";
 import { resolvePath } from "@/lib/routes";
 import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
 import EditableText from "@/components/EditableText";
-import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
+import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -17,7 +17,8 @@ const initialState = {
   full_name: "",
   email: "",
   phone: "",
-  travel_dates: "",
+  travel_start_date: "",
+  travel_end_date: "",
   party_size: "",
   journey_interest: "",
   preferred_contact: [],
@@ -86,8 +87,11 @@ export const ContactForm = () => {
     try {
       let routeId = null;
       try { routeId = resolvePath(location.pathname)?.routeId || null; } catch { routeId = null; }
+      const { travel_start_date, travel_end_date, ...requestFields } = form;
+      const travel_dates = [travel_start_date, travel_end_date].filter(Boolean).join(" → ");
       await axios.post(`${API}/contact-requests`, {
-        ...form,
+        ...requestFields,
+        travel_dates: travel_dates || null,
         language: lang,
         source_route_id: routeId,
         source_path: location.pathname,
@@ -202,11 +206,48 @@ export const ContactForm = () => {
                     {phoneError && <span className="mt-2 block text-xs text-[#D4A373]">{phoneError}</span>}
                   </Field>
 
-                  <Field labelSlot="home.contact.form_dates" labelDefaults={translations.form_dates} testId="form-dates">
-                    <input name="travel_dates" value={form.travel_dates} onChange={onChange}
-                      placeholder="e.g. Oct 12 — Oct 22, 2026"
-                      data-testid="contact-input-dates" className="form-input" />
-                  </Field>
+                  <div className="md:col-span-2">
+                    <Field as="div" labelSlot="home.contact.form_dates" labelDefaults={translations.form_dates} testId="form-dates">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <label className="block">
+                          <span className="mb-2 block text-[10px] uppercase tracking-[0.22em] text-[#FDFBF7]/50">
+                            {pick({ es: "Fecha de inicio", en: "Start date", fr: "Date de début" }, lang)}
+                          </span>
+                          <input
+                            type="date"
+                            name="travel_start_date"
+                            value={form.travel_start_date}
+                            max={form.travel_end_date || undefined}
+                            onChange={onChange}
+                            data-testid="contact-input-start-date"
+                            className="form-input"
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="mb-2 block text-[10px] uppercase tracking-[0.22em] text-[#FDFBF7]/50">
+                            {pick({ es: "Fecha de fin", en: "End date", fr: "Date de fin" }, lang)}
+                          </span>
+                          <input
+                            type="date"
+                            name="travel_end_date"
+                            value={form.travel_end_date}
+                            min={form.travel_start_date || undefined}
+                            onChange={onChange}
+                            data-testid="contact-input-end-date"
+                            className="form-input"
+                          />
+                        </label>
+                      </div>
+                      <TripDurationSummary
+                        startDate={form.travel_start_date}
+                        endDate={form.travel_end_date}
+                        lang={lang}
+                        tone="dark"
+                        className="mt-4"
+                        testid="contact-trip-duration"
+                      />
+                    </Field>
+                  </div>
 
                   <Field labelSlot="home.contact.form_party" labelDefaults={translations.form_party} testId="form-party">
                     <input name="party_size" value={form.party_size} onChange={onChange}

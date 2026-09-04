@@ -16,7 +16,7 @@ import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripContext";
 import { optimizedSrc } from "@/lib/imageUrl";
-import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
+import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 /* ============================================================
@@ -461,12 +461,21 @@ export default function PlannerForm() {
                 <>
                   <Field label={<ET k="start_date" multiline={false} />}>
                     <input type="date" data-testid="start-date" className={inputCls}
-                      value={form.startDate} onChange={(e) => set("startDate", e.target.value)} />
+                      value={form.startDate} max={form.endDate || undefined}
+                      onChange={(e) => set("startDate", e.target.value)} />
                   </Field>
                   <Field label={<ET k="end_date" multiline={false} />}>
                     <input type="date" data-testid="end-date" className={inputCls}
-                      value={form.endDate} onChange={(e) => set("endDate", e.target.value)} />
+                      value={form.endDate} min={form.startDate || undefined}
+                      onChange={(e) => set("endDate", e.target.value)} />
                   </Field>
+                  <TripDurationSummary
+                    startDate={form.startDate}
+                    endDate={form.endDate}
+                    lang={lang}
+                    className="md:col-span-2"
+                    testid="planner-trip-duration"
+                  />
                 </>
               )}
               {form.dateMode === "exact" && (
