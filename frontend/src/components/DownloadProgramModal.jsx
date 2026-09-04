@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { X, Download, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -105,7 +106,7 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
     form.first_name.trim().length > 0 &&
     form.last_name.trim().length > 0 &&
     isValidEmail(form.email.trim()) &&
-    form.phone.trim().length >= 4 &&
+    isValidInternationalPhone(form.phone) &&
     form.privacy === true;
 
   const onSubmit = async (e) => {
@@ -204,9 +205,15 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
                   <input required type="email" name="email" value={form.email} onChange={onField}
                     data-testid="download-input-email" className="dl-input" autoComplete="email" />
                 </DLField>
-                <DLField label={L("phone")} testId="dl-phone" required>
-                  <input required name="phone" value={form.phone} onChange={onField}
-                    data-testid="download-input-phone" className="dl-input" autoComplete="tel" inputMode="tel" />
+                <DLField as="div" label={L("phone")} testId="dl-phone" required>
+                  <InternationalPhoneInput
+                    required
+                    name="phone"
+                    value={form.phone}
+                    onValueChange={(phone) => setForm((current) => ({ ...current, phone }))}
+                    lang={lang}
+                    testId="download-input-phone"
+                  />
                 </DLField>
               </div>
 
@@ -268,13 +275,13 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
   );
 };
 
-const DLField = ({ label, testId, children, required = false }) => (
-  <label className="block" data-testid={`${testId}-field`}>
+const DLField = ({ label, testId, children, required = false, as: Wrapper = "label" }) => (
+  <Wrapper className="block" data-testid={`${testId}-field`}>
     <span className="block text-[10px] tracking-[0.3em] uppercase text-[#2C2621]/55 mb-2">
       {label}{required ? <span className="text-[#C16542]" aria-hidden="true"> *</span> : null}
     </span>
     {children}
-  </label>
+  </Wrapper>
 );
 
 export default DownloadProgramModal;

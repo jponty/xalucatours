@@ -57,10 +57,10 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
     assert result.full_name == "Ana García"
     stored_contact = collection.insert_one.await_args.args[0]
     assert stored_contact["preferred_contact_email"] == "respuesta.ana@example.com"
-    assert stored_contact["preferred_contact_phone"] == "+34 699 555 444"
+    assert stored_contact["preferred_contact_phone"] == "+34699555444"
     for value in (
-        "Ana García", "ana@example.com", "+34 600 111 222", "Octubre 2026",
-        "4", "Gran Sur", "respuesta.ana@example.com", "+34 699 555 444",
+        "Ana García", "ana@example.com", "+34600111222", "Octubre 2026",
+        "4", "Gran Sur", "respuesta.ana@example.com", "+34699555444",
         "Queremos una propuesta familiar completa.", "Contacto",
     ):
         assert value in internal[2]
@@ -70,13 +70,13 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
     assert confirmation_rows == [
         ("Nombre", "Ana García"),
         ("Email", "ana@example.com"),
-        ("Teléfono", "+34 600 111 222"),
+        ("Teléfono", "+34600111222"),
         ("Fechas", "Octubre 2026"),
         ("Viajeros", "4"),
         ("Interés", "Gran Sur"),
         ("Canal preferido", "Correo electrónico, Teléfono / WhatsApp"),
         ("Email preferido de contacto", "respuesta.ana@example.com"),
-        ("Teléfono / WhatsApp preferido", "+34 699 555 444"),
+        ("Teléfono / WhatsApp preferido", "+34699555444"),
         ("Destinatario", ""),
         ("Mensaje", "Queremos una propuesta familiar completa."),
         ("Página origen", "Contacto"),
@@ -145,7 +145,7 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
     assert stored_planner["preferred_contact_email"] == "viajes.marc@example.com"
     assert stored_planner["preferred_contact_phone"] is None
     planner_html = next(row[2] for row in captured if row[0] == "internal")
-    for value in ("Marc Vidal", "+34 611 222 333", "2026-10-10", "2026-10-18", "premium", "Habitación familiar."):
+    for value in ("Marc Vidal", "+34611222333", "2026-10-10", "2026-10-18", "premium", "Habitación familiar."):
         assert value in planner_html
     planner_confirmation = next(row for row in captured if row[0] == "confirmation")
     summary_rows = planner_confirmation[5]["summary_rows"]
@@ -168,9 +168,36 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
     )
     asyncio.run(server.create_program_download(download))
     download_html = next(row[2] for row in captured if row[0] == "internal")
-    for value in ("Laura Costa", "laura@example.com", "+34 622 333 444", "Marrakech a Fez", "Sí"):
+    for value in ("Laura Costa", "laura@example.com", "+34622333444", "Marrakech a Fez", "Sí"):
         assert value in download_html
     assert [row[0] for row in captured] == ["internal", "confirmation"]
+
+
+def test_phone_fields_are_normalized_and_require_country_code():
+    contact = server.ContactRequestCreate(
+        full_name="Ana García",
+        email="ana@example.com",
+        phone="+34 600 111 222",
+        message="Necesito información del viaje.",
+    )
+    assert contact.phone == "+34600111222"
+
+    download = server.ProgramDownloadCreate(
+        first_name="Laura",
+        last_name="Costa",
+        email="laura@example.com",
+        phone="+33 6 12 34 56 78",
+        privacy_accepted=True,
+    )
+    assert download.phone == "+33612345678"
+
+    with pytest.raises(ValueError, match="international calling code"):
+        server.ContactRequestCreate(
+            full_name="Ana García",
+            email="ana@example.com",
+            phone="600 111 222",
+            message="Necesito información del viaje.",
+        )
 
 
 def test_resend_acceptance_requires_recipient_and_message_id(monkeypatch):

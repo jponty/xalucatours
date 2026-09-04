@@ -17,6 +17,7 @@ import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripContext";
 import { optimizedSrc } from "@/lib/imageUrl";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 /* ============================================================
    PlannerForm · reusable detailed trip-planner form
@@ -160,18 +161,18 @@ const REGION_COUNTS = ALL_TRIPS.reduce((acc, t) => {
   return acc;
 }, {});
 
-const Field = ({ label, hint, required, children, error }) => (
-  <label className="block">
+const Field = ({ label, hint, required, children, error, as: Wrapper = "label" }) => (
+  <Wrapper className="block">
     <span className="text-[11px] tracking-[0.3em] uppercase text-[#A07042]">
       {label}{required && <span className="text-[#C16542]"> *</span>}
     </span>
-    <span className="block mt-2">{children}</span>
+    <div className="block mt-2">{children}</div>
     {error ? (
       <span className="block mt-2 text-xs text-[#C16542]">{error}</span>
     ) : hint ? (
       <span className="block mt-2 text-xs text-[#5C5248]/75">{hint}</span>
     ) : null}
-  </label>
+  </Wrapper>
 );
 
 const inputCls =
@@ -259,11 +260,12 @@ export default function PlannerForm() {
     const e = {};
     if (!form.fullName || form.fullName.trim().length < 2) e.fullName = tr("required");
     if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = tr("required");
+    if (form.phone && !isValidInternationalPhone(form.phone)) e.phone = tr("required");
     if (!form.preferredContact.length) e.preferredContact = tr("required");
     if (form.preferredContact.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.preferredContactEmail.trim())) {
       e.preferredContactEmail = tr("required");
     }
-    if (form.preferredContact.includes("phone") && !form.preferredContactPhone.trim()) {
+    if (form.preferredContact.includes("phone") && !isValidInternationalPhone(form.preferredContactPhone)) {
       e.preferredContactPhone = tr("required");
     }
     setErrors(e);
@@ -693,15 +695,17 @@ export default function PlannerForm() {
                   onChange={(e) => set("email", e.target.value)}
                 />
               </Field>
-              <Field label={<ET k="phone" multiline={false} />}>
-                <input
-                  type="tel"
-                  data-testid="phone"
-                  autoComplete="tel"
-                  maxLength={40}
-                  className={inputCls}
+              <Field as="div" label={<ET k="phone" multiline={false} />} error={errors.phone}>
+                <InternationalPhoneInput
+                  name="phone"
                   value={form.phone}
-                  onChange={(e) => set("phone", e.target.value)}
+                  onValueChange={(phone) => {
+                    set("phone", phone);
+                    setErrors((current) => ({ ...current, phone: "" }));
+                  }}
+                  lang={lang}
+                  invalid={Boolean(errors.phone)}
+                  testId="phone"
                 />
               </Field>
             </div>

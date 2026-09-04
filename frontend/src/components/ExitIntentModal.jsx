@@ -5,6 +5,7 @@ import { ArrowRight, Check, Mail, Phone, Sparkles, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { resolvePath } from "@/lib/routes";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const SESSION_SHOWN_KEY = "xaluca:exit-intent-shown";
@@ -175,7 +176,7 @@ export default function ExitIntentModal() {
     if (sending) return;
     const email = form.email.trim();
     const phone = form.phone.trim();
-    if ((!email && !phone) || (email && !emailValid(email)) || (phone && phone.length < 4)) {
+    if ((!email && !phone) || (email && !emailValid(email)) || (phone && !isValidInternationalPhone(phone))) {
       setError(pick(COPY.contactError, lang)); return;
     }
     if (form.preferCall && !phone) { setError(pick(COPY.phoneError, lang)); return; }
@@ -193,6 +194,8 @@ export default function ExitIntentModal() {
         phone: phone || null,
         journey_interest: "exit-intent",
         preferred_contact: preferredContact,
+        preferred_contact_email: preferredContact.includes("email") ? email : null,
+        preferred_contact_phone: preferredContact.includes("phone") ? phone : null,
         message: `Solicitud desde modal de intención de salida. Prefiere llamada: ${form.preferCall ? "Sí" : "No"}.`,
         language: lang,
         source_route_id: routeId,
@@ -274,10 +277,17 @@ export default function ExitIntentModal() {
                   <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Mail className="h-3 w-3" />{pick(COPY.email, lang)}</span>
                   <input type="email" name="email" value={form.email} onChange={onChange} maxLength={254} data-testid="exit-intent-email" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
                 </label>
-                <label className="block">
+                <div className="block">
                   <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Phone className="h-3 w-3" />{pick(COPY.phone, lang)}</span>
-                  <input type="tel" name="phone" value={form.phone} onChange={onChange} maxLength={40} data-testid="exit-intent-phone" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
-                </label>
+                  <InternationalPhoneInput
+                    name="phone"
+                    value={form.phone}
+                    onValueChange={(phone) => { setError(""); setForm((current) => ({ ...current, phone })); }}
+                    lang={lang}
+                    testId="exit-intent-phone"
+                    className="mt-2"
+                  />
+                </div>
               </div>
               <p className="mt-2 text-[10px] text-[#5C5248]/70">{pick(COPY.optional, lang)}</p>
 

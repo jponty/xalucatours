@@ -13,6 +13,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { resolvePath } from "@/lib/routes";
 import { supabaseMedia } from "@/lib/supabaseMedia";
 import Img from "@/components/Img";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const PRIVACY_URL = "https://xalucatours.com/";
@@ -86,11 +87,11 @@ const emptyForm = (recipient = "lluis") => ({
   privacy: false,
 });
 
-const Field = ({ label, children, wide = false }) => (
-  <label className={wide ? "block sm:col-span-2" : "block"}>
+const Field = ({ label, children, wide = false, as: Wrapper = "label" }) => (
+  <Wrapper className={wide ? "block sm:col-span-2" : "block"}>
     <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.23em] text-[#74685E]">{label}</span>
     {children}
-  </label>
+  </Wrapper>
 );
 
 const FounderPolaroid = ({ recipient }) => {
@@ -154,6 +155,10 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
   const onSubmit = async (event) => {
     event.preventDefault();
     if (sending) return;
+    if (!isValidInternationalPhone(form.phone)) {
+      toast.error(pick(COPY.error, lang));
+      return;
+    }
     setSending(true);
     try {
       let routeId = null;
@@ -167,6 +172,8 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
         email: form.email.trim(),
         phone: form.phone.trim(),
         preferred_contact: ["email", "phone"],
+        preferred_contact_email: form.email.trim(),
+        preferred_contact_phone: form.phone.trim(),
         message: form.message.trim(),
         ...recipientPayload,
         journey_interest: isTeamContact ? "team-contact" : "founder-contact",
@@ -217,7 +224,16 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label={pick(COPY.firstName, lang)}><input required name="firstName" value={form.firstName} onChange={onChange} autoComplete="given-name" data-testid="founder-contact-first-name" className="founder-field" /></Field>
                 <Field label={pick(COPY.lastName, lang)}><input required name="lastName" value={form.lastName} onChange={onChange} autoComplete="family-name" data-testid="founder-contact-last-name" className="founder-field" /></Field>
-                <Field label={pick(COPY.phone, lang)}><input required type="tel" name="phone" value={form.phone} onChange={onChange} autoComplete="tel" data-testid="founder-contact-phone" className="founder-field" /></Field>
+                <Field as="div" label={pick(COPY.phone, lang)}>
+                  <InternationalPhoneInput
+                    required
+                    name="phone"
+                    value={form.phone}
+                    onValueChange={(phone) => setForm((current) => ({ ...current, phone }))}
+                    lang={lang}
+                    testId="founder-contact-phone"
+                  />
+                </Field>
                 <Field label={pick(COPY.email, lang)}><input required type="email" name="email" value={form.email} onChange={onChange} autoComplete="email" data-testid="founder-contact-email" className="founder-field" /></Field>
                 <Field label={pick(COPY.message, lang)} wide><textarea required minLength={4} rows={5} name="message" value={form.message} onChange={onChange} data-testid="founder-contact-message" className="founder-field resize-none" /></Field>
               </div>

@@ -104,6 +104,21 @@ def verify_admin_token(token: str) -> bool:
         return False
 
 
+def normalize_international_phone(value: Optional[str]) -> Optional[str]:
+    """Normalize submitted phone numbers to compact E.164 form."""
+    if value is None:
+        return None
+    raw = str(value).strip()
+    if not raw:
+        return None
+    if not raw.startswith("+"):
+        raise ValueError("Phone must include an international calling code")
+    digits = re.sub(r"\D", "", raw)
+    if not 7 <= len(digits) <= 15 or digits.startswith("0"):
+        raise ValueError("Invalid international phone number")
+    return f"+{digits}"
+
+
 # ---------- Models ----------
 class ContactRequest(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -153,6 +168,11 @@ class ContactRequestCreate(BaseModel):
     founder_recipient: Optional[str] = Field(default=None, max_length=20)
     team_recipient: Optional[str] = Field(default=None, max_length=20)
     language: Optional[str] = "en"
+
+    @field_validator("phone", "preferred_contact_phone", mode="before")
+    @classmethod
+    def _normalize_phone_fields(cls, value):
+        return normalize_international_phone(value)
 
     @field_validator("preferred_contact", mode="before")
     @classmethod
@@ -273,6 +293,11 @@ class TripPlannerCreate(BaseModel):
     preferred_contact_phone: Optional[str] = Field(default=None, max_length=40)
     language: Optional[str] = "es"
 
+    @field_validator("phone", "preferred_contact_phone", mode="before")
+    @classmethod
+    def _normalize_phone_fields(cls, value):
+        return normalize_international_phone(value)
+
     @field_validator("preferred_contact", mode="before")
     @classmethod
     def _coerce_pref_contact(cls, v):
@@ -333,6 +358,14 @@ class ProgramDownloadCreate(BaseModel):
     route_id: Optional[str] = Field(default=None, max_length=120)
     program_title: Optional[str] = Field(default=None, max_length=200)
     language: Optional[str] = "es"
+
+    @field_validator("phone", mode="before")
+    @classmethod
+    def _normalize_phone(cls, value):
+        normalized = normalize_international_phone(value)
+        if normalized is None:
+            raise ValueError("Phone is required")
+        return normalized
 
     @field_validator("privacy_accepted")
     @classmethod
@@ -5594,6 +5627,11 @@ class ContestSpinPayload(BaseModel):
     phone: Optional[str] = Field(default="", max_length=40)
     email: EmailStr
     language: Optional[str] = Field(default="es", max_length=5)
+
+    @field_validator("phone", mode="before")
+    @classmethod
+    def _normalize_phone(cls, value):
+        return normalize_international_phone(value)
 
 
 async def _get_active_contest() -> Optional[dict]:

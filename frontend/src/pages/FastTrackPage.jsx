@@ -24,6 +24,7 @@ import { IMG } from "@/lib/imageBank";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import FastTrackInfoModal from "@/components/FastTrackInfoModal";
 import Testimonials from "@/components/Testimonials";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const WAITLIST_REFRESH_MS = 5 * 60 * 60 * 1000;
@@ -176,6 +177,10 @@ export default function FastTrackPage() {
   const onSubmit = async (event) => {
     event.preventDefault();
     if (sending) return;
+    if (!isValidInternationalPhone(form.phone)) {
+      toast.error("Introduce un teléfono válido con su prefijo internacional.");
+      return;
+    }
     setSending(true);
 
     try {
@@ -183,6 +188,8 @@ export default function FastTrackPage() {
         ...form,
         journey_interest: "fast-track",
         preferred_contact: ["email", "phone"],
+        preferred_contact_email: form.email,
+        preferred_contact_phone: form.phone,
         language: "es",
         source_route_id: "fastTrack",
         source_path: "/fast-track",
@@ -484,8 +491,16 @@ export default function FastTrackPage() {
                   <FastTrackField label="Email">
                     <input required type="email" name="email" value={form.email} onChange={onChange} data-testid="fast-track-email" className="fast-track-input" />
                   </FastTrackField>
-                  <FastTrackField label="Teléfono">
-                    <input required name="phone" value={form.phone} onChange={onChange} data-testid="fast-track-phone" className="fast-track-input" />
+                  <FastTrackField as="div" label="Teléfono">
+                    <InternationalPhoneInput
+                      required
+                      name="phone"
+                      value={form.phone}
+                      onValueChange={(phone) => setForm((current) => ({ ...current, phone }))}
+                      lang="es"
+                      tone="dark"
+                      testId="fast-track-phone"
+                    />
                   </FastTrackField>
                   <FastTrackField label="Fechas aproximadas">
                     <input name="travel_dates" value={form.travel_dates} onChange={onChange} placeholder="Ej. octubre de 2026" data-testid="fast-track-dates" className="fast-track-input" />
@@ -571,11 +586,11 @@ export default function FastTrackPage() {
   );
 }
 
-function FastTrackField({ label, children }) {
+function FastTrackField({ label, children, as: Wrapper = "label" }) {
   return (
-    <label className="block">
+    <Wrapper className="block">
       <span className="mb-2 block text-[9px] uppercase tracking-[0.28em] text-white/50">{label}</span>
       {children}
-    </label>
+    </Wrapper>
   );
 }

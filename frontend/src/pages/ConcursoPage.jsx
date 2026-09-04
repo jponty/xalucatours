@@ -6,12 +6,12 @@ import { Gift, Mail, User, Phone, Loader2, RotateCw, PartyPopper, X, ArrowRight 
 import { useLanguage } from "@/contexts/LanguageContext";
 import monogramWhite from "@/assets/monograma-x-white.png";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const T = (es, en, fr) => ({ es, en, fr });
 const L = (o, lang) => (o && (o[lang] ?? o.es)) || "";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^[+\d][\d\s().-]{5,}$/;
 const LEGAL_URL = "https://xalucatours.com/";
 const PRIVACY_URL = "https://xalucatours.com/";
 const CONFETTI_COLORS = ["#C16542", "#D4A373", "#B8862F", "#2C2621", "#F2EBE1"];
@@ -172,7 +172,7 @@ export default function ConcursoPage() {
     const err = {};
     if (!form.first_name.trim()) err.first_name = L(UI.errName, lang);
     if (!form.last_name.trim()) err.last_name = L(UI.errLast, lang);
-    if (!PHONE_RE.test(form.phone.trim())) err.phone = L(UI.errPhone, lang);
+    if (!isValidInternationalPhone(form.phone)) err.phone = L(UI.errPhone, lang);
     if (!EMAIL_RE.test(form.email.trim())) err.email = L(UI.errEmail, lang);
     if (!accepted) err.accepted = L(UI.errAccept, lang);
     setErrors(err);
@@ -324,7 +324,15 @@ export default function ConcursoPage() {
                       <label className="flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#8A7C64] mb-2">
                         <Phone className="w-3.5 h-3.5" /> {L(UI.phone, lang)}
                       </label>
-                      <input data-testid="concurso-phone" type="tel" autoComplete="tel" inputMode="tel" value={form.phone} onChange={set("phone")} className={inputCls("phone")} placeholder="+34 600 000 000" />
+                      <InternationalPhoneInput
+                        required
+                        name="phone"
+                        value={form.phone}
+                        onValueChange={(phone) => { setForm((current) => ({ ...current, phone })); setErrors((current) => ({ ...current, phone: "" })); }}
+                        lang={lang}
+                        invalid={Boolean(errors.phone)}
+                        testId="concurso-phone"
+                      />
                       {errors.phone && <p className="mt-1 text-xs text-[#C16542]">{errors.phone}</p>}
                     </div>
                     <div>

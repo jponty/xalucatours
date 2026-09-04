@@ -11,6 +11,7 @@ import React from "react";
 import { Phone, Mail, Check, Clock } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
+import InternationalPhoneInput from "@/components/InternationalPhoneInput";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -209,23 +210,24 @@ export const ContactPreference = ({
             </label>
           )}
           {selected.includes("phone") && (
-            <label className="block">
+            <div className="block">
               <span className={`block text-[10px] tracking-[0.22em] uppercase ${c.reqLabel}`}>
                 {pick(CONTACT_PREF_DETAIL.phone, lang)} <span style={{ color: c.eyebrowAccent }}>*</span>
               </span>
-              <input
-                type="tel"
+              <InternationalPhoneInput
                 name="preferred_contact_phone"
                 value={details.phone || ""}
-                onChange={(event) => onDetailChange("phone", event.target.value)}
+                onValueChange={(phone) => onDetailChange("phone", phone)}
                 required
                 autoComplete="off"
-                maxLength={40}
-                data-testid={`${testidPrefix}-phone-detail`}
-                className={`mt-2 w-full bg-transparent border-b outline-none py-3 text-[14px] transition-colors ${c.detailInput}`}
+                lang={lang}
+                tone={tone}
+                invalid={Boolean(detailErrors.phone)}
+                testId={`${testidPrefix}-phone-detail`}
+                className="mt-2"
               />
               {detailErrors.phone && <span className={`block mt-2 text-xs ${c.error}`}>{detailErrors.phone}</span>}
-            </label>
+            </div>
           )}
           <p className={`sm:col-span-2 text-[12px] ${c.body}`}>{pick(CONTACT_PREF_DETAIL.hint, lang)}</p>
         </div>

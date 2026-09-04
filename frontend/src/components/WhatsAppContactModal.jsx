@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const PRIVACY_URL = "https://xalucatours.com/";
@@ -86,6 +87,7 @@ const COPY = {
   nameLabel: { es: "Nombre", en: "Name", fr: "Nom" },
   emailLabel: { es: "Correo electrónico", en: "Email", fr: "E-mail" },
   phoneLabel: { es: "Teléfono (opcional)", en: "Phone (optional)", fr: "Téléphone (facultatif)" },
+  invalidPhone: { es: "Introduce un teléfono válido con su prefijo internacional.", en: "Enter a valid phone number with its international calling code.", fr: "Saisissez un numéro valide avec son indicatif international." },
   messageLabel: { es: "¿En qué podemos ayudarte?", en: "How can we help?", fr: "Comment pouvons-nous vous aider ?" },
   privacyPre: { es: "He leído y acepto la ", en: "I have read and accept the ", fr: "J'ai lu et j'accepte la " },
   privacyLink: { es: "política de privacidad", en: "privacy policy", fr: "politique de confidentialité" },
@@ -170,6 +172,10 @@ export default function WhatsAppContactModal() {
   const submitEmailForm = async (event) => {
     event.preventDefault();
     if (emailSending) return;
+    if (emailForm.phone && !isValidInternationalPhone(emailForm.phone)) {
+      setEmailError(pick(COPY.invalidPhone, lang));
+      return;
+    }
     setEmailSending(true);
     setEmailError("");
     try {
@@ -181,6 +187,7 @@ export default function WhatsAppContactModal() {
         phone: emailForm.phone.trim() || null,
         message: emailForm.message.trim(),
         preferred_contact: ["email"],
+        preferred_contact_email: emailForm.email.trim(),
         language: lang,
         source_route_id: routeId,
         source_path: location.pathname,
@@ -328,8 +335,14 @@ export default function WhatsAppContactModal() {
                 </EmailField>
               </div>
               <div className="mt-5">
-                <EmailField label={pick(COPY.phoneLabel, lang)}>
-                  <input type="tel" name="phone" value={emailForm.phone} onChange={updateEmailForm} maxLength={40} autoComplete="tel" data-testid="email-contact-phone" className="email-contact-input" />
+                <EmailField as="div" label={pick(COPY.phoneLabel, lang)}>
+                  <InternationalPhoneInput
+                    name="phone"
+                    value={emailForm.phone}
+                    onValueChange={(phone) => setEmailForm((current) => ({ ...current, phone }))}
+                    lang={lang}
+                    testId="email-contact-phone"
+                  />
                 </EmailField>
               </div>
               <div className="mt-5">
@@ -380,9 +393,9 @@ export default function WhatsAppContactModal() {
   );
 }
 
-const EmailField = ({ label, children }) => (
-  <label className="block">
+const EmailField = ({ label, children, as: Wrapper = "label" }) => (
+  <Wrapper className="block">
     <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2C2621]/55">{label}</span>
     {children}
-  </label>
+  </Wrapper>
 );

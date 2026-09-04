@@ -9,6 +9,7 @@ import { resolvePath } from "@/lib/routes";
 import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
 import EditableText from "@/components/EditableText";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -32,6 +33,7 @@ export const ContactForm = () => {
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [prefError, setPrefError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [prefDetailErrors, setPrefDetailErrors] = useState({});
 
   const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -54,18 +56,23 @@ export const ContactForm = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (sending) return;
+    const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
+    if (form.phone && !isValidInternationalPhone(form.phone)) {
+      setPhoneError(required);
+      toast.error(t("form_error"));
+      return;
+    }
     if (!form.preferred_contact.length) {
       const req = { es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" };
       setPrefError(pick(req, lang));
       toast.error(t("form_error"));
       return;
     }
-    const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
     const detailErrors = {};
     if (form.preferred_contact.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.preferred_contact_email.trim())) {
       detailErrors.email = required;
     }
-    if (form.preferred_contact.includes("phone") && !form.preferred_contact_phone.trim()) {
+    if (form.preferred_contact.includes("phone") && !isValidInternationalPhone(form.preferred_contact_phone)) {
       detailErrors.phone = required;
     }
     if (Object.keys(detailErrors).length) {
@@ -182,9 +189,17 @@ export const ContactForm = () => {
                       data-testid="contact-input-email" className="form-input" />
                   </Field>
 
-                  <Field labelSlot="home.contact.form_phone" labelDefaults={translations.form_phone} testId="form-phone">
-                    <input name="phone" value={form.phone} onChange={onChange}
-                      data-testid="contact-input-phone" className="form-input" />
+                  <Field as="div" labelSlot="home.contact.form_phone" labelDefaults={translations.form_phone} testId="form-phone">
+                    <InternationalPhoneInput
+                      name="phone"
+                      value={form.phone}
+                      onValueChange={(phone) => { setPhoneError(""); setForm((current) => ({ ...current, phone })); }}
+                      lang={lang}
+                      tone="dark"
+                      invalid={Boolean(phoneError)}
+                      testId="contact-input-phone"
+                    />
+                    {phoneError && <span className="mt-2 block text-xs text-[#D4A373]">{phoneError}</span>}
                   </Field>
 
                   <Field labelSlot="home.contact.form_dates" labelDefaults={translations.form_dates} testId="form-dates">
@@ -281,14 +296,14 @@ export const ContactForm = () => {
   );
 };
 
-const Field = ({ labelSlot, labelDefaults, testId, required = false, children }) => (
-  <label className="block" data-testid={`${testId}-field`}>
+const Field = ({ labelSlot, labelDefaults, testId, required = false, children, as: Wrapper = "label" }) => (
+  <Wrapper className="block" data-testid={`${testId}-field`}>
     <span className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2">
       <EditableText slot={labelSlot} defaults={labelDefaults} multiline={false} />
       {required && <span className="text-[#D4A373]" aria-hidden="true">*</span>}
     </span>
     {children}
-  </label>
+  </Wrapper>
 );
 
 export default ContactForm;
