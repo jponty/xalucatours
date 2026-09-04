@@ -99,6 +99,8 @@ const detectCountry = (value) => {
   const valueCountry = countryFromValue(value);
   if (valueCountry) return valueCountry;
 
+  if (!String(value || "").trim()) return DEFAULT_COUNTRY;
+
   if (typeof window !== "undefined") {
     const saved = window.localStorage.getItem(COUNTRY_STORAGE_KEY)?.toUpperCase();
     if (saved && SUPPORTED_COUNTRIES.has(saved)) return saved;
