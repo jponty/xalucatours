@@ -6136,10 +6136,24 @@ UPLOAD_DIR = ROOT_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
+BUILTIN_CORS_ORIGINS = {
+    "https://xalucatravel.com",
+    "https://www.xalucatravel.com",
+    "https://xaluca-tours-web.onrender.com",
+    "http://127.0.0.1:3100",
+    "http://localhost:3100",
+}
+CONFIGURED_CORS_ORIGINS = {
+    origin.strip()
+    for origin in os.environ.get("CORS_ORIGINS", "").split(",")
+    if origin.strip() and origin.strip() != "*"
+}
+CORS_ALLOW_ORIGINS = sorted(BUILTIN_CORS_ORIGINS | CONFIGURED_CORS_ORIGINS)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=CORS_ALLOW_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
