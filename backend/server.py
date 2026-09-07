@@ -375,6 +375,28 @@ class ProgramDownloadCreate(BaseModel):
         return v
 
 
+# ---------- Newsletter subscriptions ----------
+class NewsletterSubscriptionCreate(BaseModel):
+    email: EmailStr
+    consent: bool
+    language: str = Field(default="es", max_length=5)
+    source_path: Optional[str] = Field(default="/", max_length=300)
+    # Honeypot: real visitors never see or fill this field.
+    website: Optional[str] = Field(default="", max_length=200)
+
+    @field_validator("consent")
+    @classmethod
+    def _newsletter_consent_required(cls, value: bool) -> bool:
+        if not value:
+            raise ValueError("Newsletter consent is required")
+        return value
+
+
+class NewsletterSubscriptionResponse(BaseModel):
+    status: str = "subscribed"
+    message: str
+
+
 # ---------- Routes ----------
 @api_router.get("/")
 async def root():
@@ -390,6 +412,34 @@ async def readiness():
         logger.exception("Supabase Postgres readiness check failed")
         raise HTTPException(status_code=503, detail="Supabase database unavailable")
     return {"service": "Xaluca Tours", "status": "ready", "database": "supabase"}
+
+
+@api_router.post("/newsletter/subscriptions", response_model=NewsletterSubscriptionResponse)
+async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
+    """Create or reactivate one Resend Contact without duplicating the email."""
+    messages = {
+        "es": "Tu suscripción se ha confirmado correctamente.",
+        "en": "Your subscription has been confirmed.",
+        "fr": "Votre inscription a bien été confirmée.",
+    }
+    lang = payload.language if payload.language in messages else "es"
+
+    # Silently accept honeypot submissions without polluting the Resend list.
+    if (payload.website or "").strip():
+        return NewsletterSubscriptionResponse(message=messages[lang])
+
+    email = str(payload.email).strip().lower()
+    try:
+        await asyncio.to_thread(sync_newsletter_contact, email)
+    except NewsletterSubscriptionError as exc:
+        logger.error("Newsletter subscription was not accepted by Resend: %s", exc)
+        error_messages = {
+            "es": "No hemos podido confirmar la suscripción. Inténtalo de nuevo en unos instantes.",
+            "en": "We could not confirm your subscription. Please try again shortly.",
+            "fr": "Nous n’avons pas pu confirmer votre inscription. Réessayez dans quelques instants.",
+        }
+        raise HTTPException(status_code=502, detail=error_messages[lang]) from exc
+    return NewsletterSubscriptionResponse(message=messages[lang])
 
 
 class AdminLoginBody(BaseModel):
@@ -779,6 +829,11 @@ async def mirror_production(payload: MirrorPayload, authorization: str = Header(
 #  reports success unless Resend returns a message id.
 # ============================================================
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
+# Contact management requires a full-access Resend key. It is intentionally
+# separate from the send-only transactional key; falling back keeps local and
+# existing full-access configurations backwards-compatible.
+RESEND_CONTACTS_API_KEY = os.environ.get("RESEND_CONTACTS_API_KEY", "").strip() or RESEND_API_KEY
+RESEND_NEWSLETTER_SEGMENT_ID = os.environ.get("RESEND_NEWSLETTER_SEGMENT_ID", "").strip()
 LEADS_FROM_EMAIL = os.environ.get("LEADS_FROM_EMAIL", "").strip()
 LEADS_NOTIFY_EMAILS = [e.strip() for e in os.environ.get("LEADS_NOTIFY_EMAILS", "").split(",") if e.strip()]
 FOUNDER_LLUIS_EMAIL = os.environ.get("FOUNDER_LLUIS_EMAIL", "").strip()
@@ -797,10 +852,73 @@ class EmailDeliveryError(RuntimeError):
     """A required email was not accepted by Resend."""
 
 
+class NewsletterSubscriptionError(RuntimeError):
+    """A newsletter contact change was not accepted by Resend."""
+
+
 def _resend_message_id(response: Any) -> str:
     if isinstance(response, dict):
         return str(response.get("id") or "").strip()
     return str(getattr(response, "id", "") or "").strip()
+
+
+def sync_newsletter_contact(email: str) -> str:
+    """Upsert a subscribed global Contact and optionally add it to a Segment.
+
+    Resend Contacts are global and unique by email. An explicit submission is
+    treated as fresh consent, so an existing unsubscribed Contact is re-enabled.
+    The request uses its own API client to avoid changing the SDK's process-wide
+    key while transactional emails are being sent concurrently.
+    """
+    if not RESEND_CONTACTS_API_KEY:
+        raise NewsletterSubscriptionError("RESEND_CONTACTS_API_KEY is not configured")
+
+    from urllib.parse import quote
+
+    encoded_email = quote(email, safe="")
+    headers = {
+        "Authorization": f"Bearer {RESEND_CONTACTS_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    try:
+        with httpx.Client(base_url="https://api.resend.com", headers=headers, timeout=15.0) as client:
+            existing = client.get(f"/contacts/{encoded_email}")
+            if existing.status_code == 404:
+                response = client.post("/contacts", json={"email": email, "unsubscribed": False})
+                # A concurrent request may have created the same global Contact.
+                if response.status_code == 409:
+                    response = client.patch(
+                        f"/contacts/{encoded_email}",
+                        json={"unsubscribed": False},
+                    )
+            else:
+                existing.raise_for_status()
+                response = client.patch(
+                    f"/contacts/{encoded_email}",
+                    json={"unsubscribed": False},
+                )
+
+            response.raise_for_status()
+            body = response.json()
+            contact_id = str(body.get("id") or "").strip()
+            if not contact_id:
+                raise NewsletterSubscriptionError("Resend returned no contact id")
+
+            if RESEND_NEWSLETTER_SEGMENT_ID:
+                membership = client.post(
+                    f"/contacts/{encoded_email}/segments/{quote(RESEND_NEWSLETTER_SEGMENT_ID, safe='')}",
+                    json={},
+                )
+                # Already-associated contacts remain a successful idempotent signup.
+                if membership.status_code != 409:
+                    membership.raise_for_status()
+
+            return contact_id
+    except NewsletterSubscriptionError:
+        raise
+    except (httpx.HTTPError, ValueError) as exc:
+        raise NewsletterSubscriptionError("Resend rejected the contact update") from exc
 
 
 def _send_resend_email(

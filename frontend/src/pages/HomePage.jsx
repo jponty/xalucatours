@@ -35,6 +35,7 @@ import PressMentions from "@/components/PressMentions";
 import VideoSection from "@/components/VideoSection";
 import FoundersSection from "@/components/FoundersSection";
 import HomeWelcomeModal from "@/components/HomeWelcomeModal";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import { HOME_VIDEOS } from "@/lib/sectionVideos";
 import {
   SOUTH_TRIPS,
@@ -239,6 +240,7 @@ export default function HomePage() {
       <PressMentions />
       <MoroccoVideos />
       <MoroccoCircuits />
+      <NewsletterSignup />
       <MapSection />
       <PersonalConsultation />
       <CommunityCTA />

@@ -49,6 +49,8 @@ Configure these variables on the `xaluca-tours-api` Render service:
 
 ```dotenv
 RESEND_API_KEY=re_...
+RESEND_CONTACTS_API_KEY=re_...
+RESEND_NEWSLETTER_SEGMENT_ID=
 LEADS_FROM_EMAIL=Xaluca Tours <notificaciones@YOUR_VERIFIED_DOMAIN>
 LEADS_NOTIFY_EMAILS=xalucatours@xaluca.com
 FOUNDER_LLUIS_EMAIL=
@@ -70,3 +72,12 @@ success only after Resend accepts every required internal and client message and
 returns a message id. Final mailbox states such as `delivered` or `bounced` are
 asynchronous and must be monitored in the Resend Emails/Logs dashboard (or with
 Resend webhooks when delivery-state persistence is required).
+
+The Home newsletter form creates or reactivates one global Resend Contact per
+email, so repeated signups do not create duplicates. Because contact management
+is not available to a send-only key, `RESEND_CONTACTS_API_KEY` must be a Resend
+**Full access** key. Create a dedicated Newsletter Segment in Resend and place
+its id in `RESEND_NEWSLETTER_SEGMENT_ID` to keep these contacts grouped for
+Broadcasts. If the segment id is omitted, signups still appear under global
+Contacts. Broadcasts must retain Resend's unsubscribe link; Resend then updates
+the Contact's subscription status and suppresses future marketing sends.

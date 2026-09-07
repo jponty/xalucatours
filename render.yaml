@@ -46,6 +46,10 @@ services:
         sync: false
       - key: RESEND_API_KEY
         sync: false
+      - key: RESEND_CONTACTS_API_KEY
+        sync: false
+      - key: RESEND_NEWSLETTER_SEGMENT_ID
+        sync: false
       - key: LEADS_FROM_EMAIL
         sync: false
       - key: LEADS_NOTIFY_EMAILS
