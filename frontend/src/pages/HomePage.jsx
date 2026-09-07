@@ -240,13 +240,13 @@ export default function HomePage() {
       <PressMentions />
       <MoroccoVideos />
       <MoroccoCircuits />
-      <NewsletterSignup />
       <MapSection />
       <PersonalConsultation />
       <CommunityCTA />
       <div id="contacto" className="scroll-mt-[172px]">
         <ContactForm />
       </div>
+      <NewsletterSignup />
     </div>
   );
 }

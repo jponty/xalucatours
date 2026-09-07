@@ -10,26 +10,31 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const COPY = {
   eyebrow: {
-    es: "Cartas desde Marruecos",
-    en: "Letters from Morocco",
-    fr: "Lettres du Maroc",
+    es: "Newsletter Xaluca Tours",
+    en: "Xaluca Tours Newsletter",
+    fr: "Newsletter Xaluca Tours",
   },
   title: {
-    es: "Marruecos, cuando merezca la pena contarlo.",
-    en: "Morocco, whenever there is something worth sharing.",
-    fr: "Le Maroc, lorsqu’il mérite d’être raconté.",
+    es: "Inspírate para tu próximo viaje a Marruecos.",
+    en: "Find inspiration for your next journey to Morocco.",
+    fr: "Inspirez-vous pour votre prochain voyage au Maroc.",
   },
   description: {
-    es: "Nuevos viajes, rutas, experiencias y consejos para descubrir el país con otra mirada. Te escribiremos solo cuando tengamos algo que aporte valor a tu próximo viaje.",
-    en: "New journeys, routes, experiences and advice for seeing the country differently. We will only write when we have something genuinely useful for your next trip.",
-    fr: "Nouveaux voyages, itinéraires, expériences et conseils pour découvrir le pays autrement. Nous vous écrirons uniquement lorsque nous aurons quelque chose d’utile à partager.",
+    es: "Suscríbete a nuestra newsletter y recibe nuevos viajes, rutas, experiencias, recomendaciones y consejos para descubrir Marruecos y preparar tu próxima aventura.",
+    en: "Subscribe to our newsletter for new journeys, routes, experiences, recommendations and advice to help you discover Morocco and prepare your next adventure.",
+    fr: "Inscrivez-vous à notre newsletter pour recevoir de nouveaux voyages, itinéraires, expériences, recommandations et conseils afin de découvrir le Maroc et préparer votre prochaine aventure.",
+  },
+  descriptionSecondary: {
+    es: "Compartimos solo información que creemos que merece la pena: nuevos destinos, propuestas de viaje, lugares especiales y novedades de Xaluca Tours.",
+    en: "We only share information we believe is worthwhile: new destinations, travel ideas, special places and the latest from Xaluca Tours.",
+    fr: "Nous partageons uniquement des informations qui en valent la peine : nouvelles destinations, idées de voyage, lieux d’exception et actualités de Xaluca Tours.",
   },
   cadence: {
-    es: "Sin correos constantes. Solo inspiración que merece llegar a tu bandeja de entrada.",
-    en: "No constant emails. Only inspiration worth landing in your inbox.",
-    fr: "Pas d’e-mails incessants. Seulement de l’inspiration qui mérite d’arriver dans votre boîte de réception.",
+    es: "Sin spam ni correos constantes. Solo buenas ideas para viajar por Marruecos.",
+    en: "No spam or constant emails. Just good ideas for travelling through Morocco.",
+    fr: "Pas de spam ni d’e-mails incessants. Seulement de bonnes idées pour voyager au Maroc.",
   },
-  emailLabel: { es: "Correo electrónico", en: "Email address", fr: "Adresse e-mail" },
+  emailLabel: { es: "Tu email", en: "Your email", fr: "Votre e-mail" },
   emailPlaceholder: { es: "tu@email.com", en: "you@email.com", fr: "vous@email.com" },
   consentPre: {
     es: "Quiero recibir novedades y contenido de Xaluca Tours y acepto el tratamiento de mis datos según la ",
@@ -37,7 +42,7 @@ const COPY = {
     fr: "Je souhaite recevoir les actualités et contenus de Xaluca Tours et j’accepte le traitement de mes données conformément à la ",
   },
   privacyLabel: { es: "información de privacidad", en: "privacy information", fr: "notice de confidentialité" },
-  submit: { es: "Quiero recibir novedades", en: "Keep me inspired", fr: "Je souhaite recevoir les nouveautés" },
+  submit: { es: "Suscribirme a la newsletter", en: "Subscribe to the newsletter", fr: "M’inscrire à la newsletter" },
   sending: { es: "Guardando tu suscripción…", en: "Saving your subscription…", fr: "Enregistrement de votre inscription…" },
   successEyebrow: { es: "Suscripción confirmada", en: "Subscription confirmed", fr: "Inscription confirmée" },
   successTitle: {
@@ -143,6 +148,9 @@ export default function NewsletterSignup() {
               <p className="mt-7 max-w-xl text-[15px] leading-[1.8] text-[#FDFBF7]/70 sm:text-base">
                 {t("description")}
               </p>
+              <p className="mt-4 max-w-xl text-[15px] leading-[1.8] text-[#FDFBF7]/70 sm:text-base">
+                {t("descriptionSecondary")}
+              </p>
             </div>
 
             <div className="mt-10 flex items-center gap-4 border-t border-white/12 pt-7">
@@ -177,7 +185,7 @@ export default function NewsletterSignup() {
                 <label htmlFor="newsletter-email" className="mt-8 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">
                   {t("emailLabel")} <span className="text-[#C16542]">*</span>
                 </label>
-                <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-3 flex flex-col gap-3">
                   <input
                     id="newsletter-email"
                     data-testid="newsletter-email"
@@ -196,7 +204,7 @@ export default function NewsletterSignup() {
                     type="submit"
                     disabled={sending}
                     data-testid="newsletter-submit"
-                    className="inline-flex min-h-14 shrink-0 items-center justify-center gap-3 bg-[#C16542] px-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#A35133] disabled:cursor-wait disabled:opacity-60"
+                    className="inline-flex min-h-14 w-full items-center justify-center gap-3 bg-[#C16542] px-6 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#A35133] disabled:cursor-wait disabled:opacity-60"
                   >
                     {sending ? t("sending") : t("submit")}
                     {!sending && <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />}
