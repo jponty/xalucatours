@@ -34,6 +34,10 @@ const COPY = {
     en: "No spam or constant emails. Just good ideas for travelling through Morocco.",
     fr: "Pas de spam ni d’e-mails incessants. Seulement de bonnes idées pour voyager au Maroc.",
   },
+  firstNameLabel: { es: "Nombre", en: "First name", fr: "Prénom" },
+  firstNamePlaceholder: { es: "Tu nombre", en: "Your first name", fr: "Votre prénom" },
+  lastNameLabel: { es: "Apellido(s)", en: "Last name(s)", fr: "Nom(s) de famille" },
+  lastNamePlaceholder: { es: "Tus apellidos", en: "Your last name(s)", fr: "Votre nom" },
   emailLabel: { es: "Tu email", en: "Your email", fr: "Votre e-mail" },
   emailPlaceholder: { es: "tu@email.com", en: "you@email.com", fr: "vous@email.com" },
   consentPre: {
@@ -56,6 +60,7 @@ const COPY = {
     fr: "Nous vous écrirons lorsque de nouveaux itinéraires, expériences ou récits du Maroc mériteront vraiment d’être partagés.",
   },
   another: { es: "Suscribir otro email", en: "Subscribe another email", fr: "Inscrire une autre adresse" },
+  requiredNames: { es: "Introduce tu nombre y apellido(s).", en: "Enter your first and last name.", fr: "Saisissez votre prénom et votre nom." },
   invalidEmail: { es: "Introduce un correo electrónico válido.", en: "Enter a valid email address.", fr: "Saisissez une adresse e-mail valide." },
   consentError: { es: "Debes aceptar el consentimiento para suscribirte.", en: "You must accept the consent to subscribe.", fr: "Vous devez accepter le consentement pour vous inscrire." },
   genericError: {
@@ -75,6 +80,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function NewsletterSignup() {
   const { lang } = useLanguage();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
@@ -86,7 +93,13 @@ export default function NewsletterSignup() {
   const submit = async (event) => {
     event.preventDefault();
     if (sending) return;
+    const normalizedFirstName = firstName.trim();
+    const normalizedLastName = lastName.trim();
     const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedFirstName || !normalizedLastName) {
+      setError(t("requiredNames"));
+      return;
+    }
     if (!EMAIL_RE.test(normalizedEmail)) {
       setError(t("invalidEmail"));
       return;
@@ -100,6 +113,8 @@ export default function NewsletterSignup() {
     setSending(true);
     try {
       await axios.post(`${API}/newsletter/subscriptions`, {
+        first_name: normalizedFirstName,
+        last_name: normalizedLastName,
         email: normalizedEmail,
         consent: true,
         language: lang,
@@ -107,6 +122,8 @@ export default function NewsletterSignup() {
         website,
       });
       setDone(true);
+      setFirstName("");
+      setLastName("");
       setEmail("");
       setConsent(false);
       setWebsite("");
@@ -182,7 +199,44 @@ export default function NewsletterSignup() {
                   <Mail className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
                 </div>
 
-                <label htmlFor="newsletter-email" className="mt-8 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="newsletter-first-name" className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">
+                      {t("firstNameLabel")} <span className="text-[#C16542]">*</span>
+                    </label>
+                    <input
+                      id="newsletter-first-name"
+                      data-testid="newsletter-first-name"
+                      type="text"
+                      autoComplete="given-name"
+                      required
+                      aria-required="true"
+                      value={firstName}
+                      onChange={(event) => { setFirstName(event.target.value); setError(""); }}
+                      placeholder={t("firstNamePlaceholder")}
+                      className="mt-3 min-h-14 w-full border border-[#2C2621]/18 bg-white px-4 text-base text-[#2C2621] outline-none transition-colors placeholder:text-[#82756A]/65 focus:border-[#C16542]"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="newsletter-last-name" className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">
+                      {t("lastNameLabel")} <span className="text-[#C16542]">*</span>
+                    </label>
+                    <input
+                      id="newsletter-last-name"
+                      data-testid="newsletter-last-name"
+                      type="text"
+                      autoComplete="family-name"
+                      required
+                      aria-required="true"
+                      value={lastName}
+                      onChange={(event) => { setLastName(event.target.value); setError(""); }}
+                      placeholder={t("lastNamePlaceholder")}
+                      className="mt-3 min-h-14 w-full border border-[#2C2621]/18 bg-white px-4 text-base text-[#2C2621] outline-none transition-colors placeholder:text-[#82756A]/65 focus:border-[#C16542]"
+                    />
+                  </div>
+                </div>
+
+                <label htmlFor="newsletter-email" className="mt-5 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">
                   {t("emailLabel")} <span className="text-[#C16542]">*</span>
                 </label>
                 <div className="mt-3 flex flex-col gap-3">

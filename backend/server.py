@@ -377,12 +377,22 @@ class ProgramDownloadCreate(BaseModel):
 
 # ---------- Newsletter subscriptions ----------
 class NewsletterSubscriptionCreate(BaseModel):
+    first_name: str = Field(..., min_length=1, max_length=100)
+    last_name: str = Field(..., min_length=1, max_length=150)
     email: EmailStr
     consent: bool
     language: str = Field(default="es", max_length=5)
     source_path: Optional[str] = Field(default="/", max_length=300)
     # Honeypot: real visitors never see or fill this field.
     website: Optional[str] = Field(default="", max_length=200)
+
+    @field_validator("first_name", "last_name")
+    @classmethod
+    def _newsletter_name_required(cls, value: str) -> str:
+        normalized = " ".join(value.split())
+        if not normalized:
+            raise ValueError("Name is required")
+        return normalized
 
     @field_validator("consent")
     @classmethod
@@ -430,7 +440,12 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
 
     email = str(payload.email).strip().lower()
     try:
-        await asyncio.to_thread(sync_newsletter_contact, email)
+        await asyncio.to_thread(
+            sync_newsletter_contact,
+            email,
+            payload.first_name,
+            payload.last_name,
+        )
     except NewsletterSubscriptionError as exc:
         logger.error("Newsletter subscription was not accepted by Resend: %s", exc)
         error_messages = {
@@ -862,7 +877,7 @@ def _resend_message_id(response: Any) -> str:
     return str(getattr(response, "id", "") or "").strip()
 
 
-def sync_newsletter_contact(email: str) -> str:
+def sync_newsletter_contact(email: str, first_name: str, last_name: str) -> str:
     """Upsert a subscribed global Contact and optionally add it to a Segment.
 
     Resend Contacts are global and unique by email. An explicit submission is
@@ -880,23 +895,28 @@ def sync_newsletter_contact(email: str) -> str:
         "Authorization": f"Bearer {RESEND_CONTACTS_API_KEY}",
         "Content-Type": "application/json",
     }
+    contact_data = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "unsubscribed": False,
+    }
 
     try:
         with httpx.Client(base_url="https://api.resend.com", headers=headers, timeout=15.0) as client:
             existing = client.get(f"/contacts/{encoded_email}")
             if existing.status_code == 404:
-                response = client.post("/contacts", json={"email": email, "unsubscribed": False})
+                response = client.post("/contacts", json={"email": email, **contact_data})
                 # A concurrent request may have created the same global Contact.
                 if response.status_code == 409:
                     response = client.patch(
                         f"/contacts/{encoded_email}",
-                        json={"unsubscribed": False},
+                        json=contact_data,
                     )
             else:
                 existing.raise_for_status()
                 response = client.patch(
                     f"/contacts/{encoded_email}",
-                    json={"unsubscribed": False},
+                    json=contact_data,
                 )
 
             response.raise_for_status()
