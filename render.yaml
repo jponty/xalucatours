@@ -46,6 +46,8 @@ services:
         sync: false
       - key: RESEND_API_KEY
         sync: false
+      - key: XALUCA_TOURS_NEWSLETTER
+        sync: false
       - key: RESEND_CONTACTS_API_KEY
         sync: false
       - key: RESEND_NEWSLETTER_SEGMENT_ID

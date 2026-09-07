@@ -844,10 +844,15 @@ async def mirror_production(payload: MirrorPayload, authorization: str = Header(
 #  reports success unless Resend returns a message id.
 # ============================================================
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
-# Contact management requires a full-access Resend key. It is intentionally
-# separate from the send-only transactional key; falling back keeps local and
-# existing full-access configurations backwards-compatible.
-RESEND_CONTACTS_API_KEY = os.environ.get("RESEND_CONTACTS_API_KEY", "").strip() or RESEND_API_KEY
+# Contact management requires a full-access Resend key. Prefer the existing
+# Render variable used by Xaluca Tours, while retaining the generic alias and
+# the backwards-compatible fallback for installations where RESEND_API_KEY is
+# already full access.
+RESEND_CONTACTS_API_KEY = (
+    os.environ.get("XALUCA_TOURS_NEWSLETTER", "").strip()
+    or os.environ.get("RESEND_CONTACTS_API_KEY", "").strip()
+    or RESEND_API_KEY
+)
 RESEND_NEWSLETTER_SEGMENT_ID = os.environ.get("RESEND_NEWSLETTER_SEGMENT_ID", "").strip()
 LEADS_FROM_EMAIL = os.environ.get("LEADS_FROM_EMAIL", "").strip()
 LEADS_NOTIFY_EMAILS = [e.strip() for e in os.environ.get("LEADS_NOTIFY_EMAILS", "").split(",") if e.strip()]
@@ -937,8 +942,17 @@ def sync_newsletter_contact(email: str, first_name: str, last_name: str) -> str:
             return contact_id
     except NewsletterSubscriptionError:
         raise
+    except httpx.HTTPStatusError as exc:
+        error_name = "unknown_error"
+        try:
+            error_name = str(exc.response.json().get("name") or error_name)
+        except (ValueError, AttributeError):
+            pass
+        raise NewsletterSubscriptionError(
+            f"Resend contact API returned {exc.response.status_code} ({error_name})"
+        ) from exc
     except (httpx.HTTPError, ValueError) as exc:
-        raise NewsletterSubscriptionError("Resend rejected the contact update") from exc
+        raise NewsletterSubscriptionError("Resend contact API request failed") from exc
 
 
 def _send_resend_email(
