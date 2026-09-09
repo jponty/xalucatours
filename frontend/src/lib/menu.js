@@ -83,6 +83,7 @@ export const MENU_TREE = [
     children: [
       { id: "when",  routeId: "whenToTravel", icon: "sunrise", label: { es: "Cuándo viajar a Marruecos", en: "When to travel to Morocco", fr: "Quand partir au Maroc" } },
       { id: "practical-info", routeId: "practicalInfo", icon: "book-open", label: { es: "Informaciones prácticas", en: "Practical information", fr: "Informations pratiques" } },
+      { id: "navigation-map", routeId: "navigationMap", icon: "globe-2", label: { es: "Mapa de navegación", en: "Navigation map", fr: "Plan du site" } },
     ],
   },
   {

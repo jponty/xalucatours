@@ -35,6 +35,14 @@ const withBrand = (label) => ({
 
 const SEO = {
   home: DEFAULT_SEO,
+  navigationMap: {
+    title: withBrand(T("Mapa de navegación", "Navigation map", "Plan du site")),
+    description: T(
+      "Todas las páginas de Xaluca Tours en un solo lugar: viajes, rutas, programas, información práctica y artículos, organizados por categorías e idiomas.",
+      "Every Xaluca Tours page in one place: journeys, routes, programmes, practical information and articles, organised by category and language.",
+      "Toutes les pages Xaluca Tours au même endroit : voyages, circuits, programmes, informations pratiques et articles, classés par catégorie et langue."
+    ),
+  },
 
   planner: {
     title: withBrand(T("Planificador inteligente de viajes", "Smart Morocco trip planner", "Planificateur de voyage intelligent")),

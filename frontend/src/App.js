@@ -15,7 +15,7 @@ import Layout from "@/components/Layout";
 import StubPage from "@/pages/StubPage";
 import AdminPage from "@/pages/AdminPage";
 import { BlogPostPage } from "@/pages/BlogPage";
-import { resolvePath, pathFor } from "@/lib/routes";
+import { resolvePath, pathFor, STANDALONE_PATHS } from "@/lib/routes";
 import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
 import SeoHead from "@/components/SeoHead";
 import { getSeoMeta } from "@/lib/seoMeta";
@@ -79,7 +79,7 @@ function App() {
             <AdminSessionProvider>
               <EditModeProvider>
               <Routes>
-                <Route path="/admin" element={<AdminPage />} />
+                <Route path={STANDALONE_PATHS.admin} element={<AdminPage />} />
                 <Route
                   path="*"
                   element={

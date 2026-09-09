@@ -5,6 +5,8 @@
 export const SUPPORTED_LANGS = ["es", "en", "fr"];
 export const PREFIXED_LANGS  = ["en", "fr"];     // only these add a /<lang> URL prefix
 export const DEFAULT_LANG    = "es";
+// Pages outside the localized public layout, shared with App and the site map.
+export const STANDALONE_PATHS = { admin: "/admin" };
 
 export const ROUTES = {
   home:               { es: "",                          en: "",                         fr: "" },
@@ -24,6 +26,7 @@ export const ROUTES = {
   catalog:            { es: "catalogo",                  en: "catalogue",                fr: "catalogue" },
   archive:            { es: "archivo",                   en: "archive",                  fr: "archives" },
   practicalInfo:      { es: "info",                      en: "practical-information",    fr: "informations-pratiques" },
+  navigationMap:      { es: "nav",                       en: "nav",                      fr: "nav" },
   tourSouth:          { es: "viajes/surdemarruecos",     en: "tours/southern-morocco",   fr: "voyages/sud-du-maroc" },
   tourDesiertoAtlas67:{ es: "viajes/desierto_atlas/programa_6n_7d", en: "tours/desert-atlas/program-6n-7d", fr: "voyages/desert-atlas/programme-6n-7j" },
   tourDesiertoAtlas56:{ es: "viajes/desierto_atlas/programa_5n_6d", en: "tours/desert-atlas/program-5n-6d", fr: "voyages/desert-atlas/programme-5n-6j" },

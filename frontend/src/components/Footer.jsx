@@ -35,6 +35,7 @@ export const Footer = () => {
     { routeId: "tourNorth",     k: "menu_north" },
     { routeId: "tourAdventure", k: "menu_adventure" },
     { routeId: "practicalInfo", k: "menu_practical_info" },
+    { routeId: "navigationMap", k: "menu_navigation_map" },
   ];
 
   // Fallback labels — pulled from MENU_TREE via translations table-like dictionary
@@ -46,6 +47,7 @@ export const Footer = () => {
     menu_north:     { es: "Norte de Marruecos",    en: "Northern Morocco", fr: "Nord du Maroc" },
     menu_adventure: { es: "Aventura",              en: "Adventure",        fr: "Aventure" },
     menu_practical_info: { es: "Informaciones prácticas", en: "Practical information", fr: "Informations pratiques" },
+    menu_navigation_map: { es: "Mapa de navegación", en: "Navigation map", fr: "Plan du site" },
   };
 
   return (

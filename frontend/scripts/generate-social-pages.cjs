@@ -54,7 +54,7 @@ for (const route of routes) {
       writeRoute({ lang, slug: "", image: `/og-image.jpg?v=${IMAGE_VERSION}` });
       continue;
     }
-    const imageRoute = route.routeId === "practicalInfo" ? "whenToTravel" : route.routeId;
+    const imageRoute = { practicalInfo: "whenToTravel", navigationMap: "archive" }[route.routeId] || route.routeId;
     writeRoute({ lang, slug, image: `/og/routes/${imageRoute}.jpg?v=${IMAGE_VERSION}` });
   }
 }
