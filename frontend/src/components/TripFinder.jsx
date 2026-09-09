@@ -2,24 +2,21 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import {
-  MapPin, Plane, CalendarDays, Clock, ChevronDown, ArrowUpRight, ArrowRight, Compass, Sparkles, Heart, Wallet, RotateCcw, SearchX,
+  MapPin, Plane, CalendarDays, Clock, ChevronDown, ArrowRight, Compass, Sparkles, Wallet, RotateCcw, SearchX,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { usePricing } from "@/lib/pricingStore";
 import { fmtEuro } from "@/lib/pricing";
 import { pathFor } from "@/lib/routes";
-import { FromPrice } from "@/components/FromPrice";
 import EditableText from "@/components/EditableText";
 import SmartPlannerInfoModal from "@/components/SmartPlannerInfoModal";
-import TripImageCarousel from "@/components/TripImageCarousel";
+import TripFinderCard from "@/components/TripFinderCard";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
 import { tripImagesForRoute } from "@/lib/tripImageGallery";
-import monogramWhite from "@/assets/monograma-x-white.png";
-import monogramBorder from "@/assets/monograma-x-borde.png";
 import {
   ORIGIN_OPTIONS, buildMonthOptions, monthName, FLEXIBLE_LABEL, DURATION_BUCKETS,
-  topTrips, tt, nodeName, priceBounds,
+  topTrips, tt, priceBounds,
 } from "@/lib/tripFinder";
 
 const T = (es, en, fr) => ({ es, en, fr });
@@ -40,11 +37,6 @@ const UI = {
   anyDuration: T("Cualquier duración", "Any duration", "Toute durée"),
   results:  T("viajes recomendados", "recommended trips", "voyages recommandés"),
   result:   T("viaje recomendado", "recommended trip", "voyage recommandé"),
-  viewTrip: T("Ver viaje", "View trip", "Voir le voyage"),
-  fav: T("Guardar en favoritos", "Save to favourites", "Enregistrer dans mes favoris"),
-  favRemove: T("Quitar de favoritos", "Remove from favourites", "Retirer des favoris"),
-  nights:   T("noches", "nights", "nuits"),
-  days:     T("días", "days", "jours"),
   reasonSeason:   T("Ideal en", "Great in", "Idéal en"),
   reasonDuration: T("Duración ideal", "Perfect length", "Durée idéale"),
   reasonOrigin:   T("Recomendado", "Recommended", "Recommandé"),
@@ -339,84 +331,12 @@ export const TripFinder = () => {
         {/* Results grid */}
         <div
           data-testid="trip-finder-results"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {rankedWithImages.map(({ trip, reasons, images }) => {
-            const chip = chipFor(reasons);
-            const nights = trip.days - 1;
-            const fav = isFavorite(trip.routeId);
-            return (
-              <Link
-                key={trip.routeId}
-                to={pathFor(lang, trip.routeId)}
-                data-testid={`trip-finder-card-${trip.routeId}`}
-                className="group block bg-[#FDFBF7] border border-[#2C2621]/10 overflow-hidden hover:border-[#C16542]/40 hover:shadow-[0_28px_54px_-30px_rgba(26,21,19,0.5)] transition-all duration-300"
-              >
-                <TripImageCarousel
-                  images={images}
-                  title={tt(trip.name, lang)}
-                  lang={lang}
-                  className="aspect-[4/3] bg-[#1A1513]"
-                  imageClassName="transition-transform duration-[900ms] group-hover:scale-105"
-                  priorityFirst
-                  showBadge={false}
-                  showCount={false}
-                  testidPrefix={`trip-finder-carousel-${trip.routeId}`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/70 via-transparent to-transparent pointer-events-none" />
-                  <img
-                    src={monogramBorder}
-                    alt=""
-                    aria-hidden="true"
-                    data-testid={`trip-finder-monogram-${trip.routeId}`}
-                    className="pointer-events-none absolute bottom-0 right-0 z-[2] h-[118%] w-auto max-w-none select-none object-contain opacity-[0.22] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                  />
-                  {chip && (
-                    <span className="absolute top-3 left-3 z-[4] inline-flex items-center gap-1.5 bg-[#C16542] text-[#FDFBF7] px-2.5 py-1.5 text-[9px] tracking-[0.2em] uppercase shadow-md">
-                      <Sparkles className="w-3 h-3" strokeWidth={1.9} />{chip}
-                    </span>
-                  )}
-                  {/* Save to favourites — toggles without navigating */}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(trip.routeId); }}
-                    data-testid={`trip-finder-fav-${trip.routeId}`}
-                    aria-pressed={fav}
-                    aria-label={L(fav ? UI.favRemove : UI.fav)}
-                    title={L(fav ? UI.favRemove : UI.fav)}
-                    className={`absolute top-3 right-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full backdrop-blur shadow-md transition-colors ${
-                      fav ? "bg-[#C16542] text-[#FDFBF7]" : "bg-[#FDFBF7]/90 text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
-                    }`}
-                  >
-                    <Heart className="w-4 h-4 transition-transform active:scale-90" strokeWidth={1.7} fill={fav ? "currentColor" : "none"} />
-                  </button>
-                  <span className="absolute bottom-3 right-3 z-[4] bg-[#1A1513]/80 backdrop-blur-sm text-[#FDFBF7] px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase tabular-nums">
-                    {nights} {L(UI.nights)} · {trip.days} {L(UI.days)}
-                  </span>
-                  <span className="absolute bottom-3 left-3 z-[4] w-9 h-9 rounded-full bg-[#1A1513]/45 backdrop-blur-sm ring-1 ring-[#FDFBF7]/25 flex items-center justify-center shadow-md">
-                    <img src={monogramWhite} alt="Xaluca Tours" className="w-5 h-5 object-contain" loading="lazy" />
-                  </span>
-                </TripImageCarousel>
-                <div className="p-5">
-                  <h3 className="font-serif-x text-[#2C2621] text-xl leading-snug group-hover:text-[#C16542] transition-colors">
-                    {tt(trip.name, lang)}
-                  </h3>
-                  <p className="mt-2 inline-flex items-center gap-1.5 text-[12px] text-[#8A7C64] tracking-wide">
-                    {nodeName(trip.entry, lang)}
-                    <ArrowRight className="w-3 h-3" strokeWidth={1.8} />
-                    {nodeName(trip.exit, lang)}
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex items-center justify-between gap-3">
-                    <FromPrice tone="dark" layout="stacked" routeId={trip.routeId} testid={`trip-finder-price-${trip.routeId}`} />
-                    <span className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
-                      {L(UI.viewTrip)}
-                      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {rankedWithImages.map(({ trip, reasons, images }) => (
+            <TripFinderCard key={trip.routeId} trip={trip} images={images} chip={chipFor(reasons)} lang={lang}
+              favorite={isFavorite(trip.routeId)} onToggleFavorite={toggleFavorite} />
+          ))}
         </div>
 
         {/* Empty state — shown when no trips fall in the current filters/range */}

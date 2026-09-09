@@ -23,6 +23,7 @@ import ImageContactBubble from "@/components/ImageContactBubble";
 import IdealTripWizard from "@/components/IdealTripWizard";
 import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
+import ExpandableTripCard from "@/components/ExpandableTripCard";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users, Leaf };
 
@@ -437,7 +438,7 @@ const TripExplorer = ({ t, lang }) => {
         </div>
 
         {/* Trip grid */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="mt-8 grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {filtered.length === 0 ? (
             <div data-testid="explorer-empty"
                  className="col-span-full bg-[#FDFBF7] border border-[#2C2621]/10 p-12 text-center">
@@ -449,8 +450,10 @@ const TripExplorer = ({ t, lang }) => {
             const reg = REGIONS.find((r) => r.id === trip.region);
             const fav = isFavorite(trip.id);
             return (
-              <article key={trip.id} data-testid={`trip-card-${trip.id}`}
-                       className="group relative bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden">
+              <ExpandableTripCard key={trip.id} title={pick(trip.title, lang)} lang={lang}
+                description={pick(trip.summary, lang)} destinations={exps.map((e) => pick(e.label, lang))}
+                href={pathFor(lang, "contact")} ctaLabel={t.cta_card}
+                testIdPrefix={`trip-${trip.id}`} testIds={{ card: `trip-card-${trip.id}` }}>
                 <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
                   <EditableImage
                     slot={`viajes.trip.${trip.id}`}
@@ -516,7 +519,7 @@ const TripExplorer = ({ t, lang }) => {
                     </Link>
                   </div>
                 </div>
-              </article>
+              </ExpandableTripCard>
             );
           })}
         </div>
@@ -549,15 +552,19 @@ const ProximasSalidas = ({ t, lang }) => {
   const DEPARTURES = [
     { season: { es: "Semana Santa 2026", en: "Easter 2026",   fr: "Pâques 2026" }, dates: "28 Mar — 04 Abr",
       title:  { es: "Sáhara & Alto Atlas", en: "Sahara & High Atlas", fr: "Sahara & Haut Atlas" },
+      summary: { es: "Del paisaje de montaña del Alto Atlas a las dunas del Sáhara: una salida para descubrir los grandes contrastes del sur de Marruecos.", en: "From High Atlas mountain scenery to Saharan dunes: a departure to discover the great contrasts of southern Morocco.", fr: "Des paysages de montagne du Haut Atlas aux dunes du Sahara : un départ pour découvrir les grands contrastes du sud marocain." },
       spots: 4, accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85" },
     { season: { es: "Verano 2026", en: "Summer 2026", fr: "Été 2026" }, dates: "12 Jul — 23 Jul",
       title:  { es: "Norte de Marruecos & costas", en: "Northern Morocco & coasts", fr: "Nord du Maroc & côtes" },
+      summary: { es: "Descubre el norte de Marruecos y sus costas, una propuesta para acercarte a sus ciudades y disfrutar de sus paisajes junto al mar.", en: "Discover northern Morocco and its coasts, a journey to explore its cities and enjoy its seaside landscapes.", fr: "Découvrez le nord du Maroc et ses côtes, un voyage pour explorer ses villes et profiter de ses paysages en bord de mer." },
       spots: 6, accent: "#3A4A5F", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85" },
     { season: { es: "Otoño 2026", en: "Autumn 2026", fr: "Automne 2026" }, dates: "10 Oct — 21 Oct",
       title:  { es: "Marruecos al completo", en: "Full Morocco", fr: "Maroc intégral" },
+      summary: { es: "Una propuesta para descubrir la diversidad de Marruecos: paisajes, ciudades y culturas que muestran las distintas caras del país en un mismo viaje.", en: "A journey through Morocco's diversity: landscapes, cities and cultures revealing the country's many faces in a single trip.", fr: "Un voyage à travers la diversité du Maroc : paysages, villes et cultures pour découvrir les multiples facettes du pays." },
       spots: 8, accent: "#A07042", image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=1600&q=85" },
     { season: { es: "Fin de año 2026", en: "New Year 2026", fr: "Nouvel An 2026" }, dates: "27 Dic — 03 Ene",
       title:  { es: "Bivouac Erg Chigaga", en: "Erg Chigaga bivouac", fr: "Bivouac Erg Chigaga" },
+      summary: { es: "Despide el año entre las dunas de Erg Chigaga y vive la experiencia de un bivouac en el desierto: una forma diferente de recibir el nuevo año.", en: "See out the year among the dunes of Erg Chigaga and experience a desert bivouac: a different way to welcome the new year.", fr: "Terminez l’année parmi les dunes de l’Erg Chigaga et vivez l’expérience d’un bivouac au désert : une autre façon d’accueillir le nouvel an." },
       spots: 2, accent: "#D97742", image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=85" },
   ];
 
@@ -577,10 +584,11 @@ const ProximasSalidas = ({ t, lang }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {DEPARTURES.map((d, i) => (
-            <article key={d.id || `proxima-${i}`} data-testid={`proxima-card-${i}`}
-                     className="group relative bg-[#F2EBE1] border border-[#2C2621]/10 hover:border-[#2C2621]/30 transition-colors duration-300 flex flex-col overflow-hidden">
+            <ExpandableTripCard key={d.id || `proxima-${i}`} title={pick(d.title, lang)} lang={lang}
+              description={pick(d.summary, lang)} href={pathFor(lang, "contact")} ctaLabel={t.reserve}
+              testIdPrefix={`proxima-${i}`} testIds={{ card: `proxima-card-${i}` }} className="!bg-[#F2EBE1]">
               <div className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
                 <EditableImage
                   slot={`viajes.proxima.${d.id || i}`}
@@ -635,7 +643,7 @@ const ProximasSalidas = ({ t, lang }) => {
                   </Link>
                 </div>
               </div>
-            </article>
+            </ExpandableTripCard>
           ))}
         </div>
       </div>
@@ -1099,7 +1107,7 @@ export default function ToursLandingPage() {
       <ExperiencesSection t={t.experiences} lang={lang} />
       <IdealTripWizard />
       <TripExplorer t={t.explorer} lang={lang} />
-      <HomeAllTripsCatalog initialLimit={12} />
+      <HomeAllTripsCatalog initialLimit={12} expandableCards />
       <ProximasSalidas t={t.proximas} lang={lang} />
       <Asesoramiento t={t.asesoramiento} lang={lang} />
       <CatalogoCTA lang={lang} />

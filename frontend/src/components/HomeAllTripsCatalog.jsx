@@ -16,6 +16,8 @@ import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import TripCardActions from "@/components/TripCardActions";
+import ExpandableTripCard from "@/components/ExpandableTripCard";
+import { catalogueTripPreview } from "@/lib/catalogueTripPreview";
 import monogramaX from "@/assets/monograma-x-crop.png";
 import FromPrice from "@/components/FromPrice";
 import { SlotScope } from "@/components/slotScope";
@@ -159,16 +161,12 @@ const ChipGroup = ({ icon: Icon, label, options, value, onChange, testidBase }) 
 );
 
 /* ---------- Card ---------- */
-const TripCard = ({ trip, lang }) => {
+const TripCard = ({ trip, lang, expandable = false }) => {
   const href = pathFor(lang, trip.routeId);
   // Shares the trip's MASTER image slot with the page Hero and all listings.
   const slot = tripHeroSlot(trip.routeId);
-  return (
-    <SlotScope id={trip.routeId}>
-      <div
-        data-testid={`home-all-trips-card-${trip.routeId}`}
-        className="group flex flex-col bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#C16542]/60 transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(44,38,33,0.35)]"
-      >
+  const content = (
+      <>
         <Link
           to={href}
           data-testid={`home-all-trips-link-${trip.routeId}`}
@@ -231,13 +229,29 @@ const TripCard = ({ trip, lang }) => {
         </div>
         {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
         <CardHighlightsMarquee routeId={trip.routeId} testid={`home-all-trips-highlights-${trip.routeId}`} />
-      </div>
+      </>
+  );
+  return (
+    <SlotScope id={trip.routeId}>
+      {expandable ? (
+        <ExpandableTripCard title={pick(trip.title, lang)} href={href} lang={lang}
+          {...catalogueTripPreview(trip, lang)}
+          testIdPrefix={`home-all-trips-${trip.routeId}`}
+          testIds={{ card: `home-all-trips-card-${trip.routeId}` }}>
+          {content}
+        </ExpandableTripCard>
+      ) : (
+        <div data-testid={`home-all-trips-card-${trip.routeId}`}
+          className="group flex flex-col bg-[#FDFBF7] border border-[#2C2621]/10 hover:border-[#C16542]/60 transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(44,38,33,0.35)]">
+          {content}
+        </div>
+      )}
     </SlotScope>
   );
 };
 
 /* ---------- Section ---------- */
-const HomeAllTripsCatalog = ({ initialLimit = null }) => {
+const HomeAllTripsCatalog = ({ initialLimit = null, expandableCards = false }) => {
   const { lang } = useLanguage();
   const [query, setQuery]       = useState("");
   const [region, setRegion]     = useState("all");
@@ -349,9 +363,9 @@ const HomeAllTripsCatalog = ({ initialLimit = null }) => {
               {pick(COPY.noMatch, lang)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-7">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-7 ${expandableCards ? "items-start" : ""}`}>
               {visible.map((trip) => (
-                <TripCard key={trip.routeId} trip={trip} lang={lang} />
+                <TripCard key={trip.routeId} trip={trip} lang={lang} expandable={expandableCards} />
               ))}
             </div>
           )}

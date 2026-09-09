@@ -5,6 +5,7 @@ import EditableText from "@/components/EditableText";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { HOME_HELP_COPY, HOME_HELP_OPTIONS } from "@/lib/homeHelpOptions";
+import ContactDetailsCard from "@/components/ContactDetailsCard";
 
 const COPY = {
   eyebrow: {
@@ -255,6 +256,7 @@ export default function HomeTrustStrip() {
             ))}
           </div>
         </div>
+        <ContactDetailsCard testIdPrefix="home-contact" className="mt-6" />
       </div>
     </section>
   );
