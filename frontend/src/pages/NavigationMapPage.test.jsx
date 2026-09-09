@@ -40,4 +40,16 @@ describe("navigation map links", () => {
     expect(shortcut.getAttribute("target")).toBeNull();
     expect(page.querySelectorAll('[data-nav-url="/admin"]')).toHaveLength(1);
   });
+
+  test("every Fin de Año title and language link opens the 2026 page in a new tab", () => {
+    const page = renderPage();
+    const links = [...page.querySelectorAll("a")];
+    const yearLinks = links.filter((link) => /(?:findeano|newyear|nouvelan)2026/.test(link.getAttribute("href")));
+    expect(yearLinks).toHaveLength(4); // Page title plus ES, EN and FR URLs.
+    expect(yearLinks.map((link) => link.getAttribute("href"))).toEqual(expect.arrayContaining([
+      "/findeano2026", "/en/newyear2026", "/fr/nouvelan2026",
+    ]));
+    for (const link of yearLinks) expect(link.getAttribute("target")).toBe("_blank");
+    for (const link of links) expect(link.getAttribute("href")).not.toMatch(/(?:findeano|newyear|nouvelan)2025/);
+  });
 });

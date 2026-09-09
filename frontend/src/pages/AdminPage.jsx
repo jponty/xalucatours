@@ -2931,7 +2931,7 @@ const LEAD_FORMS = [
       { header: "Fechas", get: (r) => r.travel_dates || "—", truncate: true },
       { header: "Estilo", get: (r) => r.journey_interest || "—", truncate: true },
       { header: "Canal pref.", get: (r) => leadContactPref(r.preferred_contact), nowrap: true },
-      { header: "Destinatario", get: (r) => ({ lluis: "Lluís", tayeb: "Tayeb", both: "Ambos fundadores" }[r.founder_recipient] || { noemi: "Noemi", elena: "Elena", sanaa: "Sanaa" }[r.team_recipient] || "—"), nowrap: true },
+      { header: "Destinatario", get: (r) => ({ lluis: "Lluís", tayeb: "Tayeb", both: "Ambos fundadores" }[r.founder_recipient] || { noemi: "Noemi", elena: "Elena", sanaa: "Sanaa", magda: "Magda" }[r.team_recipient] || "—"), nowrap: true },
       { header: "Mensaje", get: (r) => r.message || "—", truncate: true, title: (r) => r.message },
       { header: "Origen", get: (r) => r.source_label || r.source_route_id || r.source_path || "—", truncate: true, title: (r) => `${r.source_label || ""}\n${r.source_path || ""}` },
       { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },

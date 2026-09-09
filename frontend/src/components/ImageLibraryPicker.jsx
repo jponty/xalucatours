@@ -9,6 +9,7 @@ import UnsplashTab from "@/components/UnsplashTab";
 import PexelsSelectionTab from "@/components/PexelsSelectionTab";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
 import { adminAuthHeaders } from "@/lib/adminSession";
+import { pathFor } from "@/lib/routes";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -1218,8 +1219,10 @@ const SLOT_PREFIX_TO_PATH = {
   home:                       "/",
   contact:                    "/contacto",
   "proximas-salidas":         "/proximas_salidas",
-  "findeano-2026":            "/findeano2025",
-  "findeano2025":             "/findeano2025",
+  "findeano-2026":            pathFor("es", "tourFinDeAno2025"),
+  "findeano2026":             pathFor("es", "tourFinDeAno2025"),
+  "findeano2025":             pathFor("es", "tourFinDeAno2025"),
+  findeano:                    pathFor("es", "tourFinDeAno2025"),
 };
 function slotToPath(slot_id) {
   if (!slot_id) return null;

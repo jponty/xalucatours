@@ -88,6 +88,42 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
     assert delivery["confirmation_id"] == "resend-client-id"
 
 
+@pytest.mark.parametrize("recipient,name", [
+    ("noemi", "Noemi Aparicio"),
+    ("elena", "Elena Xaluca"),
+    ("sanaa", "Sanaa Xaluca"),
+    ("magda", "Magda Xaluca"),
+])
+def test_team_contact_preserves_recipient_in_storage_and_both_emails(monkeypatch, recipient, name):
+    collection = _collection(monkeypatch, "contact_requests")
+    captured = []
+    _accepted_senders(monkeypatch, captured)
+    recipient_email = f"{recipient}@example.com"
+    monkeypatch.setattr(server, f"TEAM_{recipient.upper()}_EMAIL", recipient_email)
+    payload = server.ContactRequestCreate(
+        full_name="Ana García",
+        email="ana@example.com",
+        team_recipient=recipient.upper(),
+        journey_interest="team-contact",
+        message="Quiero preparar mi viaje a Marruecos.",
+        language="es",
+    )
+
+    result = asyncio.run(server.create_contact_request(payload))
+
+    assert result.team_recipient == recipient
+    assert collection.insert_one.await_args.args[0]["team_recipient"] == recipient
+    assert name in captured[0][2]
+    assert captured[0][4] == [recipient_email]
+    assert ("Destinatario", name) in captured[1][5]["summary_rows"]
+
+
+def test_magda_contact_uses_central_inbox_until_individual_address_is_configured(monkeypatch):
+    monkeypatch.setattr(server, "TEAM_MAGDA_EMAIL", "")
+    monkeypatch.setattr(server, "NOTIFY_EMAILS", ["team@example.com"])
+    assert server._team_notification_recipients("magda") == ["team@example.com"]
+
+
 def test_contact_never_returns_success_when_resend_rejects(monkeypatch):
     collection = _collection(monkeypatch, "contact_requests")
     monkeypatch.setattr(

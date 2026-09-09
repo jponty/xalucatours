@@ -15,6 +15,7 @@ import { supabaseMedia } from "@/lib/supabaseMedia";
 import Img from "@/components/Img";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
+import { TEAM_MEMBERS } from "@/lib/teamMembers";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const PRIVACY_URL = "https://xalucatours.com/";
@@ -59,11 +60,7 @@ const COPY = {
   selectedRecipient: T("Tu consulta se enviará a", "Your enquiry will be sent to", "Votre demande sera envoyée à"),
 };
 
-const TEAM_RECIPIENTS = {
-  noemi: "Noemi Aparicio",
-  elena: "Elena Xaluca",
-  sanaa: "Sanaa Xaluca",
-};
+const TEAM_RECIPIENTS = Object.fromEntries(TEAM_MEMBERS.map(({ id, name }) => [id, name.es]));
 
 const FOUNDER_VISUALS = {
   lluis: {

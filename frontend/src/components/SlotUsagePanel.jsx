@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Eye, ExternalLink, MapPin, Loader2 } from "lucide-react";
+import { pathFor } from "@/lib/routes";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -30,8 +31,11 @@ const SLOT_PREFIX_TO_PATH = {
   "when-travel": "/cuando-viajar",
   "proximas-salidas": "/proximas_salidas",
   juego: "/juego",
-  "findeano-2026": "/findeano2025",
-  findeano2025: "/findeano2025",
+  "findeano-2026": pathFor("es", "tourFinDeAno2025"),
+  findeano2026: pathFor("es", "tourFinDeAno2025"),
+  // Old image slots still link to the current public page.
+  findeano2025: pathFor("es", "tourFinDeAno2025"),
+  findeano: pathFor("es", "tourFinDeAno2025"),
 };
 const PAGE_LABELS = {
   home: "Inicio",
@@ -52,7 +56,9 @@ const PAGE_LABELS = {
   "proximas-salidas": "Próximas salidas",
   juego: "Juego",
   "findeano-2026": "Fin de Año 2026",
-  findeano2025: "Fin de Año",
+  findeano2026: "Fin de Año 2026",
+  findeano2025: "Fin de Año 2026",
+  findeano: "Fin de Año 2026",
 };
 const prettify = (seg) =>
   String(seg || "")

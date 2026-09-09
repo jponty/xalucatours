@@ -485,7 +485,7 @@ const TeamSection = ({ lang }) => (
         </div>
 
         <div className="md:col-span-5">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 md:-rotate-1">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 md:-rotate-1">
             {TEAM_MEMBERS.map((member, index) => (
               <article
                 key={member.id}

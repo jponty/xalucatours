@@ -15,7 +15,7 @@ import Layout from "@/components/Layout";
 import StubPage from "@/pages/StubPage";
 import AdminPage from "@/pages/AdminPage";
 import { BlogPostPage } from "@/pages/BlogPage";
-import { resolvePath, pathFor, STANDALONE_PATHS } from "@/lib/routes";
+import { resolvePath, pathFor, redirectForPath, STANDALONE_PATHS } from "@/lib/routes";
 import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
 import SeoHead from "@/components/SeoHead";
 import { getSeoMeta } from "@/lib/seoMeta";
@@ -36,6 +36,11 @@ const LocalizedRouter = () => {
   useEffect(() => {
     if (!location.hash) window.scrollTo(0, 0);
   }, [location.pathname, location.hash]);
+
+  const redirect = redirectForPath(location.pathname);
+  if (redirect) {
+    return <Navigate to={`${redirect}${location.search}${location.hash}`} replace />;
+  }
 
   // Blog post: dynamic slug under /blog/:slug · /en/blog/:slug · /fr/blog/:slug
   // (resolvePath only matches exact slugs; we handle the post route manually.)

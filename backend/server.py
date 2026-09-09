@@ -216,7 +216,7 @@ class ContactRequestCreate(BaseModel):
         if value is None:
             return None
         normalized = value.strip().lower()
-        if normalized not in {"noemi", "elena", "sanaa"}:
+        if normalized not in {"noemi", "elena", "sanaa", "magda"}:
             raise ValueError("Invalid team recipient")
         return normalized
 
@@ -861,6 +861,7 @@ FOUNDER_TAYEB_EMAIL = os.environ.get("FOUNDER_TAYEB_EMAIL", "").strip()
 TEAM_NOEMI_EMAIL = os.environ.get("TEAM_NOEMI_EMAIL", "").strip()
 TEAM_ELENA_EMAIL = os.environ.get("TEAM_ELENA_EMAIL", "").strip()
 TEAM_SANAA_EMAIL = os.environ.get("TEAM_SANAA_EMAIL", "").strip()
+TEAM_MAGDA_EMAIL = os.environ.get("TEAM_MAGDA_EMAIL", "").strip()
 # Live, DB-backed recipient list (seeded from env). Mutated in place so every
 # form submission reads the latest recipients.
 NOTIFY_EMAILS = list(LEADS_NOTIFY_EMAILS)
@@ -1537,6 +1538,7 @@ def _team_recipient_label(value: Optional[str]) -> str:
         "noemi": "Noemi Aparicio",
         "elena": "Elena Xaluca",
         "sanaa": "Sanaa Xaluca",
+        "magda": "Magda Xaluca",
     }.get((value or "").strip().lower(), "")
 
 
@@ -1548,6 +1550,7 @@ def _team_notification_recipients(value: Optional[str]) -> Optional[List[str]]:
         "noemi": TEAM_NOEMI_EMAIL,
         "elena": TEAM_ELENA_EMAIL,
         "sanaa": TEAM_SANAA_EMAIL,
+        "magda": TEAM_MAGDA_EMAIL,
     }
     recipients = _clean_emails([configured.get(selected, "")])
     # Keep the lead safe in the central inbox until individual addresses exist.

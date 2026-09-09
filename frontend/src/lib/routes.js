@@ -60,7 +60,9 @@ export const ROUTES = {
   tourErrAtlasFez56: { es: "viajes/errachidia-atlas-fez/programa_5n_6d", en: "tours/errachidia-atlas-fez/program-5n-6d", fr: "voyages/errachidia-atlas-fes/programme-5n-6j" },
   tourFezAtlasErr56: { es: "viajes/fez-atlas-errachidia/programa_5n_6d", en: "tours/fez-atlas-errachidia/program-5n-6d", fr: "voyages/fes-atlas-errachidia/programme-5n-6j" },
   tourUpcoming:       { es: "proximas_salidas", en: "upcoming-departures", fr: "prochains-departs" },
-  tourFinDeAno2025:   { es: "findeano2025",     en: "newyear2025",          fr: "nouvelan2025" },
+  // Keep the internal ID stable for saved favourites, pricing and media.
+  // Only the public URLs change to the current edition.
+  tourFinDeAno2025:   { es: "findeano2026",     en: "newyear2026",          fr: "nouvelan2026" },
   tourFull:           { es: "viajes/marruecos",          en: "tours/full-morocco",       fr: "voyages/maroc-integral" },
   tourGransurFezRak:      { es: "viajes/gransur/fez-rak",            en: "tours/grand-south/fez-marrakech",            fr: "voyages/grand-sud/fes-marrakech" },
   tourFezRak910:          { es: "viajes/gransur/fez_marrakech/programa_9n_10d", en: "tours/grand-south/fez-marrakech/program-9n-10d", fr: "voyages/grand-sud/fes-marrakech/programme-9n-10j" },
@@ -153,6 +155,19 @@ export const pathFor = (lang, routeId = "home") => {
     return slug ? `/${slug}` : "/";
   }
   return slug ? `/${safeLang}/${slug}` : `/${safeLang}`;
+};
+
+// Inbound compatibility only: never enumerate legacy URLs as navigation links.
+// Keep in sync with the permanent redirect rules in render.yaml.
+const LEGACY_REDIRECTS = {
+  "/findeano2025": { lang: "es", routeId: "tourFinDeAno2025" },
+  "/en/newyear2025": { lang: "en", routeId: "tourFinDeAno2025" },
+  "/fr/nouvelan2025": { lang: "fr", routeId: "tourFinDeAno2025" },
+};
+
+export const redirectForPath = (pathname) => {
+  const legacy = LEGACY_REDIRECTS[(pathname || "/").replace(/\/+$/, "")];
+  return legacy ? pathFor(legacy.lang, legacy.routeId) : null;
 };
 
 /* Given a pathname, identify { lang, routeId, slug }. */

@@ -35,6 +35,14 @@ const withBrand = (label) => ({
 
 const SEO = {
   home: DEFAULT_SEO,
+  tourFinDeAno2025: {
+    title: withBrand(T("Fin de Año 2026 en el desierto", "New Year's Eve 2026 in the desert", "Réveillon 2026 dans le désert")),
+    description: T(
+      "Descubre el viaje de Fin de Año 2026 en el desierto de Marruecos con Xaluca Tours: itinerario, experiencias, alojamientos y toda la información para preparar tu viaje.",
+      "Discover Xaluca Tours' New Year's Eve 2026 trip in the Moroccan desert: itinerary, experiences, accommodation and everything you need to plan your journey.",
+      "Découvrez le voyage du réveillon 2026 dans le désert marocain avec Xaluca Tours : itinéraire, expériences, hébergements et informations pour préparer votre séjour."
+    ),
+  },
   navigationMap: {
     title: withBrand(T("Mapa de navegación", "Navigation map", "Plan du site")),
     description: T(

@@ -101,6 +101,25 @@ services:
         # Keep the integration ready while hiding the public floating widget.
         value: "false"
     routes:
+      # Retired campaign URLs are inbound redirects, not public navigation.
+      - type: redirect
+        source: /findeano2025
+        destination: /findeano2026
+      - type: redirect
+        source: /findeano2025/
+        destination: /findeano2026
+      - type: redirect
+        source: /en/newyear2025
+        destination: /en/newyear2026
+      - type: redirect
+        source: /en/newyear2025/
+        destination: /en/newyear2026
+      - type: redirect
+        source: /fr/nouvelan2025
+        destination: /fr/nouvelan2026
+      - type: redirect
+        source: /fr/nouvelan2025/
+        destination: /fr/nouvelan2026
       - type: rewrite
         source: /*
         destination: /index.html

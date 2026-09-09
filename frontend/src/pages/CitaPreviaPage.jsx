@@ -153,7 +153,7 @@ const TeamPreview = ({ lang }) => (
         />
       </div>
 
-      <div className="mt-16 grid grid-cols-1 items-start gap-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-9">
+      <div className="mt-16 grid grid-cols-1 items-start gap-14 sm:grid-cols-2 xl:grid-cols-4 lg:gap-9">
         {TEAM_MEMBERS.map((member) => (
           <article
             key={member.id}

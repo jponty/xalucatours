@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Compass, ArrowRight, Play, Pause, Send } from "lucide-react";
+import { Compass, ArrowRight, Send } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
 import { supabaseMedia } from "@/lib/supabaseMedia";
 import FounderContactModal from "@/components/FounderContactModal";
+import FounderAudioButton from "@/components/FounderAudioButton";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 /* ============================================================
@@ -23,8 +24,6 @@ const PONT_IMG =
   supabaseMedia("xaluca/static/founders/lluis-pont.jpg");
 const TAYEB_IMG =
   supabaseMedia("xaluca/static/founders/tayeb-ettaiek.jpg");
-const FOUNDER_AUDIO =
-  supabaseMedia("xaluca/static/audio/grup-xaluca.mp3");
 
 const COPY = {
   eyebrow: T("Nuestros fundadores", "Our founders", "Nos fondateurs"),
@@ -49,7 +48,7 @@ const FOUNDERS = [
   {
     id: "pont",
     img: PONT_IMG,
-    audio: FOUNDER_AUDIO,
+    audio: null, // Add Lluís's own recording here when it is available.
     firstName: "Lluís",
     tilt: "-rotate-3",
     paperTilt: "rotate-[0.6deg]",
@@ -70,7 +69,7 @@ const FOUNDERS = [
   {
     id: "tayeb",
     img: TAYEB_IMG,
-    audio: FOUNDER_AUDIO,
+    audio: null, // Add Tayeb's own recording here when it is available.
     firstName: "Tayeb",
     tilt: "rotate-3",
     paperTilt: "-rotate-[0.6deg]",
@@ -89,56 +88,6 @@ const FOUNDERS = [
     ),
   },
 ];
-
-const FounderAudio = ({ src, playLabel, pauseLabel, testid }) => {
-  const ref = useRef(null);
-  const [playing, setPlaying] = useState(false);
-
-  const toggle = () => {
-    const el = ref.current;
-    if (!el) return;
-    if (el.paused) {
-      // Only one founder audio plays at a time.
-      if (window.__xalucaFounderAudio && window.__xalucaFounderAudio !== el) {
-        try { window.__xalucaFounderAudio.pause(); } catch (_) { /* noop */ }
-      }
-      window.__xalucaFounderAudio = el;
-      el.play().catch(() => {});
-    } else {
-      el.pause();
-    }
-  };
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={toggle}
-        data-testid={testid}
-        aria-pressed={playing}
-        aria-label={playing ? pauseLabel : playLabel}
-        className={`inline-flex items-center gap-2.5 px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase transition-colors ${
-          playing
-            ? "bg-[#C16542] text-[#FDFBF7]"
-            : "border border-[#C16542]/40 text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
-        }`}
-      >
-        <span className="inline-flex items-center justify-center">
-          {playing ? <Pause className="w-4 h-4" strokeWidth={1.8} /> : <Play className="w-4 h-4" strokeWidth={1.8} />}
-        </span>
-        {playing ? pauseLabel : playLabel}
-      </button>
-      <audio
-        ref={ref}
-        src={src}
-        preload="none"
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-        onEnded={() => setPlaying(false)}
-      />
-    </>
-  );
-};
 
 const FounderBlock = ({ f, reverse, lang, onContact }) => (
   <div
@@ -234,8 +183,9 @@ const FounderBlock = ({ f, reverse, lang, onContact }) => (
               className="mt-2 text-[10px] tracking-[0.28em] uppercase text-[#8A7C64]"
             />
             <div className="mt-4 flex flex-wrap justify-end gap-3">
-              <FounderAudio
+              <FounderAudioButton
                 src={f.audio}
+                founderName={f.firstName}
                 testid={`founder-audio-${f.id}`}
                 playLabel={`${(COPY.audioPlay[lang] ?? COPY.audioPlay.es)} ${f.firstName}`}
                 pauseLabel={COPY.audioPause[lang] ?? COPY.audioPause.es}
