@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowRight, Mail, Phone, Check, Clock } from "lucide-react";
+import { ArrowRight, Mail, Phone, Clock } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/i18n";
 import { resolvePath } from "@/lib/routes";
@@ -10,6 +10,7 @@ import { TRAVEL_CATEGORIES, CONTACT } from "@/lib/data";
 import EditableText from "@/components/EditableText";
 import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
+import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -162,19 +163,7 @@ export const ContactForm = () => {
                 data-testid="contact-success-card"
                 className="bg-[#FDFBF7]/[0.04] border border-[#D4A373]/40 p-10 md:p-14 text-center berber-watermark relative"
               >
-                <span className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#D4A373]/40 text-[#D4A373] mx-auto">
-                  <Check className="w-5 h-5" strokeWidth={1.6} />
-                </span>
-                <EditableText as="h3" slot="home.contact.form_success" defaults={translations.form_success}
-                  className="font-serif-x text-3xl md:text-4xl leading-[1.05] mt-6 text-[#FDFBF7] block" />
-                <button
-                  onClick={() => setDone(false)}
-                  data-testid="contact-send-another"
-                  className="mt-8 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b border-[#D4A373]/40 pb-1 text-[#D4A373] hover:text-[#FDFBF7] hover:border-[#FDFBF7] transition-colors"
-                >
-                  <EditableText slot="home.contact.send_another" defaults={translations.send_another} multiline={false} />
-                  <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
-                </button>
+                <LeadSubmissionSuccess tone="dark" />
               </div>
             ) : (
               <form

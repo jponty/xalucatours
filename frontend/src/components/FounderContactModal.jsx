@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { ArrowRight, Check, Mail, Send, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, Mail, Send, ShieldCheck, Users } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import {
@@ -14,6 +14,7 @@ import { resolvePath } from "@/lib/routes";
 import { supabaseMedia } from "@/lib/supabaseMedia";
 import Img from "@/components/Img";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
+import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const PRIVACY_URL = "https://xalucatours.com/";
@@ -201,11 +202,8 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
       >
         {success ? (
           <div className="px-6 py-14 text-center sm:px-12 sm:py-20" data-testid="founder-contact-success">
-            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#C16542] text-white"><Check className="h-6 w-6" strokeWidth={1.7} /></span>
-            <span className="mt-7 block text-[10px] font-semibold uppercase tracking-[0.3em] text-[#C16542]">Xaluca · Grup Xaluca</span>
-            <DialogTitle className="mx-auto mt-4 max-w-xl font-serif-x text-4xl font-normal leading-[1.05] sm:text-5xl">{pick(COPY.successTitle, lang)}</DialogTitle>
-            <DialogDescription className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[#62584E] sm:text-base">{pick(COPY.successBody, lang)}</DialogDescription>
-            <button type="button" onClick={() => onOpenChange(false)} className="mt-9 inline-flex items-center gap-3 bg-[#2C2621] px-8 py-4 text-[10px] uppercase tracking-[0.23em] text-white">{pick(COPY.close, lang)}</button>
+            <DialogTitle className="sr-only">{pick(COPY.successTitle, lang)}</DialogTitle>
+            <LeadSubmissionSuccess onNavigate={() => onOpenChange(false)} />
           </div>
         ) : (
           <>

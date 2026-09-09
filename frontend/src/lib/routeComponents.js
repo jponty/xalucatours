@@ -111,6 +111,7 @@ import ContactPage from "@/pages/ContactPage";
 import CitaPreviaPage from "@/pages/CitaPreviaPage";
 import CatalogoPage from "@/pages/CatalogoPage";
 import ArchivoPage from "@/pages/ArchivoPage";
+import PracticalInfoPage from "@/pages/PracticalInfoPage";
 import JuegoPage from "@/pages/JuegoPage";
 import ConcursoPage from "@/pages/ConcursoPage";
 import GaleriaPage from "@/pages/GaleriaPage";
@@ -128,6 +129,7 @@ export const ROUTE_COMPONENTS = {
   toursLanding:                  ToursLandingPage,
   catalog:                       CatalogoPage,            // /catalogo · Publuu flipbook
   archive:                       ArchivoPage,             // /archivo · complete trip index
+  practicalInfo:                 PracticalInfoPage,       // /info · shared travel notes
   tourFull:                      MarruecosPage,
   tourNorth:                     NortePage,
   tourSouth:                     SurPage,

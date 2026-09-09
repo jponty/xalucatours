@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
-import { ArrowRight, Check, Mail, Phone, Sparkles, X } from "lucide-react";
+import { ArrowRight, Mail, Phone, Sparkles, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { resolvePath } from "@/lib/routes";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
+import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const SESSION_SHOWN_KEY = "xaluca:exit-intent-shown";
@@ -240,17 +241,7 @@ export default function ExitIntentModal() {
 
         {success ? (
           <div className="px-6 py-16 text-center sm:px-12 md:py-20" data-testid="exit-intent-success">
-            <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#C16542] text-white shadow-lg">
-              <Check className="h-6 w-6" strokeWidth={1.8} />
-            </span>
-            <p className="mt-7 text-[9px] uppercase tracking-[0.3em] text-[#C16542]">Xaluca · Tours</p>
-            <h2 id="exit-intent-title" className="mx-auto mt-4 max-w-2xl font-serif-x text-4xl leading-tight text-[#2C2621] md:text-5xl">
-              {pick(COPY.successTitle, lang)}
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[#5C5248] md:text-base">{pick(COPY.successBody, lang)}</p>
-            <button type="button" onClick={() => setOpen(false)} className="mt-8 border-b border-[#C16542]/40 pb-1 text-[10px] uppercase tracking-[0.2em] text-[#C16542]">
-              {pick(COPY.later, lang)}
-            </button>
+            <LeadSubmissionSuccess titleId="exit-intent-title" onNavigate={() => setOpen(false)} />
           </div>
         ) : (
           <div className="grid md:grid-cols-[0.9fr_1.1fr]">

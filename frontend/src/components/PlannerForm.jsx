@@ -18,6 +18,7 @@ import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripCon
 import { optimizedSrc } from "@/lib/imageUrl";
 import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
+import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 
 /* ============================================================
    PlannerForm · reusable detailed trip-planner form
@@ -341,18 +342,7 @@ export default function PlannerForm() {
           className="relative bg-white border border-[#2C2621]/10 p-10 md:p-14 text-center"
           style={{ borderTopColor: "#5A6B4F", borderTopWidth: 3 }}
         >
-          <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#5A6B4F]/12 text-[#5A6B4F]">
-            <Check className="w-6 h-6" strokeWidth={1.6} />
-          </span>
-          <ET k="success_t" as="h2" multiline={false} className="font-serif-x text-3xl md:text-4xl tracking-tight mt-7 text-[#2C2621]" />
-          <ET k="success_b" as="p" className="mt-5 text-[15px] md:text-base text-[#5C5248] leading-[1.85] max-w-xl mx-auto" />
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 mt-9 px-7 py-3.5 bg-[#2C2621] text-[#FDFBF7] text-[11px] tracking-[0.25em] uppercase hover:bg-[#C16542] transition-colors"
-            data-testid="plan-trip-success-home"
-          >
-            <ET k="send_back" multiline={false} />
-          </Link>
+          <LeadSubmissionSuccess />
         </div>
       ) : (
         <form

@@ -108,6 +108,15 @@ const SEO = {
     ),
   },
 
+  practicalInfo: {
+    title: withBrand(T("Informaciones prácticas para tu viaje", "Practical information for your trip", "Informations pratiques pour votre voyage")),
+    description: T(
+      "Encuentra las notas de viaje de cada itinerario de Xaluca Tours. Consulta qué llevar y cómo preparar tu maleta para viajar por Marruecos.",
+      "Find the travel notes for each Xaluca Tours itinerary. Discover what to bring and how to pack for your journey through Morocco.",
+      "Retrouvez les notes de chaque itinéraire Xaluca Tours. Consultez quoi emporter et comment préparer votre valise pour voyager au Maroc."
+    ),
+  },
+
   precios: {
     title: withBrand(T("Precios y tarifas", "Pricing", "Tarifs")),
     description: T(

@@ -41,14 +41,14 @@ const THEME_ICON = {
   comfort: Backpack,
 };
 
-const Note = ({ note, lang, index, routeId }) => {
+const Note = ({ note, lang, index, routeId, layout }) => {
   const Icon = THEME_ICON[note.theme] || Luggage;
   const rotation = index % 2 === 0 ? "rotate-[-1.4deg]" : "rotate-[1.2deg]";
   const slotBase = `trip.${routeId}.packing.note.${index}`;
   return (
     <article
       data-testid={`packing-note-${index}`}
-      className={`relative shrink-0 snap-center w-[82vw] sm:w-[320px] md:w-[330px] ${rotation} transition-transform duration-500 hover:rotate-0`}
+      className={`relative ${layout === "grid" ? "w-full min-w-0" : "shrink-0 snap-center w-[82vw] sm:w-[320px] md:w-[330px]"} ${rotation} transition-transform duration-500 hover:rotate-0`}
     >
       {/* washi tape */}
       <span
@@ -115,7 +115,7 @@ const Note = ({ note, lang, index, routeId }) => {
   );
 };
 
-export default function TripPackingNotes({ routeId }) {
+export default function TripPackingNotes({ routeId, layout = "carousel" }) {
   const { lang } = useLanguage();
   const notes = getTripPackingNotes(routeId);
   const trackRef = useRef(null);
@@ -165,7 +165,7 @@ export default function TripPackingNotes({ routeId }) {
           </p>
         </div>
         {/* arrows (desktop) */}
-        <div className="hidden sm:flex items-center gap-2 shrink-0">
+        {layout === "carousel" && <div className="hidden sm:flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => goTo(active - 1)}
@@ -186,23 +186,25 @@ export default function TripPackingNotes({ routeId }) {
           >
             <ChevronRight className="w-4 h-4" strokeWidth={1.7} />
           </button>
-        </div>
+        </div>}
       </div>
 
       {/* Sticky-note rail */}
       <div
         ref={trackRef}
-        onScroll={onScroll}
+        onScroll={layout === "carousel" ? onScroll : undefined}
         data-testid="packing-notes-track"
-        className="flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pt-4 pb-3 -mx-1 px-1"
+        className={layout === "grid"
+          ? "grid gap-x-6 gap-y-10 pt-4 pb-3 px-1 sm:grid-cols-2 xl:grid-cols-3"
+          : "flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pt-4 pb-3 -mx-1 px-1"}
       >
         {notes.map((note, i) => (
-          <Note key={`packing-${i}`} note={note} lang={lang} index={i} routeId={routeId} />
+          <Note key={`packing-${i}`} note={note} lang={lang} index={i} routeId={routeId} layout={layout} />
         ))}
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center gap-2.5 mt-4" data-testid="packing-notes-dots">
+      {layout === "carousel" && <div className="flex justify-center gap-2.5 mt-4" data-testid="packing-notes-dots">
         {notes.map((_, i) => (
           <button
             key={`pn-dot-${i}`}
@@ -216,7 +218,7 @@ export default function TripPackingNotes({ routeId }) {
             }`}
           />
         ))}
-      </div>
+      </div>}
     </div>
   );
 }

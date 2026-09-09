@@ -8,6 +8,8 @@ export const SEO_IMAGE_VERSION = "20260811-2";
 export const seoImageForRoute = (routeId) =>
   routeId === "home" || !routeId
     ? `/og-image.jpg?v=${SEO_IMAGE_VERSION}`
+    : routeId === "practicalInfo"
+    ? `/og/routes/whenToTravel.jpg?v=${SEO_IMAGE_VERSION}`
     : `/og/routes/${routeId}.jpg?v=${SEO_IMAGE_VERSION}`;
 
 export const seoImageForBlogPost = (slug) =>

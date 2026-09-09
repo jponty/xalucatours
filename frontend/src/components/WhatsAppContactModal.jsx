@@ -12,6 +12,7 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
+import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const PRIVACY_URL = "https://xalucatours.com/";
@@ -295,20 +296,8 @@ export default function WhatsAppContactModal() {
       >
         {emailSuccess ? (
           <div className="px-6 py-12 text-center sm:px-12 sm:py-16" data-testid="email-contact-success">
-            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#C16542] text-white shadow-lg">
-              <Check className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
-            </span>
-            <DialogTitle className="mt-6 font-serif-x text-3xl font-normal sm:text-4xl">
-              {pick(COPY.emailSuccessTitle, lang)}
-            </DialogTitle>
-            <DialogDescription className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#2C2621]/68">
-              {pick(COPY.emailSuccessBody, lang)}
-            </DialogDescription>
-            <DialogClose asChild>
-              <button type="button" className="mt-8 bg-[#2C2621] px-8 py-3.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#C16542]">
-                {pick(COPY.finish, lang)}
-              </button>
-            </DialogClose>
+            <DialogTitle className="sr-only">{pick(COPY.emailSuccessTitle, lang)}</DialogTitle>
+            <LeadSubmissionSuccess onNavigate={() => setEmailOpen(false)} />
           </div>
         ) : (
           <>
