@@ -129,6 +129,30 @@ test("does not enable extensions in other pages that reuse the catalogue without
   expect(container.querySelectorAll("button[aria-controls]")).toHaveLength(0);
 });
 
+test("mobile/tablet shows every extension immediately, including new and filtered catalogue results", () => {
+  window.matchMedia.mockReturnValue({ matches: false });
+  act(() => root.render(<ToursLandingPage />));
+  const assertVisible = () => {
+    const allCards = [...cards("trip-card-"), ...cards("home-all-trips-card-"), ...cards("proxima-card-")];
+    for (const card of allCards) {
+      expect(card.dataset.expanded).toBe("true");
+      expect(card.querySelector("[data-trip-card-image]")).not.toBeNull();
+      expect(card.querySelector('[role="region"]').hasAttribute("inert")).toBe(false);
+      expect(card.querySelector('[data-testid$="-details-cta"]').tabIndex).toBe(0);
+      expect(card.querySelector("button[aria-controls]")).toBeNull();
+    }
+  };
+  assertVisible();
+  click("all-trips-view-all");
+  expect(cards("home-all-trips-card-")).toHaveLength(ALL_TRIPS.length);
+  assertVisible();
+  click("region-chip-north");
+  click("all-trips-filter-region-norte");
+  assertVisible();
+  act(() => cards("trip-card-")[0].querySelector('[data-testid$="-details-cta"]').click());
+  expect(mockNavigate).toHaveBeenCalledWith("/contacto");
+});
+
 test.each(["en", "fr"])("keeps localized panel labels and matching destinations in %s", (lang) => {
   mockLang = lang;
   act(() => root.render(<ToursLandingPage />));

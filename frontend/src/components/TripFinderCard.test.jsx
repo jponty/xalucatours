@@ -29,10 +29,10 @@ const get = (suffix) => container.querySelector(`[data-testid="trip-finder-${suf
 const carouselControl = (suffix) => container.querySelector(`[data-testid="trip-finder-carousel-${trip.routeId}-${suffix}"]`);
 const activeImage = () => get("carousel").querySelector("img");
 const click = (element) => act(() => element.click());
-const pointer = (type, pointerType = "mouse") => act(() => {
+const pointer = (type, pointerType = "mouse", target = get("image-link")) => act(() => {
   const event = new MouseEvent(type, { bubbles: true, relatedTarget: document.body });
   Object.defineProperty(event, "pointerType", { value: pointerType });
-  get("card").dispatchEvent(event);
+  target.dispatchEvent(event);
 });
 const touch = (type, x, y) => act(() => {
   const event = new Event(type, { bubbles: true, cancelable: true });
@@ -82,7 +82,7 @@ test("opens a connected panel on mouse hover, preserving the original card and i
   expect(get("card").dataset.expanded).toBe("false");
 });
 
-test("a touch pointer does not open on hover; the disclosure opens and closes on tap", () => {
+test("a touch pointer on a desktop does not simulate hover; the accessible disclosure still works", () => {
   pointer("pointerover", "touch");
   expect(get("card").dataset.expanded).toBe("false");
   click(get("more"));
@@ -95,10 +95,29 @@ test("a touch pointer does not open on hover; the disclosure opens and closes on
   expect(mockNavigate).not.toHaveBeenCalled();
 });
 
-test("does not hover-expand when the device has no fine hover pointer", () => {
+test("starts expanded on mobile/tablet, without a disclosure or extra interaction", () => {
   window.matchMedia.mockReturnValue({ matches: false });
-  pointer("pointerover");
+  act(() => root.render(<TripFinderCard key="mobile" trip={trip} images={images} lang="es" onToggleFavorite={mockToggleFavorite} />));
+  expect(get("more")).toBeNull();
+  expect(get("card").dataset.expanded).toBe("true");
+  expect(get("details").getAttribute("aria-hidden")).toBe("false");
+  expect(get("details").hasAttribute("inert")).toBe(false);
+  expect(get("details-cta").tabIndex).toBe(0);
+  touch("touchstart", 250, 100);
+  touch("touchend", 100, 110);
+  expect(activeImage().getAttribute("src")).toBe(images[1]);
+  expect(get("card").dataset.expanded).toBe("true");
+  click(get("details-cta"));
+  expect(mockNavigate).toHaveBeenCalledWith(pathFor("es", trip.routeId));
+});
+
+test("hovering the title or price alone does not open the panel on desktop", () => {
+  pointer("pointerover", "mouse", get("main-link"));
+  pointer("pointerover", "mouse", get("price"));
   expect(get("card").dataset.expanded).toBe("false");
+  pointer("pointerover");
+  pointer("pointerover", "mouse", get("details-cta"));
+  expect(get("card").dataset.expanded).toBe("true");
 });
 
 test("supports keyboard disclosure and Escape restores focus instead of hiding it", () => {

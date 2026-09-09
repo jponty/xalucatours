@@ -454,7 +454,7 @@ const TripExplorer = ({ t, lang }) => {
                 description={pick(trip.summary, lang)} destinations={exps.map((e) => pick(e.label, lang))}
                 href={pathFor(lang, "contact")} ctaLabel={t.cta_card}
                 testIdPrefix={`trip-${trip.id}`} testIds={{ card: `trip-card-${trip.id}` }}>
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
+                <div data-trip-card-image="" className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
                   <EditableImage
                     slot={`viajes.trip.${trip.id}`}
                     fallback={trip.image}
@@ -463,10 +463,10 @@ const TripExplorer = ({ t, lang }) => {
                     imgProps={{ loading: "lazy" }}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
                   />
-                  <span className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
+                  <span className="absolute top-3 left-3 inline-flex max-w-[calc(100%-4.5rem)] items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
                         style={{ color: reg?.accent || "#5C5248" }}>
-                    <MapPin className="w-3 h-3" strokeWidth={1.6} />
-                    {pick(reg?.label, lang)}
+                    <MapPin className="w-3 h-3 shrink-0" strokeWidth={1.6} />
+                    <span className="min-w-0 break-words">{pick(reg?.label, lang)}</span>
                   </span>
                   {/* Save to favourites — toggles without leaving the page */}
                   <button
@@ -486,13 +486,13 @@ const TripExplorer = ({ t, lang }) => {
                     className="bottom-3 left-3 w-11 h-11"
                     testid={`trip-logo-${trip.id}`}
                   />
-                  <span className="absolute bottom-3 right-3 inline-flex items-center gap-2 bg-[#1A1513]/65 backdrop-blur-sm text-[#FDFBF7] px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase">
-                    <Clock className="w-3 h-3" strokeWidth={1.6} />
-                    {pick(trip.duration, lang)}
+                  <span className="absolute bottom-3 right-3 inline-flex max-w-[calc(100%-5rem)] items-center gap-2 bg-[#1A1513]/65 backdrop-blur-sm text-[#FDFBF7] px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase">
+                    <Clock className="w-3 h-3 shrink-0" strokeWidth={1.6} />
+                    <span className="min-w-0 break-words">{pick(trip.duration, lang)}</span>
                   </span>
                 </div>
-                <div className="p-6 md:p-7 flex flex-col flex-1">
-                  <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621]">
+                <div className="p-4 sm:p-5 xl:p-6 flex min-w-0 flex-col flex-1">
+                  <h3 className="break-words font-serif-x text-xl md:text-[22px] leading-[1.15] text-[#2C2621]">
                     {pick(trip.title, lang)}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-[#5C5248] flex-1">
@@ -502,20 +502,20 @@ const TripExplorer = ({ t, lang }) => {
                   {/* Experience badges */}
                   <div className="mt-5 flex flex-wrap gap-1.5">
                     {exps.map((e) => (
-                      <span key={e.id} className="text-[9px] tracking-[0.2em] uppercase px-2 py-1 border"
+                      <span key={e.id} className="max-w-full break-words text-[9px] tracking-[0.2em] uppercase px-2 py-1 border"
                             style={{ borderColor: `${e.accent}55`, color: e.accent }}>
                         {pick(e.label, lang)}
                       </span>
                     ))}
                   </div>
 
-                  <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex items-end justify-between gap-3">
-                    <FromPrice tone="dark" size="sm" testid={`trip-from-${trip.id}`} />
+                  <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex flex-wrap items-end justify-between gap-3">
+                    <FromPrice tone="dark" size="sm" className="flex-wrap" testid={`trip-from-${trip.id}`} />
                     <Link to={pathFor(lang, "contact")}
                           data-testid={`trip-cta-${trip.id}`}
                           className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300 border-b border-[#C16542]/40 pb-1">
                       {t.cta_card}
-                      <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                      <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
                     </Link>
                   </div>
                 </div>
@@ -589,7 +589,7 @@ const ProximasSalidas = ({ t, lang }) => {
             <ExpandableTripCard key={d.id || `proxima-${i}`} title={pick(d.title, lang)} lang={lang}
               description={pick(d.summary, lang)} href={pathFor(lang, "contact")} ctaLabel={t.reserve}
               testIdPrefix={`proxima-${i}`} testIds={{ card: `proxima-card-${i}` }} className="!bg-[#F2EBE1]">
-              <div className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
+              <div data-trip-card-image="" className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
                 <EditableImage
                   slot={`viajes.proxima.${d.id || i}`}
                   fallback={d.image}
@@ -604,7 +604,7 @@ const ProximasSalidas = ({ t, lang }) => {
                 >
                   <span
                     data-testid={`proxima-season-${i}`}
-                    className="inline-flex max-w-full items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase whitespace-nowrap"
+                    className="inline-flex max-w-full items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase"
                     style={{ color: d.accent }}
                   >
                     <Calendar className="w-3 h-3 shrink-0" strokeWidth={1.6} />
@@ -613,7 +613,7 @@ const ProximasSalidas = ({ t, lang }) => {
                   {d.spots <= 2 && (
                     <span
                       data-testid={`proxima-last-spots-${i}`}
-                      className="inline-flex bg-[#C16542] text-[#FDFBF7] px-3 py-1.5 text-[9px] tracking-[0.25em] uppercase whitespace-nowrap"
+                      className="inline-flex max-w-full bg-[#C16542] text-[#FDFBF7] px-3 py-1.5 text-[9px] tracking-[0.25em] uppercase"
                     >
                       {t.last_spots}
                     </span>
@@ -624,22 +624,22 @@ const ProximasSalidas = ({ t, lang }) => {
                   testid={`proxima-logo-${i}`}
                 />
               </div>
-              <div className="p-6 md:p-7 flex flex-col flex-1">
+              <div className="p-4 sm:p-5 xl:p-6 flex min-w-0 flex-col flex-1">
                 <p className="font-serif-x-italic text-base text-[#5C5248]">{d.dates}</p>
-                <h3 className="font-serif-x text-xl md:text-[22px] leading-[1.15] mt-2 text-[#2C2621]">
+                <h3 className="break-words font-serif-x text-xl md:text-[22px] leading-[1.15] mt-2 text-[#2C2621]">
                   {pick(d.title, lang)}
                 </h3>
                 <div className="mt-3">
-                  <FromPrice tone="dark" size="sm" testid={`proxima-from-${i}`} />
+                  <FromPrice tone="dark" size="sm" className="flex-wrap" testid={`proxima-from-${i}`} />
                 </div>
-                <div className="mt-auto pt-5 border-t border-[#2C2621]/10 flex items-center justify-between">
+                <div className="mt-auto pt-5 border-t border-[#2C2621]/10 flex flex-wrap items-center justify-between gap-3">
                   <span className="text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
                     {d.spots} {t.spots}
                   </span>
                   <Link to={pathFor(lang, "contact")} data-testid={`proxima-cta-${i}`}
                         className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300">
                     {t.reserve}
-                    <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+                    <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>

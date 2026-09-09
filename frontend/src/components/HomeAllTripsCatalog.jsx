@@ -172,7 +172,7 @@ const TripCard = ({ trip, lang, expandable = false }) => {
           data-testid={`home-all-trips-link-${trip.routeId}`}
           className="flex flex-col flex-1"
         >
-          <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1513]">
+          <div data-trip-card-image="" className="relative w-full aspect-[4/3] overflow-hidden bg-[#1A1513]">
             <EditableImage
               slot={slot}
               fallback={trip.image}
@@ -191,40 +191,42 @@ const TripCard = ({ trip, lang, expandable = false }) => {
             />
             {/* Xaluca logo — anchored to the bottom-left edge of the image */}
             <XalucaLogoBadge className="bottom-3 left-3 w-11 h-11" testid={`home-all-trips-logo-${trip.routeId}`} />
-            {/* Region badge */}
-            <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#2C2621]">
+            {/* Allow the region and pace to wrap instead of overlapping. */}
+            <div className="absolute inset-x-3 top-3 flex flex-wrap items-start justify-between gap-2">
+            <span className="inline-flex max-w-full break-words bg-[#FDFBF7]/95 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#2C2621]">
               {pick(REGION_LABEL[trip.region] || { es: trip.region }, lang)}
             </span>
             {/* Pace badge */}
-            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 bg-[#2C2621]/90 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#FDFBF7]">
+            <span className="inline-flex max-w-full break-words bg-[#2C2621]/90 backdrop-blur-sm px-2.5 py-1 text-[9px] tracking-[0.28em] uppercase text-[#FDFBF7]">
               {pick(PACE_LABEL[trip.pace] || { es: trip.pace }, lang)}
             </span>
+            </div>
           </div>
-          <div className="flex flex-col flex-1 p-5">
+          <div className="flex min-w-0 flex-col flex-1 p-4 sm:p-5">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#C16542] mb-2">
               <Moon className="w-3 h-3" strokeWidth={1.7} />
               {trip.nights} {pick(COPY.nights, lang)}
             </div>
-            <h3 className="font-serif text-xl md:text-[22px] text-[#2C2621] leading-tight mb-2">
+            <h3 className="break-words font-serif text-xl md:text-[22px] text-[#2C2621] leading-tight mb-2">
               {pick(trip.title, lang)}
             </h3>
             <p className="text-[13px] text-[#5C5248] leading-relaxed flex-1">
               {pick(trip.summary, lang)}
             </p>
             <div className="mt-5">
-              <FromPrice tone="dark" size="md" routeId={trip.routeId} testid={`home-all-trips-from-${trip.routeId}`} />
+              <FromPrice tone="dark" size="md" className="flex-wrap" routeId={trip.routeId} testid={`home-all-trips-from-${trip.routeId}`} />
             </div>
             <div className="mt-5 pt-4 border-t border-[#2C2621]/10">
               <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] group-hover:text-[#C16542] transition-colors">
                 {pick(COPY.details, lang)}
-                <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
+                <ArrowUpRight className="w-3.5 h-3.5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
               </span>
             </div>
           </div>
         </Link>
 
         {/* CTA icon group — siblings of the link so they never trigger card navigation */}
-        <div className="px-5 pb-5">
+        <div className="px-4 pb-4 sm:px-5 sm:pb-5">
           <TripCardActions lang={lang} routeId={trip.routeId} testidBase={`home-all-trips-${trip.routeId}`} />
         </div>
         {/* Highlights ticker — mirrors the trip page "Lugares destacados" */}
