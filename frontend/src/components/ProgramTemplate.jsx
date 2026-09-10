@@ -35,6 +35,7 @@ import DownloadProgramModal from "@/components/DownloadProgramModal";
 import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import VideoSection from "@/components/VideoSection";
 import JourneyChronology from "@/components/JourneyChronology";
+import TripFloatingActions from "@/components/TripFloatingActions";
 import JourneyStoryPostcard from "@/components/JourneyStoryPostcard";
 import { journeyPostcardFor } from "@/lib/journeyPostcards";
 import { programAudioGuideForRoute } from "@/lib/programAudioGuides";
@@ -884,6 +885,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
 
   return (
     <div data-testid={`program-page-${program.duration_key}`}>
+      <TripFloatingActions key={routeId} routeId={routeId} lang={lang} hasChronology={showJourneyChronology && Boolean(program.days?.length)} />
       <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
       <StickyNav items={navItems} testid="program-nav" />
       {(() => {

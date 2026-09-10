@@ -3,6 +3,7 @@ import { ImagePlus, Check, Type, Library } from "lucide-react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 import { useAdminSession } from "@/contexts/AdminSessionContext";
+import { TripFloatingSlot } from "./TripFloatingActions";
 
 /**
  * Floating CMS edit controls.
@@ -25,7 +26,7 @@ export const EditModeFAB = () => {
 
   return (
     <>
-      <div
+      <TripFloatingSlot name="editor"><div
         className="fixed bottom-6 left-6 z-[60] flex flex-col items-start gap-2.5 print:hidden"
         data-testid="edit-mode-fab"
       >
@@ -79,7 +80,7 @@ export const EditModeFAB = () => {
           {textEditMode ? <Check className="w-4 h-4" strokeWidth={1.9} /> : <Type className="w-4 h-4" strokeWidth={1.7} />}
           <span className="text-[10px] tracking-[0.22em] uppercase">Textos</span>
         </button>
-      </div>
+      </div></TripFloatingSlot>
 
       <ImageLibraryPicker
         open={libraryOpen}

@@ -1,0 +1,104 @@
+/* Same layer as the existing chronology FAB: below header (40), dialogs (50+).
+   A single normal-flow column owns all heights; there are no sibling offsets. */
+.trip-floating-dock {
+  position: fixed;
+  z-index: 30;
+  bottom: 0;
+  right: 0;
+  width: min(100%, 30rem);
+  box-sizing: border-box;
+  padding: 8px max(12px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms ease, visibility 220ms;
+}
+.trip-floating-dock[data-blocked="true"] { opacity: 0; transform: translateY(12px); visibility: hidden; }
+.trip-floating-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-height: calc(100dvh - var(--trip-floating-header-height, 0px) - 24px - env(safe-area-inset-bottom, 0px));
+}
+.trip-floating-stack > * { flex-shrink: 0; }
+.trip-floating-stack > .trip-floating-extras {
+  flex-shrink: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  pointer-events: auto;
+}
+.trip-floating-slot:empty { display: none; }
+.trip-floating-slot:not(:empty) { margin-bottom: 8px; pointer-events: auto; }
+.trip-floating-stack [data-testid="journey-chronology-fab"] {
+  position: static;
+  align-self: flex-end;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 6px 14px;
+  pointer-events: auto;
+  transform: none;
+}
+.trip-floating-slot [data-testid="narration-mini-player"],
+.trip-floating-slot [data-testid="best-month-fab"],
+.trip-floating-slot [data-testid="edit-mode-fab"] {
+  position: static;
+  width: 100%;
+  max-width: none;
+  transform: none;
+}
+.trip-contact-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: grid-template-rows 240ms ease, opacity 240ms ease, transform 240ms ease, visibility 240ms;
+}
+.trip-contact-reveal[data-visible="true"] { grid-template-rows: 1fr; opacity: 1; visibility: visible; transform: translateY(0); }
+.trip-contact-clip { min-height: 0; overflow: hidden; }
+.trip-contact-card {
+  margin-top: 8px;
+  border: 1px solid #D4A37380;
+  background: #FDFBF7;
+  padding: 10px 12px;
+  color: #2C2621;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+  pointer-events: auto;
+}
+.trip-contact-card p { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 600; line-height: 1.2; }
+.trip-contact-card a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  background: #C16542;
+  color: #FDFBF7;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  transition: background 180ms ease;
+}
+.trip-contact-card a svg { flex-shrink: 0; }
+.trip-contact-card a:hover { background: #A35133; }
+.trip-contact-card a:focus-visible { outline: 2px solid #2C2621; outline-offset: 2px; }
+.trip-floating-page-clearance { height: var(--trip-floating-clearance, 0px); }
+html { scroll-padding-bottom: calc(var(--trip-floating-clearance, 0px) + 16px); }
+@media (min-width: 440px), (max-height: 450px) {
+  .trip-contact-card { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; text-align: left; }
+  .trip-contact-card p { flex: 1; font-size: 21px; }
+  .trip-contact-card a { flex: 1; }
+}
+@media (max-height: 450px) {
+  .trip-contact-card { padding: 8px 10px; }
+  .trip-contact-card p { font-size: 18px; }
+  .trip-contact-card a { padding: 8px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trip-floating-dock, .trip-contact-reveal, .trip-contact-card a { transition: none; transform: none; }
+}
+@media print { .trip-floating-dock, .trip-floating-page-clearance { display: none; } }

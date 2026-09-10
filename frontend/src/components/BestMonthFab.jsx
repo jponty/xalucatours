@@ -5,6 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { REGIONS, MONTHS } from "@/lib/bestTimeData";
 import { getTripProgram } from "@/lib/tripPrograms";
+import { TripFloatingSlot } from "./TripFloatingActions";
 
 /* ------------------------------------------------------------------
    BestMonthFab
@@ -318,6 +319,7 @@ export default function BestMonthFab() {
     <>
       {/* Floating pill button — fixed terracotta. Hidden on program pages. */}
       {!isProgram && (
+      <TripFloatingSlot name="auxiliary">
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -336,6 +338,7 @@ export default function BestMonthFab() {
           {pick(COPY.fab, lang)}
         </span>
       </button>
+      </TripFloatingSlot>
       )}
 
       {/* Overlay + side modal */}

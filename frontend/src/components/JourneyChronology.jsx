@@ -167,7 +167,8 @@ const jumpToChronology = () => {
   const programNav = document.querySelector('[data-testid="program-nav"]');
   const offset = (header?.offsetHeight || 0) + (programNav?.offsetHeight || 0) + 16;
   const top = target.getBoundingClientRect().top + window.scrollY - offset;
-  window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion ? "auto" : "smooth" });
   target.focus({ preventScroll: true });
 };
 
@@ -241,6 +242,26 @@ const ChronologyDayCard = ({ day, index, lang, t }) => {
   );
 };
 
+export function ChronologyButton({ lang = "es", compact = false }) {
+  const t = COPY[lang] || COPY.es;
+  return (
+    <button
+      type="button"
+      onClick={jumpToChronology}
+      data-testid="journey-chronology-fab"
+      aria-label={t.returnToChronology}
+      className="fixed bottom-24 right-4 z-30 inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-[#D4A373]/45 bg-[#201A17] px-3 text-[#FDFBF7] shadow-[0_16px_36px_-16px_rgba(26,21,19,0.75)] transition duration-300 hover:-translate-y-0.5 hover:border-[#D4A373] hover:bg-[#2A221E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFBF7] sm:right-6 sm:px-4 print:hidden motion-reduce:transition-none"
+    >
+      <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C16542]">
+        <History className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
+      </span>
+      <span className={`${compact ? "" : "hidden sm:inline"} text-[9px] font-medium uppercase tracking-[0.2em]`}>
+        {compact ? ({ es: "Cronología", en: "Timeline", fr: "Chronologie" }[lang] || "Cronología") : t.returnToChronology}
+      </span>
+    </button>
+  );
+}
+
 export default function JourneyChronology({ days, lang = "es", variant = "ad" }) {
   const t = COPY[lang] || COPY.es;
   if (!Array.isArray(days) || days.length === 0) return null;
@@ -304,20 +325,6 @@ export default function JourneyChronology({ days, lang = "es", variant = "ad" })
         </div>
       </section>
 
-      <button
-        type="button"
-        onClick={jumpToChronology}
-        data-testid="journey-chronology-fab"
-        aria-label={t.returnToChronology}
-        className="fixed bottom-24 right-4 z-30 inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-[#D4A373]/45 bg-[#201A17] px-3 text-[#FDFBF7] shadow-[0_16px_36px_-16px_rgba(26,21,19,0.75)] transition duration-300 hover:-translate-y-0.5 hover:border-[#D4A373] hover:bg-[#2A221E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFBF7] sm:right-6 sm:px-4 print:hidden"
-      >
-        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C16542]">
-          <History className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
-        </span>
-        <span className="hidden text-[9px] font-medium uppercase tracking-[0.2em] sm:inline">
-          {t.returnToChronology}
-        </span>
-      </button>
     </>
   );
 }
