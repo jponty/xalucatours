@@ -10,6 +10,7 @@ const CONTENT_TYPES = {
   "/.well-known/agent-skills/index.json": "application/json",
   "/.well-known/agent-skills/explore-xaluca-trips/SKILL.md": "text/markdown; charset=utf-8",
   "/docs/agents.md": "text/markdown; charset=utf-8",
+  "/auth.md": "text/markdown; charset=utf-8",
 };
 
 function discoveryMiddleware(publicDirectory) {

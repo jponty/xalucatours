@@ -61,6 +61,17 @@ describe("public discovery files generated from real routes", () => {
     });
   });
 
+  test("auth.md is honest Markdown about public access, not a fictitious registration service", () => {
+    const document = fs.readFileSync(path.join("public", "auth.md"), "utf8");
+    expect(document).toMatch(/^# Xaluca Tours auth\.md\n/);
+    expect(document).not.toMatch(/<html|<script/i);
+    expect(document).toContain("Agent registration is **not available**");
+    expect(document).toContain("not an implementation of the Auth.md agent");
+    expect(document).not.toMatch(/register_uri|claim_uri|token_endpoint|POST \/agent\/auth/);
+    expect(document).not.toMatch(/localhost|127\.0\.0\.1/);
+    expect(CONTENT_TYPES["/auth.md"]).toBe("text/markdown; charset=utf-8");
+  });
+
   test("the skill digest matches the exact bytes being published", () => {
     const index = JSON.parse(read(".well-known/agent-skills/index.json"));
     expect(index.$schema).toContain("/0.2.0/schema.json");

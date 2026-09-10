@@ -128,6 +128,9 @@ services:
       - path: /docs/agents.md
         name: Content-Type
         value: text/markdown; charset=utf-8
+      - path: /auth.md
+        name: Content-Type
+        value: text/markdown; charset=utf-8
     routes:
       # Retired campaign URLs are inbound redirects, not public navigation.
       - type: redirect

@@ -4,7 +4,7 @@ Revisión: 10 de septiembre de 2026. Dominio canónico: `https://xalucatravel.co
 
 ## Resultado y alcance
 
-Se han preparado los recursos que corresponden a capacidades reales de la web. Los cambios están en el proyecto local: **no se han publicado ni se ha cambiado DNS, Render, permisos o credenciales de producción**.
+La primera fase se ha incorporado al commit `9ce7839c` y se ha subido a `main`. Tras el despliegue se ha comprobado en producción que `/robots.txt` responde HTTP 200 como texto y que la cabecera `Link` está presente. **No se han cambiado DNS, permisos ni credenciales.** La segunda revisión añade `/auth.md` como documento informativo; su publicación en producción queda pendiente de verificación después del despliegue.
 
 La web sigue siendo una Static Site de Render con una API FastAPI independiente. La consulta para agentes es exclusivamente de lectura: no permite enviar solicitudes, suscribir contactos, reservar, pagar ni acceder a administración.
 
@@ -20,9 +20,9 @@ La web sigue siendo una Static Site de Render con una API FastAPI independiente.
 
 | Punto | Estado en este cambio | Resultado / siguiente paso |
 | --- | --- | --- |
-| 1. `robots.txt` | Implementado; pendiente de despliegue | Texto real, reglas para páginas públicas, administración, API y favoritos. |
+| 1. `robots.txt` | Verificado en producción | HTTP 200 y texto real, reglas para páginas públicas, administración, API y favoritos. |
 | 2. Sitemap | Implementado; pendiente de despliegue | 384 URLs canónicas ES/EN/FR, con alternativos hreflang. Se regenera antes de cada build. |
-| 3. HTTP `Link` | Configurado en código | Cabeceras en `render.yaml` y en desarrollo local. Hay que sincronizar el Blueprint o añadirlas al servicio existente. |
+| 3. HTTP `Link` | Verificado en producción | La respuesta de `/robots.txt` contiene los tres recursos de descubrimiento configurados en `render.yaml`. |
 | 4. DNS-AID y DNSSEC | Pendiente de infraestructura | No hay un servicio MCP/A2A que anunciar. Requiere confirmar un endpoint real, compatibilidad del proveedor y planificar DNSSEC. |
 | 5. Negociación Markdown | Pendiente de arquitectura | Render Static Site no convierte la aplicación React según `Accept`. Los dos documentos Markdown publicados no equivalen a esta funcionalidad. |
 | 6. Reglas explícitas para bots IA | Pendiente de decisión | Falta elegir la política: permitir búsqueda/respuestas, permitir entrenamiento o bloquear rastreadores IA. No se ha decidido por el propietario. |
@@ -30,7 +30,7 @@ La web sigue siendo una Static Site de Render con una API FastAPI independiente.
 | 8. API catalog | Implementado; pendiente de despliegue | Linkset RFC 9727 hacia OpenAPI, documentación y salud de la API real. |
 | 9. OAuth/OIDC discovery | No aplicable a la arquitectura actual | El login interno utiliza contraseña y token propio; no existe un authorization server OAuth/OIDC. |
 | 10. OAuth protected resource | No aplicable actualmente | No se publican emisores o scopes inexistentes. |
-| 11. `auth.md` para registro | No aplicable actualmente | No hay registro de agentes. La situación se explica en `/docs/agents.md`, sin simular un flujo de registro. |
+| 11. `auth.md` para registro | Corrección de formato preparada; registro no disponible | `/auth.md` es Markdown y explica el acceso público sin credenciales. No implementa el protocolo de registro Auth.md ni se presenta como tal. |
 | 12. MCP Server Card | No aplicable actualmente | WebMCP de navegador no es un servidor MCP remoto. No se anuncia un endpoint ficticio. |
 | 13. Agent Skills | Implementado; pendiente de despliegue | Índice, guía pública de consulta y digest SHA-256 de sus bytes exactos. |
 | 14. WebMCP | Implementado con detección de soporte | `xaluca_search_pages`: consulta títulos y URLs del mismo catálogo que `/nav`. Solo lectura. |
@@ -49,6 +49,7 @@ La web sigue siendo una Static Site de Render con una API FastAPI independiente.
 | `/.well-known/agent-skills/explore-xaluca-trips/SKILL.md` | `text/markdown; charset=utf-8` |
 | `/.well-known/ai-catalog.json` | `application/json` |
 | `/docs/agents.md` | `text/markdown; charset=utf-8` |
+| `/auth.md` | `text/markdown; charset=utf-8` |
 
 La cabecera de descubrimiento es:
 
@@ -92,9 +93,15 @@ No cambiar nameservers ni crear registros hacia endpoints inexistentes. Primero 
 
 El encabezado `server: cloudflare` que devuelve Render no demuestra que Xaluca Tours tenga su zona en una cuenta propia de Cloudflare ni acceso a sus ajustes de Markdown o AI Crawl Control.
 
+**Comprobación adicional:** el catálogo oficial de tipos de registro de Namecheap PremiumDNS no incluye SVCB ni HTTPS. No se debe introducir su sintaxis en un campo A, CNAME o SRV: no son equivalentes. Confirmar compatibilidad con el proveedor o planificar un DNS compatible antes de preparar registros definitivos. DNS-AID sigue siendo un Internet-Draft, no un estándar RFC publicado.
+
+DNSSEC sí se puede gestionar desde Namecheap para dominios allí registrados que utilicen BasicDNS/PremiumDNS: **Domain List → Manage → Advanced DNS → DNSSEC**. Namecheap gestiona los valores automáticamente. Tras activarlo, verificar DS, DNSKEY y validación con un resolver independiente; no basta con que el interruptor aparezca activado. Esta opción no exige trasladar la web de Render. No se ha activado desde esta sesión.
+
 ### Markdown por negociación
 
 Alternativas a valorar: un proxy/edge controlado por Xaluca Tours o un despliegue con renderizado de contenido en servidor. Debe devolver el contenido real de cada itinerario, `Content-Type: text/markdown`, `Vary: Accept` y HTML por defecto. Convertir únicamente el HTML inicial vacío de una SPA no cubre el contenido del viaje. No se han cambiado DNS, proxy ni hosting para habilitarlo.
+
+La función gestionada Markdown for Agents está documentada para planes Cloudflare Pro, Business, Enterprise y clientes SSL for SaaS. No se ha confirmado que Xaluca Tours tenga una zona/configuración elegible. La búsqueda de integraciones no encontró un conector disponible para gestionar Namecheap, Render o Cloudflare; tampoco está disponible aquí el buscador de plugins de `plugin-management`. No se ha instalado ningún proveedor ni contratado ningún plan.
 
 ### Autenticación de agentes y MCP remoto
 
@@ -102,7 +109,7 @@ Si se quiere esta capacidad en el futuro, hace falta definir proveedor OAuth, sc
 
 ## Despliegue y verificación
 
-1. Revisar y autorizar commit/push cuando proceda. Este trabajo no ha publicado cambios en producción.
+1. Tras subir la segunda revisión, comprobar su despliegue siguiendo los pasos siguientes. No confundir la corrección de formato de `/auth.md` con habilitar registro de agentes.
 2. En **xaluca-tours-web**, mantener `npm run build` y directorio publicado `build`.
 3. Si el servicio está gestionado por Blueprint, sincronizar `render.yaml`. Si se creó manualmente, copiar las entradas de `headers` a Settings → Headers. Hacer push por sí solo no garantiza que un servicio manual aplique la configuración YAML.
 4. Desplegar el build. Los archivos físicos deben servirse antes de la reescritura SPA a `/index.html`.
@@ -114,6 +121,7 @@ curl -sS -D - https://xalucatravel.com/sitemap.xml
 curl -sS -D - https://xalucatravel.com/.well-known/api-catalog
 curl -sS -D - https://xalucatravel.com/.well-known/agent-skills/index.json
 curl -sS -D - https://xalucatravel.com/.well-known/ai-catalog.json
+curl -sS -D - https://xalucatravel.com/auth.md
 curl -sS -I https://xalucatravel.com/
 ```
 
@@ -129,11 +137,12 @@ Para revertir, restaurar los cambios de código y retirar únicamente las cabece
 - SHA-256 y formato de la skill.
 - Consulta WebMCP por idioma, paginación, validación de parámetros y exclusión de páginas personales/restringidas.
 - Canonical/Open Graph con el origen público y sin query/hash.
-- Suite completa: **20 suites y 234 pruebas superadas**.
+- Suite completa tras la segunda revisión: **20 suites y 235 pruebas superadas**.
 - Build de producción correcto; permanecen avisos anteriores sobre tamaño del bundle, utilidades ambiguas de Tailwind y plugin de ESLint del build. No equivalen a una nueva validación de lint sin avisos.
 - Verificación de los **384 canonical** en los HTML generados y de los **7 archivos de descubrimiento** copiados al build.
 - Los siete recursos responden en `127.0.0.1:3100` con HTTP 200, su tipo MIME y cabecera Link esperados.
 - Home y página específica de Marrakech → Fez comprobadas en navegador; consulta WebMCP ejecutada sin enviar formularios.
+- Segunda revisión: `/auth.md` devuelve HTTP 200 y `text/markdown` en el servidor local, está incluido en el build y contiene el estado real de acceso. Su respuesta en producción está pendiente de verificación.
 
 ## Referencias utilizadas
 
@@ -143,3 +152,6 @@ Para revertir, restaurar los cambios de código y retirar únicamente las cabece
 - [WebMCP, propuesta vigente](https://webmachinelearning.github.io/webmcp/) y [programa preliminar de Chrome](https://developer.chrome.com/blog/webmcp-epp).
 - [Markdown for Agents de Cloudflare](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/).
 - Guías aportadas en el documento y aplicadas: [robots](https://isitagentready.com/.well-known/agent-skills/robots-txt/SKILL.md), [sitemap](https://isitagentready.com/.well-known/agent-skills/sitemap/SKILL.md), [Link](https://isitagentready.com/.well-known/agent-skills/link-headers/SKILL.md), [API catalog](https://isitagentready.com/.well-known/agent-skills/api-catalog/SKILL.md), [Agent Skills](https://isitagentready.com/.well-known/agent-skills/agent-skills/SKILL.md), [WebMCP](https://isitagentready.com/.well-known/agent-skills/webmcp/SKILL.md) y [ARD](https://isitagentready.com/.well-known/agent-skills/ard/SKILL.md).
+- Segunda revisión: [guía Auth.md](https://isitagentready.com/.well-known/agent-skills/auth-md/SKILL.md) y [protocolo Auth.md](https://workos.com/auth-md); se aplica la representación Markdown sin inventar registro. La guía [Content Signals](https://isitagentready.com/.well-known/agent-skills/content-signals/SKILL.md) requiere la elección de política consultada al propietario. Las guías [DNS-AID](https://isitagentready.com/.well-known/agent-skills/dns-aid/SKILL.md), [Markdown](https://isitagentready.com/.well-known/agent-skills/markdown-negotiation/SKILL.md), [OAuth discovery](https://isitagentready.com/.well-known/agent-skills/oauth-discovery/SKILL.md), [protected resource](https://isitagentready.com/.well-known/agent-skills/oauth-protected-resource/SKILL.md) y [MCP card](https://isitagentready.com/.well-known/agent-skills/mcp-server-card/SKILL.md) determinan los prerrequisitos pendientes; no se han implementado esos servicios.
+- [Namecheap PremiumDNS: tipos de registro](https://www.namecheap.com/support/knowledgebase/article.aspx/9654/2231/what-is-premiumdns/) y [activar DNSSEC](https://www.namecheap.com/support/knowledgebase/article.aspx/9723/2232/managing-dnssec-for-domains-pointed-to-premium-or-basicdns/).
+- [DNS-AID, borrador vigente](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), [OAuth authorization-server metadata](https://www.rfc-editor.org/rfc/rfc8414) y [OAuth protected-resource metadata](https://www.rfc-editor.org/rfc/rfc9728).

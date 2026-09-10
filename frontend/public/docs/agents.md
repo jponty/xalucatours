@@ -21,6 +21,8 @@ The usual website navigation remains available in browsers without WebMCP.
 Public trip pages require no authentication. The application has an internal
 administration login; it is not an OAuth/OIDC authorization server and it is not
 an agent-registration service. No agent credentials are issued by this website.
+The [access-status document](https://xalucatravel.com/auth.md) explains this
+explicitly; it does not implement the Auth.md registration protocol.
 
 An OpenAPI description documents the existing service; it does not grant
 permission to call administrative endpoints or submit forms. Enquiries,
