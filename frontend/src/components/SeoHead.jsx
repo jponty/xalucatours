@@ -17,6 +17,7 @@
 import { useEffect } from "react";
 import { resolvePath } from "@/lib/routes";
 import { seoImageForBlogPost, seoImageForRoute } from "@/lib/seoImages";
+import { PUBLIC_SITE_ORIGIN, canonicalUrl } from "@/lib/siteConfig";
 
 const SEO_FLAG = "data-seo";
 const SEO_FLAG_VAL = "dynamic";
@@ -77,12 +78,10 @@ export default function SeoHead({
     const head = document.head;
     if (!head) return undefined;
 
-    const origin =
-      typeof window !== "undefined" && window.location ? window.location.origin : "";
-    const currentUrl =
-      typeof window !== "undefined" && window.location ? window.location.href : "";
+    const origin = PUBLIC_SITE_ORIGIN;
     const pathname =
       typeof window !== "undefined" && window.location ? window.location.pathname : "";
+    const currentUrl = canonicalUrl(pathname);
     const blogMatch = pathname.match(/^\/(?:en\/|fr\/)?blog\/([^/?#]+)\/?$/);
     const { routeId } = resolvePath(pathname || "/");
     // Always use the controlled Grup Xaluca composition for public pages.

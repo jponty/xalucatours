@@ -30,6 +30,13 @@ next-env.d.ts
 dist/
 dist
 
+# Rebuilt from the central route registry by frontend prestart/prebuild.
+/frontend/public/robots.txt
+/frontend/public/sitemap.xml
+/frontend/public/.well-known/api-catalog
+/frontend/public/.well-known/ai-catalog.json
+/frontend/public/.well-known/agent-skills/index.json
+
 # Environment files (comprehensive coverage)
 
 *token.json*

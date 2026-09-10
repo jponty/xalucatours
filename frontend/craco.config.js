@@ -1,5 +1,6 @@
 // craco.config.js
 const path = require("path");
+const { discoveryMiddleware } = require("./scripts/discovery-headers.cjs");
 
 // Check if we're in development/preview mode (not production build)
 // Craco sets NODE_ENV=development for start, NODE_ENV=production for build
@@ -72,6 +73,13 @@ webpackConfig.devServer = (devServerConfig) => {
   // The development server is bound to loopback by the start command. Keep
   // its host allow-list explicit when CRA's proxy support is enabled.
   devServerConfig.allowedHosts = ["127.0.0.1", "localhost"];
+
+  const originalDiscoverySetup = devServerConfig.setupMiddlewares;
+  devServerConfig.setupMiddlewares = (middlewares, devServer) => {
+    if (originalDiscoverySetup) middlewares = originalDiscoverySetup(middlewares, devServer);
+    middlewares.unshift({ name: "public-discovery", middleware: discoveryMiddleware(path.join(__dirname, "public")) });
+    return middlewares;
+  };
 
   // Add health check endpoints if enabled
   if (config.enableHealthCheck && setupHealthEndpoints && healthPluginInstance) {

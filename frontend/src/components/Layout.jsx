@@ -9,10 +9,12 @@ import ExitIntentModal from "./ExitIntentModal";
 import WhatsAppContactModal from "./WhatsAppContactModal";
 import { Toaster } from "@/components/ui/sonner";
 import { TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
+import AgentDiscovery from "./AgentDiscovery";
 
 export const Layout = ({ children }) => {
   return (
     <TripFloatingProvider>
+      <AgentDiscovery />
       <div className="min-h-screen bg-[#FDFBF7] text-[#2C2621]">
         <Header />
         <Breadcrumbs />

@@ -100,6 +100,34 @@ services:
       - key: REACT_APP_CHATBASE_WIDGET_ENABLED
         # Keep the integration ready while hiding the public floating widget.
         value: "false"
+    headers:
+      - path: /*
+        name: Link
+        value: '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </sitemap.xml>; rel="sitemap"; type="application/xml", </docs/agents.md>; rel="describedby"; type="text/markdown"'
+      - path: /robots.txt
+        name: Content-Type
+        value: text/plain; charset=utf-8
+      - path: /sitemap.xml
+        name: Content-Type
+        value: application/xml; charset=utf-8
+      - path: /.well-known/api-catalog
+        name: Content-Type
+        value: application/linkset+json
+      - path: /.well-known/ai-catalog.json
+        name: Content-Type
+        value: application/json
+      - path: /.well-known/ai-catalog.json
+        name: Access-Control-Allow-Origin
+        value: '*'
+      - path: /.well-known/agent-skills/index.json
+        name: Content-Type
+        value: application/json
+      - path: /.well-known/agent-skills/explore-xaluca-trips/SKILL.md
+        name: Content-Type
+        value: text/markdown; charset=utf-8
+      - path: /docs/agents.md
+        name: Content-Type
+        value: text/markdown; charset=utf-8
     routes:
       # Retired campaign URLs are inbound redirects, not public navigation.
       - type: redirect
