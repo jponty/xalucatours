@@ -7,8 +7,6 @@ import { setTripContext } from "@/lib/tripContext";
 import { ChronologyButton } from "./JourneyChronology";
 import "./TripFloatingActions.css";
 
-// Includes larger tablets in landscape, without adding the CTA to desktop.
-export const MOBILE_TRIP_QUERY = "(max-width: 1024px), (hover: none) and (pointer: coarse)";
 const DockContext = createContext(null);
 
 export function TripFloatingProvider({ children }) {
@@ -18,7 +16,7 @@ export function TripFloatingProvider({ children }) {
 }
 
 // Existing audio / CMS controls join the same normal-flow stack on trip pages.
-// They keep their current positioning everywhere else, including desktop.
+// They keep their current positioning on pages without a trip dock.
 export function TripFloatingSlot({ name, children }) {
   const context = useContext(DockContext);
   const host = context?.hosts?.[name];
@@ -34,7 +32,6 @@ const COPY = {
 export default function TripFloatingActions({ routeId, lang = "es", hasChronology, heroSelector = '[data-testid="program-hero"]' }) {
   const context = useContext(DockContext);
   const setHosts = context?.setHosts;
-  const [mobile, setMobile] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const dockRef = useRef(null);
@@ -44,16 +41,7 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
   const t = COPY[lang] || COPY.es;
 
   useEffect(() => {
-    const query = window.matchMedia(MOBILE_TRIP_QUERY);
-    const update = () => setMobile(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
     setPastHero(false);
-    if (!mobile) return;
     const hero = document.querySelector(heroSelector);
     let didScroll = false;
     let frame;
@@ -77,10 +65,9 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", schedule);
     };
-  }, [mobile, routeId, heroSelector]);
+  }, [routeId, heroSelector]);
 
   useEffect(() => {
-    if (!mobile) return;
     const update = () => {
       // Both the site's custom dialogs / menu and Radix lock body scrolling.
       // Yield the whole dock (including audio) to them and to form keyboards.
@@ -98,10 +85,9 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
       document.removeEventListener("focusin", update);
       document.removeEventListener("focusout", update);
     };
-  }, [mobile]);
+  }, []);
 
   useLayoutEffect(() => {
-    if (!mobile) return;
     setHosts?.({ audio: audioRef.current, editor: editorRef.current, auxiliary: auxiliaryRef.current });
     const root = document.documentElement;
     const header = document.querySelector('[data-testid="site-header"]');
@@ -120,9 +106,7 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
       root.style.removeProperty("--trip-floating-clearance");
       root.style.removeProperty("--trip-floating-header-height");
     };
-  }, [mobile, setHosts]);
-
-  if (!mobile) return hasChronology ? <ChronologyButton lang={lang} /> : null;
+  }, [setHosts]);
 
   return createPortal(
     <div ref={dockRef} className="trip-floating-dock" data-testid="trip-floating-dock"

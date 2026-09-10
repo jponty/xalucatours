@@ -5,15 +5,15 @@ import path from "path";
 import { TRIP_PROGRAMS } from "@/lib/tripPrograms";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { setTripContext } from "@/lib/tripContext";
-import TripFloatingActions, { MOBILE_TRIP_QUERY, TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
+import TripFloatingActions, { TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
 
 jest.mock("react-router-dom", () => ({ Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a> }));
 jest.mock("@/lib/tripContext", () => ({ setTripContext: jest.fn() }));
 jest.mock("./JourneyChronology", () => ({ ChronologyButton: () => <button data-testid="journey-chronology-fab">Cronología</button> }));
 
-describe("mobile trip conversion dock", () => {
-  let root, container, hero, bottom, media, changeMedia, observers;
-  let originalMedia, originalResize;
+describe.each([320, 768, 1024, 1366, 1920])("trip conversion dock at %ipx", (width) => {
+  let root, container, hero, bottom, observers;
+  let originalMedia, originalResize, originalWidth;
   const get = (id) => document.querySelector(`[data-testid="${id}"]`);
   const render = (props = {}, audio = false) => act(() => root.render(
     <TripFloatingProvider>
@@ -31,8 +31,9 @@ describe("mobile trip conversion dock", () => {
     jest.useFakeTimers();
     originalMedia = window.matchMedia;
     originalResize = global.ResizeObserver;
-    media = { matches: true, addEventListener: jest.fn((_, fn) => { changeMedia = fn; }), removeEventListener: jest.fn() };
-    window.matchMedia = jest.fn(() => media);
+    originalWidth = window.innerWidth;
+    window.innerWidth = width;
+    window.matchMedia = jest.fn(() => ({ matches: width <= 1024, addEventListener: jest.fn(), removeEventListener: jest.fn() }));
     observers = [];
     global.ResizeObserver = class {
       constructor(callback) { this.callback = callback; this.elements = []; observers.push(this); }
@@ -55,13 +56,13 @@ describe("mobile trip conversion dock", () => {
     document.body.removeAttribute("data-scroll-locked");
     global.ResizeObserver = originalResize;
     window.matchMedia = originalMedia;
+    window.innerWidth = originalWidth;
     jest.useRealTimers();
     delete global.IS_REACT_ACT_ENVIRONMENT;
   });
 
   test("starts hidden, opens only beyond the hero, and hides again on return", () => {
     render();
-    expect(window.matchMedia).toHaveBeenCalledWith(MOBILE_TRIP_QUERY);
     expect(get("trip-contact-reveal").dataset.visible).toBe("false");
     expect(get("trip-contact-reveal").hasAttribute("inert")).toBe(true);
     expect(get("trip-contact-cta").tabIndex).toBe(-1);
@@ -74,18 +75,22 @@ describe("mobile trip conversion dock", () => {
     expect(get("trip-contact-reveal").dataset.visible).toBe("false");
   });
 
-  test("desktop only retains the existing chronology control; breakpoint changes clean up", () => {
-    media.matches = false;
+  test("retains the dock, audio and contact when resizing between desktop and mobile", () => {
     render({}, true);
-    expect(get("trip-floating-dock")).toBeNull();
-    expect(get("trip-contact-cta")).toBeNull();
-    expect(get("journey-chronology-fab")).not.toBeNull();
-    act(() => { media.matches = true; changeMedia(); });
-    expect(get("trip-floating-dock").contains(get("test-audio"))).toBe(true);
-    act(() => { media.matches = false; changeMedia(); });
+    scroll(-1);
+    for (const nextWidth of [1920, 390, 1366, 768]) {
+      act(() => {
+        window.innerWidth = nextWidth;
+        window.dispatchEvent(new Event("resize"));
+        jest.advanceTimersByTime(20);
+      });
+      expect(get("trip-floating-dock").contains(get("test-audio"))).toBe(true);
+      expect(get("trip-contact-reveal").dataset.visible).toBe("true");
+      expect(document.querySelectorAll('[data-testid="journey-chronology-fab"]')).toHaveLength(1);
+    }
+    act(() => root.render(<div>Non-trip page</div>));
     expect(get("trip-floating-dock")).toBeNull();
     expect(document.documentElement.style.getPropertyValue("--trip-floating-clearance")).toBe("");
-    expect(container.contains(get("test-audio"))).toBe(true);
     expect(observers.every((observer) => observer.disconnected)).toBe(true);
   });
 
