@@ -36,6 +36,7 @@ import TripContextBanner from "@/components/TripContextBanner";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 import ContactDetailsCard from "@/components/ContactDetailsCard";
+import OfficeContactCard from "@/components/OfficeContactCard";
 
 const COPY = {
   hero: {
@@ -374,6 +375,8 @@ const ContactPage = () => {
                   <E name="contact.helpCta" defaults={COPY.contact.helpCta} multiline={false} />
                 </a>
               </div>
+
+              <OfficeContactCard />
             </div>
           </div>
         </section>

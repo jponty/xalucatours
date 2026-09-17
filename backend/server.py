@@ -862,6 +862,9 @@ TEAM_NOEMI_EMAIL = os.environ.get("TEAM_NOEMI_EMAIL", "").strip()
 TEAM_ELENA_EMAIL = os.environ.get("TEAM_ELENA_EMAIL", "").strip()
 TEAM_SANAA_EMAIL = os.environ.get("TEAM_SANAA_EMAIL", "").strip()
 TEAM_MAGDA_EMAIL = os.environ.get("TEAM_MAGDA_EMAIL", "").strip()
+# Direct team/founder enquiries must always reach this central inbox, even if
+# the editable notification list is changed or personal recipients are set.
+DIRECT_CONTACT_CENTRAL_EMAIL = "xalucatours@xaluca.com"
 # Live, DB-backed recipient list (seeded from env). Mutated in place so every
 # form submission reads the latest recipients.
 NOTIFY_EMAILS = list(LEADS_NOTIFY_EMAILS)
@@ -1519,6 +1522,15 @@ def _founder_recipient_label(value: Optional[str]) -> str:
     }.get((value or "").strip().lower(), "")
 
 
+def _direct_contact_notification_recipients(personal_emails: List[str]) -> List[str]:
+    """Keep personal and general recipients plus the required central inbox."""
+    return _clean_emails([
+        *personal_emails,
+        *NOTIFY_EMAILS,
+        DIRECT_CONTACT_CENTRAL_EMAIL,
+    ])
+
+
 def _founder_notification_recipients(value: Optional[str]) -> Optional[List[str]]:
     selected = (value or "").strip().lower()
     if not selected:
@@ -1528,9 +1540,9 @@ def _founder_notification_recipients(value: Optional[str]) -> Optional[List[str]
         "tayeb": FOUNDER_TAYEB_EMAIL,
     }
     ids = ("lluis", "tayeb") if selected == "both" else (selected,)
-    recipients = _clean_emails([configured.get(founder_id, "") for founder_id in ids])
-    # Keep the lead safe in the central inbox until individual addresses exist.
-    return recipients or list(NOTIFY_EMAILS)
+    return _direct_contact_notification_recipients([
+        configured.get(founder_id, "") for founder_id in ids
+    ])
 
 
 def _team_recipient_label(value: Optional[str]) -> str:
@@ -1552,9 +1564,7 @@ def _team_notification_recipients(value: Optional[str]) -> Optional[List[str]]:
         "sanaa": TEAM_SANAA_EMAIL,
         "magda": TEAM_MAGDA_EMAIL,
     }
-    recipients = _clean_emails([configured.get(selected, "")])
-    # Keep the lead safe in the central inbox until individual addresses exist.
-    return recipients or list(NOTIFY_EMAILS)
+    return _direct_contact_notification_recipients([configured.get(selected, "")])
 
 
 # Short Spanish region labels for the lead email subject summary.

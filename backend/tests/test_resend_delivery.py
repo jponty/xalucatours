@@ -100,6 +100,7 @@ def test_team_contact_preserves_recipient_in_storage_and_both_emails(monkeypatch
     _accepted_senders(monkeypatch, captured)
     recipient_email = f"{recipient}@example.com"
     monkeypatch.setattr(server, f"TEAM_{recipient.upper()}_EMAIL", recipient_email)
+    monkeypatch.setattr(server, "NOTIFY_EMAILS", ["xalucatours@xaluca.com", "joan@xaluca.com"])
     payload = server.ContactRequestCreate(
         full_name="Ana García",
         email="ana@example.com",
@@ -114,14 +115,104 @@ def test_team_contact_preserves_recipient_in_storage_and_both_emails(monkeypatch
     assert result.team_recipient == recipient
     assert collection.insert_one.await_args.args[0]["team_recipient"] == recipient
     assert name in captured[0][2]
-    assert captured[0][4] == [recipient_email]
+    assert captured[0][4] == [recipient_email, "xalucatours@xaluca.com", "joan@xaluca.com"]
     assert ("Destinatario", name) in captured[1][5]["summary_rows"]
 
 
 def test_magda_contact_uses_central_inbox_until_individual_address_is_configured(monkeypatch):
     monkeypatch.setattr(server, "TEAM_MAGDA_EMAIL", "")
     monkeypatch.setattr(server, "NOTIFY_EMAILS", ["team@example.com"])
-    assert server._team_notification_recipients("magda") == ["team@example.com"]
+    assert server._team_notification_recipients("magda") == [
+        "team@example.com", "xalucatours@xaluca.com",
+    ]
+
+
+@pytest.mark.parametrize("field,selected,personal_emails", [
+    ("founder_recipient", "lluis", ["lluis@example.com"]),
+    ("founder_recipient", "tayeb", ["tayeb@example.com"]),
+    ("founder_recipient", "both", ["lluis@example.com", "tayeb@example.com"]),
+    ("team_recipient", "noemi", ["noemi@example.com"]),
+    ("team_recipient", "elena", ["elena@example.com"]),
+    ("team_recipient", "sanaa", ["sanaa@example.com"]),
+    ("team_recipient", "magda", ["magda@example.com"]),
+])
+def test_direct_contact_sends_to_personal_and_central_recipients(
+    monkeypatch, field, selected, personal_emails,
+):
+    collection = _collection(monkeypatch, "contact_requests")
+    for person in ("lluis", "tayeb"):
+        monkeypatch.setattr(server, f"FOUNDER_{person.upper()}_EMAIL", f"{person}@example.com")
+    for person in ("noemi", "elena", "sanaa", "magda"):
+        monkeypatch.setattr(server, f"TEAM_{person.upper()}_EMAIL", f"{person}@example.com")
+    monkeypatch.setattr(server, "NOTIFY_EMAILS", ["xalucatours@xaluca.com", "joan@xaluca.com"])
+    monkeypatch.setattr(server, "RESEND_API_KEY", "re_test")
+    monkeypatch.setattr(server, "LEADS_FROM_EMAIL", "Xaluca Tours <hola@example.com>")
+    sent = []
+
+    def accept(params, *_args, **_kwargs):
+        sent.append(params)
+        return {"id": f"accepted-{params['to'][0]}"}
+
+    monkeypatch.setattr(server.resend.Emails, "send", accept)
+    payload = server.ContactRequestCreate(
+        full_name="Ana García",
+        email="ana@example.com",
+        message="Quiero preparar mi viaje a Marruecos.",
+        language="es",
+        **{field: selected},
+    )
+
+    asyncio.run(server.create_contact_request(payload))
+
+    assert len(sent) == 2
+    internal = next(email for email in sent if email["subject"].startswith("Consulta para"))
+    assert internal["to"] == [*personal_emails, "xalucatours@xaluca.com", "joan@xaluca.com"]
+    assert internal["reply_to"] == "ana@example.com"
+    confirmation = next(email for email in sent if email is not internal)
+    assert confirmation["to"] == ["ana@example.com"]
+    assert "cc" not in confirmation and "bcc" not in confirmation
+    assert collection.insert_one.await_args.args[0][field] == selected
+    delivery = collection.update_one.await_args.args[1]["$set"]["email_delivery"]
+    assert delivery["status"] == "accepted"
+
+
+@pytest.mark.parametrize("resolver,selected", [
+    (server._founder_notification_recipients, "lluis"),
+    (server._founder_notification_recipients, "tayeb"),
+    (server._founder_notification_recipients, "both"),
+    (server._team_notification_recipients, "noemi"),
+    (server._team_notification_recipients, "elena"),
+    (server._team_notification_recipients, "sanaa"),
+    (server._team_notification_recipients, "magda"),
+])
+@pytest.mark.parametrize("personal_email,notify_emails,expected", [
+    ("", [], ["xalucatours@xaluca.com"]),
+    ("not-an-email", ["team@example.com"], ["team@example.com", "xalucatours@xaluca.com"]),
+    ("personal@example.com", ["joan@xaluca.com"], [
+        "personal@example.com", "joan@xaluca.com", "xalucatours@xaluca.com",
+    ]),
+    (" XALUCATOURS@XALUCA.COM ", ["xalucatours@xaluca.com", " joan@xaluca.com ", "JOAN@xaluca.com"], [
+        "XALUCATOURS@XALUCA.COM", "joan@xaluca.com",
+    ]),
+])
+def test_direct_contact_recipients_always_include_central_inbox_once(
+    monkeypatch, resolver, selected, personal_email, notify_emails, expected,
+):
+    for variable in (
+        "FOUNDER_LLUIS_EMAIL", "FOUNDER_TAYEB_EMAIL", "TEAM_NOEMI_EMAIL",
+        "TEAM_ELENA_EMAIL", "TEAM_SANAA_EMAIL", "TEAM_MAGDA_EMAIL",
+    ):
+        monkeypatch.setattr(server, variable, personal_email)
+    monkeypatch.setattr(server, "NOTIFY_EMAILS", notify_emails.copy())
+
+    assert resolver(selected) == expected
+    assert server.NOTIFY_EMAILS == notify_emails
+
+
+def test_no_direct_recipient_preserves_general_routing():
+    for value in (None, "", "  "):
+        assert server._founder_notification_recipients(value) is None
+        assert server._team_notification_recipients(value) is None
 
 
 def test_contact_never_returns_success_when_resend_rejects(monkeypatch):

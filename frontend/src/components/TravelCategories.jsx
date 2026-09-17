@@ -195,13 +195,13 @@ export const TravelCategories = () => {
                             <Calendar className="w-3.5 h-3.5 text-[#C16542]" strokeWidth={1.5} />
                             {pick(d.label, lang)}
                           </span>
-                          <span className="text-[#5C5248] font-serif-x-italic">{d.dates}</span>
-                          <span
+                          <span className="text-[#5C5248] font-serif-x-italic">{pick(d.dates, lang)}</span>
+                          {d.spots != null && <span
                             className="text-[10px] tracking-[0.25em] uppercase"
                             style={{ color: d.spots <= 2 ? "#C16542" : "#5C5248" }}
                           >
                             {d.spots} {d.spots === 1 ? "spot" : "spots"}
-                          </span>
+                          </span>}
                         </li>
                       ))}
                     </ul>

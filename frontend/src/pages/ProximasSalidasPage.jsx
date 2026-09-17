@@ -23,7 +23,7 @@ const COPY = {
     docTitle: "Próximas salidas a Marruecos · Xaluca Tours",
     hero: {
       eyebrow: "Salidas en grupo · Fechas confirmadas",
-      place: "Semana Santa · Verano · Fin de Año",
+      place: "Año Nuevo 2027",
       title: "Próximas salidas a Marruecos.",
       subtitle: "Fechas establecidas, grupos reducidos y experiencias diseñadas alrededor de momentos especiales del año.",
       intro: "Itinerarios cuidadosamente organizados por nuestro equipo con salidas en grupo en momentos específicos como fin de año, Semana Santa, verano, así como en varios puentes u ocasiones especiales a lo largo del año.",
@@ -99,7 +99,7 @@ const COPY = {
     docTitle: "Upcoming Morocco departures · Xaluca Tours",
     hero: {
       eyebrow: "Group departures · Fixed dates",
-      place: "Easter · Summer · NYE",
+      place: "New Year 2027",
       title: "Upcoming Morocco departures.",
       subtitle: "Fixed dates, small groups and experiences designed around special moments of the year.",
       intro: "Itineraries carefully organised by our team with group departures around specific times — New Year, Easter, summer, long weekends and other special occasions throughout the year.",
@@ -165,7 +165,7 @@ const COPY = {
     docTitle: "Prochains départs au Maroc · Xaluca Tours",
     hero: {
       eyebrow: "Départs en groupe · Dates fixes",
-      place: "Pâques · Été · Nouvel An",
+      place: "Nouvel An 2027",
       title: "Prochains départs au Maroc.",
       subtitle: "Dates fixes, petits groupes et expériences conçues autour des moments forts de l'année.",
       intro: "Itinéraires soigneusement organisés par notre équipe avec des départs en groupe autour de moments spécifiques — Nouvel An, Pâques, été, ponts et autres occasions tout au long de l'année.",
@@ -246,6 +246,9 @@ const seasonOf = (id) => {
   if (id.includes("carnival"))  return "carnival";
   return "other";
 };
+
+const availableSeasons = new Set(UPCOMING_DEPARTURES.map((departure) => seasonOf(departure.id)));
+const showSeasonFilters = availableSeasons.size > 1;
 
 /* ============================================================
    Departure card
@@ -502,7 +505,7 @@ const DeparturesList = ({ t, filters_t, lang }) => {
     { id: "bridge",   label: filters_t.bridge },
     { id: "nye",      label: filters_t.nye },
     { id: "carnival", label: filters_t.carnival },
-  ];
+  ].filter((chip) => chip.id === "all" || availableSeasons.has(chip.id));
 
   return (
     <section
@@ -525,7 +528,7 @@ const DeparturesList = ({ t, filters_t, lang }) => {
         </div>
 
         {/* Filter chips */}
-        <div id="filters" className="flex flex-wrap gap-2 mb-10" data-testid="upcoming-filters">
+        {showSeasonFilters && <div id="filters" className="flex flex-wrap gap-2 mb-10" data-testid="upcoming-filters">
           <span className="self-center text-[10px] tracking-[0.3em] uppercase text-[#5C5248] mr-2">
             {t.filter_label} ·
           </span>
@@ -543,7 +546,7 @@ const DeparturesList = ({ t, filters_t, lang }) => {
               {c.label}
             </button>
           ))}
-        </div>
+        </div>}
 
         {/* List */}
         {filtered.length === 0 ? (
@@ -574,7 +577,7 @@ export default function ProximasSalidasPage() {
 
   const navItems = [
     { id: "departures", label: t.nav.departures },
-    { id: "filters",    label: t.nav.filters },
+    ...(showSeasonFilters ? [{ id: "filters", label: t.nav.filters }] : []),
     { id: "process",    label: t.nav.process },
     { id: "why",        label: t.nav.why },
     { id: "community",  label: t.nav.community },

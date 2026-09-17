@@ -1,4 +1,5 @@
 // Master data for Xaluca Tours — trilingual content (EN/FR/ES).
+import { UPCOMING_DEPARTURES } from "./upcomingDepartures";
 
 /* =========================================================================
    TRAVEL CATEGORIES — the 5 large storytelling cards
@@ -133,11 +134,11 @@ export const TRAVEL_CATEGORIES = [
     badges: ["seasonal", "last"],
     category: { en: "Group Departures", fr: "Départs en groupe", es: "Salidas en Grupo" },
     region: { en: "Curated dates · Limited spots", fr: "Dates choisies · Places limitées", es: "Fechas elegidas · Plazas limitadas" },
-    departures: [
-      { label: { en: "Easter 2026",  fr: "Pâques 2026",      es: "Semana Santa 2026" }, dates: "28 Mar — 04 Apr", spots: 4 },
-      { label: { en: "Summer 2026",  fr: "Été 2026",          es: "Verano 2026" },        dates: "12 Jul — 23 Jul", spots: 6 },
-      { label: { en: "New Year 2027",fr: "Nouvel An 2027",   es: "Año Nuevo 2027" },     dates: "27 Dec — 03 Jan", spots: 2 },
-    ],
+    departures: UPCOMING_DEPARTURES.map((departure) => ({
+      label: departure.badge,
+      dates: departure.dates,
+      spots: departure.spots,
+    })),
   },
 ];
 

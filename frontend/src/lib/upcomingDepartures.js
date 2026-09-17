@@ -1,11 +1,14 @@
 // Upcoming group departures for /proximas_salidas
 // Real-world structure: dates, route, places left, price, status.
 
-export const UPCOMING_DEPARTURES = [
+// Keep unpublished departures available for future reuse, without displaying
+// them in the hub or any of its homepage/category previews.
+const DEPARTURE_CATALOG = [
   {
     id: "nye-2026",
+    published: true,
     featured: true,
-    badge: { es: "Fin de Año 2026", en: "New Year 2026", fr: "Nouvel An 2026" },
+    badge: { es: "Año Nuevo 2027", en: "New Year 2027", fr: "Nouvel An 2027" },
     badgeColor: "#D4A373",
     title: {
       es: "Viaje Especial de Fin de Año al Desierto de Marruecos",
@@ -170,3 +173,5 @@ export const UPCOMING_DEPARTURES = [
     status: "open",
   },
 ];
+
+export const UPCOMING_DEPARTURES = DEPARTURE_CATALOG.filter((departure) => departure.published === true);
