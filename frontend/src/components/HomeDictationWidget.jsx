@@ -20,9 +20,10 @@ export default function HomeDictationWidget() {
   return <Dialog open={open} onOpenChange={setOpen}>
     <FloatingActionsDock testId="home-dictation-dock">
       <DialogTrigger asChild>
-        <button ref={triggerButton} type="button" data-testid="home-dictation-trigger" className="home-dictation-trigger">
+        <button ref={triggerButton} type="button" data-testid="home-dictation-trigger" className="home-dictation-trigger"
+          aria-label={pick(DICTATION_COPY.title, lang)}>
           <Mic className="h-5 w-5 shrink-0" aria-hidden="true" />
-          <span>{pick(DICTATION_COPY.title, lang)}</span>
+          <span className="home-dictation-trigger-label" aria-hidden="true">{pick(DICTATION_COPY.title, lang)}</span>
         </button>
       </DialogTrigger>
     </FloatingActionsDock>

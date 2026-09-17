@@ -62,6 +62,8 @@ test("opens only on demand, uses the real shared form and closes with Escape or 
   expect(get("home-dictation-modal")).toBeNull();
   expect(get("dictation-form")).toBeNull();
   expect(get("home-dictation-trigger").getAttribute("aria-haspopup")).toBe("dialog");
+  expect(get("home-dictation-trigger").getAttribute("aria-label")).toBe("Tu viaje, con tus palabras.");
+  expect(get("home-dictation-trigger").querySelector(".home-dictation-trigger-label").getAttribute("aria-hidden")).toBe("true");
   await click("home-dictation-trigger");
   expect(get("home-dictation-modal").getAttribute("aria-modal")).toBe("true");
   expect(get("dictation-form")).not.toBeNull();
@@ -144,6 +146,7 @@ test("the shared two-step flow validates, retains the story and submits one home
 test.each([ ["en", "Your trip, in your own words."], ["fr", "Votre voyage, avec vos mots."] ])("%s widget and modal use the shared translated title", async (lang, title) => {
   mockLang = lang; await render();
   expect(get("home-dictation-trigger").textContent).toBe(title);
+  expect(get("home-dictation-trigger").getAttribute("aria-label")).toBe(title);
   await click("home-dictation-trigger");
   const dialog = get("home-dictation-modal");
   expect(document.getElementById(dialog.getAttribute("aria-labelledby")).textContent).toBe(title);
