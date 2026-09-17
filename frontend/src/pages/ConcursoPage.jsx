@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Gift, Mail, User, Phone, Loader2, RotateCw, PartyPopper, X, ArrowRight } from "lucide-react";
@@ -138,6 +139,7 @@ const Wheel = ({ prizes, rotation, lang, onSpinEnd }) => {
 };
 
 export default function ConcursoPage() {
+  const leadCapture = useLeadCapture("contest");
   const { lang } = useLanguage();
   const [contest, setContest] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -199,6 +201,7 @@ export default function ConcursoPage() {
     setPhase("spinning");
     try {
       const { data } = await axios.post(`${API}/contest/spin`, {
+        ...leadCapture(),
         contest_id: contest.id,
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),

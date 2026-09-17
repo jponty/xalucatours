@@ -16,13 +16,17 @@ from io import BytesIO, StringIO
 from PIL import Image
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, ValidationError, field_validator, model_validator
-from typing import List, Optional, Dict, Any
+from typing import Annotated, List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
 
 from storage import init_storage, put_object, get_object
 from supabase_db import SupabaseDatabase, UpdateOne
 from contest_prize_policy import contest_prize_policy_error, normalize_legacy_contest_prize
+from lead_registry import LeadCapture, register_lead_routes, save_submission
+from calendly_leads import register_calendly_routes
+from newsletter_leads import import_newsletter_leads
+from form_dictation import register_dictation_routes
 
 
 ROOT_DIR = Path(__file__).parent
@@ -121,10 +125,12 @@ def normalize_international_phone(value: Optional[str]) -> Optional[str]:
 
 
 # ---------- Models ----------
-class ContactRequest(BaseModel):
+class ContactRequest(LeadCapture):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     full_name: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
     travel_dates: Optional[str] = None
@@ -152,8 +158,10 @@ class ContactRequest(BaseModel):
         return v
 
 
-class ContactRequestCreate(BaseModel):
+class ContactRequestCreate(LeadCapture):
     full_name: str = Field(..., min_length=2, max_length=120)
+    first_name: Optional[str] = Field(default=None, max_length=120)
+    last_name: Optional[str] = Field(default=None, max_length=150)
     email: Optional[EmailStr] = None
     phone: Optional[str] = Field(default=None, max_length=40)
     travel_dates: Optional[str] = Field(default=None, max_length=120)
@@ -237,7 +245,7 @@ class TripRef(BaseModel):
     image: Optional[str] = None
 
 
-class TripPlannerRequest(BaseModel):
+class TripPlannerRequest(LeadCapture):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     # contact
@@ -273,7 +281,7 @@ class TripPlannerRequest(BaseModel):
         return v
 
 
-class TripPlannerCreate(BaseModel):
+class TripPlannerCreate(LeadCapture):
     full_name: str = Field(..., min_length=2, max_length=120)
     email: EmailStr
     phone: Optional[str] = Field(default=None, max_length=40)
@@ -333,7 +341,7 @@ def resolve_program_download_url(route_id: Optional[str]) -> str:
     return PROGRAM_DOWNLOAD_LINKS.get(route_id or "", DEFAULT_PROGRAM_DOWNLOAD_URL)
 
 
-class ProgramDownloadRequest(BaseModel):
+class ProgramDownloadRequest(LeadCapture):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     first_name: str
@@ -349,7 +357,7 @@ class ProgramDownloadRequest(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-class ProgramDownloadCreate(BaseModel):
+class ProgramDownloadCreate(LeadCapture):
     first_name: str = Field(..., min_length=1, max_length=80)
     last_name: str = Field(..., min_length=1, max_length=80)
     email: EmailStr
@@ -377,7 +385,7 @@ class ProgramDownloadCreate(BaseModel):
 
 
 # ---------- Newsletter subscriptions ----------
-class NewsletterSubscriptionCreate(BaseModel):
+class NewsletterSubscriptionCreate(LeadCapture):
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=150)
     email: EmailStr
@@ -440,14 +448,32 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
         return NewsletterSubscriptionResponse(message=messages[lang])
 
     email = str(payload.email).strip().lower()
+    # A newsletter signup is a lead, but its CRM state is not a mailing consent.
+    # Keep Resend authoritative for subscription/bounce/unsubscribe state.
+    newsletter_id = str(uuid.uuid5(uuid.NAMESPACE_URL, f"xaluca:newsletter:{email}"))
+    now = datetime.now(timezone.utc).isoformat()
+    newsletter_doc = {
+        **payload.model_dump(mode="json", exclude={"website"}),
+        "id": newsletter_id, "email": email,
+        "full_name": f"{payload.first_name} {payload.last_name}",
+        "capture_type": "newsletter", "created_at": now,
+        "message": "Suscripción a la newsletter", "subscription_sync": "pending",
+    }
+    await db.contact_requests.insert_once(newsletter_doc)
+    await db.contact_requests.update_one({"id": newsletter_id}, {"$set": {
+        "first_name": payload.first_name, "last_name": payload.last_name,
+        "full_name": newsletter_doc["full_name"], "consent": True,
+        "last_signup_at": now, "subscription_sync": "pending",
+    }})
     try:
-        await asyncio.to_thread(
+        contact_id = await asyncio.to_thread(
             sync_newsletter_contact,
             email,
             payload.first_name,
             payload.last_name,
         )
     except NewsletterSubscriptionError as exc:
+        await db.contact_requests.update_one({"id": newsletter_id}, {"$set": {"subscription_sync": "failed"}})
         logger.error("Newsletter subscription was not accepted by Resend: %s", exc)
         error_messages = {
             "es": "No hemos podido confirmar la suscripción. Inténtalo de nuevo en unos instantes.",
@@ -455,6 +481,10 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
             "fr": "Nous n’avons pas pu confirmer votre inscription. Réessayez dans quelques instants.",
         }
         raise HTTPException(status_code=502, detail=error_messages[lang]) from exc
+    await db.contact_requests.update_one({"id": newsletter_id}, {"$set": {
+        "subscription_sync": "accepted", "resend_contact_id": contact_id,
+        "subscription_synced_at": datetime.now(timezone.utc).isoformat(),
+    }})
     return NewsletterSubscriptionResponse(message=messages[lang])
 
 
@@ -1597,9 +1627,9 @@ def _planner_subject(name: str, n_trips: int, regions: list) -> str:
 @api_router.post("/contact-requests", response_model=ContactRequest)
 async def create_contact_request(payload: ContactRequestCreate):
     obj = ContactRequest(**payload.model_dump())
-    doc = obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.contact_requests.insert_one(doc)
+    obj, doc = await save_submission(db.contact_requests, obj)
+    if (doc.get("email_delivery") or {}).get("status") == "accepted":
+        return obj
     contact_summary = obj.email or obj.phone or ""
     founder_label = _founder_recipient_label(obj.founder_recipient)
     team_label = _team_recipient_label(obj.team_recipient)
@@ -1720,9 +1750,9 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
         if title or tid:
             selected_trips_detail.append(TripRef(id=tid, title=title or tid, url=url))
     obj = TripPlannerRequest(**{**payload.model_dump(), "activities": activities, "regions": regions, "selected_trips": selected_trips, "selected_trips_detail": [d.model_dump() for d in selected_trips_detail]})
-    doc = obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.trip_planner_requests.insert_one(doc)
+    obj, doc = await save_submission(db.trip_planner_requests, obj)
+    if (doc.get("email_delivery") or {}).get("status") == "accepted":
+        return obj
     if obj.date_mode == "exact":
         dates = obj.start_date
     elif obj.date_mode == "flexible":
@@ -1812,9 +1842,9 @@ async def list_trip_planner(authorization: str = Header(default="")):
 async def create_program_download(payload: ProgramDownloadCreate):
     url = resolve_program_download_url(payload.route_id)
     obj = ProgramDownloadRequest(**payload.model_dump(), download_url=url)
-    doc = obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.program_downloads.insert_one(doc)
+    obj, doc = await save_submission(db.program_downloads, obj)
+    if (doc.get("email_delivery") or {}).get("status") == "accepted":
+        return obj
     html = _lead_email_html(
         "Descarga de programa",
         f"{obj.first_name} {obj.last_name} · {obj.email}",
@@ -2233,6 +2263,7 @@ async def create_feedback(
     source_url: Optional[str] = Form(default=None),
     consent: bool = Form(...),
     website: Optional[str] = Form(default=None),
+    submission_id: Annotated[Optional[uuid.UUID], Form()] = None,
 ):
     # Honeypot submissions receive a neutral response without consuming database/API.
     if website:
@@ -2256,7 +2287,8 @@ async def create_feedback(
     if not fields.consent:
         raise HTTPException(status_code=422, detail="Debes aceptar el tratamiento del comentario.")
 
-    feedback_id = str(uuid.uuid4())
+    fingerprint = hashlib.sha256(fields.model_dump_json().encode()).hexdigest()
+    feedback_id = str(uuid.uuid5(uuid.NAMESPACE_URL, f"feedback:{submission_id}:{fingerprint}")) if submission_id else str(uuid.uuid4())
     now_iso = datetime.now(timezone.utc).isoformat()
 
     record = {
@@ -2278,7 +2310,8 @@ async def create_feedback(
         await db.request(
             "POST",
             "feedback",
-            headers={"Prefer": "return=minimal"},
+            params={"on_conflict": "id"},
+            headers={"Prefer": "resolution=ignore-duplicates,return=minimal"},
             json=record,
         )
     except Exception as exc:
@@ -5787,7 +5820,7 @@ def send_contest_prize_email(
 
 
 # ---------- Public contest endpoints ----------
-class ContestSpinPayload(BaseModel):
+class ContestSpinPayload(LeadCapture):
     contest_id: Optional[str] = Field(default=None, max_length=64)
     first_name: str = Field(..., min_length=1, max_length=80)
     last_name: str = Field(..., min_length=1, max_length=80)
@@ -5950,6 +5983,7 @@ async def contest_spin(payload: ContestSpinPayload):
 
     name = f"{payload.first_name.strip()} {payload.last_name.strip()}".strip()
     participant = {
+        **payload.model_dump(mode="json"),
         "id": str(uuid.uuid4()),
         "contest_id": contest["id"],
         "first_name": payload.first_name.strip(),
@@ -6146,6 +6180,15 @@ async def admin_contest_stats(contest_id: str, authorization: str = Header(defau
     return {"total_participants": total, "per_prize": per_prize, "by_day": by_day}
 
 
+@api_router.post("/admin/leads/import-newsletter")
+async def import_newsletter_history(authorization: str = Header(default="")):
+    _require_admin(authorization)
+    return await import_newsletter_leads(db, RESEND_CONTACTS_API_KEY, RESEND_NEWSLETTER_SEGMENT_ID)
+
+
+register_lead_routes(api_router, lambda: db, _require_admin)
+register_calendly_routes(api_router, lambda: db)
+register_dictation_routes(api_router)
 app.include_router(api_router)
 
 # Serve legacy uploaded files under /api/uploads for backward compatibility.
@@ -6161,6 +6204,8 @@ BUILTIN_CORS_ORIGINS = {
     "https://xaluca-tours-web.onrender.com",
     "http://127.0.0.1:3100",
     "http://localhost:3100",
+    "http://127.0.0.1:3101",
+    "http://localhost:3101",
 }
 CONFIGURED_CORS_ORIGINS = {
     origin.strip()

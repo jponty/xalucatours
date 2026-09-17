@@ -10,12 +10,15 @@
      2. TRIP_PROGRAMS registry (every program page's data) — derives
         title + duration + hero image from the SAME source the trip
         page renders, via programMeta.
+     3. Finder/planner catalog (including route-family hubs).
+     4. Curated explorer entries.
    Returns null when the routeId matches no real trip.
 ============================================================ */
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
 import { getTripProgram } from "@/lib/tripPrograms";
 import { metaAllLangs } from "@/lib/programMeta";
 import { tripHeroImage } from "@/lib/tripHero";
+import { XALUCA_TRIPS, tripImage } from "@/lib/planner/plannerTrips";
 import { TRIPS as EXPLORER_TRIPS } from "@/lib/tripsData";
 import { pick } from "@/contexts/LanguageContext";
 
@@ -104,7 +107,20 @@ export const resolveTripContext = (routeId, lang) => {
     };
   }
 
-  // 3 · Curated explorer cards (/viajes "Filtra y descubre"). These are
+  // 3 · Finder/planner routes can point to a route-family hub instead of a
+  //     programme. Reuse their existing data without maintaining aliases.
+  const finderTrip = XALUCA_TRIPS.find((trip) => trip.routeId === routeId);
+  if (finderTrip) {
+    return {
+      routeId,
+      title: pick(finderTrip.name, lang),
+      durationLabel: `${finderTrip.days} ${pick(DAYS, lang)}`,
+      image: tripImage(routeId) || null,
+      region: null,
+    };
+  }
+
+  // 4 · Curated explorer cards (/viajes "Filtra y descubre"). These are
   //     marketing entries without their own page — they route to contact.
   const ex = EXPLORER_TRIPS.find((x) => x.id === routeId);
   if (ex) {

@@ -1,0 +1,110 @@
+import React, { act } from "react";
+import { createRoot } from "react-dom/client";
+
+let mockLang = "es";
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: () => ({ lang: mockLang }),
+  pick: (copy, lang) => copy[lang] || copy.es,
+}));
+jest.mock("react-router-dom", () => ({
+  Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a>,
+}));
+jest.mock("@/components/EditableSection", () => ({
+  E: ({ as: Tag = "span", defaults, className }) => <Tag className={className}>{defaults[mockLang] || defaults.es}</Tag>,
+}));
+jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults, className }) => <Tag className={className}>{defaults[mockLang] || defaults.es}</Tag>);
+jest.mock("@/components/slotScope", () => ({ SlotScope: ({ children }) => children, useSlotId: (id) => id }));
+jest.mock("@/components/SectionNav", () => () => null);
+jest.mock("@/components/EditableImage", () => () => null);
+jest.mock("@/components/HeroMonogram", () => () => null);
+jest.mock("@/components/TripContextBanner", () => () => null);
+jest.mock("@/components/CalendlyEmbed", () => ({ CalendlyEmbed: () => null, useCalendlyScript: () => {} }));
+jest.mock("@/components/BookingSession", () => () => <div>Booking session</div>);
+jest.mock("@/components/ContactOptionsInfoModal", () => () => null);
+jest.mock("@/components/ContactForm", () => () => <form data-testid="quick-form" />);
+jest.mock("@/components/PlannerForm", () => () => <form data-testid="detailed-form" />);
+
+import ContactPage from "@/pages/ContactPage";
+import FormTabs from "./FormTabs";
+
+let container, root;
+const originalMatchMedia = window.matchMedia;
+const originalScrollIntoView = Element.prototype.scrollIntoView;
+const get = (id) => container.querySelector(`[data-testid="${id}"]`);
+const render = async (element) => act(async () => root.render(element));
+const click = async (id) => act(async () => get(id).click());
+
+beforeEach(() => {
+  global.IS_REACT_ACT_ENVIRONMENT = true;
+  mockLang = "es";
+  window.history.replaceState({}, "", "/contacto?trip=tourFezRak910#contact-form");
+  window.matchMedia = jest.fn(() => ({ matches: false }));
+  Element.prototype.scrollIntoView = jest.fn();
+  container = document.createElement("div");
+  document.body.appendChild(container);
+  root = createRoot(container);
+});
+
+afterEach(async () => {
+  await act(async () => root.unmount());
+  container.remove();
+  window.matchMedia = originalMatchMedia;
+  Element.prototype.scrollIntoView = originalScrollIntoView;
+  window.history.replaceState({}, "", "/");
+  delete global.IS_REACT_ACT_ENVIRONMENT;
+});
+
+test("the two choices appear immediately below the unchanged contact details", async () => {
+  await render(<ContactPage />);
+  expect(get("contact-details-card").nextElementSibling).toBe(get("contact-form-access"));
+  expect(get("contact-card-phone").getAttribute("href")).toBe("tel:+34937268366");
+  expect(get("contact-card-email").getAttribute("href")).toBe("mailto:xalucatours@xaluca.com");
+  expect(get("contact-access-quick").textContent).toContain("consulta rápida");
+  expect(get("contact-access-detailed").textContent).toContain("fechas, preferencias y necesidades");
+  expect(get("contact-access-quick-cta").textContent).toBe("Contacto rápido");
+  expect(get("contact-access-detailed-cta").textContent).toBe("Planificar mi viaje");
+  expect(get("contact-form-access").classList.contains("grid-cols-1")).toBe(true);
+  expect(get("contact-form-access").classList.contains("sm:grid-cols-2")).toBe(true);
+});
+
+test("each CTA opens and focuses the correct form, preserves the trip and supports repeat clicks", async () => {
+  await render(<ContactPage />);
+  for (const id of ["quick", "detailed", "detailed", "quick"]) {
+    await click(`contact-access-${id}-cta`);
+    expect(get(`form-tab-${id}`).getAttribute("aria-selected")).toBe("true");
+    expect(get(`${id}-form`)).not.toBeNull();
+    expect(document.activeElement).toBe(get(`form-tab-${id}`));
+    expect(window.location.search).toBe("?trip=tourFezRak910");
+    expect(Element.prototype.scrollIntoView).toHaveBeenLastCalledWith({ behavior: "smooth", block: "start" });
+  }
+  await click("form-tab-appointment");
+  expect(get("form-tab-appointment").getAttribute("aria-selected")).toBe("true");
+  await click("contact-access-quick-cta");
+  expect(get("quick-form")).not.toBeNull();
+});
+
+test("respects reduced motion when jumping to a form", async () => {
+  window.matchMedia = jest.fn(() => ({ matches: true }));
+  await render(<ContactPage />);
+  await click("contact-access-quick-cta");
+  expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: "instant", block: "start" });
+});
+
+test.each([
+  ["en", "Quick contact", "Detailed planning", "Plan my trip"],
+  ["fr", "Contact rapide", "Planification détaillée", "Planifier mon voyage"],
+])("the %s page offers translated choices", async (lang, quick, detailed, cta) => {
+  mockLang = lang;
+  await render(<ContactPage />);
+  expect(get("contact-access-quick").querySelector("h3").textContent).toBe(quick);
+  expect(get("contact-access-detailed").querySelector("h3").textContent).toBe(detailed);
+  expect(get("contact-access-detailed-cta").textContent).toBe(cta);
+});
+
+test("FormTabs retains its standalone default and tab switching on other pages", async () => {
+  await render(<FormTabs defaultTab="quick" />);
+  expect(get("quick-form")).not.toBeNull();
+  await click("form-tab-detailed");
+  expect(get("detailed-form")).not.toBeNull();
+  expect(get("quick-form")).toBeNull();
+});

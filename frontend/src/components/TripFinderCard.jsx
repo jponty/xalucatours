@@ -7,12 +7,14 @@ import TripImageCarousel from "@/components/TripImageCarousel";
 import { pathFor } from "@/lib/routes";
 import { nodeName, tt } from "@/lib/tripFinder";
 import { tripFinderPreview } from "@/lib/tripFinderPreview";
+import { setTripContext } from "@/lib/tripContext";
 import monogramWhite from "@/assets/monograma-x-white.png";
 import monogramBorder from "@/assets/monograma-x-borde.png";
 
 const T = (es, en, fr) => ({ es, en, fr });
 const COPY = {
   view: T("Ver viaje", "View trip", "Voir le voyage"),
+  information: T("Solicitar información", "Request information", "Demander des informations"),
   fav: T("Guardar en favoritos", "Save to favourites", "Enregistrer dans mes favoris"),
   favRemove: T("Quitar de favoritos", "Remove from favourites", "Retirer des favoris"),
   nights: T("noches", "nights", "nuits"),
@@ -29,7 +31,12 @@ export default function TripFinderCard({ trip, images, chip, lang, favorite, onT
 
   return (
     <ExpandableTripCard title={title} titleId={titleId} href={href} lang={lang} {...preview}
-      testIds={Object.fromEntries(["card", "more", "details", "description", "details-cta"].map((key) => [key, `trip-finder-${key}-${trip.routeId}`]))}
+      secondaryAction={{
+        label: L("information"),
+        href: `${pathFor(lang, "contact")}?trip=${encodeURIComponent(trip.routeId)}`,
+        onClick: () => setTripContext([trip.routeId]),
+      }}
+      testIds={Object.fromEntries(["card", "more", "details", "description", "details-cta", "details-contact-cta"].map((key) => [key, `trip-finder-${key}-${trip.routeId}`]))}
     >
       <div data-trip-card-image="" className="min-w-0">
       <TripImageCarousel

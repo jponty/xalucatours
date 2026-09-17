@@ -54,9 +54,14 @@ const FT = ({ k, defaults, as = "span", className, multiline = false }) => {
   return <EditableText slot={slot} defaults={defaults} as={as} className={className} multiline={multiline} />;
 };
 
-export default function FormTabs({ defaultTab = "detailed", showOptionsInfo = false, optionsInfoInitiallyOpen = false }) {
+export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChange, showOptionsInfo = false, optionsInfoInitiallyOpen = false }) {
   const { lang } = useLanguage();
-  const [tab, setTab] = useState(defaultTab);
+  const [internalTab, setInternalTab] = useState(defaultTab);
+  const tab = activeTab ?? internalTab;
+  const setTab = (nextTab) => {
+    setInternalTab(nextTab);
+    onTabChange?.(nextTab);
+  };
   const [optionsInfoOpen, setOptionsInfoOpen] = useState(showOptionsInfo && optionsInfoInitiallyOpen);
 
   const tabs = [

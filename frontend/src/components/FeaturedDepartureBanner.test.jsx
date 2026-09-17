@@ -15,6 +15,7 @@ jest.mock("@/components/EditableImage", () => ({ slot, fallback, alt, sizes, cla
 
 import FeaturedDepartureBanner from "./FeaturedDepartureBanner";
 import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
+import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 
 const render = () => {
   const container = document.createElement("div");
@@ -54,4 +55,18 @@ test("reuses the trip's editable photograph and keeps the CTA responsive and acc
   expect(link.classList.contains("sm:w-fit")).toBe(true);
   expect(link.classList.contains("motion-reduce:transition-none")).toBe(true);
   expect(page.querySelector('[role="dialog"]')).toBeNull();
+});
+
+test("overlays the existing Xaluca logo without blocking the photo or CTA", () => {
+  const page = render();
+  const photo = page.querySelector('[data-testid="home-featured-departure-photo"]');
+  const logo = photo.querySelector('[data-testid="home-featured-departure-logo"]');
+  expect(logo.getAttribute("src")).toBe(grupXalucaLogo);
+  expect(logo.classList.contains("pointer-events-none")).toBe(true);
+  expect(logo.classList.contains("absolute")).toBe(true);
+  expect(logo.classList.contains("top-4")).toBe(true);
+  expect(logo.classList.contains("right-4")).toBe(true);
+  expect(logo.classList.contains("object-contain")).toBe(true);
+  expect(photo.querySelector('[data-testid="home-featured-departure-monogram"]')).not.toBeNull();
+  expect(page.querySelectorAll("a")).toHaveLength(1);
 });

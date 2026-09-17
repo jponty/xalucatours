@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ArrowRight, CalendarClock, Heart, Compass } from "lucide-react";
+import { Menu, ArrowRight, Mail, Heart, Compass } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { SideMenu } from "./SideMenu";
 import TopInfoBar from "./TopInfoBar";
@@ -11,15 +11,15 @@ import { pathFor } from "@/lib/routes";
 import EditableText from "@/components/EditableText";
 import EditModeFAB from "@/components/EditModeFAB";
 import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
-import AppointmentInfoModal from "@/components/AppointmentInfoModal";
 import PlanTripInfoModal from "@/components/PlanTripInfoModal";
 import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
+
+const CONTACT_LABEL = { es: "Contacto", en: "Contact", fr: "Contact" };
 
 export const Header = () => {
   const { t, lang } = useLanguage();
   const { count: favCount } = useFavorites();
   const [open, setOpen] = useState(false);
-  const [appointmentOpen, setAppointmentOpen] = useState(false);
   const [planTripOpen, setPlanTripOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -76,12 +76,12 @@ export const Header = () => {
         }`}
       >
         <TopInfoBar />
-        <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 md:h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 h-16 md:h-20 flex items-center justify-between gap-2">
           <button
             data-testid="header-menu-button"
             onClick={() => setOpen(true)}
             data-edit-allow="true"
-            className="inline-flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
+            className="inline-flex shrink-0 items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
             aria-label={t("nav_menu")}
           >
             <Menu className="w-4 h-4" strokeWidth={1.5} />
@@ -94,9 +94,9 @@ export const Header = () => {
             </span>
           </button>
 
-          <BrandMark />
+          <BrandMark compactHeader />
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2 md:gap-3">
             <button
               type="button"
               onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
@@ -122,16 +122,15 @@ export const Header = () => {
                 </span>
               )}
             </Link>
-            <button
-              type="button"
-              onClick={() => setAppointmentOpen(true)}
-              data-testid="header-appointment-button"
-              aria-haspopup="dialog"
-              className="hidden lg:inline-flex items-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
+            <Link
+              to={pathFor(lang, "contact")}
+              data-testid="header-contact-button"
+              aria-label={pick(CONTACT_LABEL, lang)}
+              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 lg:px-5 py-2 lg:py-3 text-[10px] lg:text-[11px] tracking-[0.12em] lg:tracking-[0.25em] uppercase transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]"
             >
-              <CalendarClock className="w-3.5 h-3.5" strokeWidth={1.6} />
-              <EditableText slot="header.cta_appointment" defaults={{ es: "Cita previa", en: "Book appointment", fr: "Rendez-vous" }} multiline={false} />
-            </button>
+              <Mail className="hidden sm:block w-3.5 h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+              <EditableText slot="header.cta_contact" defaults={CONTACT_LABEL} multiline={false} />
+            </Link>
 
             <button
               type="button"
@@ -139,22 +138,21 @@ export const Header = () => {
               data-testid="header-enquire-button"
               aria-label={pick(translations.cta_plan, lang)}
               aria-haspopup="dialog"
-              className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="inline-flex min-h-10 items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-3 sm:px-4 lg:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
-              {/* Mobile: compass icon only (frees header space, no overlap) */}
-              <Compass className="w-4 h-4 sm:hidden" strokeWidth={1.6} aria-hidden="true" />
+              {/* Small screens: compact planner control keeps Contact visible. */}
+              <Compass className="w-4 h-4 lg:hidden" strokeWidth={1.6} aria-hidden="true" />
               {/* Desktop: full label + arrow */}
-              <span className="hidden sm:inline">
+              <span className="hidden lg:inline">
                 <EditableText slot="header.cta_plan" defaults={translations.cta_plan} multiline={false} />
               </span>
-              <ArrowRight className="hidden sm:inline-block w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
+              <ArrowRight className="hidden lg:inline-block w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={1.6} />
             </button>
           </div>
         </div>
       </header>
 
       <SideMenu open={open} onClose={() => setOpen(false)} />
-      <AppointmentInfoModal open={appointmentOpen} onOpenChange={setAppointmentOpen} />
       <PlanTripInfoModal open={planTripOpen} onOpenChange={setPlanTripOpen} />
       <EditModeFAB />
     </>

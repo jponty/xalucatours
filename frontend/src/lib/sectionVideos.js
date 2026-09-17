@@ -9,6 +9,8 @@
    CMS edit-mode) without touching the page components.
 ============================================================ */
 
+import { NORTH_HUB_IMAGES } from "./northHubImages";
+
 const G_CDN = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample";
 const SUPABASE_PUBLIC_BUCKET =
   "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca";
@@ -135,7 +137,7 @@ export const ESCAPADAS_VIDEOS = {
 export const NORTE_VIDEOS = {
   imperial: {
     src: `${G_CDN}/TearsOfSteel.mp4`,
-    poster: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2400&q=85",
+    poster: NORTH_HUB_IMAGES.videoImperial,
     eyebrow: { es: "Ciudades imperiales", en: "Imperial cities", fr: "Cités impériales" },
     title: {
       es: "Fez, Meknès y Rabat — el alma imperial.",
@@ -150,7 +152,7 @@ export const NORTE_VIDEOS = {
   },
   rif: {
     src: `${G_CDN}/ForBiggerJoyrides.mp4`,
-    poster: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85",
+    poster: NORTH_HUB_IMAGES.videoRif,
     eyebrow: { es: "Tánger · Chefchaouen · Rif", en: "Tangier · Chefchaouen · Rif", fr: "Tanger · Chefchaouen · Rif" },
     title: {
       es: "El norte azul.",

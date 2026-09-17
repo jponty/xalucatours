@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { ArrowRight, Check, Mail, MessageCircle, Send, ShieldCheck } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -119,6 +120,7 @@ const isWhatsAppUrl = (href = "") => {
 };
 
 export default function WhatsAppContactModal() {
+  const leadCapture = useLeadCapture("general_contact");
   const { lang } = useLanguage();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -184,6 +186,7 @@ export default function WhatsAppContactModal() {
       let routeId = null;
       try { routeId = resolvePath(location.pathname)?.routeId || null; } catch { routeId = null; }
       await axios.post(`${API}/contact-requests`, {
+        ...leadCapture(),
         full_name: emailForm.full_name.trim(),
         email: emailForm.email.trim(),
         phone: emailForm.phone.trim() || null,

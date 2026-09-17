@@ -364,6 +364,21 @@ class SupabaseCollection:
             row_id = await self._save(document)
         return InsertOneResult(row_id)
 
+    async def insert_once(self, document: dict):
+        """Create by stable primary key, retaining the existing row on retries."""
+        clean = _safe_json(document)
+        row_id = str(clean["id"])
+        clean.setdefault("_id", row_id)
+        await self.database.request(
+            "POST", self.table, params={"on_conflict": "id"},
+            headers={"Prefer": "resolution=ignore-duplicates,return=minimal"},
+            json={"id": row_id, "data": clean},
+        )
+        response = await self.database.request(
+            "GET", self.table, params={"id": f"eq.{row_id}", "select": "data"},
+        )
+        return response.json()[0]["data"]
+
     async def insert_many(self, documents: list[dict]):
         ids = []
         async with self._lock:

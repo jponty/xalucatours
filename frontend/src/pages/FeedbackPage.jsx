@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { useLeadCapture } from "@/lib/leadCapture";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 const MAX_RECORDING_SECONDS = 180;
@@ -148,6 +149,7 @@ const writeToClipboard = async (text) => {
 
 export default function FeedbackPage() {
   const { lang } = useLanguage();
+  const leadCapture = useLeadCapture("feedback", lang);
   const [mode, setMode] = useState("voice");
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
@@ -345,7 +347,9 @@ export default function FeedbackPage() {
       body.append("message", mode === "voice" ? transcript.trim() : message.trim());
       body.append("language", lang);
       body.append("consent", "true");
-      body.append("source_url", window.location.href);
+      const capture = leadCapture();
+      body.append("source_url", capture.source_url);
+      body.append("submission_id", capture.submission_id);
       body.append("website", "");
       if (mode === "voice" && transcriptionLanguage) body.append("transcription_language", transcriptionLanguage);
       const response = await fetch(`${API}/api/feedback`, { method: "POST", body });

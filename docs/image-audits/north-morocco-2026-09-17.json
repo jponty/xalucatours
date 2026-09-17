@@ -1,0 +1,352 @@
+{
+  "page": "/viajes/nortedemarruecos",
+  "date": "2026-09-17",
+  "photos": 21,
+  "replacements": 13,
+  "potentialDuplicates": [],
+  "images": [
+    {
+      "slot": "viajes.nortedemarruecos.hero.bg",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_30398389_e00a5d06.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_30398389_e00a5d06.webp",
+      "changed": false,
+      "decodedPixelHash": "54b159e1bdf4c9610035fca0cbb4778cce331d590e537fa44413a82281a2e281",
+      "perceptualHash": "7ec6cfbc90411000",
+      "deliveredSize": [
+        600,
+        600
+      ],
+      "location": "Panorámica de la medina de Fez",
+      "photoId": "pexels:30398389",
+      "sourceUrl": "https://www.pexels.com/photo/30398389/"
+    },
+    {
+      "slot": "overview.ciudades-imperiales.image",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/unsplash_GE9HkJwwQNY_bb49ec68.jpg",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_20700637_8bd023bc.webp",
+      "changed": true,
+      "decodedPixelHash": "4c61f4165a5e4731b343ce87b74a7fbd3cd61371afa48c5522dc9a16f7aa7c02",
+      "perceptualHash": "1f1bb0d195d4332b",
+      "deliveredSize": [
+        600,
+        800
+      ],
+      "location": "Mausoleo de Moulay Ismail, Meknès",
+      "reason": "La vista previa mostraba la Koutoubia de Marrakech.",
+      "sourceUrl": "https://unsplash.com/photos/GE9HkJwwQNY",
+      "photoId": "unsplash_GE9HkJwwQNY"
+    },
+    {
+      "slot": "overview.fez-tanger.image",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/4d1d52470e6f41e68cc0dc847c8563ec.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_38112371_a4bd80de.webp",
+      "changed": true,
+      "decodedPixelHash": "6c73651fe1d21d28f0fa64ed773a94599b214ec8b52ac2bb9d1b4566b935fe66",
+      "perceptualHash": "5cce926ae7c00a00",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Puerto y ciudad de Tánger",
+      "reason": "La misma fotografía de las tenerías aparecía también en la galería de Fez.",
+      "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-vibrant-tangier-cityscape-and-port-39137746/",
+      "photographer": "Earth Photart",
+      "photoId": "pexels:39137746"
+    },
+    {
+      "slot": "viajes.nortedemarruecos.itinerary.ciudades-imperiales.image",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_38112083_c2dc08b2.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/migrated_9cba006a477244e7a94b531d7f207758.webp",
+      "changed": true,
+      "decodedPixelHash": "2ee1b8ce65534ef48446aa96e728835b040955504bcf941e56f579d078849ebf",
+      "perceptualHash": "f08d8d8596961050",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Bab Bou Jeloud, Fez",
+      "reason": "La fotografía anterior mostraba Marrakech y el Alto Atlas.",
+      "reusedFromSlot": "norte-gallery-imperial.image.1",
+      "photoId": "pexels:38112083",
+      "sourceUrl": "https://www.pexels.com/photo/38112083/"
+    },
+    {
+      "slot": "viajes.nortedemarruecos.editorial.riqueza-belleza.image",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/migrated_db8f89f811c0479ca58da8bce8d3ebd2.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/migrated_db8f89f811c0479ca58da8bce8d3ebd2.webp",
+      "changed": false,
+      "decodedPixelHash": "72c37e9748989f001acea48cdcbd3b2d89f16d82c1c816c10b883ca4927794f2",
+      "perceptualHash": "5d55e4b2f545ccb8",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Fuente Nejjarine, Fez"
+    },
+    {
+      "slot": "video.norte-video-imperial.poster",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/4e36e2af7adc44a38e34187e6227d6b9.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_38112326_ad07adff.webp",
+      "changed": true,
+      "decodedPixelHash": "7bb6f04b7323053368a8607ab52cfbf3e607dbf5ce592aefb07fa20cafc676f4",
+      "perceptualHash": "7272b4d45a385985",
+      "deliveredSize": [
+        600,
+        800
+      ],
+      "location": "Puertas del Palacio Real de Fez",
+      "reason": "Portada diferenciada de las tenerías de la galería; evita encuadres muy similares del mismo motivo.",
+      "sourceUrl": "https://www.pexels.com/photo/gold-doorway-entrance-to-a-building-12504898/",
+      "photographer": "Sarah  Hall",
+      "photoId": "pexels:12504898"
+    },
+    {
+      "slot": "norte-gallery-imperial.image.0",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_38112371_43d5138b.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_38112371_43d5138b.webp",
+      "changed": false,
+      "decodedPixelHash": "8e28aeb3c8226400e4b66076835264f8213f28f2ed2b2394e292a3f2ccc0a915",
+      "perceptualHash": "669a85e7be3cb599",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Tenerías Chouara, Fez",
+      "photoId": "pexels:38112371",
+      "sourceUrl": "https://www.pexels.com/photo/38112371/"
+    },
+    {
+      "slot": "norte-gallery-imperial.image.1",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/unsplash_n6lzuAV-u1U_bd1ef845.jpg",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_38112083_c2dc08b2.webp",
+      "changed": true,
+      "decodedPixelHash": "2fd3869db602c973ae1723776ff127a1ab72405b034834f73bc244ff87eca8ac",
+      "perceptualHash": "b9c84ab2ec00f1f1",
+      "deliveredSize": [
+        600,
+        900
+      ],
+      "location": "Bab al Mansour, Meknès",
+      "reason": "Se mostraba Bab Bou Jeloud de Fez, no Bab al Mansour.",
+      "sourceUrl": "https://unsplash.com/photos/n6lzuAV-u1U",
+      "photoId": "unsplash_n6lzuAV-u1U"
+    },
+    {
+      "slot": "norte-gallery-imperial.image.2",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_29595720_e18f07c2.jpg",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_30149254_4247dc0e.webp",
+      "changed": true,
+      "decodedPixelHash": "d4a30af88e331936e7bf371a71087822db4a6a85b06312ccd24c2608eb254e62",
+      "perceptualHash": "9ac152b23167b502",
+      "deliveredSize": [
+        600,
+        900
+      ],
+      "location": "Mosaicos romanos de Volubilis",
+      "reason": "La imagen mostraba la basílica, pero el pie anuncia mosaicos romanos.",
+      "sourceUrl": "https://www.pexels.com/photo/ancient-ruins-and-mosaic-in-volubilis-morocco-29595720/",
+      "photographer": "Tobias Waibl",
+      "photoId": "pexels:29595720"
+    },
+    {
+      "slot": "norte-gallery-imperial.image.3",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/4ff33d07ff2146a2ad64d2b4c7b80652.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_14722175_fff17aa1.webp",
+      "changed": true,
+      "decodedPixelHash": "6484d1505fcaa2645a8d0eab14ed7db69f606eb8314f02da279d2c8cea5b0c41",
+      "perceptualHash": "48d2d6524283c3c2",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Torre Hassan, Rabat",
+      "reason": "La imagen costera no mostraba la Torre Hassan.",
+      "sourceUrl": "https://www.pexels.com/photo/hassan-tower-at-dusk-in-rabat-morocco-29804296/",
+      "photographer": "MAG Photography",
+      "photoId": "pexels:29804296"
+    },
+    {
+      "slot": "norte-gallery-imperial.image.4",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_13794310_59a43485.jpg",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_18446892_38913379.webp",
+      "changed": true,
+      "decodedPixelHash": "ca2ba4909cdbd15ba4519fabbca3e46a2c2829adb0a6cdd54a6a59097e3ef3b3",
+      "perceptualHash": "be9f32b3b3313199",
+      "deliveredSize": [
+        600,
+        900
+      ],
+      "location": "Interior de la madraza Bou Inania, Fez",
+      "reason": "Sustitución por fotografía con identificación explícita del monumento en origen.",
+      "sourceUrl": "https://www.pexels.com/photo/interior-of-bou-inania-madrasa-in-morocco-13794310/",
+      "photographer": "Gül Işık",
+      "photoId": "pexels:13794310"
+    },
+    {
+      "slot": "norte-gallery-imperial.image.5",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/963f6bf3b353499c88e3ee87ffc55719.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/migrated_81c17041174f4e468c4d77acd45a2126.webp",
+      "changed": true,
+      "decodedPixelHash": "a940a7225cc24dc0cc4d66b81156eb1b37a4076755d3b6e7f8a22aaac6b01daa",
+      "perceptualHash": "096101693133178e",
+      "deliveredSize": [
+        600,
+        818
+      ],
+      "location": "Talla y geometría en Bou Inania, Fez",
+      "reason": "Se repetía la fuente Nejjarine del bloque editorial mediante otro archivo.",
+      "sourceUrl": "https://www.pexels.com/photo/ornate-wooden-door-to-bou-inania-madrasa-in-fes-morocco-18446955/",
+      "photographer": "Jean Marc Bonnel",
+      "photoId": "pexels:18446955"
+    },
+    {
+      "slot": "viajes.nortedemarruecos.itinerary.fez-tanger.image",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_28582577_dd6fc9fa.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_28582577_dd6fc9fa.webp",
+      "changed": false,
+      "decodedPixelHash": "3ebf6058fe0d9df13fa632e1235f1d584fd3bb44fb5ed8e0dbcbe9c94d333957",
+      "perceptualHash": "f846175dc9bf6c0c",
+      "deliveredSize": [
+        600,
+        538
+      ],
+      "location": "Zoco de Fez",
+      "photoId": "pexels:28582577",
+      "sourceUrl": "https://www.pexels.com/photo/28582577/"
+    },
+    {
+      "slot": "viajes.nortedemarruecos.editorial.ciudades-historicas.image",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_33912197_4669ade8.jpg",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/migrated_4c1f3b4d658244faad20530515d30e5c.webp",
+      "changed": true,
+      "decodedPixelHash": "1c4b1212474a0615c31204f014603fa901f235d866ad245ffb1fdaec48be7011",
+      "perceptualHash": "dadacd8d933bebe3",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Panorámica de Chefchaouen, Rif",
+      "reason": "La imagen anterior representaba la madraza Ben Youssef de Marrakech.",
+      "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-the-blue-city-chefchaouen-morocco-33912197/",
+      "photographer": "Earth Photart",
+      "photoId": "pexels:33912197"
+    },
+    {
+      "slot": "video.norte-video-rif.poster",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_27465667_33864084.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_27465667_33864084.webp",
+      "changed": false,
+      "decodedPixelHash": "7fd2862d1a786aec8c8692e156995445d4f98c051ad26dfd143b9e11d88da225",
+      "perceptualHash": "5c4c4c4d2d1dc9f1",
+      "deliveredSize": [
+        600,
+        399
+      ],
+      "location": "Arte y calle azul en Chefchaouen",
+      "photoId": "pexels:27465667",
+      "sourceUrl": "https://www.pexels.com/photo/27465667/"
+    },
+    {
+      "slot": "norte-gallery-rif.image.0",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_37926823_229f2a63.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_37926823_229f2a63.webp",
+      "changed": false,
+      "decodedPixelHash": "318bb1f373bf54b85d765f4e4010ea1c780b7a485914302ae3670d1511466501",
+      "perceptualHash": "90c0e0305c4c2672",
+      "deliveredSize": [
+        600,
+        900
+      ],
+      "location": "Calle de Chefchaouen",
+      "photoId": "pexels:37926823",
+      "sourceUrl": "https://www.pexels.com/photo/37926823/"
+    },
+    {
+      "slot": "norte-gallery-rif.image.1",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_9433813_d9a6ad9a.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_9433813_d9a6ad9a.webp",
+      "changed": false,
+      "decodedPixelHash": "6c8b1097fd9ed8c431a6d831e836eef476f2fa3aad2b60eea3d49c730cec9009",
+      "perceptualHash": "d0d8c8e0fa5aaa8c",
+      "deliveredSize": [
+        600,
+        480
+      ],
+      "location": "Plaza El Mechouar y medina de Tetuán",
+      "photoId": "pexels:9433813",
+      "sourceUrl": "https://www.pexels.com/photo/9433813/"
+    },
+    {
+      "slot": "norte-gallery-rif.image.2",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/bee86b36199549fbbaff5b80ac8fdba4.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_38381134_006c2dc7.webp",
+      "changed": true,
+      "decodedPixelHash": "a532e7889c51eedc0f94df4af410f11c38516c8e78591d8cbf6e8dab34a4fd18",
+      "perceptualHash": "c6e2e3a45c504809",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Cascadas de Akchour, Rif",
+      "reason": "Sustitución por fotografía con ubicación Akchour confirmada en origen.",
+      "sourceUrl": "https://www.pexels.com/photo/scenic-waterfall-in-akchour-morocco-landscape-30580974/",
+      "photographer": "Othmane Ettalbi",
+      "photoId": "pexels:30580974"
+    },
+    {
+      "slot": "norte-gallery-rif.image.3",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_36244505_fb5f574a.jpg",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_11344766_741675ec.webp",
+      "changed": true,
+      "decodedPixelHash": "1438bb4020703288becc153c979d9ea75b185c6c06b2c540479c73bdf911da74",
+      "perceptualHash": "b0c85338d8c8a4e4",
+      "deliveredSize": [
+        600,
+        400
+      ],
+      "location": "Faro del Cabo Espartel, Tánger",
+      "reason": "La fotografía anterior no mostraba el Cabo Espartel.",
+      "sourceUrl": "https://www.pexels.com/photo/cape-spartel-lighthouse-overlooking-atlantic-ocean-36244505/",
+      "photographer": "Yassine Oukhadjou",
+      "photoId": "pexels:36244505"
+    },
+    {
+      "slot": "norte-gallery-rif.image.4",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/pexels_25254927_a505c070.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_25254927_a505c070.webp",
+      "changed": false,
+      "decodedPixelHash": "2f6a88d7f1463b9c2887c40e12c5a8816c850cbc2b111eb850920b419f6d90bc",
+      "perceptualHash": "92dcce1f74e00282",
+      "deliveredSize": [
+        599,
+        400
+      ],
+      "location": "Murallas de Asilah",
+      "photoId": "pexels:25254927",
+      "sourceUrl": "https://www.pexels.com/photo/25254927/"
+    },
+    {
+      "slot": "norte-gallery-rif.image.5",
+      "url": "https://xalucatours-media.b-cdn.net/xaluca/library/e44fe101dd904ac0ae9b03cdc0d0fe72.webp",
+      "previousUrl": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_30710139_390c0b08.webp",
+      "changed": true,
+      "decodedPixelHash": "b6dce9e00541d9647f887094c74d8d6548f5eed345a1dd5f283d28ed06eebe38",
+      "perceptualHash": "c5cd642431359dfa",
+      "deliveredSize": [
+        600,
+        413
+      ],
+      "location": "Costa mediterránea de El Jebha, Rif",
+      "reason": "La fotografía anterior mostraba Chefchaouen, no la costa mediterránea.",
+      "sourceUrl": "https://www.pexels.com/photo/rocks-over-the-lake-23731946/",
+      "photographer": "AbdelAaziz Akharraz",
+      "photoId": "pexels:23731946"
+    }
+  ],
+  "notes": [
+    "Revisión visual de las 21 fotografías y comparación de píxeles normalizados y dHash; ninguna pareja con distancia dHash <= 5 tras los cambios.",
+    "13 asignaciones corregidas en el CMS existente; 8 fotografías conservadas. No se eliminaron archivos anteriores ni se alteraron otros slots.",
+    "También se alinearon los fallbacks del código y del manifiesto de build para impedir que reaparezcan imágenes antiguas cuando el CMS no responda.",
+    "Los logotipos, el mapa y los archivos de vídeo no forman parte de esta auditoría de fotografías. Los vídeos de demostración existentes no se han modificado."
+  ]
+}

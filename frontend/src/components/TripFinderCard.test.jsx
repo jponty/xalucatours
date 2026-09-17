@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
-  Link: ({ to, children, ...props }) => <a href={to} {...props} onClick={(event) => {
+  Link: ({ to, children, onClick, ...props }) => <a href={to} {...props} onClick={(event) => {
+    onClick?.(event);
     event.preventDefault();
     mockNavigate(to);
   }}>{children}</a>,
@@ -21,6 +22,7 @@ import TripFinderCard from "./TripFinderCard";
 import { XALUCA_TRIPS } from "@/lib/planner/plannerTrips";
 import { pathFor } from "@/lib/routes";
 import { tt } from "@/lib/tripFinder";
+import { getTripParams, resolveTripContext, setTripContext } from "@/lib/tripContext";
 
 const trip = XALUCA_TRIPS.find(({ routeId }) => routeId === "tourMarrakechFez67");
 const images = ["/day-one.jpg", "/day-two.jpg", "/day-three.jpg"];
@@ -46,6 +48,7 @@ beforeEach(() => {
   originalMatchMedia = window.matchMedia;
   window.matchMedia = jest.fn(() => ({ matches: true }));
   mockNavigate.mockClear();
+  window.sessionStorage.clear();
   mockToggleFavorite = jest.fn();
   container = document.createElement("div");
   document.body.appendChild(container);
@@ -56,6 +59,7 @@ beforeEach(() => {
 afterEach(() => {
   act(() => root.unmount());
   container.remove();
+  window.sessionStorage.clear();
   window.matchMedia = originalMatchMedia;
   jest.useRealTimers();
   delete global.IS_REACT_ACT_ENVIRONMENT;
@@ -65,16 +69,20 @@ test("opens a connected panel on mouse hover, preserving the original card and i
   expect(get("more").getAttribute("aria-expanded")).toBe("false");
   expect(get("details").hasAttribute("inert")).toBe(true);
   expect(get("details-cta").tabIndex).toBe(-1);
+  expect(get("details-contact-cta").tabIndex).toBe(-1);
   pointer("pointerover");
   expect(get("card").dataset.expanded).toBe("true");
   expect(get("details").getAttribute("aria-hidden")).toBe("false");
   expect(get("details").hasAttribute("inert")).toBe(false);
   expect(get("details-cta").tabIndex).toBe(0);
+  expect(get("details-contact-cta").tabIndex).toBe(0);
   expect(container.querySelector("h3").textContent).toBe(tt(trip.name, "es"));
   expect(get("price").textContent).toContain("1.135 €");
   expect(get("card").textContent).toContain("6 noches · 7 días");
   expect(activeImage().getAttribute("src")).toBe(images[0]);
-  expect([...container.querySelectorAll("a")].every((link) => link.getAttribute("href") === pathFor("es", trip.routeId))).toBe(true);
+  expect([...container.querySelectorAll("a")].filter((link) => link !== get("details-contact-cta"))
+    .every((link) => link.getAttribute("href") === pathFor("es", trip.routeId))).toBe(true);
+  expect(get("details-contact-cta").getAttribute("href")).toBe(`/contacto?trip=${trip.routeId}`);
   expect(container.querySelector("a a, a button")).toBeNull();
   pointer("pointerout");
   expect(get("card").dataset.expanded).toBe("true");
@@ -103,6 +111,7 @@ test("starts expanded on mobile/tablet, without a disclosure or extra interactio
   expect(get("details").getAttribute("aria-hidden")).toBe("false");
   expect(get("details").hasAttribute("inert")).toBe(false);
   expect(get("details-cta").tabIndex).toBe(0);
+  expect(get("details-contact-cta").tabIndex).toBe(0);
   touch("touchstart", 250, 100);
   touch("touchend", 100, 110);
   expect(activeImage().getAttribute("src")).toBe(images[1]);
@@ -137,6 +146,46 @@ test("keeps a hovered panel open if the keyboard focus moves into it", () => {
   expect(get("card").dataset.expanded).toBe("true");
   click(get("details-cta"));
   expect(mockNavigate).toHaveBeenCalledWith(pathFor("es", trip.routeId));
+});
+
+test("the information CTA replaces stale context and never opens the trip programme", () => {
+  setTripContext(["tourAtlasDesierto67"]);
+  pointer("pointerover");
+  const cta = get("details-contact-cta");
+  expect(cta.textContent).toBe("Solicitar información");
+  expect(cta.classList.contains("bg-[#A35133]")).toBe(true);
+  cta.focus();
+  pointer("pointerout");
+  act(() => jest.advanceTimersByTime(200));
+  expect(get("card").dataset.expanded).toBe("true");
+  click(cta);
+  expect(mockNavigate).toHaveBeenCalledTimes(1);
+  expect(mockNavigate).toHaveBeenCalledWith(`/contacto?trip=${trip.routeId}`);
+  expect(getTripParams()).toEqual([trip.routeId]);
+  expect(mockToggleFavorite).not.toHaveBeenCalled();
+});
+
+test.each([
+  [320, false], [390, false], [820, false], [1024, false], [1366, true],
+])("every finder result preserves its existing contact context at %i px", (width, desktop) => {
+  window.matchMedia.mockReturnValue({ matches: desktop });
+  for (const candidate of XALUCA_TRIPS) {
+    act(() => root.render(<TripFinderCard key={`${width}-${candidate.routeId}`} trip={candidate}
+      images={images} lang="es" onToggleFavorite={mockToggleFavorite} />));
+    const query = (suffix) => container.querySelector(`[data-testid="trip-finder-${suffix}-${candidate.routeId}"]`);
+    if (desktop) click(query("more"));
+    const cta = query("details-contact-cta");
+    expect(query("details").hasAttribute("inert")).toBe(false);
+    expect(cta.tabIndex).toBe(0);
+    expect(cta.getAttribute("href")).toBe(`/contacto?trip=${encodeURIComponent(candidate.routeId)}`);
+    expect(query("details-cta").getAttribute("href")).toBe(pathFor("es", candidate.routeId));
+    click(cta);
+    expect(getTripParams()).toEqual([candidate.routeId]);
+    const context = resolveTripContext(getTripParams()[0], "es");
+    expect(context?.routeId).toBe(candidate.routeId);
+    expect(context?.title).toBeTruthy();
+    expect(container.querySelector("a a, a button")).toBeNull();
+  }
 });
 
 test("carousel arrows, pricing and favourites do not navigate or alter the card content", () => {
@@ -175,6 +224,8 @@ test.each(["en", "fr"])("renders localized disclosure, descriptions and destinat
   click(get("more"));
   expect(get("details-cta").getAttribute("href")).toBe(pathFor(lang, trip.routeId));
   expect(get("details-cta").textContent).toContain(lang === "en" ? "View full itinerary" : "Voir le programme complet");
+  expect(get("details-contact-cta").getAttribute("href")).toBe(`${pathFor(lang, "contact")}?trip=${trip.routeId}`);
+  expect(get("details-contact-cta").textContent).toBe(lang === "en" ? "Request information" : "Demander des informations");
   expect(get("description").textContent.length).toBeGreaterThan(40);
   expect(get("fav").getAttribute("aria-pressed")).toBe("true");
 });

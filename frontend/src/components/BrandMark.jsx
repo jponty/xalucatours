@@ -12,7 +12,7 @@ const TAGLINE = {
   fr: "Spécialistes des voyages au Maroc",
 };
 
-export const BrandMark = ({ inverted = false, className = "" }) => {
+export const BrandMark = ({ inverted = false, className = "", compactHeader = false }) => {
   const { lang } = useLanguage();
   const ink = inverted ? "#FDFBF7" : "#2C2621";
   return (
@@ -20,7 +20,7 @@ export const BrandMark = ({ inverted = false, className = "" }) => {
       to="/"
       data-testid="brand-mark"
       aria-label={`Xaluca Tours — ${pick(TAGLINE, lang)}`}
-      className={`inline-flex items-center gap-2.5 group ${className}`}
+      className={`inline-flex ${compactHeader ? "shrink-0" : ""} items-center gap-2.5 group ${className}`}
       style={{ color: ink }}
     >
       <img
@@ -29,7 +29,7 @@ export const BrandMark = ({ inverted = false, className = "" }) => {
         data-testid="brand-logo"
         className="h-9 md:h-11 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
       />
-      <span className="inline-flex items-baseline gap-2">
+      <span className={`${compactHeader ? "hidden sm:inline-flex" : "inline-flex"} items-baseline gap-2`}>
         <EditableText
           slot="brand.first"
           defaults={BRAND_FIRST}
@@ -49,7 +49,7 @@ export const BrandMark = ({ inverted = false, className = "" }) => {
         defaults={TAGLINE}
         multiline={false}
         data-testid="brand-tagline"
-        className="hidden lg:inline-flex items-center gap-3 ml-3 pl-3 border-l text-[10.5px] tracking-[0.22em] uppercase whitespace-nowrap opacity-70"
+        className={`hidden ${compactHeader ? "xl:inline-flex" : "lg:inline-flex"} items-center gap-3 ml-3 pl-3 border-l text-[10.5px] tracking-[0.22em] uppercase whitespace-nowrap opacity-70`}
         style={{ color: ink, borderColor: `${ink}33` }}
       />
     </Link>

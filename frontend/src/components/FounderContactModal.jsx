@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { ArrowRight, Mail, Send, ShieldCheck, Users } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -128,6 +129,7 @@ const FounderPolaroid = ({ recipient }) => {
 };
 
 export default function FounderContactModal({ open, onOpenChange, initialRecipient = "lluis", contactType = "founder" }) {
+  const leadCapture = useLeadCapture(contactType === "team" ? "team_contact" : "founder_contact");
   const { lang } = useLanguage();
   const location = useLocation();
   const [form, setForm] = useState(() => emptyForm(initialRecipient));
@@ -166,6 +168,9 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
         ? { team_recipient: form.recipient }
         : { founder_recipient: form.recipient };
       await axios.post(`${API}/contact-requests`, {
+        ...leadCapture(),
+        first_name: form.firstName.trim(),
+        last_name: form.lastName.trim(),
         full_name: fullName,
         email: form.email.trim(),
         phone: form.phone.trim(),

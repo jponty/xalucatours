@@ -16,7 +16,7 @@ import SectionNav from "@/components/SectionNav";
    bootstrap; the two booking URLs are swapped via a tab state so
    we don't double-mount iframes that hammer the Calendly API.
 ============================================================ */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
@@ -36,6 +36,7 @@ import TripContextBanner from "@/components/TripContextBanner";
 import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 import ContactDetailsCard from "@/components/ContactDetailsCard";
+import ContactFormAccessCards from "@/components/ContactFormAccessCards";
 import OfficeContactCard from "@/components/OfficeContactCard";
 
 const COPY = {
@@ -185,7 +186,17 @@ const COPY = {
 const ContactPage = () => {
   const { lang } = useLanguage();
   const [tab, setTab] = useState("phone");
+  const [formTab, setFormTab] = useState("detailed");
+  const formSectionRef = useRef(null);
   useCalendlyScript();
+
+  const openContactForm = (nextTab) => {
+    setFormTab(nextTab);
+    const section = formSectionRef.current;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    section?.querySelector(`[data-testid="form-tab-${nextTab}"]`)?.focus({ preventScroll: true });
+    section?.scrollIntoView({ behavior: reducedMotion ? "instant" : "smooth", block: "start" });
+  };
 
   useEffect(() => {
     document.title = ({
@@ -284,6 +295,7 @@ const ContactPage = () => {
                  className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
 
               <ContactDetailsCard />
+              <ContactFormAccessCards onSelectForm={openContactForm} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -596,8 +608,8 @@ const ContactPage = () => {
         </section>
 
         {/* ============== FORMS — tabbed: detailed planner + quick contact ============== */}
-        <div id="contact-form" data-testid="contact-form-section">
-          <FormTabs defaultTab="detailed" />
+        <div id="contact-form" ref={formSectionRef} data-testid="contact-form-section" className="scroll-mt-40">
+          <FormTabs activeTab={formTab} onTabChange={setFormTab} />
         </div>
 
         {/* ============== HOW TO REACH US — map + location ============== */}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,6 +11,8 @@ import EditableText from "@/components/EditableText";
 import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
+import { useLeadCapture } from "@/lib/leadCapture";
+import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -30,9 +32,12 @@ const initialState = {
 
 export const ContactForm = () => {
   const { t, lang } = useLanguage();
+  const leadCapture = useLeadCapture("quick_contact", lang);
   const location = useLocation();
   const [form, setForm] = useState(initialState);
   const [sending, setSending] = useState(false);
+  const [dictating, setDictating] = useState(false);
+  const voiceId = useId();
   const [done, setDone] = useState(false);
   const [prefError, setPrefError] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -57,7 +62,7 @@ export const ContactForm = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (sending) return;
+    if (sending || dictating) return;
     const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
     if (form.phone && !isValidInternationalPhone(form.phone)) {
       setPhoneError(required);
@@ -91,6 +96,7 @@ export const ContactForm = () => {
       const { travel_start_date, travel_end_date, ...requestFields } = form;
       const travel_dates = [travel_start_date, travel_end_date].filter(Boolean).join(" → ");
       await axios.post(`${API}/contact-requests`, {
+        ...leadCapture(),
         ...requestFields,
         travel_dates: travel_dates || null,
         language: lang,
@@ -166,14 +172,17 @@ export const ContactForm = () => {
                 <LeadSubmissionSuccess tone="dark" />
               </div>
             ) : (
+              <VoiceDictationProvider onBusyChange={setDictating}>
               <form
                 onSubmit={onSubmit}
                 data-testid="contact-form"
                 className="bg-[#FDFBF7]/[0.04] border border-[#FDFBF7]/15 p-8 md:p-12 backdrop-blur-sm"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Field labelSlot="home.contact.form_name" labelDefaults={translations.form_name} testId="form-name" required>
-                    <input required aria-required="true" name="full_name" value={form.full_name} onChange={onChange}
+                  <Field as="div" inputId={`${voiceId}-name`} labelSlot="home.contact.form_name" labelDefaults={translations.form_name} testId="form-name" required>
+                    <input id={`${voiceId}-name`} aria-label={t("form_name")} disabled={sending}
+                      required aria-required="true" name="full_name" value={form.full_name}
+                      onChange={onChange}
                       data-testid="contact-input-name" className="form-input" />
                   </Field>
 
@@ -238,8 +247,9 @@ export const ContactForm = () => {
                     </Field>
                   </div>
 
-                  <Field labelSlot="home.contact.form_party" labelDefaults={translations.form_party} testId="form-party">
-                    <input name="party_size" value={form.party_size} onChange={onChange}
+                  <Field as="div" inputId={`${voiceId}-party`} labelSlot="home.contact.form_party" labelDefaults={translations.form_party} testId="form-party">
+                    <input id={`${voiceId}-party`} aria-label={t("form_party")} disabled={sending}
+                      name="party_size" value={form.party_size} onChange={onChange}
                       placeholder="2 adults"
                       data-testid="contact-input-party" className="form-input" />
                   </Field>
@@ -256,8 +266,10 @@ export const ContactForm = () => {
                 </div>
 
                 <div className="mt-6">
-                  <Field labelSlot="home.contact.form_message" labelDefaults={translations.form_message} testId="form-message" required>
-                    <textarea required aria-required="true" name="message" value={form.message} onChange={onChange} rows={5}
+                  <Field as="div" inputId={`${voiceId}-message`} labelSlot="home.contact.form_message" labelDefaults={translations.form_message} testId="form-message" required>
+                    <VoiceTextField as="textarea" id={`${voiceId}-message`} aria-label={t("form_message")} lang={lang} tone="dark" disabled={sending}
+                      required aria-required="true" name="message" value={form.message}
+                      onValueChange={value => setForm(current => ({ ...current, message: value }))} rows={5}
                       data-testid="contact-input-message" className="form-input resize-none" />
                   </Field>
                 </div>
@@ -285,7 +297,7 @@ export const ContactForm = () => {
 
                 <button
                   type="submit"
-                  disabled={sending}
+                  disabled={sending || dictating}
                   data-testid="contact-submit-button"
                   className="mt-8 w-full md:w-auto inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A35133] disabled:opacity-60 disabled:cursor-not-allowed text-[#FDFBF7] px-10 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
@@ -297,6 +309,7 @@ export const ContactForm = () => {
                   {!sending && <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />}
                 </button>
               </form>
+              </VoiceDictationProvider>
             )}
           </div>
         </div>
@@ -326,14 +339,17 @@ export const ContactForm = () => {
   );
 };
 
-const Field = ({ labelSlot, labelDefaults, testId, required = false, children, as: Wrapper = "label" }) => (
+const Field = ({ labelSlot, labelDefaults, testId, inputId, required = false, children, as: Wrapper = "label" }) => {
+  const Label = inputId ? "label" : "span";
+  return (
   <Wrapper className="block" data-testid={`${testId}-field`}>
-    <span className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2">
+    <Label htmlFor={inputId} className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/55 mb-2">
       <EditableText slot={labelSlot} defaults={labelDefaults} multiline={false} />
       {required && <span className="text-[#D4A373]" aria-hidden="true">*</span>}
-    </span>
+    </Label>
     {children}
   </Wrapper>
-);
+  );
+};
 
 export default ContactForm;

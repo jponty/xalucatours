@@ -35,7 +35,15 @@ export const CalendlyEmbed = ({ url, testid, height = 720 }) => {
       const C = typeof window !== "undefined" ? window.Calendly : null;
       if (C && typeof C.initInlineWidget === "function") {
         ref.current.replaceChildren();
-        C.initInlineWidget({ url, parentElement: ref.current });
+        const trackedUrl = new URL(url);
+        const page = new URL(window.location.pathname, window.location.origin);
+        const trip = new URLSearchParams(window.location.search).get("trip");
+        if (trip) page.searchParams.set("trip", trip);
+        trackedUrl.searchParams.set("utm_source", "xaluca-web");
+        trackedUrl.searchParams.set("utm_medium", "cita-previa");
+        trackedUrl.searchParams.set("utm_content", page.href);
+        if (trip) trackedUrl.searchParams.set("utm_term", trip);
+        C.initInlineWidget({ url: trackedUrl.href, parentElement: ref.current });
         return;
       }
       if (attempts++ < 40) setTimeout(tryInit, 150);

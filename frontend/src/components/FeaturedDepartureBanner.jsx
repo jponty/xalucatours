@@ -6,6 +6,7 @@ import { pathFor } from "@/lib/routes";
 import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
 import EditableImage from "@/components/EditableImage";
 import HeroMonogram from "@/components/HeroMonogram";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 
 const COPY = {
   eyebrow: { es: "Viaje destacado", en: "Featured journey", fr: "Voyage à la une" },
@@ -46,6 +47,10 @@ export default function FeaturedDepartureBanner() {
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1A1513]/65 via-transparent to-transparent" aria-hidden="true" />
           <HeroMonogram testid="home-featured-departure-monogram" />
+          <XalucaLogoBadge
+            testid="home-featured-departure-logo"
+            className="top-4 right-4 h-12 w-12 md:h-14 md:w-14"
+          />
           <span className="absolute bottom-4 left-5 border-l-2 border-[#D4A373] pl-3 text-[10px] font-semibold uppercase tracking-[0.18em] sm:left-6">
             {pick(departure.badge, lang)}
           </span>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { toast } from "sonner";
 import { X, Download, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -64,6 +65,7 @@ const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const initialForm = { first_name: "", last_name: "", email: "", phone: "", newsletter: false, privacy: false };
 
 export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) => {
+  const leadCapture = useLeadCapture("program_download");
   const { lang } = useLanguage();
   const L = (k) => pick(COPY[k], lang);
   const [form, setForm] = useState(initialForm);
@@ -119,6 +121,7 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
     setSending(true);
     try {
       const { data } = await axios.post(`${API}/program-downloads`, {
+        ...leadCapture(),
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
         email: form.email.trim(),

@@ -14,19 +14,20 @@ import server
         "https://xaluca-tours-web.onrender.com",
         "http://127.0.0.1:3100",
         "http://localhost:3100",
+        "http://127.0.0.1:3101",
+        "http://localhost:3101",
     ],
 )
 def test_newsletter_preflight_allows_xaluca_frontends(origin):
-    with TestClient(server.app) as client:
-        response = client.options(
-            "/api/newsletter/subscriptions",
-            headers={
-                "Origin": origin,
-                "Access-Control-Request-Method": "POST",
-                "Access-Control-Request-Headers": "content-type",
-            },
-        )
+    # No lifespan: this middleware test must not run production DB seeding.
+    response = TestClient(server.app).options(
+        "/api/newsletter/subscriptions",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
 
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == origin
-

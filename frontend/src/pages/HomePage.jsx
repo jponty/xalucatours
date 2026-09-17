@@ -227,17 +227,19 @@ export default function HomePage() {
       <StressFreeProcess />
       <WhatJourneysFeelLike />
       <div id="opiniones" className="scroll-mt-[172px]">
-        <Testimonials themes={["general"]} limit={3} tone="cream" testid="home-testimonials" />
-        <div className="-mt-6 bg-[#F9F2E6] px-6 pb-20 text-center md:px-12 md:pb-24">
-          <Link
-            to={pathFor(lang, "opiniones")}
-            data-testid="home-testimonials-all-reviews"
-            className="inline-flex items-center justify-center gap-3 border border-[#2C2621]/25 px-7 py-4 text-[10px] uppercase tracking-[0.24em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-white"
-          >
-            {REVIEWS_CTA[lang] || REVIEWS_CTA.es}
-            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-          </Link>
-        </div>
+        <Testimonials
+          themes={["general"]} limit={3} tone="cream" testid="home-testimonials"
+          footer={
+            <Link
+              to={pathFor(lang, "opiniones")}
+              data-testid="home-testimonials-all-reviews"
+              className="inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-3 border border-[#2C2621]/25 px-6 py-4 text-center text-[10px] uppercase leading-relaxed tracking-[0.24em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] sm:w-auto sm:px-7"
+            >
+              <span className="min-w-0">{REVIEWS_CTA[lang] || REVIEWS_CTA.es}</span>
+              <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+            </Link>
+          }
+        />
       </div>
       <PressMentions />
       <MoroccoVideos />

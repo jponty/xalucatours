@@ -6,6 +6,14 @@ import pytest
 from fastapi import HTTPException
 
 import server
+from .test_lead_registry import Database
+
+
+@pytest.fixture(autouse=True)
+def newsletter_database(monkeypatch):
+    database = Database()
+    monkeypatch.setattr(server, "db", database)
+    return database
 
 
 class _Response:
@@ -56,7 +64,7 @@ class _NewContactClient(_ExistingContactClient):
         return _Response(404)
 
 
-def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch):
+def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch, newsletter_database):
     captured = []
     monkeypatch.setattr(
         server,
@@ -77,6 +85,9 @@ def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch):
 
     assert result.status == "subscribed"
     assert captured == [("viajes@example.com", "Joan", "Pont Serra")]
+    saved = next(iter(newsletter_database.contact_requests.rows.values()))
+    assert saved['capture_type'] == 'newsletter'
+    assert saved['subscription_sync'] == 'accepted'
 
 
 def test_newsletter_signup_rejects_missing_consent():
@@ -99,7 +110,7 @@ def test_newsletter_signup_rejects_blank_names():
         )
 
 
-def test_newsletter_signup_does_not_claim_success_after_resend_failure(monkeypatch):
+def test_newsletter_signup_does_not_claim_success_after_resend_failure(monkeypatch, newsletter_database):
     def reject(_email, _first_name, _last_name):
         raise server.NewsletterSubscriptionError("rejected")
 
@@ -116,6 +127,11 @@ def test_newsletter_signup_does_not_claim_success_after_resend_failure(monkeypat
         asyncio.run(server.create_newsletter_subscription(payload))
 
     assert exc_info.value.status_code == 502
+    saved = next(iter(newsletter_database.contact_requests.rows.values()))
+    assert saved['subscription_sync'] == 'failed'
+    with pytest.raises(HTTPException):
+        asyncio.run(server.create_newsletter_subscription(payload))
+    assert len(newsletter_database.contact_requests.rows) == 1
 
 
 def test_newsletter_honeypot_does_not_reach_resend(monkeypatch):

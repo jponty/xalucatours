@@ -14,6 +14,7 @@ import { getTestimonialsForThemes } from "@/lib/testimonials";
      • limit      — max number of testimonials to display (default 3)
      • testid     — root data-testid suffix
      • tone       — "cream" | "sand" | "sage"  — controls background palette
+     • footer     — optional action below the cards, inside the section spacing
 ============================================================ */
 const TONES = {
   cream: { bg: "#F9F2E6", card: "#FFFDF8", border: "#2C2621", quote: "#A07042" },
@@ -121,6 +122,7 @@ export const Testimonials = ({
   variant = "full", // "full" | "compact"
   pad = true,
   items: itemsProp,
+  footer,
 }) => {
   const { lang } = useLanguage();
   const palette = TONES[tone] || TONES.cream;
@@ -188,6 +190,11 @@ export const Testimonials = ({
             <TestimonialCard key={t.id} t={t} tone={palette} lang={lang} idx={i} />
           ))}
         </div>
+        {footer && (
+          <div data-testid={`${testid}-footer`} className="mt-10 flex justify-center md:mt-12">
+            {footer}
+          </div>
+        )}
       </div>
     </section>
   );

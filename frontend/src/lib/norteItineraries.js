@@ -1,6 +1,7 @@
 // Itineraries + editorial blocks for the /viajes/nortedemarruecos gateway page.
 // Focused on the cultural & landscape north of Morocco: imperial cities,
 // Rif mountains, blue town of Chefchaouen and Mediterranean coast.
+import { NORTH_HUB_IMAGES } from "./northHubImages";
 
 export const NORTE_ITINERARIES = [
   {
@@ -11,7 +12,8 @@ export const NORTE_ITINERARIES = [
     eyebrow: { es: "Viajes al Norte de Marruecos", en: "Northern Morocco journeys", fr: "Voyages au Nord du Maroc" },
     title:   { es: "Ciudades imperiales",   en: "Imperial cities",   fr: "Cités impériales" },
     duration:{ es: "6 días / 5 noches", en: "6 days / 5 nights", fr: "6 jours / 5 nuits" },
-    image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2200&q=85",
+    image: NORTH_HUB_IMAGES.itineraryImperial,
+    overviewImage: NORTH_HUB_IMAGES.overviewImperial,
     accent: "#A07042",
     stages: [
       { es: "Fez",        en: "Fez",        fr: "Fès" },
@@ -46,7 +48,8 @@ export const NORTE_ITINERARIES = [
     eyebrow: { es: "Viajes al Norte de Marruecos", en: "Northern Morocco journeys", fr: "Voyages au Nord du Maroc" },
     title:   { es: "Fez – Tánger",   en: "Fez – Tangier",   fr: "Fès – Tanger" },
     duration:{ es: "7 días / 6 noches", en: "7 days / 6 nights", fr: "7 jours / 6 nuits" },
-    image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2200&q=85",
+    image: NORTH_HUB_IMAGES.itineraryRif,
+    overviewImage: NORTH_HUB_IMAGES.overviewRif,
     accent: "#3A4A5F",
     stages: [
       { es: "Fez",          en: "Fez",          fr: "Fès" },
@@ -80,7 +83,7 @@ export const NORTE_ITINERARIES = [
 export const NORTE_EDITORIAL = [
   {
     id: "riqueza-belleza",
-    image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2200&q=85",
+    image: NORTH_HUB_IMAGES.editorialImperial,
     eyebrow: { es: "El alma del Norte", en: "The soul of the North", fr: "L'âme du Nord" },
     title: {
       es: "La riqueza y belleza del norte de Marruecos",
@@ -113,7 +116,7 @@ export const NORTE_EDITORIAL = [
   },
   {
     id: "ciudades-historicas",
-    image: "https://images.unsplash.com/photo-1570133435536-7ececf000ef6?auto=format&fit=crop&w=2200&q=85",
+    image: NORTH_HUB_IMAGES.editorialRif,
     eyebrow: { es: "Mosaico del Norte", en: "Northern mosaic", fr: "Mosaïque du Nord" },
     title: {
       es: "Ciudades históricas y destinos emblemáticos",

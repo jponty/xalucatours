@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { ArrowRight, Mail, Phone, Sparkles, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -67,6 +68,7 @@ const safeSet = (storage, key, value) => {
 };
 
 export default function ExitIntentModal() {
+  const leadCapture = useLeadCapture("exit_intent");
   const { lang } = useLanguage();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -201,6 +203,9 @@ export default function ExitIntentModal() {
         ? ["phone"]
         : [email && "email", phone && "phone"].filter(Boolean);
       await axios.post(`${API}/contact-requests`, {
+        ...leadCapture(),
+        first_name: firstName,
+        last_name: lastName,
         full_name: fullName,
         email: email || null,
         phone: phone || null,

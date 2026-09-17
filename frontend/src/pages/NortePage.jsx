@@ -18,6 +18,13 @@ import Testimonials from "@/components/Testimonials";
 import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
+import { NORTH_HUB_IMAGES } from "@/lib/northHubImages";
+
+// Overview cards have their own photos, distinct from the full itinerary blocks.
+const OVERVIEW_ITINERARIES = NORTE_ITINERARIES.map((itinerary) => ({
+  ...itinerary,
+  image: itinerary.overviewImage,
+}));
 
 /* ============================================================
    Trilingual copy for the Norte de Marruecos gateway
@@ -204,7 +211,7 @@ export default function NortePage() {
     <BrandedImagesProvider>
     <div data-testid="norte-page">
       <JourneyHero
-        image="https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2400&q=85"
+        image={NORTH_HUB_IMAGES.hero}
         eyebrow={t.hero.eyebrow}
         place={t.hero.place}
         title={t.hero.title}
@@ -220,7 +227,7 @@ export default function NortePage() {
 
       <StickyNav items={navItems} testid="norte-nav" />
 
-      <ItinerariesOverview itineraries={NORTE_ITINERARIES} t={t.overview} lang={lang} />
+      <ItinerariesOverview itineraries={OVERVIEW_ITINERARIES} t={t.overview} lang={lang} />
 
       {/* Itinerary 1 */}
       <ItineraryBlock

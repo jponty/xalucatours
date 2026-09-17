@@ -1,5 +1,6 @@
 // Editorial gallery image sets per regional/landing page section.
 // Each set contains curated images themed to the surrounding EditorialBlock.
+import { NORTH_HUB_IMAGES } from "./northHubImages";
 
 const T = (es, en, fr) => ({ es, en, fr });
 const U = (id, w = 1600) =>
@@ -127,12 +128,12 @@ export const NORTE_GALLERIES = [
     ),
     accent: "#C16542",
     images: [
-      { src: U("photo-1597212618440-806262de4f6b"), caption: T("Tenerías Chouara · Fez", "Chouara tanneries · Fez", "Tanneries Chouara · Fès") },
-      { src: U("photo-1597212618440-806262de4f6b"), caption: T("Bab al Mansour · Meknès", "Bab al Mansour · Meknes", "Bab al Mansour · Meknès") },
-      { src: U("photo-1547234935-80c7145ec969"),    caption: T("Volubilis · mosaicos romanos", "Volubilis · Roman mosaics", "Volubilis · mosaïques romaines") },
-      { src: U("photo-1570133435536-7ececf000ef6"), caption: T("Rabat · Torre Hassan", "Rabat · Hassan Tower", "Rabat · Tour Hassan") },
-      { src: U("photo-1570133435536-7ececf000ef6"), caption: T("Madraza Bou Inania", "Bou Inania Madrasa", "Médersa Bou Inania") },
-      { src: U("photo-1539020140153-e479b8c22e70"), caption: T("Caligrafía y geometría", "Calligraphy and geometry", "Calligraphie et géométrie") },
+      { src: NORTH_HUB_IMAGES.galleryImperial[0], caption: T("Tenerías Chouara · Fez", "Chouara tanneries · Fez", "Tanneries Chouara · Fès") },
+      { src: NORTH_HUB_IMAGES.galleryImperial[1], caption: T("Bab al Mansour · Meknès", "Bab al Mansour · Meknes", "Bab al Mansour · Meknès") },
+      { src: NORTH_HUB_IMAGES.galleryImperial[2], caption: T("Volubilis · mosaicos romanos", "Volubilis · Roman mosaics", "Volubilis · mosaïques romaines") },
+      { src: NORTH_HUB_IMAGES.galleryImperial[3], caption: T("Rabat · Torre Hassan", "Rabat · Hassan Tower", "Rabat · Tour Hassan") },
+      { src: NORTH_HUB_IMAGES.galleryImperial[4], caption: T("Madraza Bou Inania", "Bou Inania Madrasa", "Médersa Bou Inania") },
+      { src: NORTH_HUB_IMAGES.galleryImperial[5], caption: T("Caligrafía y geometría", "Calligraphy and geometry", "Calligraphie et géométrie") },
     ],
   },
   // 2 · Mosaico del Norte (after second editorial block)
@@ -146,12 +147,12 @@ export const NORTE_GALLERIES = [
     ),
     accent: "#5A7F9C",
     images: [
-      { src: U("photo-1539020140153-e479b8c22e70"), caption: T("Chefchaouen · pueblo azul", "Chefchaouen · blue town", "Chefchaouen · village bleu") },
-      { src: U("photo-1597212618440-806262de4f6b"), caption: T("Tetuán · medina andalusí", "Tetouan · Andalusian medina", "Tétouan · médina andalouse") },
-      { src: U("photo-1570133435536-7ececf000ef6"), caption: T("Cascadas de Akchour", "Akchour waterfalls", "Cascades d'Akchour") },
-      { src: U("photo-1547234935-80c7145ec969"),    caption: T("Tánger · Cabo Espartel", "Tangier · Cape Spartel", "Tanger · Cap Spartel") },
-      { src: U("photo-1597212618440-806262de4f6b"), caption: T("Asilah · murallas portuguesas", "Asilah · Portuguese ramparts", "Asilah · remparts portugais") },
-      { src: U("photo-1570133435536-7ececf000ef6"), caption: T("Mediterráneo del Rif", "Rif Mediterranean", "Méditerranée du Rif") },
+      { src: NORTH_HUB_IMAGES.galleryRif[0], caption: T("Chefchaouen · pueblo azul", "Chefchaouen · blue town", "Chefchaouen · village bleu") },
+      { src: NORTH_HUB_IMAGES.galleryRif[1], caption: T("Tetuán · medina andalusí", "Tetouan · Andalusian medina", "Tétouan · médina andalouse") },
+      { src: NORTH_HUB_IMAGES.galleryRif[2], caption: T("Cascadas de Akchour", "Akchour waterfalls", "Cascades d'Akchour") },
+      { src: NORTH_HUB_IMAGES.galleryRif[3], caption: T("Tánger · Cabo Espartel", "Tangier · Cape Spartel", "Tanger · Cap Spartel") },
+      { src: NORTH_HUB_IMAGES.galleryRif[4], caption: T("Asilah · murallas portuguesas", "Asilah · Portuguese ramparts", "Asilah · remparts portugais") },
+      { src: NORTH_HUB_IMAGES.galleryRif[5], caption: T("Mediterráneo del Rif", "Rif Mediterranean", "Méditerranée du Rif") },
     ],
   },
 ];

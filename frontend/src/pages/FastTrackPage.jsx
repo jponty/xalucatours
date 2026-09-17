@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import {
@@ -135,6 +136,7 @@ const EMPTY_FORM = {
 };
 
 export default function FastTrackPage() {
+  const leadCapture = useLeadCapture("fast_track");
   const [form, setForm] = useState(EMPTY_FORM);
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
@@ -185,6 +187,7 @@ export default function FastTrackPage() {
 
     try {
       await axios.post(`${API}/contact-requests`, {
+        ...leadCapture(),
         ...form,
         journey_interest: "fast-track",
         preferred_contact: ["email", "phone"],

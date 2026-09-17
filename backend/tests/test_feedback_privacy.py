@@ -1,6 +1,7 @@
 """Privacy regressions for the ephemeral feedback transcription flow."""
 
 import asyncio
+import uuid
 from tempfile import SpooledTemporaryFile
 
 import pytest
@@ -9,6 +10,31 @@ from starlette.datastructures import Headers
 from starlette.requests import Request
 
 import server
+
+
+def test_feedback_retries_reuse_record_and_notification_identity(monkeypatch):
+    records = []
+    notifications = []
+
+    async def fake_request(method, table, **kwargs):
+        assert method == "POST" and table == "feedback"
+        assert kwargs["params"] == {"on_conflict": "id"}
+        assert "ignore-duplicates" in kwargs["headers"]["Prefer"]
+        records.append(kwargs["json"])
+
+    monkeypatch.setattr(server.db, "request", fake_request)
+    monkeypatch.setattr(server, "send_lead_notification", lambda *args: notifications.append(args[-1]) or "notification-id")
+    server._feedback_rate.clear()
+    request = Request({"type": "http", "method": "POST", "path": "/api/feedback", "headers": [], "client": ("127.0.0.1", 12121)})
+    payload = dict(request=request, submission_type="text", name="Cliente", email=None,
+                   trip_reference="Atlas", rating=3, message="Nuestro comentario del viaje.",
+                   transcription_language=None, language="es", source_url="https://xalucatravel.com/feedback",
+                   consent=True, website=None, submission_id=uuid.uuid4())
+    asyncio.run(server.create_feedback(**payload))
+    asyncio.run(server.create_feedback(**payload))
+    asyncio.run(server.create_feedback(**{**payload, "message": "Otra consulta diferente."}))
+    assert records[0]["id"] == records[1]["id"] != records[2]["id"]
+    assert notifications[0] == notifications[1] != notifications[2]
 
 
 def test_uploaded_audio_is_closed_immediately_after_read():

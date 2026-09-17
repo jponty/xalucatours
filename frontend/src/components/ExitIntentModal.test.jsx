@@ -46,6 +46,7 @@ describe("ExitIntentModal contact names", () => {
   };
 
   beforeEach(() => {
+    Object.defineProperty(window, "crypto", { configurable: true, value: require("crypto").webcrypto });
     global.IS_REACT_ACT_ENVIRONMENT = true;
     jest.useFakeTimers();
     mockLang = "es";

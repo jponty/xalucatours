@@ -13,6 +13,7 @@ import LibraryManager from "@/components/LibraryManager";
 import ContestsPanel from "@/components/ContestsPanel";
 import ProgramPricingPanel from "@/components/ProgramPricingPanel";
 import FeedbackPanel from "@/components/FeedbackPanel";
+import UnifiedLeadsPanel from "@/components/LeadsPanel";
 import { Img } from "@/components/Img";
 import { DEFAULT_PRICING, getFromPrice, fmtEuro } from "@/lib/pricing";
 import { setPricingOverride } from "@/lib/pricingStore";
@@ -475,19 +476,19 @@ export default function AdminPage() {
   return (
     <div data-testid="admin-page" className="min-h-screen bg-[#0F0D0B] text-[#FDFBF7]">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 bg-[#14110F] border-b border-white/10 px-4 md:px-6 py-3 flex items-center gap-4">
-        <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase text-[#D4A373]">
+      <header className="sticky top-0 z-30 bg-[#14110F] border-b border-white/10 px-4 md:px-6 py-3 flex flex-wrap items-center gap-3 md:gap-4">
+        <div className="w-full sm:w-auto flex items-center gap-2 text-[11px] tracking-[0.3em] uppercase text-[#D4A373]">
           <Layout className="w-4 h-4" strokeWidth={1.6} />
           Xaluca · Admin
         </div>
-        <div className="flex-1 max-w-xl ml-4 flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-2">
+        <div className="order-last sm:order-none basis-full sm:basis-0 sm:flex-1 min-w-0 max-w-xl sm:ml-4 flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-2">
           <Search className="w-4 h-4 text-white/50" strokeWidth={1.8} />
           <input
             data-testid="admin-search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar URL, slot, contenido…"
-            className="bg-transparent outline-none flex-1 text-sm placeholder:text-white/40"
+            className="bg-transparent outline-none flex-1 min-w-0 text-sm placeholder:text-white/40"
           />
           {query && <button onClick={() => setQuery("")} className="text-white/50 hover:text-white"><X className="w-3.5 h-3.5" /></button>}
         </div>
@@ -519,8 +520,8 @@ export default function AdminPage() {
       {/* Body */}
       <div className="grid grid-cols-12 gap-0 min-h-[calc(100vh-56px)]">
         {/* Left rail */}
-        <aside className="col-span-12 md:col-span-3 lg:col-span-2 border-r border-white/10 bg-[#14110F]">
-          <nav className="p-3 flex md:flex-col gap-1">
+        <aside className="min-w-0 col-span-12 md:col-span-3 lg:col-span-2 border-r border-white/10 bg-[#14110F]">
+          <nav className="p-3 flex md:flex-col gap-1 overflow-x-auto" aria-label="Secciones de administración">
             {[
               { id: "urls",   label: "URLs",          icon: Globe },
               { id: "livepreview", label: "Live Preview", icon: Eye },
@@ -540,7 +541,7 @@ export default function AdminPage() {
                   key={t.id}
                   data-testid={`admin-tab-${t.id}`}
                   onClick={() => setTab(t.id)}
-                  className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.22em] uppercase transition-colors ${
+                  className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.22em] uppercase transition-colors ${
                     active ? "bg-[#C16542] text-white" : "text-white/75 hover:bg-white/5"
                   }`}
                 >
@@ -829,8 +830,8 @@ export default function AdminPage() {
             </div>
           </section>
         ) : tab === "leads" ? (
-          <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-y-auto max-h-[calc(100vh-56px)]">
-            <LeadsPanel />
+          <section className="min-w-0 col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] md:overflow-y-auto md:max-h-[calc(100vh-56px)]">
+            <UnifiedLeadsPanel />
           </section>
         ) : tab === "feedback" ? (
           <section className="col-span-12 md:col-span-9 lg:col-span-10 bg-[#0F0D0B] overflow-hidden max-h-[calc(100vh-56px)]">
@@ -2867,98 +2868,8 @@ const PoiCardEditor = ({ poiKey, index, slots, defaults, imageMap, textMap, onSa
 
 
 /* ============================================================
-   Leads panel — captured submissions from every public form.
-   Sub-sections (one per form), each protected by the admin token,
-   with search, refresh and CSV export for the sales team.
-   Forms covered: Descargar Programa, Contacto Rápido,
-   Planificación Detallada. Add a new entry to LEAD_FORMS when a
-   new public form is wired to its own endpoint.
+   Internal notification recipients. The unified CRM lives in LeadsPanel.
 ============================================================ */
-const fmtLeadDate = (iso) => {
-  try { return new Date(iso).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" }); }
-  catch { return iso || ""; }
-};
-
-const tripPlannerDates = (r) => {
-  if (r.date_mode === "exact") return r.start_date || "—";
-  if (r.date_mode === "flexible") return r.flexible_month || "Flexible";
-  if (r.start_date || r.end_date) return `${r.start_date || "?"} → ${r.end_date || "?"}`;
-  return "—";
-};
-
-const LEAD_CONTACT_PREF = { phone: "📞 Teléfono", email: "✉️ Email" };
-const leadContactPref = (v) => {
-  const ids = Array.isArray(v) ? v : (v ? [v] : []);
-  const labels = ids.map((x) => LEAD_CONTACT_PREF[x] || x).filter(Boolean);
-  return labels.length ? labels.join(", ") : "—";
-};
-
-const colValue = (col, r) => {
-  if (col.email) return r.email || "";
-  if (col.phone) return r.phone || "";
-  return col.get ? col.get(r) : "";
-};
-
-const LEAD_FORMS = [
-  {
-    id: "program-downloads",
-    label: "Descargar Programa",
-    endpoint: "program-downloads",
-    empty: "Aún no hay descargas registradas.",
-    search: (r) => [r.first_name, r.last_name, r.email, r.phone, r.program_title, r.route_id],
-    columns: [
-      { header: "Fecha", get: (r) => fmtLeadDate(r.created_at), nowrap: true, muted: true },
-      { header: "Nombre", get: (r) => `${r.first_name || ""} ${r.last_name || ""}`.trim(), nowrap: true },
-      { header: "Email", email: true },
-      { header: "Teléfono", phone: true },
-      { header: "Programa", get: (r) => r.program_title || r.route_id || "—", truncate: true, title: (r) => `${r.program_title || ""} · ${r.route_id || ""}` },
-      { header: "Newsletter", get: (r) => (r.newsletter ? "Sí" : "No"), dot: (r) => r.newsletter, center: true },
-      { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
-    ],
-  },
-  {
-    id: "contact-requests",
-    label: "Contacto Rápido",
-    endpoint: "contact-requests",
-    empty: "Aún no hay consultas registradas.",
-    search: (r) => [r.full_name, r.email, r.phone, r.journey_interest, r.message, r.founder_recipient, r.team_recipient, r.source_label, r.source_route_id],
-    columns: [
-      { header: "Fecha", get: (r) => fmtLeadDate(r.created_at), nowrap: true, muted: true },
-      { header: "Nombre", get: (r) => r.full_name, nowrap: true },
-      { header: "Email", email: true },
-      { header: "Teléfono", phone: true },
-      { header: "Viajeros", get: (r) => r.party_size || "—", nowrap: true },
-      { header: "Fechas", get: (r) => r.travel_dates || "—", truncate: true },
-      { header: "Estilo", get: (r) => r.journey_interest || "—", truncate: true },
-      { header: "Canal pref.", get: (r) => leadContactPref(r.preferred_contact), nowrap: true },
-      { header: "Destinatario", get: (r) => ({ lluis: "Lluís", tayeb: "Tayeb", both: "Ambos fundadores" }[r.founder_recipient] || { noemi: "Noemi", elena: "Elena", sanaa: "Sanaa", magda: "Magda" }[r.team_recipient] || "—"), nowrap: true },
-      { header: "Mensaje", get: (r) => r.message || "—", truncate: true, title: (r) => r.message },
-      { header: "Origen", get: (r) => r.source_label || r.source_route_id || r.source_path || "—", truncate: true, title: (r) => `${r.source_label || ""}\n${r.source_path || ""}` },
-      { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
-    ],
-  },
-  {
-    id: "trip-planner",
-    label: "Planificación Detallada",
-    endpoint: "trip-planner",
-    empty: "Aún no hay planificaciones registradas.",
-    search: (r) => [r.full_name, r.email, r.phone, ...(r.regions || []), ...(r.activities || []), ...(r.selected_trips || [])],
-    columns: [
-      { header: "Fecha", get: (r) => fmtLeadDate(r.created_at), nowrap: true, muted: true },
-      { header: "Nombre", get: (r) => r.full_name, nowrap: true },
-      { header: "Email", email: true },
-      { header: "Teléfono", phone: true },
-      { header: "Viajeros", get: (r) => `${r.travellers_adults ?? "?"} ad · ${r.travellers_children ?? 0} niños`, nowrap: true },
-      { header: "Fechas", get: (r) => tripPlannerDates(r), truncate: true },
-      { header: "Alojamiento", get: (r) => r.accommodation || "—" },
-      { header: "Regiones", get: (r) => (r.regions || []).join(", ") || "—", truncate: true, title: (r) => (r.regions || []).join(", ") },
-      { header: "Actividades", get: (r) => (r.activities || []).join(", ") || "—", truncate: true, title: (r) => (r.activities || []).join(", ") },
-      { header: "Canal pref.", get: (r) => leadContactPref(r.preferred_contact), nowrap: true },
-      { header: "Notas", get: (r) => r.notes || "—", truncate: true, title: (r) => r.notes },
-      { header: "Idioma", get: (r) => (r.language || "").toUpperCase(), small: true },
-    ],
-  },
-];
 
 const NotifyPanel = () => {
   const [emails, setEmails] = useState(null); // null = loading
@@ -3074,416 +2985,6 @@ const NotifyPanel = () => {
           </li>
         ))}
       </ul>
-    </div>
-  );
-};
-
-const LeadsPanel = () => {
-  const [view, setView] = useState("program-downloads");
-  const [cache, setCache] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
-  const [q, setQ] = useState("");
-  const [confirmDel, setConfirmDel] = useState(null); // lead row pending deletion
-  const [delBusy, setDelBusy] = useState(false);
-  const [selected, setSelected] = useState(new Set()); // ids selected for bulk ops
-  const [confirmBulk, setConfirmBulk] = useState(false);
-
-  const cfg = LEAD_FORMS.find((f) => f.id === view);
-  const rows = cache[view] || [];
-
-  const load = useCallback(async (id) => {
-    setLoading(true);
-    setErr("");
-    try {
-      const token = localStorage.getItem("xaluca_admin_token");
-      const r = await fetch(`${API}/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      if (!r.ok) throw new Error(String(r.status));
-      const json = await r.json();
-      setCache((c) => ({ ...c, [id]: json }));
-    } catch (e) {
-      setErr("No se pudieron cargar los registros.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { setQ(""); setSelected(new Set()); load(view); }, [view, load]);
-
-  const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase();
-    if (!term) return rows;
-    return rows.filter((r) =>
-      (cfg.search(r) || []).filter(Boolean).some((v) => String(v).toLowerCase().includes(term))
-    );
-  }, [rows, q, cfg]);
-
-  const exportCsv = () => {
-    const esc = (v) => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
-    const lines = [cfg.columns.map((c) => esc(c.header)).join(",")];
-    filtered.forEach((r) => {
-      lines.push(cfg.columns.map((c) => esc(colValue(c, r))).join(","));
-    });
-    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `xaluca-${cfg.id}-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const leadLabel = (r) => {
-    if (cfg.id === "program-downloads") return `${r.first_name || ""} ${r.last_name || ""}`.trim() || r.email || r.id;
-    return r.full_name || r.email || r.id;
-  };
-
-  const doDelete = async () => {
-    if (!confirmDel) return;
-    setDelBusy(true);
-    setErr("");
-    try {
-      const token = localStorage.getItem("xaluca_admin_token");
-      const r = await fetch(`${API}/${cfg.endpoint}/${confirmDel.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!r.ok) throw new Error(String(r.status));
-      // Optimistically drop from the current cache
-      setCache((c) => ({ ...c, [view]: (c[view] || []).filter((x) => x.id !== confirmDel.id) }));
-      setSelected((s) => { const n = new Set(s); n.delete(confirmDel.id); return n; });
-      setConfirmDel(null);
-    } catch (e) {
-      setErr("No se pudo eliminar el lead. Inténtalo de nuevo.");
-    } finally {
-      setDelBusy(false);
-    }
-  };
-
-  /* ---- Bulk selection helpers ---- */
-  const toggleOne = (id) =>
-    setSelected((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
-
-  const filteredIds = useMemo(() => filtered.map((r) => r.id), [filtered]);
-  const allSelected = filteredIds.length > 0 && filteredIds.every((id) => selected.has(id));
-  const someSelected = filteredIds.some((id) => selected.has(id)) && !allSelected;
-
-  const toggleAll = () =>
-    setSelected((s) => {
-      const n = new Set(s);
-      if (allSelected) filteredIds.forEach((id) => n.delete(id));
-      else filteredIds.forEach((id) => n.add(id));
-      return n;
-    });
-
-  const selectedCount = filteredIds.filter((id) => selected.has(id)).length;
-
-  const doBulkDelete = async () => {
-    const ids = filteredIds.filter((id) => selected.has(id));
-    if (ids.length === 0) return;
-    setDelBusy(true);
-    setErr("");
-    try {
-      const token = localStorage.getItem("xaluca_admin_token");
-      const results = await Promise.allSettled(
-        ids.map((id) =>
-          fetch(`${API}/${cfg.endpoint}/${id}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-          }).then((r) => { if (!r.ok) throw new Error(String(r.status)); return id; })
-        )
-      );
-      const deleted = new Set(results.filter((x) => x.status === "fulfilled").map((x) => x.value));
-      const failed = results.filter((x) => x.status === "rejected").length;
-      setCache((c) => ({ ...c, [view]: (c[view] || []).filter((x) => !deleted.has(x.id)) }));
-      setSelected((s) => { const n = new Set(s); deleted.forEach((id) => n.delete(id)); return n; });
-      setConfirmBulk(false);
-      if (failed > 0) setErr(`${failed} de ${ids.length} leads no se pudieron eliminar.`);
-    } catch (e) {
-      setErr("No se pudieron eliminar los leads. Inténtalo de nuevo.");
-    } finally {
-      setDelBusy(false);
-    }
-  };
-
-
-  return (
-    <div data-testid="admin-leads" className="p-4 md:p-6 text-white">
-      {/* Sub-section tabs (one per form) */}
-      <div data-testid="admin-leads-tabs" className="flex flex-wrap gap-2 mb-5">
-        {LEAD_FORMS.map((f) => {
-          const active = view === f.id;
-          const count = (cache[f.id] || []).length;
-          return (
-            <button
-              key={f.id}
-              data-testid={`admin-leads-tab-${f.id}`}
-              onClick={() => setView(f.id)}
-              className={`inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.18em] uppercase border transition-colors ${
-                active ? "bg-[#C16542] border-transparent text-white" : "border-white/15 text-white/70 hover:bg-white/5"
-              }`}
-            >
-              {f.label}{cache[f.id] ? ` · ${count}` : ""}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
-        <div>
-          <h2 className="font-serif-x text-2xl md:text-3xl flex items-center gap-2">
-            <Inbox className="w-5 h-5 text-[#D4A373]" strokeWidth={1.7} /> Leads · {cfg.label}
-          </h2>
-          <p className="text-[11px] tracking-[0.18em] uppercase text-white/45 mt-1">
-            {loading ? "Cargando…" : `${filtered.length} de ${rows.length} registros`}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
-            <input
-              data-testid="admin-leads-search"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar nombre, email, contenido…"
-              className="bg-white/5 border border-white/15 pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-[#C16542] w-[260px] max-w-[60vw]"
-            />
-          </div>
-          <button
-            data-testid="admin-leads-refresh"
-            onClick={() => load(view)}
-            className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase border border-white/15 hover:bg-white/5"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} strokeWidth={1.8} /> Recargar
-          </button>
-          <button
-            data-testid="admin-leads-export"
-            onClick={exportCsv}
-            disabled={filtered.length === 0}
-            className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase bg-[#3E7C59] hover:bg-[#326449] disabled:opacity-40 disabled:cursor-not-allowed text-white"
-          >
-            <Download className="w-3.5 h-3.5" strokeWidth={1.8} /> Exportar CSV
-          </button>
-        </div>
-      </div>
-
-      {err && <p data-testid="admin-leads-error" className="text-sm text-[#E07856] mb-4">{err}</p>}
-
-      {/* Bulk action bar */}
-      {selectedCount > 0 && (
-        <div
-          data-testid="admin-leads-bulk-bar"
-          className="flex items-center justify-between gap-3 flex-wrap mb-4 px-4 py-3 bg-[#C16542]/15 border border-[#C16542]/40"
-        >
-          <span className="text-[11px] tracking-[0.18em] uppercase text-white/80">
-            {selectedCount} {selectedCount === 1 ? "lead seleccionado" : "leads seleccionados"}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              data-testid="admin-leads-bulk-clear"
-              onClick={() => setSelected(new Set())}
-              className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase border border-white/15 text-white/75 hover:bg-white/5"
-            >
-              <X className="w-3.5 h-3.5" strokeWidth={1.8} /> Limpiar selección
-            </button>
-            <button
-              data-testid="admin-leads-bulk-delete"
-              onClick={() => setConfirmBulk(true)}
-              className="inline-flex items-center gap-2 px-3 py-2 text-[10px] tracking-[0.22em] uppercase bg-[#B23A28] hover:bg-[#9c3122] text-white"
-            >
-              <Trash2 className="w-3.5 h-3.5" strokeWidth={1.8} /> Eliminar seleccionados
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="overflow-x-auto border border-white/10">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-white/5 text-[10px] tracking-[0.18em] uppercase text-white/55">
-              <th className="font-normal px-3 py-2.5 w-10 text-center">
-                <input
-                  type="checkbox"
-                  data-testid="admin-leads-select-all"
-                  checked={allSelected}
-                  ref={(el) => { if (el) el.indeterminate = someSelected; }}
-                  onChange={toggleAll}
-                  disabled={filtered.length === 0}
-                  className="w-4 h-4 accent-[#C16542] cursor-pointer disabled:opacity-40"
-                  aria-label="Seleccionar todos"
-                />
-              </th>
-              {cfg.columns.map((c) => (
-                <th key={c.header} className={`font-normal px-3 py-2.5 ${c.center ? "text-center" : "text-left"}`}>{c.header}</th>
-              ))}
-              <th className="font-normal px-3 py-2.5 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((r) => (
-              <tr key={r.id} data-testid={`admin-lead-row-${r.id}`} className={`border-t border-white/8 hover:bg-white/[0.03] align-top ${selected.has(r.id) ? "bg-[#C16542]/10" : ""}`}>
-                <td className="px-3 py-2.5 text-center">
-                  <input
-                    type="checkbox"
-                    data-testid={`admin-lead-select-${r.id}`}
-                    checked={selected.has(r.id)}
-                    onChange={() => toggleOne(r.id)}
-                    className="w-4 h-4 accent-[#C16542] cursor-pointer"
-                    aria-label="Seleccionar lead"
-                  />
-                </td>
-                {cfg.columns.map((c) => {
-                  if (c.email) {
-                    return (
-                      <td key={c.header} className="px-3 py-2.5">
-                        <a href={`mailto:${r.email}`} className="text-[#D4A373] hover:underline">{r.email}</a>
-                      </td>
-                    );
-                  }
-                  if (c.phone) {
-                    return (
-                      <td key={c.header} className="px-3 py-2.5 whitespace-nowrap">
-                        {r.phone ? <a href={`tel:${r.phone}`} className="text-white/80 hover:text-[#D4A373]">{r.phone}</a> : <span className="text-white/40">—</span>}
-                      </td>
-                    );
-                  }
-                  if (c.dot) {
-                    return (
-                      <td key={c.header} className="px-3 py-2.5 text-center">
-                        <span className={`inline-block w-2 h-2 rounded-full ${c.dot(r) ? "bg-[#7BB98A]" : "bg-white/20"}`} title={c.dot(r) ? "Sí" : "No"} />
-                      </td>
-                    );
-                  }
-                  const val = c.get ? c.get(r) : "";
-                  const cls = [
-                    "px-3 py-2.5",
-                    c.nowrap ? "whitespace-nowrap" : "",
-                    c.muted ? "text-white/70" : "",
-                    c.small ? "uppercase text-white/55 text-[11px]" : "",
-                    c.truncate ? "max-w-[220px] truncate" : "",
-                    c.center ? "text-center" : "",
-                  ].filter(Boolean).join(" ");
-                  return (
-                    <td key={c.header} className={cls} title={c.title ? c.title(r) : undefined}>{val}</td>
-                  );
-                })}
-                <td className="px-3 py-2.5 text-center whitespace-nowrap">
-                  <button
-                    data-testid={`admin-lead-delete-${r.id}`}
-                    onClick={() => setConfirmDel(r)}
-                    title="Eliminar lead"
-                    aria-label="Eliminar lead"
-                    className="inline-flex items-center justify-center p-1.5 text-white/50 hover:text-[#E07856] hover:bg-[#E07856]/10 border border-transparent hover:border-[#E07856]/30 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" strokeWidth={1.8} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {!loading && filtered.length === 0 && (
-              <tr>
-                <td colSpan={cfg.columns.length + 2} className="px-3 py-10 text-center text-white/45">
-                  {rows.length === 0 ? cfg.empty : "Sin resultados para la búsqueda."}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Delete confirmation dialog */}
-      {confirmDel && (
-        <div
-          data-testid="admin-lead-delete-dialog"
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-          onClick={() => !delBusy && setConfirmDel(null)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#14110F] border border-white/15 shadow-2xl p-6"
-          >
-            <div className="flex items-start gap-3">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#E07856]/15 text-[#E07856] shrink-0">
-                <AlertTriangle className="w-5 h-5" strokeWidth={1.9} />
-              </span>
-              <div className="min-w-0">
-                <h3 className="font-serif-x text-xl text-white">Eliminar lead</h3>
-                <p className="text-sm text-white/65 mt-2 leading-relaxed">
-                  ¿Seguro que quieres eliminar el lead de{" "}
-                  <span className="text-white font-medium">{leadLabel(confirmDel)}</span>?
-                  Esta acción no se puede deshacer.
-                </p>
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                data-testid="admin-lead-delete-cancel"
-                onClick={() => setConfirmDel(null)}
-                disabled={delBusy}
-                className="px-4 py-2 text-[11px] tracking-[0.22em] uppercase border border-white/15 text-white/75 hover:bg-white/5 disabled:opacity-40"
-              >
-                Cancelar
-              </button>
-              <button
-                data-testid="admin-lead-delete-confirm"
-                onClick={doDelete}
-                disabled={delBusy}
-                className="inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.22em] uppercase bg-[#B23A28] hover:bg-[#9c3122] text-white disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Trash2 className={`w-3.5 h-3.5 ${delBusy ? "animate-pulse" : ""}`} strokeWidth={1.9} />
-                {delBusy ? "Eliminando…" : "Eliminar"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Bulk delete confirmation dialog */}
-      {confirmBulk && (
-        <div
-          data-testid="admin-leads-bulk-dialog"
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-          onClick={() => !delBusy && setConfirmBulk(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#14110F] border border-white/15 shadow-2xl p-6"
-          >
-            <div className="flex items-start gap-3">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#E07856]/15 text-[#E07856] shrink-0">
-                <AlertTriangle className="w-5 h-5" strokeWidth={1.9} />
-              </span>
-              <div className="min-w-0">
-                <h3 className="font-serif-x text-xl text-white">Eliminar {selectedCount} leads</h3>
-                <p className="text-sm text-white/65 mt-2 leading-relaxed">
-                  Vas a eliminar{" "}
-                  <span className="text-white font-medium">{selectedCount} {selectedCount === 1 ? "lead" : "leads"}</span>{" "}
-                  de forma permanente. Esta acción no se puede deshacer.
-                </p>
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                data-testid="admin-leads-bulk-cancel"
-                onClick={() => setConfirmBulk(false)}
-                disabled={delBusy}
-                className="px-4 py-2 text-[11px] tracking-[0.22em] uppercase border border-white/15 text-white/75 hover:bg-white/5 disabled:opacity-40"
-              >
-                Cancelar
-              </button>
-              <button
-                data-testid="admin-leads-bulk-confirm"
-                onClick={doBulkDelete}
-                disabled={delBusy}
-                className="inline-flex items-center gap-2 px-4 py-2 text-[11px] tracking-[0.22em] uppercase bg-[#B23A28] hover:bg-[#9c3122] text-white disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Trash2 className={`w-3.5 h-3.5 ${delBusy ? "animate-pulse" : ""}`} strokeWidth={1.9} />
-                {delBusy ? "Eliminando…" : `Eliminar ${selectedCount}`}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

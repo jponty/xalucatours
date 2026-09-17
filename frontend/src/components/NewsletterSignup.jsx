@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
@@ -79,6 +80,7 @@ const COPY = {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function NewsletterSignup() {
+  const leadCapture = useLeadCapture("newsletter");
   const { lang } = useLanguage();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -113,6 +115,7 @@ export default function NewsletterSignup() {
     setSending(true);
     try {
       await axios.post(`${API}/newsletter/subscriptions`, {
+        ...leadCapture(),
         first_name: normalizedFirstName,
         last_name: normalizedLastName,
         email: normalizedEmail,

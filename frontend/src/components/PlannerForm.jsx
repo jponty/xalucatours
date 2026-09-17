@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useId, useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Calendar, CalendarRange, CalendarClock,
@@ -15,10 +15,12 @@ import EditableText from "@/components/EditableText";
 import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripContext";
+import { useLeadCapture } from "@/lib/leadCapture";
 import { optimizedSrc } from "@/lib/imageUrl";
 import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
+import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
 
 /* ============================================================
    PlannerForm · reusable detailed trip-planner form
@@ -162,11 +164,13 @@ const REGION_COUNTS = ALL_TRIPS.reduce((acc, t) => {
   return acc;
 }, {});
 
-const Field = ({ label, hint, required, children, error, as: Wrapper = "label" }) => (
+const Field = ({ label, hint, required, children, error, inputId, as: Wrapper = "label" }) => {
+  const Label = inputId ? "label" : "span";
+  return (
   <Wrapper className="block">
-    <span className="text-[11px] tracking-[0.3em] uppercase text-[#A07042]">
+    <Label htmlFor={inputId} className="text-[11px] tracking-[0.3em] uppercase text-[#A07042]">
       {label}{required && <span className="text-[#C16542]"> *</span>}
-    </span>
+    </Label>
     <div className="block mt-2">{children}</div>
     {error ? (
       <span className="block mt-2 text-xs text-[#C16542]">{error}</span>
@@ -174,7 +178,8 @@ const Field = ({ label, hint, required, children, error, as: Wrapper = "label" }
       <span className="block mt-2 text-xs text-[#5C5248]/75">{hint}</span>
     ) : null}
   </Wrapper>
-);
+  );
+};
 
 const inputCls =
   "w-full bg-transparent border-b border-[#2C2621]/30 focus:border-[#C16542] outline-none py-3 text-[15px] text-[#2C2621] placeholder:text-[#5C5248]/45 transition-colors";
@@ -189,6 +194,7 @@ const ET = ({ k, defaults, as = "span", className, multiline = true, ...rest }) 
    PlannerForm — the detailed multi-step form (no hero).
 ============================================================ */
 export default function PlannerForm() {
+  const leadCapture = useLeadCapture("detailed_planning");
   const { lang } = useLanguage();
   const tr = (k) => pick(COPY[k], lang);
 
@@ -219,6 +225,8 @@ export default function PlannerForm() {
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
+  const [dictating, setDictating] = useState(false);
+  const voiceId = useId();
   const [errMsg, setErrMsg] = useState("");
 
   // Persist the live trip selection for the whole session so it stays
@@ -275,12 +283,14 @@ export default function PlannerForm() {
 
   const onSubmit = async (ev) => {
     ev.preventDefault();
+    if (status === "sending" || dictating) return;
     if (!validate()) return;
     setStatus("sending");
     setErrMsg("");
     try {
       const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/trip-planner`;
       const payload = {
+        ...leadCapture(),
         full_name: form.fullName.trim(),
         email: form.email.trim(),
         phone: form.phone.trim() || null,
@@ -345,6 +355,7 @@ export default function PlannerForm() {
           <LeadSubmissionSuccess />
         </div>
       ) : (
+        <VoiceDictationProvider onBusyChange={setDictating}>
         <form
           onSubmit={onSubmit}
           data-testid="plan-trip-form"
@@ -475,15 +486,15 @@ export default function PlannerForm() {
                 </Field>
               )}
               {form.dateMode === "flexible" && (
-                <Field label={<ET k="flex_month" multiline={false} />}>
-                  <input
+                <Field as="div" inputId={`${voiceId}-month`} label={<ET k="flex_month" multiline={false} />}>
+                  <input id={`${voiceId}-month`} aria-label={tr("flex_month")} disabled={status === "sending"}
                     type="text"
                     data-testid="flex-month"
                     placeholder={lang === "es" ? "Ej. Mayo 2026" : lang === "fr" ? "Ex. mai 2026" : "e.g. May 2026"}
                     className={inputCls}
                     value={form.flexMonth}
                     maxLength={40}
-                    onChange={(e) => set("flexMonth", e.target.value)}
+                    onChange={event => set("flexMonth", event.target.value)}
                   />
                 </Field>
               )}
@@ -668,8 +679,8 @@ export default function PlannerForm() {
             title={<ET k="s5_title" multiline={false} />} help={<ET k="s5_help" />}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
-              <Field label={<ET k="name" multiline={false} />} required error={errors.fullName}>
-                <input
+              <Field as="div" inputId={`${voiceId}-name`} label={<ET k="name" multiline={false} />} required error={errors.fullName}>
+                <input id={`${voiceId}-name`} aria-label={tr("name")} disabled={status === "sending"}
                   type="text"
                   data-testid="full-name"
                   required
@@ -678,7 +689,7 @@ export default function PlannerForm() {
                   maxLength={120}
                   className={inputCls}
                   value={form.fullName}
-                  onChange={(e) => set("fullName", e.target.value)}
+                  onChange={event => set("fullName", event.target.value)}
                 />
               </Field>
               <Field label={<ET k="email" multiline={false} />} required error={errors.email}>
@@ -710,14 +721,14 @@ export default function PlannerForm() {
             </div>
 
             <div className="mt-8">
-              <Field label={<ET k="notes" multiline={false} />}>
-                <textarea
+              <Field as="div" inputId={`${voiceId}-notes`} label={<ET k="notes" multiline={false} />}>
+                <VoiceTextField as="textarea" id={`${voiceId}-notes`} aria-label={tr("notes")} lang={lang} disabled={status === "sending"}
                   data-testid="notes"
                   rows={4}
                   maxLength={3000}
                   className={`${inputCls} resize-none`}
                   value={form.notes}
-                  onChange={(e) => set("notes", e.target.value)}
+                  onValueChange={value => set("notes", value)}
                 />
               </Field>
             </div>
@@ -759,7 +770,7 @@ export default function PlannerForm() {
             <button
               type="submit"
               data-testid="plan-trip-submit"
-              disabled={status === "sending"}
+              disabled={status === "sending" || dictating}
               className="group relative inline-flex items-center gap-3 px-9 py-5 bg-[#C16542] text-[#FDFBF7] text-[11px] tracking-[0.3em] uppercase hover:bg-[#2C2621] transition-all duration-300 disabled:opacity-60"
             >
               {status === "sending" ? tr("sending") : <ET k="submit" multiline={false} />}
@@ -768,6 +779,7 @@ export default function PlannerForm() {
             <ET k="privacy" as="p" className="mt-5 text-xs text-[#5C5248]/70 max-w-xl" />
           </div>
         </form>
+        </VoiceDictationProvider>
       )}
     </div>
   );

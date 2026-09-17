@@ -66,6 +66,12 @@ export const MENU_TREE = [
     icon: "archive",
   },
   {
+    id: "catalog",
+    routeId: "catalog",
+    label: { es: "Catálogo", en: "Catalogue", fr: "Catalogue" },
+    icon: "book-open",
+  },
+  {
     id: "about-cluster",
     label: { es: "Sobre nosotros", en: "About us", fr: "À propos" },
     icon: "users",
