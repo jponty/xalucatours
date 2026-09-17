@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, Compass, Headset, HelpCircle, MessageCircle } from "lucide-react";
+import { Calendar, Compass, Headset, HelpCircle, MessageCircle, Mic } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -73,6 +73,21 @@ const OPTIONS = [
       es: "Elígelo para dudas generales, seguimiento de una solicitud o cuando todavía no tienes todos los detalles del viaje.",
       en: "Choose it for general questions, request follow-up or when you do not yet have all your trip details.",
       fr: "Choisissez-le pour une question générale, le suivi d'une demande ou si votre projet n'est pas encore défini.",
+    },
+  },
+  {
+    id: "dictation",
+    icon: Mic,
+    title: { es: "Dictado", en: "Dictation", fr: "Dictée" },
+    description: {
+      es: "Cuéntanos tu viaje por voz, revisa el texto y déjanos tus datos de contacto en dos pasos.",
+      en: "Tell us about your trip by voice, review the text and leave your contact details in two steps.",
+      fr: "Décrivez votre voyage à voix haute, relisez le texte et laissez vos coordonnées en deux étapes.",
+    },
+    bestFor: {
+      es: "Elígelo si prefieres hablar con naturalidad, sin rellenar por separado las fechas, los viajeros o el presupuesto.",
+      en: "Choose this to speak naturally, without separate date, traveller or budget fields.",
+      fr: "Choisissez cette option pour parler naturellement, sans champs séparés pour les dates, les voyageurs ou le budget.",
     },
   },
   {

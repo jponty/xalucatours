@@ -1,0 +1,71 @@
+.home-dictation-trigger {
+  align-self: flex-end;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  max-width: 100%;
+  padding: 14px 20px;
+  border: 1px solid #d4a37380;
+  border-radius: 999px;
+  background: #a35133;
+  color: #fff;
+  box-shadow: 0 12px 32px -14px #1a151399;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  transition: background 180ms ease;
+}
+.home-dictation-trigger:hover { background: #843f28; }
+.home-dictation-trigger:focus-visible,
+.home-dictation-toolbar button:focus-visible { outline: 2px solid #c16542; outline-offset: 3px; }
+
+/* Use the existing WhatsApp modal layers; all floating controls are below. */
+.home-dictation-overlay { z-index: 10020; background: #1a1513bf; backdrop-filter: blur(4px); }
+.home-dictation-modal {
+  position: fixed;
+  z-index: 10030;
+  inset: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  width: min(62rem, calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  height: min(58rem, calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  border: 1px solid #2c262126;
+  background: #fdfbf7;
+  color: #2c2621;
+  box-shadow: 0 35px 100px -35px #1a1513bf;
+  outline: none;
+}
+.home-dictation-toolbar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #2c26211a;
+}
+.home-dictation-toolbar > span { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.home-dictation-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px;
+  font-size: 13px;
+}
+.home-dictation-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 24px 0; scroll-padding-block: 20px; }
+.home-dictation-form { padding-inline: clamp(12px, 3vw, 32px); }
+.home-dictation-form h3 { scroll-margin-top: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .home-dictation-modal[data-state="open"] { animation: home-dictation-enter 180ms ease-out; }
+  @keyframes home-dictation-enter { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-dictation-trigger { transition: none; }
+  .home-dictation-overlay { animation: none !important; }
+}

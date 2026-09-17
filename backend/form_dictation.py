@@ -13,6 +13,7 @@ from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 
 ENDPOINT = "https://sync.eu.assemblyai.com/transcribe"
+STREAM_TOKEN_ENDPOINT = "https://streaming.eu.assemblyai.com/v3/token"
 MAX_SECONDS = 120
 MAX_BYTES = 48000 * MAX_SECONDS * 2 + 4096  # mono, PCM16 at up to 48 kHz
 SAMPLE_RATES = {8000, 16000, 22050, 24000, 32000, 44100, 48000}
@@ -31,9 +32,12 @@ class DictationGuard:
         self.clients = {}
         self.total = deque()
         self.inflight = 0
+        self.streaming_leases = deque()
 
     def enter(self, request):
         now = time.monotonic()
+        while self.streaming_leases and self.streaming_leases[0] <= now:
+            self.streaming_leases.popleft()
         self.clients = {key: times for key, times in self.clients.items() if times and now - times[-1] < 3600}
         while self.total and now - self.total[0] >= 3600:
             self.total.popleft()
@@ -48,7 +52,7 @@ class DictationGuard:
             hourly_limit = 120
         if len(recent) >= 12 or len(self.total) >= hourly_limit or len(self.clients) >= 2048:
             fail(429, "rate_limit", 60)
-        if self.inflight >= 2:
+        if self.inflight + len(self.streaming_leases) >= 2:
             fail(429, "busy", 5)
         recent.append(now)
         self.clients[key] = recent
@@ -126,6 +130,38 @@ async def transcribe(data, language, api_key):
 
 def register_dictation_routes(router):
     guard = DictationGuard()
+
+    @router.post("/form-dictation/stream-token")
+    async def stream_token(request: Request):
+        api_key = os.environ.get("ASSEMBLYAI_API_KEY", "").strip()
+        if not api_key:
+            fail(503, "unavailable")
+        guard.enter(request)
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(STREAM_TOKEN_ENDPOINT,
+                    headers={"Authorization": api_key},
+                    params={"expires_in_seconds": 60, "max_session_duration_seconds": MAX_SECONDS + 15})
+            if response.status_code == 429:
+                fail(429, "rate_limit", 60)
+            if response.status_code != 200:
+                fail(503, "unavailable")
+            try:
+                token = response.json().get("token")
+            except (ValueError, AttributeError):
+                fail(502, "unavailable")
+            if not isinstance(token, str) or not token or len(token) > 8192:
+                fail(502, "unavailable")
+            # Direct browser sessions are bounded by the provider. Reserve a
+            # slot through redemption + session expiry (no client release trust).
+            guard.streaming_leases.append(time.monotonic() + 60 + MAX_SECONDS + 15)
+            return JSONResponse({"token": token}, headers={"Cache-Control": "no-store"})
+        except httpx.TimeoutException:
+            fail(504, "timeout")
+        except httpx.RequestError:
+            fail(503, "unavailable")
+        finally:
+            guard.inflight -= 1
 
     @router.get("/form-dictation/status")
     async def dictation_status():

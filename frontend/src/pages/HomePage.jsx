@@ -36,6 +36,7 @@ import PressMentions from "@/components/PressMentions";
 import VideoSection from "@/components/VideoSection";
 import FoundersSection from "@/components/FoundersSection";
 import HomeWelcomeModal from "@/components/HomeWelcomeModal";
+import HomeDictationWidget from "@/components/HomeDictationWidget";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { HOME_VIDEOS } from "@/lib/sectionVideos";
 import {
@@ -124,6 +125,7 @@ export default function HomePage() {
           trigger is intentionally disabled while the choices are displayed
           permanently inside HomeTrustStrip. */}
       <HomeWelcomeModal autoOpen={false} />
+      <HomeDictationWidget />
       <HeroSlider />
       <FeaturedDepartureBanner />
       <HomeTrustStrip />

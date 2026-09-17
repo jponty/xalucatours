@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Compass, MessageCircle, Headset, Calendar, HelpCircle } from "lucide-react";
+import React, { useId, useState } from "react";
+import { Compass, MessageCircle, Headset, Calendar, HelpCircle, Mic } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import EditableText from "@/components/EditableText";
 import { useSlotId } from "@/components/slotScope";
 import PlannerForm from "@/components/PlannerForm";
 import ContactForm from "@/components/ContactForm";
+import DictationForm from "@/components/DictationForm";
 import BookingSession from "@/components/BookingSession";
 import ContactOptionsInfoModal from "@/components/ContactOptionsInfoModal";
 
@@ -17,6 +18,7 @@ import ContactOptionsInfoModal from "@/components/ContactOptionsInfoModal";
 const TABS_COPY = {
   detailed: { es: "Planificación detallada", en: "Detailed planner", fr: "Planification détaillée" },
   quick:    { es: "Contacto rápido", en: "Quick contact", fr: "Contact rapide" },
+  dictation:{ es: "Dictado", en: "Dictation", fr: "Dictée" },
   assistant:{ es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" },
   appointment:{ es: "Cita previa", en: "Book appointment", fr: "Prendre rendez-vous" },
   eyebrow:  { es: "Elige cómo contactarnos", en: "Choose how to reach us", fr: "Choisissez comment nous contacter" },
@@ -56,6 +58,7 @@ const FT = ({ k, defaults, as = "span", className, multiline = false }) => {
 
 export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChange, showOptionsInfo = false, optionsInfoInitiallyOpen = false }) {
   const { lang } = useLanguage();
+  const tabsId = useId();
   const [internalTab, setInternalTab] = useState(defaultTab);
   const tab = activeTab ?? internalTab;
   const setTab = (nextTab) => {
@@ -67,6 +70,7 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
   const tabs = [
     { id: "detailed", Icon: Compass,        label: TABS_COPY.detailed },
     { id: "quick",    Icon: MessageCircle,  label: TABS_COPY.quick },
+    { id: "dictation",Icon: Mic,            label: TABS_COPY.dictation },
     { id: "assistant",Icon: Headset,        label: TABS_COPY.assistant },
     { id: "appointment", Icon: Calendar,    label: TABS_COPY.appointment },
   ];
@@ -78,7 +82,7 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
         <div className="max-w-6xl mx-auto px-6 md:px-12 text-center">
           <FT k="eyebrow" defaults={TABS_COPY.eyebrow} as="span"
               className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-6" />
-          <div role="tablist" className="flex items-stretch justify-center gap-0 flex-wrap lg:flex-nowrap">
+          <div role="tablist" aria-label={pick(TABS_COPY.eyebrow, lang)} className="grid grid-cols-2 lg:grid-cols-5">
             {tabs.map((t) => {
               const active = tab === t.id;
               return (
@@ -86,10 +90,20 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
                   key={t.id}
                   type="button"
                   role="tab"
+                  id={`${tabsId}-${t.id}`}
+                  aria-controls={`${tabsId}-panel-${t.id}`}
                   aria-selected={active}
+                  tabIndex={active ? 0 : -1}
                   data-testid={`form-tab-${t.id}`}
                   onClick={() => setTab(t.id)}
-                  className={`inline-flex items-center justify-center gap-2.5 whitespace-nowrap px-5 sm:px-7 lg:px-6 py-4 text-[10px] sm:text-[11px] tracking-[0.22em] sm:tracking-[0.26em] uppercase border-2 transition-colors ${
+                  onKeyDown={event => {
+                    const index = tabs.findIndex(item => item.id === t.id);
+                    const next = event.key === "ArrowRight" ? (index + 1) % tabs.length : event.key === "ArrowLeft" ? (index + tabs.length - 1) % tabs.length : event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : null;
+                    if (next === null) return;
+                    event.preventDefault(); setTab(tabs[next].id);
+                    document.getElementById(`${tabsId}-${tabs[next].id}`)?.focus();
+                  }}
+                  className={`inline-flex min-w-0 items-center justify-center gap-2 px-2 sm:px-4 py-4 text-[10px] sm:text-[11px] leading-relaxed tracking-[0.12em] uppercase border-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542] ${
                     active
                       ? "bg-[#2C2621] text-[#FDFBF7] border-[#2C2621]"
                       : "bg-transparent text-[#5C5248] border-[#2C2621]/20 hover:border-[#2C2621]/50 hover:text-[#2C2621]"
@@ -118,17 +132,22 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
 
       {/* Active panel */}
       {tab === "detailed" && (
-        <div className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-detailed" role="tabpanel">
+        <div id={`${tabsId}-panel-detailed`} aria-labelledby={`${tabsId}-detailed`} className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-detailed" role="tabpanel">
           <PlannerForm />
         </div>
       )}
       {tab === "quick" && (
-        <div className="bg-[#FBF5EA] pt-12 md:pt-16" data-testid="form-tab-panel-quick" role="tabpanel">
+        <div id={`${tabsId}-panel-quick`} aria-labelledby={`${tabsId}-quick`} className="bg-[#FBF5EA] pt-12 md:pt-16" data-testid="form-tab-panel-quick" role="tabpanel">
           <ContactForm />
         </div>
       )}
+      {tab === "dictation" && (
+        <div id={`${tabsId}-panel-dictation`} aria-labelledby={`${tabsId}-dictation`} className="bg-[#FBF5EA] pt-10 pb-20 md:pt-12 md:pb-28" data-testid="form-tab-panel-dictation" role="tabpanel">
+          <DictationForm />
+        </div>
+      )}
       {tab === "assistant" && (
-        <div className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-assistant" role="tabpanel">
+        <div id={`${tabsId}-panel-assistant`} aria-labelledby={`${tabsId}-assistant`} className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-assistant" role="tabpanel">
           <div className="max-w-2xl mx-auto px-6 md:px-12 text-center">
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#2C2621] text-[#FDFBF7] mb-7">
               <Headset className="w-7 h-7" strokeWidth={1.6} />
@@ -150,7 +169,7 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
         </div>
       )}
       {tab === "appointment" && (
-        <div className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-appointment" role="tabpanel">
+        <div id={`${tabsId}-panel-appointment`} aria-labelledby={`${tabsId}-appointment`} className="bg-[#FBF5EA] pt-12 pb-20 md:pb-28" data-testid="form-tab-panel-appointment" role="tabpanel">
           <BookingSession testid="form-tab-booking-session" />
         </div>
       )}

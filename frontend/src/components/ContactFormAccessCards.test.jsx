@@ -10,7 +10,7 @@ jest.mock("react-router-dom", () => ({
   Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a>,
 }));
 jest.mock("@/components/EditableSection", () => ({
-  E: ({ as: Tag = "span", defaults, className }) => <Tag className={className}>{defaults[mockLang] || defaults.es}</Tag>,
+  E: ({ as: Tag = "span", defaults, className, id }) => <Tag id={id} className={className}>{defaults[mockLang] || defaults.es}</Tag>,
 }));
 jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults, className }) => <Tag className={className}>{defaults[mockLang] || defaults.es}</Tag>);
 jest.mock("@/components/slotScope", () => ({ SlotScope: ({ children }) => children, useSlotId: (id) => id }));
@@ -23,6 +23,7 @@ jest.mock("@/components/BookingSession", () => () => <div>Booking session</div>)
 jest.mock("@/components/ContactOptionsInfoModal", () => () => null);
 jest.mock("@/components/ContactForm", () => () => <form data-testid="quick-form" />);
 jest.mock("@/components/PlannerForm", () => () => <form data-testid="detailed-form" />);
+jest.mock("@/components/DictationForm", () => () => <form data-testid="dictated-form" />);
 
 import ContactPage from "@/pages/ContactPage";
 import FormTabs from "./FormTabs";
@@ -52,6 +53,23 @@ afterEach(async () => {
   Element.prototype.scrollIntoView = originalScrollIntoView;
   window.history.replaceState({}, "", "/");
   delete global.IS_REACT_ACT_ENVIRONMENT;
+});
+
+test.each([
+  ["es", "Elige cómo quieres contactar con nosotros", "escoge libremente", "Todas las solicitudes llegan al mismo equipo de especialistas en viajes a Marruecos de Xaluca Tours."],
+  ["en", "Choose how you would like to contact us", "choose whichever option", "All enquiries reach the same team of Morocco travel specialists at Xaluca Tours."],
+  ["fr", "Choisissez comment vous souhaitez nous contacter", "choisissez librement", "Toutes les demandes arrivent à la même équipe de spécialistes des voyages au Maroc de Xaluca Tours."],
+])("the %s introduction explains free choice and the shared team before any contact options", async (lang, title, choice, team) => {
+  mockLang = lang;
+  await render(<ContactPage />);
+  const introduction = get("contact-introduction");
+  expect(introduction.querySelector("h2").textContent).toBe(title);
+  expect(introduction.getAttribute("aria-labelledby")).toBe(introduction.querySelector("h2").id);
+  expect(introduction.textContent).toContain(choice);
+  expect(introduction.textContent).toContain(team);
+  for (const id of ["contact-details-card", "contact-form-access", "contact-phone-link", "form-tabs"]) {
+    expect(introduction.compareDocumentPosition(get(id)) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  }
 });
 
 test("the two choices appear immediately below the unchanged contact details", async () => {
@@ -107,4 +125,18 @@ test("FormTabs retains its standalone default and tab switching on other pages",
   await click("form-tab-detailed");
   expect(get("detailed-form")).not.toBeNull();
   expect(get("quick-form")).toBeNull();
+});
+
+test("both pages share the five ordered tabs and an accessible dictation panel", async () => {
+  for (const element of [<ContactPage />, <FormTabs defaultTab="detailed" />]) {
+    await render(element);
+    const tabs = [...get("form-tabs").querySelectorAll('[role="tablist"] [role="tab"]')];
+    expect(tabs.map(tab => tab.textContent)).toEqual(["Planificación detallada", "Contacto rápido", "Dictado", "Asistente Virtual", "Cita previa"]);
+    await click("form-tab-dictation");
+    expect(get("dictated-form")).not.toBeNull();
+    const active = get("form-tab-dictation");
+    const panel = get("form-tab-panel-dictation");
+    expect(active.getAttribute("aria-controls")).toBe(panel.id);
+    expect(panel.getAttribute("aria-labelledby")).toBe(active.id);
+  }
 });

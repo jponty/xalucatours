@@ -86,6 +86,18 @@ const COPY = {
     tabOffice: { es: "Visita en oficina", en: "Visit at our office", fr: "Visite au bureau" },
   },
   contact: {
+    introEyebrow: { es: "Distintas formas de contactar. Un mismo equipo.",
+                    en: "Different ways to get in touch. The same team.",
+                    fr: "Plusieurs façons de nous contacter. Une même équipe." },
+    introTitle: { es: "Elige cómo quieres contactar con nosotros",
+                  en: "Choose how you would like to contact us",
+                  fr: "Choisissez comment vous souhaitez nous contacter" },
+    introBody: { es: "Una consulta rápida, una planificación detallada, un mensaje dictado, una llamada o una cita: escoge libremente la opción que te resulte más cómoda para contarnos cómo imaginas tu viaje.",
+                 en: "A quick enquiry, detailed planning, a dictated message, a phone call or an appointment: choose whichever option feels most comfortable to tell us about the trip you have in mind.",
+                 fr: "Une question rapide, une planification détaillée, un message dicté, un appel ou un rendez-vous : choisissez librement la formule qui vous convient pour nous raconter le voyage que vous imaginez." },
+    introTeam: { es: "Todas las solicitudes llegan al mismo equipo de especialistas en viajes a Marruecos de Xaluca Tours. Sea cual sea el canal que elijas, nuestro equipo te acompañará para dar forma a tu viaje.",
+                 en: "All enquiries reach the same team of Morocco travel specialists at Xaluca Tours. Whichever channel you choose, our team will help you shape your trip.",
+                 fr: "Toutes les demandes arrivent à la même équipe de spécialistes des voyages au Maroc de Xaluca Tours. Quel que soit le canal choisi, notre équipe vous accompagnera pour donner forme à votre voyage." },
     eyebrow: { es: "Contacto directo",  en: "Direct contact",  fr: "Contact direct" },
     title:   { es: "Ponte en contacto con nosotros",
                en: "Get in touch with us",
@@ -286,6 +298,28 @@ const ContactPage = () => {
         <section id="contact-direct" data-testid="contact-direct" className="py-20 md:py-28 border-b border-[#2C2621]/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <TripContextBanner className="mb-12 max-w-3xl" />
+            <section
+              data-testid="contact-introduction"
+              aria-labelledby="contact-introduction-title"
+              className="mb-14 md:mb-16 border border-[#C16542]/20 bg-[#F5EFE6] p-6 sm:p-8 lg:p-10"
+            >
+              <E name="contact.introEyebrow" defaults={COPY.contact.introEyebrow} multiline={false} as="p"
+                 className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-[#C16542] leading-relaxed mb-6" />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
+                <div className="min-w-0">
+                  <Users className="w-7 h-7 text-[#C16542] mb-4" strokeWidth={1.5} aria-hidden="true" />
+                  <E name="contact.introTitle" defaults={COPY.contact.introTitle} multiline={false} as="h2"
+                     id="contact-introduction-title"
+                     className="font-serif text-3xl md:text-4xl text-[#2C2621] leading-tight tracking-tight" />
+                </div>
+                <div className="min-w-0 space-y-5 text-[14px] md:text-base leading-relaxed">
+                  <E name="contact.introBody" defaults={COPY.contact.introBody} as="p"
+                     className="text-[#5C5248]" />
+                  <E name="contact.introTeam" defaults={COPY.contact.introTeam} as="p"
+                     className="text-[#2C2621] font-medium" />
+                </div>
+              </div>
+            </section>
             <div className="max-w-2xl mb-12">
               <E name="contact.eyebrow" defaults={COPY.contact.eyebrow} multiline={false} as="span"
                  className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />

@@ -193,6 +193,7 @@ export const ContactPreference = ({
   onDetailChange,
   detailErrors = {},
   testidPrefix = "contact-pref",
+  countryPortalContainer,
 }) => {
   const c = TONES[tone] || TONES.light;
   const selected = Array.isArray(value) ? value : (value ? [value] : []);
@@ -257,6 +258,7 @@ export const ContactPreference = ({
                 {pick(CONTACT_PREF_DETAIL.phone, lang)} <span style={{ color: c.eyebrowAccent }}>*</span>
               </span>
               <InternationalPhoneInput
+                countryPortalContainer={countryPortalContainer}
                 name="preferred_contact_phone"
                 value={details.phone || ""}
                 onValueChange={(phone) => onDetailChange("phone", phone)}

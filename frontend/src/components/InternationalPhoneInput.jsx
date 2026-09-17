@@ -170,6 +170,7 @@ export const isValidInternationalPhone = (value) => {
 };
 
 export default function InternationalPhoneInput({
+  id,
   value,
   onValueChange,
   lang = "es",
@@ -360,6 +361,7 @@ export default function InternationalPhoneInput({
       <label className={`min-w-0 flex-1 border transition-colors ${borderClass}`}>
         <span className="sr-only">{copy.number}</span>
         <input
+          id={id}
           type="tel"
           inputMode="tel"
           name={name}

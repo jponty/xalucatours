@@ -129,6 +129,7 @@ class ContactRequest(LeadCapture):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     full_name: str
+    privacy_consent: bool = False
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
@@ -160,6 +161,7 @@ class ContactRequest(LeadCapture):
 
 class ContactRequestCreate(LeadCapture):
     full_name: str = Field(..., min_length=2, max_length=120)
+    privacy_consent: bool = False
     first_name: Optional[str] = Field(default=None, max_length=120)
     last_name: Optional[str] = Field(default=None, max_length=150)
     email: Optional[EmailStr] = None
@@ -196,6 +198,14 @@ class ContactRequestCreate(LeadCapture):
     def _require_email_or_phone(self):
         if not self.email and not (self.phone or "").strip():
             raise ValueError("Email or phone is required")
+        return self
+
+    @model_validator(mode="after")
+    def _validate_dictation_request(self):
+        if self.capture_type == "dictation":
+            if (len(self.full_name.strip()) < 2 or len(self.message.strip()) < 4
+                    or not self.email or not self.preferred_contact or not self.privacy_consent):
+                raise ValueError("Name, message, email, preferred contact and privacy consent are required")
         return self
 
     @model_validator(mode="after")
@@ -1644,6 +1654,8 @@ async def create_contact_request(payload: ContactRequestCreate):
         if direct_label else f"Nuevo contacto · {obj.full_name}"
     )
     summary_rows = [
+        *([("Tipo de solicitud", "Dictado")] if obj.capture_type == "dictation" else []),
+        *([("Viaje consultado", obj.related_trip_title)] if obj.related_trip_title else []),
         ("Nombre", obj.full_name),
         ("Email", obj.email),
         ("Teléfono", obj.phone),

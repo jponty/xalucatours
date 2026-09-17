@@ -2,6 +2,8 @@ import React, { act, useState } from "react";
 import { createRoot } from "react-dom/client";
 import VoiceTextField, { VoiceDictationProvider } from "./VoiceTextField";
 import { createVoiceRecorder, dictationAvailable, supportsDictation, transcribeVoice } from "@/lib/voiceDictation";
+import { createLiveVoiceRecorder } from "@/lib/liveVoiceDictation";
+jest.mock("@/lib/liveVoiceDictation", () => ({ createLiveVoiceRecorder: jest.fn() }));
 
 jest.mock("@/lib/voiceDictation", () => ({
   ...jest.requireActual("@/lib/voiceDictation"),
@@ -9,13 +11,13 @@ jest.mock("@/lib/voiceDictation", () => ({
 }));
 
 let container, root, recording, submitted;
-function Harness({ maxLength, lang = "es", initial = "Ya escrito", second = false }) {
+function Harness({ maxLength, lang = "es", initial = "Ya escrito", second = false, live = false }) {
   const [value, setValue] = useState(initial);
   const [busy, setBusy] = useState(false);
   return <VoiceDictationProvider onBusyChange={setBusy}><form onSubmit={event => { event.preventDefault(); submitted(value); }}>
     <label htmlFor="notes">Notas</label>
     <VoiceTextField as="textarea" id="notes" aria-label="Notas" data-testid="notes" maxLength={maxLength}
-      value={value} onValueChange={setValue} lang={lang} />
+      value={value} onValueChange={setValue} lang={lang} live={live} />
     {second && <VoiceTextField id="name" value="" onValueChange={() => {}} lang={lang} />}
     <button type="submit" disabled={busy}>Enviar</button>
   </form></VoiceDictationProvider>;
@@ -154,4 +156,44 @@ test.each([["es", "Dictar"], ["en", "Dictate"], ["fr", "Dicter"]])("localized ac
   expect(container.querySelector("label button")).toBeNull();
   expect(container.querySelector("#notes").getAttribute("aria-describedby")).toBeTruthy();
   expect(container.innerHTML).not.toMatch(/assemblyai/i);
+});
+
+test("live dictation updates the same field, revises partials without duplication and enables editing at the end", async () => {
+  const live = { cancel: jest.fn(), stop: jest.fn().mockResolvedValue("Viaje por el Atlas.") };
+  createLiveVoiceRecorder.mockResolvedValue(live);
+  await render({ live: true }); await click("Dictar");
+  const { onTranscript } = createLiveVoiceRecorder.mock.calls[0][0];
+  await act(async () => onTranscript("Viaje por"));
+  expect(container.querySelector("#notes").value).toBe("Ya escrito\nViaje por");
+  await act(async () => onTranscript("Viaje por el Atlas."));
+  expect(container.querySelector("#notes").value).toBe("Ya escrito\nViaje por el Atlas.");
+  expect(container.querySelector("#notes").readOnly).toBe(true);
+  expect(button("Enviar").disabled).toBe(true);
+  await click("Terminar dictado");
+  expect(container.querySelector("#notes").value).toBe("Ya escrito\nViaje por el Atlas.");
+  expect(container.querySelector("#notes").readOnly).toBe(false);
+  expect(transcribeVoice).not.toHaveBeenCalled();
+  await change("#notes", "Texto revisado"); await click("Enviar");
+  expect(submitted).toHaveBeenCalledWith("Texto revisado");
+});
+
+test("live cancel restores pre-recording text and ignores late turns", async () => {
+  createLiveVoiceRecorder.mockResolvedValue({ cancel: jest.fn(), stop: jest.fn() });
+  await render({ live: true }); await click("Dictar");
+  const { onTranscript } = createLiveVoiceRecorder.mock.calls[0][0];
+  await act(async () => onTranscript("Parcial")); await click("Cancelar");
+  await act(async () => onTranscript("Tardío"));
+  expect(container.querySelector("#notes").value).toBe("Ya escrito");
+  expect(button("Enviar").disabled).toBe(false);
+});
+
+test("live interruption retains visible text for manual editing", async () => {
+  createLiveVoiceRecorder.mockResolvedValue({ cancel: jest.fn(), stop: jest.fn() });
+  await render({ live: true }); await click("Dictar");
+  const { onTranscript, onInterrupted } = createLiveVoiceRecorder.mock.calls[0][0];
+  await act(async () => onTranscript("Texto recibido"));
+  await act(async () => onInterrupted("unavailable"));
+  expect(container.querySelector("#notes").value).toBe("Ya escrito\nTexto recibido");
+  expect(container.querySelector("#notes").readOnly).toBe(false);
+  expect(button("Enviar").disabled).toBe(false);
 });

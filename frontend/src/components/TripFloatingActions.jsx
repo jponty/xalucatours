@@ -15,8 +15,8 @@ export function TripFloatingProvider({ children }) {
   return <DockContext.Provider value={value}>{children}</DockContext.Provider>;
 }
 
-// Existing audio / CMS controls join the same normal-flow stack on trip pages.
-// They keep their current positioning on pages without a trip dock.
+// Existing audio / CMS controls join the same normal-flow stack wherever a
+// dock is mounted. They keep their current positioning on other pages.
 export function TripFloatingSlot({ name, children }) {
   const context = useContext(DockContext);
   const host = context?.hosts?.[name];
@@ -29,43 +29,16 @@ const COPY = {
   fr: { title: "Ce voyage vous intéresse ?", cta: "Contactez-nous" },
 };
 
-export default function TripFloatingActions({ routeId, lang = "es", hasChronology, heroSelector = '[data-testid="program-hero"]' }) {
+// Shared by trip pages and the Home dictation widget. A single measured stack
+// keeps audio/editor controls and conversion actions clear of one another.
+export function FloatingActionsDock({ children, testId = "trip-floating-dock", className = "" }) {
   const context = useContext(DockContext);
   const setHosts = context?.setHosts;
-  const [pastHero, setPastHero] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const dockRef = useRef(null);
   const audioRef = useRef(null);
   const editorRef = useRef(null);
   const auxiliaryRef = useRef(null);
-  const t = COPY[lang] || COPY.es;
-
-  useEffect(() => {
-    setPastHero(false);
-    const hero = document.querySelector(heroSelector);
-    let didScroll = false;
-    let frame;
-    const update = () => {
-      // The end of the actual hero is the threshold; it is not a fixed pixel
-      // offset and remains correct when content, orientation or fonts change.
-      setPastHero(didScroll && !!hero && hero.getBoundingClientRect().bottom <= 0);
-    };
-    const schedule = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
-    };
-    const onScroll = () => { didScroll = true; schedule(); };
-    const resize = new ResizeObserver(schedule);
-    if (hero) resize.observe(hero);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      resize.disconnect();
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [routeId, heroSelector]);
 
   useEffect(() => {
     const update = () => {
@@ -109,7 +82,7 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
   }, [setHosts]);
 
   return createPortal(
-    <div ref={dockRef} className="trip-floating-dock" data-testid="trip-floating-dock"
+    <div ref={dockRef} className={`trip-floating-dock ${className}`} data-testid={testId}
       data-blocked={blocked} aria-hidden={blocked || undefined} inert={blocked ? true : undefined}>
       <div className="trip-floating-stack">
         <div className="trip-floating-extras">
@@ -117,6 +90,44 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
           <div ref={audioRef} className="trip-floating-slot" />
           <div ref={auxiliaryRef} className="trip-floating-slot" />
         </div>
+        {children}
+      </div>
+    </div>, document.body
+  );
+}
+
+export default function TripFloatingActions({ routeId, lang = "es", hasChronology, heroSelector = '[data-testid="program-hero"]' }) {
+  const [pastHero, setPastHero] = useState(false);
+  const t = COPY[lang] || COPY.es;
+
+  useEffect(() => {
+    setPastHero(false);
+    const hero = document.querySelector(heroSelector);
+    let didScroll = false;
+    let frame;
+    const update = () => {
+      // Measure the hero instead of assuming a fixed height.
+      setPastHero(didScroll && !!hero && hero.getBoundingClientRect().bottom <= 0);
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    const onScroll = () => { didScroll = true; schedule(); };
+    const resize = new ResizeObserver(schedule);
+    if (hero) resize.observe(hero);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      resize.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [routeId, heroSelector]);
+
+  return (
+    <FloatingActionsDock>
         {hasChronology && <ChronologyButton lang={lang} compact />}
         <div className="trip-contact-reveal" data-visible={pastHero} aria-hidden={!pastHero}
           inert={!pastHero ? true : undefined} data-testid="trip-contact-reveal">
@@ -131,7 +142,6 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
             </aside>
           </div>
         </div>
-      </div>
-    </div>, document.body
+    </FloatingActionsDock>
   );
 }
