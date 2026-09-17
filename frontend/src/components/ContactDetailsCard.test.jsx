@@ -82,6 +82,7 @@ describe("shared direct contact card", () => {
     expect(contact.nextElementSibling).toBe(whatsapp);
     expect(whatsapp.textContent).toBe(label);
     expect(whatsapp.getAttribute("href")).toBe(WHATSAPP_URL);
+    expect(whatsapp.getAttribute("href")).toBe("https://wa.me/34626049676");
     expect(whatsapp.getAttribute("target")).toBe("_blank");
     expect(whatsapp.getAttribute("rel")).toBe("noopener noreferrer");
     // The global WhatsApp handler must leave this direct-chat link alone.

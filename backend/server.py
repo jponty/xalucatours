@@ -22,6 +22,7 @@ from datetime import datetime, timezone, timedelta
 
 from storage import init_storage, put_object, get_object
 from supabase_db import SupabaseDatabase, UpdateOne
+from contest_prize_policy import contest_prize_policy_error, normalize_legacy_contest_prize
 
 
 ROOT_DIR = Path(__file__).parent
@@ -5578,7 +5579,7 @@ def _default_contest_prizes() -> list:
         (_lp("Paseo en dromedario para dos personas", "Camel ride for two", "Balade à dos de dromadaire pour deux"), _lp("Dromedario", "Camel ride", "Dromadaire"), 6),
         (_lp("Cena marroquí tradicional para dos", "Traditional Moroccan dinner for two", "Dîner marocain traditionnel pour deux"), _lp("Cena x2", "Dinner x2", "Dîner x2"), 4),
         (_lp("Cóctel o bebida de bienvenida", "Welcome cocktail or drink", "Cocktail ou boisson de bienvenue"), _lp("Cóctel", "Cocktail", "Cocktail"), 18),
-        (_lp("10% de descuento en una futura reserva", "10% off a future booking", "10% de réduction sur une future réservation"), _lp("−10%", "−10%", "−10%"), 14),
+        (_lp("10% de descuento en tratamientos de Spa", "10% off Spa treatments", "10% de réduction sur les soins Spa"), _lp("−10% Spa", "−10% Spa", "−10% Spa"), 14),
         (_lp("15% de descuento en tratamientos de Spa", "15% off Spa treatments", "15% de réduction sur les soins Spa"), _lp("−15% Spa", "−15% Spa", "−15% Spa"), 9),
         (_lp("Cesta de productos tradicionales marroquíes", "Traditional Moroccan products hamper", "Panier de produits traditionnels marocains"), _lp("Cesta", "Hamper", "Panier"), 6),
         (_lp("Pack de souvenirs Xaluca", "Xaluca souvenir pack", "Pack de souvenirs Xaluca"), _lp("Souvenirs", "Souvenirs", "Souvenirs"), 10),
@@ -5663,8 +5664,9 @@ def _contest_is_open(contest: dict) -> tuple:
 
 
 def _enabled_prizes(contest: dict) -> list:
-    """Prizes shown on the wheel (enabled), in stored order."""
-    return [p for p in contest.get("prizes", []) if p.get("enabled")]
+    """Use the same eligible prizes for display and selection, in stored order."""
+    prizes = (normalize_legacy_contest_prize(p) for p in contest.get("prizes", []))
+    return [p for p in prizes if p.get("enabled") and not contest_prize_policy_error(p)]
 
 
 def _public_contest(contest: dict) -> dict:
@@ -6061,7 +6063,7 @@ async def admin_get_contest(contest_id: str, authorization: str = Header(default
     c = await db.contests.find_one({"id": contest_id}, {"_id": 0})
     if not c:
         raise HTTPException(status_code=404, detail="Concurso no encontrado")
-    return c
+    return {**c, "prizes": [normalize_legacy_contest_prize(p) for p in c.get("prizes", [])]}
 
 
 @api_router.put("/admin/contests/{contest_id}")
@@ -6089,6 +6091,10 @@ async def admin_update_contest(contest_id: str, payload: ContestUpdatePayload, a
                 "awarded": int(prev.get("awarded", 0)),
                 "is_grand": bool(p.get("is_grand", prev.get("is_grand", False))),
             })
+        for prize in norm:
+            policy_error = contest_prize_policy_error(prize)
+            if policy_error:
+                raise HTTPException(status_code=422, detail=policy_error)
         update["prizes"] = norm
     await db.contests.update_one({"id": contest_id}, {"$set": update})
     return await db.contests.find_one({"id": contest_id}, {"_id": 0})

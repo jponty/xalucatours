@@ -22,6 +22,7 @@ import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
 import IdealTripWizard from "@/components/IdealTripWizard";
 import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
+import { WHATSAPP_URL } from "@/components/WhatsAppIcon";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 import ExpandableTripCard from "@/components/ExpandableTripCard";
 
@@ -744,7 +745,7 @@ const ContactIntro = ({ t, lang }) => (
                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
               {t.cta_form}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             </Link>
-            <button type="button" onClick={() => requestWhatsAppContact(`https://wa.me/${CONTACT.phoneRaw.replace("+", "")}`)}
+            <button type="button" onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
                data-testid="viajes-contact-cta-wa"
                className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
               <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.6} />WhatsApp

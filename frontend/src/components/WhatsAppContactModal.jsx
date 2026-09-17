@@ -13,6 +13,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
+import { WHATSAPP_URL } from "@/components/WhatsAppIcon";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const PRIVACY_URL = "https://xalucatours.com/";
@@ -21,7 +22,7 @@ const initialEmailForm = { full_name: "", email: "", phone: "", message: "", pri
 const WHATSAPP_MODAL_EVENT = "xaluca:open-whatsapp-contact";
 export const CLOSE_TRANSIENT_CONTACT_EVENT = "xaluca:close-transient-contact";
 
-export const requestWhatsAppContact = (url) => {
+export const requestWhatsAppContact = (url = WHATSAPP_URL) => {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new Event(CLOSE_TRANSIENT_CONTACT_EVENT));
   window.requestAnimationFrame(() => {
@@ -126,11 +127,11 @@ export default function WhatsAppContactModal() {
   const [emailSending, setEmailSending] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [emailError, setEmailError] = useState("");
-  const [whatsappUrl, setWhatsappUrl] = useState("https://wa.me/34629415221");
+  const [whatsappUrl, setWhatsappUrl] = useState(WHATSAPP_URL);
 
   useEffect(() => {
     const showModal = (url) => {
-      if (url) setWhatsappUrl(url);
+      setWhatsappUrl(url || WHATSAPP_URL);
       setOpen(true);
     };
 

@@ -1,7 +1,7 @@
 import React from "react";
 
-/* Official WhatsApp number (digits only for wa.me). Hardcoded for now. */
-export const WHATSAPP_URL = "https://wa.me/34629415221";
+/* Shared WhatsApp Business contact (digits only for wa.me). */
+export const WHATSAPP_URL = "https://wa.me/34626049676";
 
 /* Official WhatsApp glyph (brand icon). */
 export const WhatsAppIcon = ({ className = "" }) => (

@@ -29,6 +29,7 @@ jest.mock("@/components/IdealTripWizard", () => () => null);
 jest.mock("@/components/WhatsAppContactModal", () => ({ requestWhatsAppContact: jest.fn() }));
 
 import ToursLandingPage from "./ToursLandingPage";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import { ALL_TRIPS } from "@/lib/allTripsCatalog";
 import { TRIPS } from "@/lib/tripsData";
@@ -62,6 +63,14 @@ afterEach(() => {
   window.scrollTo = originalScrollTo;
   window.matchMedia = originalMatchMedia;
   delete global.IS_REACT_ACT_ENVIRONMENT;
+});
+
+test.each(["es", "en", "fr"])("WhatsApp uses the Business number instead of the office landline in %s", (lang) => {
+  mockLang = lang;
+  act(() => root.render(<ToursLandingPage />));
+  click("viajes-contact-cta-wa");
+  expect(requestWhatsAppContact).toHaveBeenCalledWith("https://wa.me/34626049676");
+  expect(container.querySelector('a[href="tel:+34937268366"]')).not.toBeNull();
 });
 
 test("all explorer and departure cards have the shared extension and keep their existing destinations", () => {

@@ -320,6 +320,9 @@ const ContestsPanel = () => {
         </button>
       </div>
 
+      <p className="mb-4 text-xs leading-relaxed text-[#D4A373]" data-testid="contest-discount-policy">
+        Los descuentos deben ser exclusivos del spa. Indica «Spa» en el nombre y la etiqueta corta de cada idioma. No se admiten descuentos en reservas, alojamiento, restauración ni otros servicios.
+      </p>
       <div className="space-y-2 mb-8" data-testid="contest-prizes">
         {prizes.map((p, idx) => {
           const isOpen = expanded[idx];

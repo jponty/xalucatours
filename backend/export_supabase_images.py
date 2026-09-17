@@ -12,6 +12,7 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
+from contest_prize_policy import contest_prize_policy_error, normalize_legacy_contest_prize
 from urllib.parse import quote
 
 from dotenv import load_dotenv
@@ -65,7 +66,8 @@ def public_contest(data):
     now = datetime.now(timezone.utc)
     starts_at = parse_datetime(data.get("starts_at"))
     ends_at = parse_datetime(data.get("ends_at"))
-    prizes = [prize for prize in (data.get("prizes") or []) if prize.get("enabled")]
+    current_prizes = [normalize_legacy_contest_prize(prize) for prize in (data.get("prizes") or [])]
+    prizes = [prize for prize in current_prizes if prize.get("enabled") and not contest_prize_policy_error(prize)]
     awarded = sum(int(prize.get("awarded") or 0) for prize in prizes)
     cap = int(data.get("max_prizes_total") or 0)
     is_open = not (

@@ -20,9 +20,9 @@ const COPY = {
     fr: "Tournez la roue et gagnez un lot",
   },
   text: {
-    es: "Masajes, cenas, estancias, descuentos… y hasta ¡un viaje gratuito! Deja tus datos, gira la ruleta y descubre al instante tu regalo de Xaluca Tours. Sin sorteos ni esperas: siempre hay premio.",
-    en: "Massages, dinners, stays, discounts… and even a free trip! Leave your details, spin the wheel and instantly discover your gift from Xaluca Tours. No draws, no waiting: there's always a prize.",
-    fr: "Massages, dîners, séjours, réductions… et même un voyage gratuit ! Laissez vos coordonnées, tournez la roue et découvrez aussitôt votre cadeau Xaluca Tours. Sans tirage ni attente : il y a toujours un lot.",
+    es: "Masajes, cenas, estancias, descuentos exclusivos en tratamientos de spa… y hasta ¡un viaje gratuito! Deja tus datos, gira la ruleta y descubre al instante tu regalo de Xaluca Tours. Sin sorteos ni esperas: siempre hay premio.",
+    en: "Massages, dinners, stays, discounts exclusively on spa treatments… and even a free trip! Leave your details, spin the wheel and instantly discover your gift from Xaluca Tours. No draws, no waiting: there's always a prize.",
+    fr: "Massages, dîners, séjours, réductions exclusivement sur les soins du spa… et même un voyage gratuit ! Laissez vos coordonnées, tournez la roue et découvrez aussitôt votre cadeau Xaluca Tours. Sans tirage ni attente : il y a toujours un lot.",
   },
   cta: { es: "Prueba tu suerte", en: "Try your luck", fr: "Tentez votre chance" },
   note: {
