@@ -551,6 +551,7 @@ const FilterChip = ({ active, accent, onClick, children, ...rest }) => (
 const ProximasSalidas = ({ t, lang }) => {
   const DEPARTURES = [
     { season: { es: "Semana Santa 2026", en: "Easter 2026",   fr: "Pâques 2026" }, dates: "28 Mar — 04 Abr",
+      tripRouteId: "tourFinDeAno2025",
       title:  { es: "Sáhara & Alto Atlas", en: "Sahara & High Atlas", fr: "Sahara & Haut Atlas" },
       summary: { es: "Del paisaje de montaña del Alto Atlas a las dunas del Sáhara: una salida para descubrir los grandes contrastes del sur de Marruecos.", en: "From High Atlas mountain scenery to Saharan dunes: a departure to discover the great contrasts of southern Morocco.", fr: "Des paysages de montagne du Haut Atlas aux dunes du Sahara : un départ pour découvrir les grands contrastes du sud marocain." },
       spots: 4, accent: "#C16542", image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1600&q=85" },
@@ -587,7 +588,7 @@ const ProximasSalidas = ({ t, lang }) => {
         <div className="grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {DEPARTURES.map((d, i) => (
             <ExpandableTripCard key={d.id || `proxima-${i}`} title={pick(d.title, lang)} lang={lang}
-              description={pick(d.summary, lang)} href={pathFor(lang, "contact")} ctaLabel={t.reserve}
+              description={pick(d.summary, lang)} href={pathFor(lang, d.tripRouteId || "contact")} ctaLabel={d.tripRouteId ? t.view_trip : t.reserve}
               testIdPrefix={`proxima-${i}`} testIds={{ card: `proxima-card-${i}` }} className="!bg-[#F2EBE1]">
               <div data-trip-card-image="" className="relative aspect-[5/4] overflow-hidden bg-[#1A1513]">
                 <EditableImage
@@ -642,6 +643,13 @@ const ProximasSalidas = ({ t, lang }) => {
                     <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
                   </Link>
                 </div>
+                {d.tripRouteId && (
+                  <Link to={pathFor(lang, d.tripRouteId)} data-testid={`proxima-trip-cta-${i}`}
+                        className="mt-4 inline-flex min-h-11 max-w-full items-center justify-center gap-2 border border-[#C16542]/40 px-4 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-white transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2">
+                    {t.view_trip}
+                    <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
+                  </Link>
+                )}
               </div>
             </ExpandableTripCard>
           ))}
@@ -823,7 +831,7 @@ const COPY = {
     proximas: {
       overline: "Próximas salidas", title: "Próximas salidas a Marruecos.",
       body: "Circuitos organizados con fechas cerradas y salidas en grupo durante Semana Santa, verano, fin de año y otras ocasiones especiales.",
-      last_spots: "Últimas plazas", spots: "plazas", reserve: "Reservar",
+      last_spots: "Últimas plazas", spots: "plazas", reserve: "Reservar", view_trip: "Ver viaje",
     },
     asesoramiento: {
       overline: "Asesoramiento personalizado",
@@ -893,7 +901,7 @@ const COPY = {
     proximas: {
       overline: "Upcoming departures", title: "Upcoming Morocco departures.",
       body: "Curated group departures with fixed dates throughout Easter, summer, New Year and other special occasions.",
-      last_spots: "Last spots", spots: "spots", reserve: "Book",
+      last_spots: "Last spots", spots: "spots", reserve: "Book", view_trip: "View trip",
     },
     asesoramiento: {
       overline: "Personal consultation",
@@ -963,7 +971,7 @@ const COPY = {
     proximas: {
       overline: "Prochains départs", title: "Prochains départs au Maroc.",
       body: "Départs en groupe à dates fixes pendant Pâques, l'été, le Nouvel An et d'autres occasions spéciales.",
-      last_spots: "Dernières places", spots: "places", reserve: "Réserver",
+      last_spots: "Dernières places", spots: "places", reserve: "Réserver", view_trip: "Voir le voyage",
     },
     asesoramiento: {
       overline: "Conseil personnalisé",

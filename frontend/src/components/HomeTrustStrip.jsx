@@ -256,7 +256,7 @@ export default function HomeTrustStrip() {
             ))}
           </div>
         </div>
-        <ContactDetailsCard testIdPrefix="home-contact" className="mt-6" />
+        <ContactDetailsCard testIdPrefix="home-contact" className="mt-6" showContactCta />
       </div>
     </section>
   );

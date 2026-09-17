@@ -1,9 +1,12 @@
 import React from "react";
-import { Mail, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Mail, Phone } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
+import { pathFor } from "@/lib/routes";
+import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
 
-export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = "contact" }) {
+export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = "contact", showContactCta = false }) {
   const { lang } = useLanguage();
 
   return (
@@ -50,6 +53,34 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
             </span>
           </a>
         </div>
+
+        {showContactCta && (
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link
+              to={pathFor(lang, "contact")}
+              data-testid={`${testIdPrefix}-card-cta`}
+              className="inline-flex min-h-12 w-full min-w-0 max-w-full items-center justify-center gap-3 bg-[#C16542] px-6 py-3.5 text-center text-[11px] leading-relaxed font-semibold uppercase tracking-[0.2em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 sm:w-auto"
+            >
+              <span className="min-w-0 break-words">
+                {pick({ es: "Contacta con nosotros", en: "Contact us", fr: "Contactez-nous" }, lang)}
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} aria-hidden="true" />
+            </Link>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-whatsapp-direct="true"
+              data-testid={`${testIdPrefix}-card-whatsapp`}
+              className="inline-flex min-h-12 w-full min-w-0 max-w-full items-center justify-center gap-3 border border-[#15803D] bg-[#15803D] px-6 py-3.5 text-center text-[11px] leading-relaxed font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:border-[#166534] hover:bg-[#166534] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#15803D] focus-visible:ring-offset-2 sm:w-auto"
+            >
+              <WhatsAppIcon className="h-5 w-5 shrink-0" />
+              <span className="min-w-0 break-words">
+                {pick({ es: "Habla con nosotros por WhatsApp", en: "Chat with us on WhatsApp", fr: "Échangez avec nous sur WhatsApp" }, lang)}
+              </span>
+            </a>
+          </div>
+        )}
       </div>
     </aside>
   );

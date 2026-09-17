@@ -6,6 +6,7 @@
 const DEPARTURE_CATALOG = [
   {
     id: "nye-2026",
+    tripRouteId: "tourFinDeAno2025",
     published: true,
     featured: true,
     badge: { es: "Año Nuevo 2027", en: "New Year 2027", fr: "Nouvel An 2027" },

@@ -76,7 +76,8 @@ test("all explorer and departure cards have the shared extension and keep their 
   expect(cards("proxima-card-")).toHaveLength(4);
   for (let i = 0; i < 4; i++) {
     expect(get(`proxima-${i}-description`).textContent.length).toBeGreaterThan(60);
-    expect(get(`proxima-${i}-details-cta`).getAttribute("href")).toBe(get(`proxima-cta-${i}`).getAttribute("href"));
+    const tripCta = get(`proxima-trip-cta-${i}`) || get(`proxima-cta-${i}`);
+    expect(get(`proxima-${i}-details-cta`).getAttribute("href")).toBe(tripCta.getAttribute("href"));
   }
   click("trip-sahara-soul-more");
   expect(get("trip-card-sahara-soul").dataset.expanded).toBe("true");
@@ -85,6 +86,26 @@ test("all explorer and departure cards have the shared extension and keep their 
   expect(mockNavigate).not.toHaveBeenCalled();
   click("trip-sahara-soul-details-cta");
   expect(mockNavigate).toHaveBeenCalledWith("/contacto");
+});
+
+test.each(["es", "en", "fr"])("Semana Santa has a direct trip CTA and keeps its reservation link in %s", (lang) => {
+  mockLang = lang;
+  act(() => root.render(<ToursLandingPage />));
+  const cta = get("proxima-trip-cta-0");
+  const tripPath = pathFor(lang, "tourFinDeAno2025");
+  expect(cta.textContent).toBe({ es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }[lang]);
+  expect(cta.getAttribute("href")).toBe(tripPath);
+  if (lang === "es") expect(tripPath).toBe("/findeano2026");
+  expect(get("proxima-cta-0").getAttribute("href")).toBe(pathFor(lang, "contact"));
+  expect(get("proxima-0-details-cta").getAttribute("href")).toBe(tripPath);
+  expect(get("proxima-0-details-cta").textContent).toBe(cta.textContent);
+  expect(cta.className).toContain("min-h-11");
+  click("proxima-trip-cta-0");
+  expect(mockNavigate).toHaveBeenCalledWith(tripPath);
+  for (let i = 1; i < 4; i++) {
+    expect(get(`proxima-trip-cta-${i}`)).toBeNull();
+    expect(get(`proxima-cta-${i}`).getAttribute("href")).toBe(pathFor(lang, "contact"));
+  }
 });
 
 test("all catalogue cards, including those beyond the first 12, retain images, prices and direct itinerary links", () => {

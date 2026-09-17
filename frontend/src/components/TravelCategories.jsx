@@ -31,6 +31,7 @@ const OPTIONS_BY_SLUG = {
 };
 
 const OPTIONS_LABEL = { es: "Opciones de viaje", en: "Trip options", fr: "Options de voyage" };
+const VIEW_TRIP_LABEL = { es: "Ver viaje", en: "View trip", fr: "Voir le voyage" };
 
 export const TravelCategories = () => {
   const { t, lang } = useLanguage();
@@ -190,18 +191,30 @@ export const TravelCategories = () => {
                   {c.departures && (
                     <ul className="mt-6 divide-y divide-[#2C2621]/10 border-t border-b border-[#2C2621]/10">
                       {c.departures.map((d, i) => (
-                        <li key={i} className="flex items-center justify-between py-3 text-sm">
-                          <span className="inline-flex items-center gap-2 text-[#2C2621]">
-                            <Calendar className="w-3.5 h-3.5 text-[#C16542]" strokeWidth={1.5} />
-                            {pick(d.label, lang)}
-                          </span>
-                          <span className="text-[#5C5248] font-serif-x-italic">{pick(d.dates, lang)}</span>
-                          {d.spots != null && <span
-                            className="text-[10px] tracking-[0.25em] uppercase"
-                            style={{ color: d.spots <= 2 ? "#C16542" : "#5C5248" }}
-                          >
-                            {d.spots} {d.spots === 1 ? "spot" : "spots"}
-                          </span>}
+                        <li key={d.id || i} className="flex min-w-0 flex-col gap-3 py-3 text-sm">
+                          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                            <span className="inline-flex items-center gap-2 text-[#2C2621]">
+                              <Calendar className="w-3.5 h-3.5 shrink-0 text-[#C16542]" strokeWidth={1.5} />
+                              {pick(d.label, lang)}
+                            </span>
+                            <span className="text-[#5C5248] font-serif-x-italic">{pick(d.dates, lang)}</span>
+                            {d.spots != null && <span
+                              className="text-[10px] tracking-[0.25em] uppercase"
+                              style={{ color: d.spots <= 2 ? "#C16542" : "#5C5248" }}
+                            >
+                              {d.spots} {d.spots === 1 ? "spot" : "spots"}
+                            </span>}
+                          </div>
+                          {d.tripRouteId && (
+                            <Link
+                              to={pathFor(lang, d.tripRouteId)}
+                              data-testid={`category-departure-cta-${d.id}`}
+                              className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-3 border border-[#C16542]/40 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] transition-colors duration-300 hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 sm:w-auto sm:self-start"
+                            >
+                              {pick(VIEW_TRIP_LABEL, lang)}
+                              <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.6} />
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>

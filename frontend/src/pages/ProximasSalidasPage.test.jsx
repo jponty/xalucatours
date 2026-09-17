@@ -21,6 +21,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
 import { UPCOMING_TRIPS } from "@/lib/homeCarousels";
 import { TRAVEL_CATEGORIES } from "@/lib/data";
+import { pathFor } from "@/lib/routes";
 
 describe("published group departures", () => {
   test("only publishes the existing New Year 2027 itinerary across previews", () => {
@@ -30,8 +31,9 @@ describe("published group departures", () => {
     expect(departure.badge.es).toBe("Año Nuevo 2027");
     expect(departure.dates.es).toBe("27 Dic 2026 – 01 Ene 2027");
     expect(departure.price).toBe(1980);
+    expect(pathFor("es", departure.tripRouteId)).toBe("/findeano2026");
     expect(TRAVEL_CATEGORIES.find((category) => category.slug === "group-departures").departures).toEqual([
-      { label: departure.badge, dates: departure.dates, spots: departure.spots },
+      { id: departure.id, tripRouteId: departure.tripRouteId, label: departure.badge, dates: departure.dates, spots: departure.spots },
     ]);
   });
 
@@ -46,6 +48,12 @@ describe("published group departures", () => {
     expect(page.querySelector('[data-testid="upcoming-filters"]')).toBeNull();
     expect(page.querySelector('a[href="#filters"]')).toBeNull();
     expect(card.querySelector('[data-testid="departure-cta-reserve-nye-2026"]').getAttribute("href")).toBe("#form");
+    const tripCta = card.querySelector('[data-testid="departure-cta-trip-nye-2026"]');
+    expect(tripCta.getAttribute("href")).toBe(pathFor(lang, UPCOMING_DEPARTURES[0].tripRouteId));
+    expect(tripCta.textContent).toBe({ es: "Ver viaje", en: "View trip", fr: "Voir le voyage" }[lang]);
+    expect(tripCta.className).toContain("min-h-11");
+    expect(tripCta.parentElement.className).toContain("flex-col");
+    expect(tripCta.parentElement.className).toContain("sm:flex-row");
     expect(page.querySelector("#form form")).not.toBeNull();
   });
 });

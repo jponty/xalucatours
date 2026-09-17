@@ -16,6 +16,7 @@ import HomeTrustStrip from "./HomeTrustStrip";
 import { CONTACT } from "@/lib/data";
 import { HOME_HELP_OPTIONS } from "@/lib/homeHelpOptions";
 import { pathFor } from "@/lib/routes";
+import { WHATSAPP_URL } from "./WhatsAppIcon";
 
 const render = (component) => {
   const container = document.createElement("div");
@@ -48,6 +49,53 @@ describe("shared direct contact card", () => {
     expect(email.getAttribute("href")).toBe(`mailto:${CONTACT.email}`);
     expect(email.textContent).toContain(CONTACT.email);
     expect(page.querySelectorAll("a")).toHaveLength(2);
+    expect(page.querySelector(`[data-testid="${prefix}-card-cta"]`)).toBeNull();
+    expect(page.querySelector(`[data-testid="${prefix}-card-whatsapp"]`)).toBeNull();
+  });
+
+  test.each([
+    ["es", "Contacta con nosotros", "/contacto"],
+    ["en", "Contact us", "/en/contact"],
+    ["fr", "Contactez-nous", "/fr/contact"],
+  ])("the %s home contact card includes the responsive contact CTA", (lang, label, href) => {
+    mockLang = lang;
+    const card = render(<HomeTrustStrip />).querySelector('[data-testid="home-contact-details-card"]');
+    const cta = card.querySelector('[data-testid="home-contact-card-cta"]');
+    expect(cta.textContent).toBe(label);
+    expect(cta.getAttribute("href")).toBe(href);
+    expect(cta.classList.contains("w-full")).toBe(true);
+    expect(cta.classList.contains("sm:w-auto")).toBe(true);
+    expect(card.querySelectorAll("a")).toHaveLength(4);
+    expect(card.querySelector('[data-testid="home-contact-card-phone"]').getAttribute("href")).toBe(`tel:${CONTACT.phoneRaw}`);
+    expect(card.querySelector('[data-testid="home-contact-card-email"]').getAttribute("href")).toBe(`mailto:${CONTACT.email}`);
+  });
+
+  test.each([
+    ["es", "Habla con nosotros por WhatsApp"],
+    ["en", "Chat with us on WhatsApp"],
+    ["fr", "Échangez avec nous sur WhatsApp"],
+  ])("the %s home WhatsApp CTA opens the shared chat directly", (lang, label) => {
+    mockLang = lang;
+    const card = render(<HomeTrustStrip />).querySelector('[data-testid="home-contact-details-card"]');
+    const contact = card.querySelector('[data-testid="home-contact-card-cta"]');
+    const whatsapp = card.querySelector('[data-testid="home-contact-card-whatsapp"]');
+    expect(contact.nextElementSibling).toBe(whatsapp);
+    expect(whatsapp.textContent).toBe(label);
+    expect(whatsapp.getAttribute("href")).toBe(WHATSAPP_URL);
+    expect(whatsapp.getAttribute("target")).toBe("_blank");
+    expect(whatsapp.getAttribute("rel")).toBe("noopener noreferrer");
+    // The global WhatsApp handler must leave this direct-chat link alone.
+    expect(whatsapp.dataset.whatsappDirect).toBe("true");
+    expect(whatsapp.classList.contains("w-full")).toBe(true);
+    expect(whatsapp.classList.contains("max-w-full")).toBe(true);
+    expect(whatsapp.classList.contains("bg-[#15803D]")).toBe(true);
+    expect(whatsapp.classList.contains("hover:bg-[#166534]")).toBe(true);
+    expect(whatsapp.classList.contains("text-white")).toBe(true);
+    expect(whatsapp.querySelector("svg").getAttribute("fill")).toBe("currentColor");
+    expect(whatsapp.querySelector("svg").getAttribute("viewBox")).toBe("0 0 24 24");
+    expect(whatsapp.querySelector("svg").classList.contains("h-5")).toBe(true);
+    expect(contact.classList.contains("bg-[#C16542]")).toBe(true);
+    expect(whatsapp.parentElement.classList.contains("sm:flex-wrap")).toBe(true);
   });
 
   test.each([

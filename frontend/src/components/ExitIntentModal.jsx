@@ -31,7 +31,8 @@ const COPY = {
     "Leave us your details and our team will contact you to design a journey around your dates, preferences and ideal experience.",
     "Laissez-nous vos coordonnées et notre équipe vous contactera pour concevoir un voyage adapté à vos dates, préférences et type d'expérience."
   ),
-  name: T("Nombre", "Name", "Nom"),
+  name: T("Nombre", "First name", "Prénom"),
+  lastName: T("Apellidos", "Last name", "Nom de famille"),
   email: T("Correo electrónico", "Email", "E-mail"),
   phone: T("Teléfono", "Phone", "Téléphone"),
   optional: T("Email o teléfono: completa al menos uno", "Email or phone: complete at least one", "E-mail ou téléphone : renseignez-en au moins un"),
@@ -42,6 +43,8 @@ const COPY = {
   sending: T("Enviando…", "Sending…", "Envoi…"),
   later: T("Ahora no, seguir explorando", "Not now, keep exploring", "Pas maintenant, continuer à explorer"),
   close: T("Cerrar", "Close", "Fermer"),
+  nameError: T("Introduce tu nombre y tus apellidos.", "Enter your first and last name.", "Saisissez votre prénom et votre nom de famille."),
+  nameLengthError: T("El nombre y los apellidos no pueden superar los 120 caracteres en total.", "Your first and last name must not exceed 120 characters in total.", "Votre prénom et votre nom ne doivent pas dépasser 120 caractères au total."),
   contactError: T("Introduce un correo electrónico válido o un teléfono.", "Enter a valid email address or phone number.", "Saisissez une adresse e-mail valide ou un numéro de téléphone."),
   phoneError: T("Añade un teléfono para solicitar una llamada.", "Add a phone number to request a call.", "Ajoutez un numéro pour demander un appel."),
   privacyError: T("Debes aceptar la política de privacidad.", "You must accept the privacy policy.", "Vous devez accepter la politique de confidentialité."),
@@ -54,7 +57,7 @@ const COPY = {
   ),
 };
 
-const initialForm = { fullName: "", email: "", phone: "", preferCall: false, privacy: false };
+const initialForm = { firstName: "", lastName: "", email: "", phone: "", preferCall: false, privacy: false };
 const emailValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const safeGet = (storage, key) => {
   try { return storage.getItem(key); } catch { return null; }
@@ -175,6 +178,12 @@ export default function ExitIntentModal() {
   const onSubmit = async (event) => {
     event.preventDefault();
     if (sending) return;
+    const firstName = form.firstName.trim();
+    const lastName = form.lastName.trim();
+    if (!firstName || !lastName) { setError(pick(COPY.nameError, lang)); return; }
+    // Preserve the contact API's full_name contract and length limit.
+    const fullName = `${firstName} ${lastName}`;
+    if (fullName.length > 120) { setError(pick(COPY.nameLengthError, lang)); return; }
     const email = form.email.trim();
     const phone = form.phone.trim();
     if ((!email && !phone) || (email && !emailValid(email)) || (phone && !isValidInternationalPhone(phone))) {
@@ -190,7 +199,7 @@ export default function ExitIntentModal() {
         ? ["phone"]
         : [email && "email", phone && "phone"].filter(Boolean);
       await axios.post(`${API}/contact-requests`, {
-        full_name: form.fullName.trim(),
+        full_name: fullName,
         email: email || null,
         phone: phone || null,
         journey_interest: "exit-intent",
@@ -259,10 +268,16 @@ export default function ExitIntentModal() {
             </div>
 
             <form onSubmit={onSubmit} data-testid="exit-intent-form" className="px-6 py-10 sm:px-9 md:px-10 md:py-14">
-              <label className="block">
-                <span className="text-[9px] uppercase tracking-[0.24em] text-[#5C5248]">{pick(COPY.name, lang)} *</span>
-                <input name="fullName" value={form.fullName} onChange={onChange} required minLength={2} maxLength={120} data-testid="exit-intent-name" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
-              </label>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <label className="block min-w-0">
+                  <span className="text-[9px] uppercase tracking-[0.24em] text-[#5C5248]">{pick(COPY.name, lang)} *</span>
+                  <input type="text" name="firstName" autoComplete="given-name" value={form.firstName} onChange={onChange} required maxLength={120} data-testid="exit-intent-name" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
+                </label>
+                <label className="block min-w-0">
+                  <span className="text-[9px] uppercase tracking-[0.24em] text-[#5C5248]">{pick(COPY.lastName, lang)} *</span>
+                  <input type="text" name="lastName" autoComplete="family-name" value={form.lastName} onChange={onChange} required maxLength={120} data-testid="exit-intent-last-name" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
+                </label>
+              </div>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
                 <label className="block">
                   <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Mail className="h-3 w-3" />{pick(COPY.email, lang)}</span>

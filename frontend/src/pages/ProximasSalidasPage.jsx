@@ -44,6 +44,7 @@ const COPY = {
       body: "Cada salida tiene plazas limitadas. Reserva con un depósito reducido y el resto 30 días antes de la salida.",
       filter_label: "Filtrar por temporada",
       reserve: "Reservar plaza",
+      view_trip: "Ver viaje",
       detail: "Ver itinerario",
       from: "Desde",
       per_person: "por persona",
@@ -113,6 +114,7 @@ const COPY = {
       body: "Each departure has limited places. Book with a small deposit and pay the rest 30 days before departure.",
       filter_label: "Filter by season",
       reserve: "Reserve a spot",
+      view_trip: "View trip",
       detail: "View itinerary",
       from: "From",
       per_person: "per person",
@@ -179,6 +181,7 @@ const COPY = {
       body: "Chaque départ a des places limitées. Réservez avec un acompte réduit et le solde 30 jours avant le départ.",
       filter_label: "Filtrer par saison",
       reserve: "Réserver une place",
+      view_trip: "Voir le voyage",
       detail: "Voir l'itinéraire",
       from: "Dès",
       per_person: "par personne",
@@ -388,18 +391,28 @@ const DepartureCard = ({ dep, t, lang }) => {
               <span className="font-serif-x text-lg text-[#2C2621]">{formatDepartureEuro(dep.deposit, lang)}</span>
             </div>
           )}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex w-full min-w-0 flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
+            {dep.tripRouteId && (
+              <Link
+                to={pathFor(lang, dep.tripRouteId)}
+                data-testid={`departure-cta-trip-${dep.id}`}
+                className="inline-flex min-h-11 max-w-full items-center justify-center gap-3 border border-[#C16542]/40 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] transition-colors duration-300 hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
+              >
+                {t.view_trip}
+                <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.6} />
+              </Link>
+            )}
             <a
               href="#form"
               data-testid={`departure-cta-reserve-${dep.id}`}
-              className={`inline-flex items-center gap-3 px-6 py-3 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 ${
+              className={`inline-flex min-h-11 max-w-full items-center justify-center gap-3 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase transition-all duration-300 ${
                 dep.status === "sold-out"
                   ? "bg-[#2C2621]/15 text-[#2C2621]/45 pointer-events-none"
                   : "bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7]"
               }`}
             >
               {t.reserve}
-              <ArrowRight className="w-3 h-3" strokeWidth={1.6} />
+              <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.6} />
             </a>
           </div>
         </div>

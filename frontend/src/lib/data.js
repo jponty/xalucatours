@@ -135,6 +135,8 @@ export const TRAVEL_CATEGORIES = [
     category: { en: "Group Departures", fr: "Départs en groupe", es: "Salidas en Grupo" },
     region: { en: "Curated dates · Limited spots", fr: "Dates choisies · Places limitées", es: "Fechas elegidas · Plazas limitadas" },
     departures: UPCOMING_DEPARTURES.map((departure) => ({
+      id: departure.id,
+      tripRouteId: departure.tripRouteId,
       label: departure.badge,
       dates: departure.dates,
       spots: departure.spots,
