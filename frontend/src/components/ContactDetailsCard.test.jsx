@@ -27,6 +27,25 @@ const render = (component) => {
 describe("shared direct contact card", () => {
   beforeEach(() => { mockLang = "es"; });
 
+  test.each(["es", "en", "fr"])("the entire %s trust block is one reviews link, separate from help and contact", (lang) => {
+    mockLang = lang;
+    const page = render(<HomeTrustStrip />);
+    const link = page.querySelector('[data-testid="home-trust-reviews-link"]');
+    expect(link.tagName).toBe("A");
+    expect(link.getAttribute("href")).toBe(pathFor(lang, "opiniones"));
+    expect(link.getAttribute("aria-label")).toBeTruthy();
+    expect(link.querySelector("#home-trust-title")).not.toBeNull();
+    expect(link.children).toHaveLength(5);
+    for (const value of ["+30", "1M+", "4,9"]) expect(link.textContent).toContain(value);
+    expect(link.querySelector("a, button, input")).toBeNull();
+    expect(link.nextElementSibling).toBe(page.querySelector('[data-testid="home-help-options"]'));
+    expect(link.contains(page.querySelector('[data-testid="home-contact-details-card"]'))).toBe(false);
+    expect(link.classList.contains("grid-cols-2")).toBe(true);
+    expect(link.classList.contains("lg:grid-cols-12")).toBe(true);
+    expect(link.classList.contains("focus-visible:outline-2")).toBe(true);
+    expect(link.classList.contains("motion-reduce:transition-none")).toBe(true);
+  });
+
   test("appears immediately after the complete Home help section, without changing its links", () => {
     const page = render(<HomeTrustStrip />);
     const help = page.querySelector('[data-testid="home-help-options"]');

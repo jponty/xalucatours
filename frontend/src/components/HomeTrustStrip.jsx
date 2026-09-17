@@ -58,6 +58,11 @@ const COPY = {
     en: "Our travellers’ choice for discovering Morocco",
     fr: "Le choix de nos voyageurs pour découvrir le Maroc",
   },
+  reviewsLink: {
+    es: "Ver opiniones de nuestros viajeros",
+    en: "Read our travellers’ reviews",
+    fr: "Lire les avis de nos voyageurs",
+  },
 };
 
 const StatCell = ({ value, children, className = "" }) => (
@@ -92,7 +97,12 @@ export default function HomeTrustStrip() {
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-7xl px-6 py-10 md:px-12 md:py-12">
-        <div className="grid grid-cols-2 overflow-hidden border border-[#2C2621]/12 bg-[#FDFBF7]/75 shadow-[0_22px_65px_rgba(44,38,33,0.06)] lg:grid-cols-12">
+        <Link
+          to={pathFor(lang, "opiniones")}
+          data-testid="home-trust-reviews-link"
+          aria-label={text("reviewsLink")}
+          className="grid grid-cols-2 overflow-hidden border border-[#2C2621]/12 bg-[#FDFBF7]/75 text-inherit no-underline shadow-[0_22px_65px_rgba(44,38,33,0.06)] transition-[border-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#A95739] motion-reduce:transition-none lg:grid-cols-12 [@media(hover:hover)_and_(pointer:fine)]:hover:border-[#C16542]/40 [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_22px_65px_rgba(44,38,33,0.1)]"
+        >
           <div className="col-span-2 flex min-h-[178px] flex-col items-center justify-center px-6 py-5 text-center sm:px-8 lg:col-span-3 lg:min-h-[190px] lg:py-6">
             <div className="text-[#A95739]">
               <EditableText
@@ -191,7 +201,7 @@ export default function HomeTrustStrip() {
             </div>
           </StatCell>
 
-        </div>
+        </Link>
 
         <div
           data-testid="home-help-options"
