@@ -181,7 +181,7 @@ export const translations = {
   sec_contact_title:    { en: "Tell us about your dream trip.", fr: "Parlez-nous de votre voyage idéal.", es: "Cuéntanos tu viaje soñado." },
   sec_contact_sub:      { en: "A real specialist will reply within 24 hours — no automated funnels, ever.",
                           fr: "Un spécialiste réel vous répondra sous 24 heures — jamais d'automatisation.",
-                          es: "Un especialista real te responderá en 24 horas — sin automatizaciones." },
+                          es: "Un especialista en Marruecos te responderá personalmente en un plazo de 24 a 48 horas laborables. Nuestro horario de atención es de lunes a viernes, de 10:00 a 20:00 h." },
 
   form_name:       { en: "Full name",           fr: "Nom complet",            es: "Nombre completo" },
   form_email:      { en: "Email",               fr: "E-mail",                 es: "Correo electrónico" },

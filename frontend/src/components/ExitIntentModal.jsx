@@ -75,6 +75,7 @@ export default function ExitIntentModal() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const dialogRef = useRef(null);
+  const [countryPortalContainer, setCountryPortalContainer] = useState(null);
   const pathRef = useRef(location.pathname);
   const formBusyUntilRef = useRef(0);
   const openedRef = useRef(false);
@@ -152,6 +153,7 @@ export default function ExitIntentModal() {
     document.body.style.overflow = "hidden";
     window.requestAnimationFrame(() => dialogRef.current?.querySelector("button")?.focus());
     const onKeyDown = (event) => {
+      if (event.defaultPrevented) return;
       if (event.key === "Escape") { setOpen(false); return; }
       if (event.key !== "Tab" || !dialogRef.current) return;
       const focusable = [...dialogRef.current.querySelectorAll('button, a[href], input, [tabindex]:not([tabindex="-1"])')];
@@ -226,6 +228,7 @@ export default function ExitIntentModal() {
 
   return createPortal(
     <div
+      ref={setCountryPortalContainer}
       className="fixed inset-0 z-[13000] flex items-center justify-center bg-[#1A1513]/78 px-4 py-6 backdrop-blur-sm"
       data-testid="exit-intent-backdrop"
       onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}
@@ -286,6 +289,9 @@ export default function ExitIntentModal() {
                 <div className="block">
                   <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Phone className="h-3 w-3" />{pick(COPY.phone, lang)}</span>
                   <InternationalPhoneInput
+                    // Keep the country portal in this modal's stacking context,
+                    // outside the overflow-y-auto dialog so it cannot be clipped.
+                    countryPortalContainer={countryPortalContainer}
                     name="phone"
                     value={form.phone}
                     onValueChange={(phone) => { setError(""); setForm((current) => ({ ...current, phone })); }}

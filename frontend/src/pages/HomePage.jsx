@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import HeroSlider from "@/components/HeroSlider";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 import HomeTrustStrip from "@/components/HomeTrustStrip";
 import HomeSectionNav from "@/components/HomeSectionNav";
 import DualTimezoneClock from "@/components/DualTimezoneClock";
@@ -124,6 +125,7 @@ export default function HomePage() {
           permanently inside HomeTrustStrip. */}
       <HomeWelcomeModal autoOpen={false} />
       <HeroSlider />
+      <FeaturedDepartureBanner />
       <HomeTrustStrip />
       <HomeSectionNav />
       <MoroccoLightFilm lang={lang} />

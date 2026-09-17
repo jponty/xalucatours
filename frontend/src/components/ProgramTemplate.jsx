@@ -38,6 +38,7 @@ import VideoSection from "@/components/VideoSection";
 import JourneyChronology from "@/components/JourneyChronology";
 import TripFloatingActions from "@/components/TripFloatingActions";
 import JourneyStoryPostcard from "@/components/JourneyStoryPostcard";
+import TripCustomizationSection from "@/components/TripCustomizationSection";
 import { journeyPostcardFor } from "@/lib/journeyPostcards";
 import { programAudioGuideForRoute } from "@/lib/programAudioGuides";
 
@@ -862,7 +863,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
   ];
 
   // Section order applied to ALL programs:
-  // Description → Quick → Audio → Map.
+  // Description → Customization → Postcard → Chronology → Quick → Audio → Map.
   const audioSection = programAudioSrc ? (
     <VideoSection
       testid={`program-audio-${routeId || program.duration_key}`}
@@ -898,6 +899,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
         return (
           <>
             {descSection}
+            <TripCustomizationSection routeId={routeId} lang={lang} />
             {journeyPostcard && (
               <JourneyStoryPostcard
                 content={journeyPostcard}

@@ -12,6 +12,7 @@ import ContactForm from "@/components/ContactForm";
 import VideoSection from "@/components/VideoSection";
 import JourneyChronology from "@/components/JourneyChronology";
 import TripFloatingActions from "@/components/TripFloatingActions";
+import TripCustomizationSection from "@/components/TripCustomizationSection";
 
 /* ============================================================
    FIN DE AÑO 2026 EN EL DESIERTO DE MARRUECOS
@@ -317,6 +318,7 @@ export default function FinDeAno2026Page() {
     <div data-testid="findeano-2026-page" className="bg-[#FDFBF7]">
       <TripFloatingActions routeId="tourFinDeAno2025" lang={lang} hasChronology heroSelector='[data-testid="findeano-hero"]' />
       <Hero lang={lang} />
+      <TripCustomizationSection routeId="tourFinDeAno2025" lang={lang} />
       <JourneyChronology days={FIN_DE_ANO_ITINERARY} lang={lang} variant="newYear" />
       <Overview lang={lang} />
       <VideoSection {...VIDEO} testid="findeano-video" />

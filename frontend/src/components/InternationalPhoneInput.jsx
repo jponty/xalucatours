@@ -181,6 +181,7 @@ export default function InternationalPhoneInput({
   autoComplete = "tel",
   tone = "light",
   className = "",
+  countryPortalContainer,
 }) {
   const initialCountry = useRef(detectCountry(value));
   const [country, setCountry] = useState(initialCountry.current);
@@ -291,6 +292,7 @@ export default function InternationalPhoneInput({
   return (
     <div className={`flex min-w-0 flex-col gap-2 sm:flex-row ${className}`} data-phone-input>
       <Popover
+        modal={Boolean(countryPortalContainer)}
         open={countryOpen}
         onOpenChange={(open) => {
           setCountryOpen(open);
@@ -314,9 +316,14 @@ export default function InternationalPhoneInput({
           </button>
         </PopoverTrigger>
         <PopoverContent
+          portalContainer={countryPortalContainer}
           align="start"
           sideOffset={6}
-          className={`z-[220] w-[min(92vw,24rem)] overflow-hidden rounded-none p-0 shadow-2xl ${dark ? "border-white/15 bg-[#1A1513] text-[#FDFBF7]" : "border-[#2C2621]/15 bg-[#FDFBF7] text-[#2C2621]"}`}
+          collisionPadding={12}
+          onEscapeKeyDown={(event) => event.stopPropagation()}
+          aria-label={copy.country}
+          data-testid={testId ? `${testId}-country-popover` : undefined}
+          className={`z-[220] w-[min(92vw,24rem)] max-h-[var(--radix-popover-content-available-height)] overflow-hidden rounded-none p-0 shadow-2xl ${dark ? "border-white/15 bg-[#1A1513] text-[#FDFBF7]" : "border-[#2C2621]/15 bg-[#FDFBF7] text-[#2C2621]"}`}
         >
           <Command className={dark ? "bg-[#1A1513] text-[#FDFBF7]" : "bg-[#FDFBF7] text-[#2C2621]"} shouldFilter>
             <CommandInput
@@ -327,7 +334,10 @@ export default function InternationalPhoneInput({
               data-testid={testId ? `${testId}-country-search` : undefined}
               className={dark ? "text-[#FDFBF7] placeholder:text-white/40" : "text-[#2C2621]"}
             />
-            <CommandList className="max-h-[min(19rem,48vh)] overscroll-contain">
+            <CommandList
+              className="max-h-[min(19rem,48vh)] overscroll-contain"
+              style={{ maxHeight: "max(0px, min(19rem, 48dvh, calc(var(--radix-popover-content-available-height) - 3rem)))" }}
+            >
               <CommandEmpty className={dark ? "py-6 text-center text-sm text-white/60" : "py-6 text-center text-sm text-[#2C2621]/60"}>{copy.noResults}</CommandEmpty>
               {countryOptions.map((option) => (
                 <CommandItem
