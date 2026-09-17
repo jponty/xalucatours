@@ -1,7 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
 import { Mic, Square, X, Loader2 } from "lucide-react";
 import { appendDictation, createVoiceRecorder, dictationAvailable, supportsDictation, transcribeVoice } from "@/lib/voiceDictation";
-import { createLiveVoiceRecorder } from "@/lib/liveVoiceDictation";
 
 const Scope = createContext(null);
 export function VoiceDictationProvider({ children, onBusyChange }) {
@@ -68,7 +67,7 @@ const COPY = {
 };
 
 /** Shared controlled field; voice is optional and never submits the form. */
-export default function VoiceTextField({ as: Input = "input", value, onValueChange, lang = "es", tone = "light", disabled = false, live = false, ...inputProps }) {
+export default function VoiceTextField({ as: Input = "input", value, onValueChange, lang = "es", tone = "light", disabled = false, ...inputProps }) {
   const id = useId();
   const { activeId, select } = useContext(Scope);
   const [available, setAvailable] = useState(null);
@@ -78,7 +77,6 @@ export default function VoiceTextField({ as: Input = "input", value, onValueChan
   const [seconds, setSeconds] = useState(0);
   const job = useRef(null);
   const recorder = useRef(null);
-  const liveBase = useRef("");
   const latest = useRef({ value, onValueChange, select });
   latest.current = { value, onValueChange, select };
   const copy = COPY[lang] || COPY.es;
@@ -129,23 +127,16 @@ export default function VoiceTextField({ as: Input = "input", value, onValueChan
     controller?.abort();
     recorder.current?.cancel();
     release(controller);
-    if (live) latest.current.onValueChange(liveBase.current);
     setPending("");
     setMessage("cancelled");
   };
   const insert = (text) => {
-    const merged = appendDictation(live ? liveBase.current : latest.current.value, text, multiline);
+    const merged = appendDictation(latest.current.value, text, multiline);
     if (inputProps.maxLength && merged.length > inputProps.maxLength) {
       setPending(text); setMessage("overflow"); return;
     }
     latest.current.onValueChange(merged);
     setPending(""); setMessage("ready");
-  };
-  const preview = (text, controller) => {
-    if (controller.signal.aborted || job.current !== controller) return;
-    const merged = appendDictation(liveBase.current, text, multiline);
-    if (!inputProps.maxLength || merged.length <= inputProps.maxLength) latest.current.onValueChange(merged);
-    else { setPending(text); setMessage("overflow"); stopRef.current(); }
   };
   const stop = async () => {
     const controller = job.current;
@@ -157,9 +148,8 @@ export default function VoiceTextField({ as: Input = "input", value, onValueChan
     try {
       const result = await current.stop();
       if (controller.signal.aborted) return;
-      if (!live) timeout = setTimeout(() => controller.abort("timeout"), 90000);
-      const transcript = live ? result : await transcribeVoice(result, lang, controller.signal);
-      if (live && !transcript.trim()) throw new Error("no_speech");
+      timeout = setTimeout(() => controller.abort("timeout"), 90000);
+      const transcript = await transcribeVoice(result, lang, controller.signal);
       if (!controller.signal.aborted && job.current === controller) insert(transcript);
     } catch (error) {
       if (job.current === controller) setMessage(controller.signal.reason === "timeout" ? "timeout" : error.message in copy ? error.message : "unavailable");
@@ -174,13 +164,11 @@ export default function VoiceTextField({ as: Input = "input", value, onValueChan
     if (!supportsDictation()) { setMessage("unsupported"); return; }
     if (available !== true) { setMessage("unavailable"); return; }
     const controller = new AbortController();
-    liveBase.current = latest.current.value;
     job.current = controller;
     select(id); setPhase("starting"); setSeconds(0); setPending("");
     try {
-      const captured = await (live ? createLiveVoiceRecorder : createVoiceRecorder)({
+      const captured = await createVoiceRecorder({
         signal: controller.signal, onLimit: () => stopRef.current(),
-        lang, onTranscript: text => preview(text, controller),
         onInterrupted: code => { if (job.current === controller) { release(controller); setMessage(code in copy ? code : "microphone"); } },
       });
       if (controller.signal.aborted || job.current !== controller) { captured.cancel(); return; }
@@ -194,13 +182,13 @@ export default function VoiceTextField({ as: Input = "input", value, onValueChan
   };
 
   return <div className="min-w-0" data-testid={`${inputProps["data-testid"] || inputProps.id}-voice`}>
-    <Input {...inputProps} value={value} onChange={event => onValueChange(event.target.value)} disabled={disabled} readOnly={inputProps.readOnly || (live && busy)}
+    <Input {...inputProps} value={value} onChange={event => onValueChange(event.target.value)} disabled={disabled}
       aria-describedby={[inputProps["aria-describedby"], hintId, statusId].filter(Boolean).join(" ")} />
     <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
-      <p id={hintId} className={`min-w-0 flex-[1_1_12rem] text-[11px] leading-relaxed ${textTone}`}>{live ? ({ es: "Hasta 2 min. El audio se envía para transcribirse mientras hablas. Al detener, podrás revisar y editar el texto.", en: "Up to 2 min. Audio is sent for transcription as you speak. Stop to review and edit the text.", fr: "2 min maximum. L’audio est envoyé pour transcription pendant que vous parlez. Arrêtez pour relire et modifier le texte." }[lang] || copy.notice) : copy.notice}</p>
+      <p id={hintId} className={`min-w-0 flex-[1_1_12rem] text-[11px] leading-relaxed ${textTone}`}>{copy.notice}</p>
       <div className="flex max-w-full flex-wrap gap-2">
         {phase === "recording" ? <button type="button" className={buttonCls} onClick={stop} aria-controls={inputProps.id}>
-          <Square className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />{live ? ({ es: "Terminar dictado", en: "Finish dictation", fr: "Terminer la dictée" }[lang] || copy.stop) : copy.stop}
+          <Square className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />{copy.stop}
         </button> : !busy && <button type="button" className={buttonCls} onClick={start} disabled={disabled || otherBusy || available === null}
           aria-label={`${copy.dictate} · ${inputProps["aria-label"] || inputProps.name || inputProps.id}`} aria-controls={inputProps.id}>
           <Mic className="h-4 w-4 shrink-0" aria-hidden="true" />{copy.dictate}
@@ -218,7 +206,7 @@ export default function VoiceTextField({ as: Input = "input", value, onValueChan
         className={`w-full border bg-transparent p-3 text-sm ${textTone}`} />
       <div className="flex flex-wrap gap-2">
         <button type="button" className={buttonCls} onClick={() => insert(pending)}
-          disabled={Boolean(inputProps.maxLength && appendDictation(live ? liveBase.current : value, pending, multiline).length > inputProps.maxLength)}>{copy.insert}</button>
+          disabled={Boolean(inputProps.maxLength && appendDictation(value, pending, multiline).length > inputProps.maxLength)}>{copy.insert}</button>
         <button type="button" className={buttonCls} onClick={() => { setPending(""); setMessage("cancelled"); }}>{copy.cancel}</button>
       </div>
     </div>}

@@ -125,7 +125,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
               <p className="mt-4 text-sm leading-relaxed text-[#5C5248]">{text("natural")}</p>
             </div>
             <label htmlFor={`${id}-message`} className="text-sm font-medium text-[#2C2621]">{text("story")} *</label>
-            <VoiceTextField live as="textarea" id={`${id}-message`} name="message" aria-label={text("story")} required minLength={4} maxLength={4000} rows={9}
+            <VoiceTextField as="textarea" id={`${id}-message`} name="message" aria-label={text("story")} required minLength={4} maxLength={4000} rows={9}
               value={form.message} onValueChange={value => update("message", value)} lang={lang} disabled={sending}
               aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? `${id}-message-error` : undefined}
               className={`${inputClass} resize-y`} data-testid="dictation-message" />

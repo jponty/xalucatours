@@ -10,7 +10,7 @@
    `REACT_APP_`. Guardar y desplegar el backend con este código.
 3. Opcional: `ASSEMBLYAI_DICTATION_HOURLY_LIMIT=120` limita los intentos globales
    por hora y proceso. Se aplican también 12 intentos/hora por IP y un máximo de
-   2 peticiones/sesiones simultáneas. Los límites son en memoria: se reinician al
+   2 peticiones simultáneas. Los límites son en memoria: se reinician al
    reiniciar el proceso. Antes de escalar a varios workers/instancias, usar un
    limitador compartido y ajustar el presupuesto en AssemblyAI.
 4. Para probar localmente, añadir la misma variable a `backend/.env` (ignorado
@@ -29,11 +29,14 @@
   2. Nombre, email, teléfono opcional, canales preferidos con sus datos
      independientes y consentimiento obligatorio. El texto se puede revisar
      volviendo al primer paso, sin perder los datos del segundo.
-- Esta nueva pestaña usa transcripción progresiva: el mismo textarea muestra
-  los resultados parciales y sus revisiones, sin duplicar frases. Se deja en
-  solo lectura mientras graba/finaliza y se habilita para editar al terminar.
-  Cancelar restaura el texto anterior a esa grabación; un fallo de conexión
-  conserva el texto ya recibido para poder editarlo manualmente.
+- El widget de la Home abre este mismo `DictationForm` en un modal. Los dos
+  pasos, campos, privacidad, validaciones y envío permanecen compartidos.
+- **Ninguna modalidad usa transcripción en tiempo real**, ni en desktop ni
+  en tablet o móvil. El audio permanece en memoria local durante la grabación.
+  Sólo al pulsar **Detener y transcribir** (o alcanzar los 120 segundos) se
+  envía la grabación completa y se incorpora el texto devuelto. Mientras tanto,
+  el campo no recibe texto parcial y se puede seguir editando manualmente.
+  Cancelar antes de detener descarta el audio sin enviarlo y conserva el texto.
 - Se envía a `POST /api/contact-requests`, con `capture_type: dictation`.
   Aparece como **Dictado** en Leads, reutiliza idempotencia, estado y los
   emails/resúmenes existentes. Conserva el viaje seleccionado y guarda el
@@ -59,33 +62,14 @@
 
 ## Flujo y privacidad
 
-### Pestaña Dictado: transcripción progresiva
+### Un único flujo: transcripción al detener
 
-El backend genera un token de un solo uso en
-`POST /api/form-dictation/stream-token`, usando
-`https://streaming.eu.assemblyai.com/v3/token`. Solo ese token temporal llega
-al navegador; nunca la API key. Caduca para su canje en 60 segundos y limita
-la conexión a 135 segundos (120 de grabación como máximo y margen para
-finalizar). La cuota compartida reserva cada sesión hasta que hayan expirado
-el canje y la duración máxima, sin confiar en avisos de cierre del cliente.
-
-El navegador conecta a `wss://streaming.eu.assemblyai.com/v3/ws`, modelo
-`universal-3-5-pro`, PCM16 mono y frecuencia real del AudioContext. Envía
-audio únicamente tras `Begin` y solicita `Terminate` al terminar. No graba
-archivos persistentes. Una CSP externa, si se configura, debe permitir ese
-destino WebSocket en `connect-src`.
-
-Esta modalidad requiere acceso a Streaming en la misma cuenta de AssemblyAI
-y crédito disponible. La API key existente sirve; no necesita otra variable.
-Las pruebas automáticas simulan el proveedor: se debe completar una prueba
-con voz y permisos reales tras desplegar frontend y backend. No se ha
-activado el micrófono del usuario ni enviado grabaciones durante el desarrollo.
-
-Referencias: [tokens temporales](https://www.assemblyai.com/docs/streaming/api-spec/generate-streaming-token),
-[protocolo WebSocket](https://www.assemblyai.com/docs/streaming/api-spec/streaming-websocket),
-[procesamiento europeo](https://www.assemblyai.com/docs/streaming/endpoints-and-data-zones).
-
-### Contacto rápido y Planificación detallada: transcripción al detener
+El widget, la pestaña Dictado, Contacto rápido y Planificación detallada
+utilizan `VoiceTextField` y el mismo grabador local. No se abren WebSockets
+de dictado ni se generan tokens de streaming. Se ha retirado el endpoint
+antiguo de tokens; no hay que configurar acceso a Streaming ni otra API key.
+La clave existente sirve para el endpoint de transcripción de audio completo.
+Desplegar frontend y backend juntos para retirar también la ruta antigua.
 
 El navegador captura PCM mono de 16 bits y genera WAV en memoria. Al detener,
 envía un cuerpo binario `audio/wav` a `POST /api/form-dictation?language=es`
@@ -118,6 +102,9 @@ cambiado ninguna preferencia contractual o de retención del proveedor.
   micrófono, grabar/detener, cancelar, salir de la página y cambiar de pestaña
   del formulario.
 - Dictar en ES/EN/FR; comprobar edición, texto previo y una segunda grabación.
+- En el widget y las tres modalidades, comprobar que durante la grabación
+  no hay peticiones de audio ni resultados parciales: sólo se inicia el POST
+  de transcripción al detener. La consulta GET de disponibilidad no envía audio.
 - Grabar hasta 2 min; comprobar que el micrófono se libera al llegar al límite.
 - Revisar el payload final sin enviar leads de prueba a clientes reales.
 - Simular caída del servicio, límite de peticiones y audio sin voz.

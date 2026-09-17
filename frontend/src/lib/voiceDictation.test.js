@@ -100,6 +100,28 @@ describe("microphone lifecycle", () => {
     expect((await promise).size).toBe(50);
     expect(context.close).toHaveBeenCalled();
   });
+  test("capturing audio samples never opens a network connection", async () => {
+    const originalFetch = global.fetch;
+    const originalWebSocket = window.WebSocket;
+    global.fetch = jest.fn();
+    window.WebSocket = jest.fn();
+    const controller = new AbortController();
+    try {
+      const capture = await createVoiceRecorder({ signal: controller.signal, onLimit: jest.fn(), onInterrupted: jest.fn() });
+      node.port.onmessage({ data: { type: "samples", buffer: new Int16Array([1, 2, 3]).buffer } });
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(window.WebSocket).not.toHaveBeenCalled();
+      const complete = capture.stop();
+      node.port.onmessage({ data: { type: "stopped" } });
+      expect((await complete).size).toBe(50);
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(window.WebSocket).not.toHaveBeenCalled();
+    } finally {
+      controller.abort();
+      global.fetch = originalFetch;
+      window.WebSocket = originalWebSocket;
+    }
+  });
 });
 
 test("uploads only audio and language to our backend, never an API key", async () => {

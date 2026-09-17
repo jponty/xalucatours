@@ -64,38 +64,9 @@ def test_configuration_status_and_missing_key(client, monkeypatch):
     assert send(client).status_code == 503
 
 
-def test_stream_token_is_eu_bounded_no_store_and_never_exposes_api_key(client, monkeypatch):
-    get = AsyncMock(return_value=httpx.Response(200, json={"token": "temporary-one-use"}))
-    class Client:
-        def __init__(self, **_kwargs): pass
-        async def __aenter__(self): return SimpleNamespace(get=get)
-        async def __aexit__(self, *_args): pass
-    monkeypatch.setattr(dictation.httpx, "AsyncClient", Client)
-    response = client.post("/api/form-dictation/stream-token")
-    assert response.json() == {"token": "temporary-one-use"}
-    assert response.headers["cache-control"] == "no-store"
-    assert "test-only-key" not in response.text
-    assert get.call_args.args[0] == "https://streaming.eu.assemblyai.com/v3/token"
-    assert get.call_args.kwargs["params"] == {"expires_in_seconds": 60, "max_session_duration_seconds": 135}
-    assert client.post("/api/form-dictation/stream-token").status_code == 200
-    assert client.post("/api/form-dictation/stream-token").status_code == 429
-    assert send(client).status_code == 429  # shared concurrency/cost guard
-
-
-@pytest.mark.parametrize("response,expected", [
-    (httpx.Response(401, json={"error": "secret provider error"}), 503),
-    (httpx.Response(429), 429), (httpx.Response(200, json={}), 502),
-    (httpx.Response(200, text="not json"), 502),
-])
-def test_stream_token_sanitizes_provider_errors(client, monkeypatch, response, expected):
-    class Client:
-        def __init__(self, **_kwargs): pass
-        async def __aenter__(self): return SimpleNamespace(get=AsyncMock(return_value=response))
-        async def __aexit__(self, *_args): pass
-    monkeypatch.setattr(dictation.httpx, "AsyncClient", Client)
-    result = client.post("/api/form-dictation/stream-token")
-    assert result.status_code == expected
-    assert "secret" not in result.text
+def test_realtime_token_endpoint_is_not_available(client, provider):
+    assert client.post("/api/form-dictation/stream-token").status_code == 404
+    provider[1].assert_not_called()
 
 
 @pytest.mark.parametrize("lang", ["es", "en", "fr"])

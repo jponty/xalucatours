@@ -2,6 +2,8 @@ import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import ContactForm from "./ContactForm";
 import PlannerForm from "./PlannerForm";
+import DictationForm from "./DictationForm";
+import { createVoiceRecorder, dictationAvailable, transcribeVoice } from "@/lib/voiceDictation";
 
 jest.mock("react-router-dom", () => ({ Link: ({ children, to, ...rest }) => <a href={to} {...rest}>{children}</a>, useLocation: () => ({ pathname: "/contacto" }) }));
 jest.mock("@/contexts/LanguageContext", () => ({
@@ -16,13 +18,44 @@ jest.mock("@/lib/tripContext", () => ({ resolveTripContext: () => null, getTripP
 jest.mock("@/components/InternationalPhoneInput", () => ({ __esModule: true, default: () => <input type="tel" />, isValidInternationalPhone: () => true }));
 jest.mock("@/components/FormExtras", () => ({ WhatHappensNext: () => null, ContactPreference: () => null, TripDurationSummary: () => null }));
 jest.mock("@/components/LeadSubmissionSuccess", () => () => null);
-jest.mock("@/lib/voiceDictation", () => ({ ...jest.requireActual("@/lib/voiceDictation"), supportsDictation: () => true, dictationAvailable: async () => false }));
+jest.mock("@/lib/voiceDictation", () => ({ ...jest.requireActual("@/lib/voiceDictation"), supportsDictation: () => true,
+  dictationAvailable: jest.fn(), createVoiceRecorder: jest.fn(), transcribeVoice: jest.fn() }));
 
 let container, root;
 beforeEach(() => {
   global.IS_REACT_ACT_ENVIRONMENT = true;
+  dictationAvailable.mockResolvedValue(false);
+  createVoiceRecorder.mockReset();
+  transcribeVoice.mockReset();
   container = document.createElement("div"); document.body.appendChild(container);
   root = createRoot(container);
+});
+
+test.each([
+  ["Contacto rápido", ContactForm, "contact-input-message"],
+  ["Planificación detallada", PlannerForm, "notes"],
+  ["Dictado", DictationForm, "dictation-message"],
+])("%s only transcribes after stopping the recording", async (_name, Form, testId) => {
+  dictationAvailable.mockResolvedValue(true);
+  const audio = new Blob(["complete recording"]);
+  createVoiceRecorder.mockResolvedValue({ stop: jest.fn().mockResolvedValue(audio), cancel: jest.fn() });
+  transcribeVoice.mockResolvedValue("Quiero visitar Marruecos en familia.");
+  await act(async () => root.render(<Form />));
+  const field = container.querySelector(`[data-testid="${testId}-voice"]`);
+  const textarea = field.querySelector("textarea");
+  const initial = textarea.value;
+  await act(async () => field.querySelector('button[aria-label^="Dictar"]').click());
+  expect(createVoiceRecorder).toHaveBeenCalledTimes(1);
+  expect(createVoiceRecorder.mock.calls[0][0]).not.toHaveProperty("onTranscript");
+  expect(transcribeVoice).not.toHaveBeenCalled();
+  expect(textarea.value).toBe(initial);
+  expect(field.textContent).toContain("Al detener, el audio se envía");
+  const stop = [...field.querySelectorAll("button")].find(button => button.textContent === "Detener y transcribir");
+  await act(async () => stop.click());
+  expect(transcribeVoice).toHaveBeenCalledTimes(1);
+  expect(transcribeVoice).toHaveBeenCalledWith(audio, "es", expect.any(AbortSignal));
+  expect(textarea.value).toContain("Quiero visitar Marruecos en familia.");
+  expect(textarea.readOnly).toBe(false);
 });
 afterEach(() => { act(() => root.unmount()); container.remove(); delete global.IS_REACT_ACT_ENVIRONMENT; });
 

@@ -29,7 +29,7 @@ export function supportsDictation() {
 
 const abortError = () => new DOMException("Cancelled", "AbortError");
 
-export async function createVoiceRecorder({ signal, onLimit, onInterrupted, onSamples, retainAudio = true }) {
+export async function createVoiceRecorder({ signal, onLimit, onInterrupted }) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const context = new AudioContext({ sampleRate: 16000 });
   let stream, source, node, timer, resolveStop, stopTimer;
@@ -71,11 +71,8 @@ export async function createVoiceRecorder({ signal, onLimit, onInterrupted, onSa
     node.connect(context.destination); // processor's output is always silence
     node.port.onmessage = ({ data }) => {
       if (cancelled) return;
-      if (data.type === "samples") {
-        const samples = new Int16Array(data.buffer);
-        if (retainAudio) chunks.push(samples);
-        onSamples?.(samples);
-      }
+      // Retain samples locally; upload happens only after stop() returns a WAV.
+      if (data.type === "samples") chunks.push(new Int16Array(data.buffer));
       if (data.type === "stopped" || data.type === "limit") {
         finished = true;
         clean();
@@ -87,7 +84,6 @@ export async function createVoiceRecorder({ signal, onLimit, onInterrupted, onSa
     // Wall-clock guard covers background tabs / suspended audio contexts too.
     timer = setTimeout(onLimit, MAX_DICTATION_SECONDS * 1000);
     return {
-      sampleRate: context.sampleRate,
       cancel,
       stop: () => {
         signal.removeEventListener("abort", cancel);

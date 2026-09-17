@@ -5,8 +5,7 @@ import fs from "fs";
 import path from "path";
 import HomeDictationWidget from "./HomeDictationWidget";
 import { TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
-import { dictationAvailable, supportsDictation } from "@/lib/voiceDictation";
-import { createLiveVoiceRecorder } from "@/lib/liveVoiceDictation";
+import { createVoiceRecorder, dictationAvailable, supportsDictation, transcribeVoice } from "@/lib/voiceDictation";
 
 jest.mock("axios");
 // CRA's Jest 27 does not resolve conditional package subpath exports.
@@ -20,8 +19,7 @@ jest.mock("@/components/InternationalPhoneInput", () => ({ __esModule: true,
   default: ({ value, onValueChange, testId, required, id, countryPortalContainer }) => <input id={id} type="tel" value={value} onChange={event => onValueChange(event.target.value)} data-testid={testId} data-portal={countryPortalContainer?.dataset.testid} required={required} />,
   isValidInternationalPhone: value => /^\+\d{9,15}$/.test(value),
 }));
-jest.mock("@/lib/voiceDictation", () => ({ ...jest.requireActual("@/lib/voiceDictation"), supportsDictation: jest.fn(), dictationAvailable: jest.fn() }));
-jest.mock("@/lib/liveVoiceDictation", () => ({ createLiveVoiceRecorder: jest.fn() }));
+jest.mock("@/lib/voiceDictation", () => ({ ...jest.requireActual("@/lib/voiceDictation"), supportsDictation: jest.fn(), dictationAvailable: jest.fn(), createVoiceRecorder: jest.fn(), transcribeVoice: jest.fn() }));
 
 let container, root;
 const originalResize = global.ResizeObserver;
@@ -43,7 +41,8 @@ beforeEach(async () => {
   mockLang = "es";
   supportsDictation.mockReturnValue(false);
   dictationAvailable.mockResolvedValue(true);
-  createLiveVoiceRecorder.mockReset();
+  createVoiceRecorder.mockReset();
+  transcribeVoice.mockReset();
   window.history.replaceState({}, "", "/");
   window.matchMedia = jest.fn(() => ({ matches: true }));
   Element.prototype.scrollIntoView = jest.fn();
@@ -93,22 +92,43 @@ test("keeps other floating controls in the same stack and yields to blocking UI"
   expect(dock.dataset.blocked).toBe("false");
 });
 
-test("closing during dictation cancels the shared recorder and ignores subsequent transcripts", async () => {
+test("closing during dictation cancels the shared recorder without sending audio", async () => {
   supportsDictation.mockReturnValue(true);
   const recording = { stop: jest.fn(), cancel: jest.fn() };
-  createLiveVoiceRecorder.mockResolvedValue(recording);
+  createVoiceRecorder.mockResolvedValue(recording);
   await click("home-dictation-trigger");
   await act(async () => get("home-dictation-modal").querySelector('button[aria-label^="Dictar"]').click());
-  expect(createLiveVoiceRecorder).toHaveBeenCalledTimes(1);
-  const options = createLiveVoiceRecorder.mock.calls[0][0];
-  await act(async () => options.onTranscript("Quiero descubrir Marruecos"));
-  expect(get("dictation-message").value).toContain("descubrir Marruecos");
+  expect(createVoiceRecorder).toHaveBeenCalledTimes(1);
+  const options = createVoiceRecorder.mock.calls[0][0];
+  expect(options).not.toHaveProperty("onTranscript");
+  expect(get("dictation-message").value).toBe("");
   expect(get("dictation-next").disabled).toBe(true);
   await click("home-dictation-close");
   expect(recording.cancel).toHaveBeenCalledTimes(1);
   expect(options.signal.aborted).toBe(true);
-  await act(async () => options.onTranscript("Texto tardío"));
   expect(get("dictation-form")).toBeNull();
+  expect(transcribeVoice).not.toHaveBeenCalled();
+  expect(axios.post).not.toHaveBeenCalled();
+});
+
+test("the modal keeps recording local and adds editable text only after stopping", async () => {
+  supportsDictation.mockReturnValue(true);
+  const audio = new Blob(["recorded audio"]);
+  createVoiceRecorder.mockResolvedValue({ stop: jest.fn().mockResolvedValue(audio), cancel: jest.fn() });
+  transcribeVoice.mockResolvedValue("Quiero viajar en familia por Marruecos.");
+  await click("home-dictation-trigger");
+  await change("dictation-message", "Una semana.");
+  await act(async () => get("home-dictation-modal").querySelector('button[aria-label^="Dictar"]').click());
+  expect(get("dictation-message").value).toBe("Una semana.");
+  expect(transcribeVoice).not.toHaveBeenCalled();
+  const stop = [...get("home-dictation-modal").querySelectorAll("button")].find(button => button.textContent === "Detener y transcribir");
+  await act(async () => stop.click());
+  expect(transcribeVoice).toHaveBeenCalledTimes(1);
+  expect(transcribeVoice).toHaveBeenCalledWith(audio, "es", expect.any(AbortSignal));
+  expect(get("dictation-message").value).toBe("Una semana.\nQuiero viajar en familia por Marruecos.");
+  expect(get("dictation-next").disabled).toBe(false);
+  await change("dictation-message", "Texto revisado.");
+  expect(get("dictation-message").value).toBe("Texto revisado.");
   expect(axios.post).not.toHaveBeenCalled();
 });
 
