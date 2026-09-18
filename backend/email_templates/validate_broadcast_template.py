@@ -23,8 +23,8 @@ def main() -> None:
     required_tokens = (
         "{{{contact.first_name|viajero}}}",
         "{{{RESEND_UNSUBSCRIBE_URL}}}",
-        "https://xalucatravel.com/planifica-tu-viaje",
-        "https://xalucatravel.com/archivo",
+        "https://xalucatours.com/planifica-tu-viaje",
+        "https://xalucatours.com/archivo",
         "Xaluca Tours",
     )
     for token in required_tokens:

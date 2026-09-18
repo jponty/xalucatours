@@ -1,13 +1,13 @@
 # Xaluca Tours: public discovery
 
-Canonical website: https://xalucatravel.com
+Canonical website: https://xalucatours.com
 
 ## Public resources
 
-- [Sitemap](https://xalucatravel.com/sitemap.xml): canonical public pages in Spanish, English and French.
-- [API catalog](https://xalucatravel.com/.well-known/api-catalog): documentation and schema of the existing application API.
-- [Skills index](https://xalucatravel.com/.well-known/agent-skills/index.json): public trip-discovery guidance, with an integrity digest.
-- [AI catalog](https://xalucatravel.com/.well-known/ai-catalog.json): available discovery resources. It does not advertise a remote MCP or A2A service.
+- [Sitemap](https://xalucatours.com/sitemap.xml): canonical public pages in Spanish, English and French.
+- [API catalog](https://xalucatours.com/.well-known/api-catalog): documentation and schema of the existing application API.
+- [Skills index](https://xalucatours.com/.well-known/agent-skills/index.json): public trip-discovery guidance, with an integrity digest.
+- [AI catalog](https://xalucatours.com/.well-known/ai-catalog.json): available discovery resources. It does not advertise a remote MCP or A2A service.
 
 ## Browser tools
 
@@ -21,7 +21,7 @@ The usual website navigation remains available in browsers without WebMCP.
 Public trip pages require no authentication. The application has an internal
 administration login; it is not an OAuth/OIDC authorization server and it is not
 an agent-registration service. No agent credentials are issued by this website.
-The [access-status document](https://xalucatravel.com/auth.md) explains this
+The [access-status document](https://xalucatours.com/auth.md) explains this
 explicitly; it does not implement the Auth.md registration protocol.
 
 An OpenAPI description documents the existing service; it does not grant

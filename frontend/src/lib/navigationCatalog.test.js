@@ -58,6 +58,7 @@ describe("complete navigation map", () => {
     expect(filterNavigationCatalog(entries, { query: "Tánger" })).toEqual(filterNavigationCatalog(entries, { query: "tanger" }));
     expect(filterNavigationCatalog(entries, { query: "/viajes/desierto_atlas/programa_4n_5d" }).map((entry) => entry.id)).toEqual(["tourDesiertoAtlas45"]);
     expect(filterNavigationCatalog(entries, { query: "https://xalucatravel.com/viajes/desierto_atlas/programa_4n_5d#journey-chronology" }).map((entry) => entry.id)).toEqual(["tourDesiertoAtlas45"]);
+    expect(filterNavigationCatalog(entries, { query: "https://xalucatours.com/viajes/desierto_atlas/programa_4n_5d#journey-chronology" }).map((entry) => entry.id)).toEqual(["tourDesiertoAtlas45"]);
     expect(filterNavigationCatalog(entries, { query: "noche-en-erg-chebbi" }).some((entry) => entry.type === "article")).toBe(true);
     expect(filterNavigationCatalog(entries, { query: "no-matching-url-xyz" })).toEqual([]);
     expect(filterNavigationCatalog(entries, { query: "  " })).toHaveLength(entries.length);

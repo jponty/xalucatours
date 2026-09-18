@@ -359,7 +359,8 @@ def test_selected_contact_methods_require_their_own_details():
         )
 
 
-def test_planner_confirmation_has_public_archive_cta_and_non_empty_summary(monkeypatch):
+@pytest.mark.parametrize("public_origin", ["", "http://127.0.0.1:3100", "https://xalucatours.com"])
+def test_planner_confirmation_has_public_archive_cta_and_non_empty_summary(monkeypatch, public_origin):
     sent = {}
 
     def accept(params, **_kwargs):
@@ -368,7 +369,7 @@ def test_planner_confirmation_has_public_archive_cta_and_non_empty_summary(monke
 
     monkeypatch.setattr(server, "RESEND_API_KEY", "re_test")
     monkeypatch.setattr(server, "LEADS_FROM_EMAIL", "Xaluca Tours <hola@example.com>")
-    monkeypatch.setattr(server, "PUBLIC_SITE_URL", "http://127.0.0.1:3100")
+    monkeypatch.setattr(server, "PUBLIC_SITE_URL", public_origin)
     monkeypatch.setattr(server.resend.Emails, "send", accept)
 
     result = server.send_client_confirmation(
@@ -386,7 +387,7 @@ def test_planner_confirmation_has_public_archive_cta_and_non_empty_summary(monke
     assert sent["subject"] == "Hemos recibido tu solicitud · Xaluca Tours"
     assert "Mientras preparamos tu propuesta" in sent["html"]
     assert "Explorar todos nuestros viajes" in sent["html"]
-    assert "https://xaluca-tours-web.onrender.com/archivo" in sent["html"]
+    assert "https://xalucatours.com/archivo" in sent["html"]
     assert "Resumen de tu solicitud" in sent["html"]
     assert "10 → 18 de octubre" in sent["html"]
     assert "premium" in sent["html"]

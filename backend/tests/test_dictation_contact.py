@@ -39,14 +39,16 @@ def test_dictation_requires_valid_contact_consent_and_story(changes):
     ("Día concreto: 2026-11-14", "Adultos: 2 · Niños: 0 · Total: 2"),
     ("Mes flexible: 2027-03", None),
 ])
-def test_dictation_uses_existing_lead_and_both_email_summaries_idempotently(monkeypatch, travel_dates, party_size):
+@pytest.mark.parametrize("origin", ["https://xalucatours.com", "https://xalucatravel.com"])
+def test_dictation_uses_existing_lead_and_both_email_summaries_idempotently(monkeypatch, travel_dates, party_size, origin):
     database = Database()
     monkeypatch.setattr(server, "db", database)
     internal = Mock(return_value="internal-id")
     confirmation = Mock(return_value="confirmation-id")
     monkeypatch.setattr(server, "send_lead_notification", internal)
     monkeypatch.setattr(server, "send_client_confirmation", confirmation)
-    data = payload(submission_id=str(uuid.uuid4()), travel_dates=travel_dates, party_size=party_size)
+    data = payload(submission_id=str(uuid.uuid4()), travel_dates=travel_dates, party_size=party_size,
+                   source_url=f"{origin}/contacto?trip=tourAtlasDesierto67")
     for _ in range(2):
         asyncio.run(server.create_contact_request(server.ContactRequestCreate(**data)))
     assert len(database.contact_requests.rows) == 1

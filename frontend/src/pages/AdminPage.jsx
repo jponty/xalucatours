@@ -1117,14 +1117,14 @@ const PricingEditor = ({ onSaved }) => {
 
 /* ---------- Mirror Production Database ----------
    One-click FULL pull: this environment's content is OVERWRITTEN with an
-   exact copy of production (https://xalucatravel.com). The backend reads
+   exact copy of production (https://xalucatours.com). The backend reads
    production's public endpoints (cms/export, day-galleries, files) — no
    prod redeploy needed — and image binaries live in shared object storage,
    so previews show the same images immediately. Run on PREVIEW before a
    deploy so live CMS edits are never lost. */
 const MirrorPanel = () => {
-  const PROD = "https://xalucatravel.com";
-  const onProd = (process.env.REACT_APP_BACKEND_URL || "").includes("xalucatravel.com");
+  const PROD = "https://xaluca-tours-api.onrender.com";
+  const onProd = (process.env.REACT_APP_BACKEND_URL || "").replace(/\/+$/, "") === PROD;
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState(null);

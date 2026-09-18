@@ -3,7 +3,7 @@
 ## Audience and current access
 
 This document is for agents helping travellers discover public Xaluca Tours
-itineraries at https://xalucatravel.com. Public pages and the read-only browser
+itineraries at https://xalucatours.com. Public pages and the read-only browser
 search tool do not require an account, API key or bearer token.
 
 ## Registration and credentials
@@ -21,9 +21,9 @@ reuse or expose staff passwords, administrative tokens or customer records.
 
 ## Permitted public discovery
 
-- Consult the [public discovery documentation](https://xalucatravel.com/docs/agents.md).
-- Follow the [trip-discovery skill](https://xalucatravel.com/.well-known/agent-skills/explore-xaluca-trips/SKILL.md).
-- Use the [sitemap](https://xalucatravel.com/sitemap.xml) for canonical public URLs.
+- Consult the [public discovery documentation](https://xalucatours.com/docs/agents.md).
+- Follow the [trip-discovery skill](https://xalucatours.com/.well-known/agent-skills/explore-xaluca-trips/SKILL.md).
+- Use the [sitemap](https://xalucatours.com/sitemap.xml) for canonical public URLs.
 
 Submitting an enquiry or newsletter form is not an agent-registration flow.
 Such actions require the traveller's explicit request and the existing website

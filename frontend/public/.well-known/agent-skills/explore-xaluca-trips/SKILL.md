@@ -5,15 +5,15 @@ description: Find and compare public Xaluca Tours itineraries in Morocco and the
 
 # Explore Xaluca Tours trips
 
-The primary website is https://xalucatravel.com. Spanish URLs have no language
+The primary website is https://xalucatours.com. Spanish URLs have no language
 prefix; English and French pages use `/en` and `/fr`.
 
-- Use [the sitemap](https://xalucatravel.com/sitemap.xml) for canonical page URLs.
-- Use [all trips](https://xalucatravel.com/viajes) to explore regions and
-  [the archive](https://xalucatravel.com/archivo) to compare programmes.
+- Use [the sitemap](https://xalucatours.com/sitemap.xml) for canonical page URLs.
+- Use [all trips](https://xalucatours.com/viajes) to explore regions and
+  [the archive](https://xalucatours.com/archivo) to compare programmes.
 - Open the specific programme before describing its duration, itinerary or
   price. A hub may contain several programmes with different durations.
-- [Practical information](https://xalucatravel.com/info) groups the travel notes
+- [Practical information](https://xalucatours.com/info) groups the travel notes
   belonging to each itinerary. Keep recommendations associated with that trip.
 - Quote prices with their displayed season, party size and provisional status.
   A displayed price is not a live availability check or a confirmed booking.

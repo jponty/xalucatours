@@ -9,15 +9,15 @@ test("canonical and social metadata use the public origin without tracking param
   const previousPath = window.location.href;
   const staticCanonical = document.createElement("link");
   staticCanonical.rel = "canonical";
-  staticCanonical.href = "https://xalucatravel.com/";
+  staticCanonical.href = "https://xalucatours.com/";
   document.head.appendChild(staticCanonical);
   try {
     window.history.replaceState({}, "", "/contacto?trip=example&utm_source=test#contact-form");
     act(() => root.render(<SeoHead title="Contacto" description="Contacta con Xaluca Tours" lang="es" />));
     expect(document.head.querySelectorAll('link[rel="canonical"]')).toHaveLength(1);
-    expect(document.head.querySelector('link[rel="canonical"]').href).toBe("https://xalucatravel.com/contacto");
-    expect(document.head.querySelector('meta[property="og:url"]').content).toBe("https://xalucatravel.com/contacto");
-    expect(document.head.querySelector('meta[property="og:image"]').content).toMatch(/^https:\/\/xalucatravel\.com\//);
+    expect(document.head.querySelector('link[rel="canonical"]').href).toBe("https://xalucatours.com/contacto");
+    expect(document.head.querySelector('meta[property="og:url"]').content).toBe("https://xalucatours.com/contacto");
+    expect(document.head.querySelector('meta[property="og:image"]').content).toMatch(/^https:\/\/xalucatours\.com\//);
   } finally {
     act(() => root.unmount());
     container.remove();

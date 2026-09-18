@@ -737,7 +737,8 @@ async def cms_import(payload: CmsImportPayload, authorization: str = Header(defa
 # No redeploy of the source is required. Image binaries use canonical Supabase
 # Storage paths, so copying the records is enough. Leads / PII
 # (contact_requests, trip_planner_requests, downloads) are deliberately excluded.
-PRODUCTION_BASE_URL = os.environ.get("PRODUCTION_BASE_URL", "https://xalucatravel.com").rstrip("/")
+# The mirror reads API endpoints, not the public Static Site.
+PRODUCTION_BASE_URL = os.environ.get("PRODUCTION_BASE_URL", "https://xaluca-tours-api.onrender.com").rstrip("/")
 
 
 class MirrorPayload(BaseModel):
@@ -1180,7 +1181,7 @@ def _email_banner(inner_html: str, padding: str = "24px 28px") -> str:
 # Guarantees the lead emails never show raw internal trip ids, even when the
 # frontend payload omits the resolved detail. Regenerate with build_trip_gazetteer.py.
 PUBLIC_SITE_URL = os.environ.get("PUBLIC_SITE_URL", "").strip().rstrip("/")
-_PUBLIC_SITE_FALLBACK = "https://xaluca-tours-web.onrender.com"
+_PUBLIC_SITE_FALLBACK = "https://xalucatours.com"
 _TRIP_GAZETTEER: Dict[str, dict] = {}
 try:
     _gaz_path = ROOT_DIR / "trip_gazetteer.json"
@@ -6213,6 +6214,9 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 BUILTIN_CORS_ORIGINS = {
+    "https://xalucatours.com",
+    "https://www.xalucatours.com",
+    # Keep the previous domain working during the migration window.
     "https://xalucatravel.com",
     "https://www.xalucatravel.com",
     "https://xaluca-tours-web.onrender.com",

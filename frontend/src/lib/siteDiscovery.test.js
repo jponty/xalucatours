@@ -18,6 +18,19 @@ describe("public discovery files generated from real routes", () => {
   });
   afterAll(() => { if (output) fs.rmSync(output, { recursive: true, force: true }); });
 
+  test("publishes only the new canonical domain in public metadata and discovery documents", () => {
+    expect(PUBLIC_SITE_ORIGIN).toBe("https://xalucatours.com");
+    for (const file of ["sitemap.xml", "robots.txt", ".well-known/ai-catalog.json", ".well-known/agent-skills/index.json"]) {
+      expect(read(file)).not.toContain("xalucatravel.com");
+      expect(read(file)).toContain("https://xalucatours.com");
+    }
+    for (const file of ["index.html", "auth.md", "docs/agents.md", ".well-known/agent-skills/explore-xaluca-trips/SKILL.md"]) {
+      const source = fs.readFileSync(path.join("public", file), "utf8");
+      expect(source).not.toContain("xalucatravel.com");
+      expect(source).toContain("https://xalucatours.com");
+    }
+  });
+
   test("generates valid XML covering every public canonical URL, with no duplicates or retired links", () => {
     const xml = new DOMParser().parseFromString(read("sitemap.xml"), "application/xml");
     expect(xml.querySelector("parsererror")).toBeNull();
@@ -97,8 +110,8 @@ describe("public discovery files generated from real routes", () => {
     expect(catalog.specVersion).toBe("1.0");
     expect(catalog.host.identifier).toBe(PUBLIC_SITE_ORIGIN);
     catalog.entries.forEach((entry) => {
-      expect(entry.identifier).toMatch(/^urn:air:xalucatravel\.com:/);
-      expect(entry.url).toMatch(/^https:\/\/xalucatravel\.com\//);
+      expect(entry.identifier).toMatch(/^urn:air:xalucatours\.com:/);
+      expect(entry.url).toMatch(/^https:\/\/xalucatours\.com\//);
       expect(entry).not.toHaveProperty("data");
       expect(entry.representativeQueries.length).toBeGreaterThanOrEqual(2);
       expect(entry.representativeQueries.length).toBeLessThanOrEqual(5);

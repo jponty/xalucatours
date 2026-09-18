@@ -187,7 +187,7 @@ class ClimateService:
 
     async def report(self, provider):
         points = DESTINATIONS if provider == "met" else REGION_POINTS
-        ua = os.getenv("WEATHER_USER_AGENT", "XalucaToursClimate/1.0 (https://xalucatravel.com/contacto; xalucatours@xaluca.com)")
+        ua = os.getenv("WEATHER_USER_AGENT", "XalucaToursClimate/1.0 (https://xalucatours.com/contacto; xalucatours@xaluca.com)")
         async with httpx.AsyncClient(timeout=15, follow_redirects=True,
                                      headers={"User-Agent": ua, "Accept": "application/json"}) as client:
             entries = await asyncio.gather(*(self.fetch(provider, point, client) for point in points))
