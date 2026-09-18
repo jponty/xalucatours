@@ -33,14 +33,20 @@ def test_dictation_requires_valid_contact_consent_and_story(changes):
         server.ContactRequestCreate(**payload(**changes))
 
 
-def test_dictation_uses_existing_lead_and_both_email_summaries_idempotently(monkeypatch):
+@pytest.mark.parametrize("travel_dates,party_size", [
+    (None, None),
+    ("Rango: 2026-10-12 → 2026-10-18", "Adultos: 2 · Niños: 1 · Total: 3"),
+    ("Día concreto: 2026-11-14", "Adultos: 2 · Niños: 0 · Total: 2"),
+    ("Mes flexible: 2027-03", None),
+])
+def test_dictation_uses_existing_lead_and_both_email_summaries_idempotently(monkeypatch, travel_dates, party_size):
     database = Database()
     monkeypatch.setattr(server, "db", database)
     internal = Mock(return_value="internal-id")
     confirmation = Mock(return_value="confirmation-id")
     monkeypatch.setattr(server, "send_lead_notification", internal)
     monkeypatch.setattr(server, "send_client_confirmation", confirmation)
-    data = payload(submission_id=str(uuid.uuid4()))
+    data = payload(submission_id=str(uuid.uuid4()), travel_dates=travel_dates, party_size=party_size)
     for _ in range(2):
         asyncio.run(server.create_contact_request(server.ContactRequestCreate(**data)))
     assert len(database.contact_requests.rows) == 1
@@ -52,9 +58,15 @@ def test_dictation_uses_existing_lead_and_both_email_summaries_idempotently(monk
     assert lead["trip"] == data["related_trip_title"]
     assert lead["source_url"] == data["source_url"]
     assert lead["message"] == data["message"]
+    assert lead["details"]["travel_dates"] == travel_dates
+    assert lead["details"]["party_size"] == party_size
     internal.assert_called_once()
     confirmation.assert_called_once()
     assert "Dictado" in internal.call_args.args[1]
     assert data["message"] in internal.call_args.args[1]
     assert ("Viaje consultado", data["related_trip_title"]) in confirmation.call_args.kwargs["summary_rows"]
     assert ("Mensaje", data["message"]) in confirmation.call_args.kwargs["summary_rows"]
+    for label, value in [("Fechas", travel_dates), ("Viajeros", party_size)]:
+        assert (label, value) in confirmation.call_args.kwargs["summary_rows"]
+        if value:
+            assert value in internal.call_args.args[1]

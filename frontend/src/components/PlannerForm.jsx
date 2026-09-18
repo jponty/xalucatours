@@ -1,8 +1,8 @@
 import React, { useId, useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  Calendar, CalendarRange, CalendarClock,
-  Users, BedDouble, Sparkles, Send, Check,
+  Calendar, CalendarClock,
+  BedDouble, Sparkles, Send, Check,
   Sun, Bike, Camera, Flower, Music, Waves,
   Mountain, MountainSnow, MapPin, ArrowRight, Compass,
   Moon, ArrowUpRight, X,
@@ -17,10 +17,11 @@ import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripContext";
 import { useLeadCapture } from "@/lib/leadCapture";
 import { optimizedSrc } from "@/lib/imageUrl";
-import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/components/FormExtras";
+import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
+import TripPlanningFields, { TRIP_PLANNING_COPY, PlanningField as Field, PlanningSection as SectionBlock, planningInputClass as inputCls } from "@/components/TripPlanningFields";
 
 /* ============================================================
    PlannerForm · reusable detailed trip-planner form
@@ -47,21 +48,7 @@ export const PLANNER_COPY = {
     "Quatre étapes courtes et une note optionnelle. Notre équipe sur place vous répond avec une proposition sur mesure sous 24-48 h.",
   ),
   step:        T("Paso", "Step", "Étape"),
-  // Section 1
-  s1_title:    T("Fechas del viaje", "Trip dates", "Dates du voyage"),
-  s1_help:     T("Elige fechas concretas, un rango o un mes orientativo.", "Pick exact dates, a range or a flexible month.", "Choisissez des dates précises, une plage ou un mois indicatif."),
-  mode_range:  T("Rango", "Range", "Plage"),
-  mode_exact:  T("Día concreto", "Exact day", "Date exacte"),
-  mode_flex:   T("Mes flexible", "Flexible month", "Mois flexible"),
-  start_date:  T("Fecha de inicio", "Start date", "Date de début"),
-  end_date:    T("Fecha de fin", "End date", "Date de fin"),
-  exact_date:  T("Día de llegada", "Arrival day", "Jour d'arrivée"),
-  flex_month:  T("Mes preferido", "Preferred month", "Mois préféré"),
-  // Section 2
-  s2_title:    T("Viajeros", "Travellers", "Voyageurs"),
-  s2_help:     T("Indica adultos y, si procede, niños menores de 12.", "Tell us about adults and children under 12.", "Indiquez les adultes et, le cas échéant, les enfants de moins de 12 ans."),
-  adults:      T("Adultos", "Adults", "Adultes"),
-  children:    T("Niños (3-11)", "Children (3-11)", "Enfants (3-11)"),
+  ...TRIP_PLANNING_COPY,
   // Section 3
   s3_title:    T("Alojamiento", "Accommodation", "Hébergement"),
   s3_help:     T("Tres categorías curadas. Siempre con encanto local.", "Three curated categories — always with local charm.", "Trois catégories sélectionnées — toujours avec du charme local."),
@@ -164,25 +151,6 @@ const REGION_COUNTS = ALL_TRIPS.reduce((acc, t) => {
   return acc;
 }, {});
 
-const Field = ({ label, hint, required, children, error, inputId, as: Wrapper = "label" }) => {
-  const Label = inputId ? "label" : "span";
-  return (
-  <Wrapper className="block">
-    <Label htmlFor={inputId} className="text-[11px] tracking-[0.3em] uppercase text-[#A07042]">
-      {label}{required && <span className="text-[#C16542]"> *</span>}
-    </Label>
-    <div className="block mt-2">{children}</div>
-    {error ? (
-      <span className="block mt-2 text-xs text-[#C16542]">{error}</span>
-    ) : hint ? (
-      <span className="block mt-2 text-xs text-[#5C5248]/75">{hint}</span>
-    ) : null}
-  </Wrapper>
-  );
-};
-
-const inputCls =
-  "w-full bg-transparent border-b border-[#2C2621]/30 focus:border-[#C16542] outline-none py-3 text-[15px] text-[#2C2621] placeholder:text-[#5C5248]/45 transition-colors";
 
 /* Inline-CMS per-page text editor (auto-namespaced by page path). */
 const ET = ({ k, defaults, as = "span", className, multiline = true, ...rest }) => {
@@ -334,11 +302,6 @@ export default function PlannerForm() {
     }
   };
 
-  const totalTravellers = useMemo(
-    () => Number(form.adults || 0) + Number(form.children || 0),
-    [form.adults, form.children],
-  );
-
   const recommendedTrips = useMemo(() => {
     if (!form.regions.length) return [];
     return ALL_TRIPS.filter((t) => form.regions.includes(t.region));
@@ -426,100 +389,7 @@ export default function PlannerForm() {
             </div>
           )}
 
-          {/* ============ STEP 1 · DATES ============ */}
-          <SectionBlock
-            step="01" icon={CalendarRange}
-            title={<ET k="s1_title" multiline={false} />} help={<ET k="s1_help" />}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {[
-                { id: "range",    label: <ET k="mode_range" multiline={false} />, icon: CalendarRange },
-                { id: "exact",    label: <ET k="mode_exact" multiline={false} />, icon: Calendar },
-                { id: "flexible", label: <ET k="mode_flex" multiline={false} />,  icon: CalendarClock },
-              ].map(({ id, label, icon: I }) => {
-                const on = form.dateMode === id;
-                return (
-                  <button
-                    type="button"
-                    key={id}
-                    onClick={() => set("dateMode", id)}
-                    data-testid={`date-mode-${id}`}
-                    className={`group flex items-center gap-3 px-4 py-4 border text-[12px] tracking-[0.2em] uppercase transition-all ${
-                      on
-                        ? "bg-[#2C2621] text-[#FDFBF7] border-[#2C2621]"
-                        : "bg-white border-[#2C2621]/15 hover:border-[#2C2621]/60 text-[#3D352C]"
-                    }`}
-                  >
-                    <I className="w-4 h-4 shrink-0" strokeWidth={1.6} />
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-              {form.dateMode === "range" && (
-                <>
-                  <Field label={<ET k="start_date" multiline={false} />}>
-                    <input type="date" data-testid="start-date" className={inputCls}
-                      value={form.startDate} max={form.endDate || undefined}
-                      onChange={(e) => set("startDate", e.target.value)} />
-                  </Field>
-                  <Field label={<ET k="end_date" multiline={false} />}>
-                    <input type="date" data-testid="end-date" className={inputCls}
-                      value={form.endDate} min={form.startDate || undefined}
-                      onChange={(e) => set("endDate", e.target.value)} />
-                  </Field>
-                  <TripDurationSummary
-                    startDate={form.startDate}
-                    endDate={form.endDate}
-                    lang={lang}
-                    className="md:col-span-2"
-                    testid="planner-trip-duration"
-                  />
-                </>
-              )}
-              {form.dateMode === "exact" && (
-                <Field label={<ET k="exact_date" multiline={false} />}>
-                  <input type="date" data-testid="exact-date" className={inputCls}
-                    value={form.exactDate} onChange={(e) => set("exactDate", e.target.value)} />
-                </Field>
-              )}
-              {form.dateMode === "flexible" && (
-                <Field as="div" inputId={`${voiceId}-month`} label={<ET k="flex_month" multiline={false} />}>
-                  <input id={`${voiceId}-month`} aria-label={tr("flex_month")} disabled={status === "sending"}
-                    type="text"
-                    data-testid="flex-month"
-                    placeholder={lang === "es" ? "Ej. Mayo 2026" : lang === "fr" ? "Ex. mai 2026" : "e.g. May 2026"}
-                    className={inputCls}
-                    value={form.flexMonth}
-                    maxLength={40}
-                    onChange={event => set("flexMonth", event.target.value)}
-                  />
-                </Field>
-              )}
-            </div>
-          </SectionBlock>
-
-          {/* ============ STEP 2 · TRAVELLERS ============ */}
-          <SectionBlock
-            step="02" icon={Users}
-            title={<ET k="s2_title" multiline={false} />} help={<ET k="s2_help" />}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
-              <Field label={<ET k="adults" multiline={false} />}>
-                <input type="number" min={1} max={40} data-testid="adults" className={inputCls}
-                  value={form.adults} onChange={(e) => set("adults", e.target.value.replace(/[^0-9]/g, ""))} />
-              </Field>
-              <Field label={<ET k="children" multiline={false} />}>
-                <input type="number" min={0} max={20} data-testid="children" className={inputCls}
-                  value={form.children} onChange={(e) => set("children", e.target.value.replace(/[^0-9]/g, ""))} />
-              </Field>
-            </div>
-            <p className="mt-5 text-[12px] tracking-[0.2em] uppercase text-[#A07042]">
-              Total · {totalTravellers}
-            </p>
-          </SectionBlock>
+          <TripPlanningFields value={form} onChange={set} lang={lang} monthDisabled={status === "sending"} renderText={key => <ET k={key} multiline={key.endsWith("_help")} />} />
 
           {/* ============ STEP 3 · ACCOMMODATION ============ */}
           <SectionBlock
@@ -856,29 +726,5 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
         </div>
       </div>
     </SlotScope>
-  );
-}
-
-/* ============================================================
-   SectionBlock — Reusable step container.
-============================================================ */
-function SectionBlock({ step, icon: IconCmp, title, help, children }) {
-  return (
-    <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start" data-testid={`plan-step-${step}`}>
-      <header className="lg:col-span-4">
-        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.35em] uppercase text-[#A07042]">
-          <span>{step}</span>
-          <span className="w-8 h-px bg-[#A07042]/40" />
-          {IconCmp && <IconCmp className="w-3.5 h-3.5" strokeWidth={1.6} />}
-        </span>
-        <h2 className="font-serif-x text-2xl md:text-3xl leading-[1.15] tracking-tight mt-4 text-[#2C2621]">
-          {title}
-        </h2>
-        <p className="mt-3 text-sm text-[#5C5248] leading-[1.75] max-w-xs">
-          {help}
-        </p>
-      </header>
-      <div className="lg:col-span-8">{children}</div>
-    </section>
   );
 }

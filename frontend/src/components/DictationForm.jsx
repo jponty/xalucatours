@@ -9,6 +9,7 @@ import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextFi
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import { ContactPreference, WhatHappensNext } from "@/components/FormExtras";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
+import TripPlanningFields, { serializeOptionalTripDetails } from "@/components/TripPlanningFields";
 
 const T = (es, en, fr) => ({ es, en, fr });
 export const DICTATION_COPY = {
@@ -49,6 +50,7 @@ const PROMPTS = [
   T("Cualquier necesidad especial, duda, preferencia o detalle importante.", "Any special needs, questions, preferences or important details.", "Tout besoin particulier, question, préférence ou détail important."),
 ];
 const EMPTY = { message: "", full_name: "", email: "", phone: "", preferred_contact: [], preferred_contact_email: "", preferred_contact_phone: "", privacy_consent: false };
+const EMPTY_TRIP = { dateMode: "range", startDate: "", endDate: "", exactDate: "", flexMonth: "", adults: "", children: "" };
 const inputClass = "mt-2 w-full min-w-0 rounded-sm border border-[#2C2621]/25 bg-white p-3.5 text-base text-[#2C2621] outline-none focus:border-[#C16542] focus:ring-1 focus:ring-[#C16542]";
 const buttonClass = "xaluca-button inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 py-4 text-xs tracking-[0.12em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
 const emailValid = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -60,6 +62,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
   const heading = useRef(null);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(EMPTY);
+  const [tripDetails, setTripDetails] = useState(EMPTY_TRIP);
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [sending, setSending] = useState(false);
@@ -95,6 +98,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
       const trip = resolveTripContext(getTripParam(), lang);
       await axios.post(`${(process.env.REACT_APP_BACKEND_URL || "").replace(/\/$/, "")}/api/contact-requests`, {
         ...capture(), ...form, full_name: form.full_name.trim(), email: form.email.trim(), message: form.message.trim(), language: lang,
+        ...serializeOptionalTripDetails(tripDetails),
         related_trip_id: trip?.routeId || null, related_trip_title: trip?.title || null,
       });
       setDone(true);
@@ -146,6 +150,10 @@ export default function DictationForm({ className = "", countryPortalContainer, 
                 <label htmlFor={`${id}-phone`} className="mb-2 block text-sm text-[#2C2621]">{text("phone")}</label>
                 <InternationalPhoneInput countryPortalContainer={countryPortalContainer} id={`${id}-phone`} name="phone" value={form.phone} onValueChange={value => update("phone", value)} lang={lang} invalid={Boolean(errors.phone)} testId="dictation-phone" />{error("phone")}
               </div>
+            </div>
+            <div className="space-y-10 border-y border-[#2C2621]/15 py-8" data-testid="dictation-optional-trip-details">
+              <TripPlanningFields value={tripDetails} onChange={(key, value) => setTripDetails(current => ({ ...current, [key]: value }))}
+                lang={lang} optional monthInputType="month" testidPrefix="dictation-" headingAs="h4" />
             </div>
             <ContactPreference countryPortalContainer={countryPortalContainer} lang={lang} value={form.preferred_contact} onToggle={key => {
               const removing = form.preferred_contact.includes(key);
