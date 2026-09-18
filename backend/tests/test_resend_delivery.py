@@ -89,10 +89,10 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
 
 
 @pytest.mark.parametrize("recipient,name", [
-    ("noemi", "Noemi Aparicio"),
-    ("elena", "Elena Xaluca"),
-    ("sanaa", "Sanaa Xaluca"),
-    ("magda", "Magda Xaluca"),
+    ("noemi", "Noemí Aparicio"),
+    ("elena", "Elena"),
+    ("sanaa", "Sanaa"),
+    ("magda", "Magda"),
 ])
 def test_team_contact_preserves_recipient_in_storage_and_both_emails(monkeypatch, recipient, name):
     collection = _collection(monkeypatch, "contact_requests")

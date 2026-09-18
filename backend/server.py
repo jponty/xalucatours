@@ -1589,10 +1589,10 @@ def _founder_notification_recipients(value: Optional[str]) -> Optional[List[str]
 
 def _team_recipient_label(value: Optional[str]) -> str:
     return {
-        "noemi": "Noemi Aparicio",
-        "elena": "Elena Xaluca",
-        "sanaa": "Sanaa Xaluca",
-        "magda": "Magda Xaluca",
+        "noemi": "Noemí Aparicio",
+        "elena": "Elena",
+        "sanaa": "Sanaa",
+        "magda": "Magda",
     }.get((value or "").strip().lower(), "")
 
 

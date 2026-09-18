@@ -14,17 +14,17 @@ const ADVISOR_ROLE = {
 export const TEAM_MEMBERS = [
   {
     id: "noemi",
-    firstName: "Noemi",
+    firstName: "Noemí",
     reviewTheme: "noemi",
     photo: supabaseMedia("xaluca/static/team/noemi-aparicio.png"),
     tilt: "-rotate-2",
     tapeRotate: "rotate-6",
-    name: { es: "Noemi Aparicio", en: "Noemi Aparicio", fr: "Noemi Aparicio" },
+    name: { es: "Noemí Aparicio", en: "Noemí Aparicio", fr: "Noemí Aparicio" },
     role: { es: "Directora", en: "Director", fr: "Directrice" },
     note1: {
-      es: "Como directora de Xaluca Tours, Noemi Aparicio representa la cercanía, la experiencia y el cuidado que definen cada viaje. Su papel es acompañar al equipo y a los viajeros con una mirada atenta, asegurando que cada propuesta transmita la esencia de Marruecos y la hospitalidad de Xaluca.",
-      en: "As director of Xaluca Tours, Noemi Aparicio embodies the closeness, experience and care that define every journey. Her role is to guide the team and travellers with an attentive eye, making sure every proposal conveys the essence of Morocco and Xaluca's hospitality.",
-      fr: "En tant que directrice de Xaluca Tours, Noemi Aparicio incarne la proximité, l'expérience et le soin qui définissent chaque voyage. Son rôle est d'accompagner l'équipe et les voyageurs avec un regard attentif, en veillant à ce que chaque proposition transmette l'essence du Maroc et l'hospitalité de Xaluca.",
+      es: "Como directora de Xaluca Tours, Noemí Aparicio representa la cercanía, la experiencia y el cuidado que definen cada viaje. Su papel es acompañar al equipo y a los viajeros con una mirada atenta, asegurando que cada propuesta transmita la esencia de Marruecos y la hospitalidad de Xaluca.",
+      en: "As director of Xaluca Tours, Noemí Aparicio embodies the closeness, experience and care that define every journey. Her role is to guide the team and travellers with an attentive eye, making sure every proposal conveys the essence of Morocco and Xaluca's hospitality.",
+      fr: "En tant que directrice de Xaluca Tours, Noemí Aparicio incarne la proximité, l'expérience et le soin qui définissent chaque voyage. Son rôle est d'accompagner l'équipe et les voyageurs avec un regard attentif, en veillant à ce que chaque proposition transmette l'essence du Maroc et l'hospitalité de Xaluca.",
     },
     note2: {
       es: "Cada itinerario nace con la voluntad de escuchar, entender y crear experiencias hechas a medida, pensadas para que cada viajero se sienta acompañado desde el primer contacto hasta el regreso a casa.",
@@ -39,7 +39,7 @@ export const TEAM_MEMBERS = [
     photo: elenaPhoto,
     tilt: "rotate-2",
     tapeRotate: "-rotate-6",
-    name: { es: "Elena Xaluca", en: "Elena Xaluca", fr: "Elena Xaluca" },
+    name: { es: "Elena", en: "Elena", fr: "Elena" },
     role: ADVISOR_ROLE,
     note1: {
       es: "Elena acompaña a cada viajero desde las primeras ideas hasta convertirlas en un viaje pensado a su medida. Escucha, aconseja y ayuda a encontrar el itinerario, los alojamientos y las experiencias que mejor encajan con la forma de viajar de cada persona.",
@@ -59,7 +59,7 @@ export const TEAM_MEMBERS = [
     photo: sanaaPhoto,
     tilt: "-rotate-3",
     tapeRotate: "rotate-3",
-    name: { es: "Sanaa Xaluca", en: "Sanaa Xaluca", fr: "Sanaa Xaluca" },
+    name: { es: "Sanaa", en: "Sanaa", fr: "Sanaa" },
     role: ADVISOR_ROLE,
     note1: {
       es: "Sanaa conoce Marruecos desde dentro y transforma ese conocimiento del destino en recomendaciones útiles para cada viajero. Atenta, resolutiva y cercana, ayuda a diseñar cada recorrido teniendo en cuenta las distancias, los tiempos, los alojamientos y las experiencias que mejor encajan en cada viaje.",
@@ -79,7 +79,7 @@ export const TEAM_MEMBERS = [
     photo: magdaPhoto,
     tilt: "rotate-2",
     tapeRotate: "-rotate-3",
-    name: { es: "Magda Xaluca", en: "Magda Xaluca", fr: "Magda Xaluca" },
+    name: { es: "Magda", en: "Magda", fr: "Magda" },
     role: ADVISOR_ROLE,
     note1: {
       es: "Magda ayuda a convertir cada idea de viaje en una propuesta clara, equilibrada y adaptada a cada viajero. Desde una primera escapada a Marruecos hasta un recorrido más completo por el país, acompaña en la elección de rutas, alojamientos y experiencias para que cada etapa tenga sentido dentro del viaje.",

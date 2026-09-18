@@ -275,9 +275,9 @@ const RAW_TESTIMONIALS = [
     date: "2025-11",
     trip: T("Viaje a medida · Sur de Marruecos", "Tailor-made · Southern Morocco", "Sur mesure · Sud du Maroc"),
     quote: T(
-      "Noemi entendió exactamente lo que buscábamos desde el primer mensaje. Nos propuso un itinerario hecho a nuestra medida, sin plantillas. Sentimos que el viaje era de verdad nuestro.",
-      "Noemi understood exactly what we were looking for from the very first message. She proposed an itinerary tailored to us, with no templates. It truly felt like our own trip.",
-      "Noemi a compris exactement ce que nous cherchions dès le premier message. Elle nous a proposé un itinéraire sur mesure, sans modèles. Nous avons senti que le voyage était vraiment le nôtre.",
+      "Noemí entendió exactamente lo que buscábamos desde el primer mensaje. Nos propuso un itinerario hecho a nuestra medida, sin plantillas. Sentimos que el viaje era de verdad nuestro.",
+      "Noemí understood exactly what we were looking for from the very first message. She proposed an itinerary tailored to us, with no templates. It truly felt like our own trip.",
+      "Noemí a compris exactement ce que nous cherchions dès le premier message. Elle nous a proposé un itinéraire sur mesure, sans modèles. Nous avons senti que le voyage était vraiment le nôtre.",
     ),
   },
   {
@@ -311,9 +311,9 @@ const RAW_TESTIMONIALS = [
     date: "2025-08",
     trip: T("Atlas y Sahara · 7 días", "Atlas & Sahara · 7 days", "Atlas & Sahara · 7 jours"),
     quote: T(
-      "Se nota que Noemi conoce Marruecos de verdad. Sus recomendaciones —dónde parar, qué evitar, a qué hora llegar— marcaron la diferencia entre un buen viaje y uno inolvidable.",
-      "You can tell Noemi truly knows Morocco. Her recommendations —where to stop, what to avoid, when to arrive— made the difference between a good trip and an unforgettable one.",
-      "On sent que Noemi connaît vraiment le Maroc. Ses recommandations —où s'arrêter, quoi éviter, à quelle heure arriver— ont fait la différence entre un bon voyage et un voyage inoubliable.",
+      "Se nota que Noemí conoce Marruecos de verdad. Sus recomendaciones —dónde parar, qué evitar, a qué hora llegar— marcaron la diferencia entre un buen viaje y uno inolvidable.",
+      "You can tell Noemí truly knows Morocco. Her recommendations —where to stop, what to avoid, when to arrive— made the difference between a good trip and an unforgettable one.",
+      "On sent que Noemí connaît vraiment le Maroc. Ses recommandations —où s'arrêter, quoi éviter, à quelle heure arriver— ont fait la différence entre un bon voyage et un voyage inoubliable.",
     ),
   },
   {
@@ -335,13 +335,13 @@ const RAW_TESTIMONIALS = [
     date: "2025-06",
     trip: T("Luna de miel · 8 días", "Honeymoon · 8 days", "Lune de miel · 8 jours"),
     quote: T(
-      "Volveríamos a confiar en Noemi sin dudarlo. Nos acompañó desde el primer contacto hasta la vuelta a casa, con una dedicación y un cuidado excepcionales.",
-      "We would trust Noemi again without hesitation. She accompanied us from the first contact to our return home, with exceptional dedication and care.",
-      "Nous ferions de nouveau confiance à Noemi sans hésiter. Elle nous a accompagnés du premier contact jusqu'au retour à la maison, avec un dévouement et un soin exceptionnels.",
+      "Volveríamos a confiar en Noemí sin dudarlo. Nos acompañó desde el primer contacto hasta la vuelta a casa, con una dedicación y un cuidado excepcionales.",
+      "We would trust Noemí again without hesitation. She accompanied us from the first contact to our return home, with exceptional dedication and care.",
+      "Nous ferions de nouveau confiance à Noemí sans hésiter. Elle nous a accompagnés du premier contact jusqu'au retour à la maison, avec un dévouement et un soin exceptionnels.",
     ),
   },
 
-  /* ---- Elena Xaluca · Asesora de viajes ---- */
+  /* ---- Elena · Asesora de viajes ---- */
   {
     id: "elena-carla", name: "Carla P.", themes: ["elena"], date: "2025-11",
     trip: T("Viaje a medida · Marruecos", "Tailor-made · Morocco", "Sur mesure · Maroc"),
@@ -388,7 +388,7 @@ const RAW_TESTIMONIALS = [
     ),
   },
 
-  /* ---- Sanaa Xaluca · Asesora de viajes ---- */
+  /* ---- Sanaa · Asesora de viajes ---- */
   {
     id: "sanaa-javier", name: "Javier M.", themes: ["sanaa"], date: "2025-11",
     trip: T("Viaje a medida · Sur de Marruecos", "Tailor-made · Southern Morocco", "Sur mesure · Sud du Maroc"),

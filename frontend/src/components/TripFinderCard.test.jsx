@@ -153,7 +153,10 @@ test("the information CTA replaces stale context and never opens the trip progra
   pointer("pointerover");
   const cta = get("details-contact-cta");
   expect(cta.textContent).toBe("Solicitar información");
-  expect(cta.classList.contains("bg-[#A35133]")).toBe(true);
+  expect(cta.classList.contains("bg-[#C16542]")).toBe(true);
+  expect(cta.classList.contains("hover:bg-[#2C2621]")).toBe(true);
+  expect(get("details-cta").classList.contains("bg-[#2C2621]")).toBe(true);
+  expect(get("details-cta").classList.contains("hover:bg-[#C16542]")).toBe(true);
   cta.focus();
   pointer("pointerout");
   act(() => jest.advanceTimersByTime(200));

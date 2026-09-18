@@ -121,6 +121,28 @@ describe("responsive card interaction", () => {
     expect(media.removeEventListener).toHaveBeenCalledWith("change", listener);
   });
 
+  test("program and information CTAs use inverse black/orange states with the global button radius", () => {
+    render();
+    const program = get("details-cta");
+    expect(program.className).toContain("bg-[#2C2621]");
+    expect(program.className).toContain("hover:bg-[#C16542]");
+    expect(program.className).toContain("text-[#FDFBF7]");
+    expect(program.className).toContain("xaluca-button");
+
+    act(() => root.render(
+      <ExpandableTripCard title="Marruecos" description="Todo el itinerario, sin cortes." href="/viajes"
+        lang="es" testIdPrefix="responsive" secondaryAction={{ href: "/contacto", label: "Solicitar información" }}>
+        <div data-trip-card-image=""><img alt="El viaje" src="/trip.jpg" /></div>
+        <h3>Marruecos</h3>
+      </ExpandableTripCard>
+    ));
+    const information = get("details-contact-cta");
+    expect(information.className).toContain("bg-[#C16542]");
+    expect(information.className).toContain("hover:bg-[#2C2621]");
+    expect(information.className).toContain("text-[#FDFBF7]");
+    expect(information.className).toContain("xaluca-button");
+  });
+
   test("a responsive change preserves a focused CTA instead of hiding keyboard focus", () => {
     media.matches = false;
     render();

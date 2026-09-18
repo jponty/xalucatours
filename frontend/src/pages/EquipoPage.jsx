@@ -241,11 +241,11 @@ const COPY = {
     hint: { es: "Selecciona un perfil del equipo", en: "Select a team profile", fr: "Sélectionnez un profil de l'équipe" },
   },
   reviews: {
-    eyebrow: { es: "Opiniones sobre Noemi", en: "Reviews about Noemi", fr: "Avis sur Noemi" },
+    eyebrow: { es: "Opiniones sobre Noemí", en: "Reviews about Noemí", fr: "Avis sur Noemí" },
     title: {
-      es: "Lo que dicen los viajeros de Noemi.",
-      en: "What travellers say about Noemi.",
-      fr: "Ce que les voyageurs disent de Noemi.",
+      es: "Lo que dicen los viajeros de Noemí.",
+      en: "What travellers say about Noemí.",
+      fr: "Ce que les voyageurs disent de Noemí.",
     },
     subtitle: {
       es: "Atención personalizada, respuestas rápidas y un conocimiento profundo de Marruecos — así viven nuestros viajeros el trato de nuestro equipo.",

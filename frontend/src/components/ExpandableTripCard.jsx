@@ -110,7 +110,7 @@ export default function ExpandableTripCard({
               </Link>
               {secondaryAction && <Link to={secondaryAction.href} onClick={secondaryAction.onClick}
                 tabIndex={open ? undefined : -1} data-testid={testId("details-contact-cta")}
-                className="xaluca-button flex min-h-11 min-w-0 flex-[1_1_10rem] items-center justify-between gap-3 bg-[#A35133] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#843F28] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A35133]">
+                className="xaluca-button flex min-h-11 min-w-0 flex-[1_1_10rem] items-center justify-between gap-3 bg-[#C16542] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-[#FDFBF7] transition-colors hover:bg-[#2C2621] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]">
                 <span className="min-w-0 break-words">{secondaryAction.label}</span><ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
               </Link>}
             </div>

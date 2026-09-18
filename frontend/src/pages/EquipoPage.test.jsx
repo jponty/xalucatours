@@ -47,7 +47,7 @@ describe("the complete Xaluca team", () => {
 
   test("lists the four profiles in the requested order", () => {
     expect(TEAM_MEMBERS.map((member) => member.name.es)).toEqual([
-      "Noemi Aparicio", "Elena Xaluca", "Sanaa Xaluca", "Magda Xaluca",
+      "Noemí Aparicio", "Elena", "Sanaa", "Magda",
     ]);
     expect(container.querySelectorAll('[role="tab"]')).toHaveLength(4);
     expect(container.querySelector('[role="tab"][aria-selected="true"]').getAttribute("data-testid")).toBe("eq-team-dot-noemi");
