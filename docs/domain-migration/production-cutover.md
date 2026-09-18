@@ -57,6 +57,20 @@ por publicar este repositorio: deben revisarse antes de futuros envíos.
 
 ## Pendiente fuera de este cambio
 
+### Publicación de metadatos por ruta
+
+Render necesita reglas exactas antes de `/* → /index.html` para servir el HTML
+de cada URL sin barra final. El bloque marcado en `render.yaml` se genera desde
+el registro de rutas y el blog, sin mantener una segunda lista manual.
+
+Al añadir rutas, ejecutar `cd frontend && npm run sync:render-routes` y versionar
+el cambio de `render.yaml`. `prebuild` comprueba la sincronización. El Blueprint
+de Xaluca Tours debe sincronizarse para aplicar estas reglas en Render.
+No usar una reescritura general a `/*/index.html`: rompería rutas técnicas y
+URLs no generadas. Se mantiene el fallback SPA y los redirects de campañas.
+
+### Resto de la migración
+
 - Redirección 301 por hostname de xalucatravel.com hacia xalucatours.com,
   conservando ruta y query. No añadir un redirect global `/*` en el mismo Static
   Site compartido: también afectaría al dominio nuevo y podría producir un bucle.
