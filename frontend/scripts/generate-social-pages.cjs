@@ -1,18 +1,20 @@
 /*
  * Create physical HTML files for every public URL after the CRA build.
- * Render serves an existing static resource before applying the SPA rewrite,
- * so social crawlers can read route-specific Open Graph tags without JS.
+ * Publish both clean-URL .html files and directory indexes: the SPA rewrite
+ * otherwise captures slashless paths before their directory index on Render.
+ * Social crawlers must receive route-specific Open Graph tags without JS.
  */
 const fs = require("fs");
 const path = require("path");
 const { loadSiteData } = require("./generate-discovery.cjs");
 
 const ROOT = path.resolve(__dirname, "..");
-const BUILD = path.join(ROOT, "build");
+const outputArg = process.argv.indexOf("--output");
+const BUILD = outputArg < 0 ? path.join(ROOT, "build") : path.resolve(process.argv[outputArg + 1]);
 const IMAGE_VERSION = "20260811-2";
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
-const template = read("build/index.html");
+const template = fs.readFileSync(path.join(BUILD, "index.html"), "utf8");
 const importData = (file) => import(`data:text/javascript;base64,${Buffer.from(read(file)).toString("base64")}`);
 const escapeHtml = (value) => String(value).replace(/[<>&"']/g, (c) => ({
   "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;",
@@ -51,7 +53,9 @@ async function main() {
     const relative = normalizedUrl.replace(/^\//, "");
     const output = path.join(BUILD, relative, "index.html");
     fs.mkdirSync(path.dirname(output), { recursive: true });
-    fs.writeFileSync(output, replaceMeta(template, { lang, url: normalizedUrl, image, meta }));
+    const html = replaceMeta(template, { lang, url: normalizedUrl, image, meta });
+    fs.writeFileSync(output, html);
+    if (relative) fs.writeFileSync(path.join(BUILD, `${relative}.html`), html);
   };
 
   for (const routeId of Object.keys(ROUTES)) {
