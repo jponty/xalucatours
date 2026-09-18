@@ -298,13 +298,13 @@ const CitaPreviaPage = () => {
                    className="fade-up fade-up-delay-2 mt-7 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed" />
                 <div className="fade-up fade-up-delay-3 mt-9 flex flex-wrap items-center gap-4">
                   <a href="#booking" data-testid="citaprevia-hero-cta"
-                     className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+                     className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
                     <E name="hero.cta" multiline={false}
                        defaults={{ es: "Pedir cita previa", en: "Book an appointment", fr: "Prendre rendez-vous" }} />
                     <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
                   </a>
                   <a href={`tel:${CONTACT.phoneRaw || "+34937268366"}`} data-testid="citaprevia-hero-call"
-                     className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+                     className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
                     <Phone className="w-3.5 h-3.5" strokeWidth={1.5} />
                     {CONTACT.phone || "+34 937 268 366"}
                   </a>
@@ -372,12 +372,12 @@ const CitaPreviaPage = () => {
                className="mt-4 text-[14px] md:text-base text-[#5C5248] leading-relaxed max-w-2xl mx-auto" />
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <a href="#contact-form" data-testid="citaprevia-outro-contact"
-                 className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+                 className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
                 <E name="outro.cta" defaults={COPY.outro.cta} multiline={false} />
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
               </a>
               <a href={`tel:${CONTACT.phoneRaw || "+34937268366"}`} data-testid="citaprevia-outro-call"
-                 className="inline-flex items-center gap-3 text-[11px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors">
+                 className="xaluca-button inline-flex items-center gap-3 text-[11px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors">
                 <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
                 {CONTACT.phone || "+34 937 268 366"}
               </a>

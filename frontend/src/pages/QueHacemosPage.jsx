@@ -321,7 +321,7 @@ const Intro = ({ lang }) => (
           <Link
             to={pathFor(lang, "toursLanding")}
             data-testid="qh-intro-proposals"
-            className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
           >
             {pick(COPY.intro.proposalsCta, lang)}
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -329,7 +329,7 @@ const Intro = ({ lang }) => (
           <Link
             to={pathFor(lang, "upcomingDepartures")}
             data-testid="qh-intro-upcoming"
-            className="inline-flex items-center gap-2 border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-2 border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
           >
             {pick(COPY.intro.upcomingCta, lang)}
             <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -472,7 +472,7 @@ const TeamSection = ({ lang }) => (
             <Link
               to={pathFor(lang, "about")}
               data-testid="qh-team-cta"
-              className="inline-flex items-center gap-3 bg-[#C16542] px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] text-[#FDFBF7] transition-colors hover:bg-[#A8533A]"
+              className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] text-[#FDFBF7] transition-colors hover:bg-[#A8533A]"
             >
               {pick(COPY.team.cta, lang)}
               <ArrowRight className="h-4 w-4" strokeWidth={1.7} />
@@ -696,7 +696,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid="qh-cta-plan"
-          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.planCta, lang)}
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -704,7 +704,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid="qh-cta-contact"
-          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.contactCta, lang)}
           <MapPin className="w-4 h-4" strokeWidth={1.6} />

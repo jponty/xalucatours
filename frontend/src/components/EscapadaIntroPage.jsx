@@ -224,7 +224,7 @@ const ContactBand = ({ lang, t, accent = "#C16542" }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid="escapada-intro-cta-primary"
-          className="inline-flex items-center justify-between gap-4 px-7 py-5 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:opacity-90 text-[#FDFBF7]"
+          className="xaluca-button inline-flex items-center justify-between gap-4 px-7 py-5 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:opacity-90 text-[#FDFBF7]"
           style={{ background: accent }}
         >
           {t.cta_primary}
@@ -233,21 +233,21 @@ const ContactBand = ({ lang, t, accent = "#C16542" }) => (
         <a
           href={`tel:${CONTACT.phoneRaw}`}
           data-testid="escapada-intro-cta-phone"
-          className="inline-flex items-center gap-3 text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
+          className="xaluca-button inline-flex items-center gap-3 text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
         >
           <Phone className="w-4 h-4" strokeWidth={1.6} /> +34 937 268 366
         </a>
         <a
           href="mailto:xalucatours@xaluca.com"
           data-testid="escapada-intro-cta-mail"
-          className="inline-flex items-center gap-3 text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
+          className="xaluca-button inline-flex items-center gap-3 text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
         >
           <Mail className="w-4 h-4" strokeWidth={1.6} /> xalucatours@xaluca.com
         </a>
         <Link
           to={pathFor(lang, "tourShort")}
           data-testid="escapada-intro-cta-back"
-          className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/65 hover:text-[#FDFBF7] transition-colors mt-2"
+          className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#FDFBF7]/65 hover:text-[#FDFBF7] transition-colors mt-2"
         >
           ← {t.return_label}
         </Link>

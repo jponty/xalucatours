@@ -43,7 +43,7 @@ export default function OfficeContactCard() {
           target="_blank"
           rel="noopener noreferrer"
           data-testid="contact-office-google-maps"
-          className="inline-flex w-full min-w-0 items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-3.5 text-[11px] leading-relaxed tracking-[0.16em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542]"
+          className="xaluca-button inline-flex w-full min-w-0 items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-3.5 text-[11px] leading-relaxed tracking-[0.16em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542]"
         >
           <MapPin className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} aria-hidden="true" />
           <E name="contact.officeGoogleCta" defaults={COPY.google} multiline={false} className="min-w-0 break-words" />
@@ -53,7 +53,7 @@ export default function OfficeContactCard() {
           target="_blank"
           rel="noopener noreferrer"
           data-testid="contact-office-waze"
-          className="inline-flex w-full min-w-0 items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-4 py-3.5 text-[11px] leading-relaxed tracking-[0.16em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2C2621]"
+          className="xaluca-button inline-flex w-full min-w-0 items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-4 py-3.5 text-[11px] leading-relaxed tracking-[0.16em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2C2621]"
         >
           <Navigation className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} aria-hidden="true" />
           <E name="contact.officeWazeCta" defaults={COPY.waze} multiline={false} className="min-w-0 break-words" />

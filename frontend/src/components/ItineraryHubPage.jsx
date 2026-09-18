@@ -260,7 +260,7 @@ export default function ItineraryHubPage({ hub }) {
           <Link
             to={pathFor(lang, hub.oppositeHub.routeId)}
             data-testid={`hub-opposite-toggle-${hub.id}`}
-            className="hidden md:inline-flex absolute right-6 lg:right-10 top-28 lg:top-32 z-20 items-center gap-3 px-4 py-2.5 bg-[#FDFBF7]/12 hover:bg-[#FDFBF7] hover:text-[#1A1513] backdrop-blur-md border border-[#FDFBF7]/35 text-[#FDFBF7] text-[10.5px] tracking-[0.28em] uppercase transition-colors duration-300"
+            className="xaluca-button hidden md:inline-flex absolute right-6 lg:right-10 top-28 lg:top-32 z-20 items-center gap-3 px-4 py-2.5 bg-[#FDFBF7]/12 hover:bg-[#FDFBF7] hover:text-[#1A1513] backdrop-blur-md border border-[#FDFBF7]/35 text-[#FDFBF7] text-[10.5px] tracking-[0.28em] uppercase transition-colors duration-300"
           >
             <ArrowLeftRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             <C name="opposite.label" defaults={hub.oppositeHub.label} multiline={false} />
@@ -273,7 +273,7 @@ export default function ItineraryHubPage({ hub }) {
           <Link
             to={pathFor(lang, hub.oppositeHub.routeId)}
             data-testid={`hub-opposite-toggle-mobile-${hub.id}`}
-            className="flex items-center justify-center gap-3 px-5 py-3.5 text-[10px] tracking-[0.28em] uppercase hover:bg-[#3A2E25] transition-colors"
+            className="xaluca-button flex items-center justify-center gap-3 px-5 py-3.5 text-[10px] tracking-[0.28em] uppercase hover:bg-[#3A2E25] transition-colors"
           >
             <ArrowLeftRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             <C name="opposite.label" defaults={hub.oppositeHub.label} multiline={false} />

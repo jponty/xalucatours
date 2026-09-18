@@ -421,7 +421,7 @@ const TripTypesGrid = ({ t, lang }) => (
                 <Link
                   to={pathFor(lang, "contact")}
                   data-testid={`bespoke-type-cta-${tt.id}`}
-                  className="mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 self-start group-hover:gap-3 transition-all duration-300"
+                  className="xaluca-button mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 self-start group-hover:gap-3 transition-all duration-300"
                   style={{ borderColor: `${tt.accent}66`, color: tt.accent }}
                 >
                   {t.cta}
@@ -525,7 +525,7 @@ const ProcessTimeline = ({ t, lang }) => (
         <Link
           to={pathFor(lang, "appointment")}
           data-testid="bespoke-process-cta-primary"
-          className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
         >
           {t.cta_primary}
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
@@ -533,7 +533,7 @@ const ProcessTimeline = ({ t, lang }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid="bespoke-process-cta-secondary"
-          className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+          className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
         >
           {t.cta_secondary}
         </Link>

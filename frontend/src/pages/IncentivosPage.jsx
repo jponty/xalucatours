@@ -690,7 +690,7 @@ const EventVideos = ({ lang }) => {
                   target="_blank"
                   rel="noreferrer"
                   data-testid={`inc-video-link-${video.id}`}
-                  className="inline-flex shrink-0 items-center gap-2 self-start border-b border-[#C16542]/35 pb-1 text-[10px] uppercase tracking-[0.22em] text-[#C16542] transition-colors hover:border-[#C16542]"
+                  className="xaluca-button inline-flex shrink-0 items-center gap-2 self-start border-b border-[#C16542]/35 pb-1 text-[10px] uppercase tracking-[0.22em] text-[#C16542] transition-colors hover:border-[#C16542]"
                 >
                   {pick(COPY.videos.watch, lang)}
                   <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.7} />
@@ -761,7 +761,7 @@ const Process = ({ lang }) => (
           <Link
             to={pathFor(lang, "planTrip")}
             data-testid="inc-process-plan"
-            className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-6 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-6 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
           >
             {pick(COPY.process.planCta, lang)}
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -769,7 +769,7 @@ const Process = ({ lang }) => (
           <Link
             to={pathFor(lang, "contact")}
             data-testid="inc-process-contact"
-            className="inline-flex items-center gap-2 border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-6 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-2 border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-6 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors"
           >
             {pick(COPY.process.contactCta, lang)}
             <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -855,7 +855,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid="inc-cta-plan"
-          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.planCta, lang)}
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -863,7 +863,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid="inc-cta-contact"
-          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.contactCta, lang)}
           <MapPin className="w-4 h-4" strokeWidth={1.6} />

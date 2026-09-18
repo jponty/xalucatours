@@ -184,7 +184,7 @@ export const VirtualAssistantInfoModal = () => {
               <Link
                 to={pathFor(lang, "contact")}
                 data-testid="virtual-assistant-info-contact"
-                className="inline-flex items-center justify-center whitespace-nowrap border border-[#2C2621]/20 px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
+                className="xaluca-button inline-flex items-center justify-center whitespace-nowrap border border-[#2C2621]/20 px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
               >
                 {pick(COPY.contact, lang)}
               </Link>

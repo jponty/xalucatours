@@ -162,7 +162,7 @@ export const HeroSlider = () => {
                 <Link
                   to={pathFor(lang, "planTrip")}
                   data-testid="hero-cta-primary"
-                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                  className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
                   <EditableText
                     slot="home.hero.cta_primary"
@@ -174,7 +174,7 @@ export const HeroSlider = () => {
                 <Link
                   to={pathFor(lang, "toursLanding")}
                   data-testid="hero-cta-tours"
-                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 whitespace-nowrap"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 whitespace-nowrap"
                 >
                   <EditableText
                     slot="home.hero.cta_tours"
@@ -186,7 +186,7 @@ export const HeroSlider = () => {
                 <a
                   href="#categories"
                   data-testid="hero-cta-secondary"
-                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                 >
                   <EditableText
                     slot="home.hero.cta_secondary"
@@ -235,7 +235,7 @@ export const HeroSlider = () => {
                 <a
                   href={`tel:${CONTACT.phoneRaw}`}
                   data-testid="hero-phone"
-                  className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
+                  className="xaluca-button inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
                   {CONTACT.phone}
@@ -244,7 +244,7 @@ export const HeroSlider = () => {
                 <a
                   href={`mailto:${CONTACT.email}`}
                   data-testid="hero-email"
-                  className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
+                  className="xaluca-button inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
                   {CONTACT.email}

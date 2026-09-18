@@ -65,7 +65,7 @@ const CatalogoPage = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="catalogo-open-external"
-                className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] px-4 py-2.5 transition-colors"
+                className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[#2C2621] border border-[#2C2621]/25 hover:border-[#C16542] hover:text-[#C16542] px-4 py-2.5 transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.7} />
                 <ET k="openExternal" multiline={false} />

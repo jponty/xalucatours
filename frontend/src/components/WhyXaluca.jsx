@@ -77,7 +77,7 @@ export const WhyXaluca = () => {
                 <Link
                   to={pathFor(lang, c.route)}
                   data-testid={`why-card-cta-${c.num}`}
-                  className="mt-5 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#2C2621] hover:gap-3 transition-all duration-300"
+                  className="xaluca-button mt-5 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#2C2621] hover:gap-3 transition-all duration-300"
                 >
                   <EditableText
                     slot={`home.why.${c.num}.cta`}

@@ -37,7 +37,7 @@ export const TopInfoBar = () => {
         <a
           href={`tel:${CONTACT.phoneRaw}`}
           data-testid="top-info-phone"
-          className="inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
+          className="xaluca-button inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
         >
           <Phone className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.8} />
           <span className="hidden sm:inline text-[#D4A373] uppercase tracking-[0.2em]">
@@ -79,7 +79,7 @@ export const TopInfoBar = () => {
         <Link
           to={pathFor(lang, "contact")}
           data-testid="top-info-email"
-          className="hidden sm:inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
+          className="xaluca-button hidden sm:inline-flex items-center gap-2 hover:text-[#D4A373] transition-colors duration-300 whitespace-nowrap"
         >
           <Mail className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.8} />
           <span className="text-[#D4A373] uppercase tracking-[0.2em]">

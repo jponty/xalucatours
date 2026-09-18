@@ -129,7 +129,7 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
           data-testid={`landmark-card-plan-cta-${index}`}
           aria-label={pick(PLAN_CTA, lang)}
           title={pick(PLAN_CTA, lang)}
-          className="inline-flex items-center justify-center w-11 h-11 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
+          className="xaluca-button inline-flex items-center justify-center w-11 h-11 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors"
         >
           <Compass className="w-[18px] h-[18px]" strokeWidth={1.6} />
         </Link>
@@ -139,7 +139,7 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
           data-testid={`landmark-card-assistant-cta-${index}`}
           aria-label={pick(ASSISTANT_CTA, lang)}
           title={pick(ASSISTANT_CTA, lang)}
-          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+          className="xaluca-button inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
         >
           <Headset className="w-[18px] h-[18px]" strokeWidth={1.6} />
         </button>
@@ -148,7 +148,7 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
           data-testid={`landmark-card-call-cta-${index}`}
           aria-label={pick(CALL_CTA, lang)}
           title={pick(CALL_CTA, lang)}
-          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+          className="xaluca-button inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
         >
           <Phone className="w-[18px] h-[18px]" strokeWidth={1.6} />
         </a>
@@ -157,7 +157,7 @@ const Card = ({ image, accent, placeName, lang, index, total, slot }) => {
           data-testid={`landmark-card-appointment-cta-${index}`}
           aria-label={pick(APPOINTMENT_CTA, lang)}
           title={pick(APPOINTMENT_CTA, lang)}
-          className="inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
+          className="xaluca-button inline-flex items-center justify-center w-11 h-11 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-colors"
         >
           <CalendarClock className="w-[18px] h-[18px]" strokeWidth={1.6} />
         </Link>

@@ -57,7 +57,7 @@ export default function HubPeerNav({ routeId }) {
           <Link
             to={hubHref}
             data-testid="hub-peer-nav-back"
-            className="group inline-flex items-center gap-2.5 text-[10px] md:text-[11px] tracking-[0.25em] uppercase font-semibold text-[#2C2621] border-b border-[#2C2621]/30 pb-1.5 self-start md:self-auto hover:border-[#C16542] hover:text-[#C16542] transition-colors"
+            className="xaluca-button group inline-flex items-center gap-2.5 text-[10px] md:text-[11px] tracking-[0.25em] uppercase font-semibold text-[#2C2621] border-b border-[#2C2621]/30 pb-1.5 self-start md:self-auto hover:border-[#C16542] hover:text-[#C16542] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" strokeWidth={1.8} />
             {pickT(COPY.back, lang)}

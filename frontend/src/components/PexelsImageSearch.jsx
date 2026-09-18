@@ -382,7 +382,7 @@ export default function PexelsImageSearch({ lang = "es" }) {
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               data-testid="image-lightbox-credit"
-              className="mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.06em] text-[#FDFBF7]/70 hover:text-[#D4A373] transition-colors"
+              className="xaluca-button mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.06em] text-[#FDFBF7]/70 hover:text-[#D4A373] transition-colors"
             >
               {t.photoBy} {lightbox.photographer} · Pexels
               <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.7} />

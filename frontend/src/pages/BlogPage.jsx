@@ -346,7 +346,7 @@ export function BlogPostPage() {
         </h1>
         <Link
           to={pathFor(lang, "blog")}
-          className="mt-8 inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-6 py-3 text-[11px] tracking-[0.22em] uppercase"
+          className="xaluca-button mt-8 inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-6 py-3 text-[11px] tracking-[0.22em] uppercase"
         >
           {({ es: "Volver al blog", en: "Back to the blog", fr: "Retour au blog" })[lang]}
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -459,7 +459,7 @@ export function BlogPostPage() {
           <Link
             to={pathFor(lang, "blog")}
             data-testid="blog-post-back"
-            className="inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5 transition-colors"
+            className="xaluca-button inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5 transition-colors"
           >
             ← {({ es: "Todos los artículos", en: "All articles", fr: "Tous les articles" })[lang]}
           </Link>
@@ -500,7 +500,7 @@ export function BlogPostPage() {
               <Link
                 to={pathFor(lang, post.cta.route)}
                 data-testid={`blog-cta-link-${post.slug}`}
-                className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
               >
                 {({ es: "Ver este viaje", en: "View this trip", fr: "Voir ce voyage" })[lang]}
                 <ArrowRight className="w-4 h-4" strokeWidth={1.6} />

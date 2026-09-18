@@ -105,12 +105,12 @@ export default function ExpandableTripCard({
             {destinations.length > 0 && <ul className="mt-4 flex flex-wrap gap-1.5">{destinations.map((name) => <li key={name} className="min-w-0 max-w-full break-words border border-[#A07042]/20 bg-[#FDFBF7]/60 px-2 py-1 text-[10px] leading-relaxed text-[#74604D]">{name}</li>)}</ul>}
             <div className="mt-5 flex flex-wrap gap-2">
               <Link to={href} tabIndex={open ? undefined : -1} data-testid={testId("details-cta")}
-                className="flex min-h-11 min-w-0 flex-[1_1_10rem] items-center justify-between gap-3 bg-[#2C2621] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-[#FDFBF7] transition-colors hover:bg-[#C16542] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]">
+                className="xaluca-button flex min-h-11 min-w-0 flex-[1_1_10rem] items-center justify-between gap-3 bg-[#2C2621] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-[#FDFBF7] transition-colors hover:bg-[#C16542] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]">
                 <span className="min-w-0 break-words">{ctaLabel || L("program")}</span><ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
               </Link>
               {secondaryAction && <Link to={secondaryAction.href} onClick={secondaryAction.onClick}
                 tabIndex={open ? undefined : -1} data-testid={testId("details-contact-cta")}
-                className="flex min-h-11 min-w-0 flex-[1_1_10rem] items-center justify-between gap-3 bg-[#A35133] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#843F28] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A35133]">
+                className="xaluca-button flex min-h-11 min-w-0 flex-[1_1_10rem] items-center justify-between gap-3 bg-[#A35133] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#843F28] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A35133]">
                 <span className="min-w-0 break-words">{secondaryAction.label}</span><ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
               </Link>}
             </div>

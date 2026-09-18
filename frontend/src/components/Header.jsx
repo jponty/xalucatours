@@ -110,7 +110,7 @@ export const Header = () => {
               to={pathFor(lang, "favorites")}
               data-testid="header-favorites-button"
               aria-label={{ es: "Favoritos", en: "Favourites", fr: "Favoris" }[lang] || "Favoritos"}
-              className="relative inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
+              className="xaluca-button relative inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
             >
               <Heart className="w-5 h-5" strokeWidth={1.6} fill={favCount > 0 ? "#C16542" : "none"} />
               {favCount > 0 && (
@@ -126,7 +126,7 @@ export const Header = () => {
               to={pathFor(lang, "contact")}
               data-testid="header-contact-button"
               aria-label={pick(CONTACT_LABEL, lang)}
-              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 lg:px-5 py-2 lg:py-3 text-[10px] lg:text-[11px] tracking-[0.12em] lg:tracking-[0.25em] uppercase transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]"
+              className="xaluca-button inline-flex min-h-10 shrink-0 items-center justify-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 lg:px-5 py-2 lg:py-3 text-[10px] lg:text-[11px] tracking-[0.12em] lg:tracking-[0.25em] uppercase transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]"
             >
               <Mail className="hidden sm:block w-3.5 h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
               <EditableText slot="header.cta_contact" defaults={CONTACT_LABEL} multiline={false} />

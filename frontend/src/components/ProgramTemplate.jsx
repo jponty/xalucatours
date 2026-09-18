@@ -345,11 +345,11 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
             <Link to={`${pathFor(lang, "contact")}${routeId ? `?trip=${routeId}` : ""}`}
                onClick={() => routeId && setTripContext([routeId])}
                data-testid="program-hero-cta-primary"
-               className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
+               className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
               <L k="cta_primary" /><ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             </Link>
             <a href="#itinerary" data-testid="program-hero-cta-secondary"
-               className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 whitespace-nowrap">
+               className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 whitespace-nowrap">
               <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
             </a>
             <button type="button" onClick={onDownload} data-testid="program-hero-download"
@@ -363,7 +363,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
           </div>
         </div>
       </div>
-      <a href="#description" className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
+      <a href="#description" className="xaluca-button absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
         <L k="scroll" className="text-[10px] tracking-[0.35em] uppercase" />
         <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
       </a>
@@ -411,7 +411,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
           <Link
             to={`${pathFor(lang, "planTrip")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-plan"
-            className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-colors"
           >
             <Compass className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             <C name="desc.cta_plan" multiline={false}
@@ -420,7 +420,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
           <Link
             to={`${pathFor(lang, "appointment")}${routeId ? `?trip=${routeId}` : ""}`}
             data-testid="desc-cta-appointment"
-            className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
+            className="xaluca-button inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
           >
             <Calendar className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             <C name="desc.cta_appointment" multiline={false}
@@ -430,7 +430,7 @@ const Description = ({ vt, t, program, variant, lang, routeId }) => {
             to={`${pathFor(lang, "contact")}${routeId ? `?trip=${routeId}` : ""}`}
             onClick={() => routeId && setTripContext([routeId])}
             data-testid="desc-cta-contact"
-            className="inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
+            className="xaluca-button inline-flex items-center gap-3 lg:gap-2 whitespace-nowrap border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 lg:px-4 py-4 text-[11px] tracking-[0.25em] lg:tracking-[0.12em] uppercase transition-all duration-300"
           >
             <Mail className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
             <C name="desc.cta_contact" multiline={false}
@@ -587,7 +587,7 @@ const DayBlock = ({ day, idx, total, lang, t, routeId, hideDayGallery = false })
               <Link
                 to={`${pathFor(lang, "planTrip")}${routeId ? `?trip=${routeId}` : ""}`}
                 data-testid={`day-contact-${day.id}`}
-                className="inline-flex items-center gap-2.5 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300"
+                className="xaluca-button inline-flex items-center gap-2.5 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-3.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300"
               >
                 <Mail className="w-4 h-4" strokeWidth={1.6} />
                 {pick(CONTACT_LABEL, lang)}
@@ -667,7 +667,7 @@ const DayTimeline = ({ days, lang, t }) => {
               onClick={(e) => jump(e, d.id)}
               data-testid={`day-timeline-item-${d.id}`}
               title={`${t.day_label} ${i + 1} · ${pick(d.title, lang)}`}
-              className="group shrink-0 flex flex-col gap-0.5 px-3.5 py-2 border border-[#FDFBF7]/15 hover:border-[#D4A373] hover:bg-[#D4A373]/10 transition-colors min-w-[148px] max-w-[230px]"
+              className="xaluca-button group shrink-0 flex flex-col gap-0.5 px-3.5 py-2 border border-[#FDFBF7]/15 hover:border-[#D4A373] hover:bg-[#D4A373]/10 transition-colors min-w-[148px] max-w-[230px]"
             >
               <span className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#D4A373] whitespace-nowrap">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: d.accent || "#D4A373" }} />
@@ -788,11 +788,11 @@ const ContactBand = ({ t, lang }) => (
       </div>
       <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
         <a href="#form" data-testid="program-cta-budget"
-           className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+           className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
           <L k="cta_budget" /><ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </a>
         <Link to={pathFor(lang, "appointment")} data-testid="program-cta-appointment"
-              className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+              className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
           <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} /><L k="cta_appointment" />
         </Link>
         <button type="button" onClick={() => requestWhatsAppContact(WHATSAPP_URL)}

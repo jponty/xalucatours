@@ -368,7 +368,7 @@ export const TripFinder = () => {
             <Link
               to={pathFor(lang, "toursLanding")}
               data-testid="trip-finder-all-trips-cta"
-              className="inline-flex items-center justify-center gap-2.5 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] hover:text-[#C16542] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
+              className="xaluca-button inline-flex items-center justify-center gap-2.5 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] hover:text-[#C16542] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
             >
               {L(UI.allTrips)}
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />

@@ -170,7 +170,7 @@ export default function RuletaPromo() {
             <Link
               to={pathFor(lang, "concurso")}
               data-testid="home-ruleta-cta"
-              className="group inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A85231] text-[#FDFBF7] text-[13px] tracking-[0.2em] uppercase font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:gap-5 shadow-[0_18px_40px_-16px_rgba(193,101,66,0.8)]"
+              className="xaluca-button group inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A85231] text-[#FDFBF7] text-[13px] tracking-[0.2em] uppercase font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:gap-5 shadow-[0_18px_40px_-16px_rgba(193,101,66,0.8)]"
             >
               <Gift className="w-4 h-4" strokeWidth={2} />
               {pick(COPY.cta, lang)}

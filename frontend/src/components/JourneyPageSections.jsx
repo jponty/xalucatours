@@ -106,7 +106,7 @@ export const JourneyHero = ({
               <a
                 href={primaryHref}
                 data-testid={`${testid}-cta-primary`}
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
               >
                 {primaryCta}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
@@ -116,7 +116,7 @@ export const JourneyHero = ({
                   <Link
                     to={secondaryHref}
                     data-testid={`${testid}-cta-secondary`}
-                    className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                    className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                   >
                     {secondaryCta}
                     <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -125,7 +125,7 @@ export const JourneyHero = ({
                   <a
                     href={secondaryHref}
                     data-testid={`${testid}-cta-secondary`}
-                    className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                    className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                   >
                     {secondaryCta}
                     <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -140,7 +140,7 @@ export const JourneyHero = ({
       <a
         href={primaryHref}
         data-testid={`${testid}-scroll`}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors"
+        className="xaluca-button absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors"
       >
         <span className="text-[10px] tracking-[0.35em] uppercase">{scroll}</span>
         <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
@@ -259,7 +259,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
               <Link
                 to={itinerary.link ? pathFor(lang, itinerary.link) : ctaTarget}
                 data-testid={`itinerary-cta-${itinerary.id}`}
-                className="inline-flex items-center gap-3 text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:opacity-90"
+                className="xaluca-button inline-flex items-center gap-3 text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:opacity-90"
                 style={{ background: itinerary.accent }}
               >
                 {itinerary.link ? (t.cta_view || t.cta_request) : t.cta_request}
@@ -268,7 +268,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
               <a
                 href="#asesoramiento"
                 data-testid={`itinerary-cta-info-${itinerary.id}`}
-                className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
               >
                 {t.cta_info}
               </a>
@@ -285,7 +285,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                     <Link
                       to={pathFor(lang, rh.link)}
                       data-testid={`itinerary-related-link-${itinerary.id}-${i}`}
-                      className="inline-flex items-center gap-2 px-3.5 py-2 text-[10px] tracking-[0.22em] uppercase border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] transition-all duration-300"
+                      className="xaluca-button inline-flex items-center gap-2 px-3.5 py-2 text-[10px] tracking-[0.22em] uppercase border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] transition-all duration-300"
                     >
                       <ArrowLeftRight className="w-3 h-3" strokeWidth={1.7} />
                       {pick(rh.label, lang)}
@@ -313,7 +313,7 @@ export const ItineraryBlock = ({ itinerary, index, lang, t, ctaTarget }) => {
                         data-testid={`itinerary-variant-link-${itinerary.id}-${i}`}
                         onMouseEnter={() => warmHero(v.link)}
                         onFocus={() => warmHero(v.link)}
-                        className="group flex items-center justify-between gap-3 px-4 py-3 border bg-[#FDFBF7]/70 border-[#2C2621]/15 hover:bg-[#2C2621] hover:border-[#2C2621] transition-all duration-300"
+                        className="xaluca-button group flex items-center justify-between gap-3 px-4 py-3 border bg-[#FDFBF7]/70 border-[#2C2621]/15 hover:bg-[#2C2621] hover:border-[#2C2621] transition-all duration-300"
                         style={{ boxShadow: `inset 3px 0 0 ${itinerary.accent}` }}
                       >
                         <span className="text-[13px] md:text-[14px] text-[#2C2621] group-hover:text-[#FDFBF7] leading-snug transition-colors">
@@ -426,7 +426,7 @@ export const CtaBand = ({ t, lang, testid = "journey-cta-band" }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid={`${testid}-contact`}
-          className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
         >
           {t.cta_primary}
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
@@ -434,7 +434,7 @@ export const CtaBand = ({ t, lang, testid = "journey-cta-band" }) => (
         <Link
           to={pathFor(lang, "appointment")}
           data-testid={`${testid}-appointment`}
-          className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+          className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
         >
           {t.cta_secondary}
         </Link>
@@ -651,7 +651,7 @@ export const CommunityCta = ({ t, lang, testid = "community-cta", image }) => (
 
       <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
         <Link to={pathFor(lang, "contact")} data-testid={`${testid}-cta-contact`}
-              className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+              className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
           {t.cta_primary}
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </Link>
@@ -810,7 +810,7 @@ export const CatalogTeaser = ({ t, lang, testid = "catalog-teaser", image }) => 
         </h2>
         <p className="mt-6 text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed">{t.body}</p>
         <Link to={pathFor(lang, "toursLanding")} data-testid={`${testid}-cta`}
-              className="mt-10 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+              className="xaluca-button mt-10 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
           {t.cta}
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
         </Link>

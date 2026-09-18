@@ -78,7 +78,7 @@ export default function TripFinderCard({ trip, images, chip, lang, favorite, onT
         </p>
         <div className="mt-4 pt-4 border-t border-[#2C2621]/10 flex flex-wrap items-center justify-between gap-3">
           <div className="relative z-[2]"><FromPrice tone="dark" layout="stacked" routeId={trip.routeId} testid={`trip-finder-price-${trip.routeId}`} /></div>
-          <Link to={href} className="relative z-[2] inline-flex min-h-11 items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]">
+          <Link to={href} className="xaluca-button relative z-[2] inline-flex min-h-11 items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]">
             {L("view")}<ArrowUpRight className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />
           </Link>
         </div>

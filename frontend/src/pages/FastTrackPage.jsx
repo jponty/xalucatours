@@ -238,7 +238,7 @@ export default function FastTrackPage() {
                 href="#activar"
                 onClick={scrollToSection("activar")}
                 data-testid="fast-track-hero-cta"
-                className="inline-flex items-center justify-center gap-3 bg-[#C16542] px-8 py-4 text-[10px] uppercase tracking-[0.25em] transition-colors hover:bg-[#A35133]"
+                className="xaluca-button inline-flex items-center justify-center gap-3 bg-[#C16542] px-8 py-4 text-[10px] uppercase tracking-[0.25em] transition-colors hover:bg-[#A35133]"
               >
                 Activar Fast Track
                 <ArrowRight className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
@@ -312,7 +312,7 @@ export default function FastTrackPage() {
               <Link
                 to={pathFor("es", "planTrip")}
                 data-testid="fast-track-standard-request"
-                className="inline-flex items-center justify-center gap-3 border border-[#2C2621]/22 px-7 py-4 text-[10px] uppercase tracking-[0.22em] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
+                className="xaluca-button inline-flex items-center justify-center gap-3 border border-[#2C2621]/22 px-7 py-4 text-[10px] uppercase tracking-[0.22em] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
               >
                 Solicitar presupuesto gratuito
                 <ArrowRight className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
@@ -320,7 +320,7 @@ export default function FastTrackPage() {
               <a
                 href="#activar"
                 onClick={scrollToSection("activar")}
-                className="inline-flex items-center justify-center gap-3 bg-[#C16542] px-7 py-4 text-[10px] uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#A35133]"
+                className="xaluca-button inline-flex items-center justify-center gap-3 bg-[#C16542] px-7 py-4 text-[10px] uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#A35133]"
               >
                 Elegir atención prioritaria
               </a>
@@ -559,7 +559,7 @@ export default function FastTrackPage() {
           </div>
           <div className="mt-12 text-center">
             <p className="text-sm text-[#5C5248]">¿Todavía tienes dudas antes de solicitarlo?</p>
-            <Link to={pathFor("es", "contact")} className="mt-4 inline-flex items-center gap-2 border-b border-[#C16542]/45 pb-1 text-[10px] uppercase tracking-[0.24em] text-[#C16542]">
+            <Link to={pathFor("es", "contact")} className="xaluca-button mt-4 inline-flex items-center gap-2 border-b border-[#C16542]/45 pb-1 text-[10px] uppercase tracking-[0.24em] text-[#C16542]">
               Hablar con el equipo
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.6} />
             </Link>

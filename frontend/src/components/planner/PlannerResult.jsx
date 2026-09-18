@@ -207,14 +207,14 @@ export default function PlannerResult({ input, recommendation, viability, warnin
                 <Link
                   to={`${pathFor(lang, "planTrip")}?trip=${trip.routeId}`}
                   data-testid="planner-cta-request"
-                  className="inline-flex items-center justify-center gap-2 bg-[#C16542] hover:bg-[#A8523180] text-[#FDFBF7] text-[12px] tracking-[0.18em] uppercase font-semibold px-6 py-3.5 rounded-full transition-colors duration-300"
+                  className="xaluca-button inline-flex items-center justify-center gap-2 bg-[#C16542] hover:bg-[#A8523180] text-[#FDFBF7] text-[12px] tracking-[0.18em] uppercase font-semibold px-6 py-3.5 rounded-full transition-colors duration-300"
                 >
                   {pick(C.cta_request, lang)} <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
                 </Link>
                 <Link
                   to={pathFor(lang, trip.routeId)}
                   data-testid="planner-cta-view"
-                  className="inline-flex items-center justify-center gap-2 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] text-[12px] tracking-[0.18em] uppercase font-semibold px-6 py-3.5 rounded-full transition-colors duration-300"
+                  className="xaluca-button inline-flex items-center justify-center gap-2 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] text-[12px] tracking-[0.18em] uppercase font-semibold px-6 py-3.5 rounded-full transition-colors duration-300"
                 >
                   {pick(C.cta_view, lang)} <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
                 </Link>

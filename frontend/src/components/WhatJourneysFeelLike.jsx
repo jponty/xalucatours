@@ -120,7 +120,7 @@ export const WhatJourneysFeelLike = () => {
                   <Link
                     to={pathFor(lang, "toursLanding")}
                     data-testid={`feel-cta-${c.slug}`}
-                    className="mt-7 inline-flex w-fit items-center gap-3 border-b pb-2 text-[10px] font-medium uppercase tracking-[0.2em] transition-all duration-300 hover:gap-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
+                    className="xaluca-button mt-7 inline-flex w-fit items-center gap-3 border-b pb-2 text-[10px] font-medium uppercase tracking-[0.2em] transition-all duration-300 hover:gap-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
                     style={{ borderColor: c.accent, color: c.accent }}
                     aria-label={`${ctaLabel}: ${t(c.k_title)}`}
                   >

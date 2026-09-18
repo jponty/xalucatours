@@ -359,7 +359,7 @@ const Hero = ({ lang }) => (
               <Link
                 to={pathFor(lang, "planTrip")}
                 data-testid="mar-hero-plan"
-                className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
               >
                 {pick(COPY.hero.cta1, lang)}
                 <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -367,7 +367,7 @@ const Hero = ({ lang }) => (
               <Link
                 to={pathFor(lang, "toursLanding")}
                 data-testid="mar-hero-tours"
-                className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors backdrop-blur-sm"
+                className="xaluca-button inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors backdrop-blur-sm"
               >
                 {pick(COPY.hero.cta2, lang)}
                 <ArrowUpRight className="w-4 h-4" strokeWidth={1.6} />
@@ -472,7 +472,7 @@ export const MoroccoLightFilm = ({ lang }) => {
               href={MOROCCO_LIGHT_VIDEO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.24em] text-[#D4A373] hover:text-white"
+              className="xaluca-button inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.24em] text-[#D4A373] hover:text-white"
             >
               {pick(COPY.film.youtube, lang)}
               <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -741,7 +741,7 @@ const Seasons = ({ lang }) => (
           <Link
             to={pathFor(lang, "whenToTravel")}
             data-testid="mar-seasons-cta"
-            className="mt-4 inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5 transition-colors"
+            className="xaluca-button mt-4 inline-flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5 transition-colors"
           >
             {pick(COPY.seasons.seeFull, lang)}
             <ArrowUpRight className="w-3 h-3" strokeWidth={1.8} />
@@ -892,7 +892,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid="mar-cta-primary"
-          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.primary, lang)}
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -900,7 +900,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "toursLanding")}
           data-testid="mar-cta-secondary"
-          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.secondary, lang)}
           <ArrowUpRight className="w-4 h-4" strokeWidth={1.6} />
@@ -908,7 +908,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid="mar-cta-tertiary"
-          className="inline-flex items-center gap-2 text-[#FDFBF7]/80 hover:text-[#FDFBF7] px-5 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 text-[#FDFBF7]/80 hover:text-[#FDFBF7] px-5 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.cta.tertiary, lang)}
           <Phone className="w-4 h-4" strokeWidth={1.6} />

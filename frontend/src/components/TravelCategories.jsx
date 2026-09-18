@@ -209,7 +209,7 @@ export const TravelCategories = () => {
                             <Link
                               to={pathFor(lang, d.tripRouteId)}
                               data-testid={`category-departure-cta-${d.id}`}
-                              className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-3 border border-[#C16542]/40 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] transition-colors duration-300 hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 sm:w-auto sm:self-start"
+                              className="xaluca-button inline-flex min-h-11 w-full max-w-full items-center justify-center gap-3 border border-[#C16542]/40 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] transition-colors duration-300 hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2 sm:w-auto sm:self-start"
                             >
                               {pick(VIEW_TRIP_LABEL, lang)}
                               <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.6} />
@@ -224,7 +224,7 @@ export const TravelCategories = () => {
                     <Link
                       to={linkTo || pathFor(lang, "contact")}
                       data-testid={`category-cta-${c.slug}`}
-                      className="inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
+                      className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/20 px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] transition-all duration-300"
                     >
                       <EditableText
                         slot="home.cat.discover_cta"
@@ -249,7 +249,7 @@ export const TravelCategories = () => {
                       data-testid={`category-plan-${c.slug}`}
                       aria-label={pick(PLAN_LABEL, lang)}
                       title={pick(PLAN_LABEL, lang)}
-                      className="inline-flex items-center justify-center w-[50px] h-[50px] bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors duration-300"
+                      className="xaluca-button inline-flex items-center justify-center w-[50px] h-[50px] bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors duration-300"
                     >
                       <Compass className="w-4 h-4" strokeWidth={1.6} />
                     </Link>

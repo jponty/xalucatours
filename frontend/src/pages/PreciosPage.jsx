@@ -353,7 +353,7 @@ const PackageCard = ({ pkg, price, lang }) => {
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid={`pricing-cta-plan-${slug}`}
-          className="flex-1 inline-flex items-center justify-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3.5 text-[11px] tracking-[0.2em] uppercase transition-colors"
+          className="xaluca-button flex-1 inline-flex items-center justify-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3.5 text-[11px] tracking-[0.2em] uppercase transition-colors"
         >
           <EditableText slot="precios.cta_primary" defaults={{ es: "Solicitar este viaje", en: "Request this trip", fr: "Demander ce voyage" }} multiline={false} />
           <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -361,7 +361,7 @@ const PackageCard = ({ pkg, price, lang }) => {
         <Link
           to={pathFor(lang, "contact")}
           data-testid={`pricing-cta-contact-${slug}`}
-          className="inline-flex items-center justify-center gap-2.5 border border-[#2C2621]/25 hover:border-[#1A1513] hover:bg-[#1A1513] hover:text-[#FDFBF7] text-[#1A1513] px-5 py-3.5 text-[11px] tracking-[0.2em] uppercase transition-all duration-300"
+          className="xaluca-button inline-flex items-center justify-center gap-2.5 border border-[#2C2621]/25 hover:border-[#1A1513] hover:bg-[#1A1513] hover:text-[#FDFBF7] text-[#1A1513] px-5 py-3.5 text-[11px] tracking-[0.2em] uppercase transition-all duration-300"
         >
           <EditableText slot="precios.cta_secondary" defaults={{ es: "Contactar", en: "Contact", fr: "Contact" }} multiline={false} />
         </Link>
@@ -460,7 +460,7 @@ export default function PreciosPage() {
                 <Link
                   to={pathFor(lang, "planTrip")}
                   data-testid="precios-trust-cta-plan"
-                  className="inline-flex items-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
+                  className="xaluca-button inline-flex items-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
                 >
                   <EditableText slot="precios.cta_primary" defaults={{ es: "Solicitar este viaje", en: "Request this trip", fr: "Demander ce voyage" }} multiline={false} />
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -468,7 +468,7 @@ export default function PreciosPage() {
                 <Link
                   to={pathFor(lang, "contact")}
                   data-testid="precios-trust-cta-contact"
-                  className="inline-flex items-center gap-2.5 border border-[#FDFBF7]/35 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-all duration-300"
+                  className="xaluca-button inline-flex items-center gap-2.5 border border-[#FDFBF7]/35 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-all duration-300"
                 >
                   <EditableText slot="precios.cta_secondary" defaults={{ es: "Contactar", en: "Contact", fr: "Contact" }} multiline={false} />
                 </Link>

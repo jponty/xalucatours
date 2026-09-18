@@ -164,7 +164,7 @@ const NotFoundEditor = ({ backHref, page, section }) => (
       <Link
         to={backHref}
         data-testid="image-editor-back-notfound"
-        className="mt-7 inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#1A1513] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors"
+        className="xaluca-button mt-7 inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#1A1513] text-[#FDFBF7] px-5 py-3 text-[11px] tracking-[0.25em] uppercase transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" strokeWidth={1.8} />
         Volver
@@ -342,7 +342,7 @@ const EditorBody = ({ group, initialIndex, backHref, page, section, onCancel }) 
           <Link
             to={backHref}
             data-testid="image-editor-back"
-            className="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
+            className="xaluca-button inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.7} />
             Volver

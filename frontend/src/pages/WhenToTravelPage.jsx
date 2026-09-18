@@ -223,7 +223,7 @@ const SeasonRecommendedCarousel = ({ season, lang, label }) => {
                   to={pathFor(lang, it.route)}
                   data-testid={`season-recommended-cta-${season.id}-${i}`}
                   aria-label={pick(it.label, lang)}
-                  className="inline-flex items-center justify-center w-9 h-9 shrink-0 text-[#FDFBF7] transition-transform duration-300 group-hover/reco:translate-x-0.5"
+                  className="xaluca-button inline-flex items-center justify-center w-9 h-9 shrink-0 text-[#FDFBF7] transition-transform duration-300 group-hover/reco:translate-x-0.5"
                   style={{ backgroundColor: season.accent }}
                 >
                   <ArrowRight className="w-4 h-4" strokeWidth={1.8} />
@@ -420,7 +420,7 @@ export default function WhenToTravelPage() {
                   <Link
                     to={pathFor(lang, SEASON_ROUTE[season.id])}
                     data-testid={`year-round-cta-${season.id}`}
-                    className="group/cta mt-auto pt-4 border-t border-[#2C2621]/10 inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold transition-colors"
+                    className="xaluca-button group/cta mt-auto pt-4 border-t border-[#2C2621]/10 inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold transition-colors"
                     style={{ color: season.accent }}
                   >
                     {pick(COPY.yearRound.cta, lang)}
@@ -927,7 +927,7 @@ export default function WhenToTravelPage() {
           <Link
             to={pathFor(lang, "planTrip")}
             data-testid="when-plantrip-cta"
-            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.3em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.3em] uppercase transition-colors"
           >
             {pick(COPY.finalCta.cta, lang)}
             <ArrowRight className="w-4 h-4" strokeWidth={1.6} />

@@ -364,7 +364,7 @@ export const HomeCategoryCarousel = ({
             <Link
               to={pathFor(lang, ctaRouteId)}
               data-testid={`${testid}-cta`}
-              className="ml-2 md:ml-4 inline-flex items-center gap-3 px-6 py-3.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
+              className="xaluca-button ml-2 md:ml-4 inline-flex items-center gap-3 px-6 py-3.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
               style={{
                 background: accent,
                 color: "#FDFBF7",

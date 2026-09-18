@@ -634,7 +634,7 @@ const DestinationCard = ({ card, sectionAccent, lang }) => (
                 <Link
                   to={pathFor(lang, trip.routeId)}
                   data-testid={`qvm-trip-${card.id}-${i}`}
-                  className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
+                  className="xaluca-button group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
                   style={{ borderLeft: `2px solid ${sectionAccent}55` }}
                 >
                   <span className="flex flex-col gap-0.5 min-w-0">
@@ -1065,7 +1065,7 @@ const DestinationsMap = ({ lang }) => {
                           <Link
                             to={pathFor(lang, trip.routeId)}
                             data-testid={`qvm-map-trip-${active.card.id}-${i}`}
-                            className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
+                            className="xaluca-button group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
                             style={{ borderLeft: `2px solid ${active.section.accent}55` }}
                           >
                             <span className="flex flex-col gap-0.5 min-w-0">
@@ -1154,7 +1154,7 @@ const DestinationsMap = ({ lang }) => {
                         <Link
                           to={pathFor(lang, "whenToTravel")}
                           data-testid={`qvm-route-climate-link-${activeRoute.id}`}
-                          className="mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5"
+                          className="xaluca-button mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#C16542] hover:text-[#A8533A] border-b border-[#C16542]/40 pb-0.5"
                         >
                           {pick(COPY.map.seeGuide, lang)}
                           <ArrowUpRight className="w-3 h-3" strokeWidth={1.8} />
@@ -1192,7 +1192,7 @@ const DestinationsMap = ({ lang }) => {
                     <Link
                       to={pathFor(lang, activeRoute.routeId)}
                       data-testid={`qvm-route-cta-${activeRoute.id}`}
-                      className="inline-flex items-center gap-2 px-5 py-3 text-[11px] tracking-[0.22em] uppercase text-[#FDFBF7] transition-colors"
+                      className="xaluca-button inline-flex items-center gap-2 px-5 py-3 text-[11px] tracking-[0.22em] uppercase text-[#FDFBF7] transition-colors"
                       style={{ backgroundColor: activeRoute.color }}
                     >
                       {pick(COPY.map.routeCta, lang)}
@@ -1250,7 +1250,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid="qvm-final-cta-plan"
-          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.finalCta.primary, lang)}
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -1258,7 +1258,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "toursLanding")}
           data-testid="qvm-final-cta-tours"
-          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           {pick(COPY.finalCta.secondary, lang)}
           <Building2 className="w-4 h-4" strokeWidth={1.6} />

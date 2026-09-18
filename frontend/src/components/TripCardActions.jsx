@@ -55,7 +55,7 @@ export default function TripCardActions({
       ? `${window.location.origin}${routeId ? pathFor(lang, routeId) : window.location.pathname}`
       : "";
 
-  const box = `inline-flex items-center justify-center ${s.btn} transition-colors duration-300`;
+  const box = `xaluca-button inline-flex items-center justify-center ${s.btn} transition-colors duration-300`;
   const outline =
     tone === "dark"
       ? `${box} border border-[#FDFBF7]/30 text-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] hover:border-[#FDFBF7]`

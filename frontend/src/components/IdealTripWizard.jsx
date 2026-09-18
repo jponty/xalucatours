@@ -479,7 +479,7 @@ const Results = ({ answers, lang, onRestart, onClose }) => {
                   to={pathFor(lang, trip.routeId)}
                   onClick={onClose}
                   data-testid={`ideal-trip-view-${trip.routeId}`}
-                  className="inline-flex items-center gap-2 bg-[#C16542] px-4 py-2.5 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#A35133]"
+                  className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] px-4 py-2.5 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#A35133]"
                 >
                   {pick(COPY.results.view, lang)} <ArrowRight className="h-3 w-3" />
                 </Link>
@@ -487,7 +487,7 @@ const Results = ({ answers, lang, onRestart, onClose }) => {
                   to={pathFor(lang, "planTrip")}
                   onClick={() => { setTripContext(trip.routeId); onClose(); }}
                   data-testid={`ideal-trip-info-${trip.routeId}`}
-                  className="inline-flex items-center border border-[#2C2621]/20 px-4 py-2.5 text-[9px] uppercase tracking-[0.15em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
+                  className="xaluca-button inline-flex items-center border border-[#2C2621]/20 px-4 py-2.5 text-[9px] uppercase tracking-[0.15em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:text-[#C16542]"
                 >
                   {pick(COPY.results.info, lang)}
                 </Link>
@@ -507,7 +507,7 @@ const Results = ({ answers, lang, onRestart, onClose }) => {
           to={pathFor(lang, "planTrip")}
           onClick={onClose}
           data-testid="ideal-trip-bespoke"
-          className="inline-flex items-center justify-center gap-2 bg-[#2C2621] px-6 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#C16542]"
+          className="xaluca-button inline-flex items-center justify-center gap-2 bg-[#2C2621] px-6 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#C16542]"
         >
           {pick(COPY.results.bespoke, lang)} <ChevronRight className="h-3.5 w-3.5" />
         </Link>

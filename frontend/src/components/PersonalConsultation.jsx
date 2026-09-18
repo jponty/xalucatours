@@ -54,7 +54,7 @@ export const PersonalConsultation = () => {
               <a
                 href={`tel:${CONTACT.phoneRaw}`}
                 data-testid="consult-cta-call"
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
               >
                 <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
                 <EditableText
@@ -66,7 +66,7 @@ export const PersonalConsultation = () => {
               <Link
                 to={pathFor(lang, "contact")}
                 data-testid="consult-cta-visit"
-                className="inline-flex items-center gap-3 border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/20 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
               >
                 <Calendar className="w-3.5 h-3.5" strokeWidth={1.5} />
                 <EditableText
@@ -157,7 +157,7 @@ export const CommunityCTA = () => {
           <Link
             to={pathFor(lang, "planTrip")}
             data-testid="community-cta-plan"
-            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
             <EditableText
               slot="home.community.cta_plan"
@@ -169,7 +169,7 @@ export const CommunityCTA = () => {
           <Link
             to={pathFor(lang, "contact")}
             data-testid="community-cta-specialist"
-            className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+            className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
             <EditableText
               slot="home.community.cta_specialist"

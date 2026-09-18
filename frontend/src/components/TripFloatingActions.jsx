@@ -136,7 +136,7 @@ export default function TripFloatingActions({ routeId, lang = "es", hasChronolog
               <p>{t.title}</p>
               <Link to={`${pathFor(lang, "contact")}${routeId ? `?trip=${encodeURIComponent(routeId)}` : ""}`}
                 onClick={() => routeId && setTripContext([routeId])}
-                tabIndex={pastHero ? 0 : -1} data-testid="trip-contact-cta">
+                tabIndex={pastHero ? 0 : -1} data-testid="trip-contact-cta" className="xaluca-button">
                 {t.cta}<ArrowRight size={16} aria-hidden="true" />
               </Link>
             </aside>

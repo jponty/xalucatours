@@ -396,7 +396,7 @@ const DepartureCard = ({ dep, t, lang }) => {
               <Link
                 to={pathFor(lang, dep.tripRouteId)}
                 data-testid={`departure-cta-trip-${dep.id}`}
-                className="inline-flex min-h-11 max-w-full items-center justify-center gap-3 border border-[#C16542]/40 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] transition-colors duration-300 hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
+                className="xaluca-button inline-flex min-h-11 max-w-full items-center justify-center gap-3 border border-[#C16542]/40 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] transition-colors duration-300 hover:bg-[#C16542] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
               >
                 {t.view_trip}
                 <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.6} />
@@ -405,7 +405,7 @@ const DepartureCard = ({ dep, t, lang }) => {
             <a
               href="#form"
               data-testid={`departure-cta-reserve-${dep.id}`}
-              className={`inline-flex min-h-11 max-w-full items-center justify-center gap-3 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase transition-all duration-300 ${
+              className={`xaluca-button inline-flex min-h-11 max-w-full items-center justify-center gap-3 px-6 py-3 text-center text-[10px] tracking-[0.25em] uppercase transition-all duration-300 ${
                 dep.status === "sold-out"
                   ? "bg-[#2C2621]/15 text-[#2C2621]/45 pointer-events-none"
                   : "bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7]"

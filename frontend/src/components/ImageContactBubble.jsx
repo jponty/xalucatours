@@ -165,7 +165,7 @@ export const ImageContactBubble = ({
                 to={pathFor(lang, "appointment")}
                 onClick={() => setOpen(false)}
                 data-testid={`image-contact-cta-${slug}`}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#C16542] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFBF7]"
+                className="xaluca-button inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#C16542] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFBF7]"
               >
                 {pick(CTA, lang)}
                 <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
@@ -175,7 +175,7 @@ export const ImageContactBubble = ({
                 onClick={() => setOpen(false)}
                 aria-label={`${pick(CALL, lang)}: 937 268 366`}
                 data-testid={`image-contact-phone-${slug}`}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#FDFBF7]/35 px-4 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:border-[#D4A373] hover:text-[#D4A373] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFBF7]"
+                className="xaluca-button inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#FDFBF7]/35 px-4 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:border-[#D4A373] hover:text-[#D4A373] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFBF7]"
               >
                 <Phone className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
                 {pick(CALL, lang)}

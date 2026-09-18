@@ -126,7 +126,7 @@ export default function SouthTravelTimelinePage() {
           </div>
 
           <nav aria-label={p(T("Ir a un mes", "Jump to a month", "Aller à un mois"))} className="flex gap-2 overflow-x-auto pb-5 mb-12 snap-x">
-            {MONTHS.map((month) => <a key={month.id} href={`#mes-${month.id}`} className="shrink-0 snap-start border border-[#2C2621]/15 bg-white px-4 py-3 text-[10px] tracking-[0.18em] uppercase hover:border-[#C16542] hover:text-[#C16542] transition-colors">{p(month.name)}</a>)}
+            {MONTHS.map((month) => <a key={month.id} href={`#mes-${month.id}`} className="xaluca-button shrink-0 snap-start border border-[#2C2621]/15 bg-white px-4 py-3 text-[10px] tracking-[0.18em] uppercase hover:border-[#C16542] hover:text-[#C16542] transition-colors">{p(month.name)}</a>)}
           </nav>
 
           <div className="relative">
@@ -167,7 +167,7 @@ export default function SouthTravelTimelinePage() {
       <section id="planificar" className="py-20 md:py-28 bg-[#211B17] text-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-12 gap-10 items-end">
           <div className="lg:col-span-8"><span className="inline-flex items-center gap-2 text-[10px] tracking-[0.34em] uppercase text-[#D4A373] mb-5"><CheckCircle2 className="w-4 h-4" />{p(T("Diseñamos la temporada contigo", "We plan the season with you", "Nous choisissons la saison avec vous"))}</span><h2 className="font-serif-x text-4xl md:text-6xl leading-tight">{p(T("El mejor mes es el que mejor se adapta a tu viaje.", "The best month is the one that best fits your journey.", "Le meilleur mois est celui qui convient le mieux à votre voyage."))}</h2></div>
-          <div className="lg:col-span-4 flex flex-col gap-3"><Link to={pathFor(lang, "planTrip")} className="inline-flex justify-between items-center bg-[#C66745] hover:bg-[#D57855] px-6 py-5 text-[10px] tracking-[0.25em] uppercase transition-colors">{p(T("Planificar mi viaje", "Plan my trip", "Planifier mon voyage"))}<ArrowRight className="w-4 h-4" /></Link><Link to={pathFor(lang, "tourSouth")} className="inline-flex justify-between items-center border border-white/25 hover:border-white px-6 py-5 text-[10px] tracking-[0.25em] uppercase transition-colors">{p(T("Ver viajes por el sur", "See southern tours", "Voir les voyages dans le sud"))}<ArrowRight className="w-4 h-4" /></Link></div>
+          <div className="lg:col-span-4 flex flex-col gap-3"><Link to={pathFor(lang, "planTrip")} className="xaluca-button inline-flex justify-between items-center bg-[#C66745] hover:bg-[#D57855] px-6 py-5 text-[10px] tracking-[0.25em] uppercase transition-colors">{p(T("Planificar mi viaje", "Plan my trip", "Planifier mon voyage"))}<ArrowRight className="w-4 h-4" /></Link><Link to={pathFor(lang, "tourSouth")} className="xaluca-button inline-flex justify-between items-center border border-white/25 hover:border-white px-6 py-5 text-[10px] tracking-[0.25em] uppercase transition-colors">{p(T("Ver viajes por el sur", "See southern tours", "Voir les voyages dans le sud"))}<ArrowRight className="w-4 h-4" /></Link></div>
         </div>
       </section>
     </div>

@@ -200,7 +200,7 @@ export default function OpinionesPage() {
             <Link
               to={pathFor(lang, "feedback")}
               data-testid="opiniones-feedback-link"
-              className="inline-flex w-full items-center justify-center gap-3 bg-[#C16542] px-8 py-5 text-[11px] uppercase tracking-[0.24em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] sm:w-auto"
+              className="xaluca-button inline-flex w-full items-center justify-center gap-3 bg-[#C16542] px-8 py-5 text-[11px] uppercase tracking-[0.24em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] sm:w-auto"
             >
               <EditableText
                 slot="opiniones.feedback.button"
@@ -260,7 +260,7 @@ export default function OpinionesPage() {
             <Link
               to={pathFor(lang, "planTrip")}
               data-testid="opiniones-cta-plan"
-              className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <EditableText slot="opiniones.cta.plan" defaults={{ es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" }} multiline={false} />
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -268,7 +268,7 @@ export default function OpinionesPage() {
             <Link
               to={pathFor(lang, "contact")}
               data-testid="opiniones-cta-contact"
-              className="inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5" strokeWidth={1.7} />
               <EditableText slot="opiniones.cta.contact" defaults={{ es: "Contactar", en: "Contact us", fr: "Nous contacter" }} multiline={false} />

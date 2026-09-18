@@ -359,7 +359,7 @@ export default function ArchivoPage() {
                         <Link
                           to={href}
                           onClick={(event) => event.stopPropagation()}
-                          className="inline-flex w-full items-center justify-center gap-3 bg-[#C16542] px-5 py-3.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#A95436] md:w-auto"
+                          className="xaluca-button inline-flex w-full items-center justify-center gap-3 bg-[#C16542] px-5 py-3.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#A95436] md:w-auto"
                         >
                           {pick(COPY.view, lang)}
                           <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.7} />

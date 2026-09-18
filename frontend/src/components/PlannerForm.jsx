@@ -632,7 +632,7 @@ export default function PlannerForm() {
                   <Link
                     to={pathFor(lang, "toursLanding")}
                     data-testid="plan-trip-recos-seeall"
-                    className="inline-flex items-center gap-2 mt-8 text-[11px] tracking-[0.28em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
+                    className="xaluca-button inline-flex items-center gap-2 mt-8 text-[11px] tracking-[0.28em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
                   >
                     <ET k="s4r_seeall" multiline={false} />
                     <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -820,7 +820,7 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06] ${selected ? "scale-[1.03]" : ""}`}
           />
           <span
-            className={`absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] tracking-[0.26em] uppercase transition-all ${
+            className={`xaluca-button absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] tracking-[0.26em] uppercase transition-all ${
               selected
                 ? "bg-[#C16542] text-[#FDFBF7]"
                 : "bg-[#FDFBF7]/95 text-[#2C2621] opacity-0 group-hover:opacity-100"
@@ -848,7 +848,7 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             data-testid={`plan-trip-reco-detail-${trip.routeId}`}
-            className="mt-4 inline-flex items-center gap-1.5 self-start text-[10px] tracking-[0.26em] uppercase text-[#2C2621] hover:text-[#C16542] border-b border-[#2C2621]/25 hover:border-[#C16542] pb-0.5 transition-colors"
+            className="xaluca-button mt-4 inline-flex items-center gap-1.5 self-start text-[10px] tracking-[0.26em] uppercase text-[#2C2621] hover:text-[#C16542] border-b border-[#2C2621]/25 hover:border-[#C16542] pb-0.5 transition-colors"
           >
             {tr("s4r_detail")}
             <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={1.8} />

@@ -263,7 +263,7 @@ const ContactPage = () => {
                     <a
                       href="#booking"
                       data-testid="hero-cta-book"
-                      className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                      className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                     >
                       <E name="hero.ctaBook" multiline={false}
                          defaults={{ es: "Reservar cita", en: "Book a session", fr: "Réserver une séance" }} />
@@ -272,7 +272,7 @@ const ContactPage = () => {
                     <a
                       href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
                       data-testid="hero-cta-call"
-                      className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                      className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
                     >
                       <Phone className="w-3.5 h-3.5" strokeWidth={1.5} />
                       {CONTACT.phone || "+34 937 268 366"}
@@ -343,7 +343,7 @@ const ContactPage = () => {
                 <a
                   href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
                   data-testid="contact-phone-link"
-                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                  className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <Phone className="w-3.5 h-3.5" strokeWidth={1.7} />
                   {CONTACT.phone || "+34 937 268 366"}
@@ -360,7 +360,7 @@ const ContactPage = () => {
                 <a
                   href="#contact-form"
                   data-testid="contact-form-anchor"
-                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <Mail className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="contact.goForm" multiline={false}
@@ -378,7 +378,7 @@ const ContactPage = () => {
                 <Link
                   to={pathFor(lang, "appointment")}
                   data-testid="contact-appt-link"
-                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <Calendar className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="contact.apptCta" defaults={COPY.contact.apptCta} multiline={false} />
@@ -415,7 +415,7 @@ const ContactPage = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-testid="contact-help-link"
-                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="contact.helpCta" defaults={COPY.contact.helpCta} multiline={false} />
@@ -541,7 +541,7 @@ const ContactPage = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-testid="support-open-page"
-                  className="inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
                   <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="support.pageCta" defaults={COPY.support.pageCta} multiline={false} />
@@ -704,7 +704,7 @@ const ContactPage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       data-testid="contact-google-maps"
-                      className="inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[10px] tracking-[0.2em] uppercase transition-colors"
+                      className="xaluca-button inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[10px] tracking-[0.2em] uppercase transition-colors"
                     >
                       <MapPin className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
                       <E name="location.cta" defaults={{ es: "Abrir en Google Maps", en: "Open in Google Maps", fr: "Ouvrir dans Google Maps" }} multiline={false} />
@@ -714,7 +714,7 @@ const ContactPage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       data-testid="contact-waze"
-                      className="inline-flex items-center justify-center gap-3 border border-[#C16542] text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] px-6 py-4 text-[10px] tracking-[0.2em] uppercase transition-colors"
+                      className="xaluca-button inline-flex items-center justify-center gap-3 border border-[#C16542] text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] px-6 py-4 text-[10px] tracking-[0.2em] uppercase transition-colors"
                     >
                       <Navigation className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
                       <E name="location.wazeCta" defaults={{ es: "Abrir en Waze", en: "Open in Waze", fr: "Ouvrir dans Waze" }} multiline={false} />

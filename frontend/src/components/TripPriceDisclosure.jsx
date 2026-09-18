@@ -109,7 +109,7 @@ export default function TripPriceDisclosure({ routeId, slug }) {
             <Link
               to={detailTo}
               data-testid={`price-disclosure-detail-${routeId}`}
-              className="mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors"
+              className="xaluca-button mt-3 inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors"
             >
               {pick(COPY.detail, lang)}
               <ArrowRight className="w-3 h-3" strokeWidth={1.7} />

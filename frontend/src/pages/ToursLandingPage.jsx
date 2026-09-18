@@ -75,12 +75,12 @@ const Hero = ({ t }) => (
             </p>
             <div className="fade-up fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
               <a href="#regions" data-testid="viajes-hero-cta-primary"
-                 className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+                 className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
                 {t.cta_primary}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
               </a>
               <a href="#explorer" data-testid="viajes-hero-cta-secondary"
-                 className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+                 className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
                 {t.cta_secondary}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
@@ -90,7 +90,7 @@ const Hero = ({ t }) => (
       </div>
 
       <a href="#intro" data-testid="viajes-scroll-indicator"
-         className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
+         className="xaluca-button absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
         <span className="text-[10px] tracking-[0.35em] uppercase">{t.scroll}</span>
         <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
       </a>
@@ -323,14 +323,14 @@ const ExperiencesSection = ({ t, lang }) => (
                 <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 self-start">
                   <a href="#explorer"
                      data-testid={`experience-explore-${e.id}`}
-                     className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
+                     className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
                      style={{ borderColor: `${e.accent}66`, color: e.accent }}>
                     {t.cta}
                     <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                   </a>
                   <a href={`tel:${CONTACT.phoneRaw}`}
                      data-testid={`experience-call-${e.id}`}
-                     className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
+                     className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 group-hover:gap-3 transition-all duration-300"
                      style={{ borderColor: `${e.accent}66`, color: e.accent }}>
                     {t.cta_call}
                     <Phone className="w-3 h-3" strokeWidth={1.5} />
@@ -514,7 +514,7 @@ const TripExplorer = ({ t, lang }) => {
                     <FromPrice tone="dark" size="sm" className="flex-wrap" testid={`trip-from-${trip.id}`} />
                     <Link to={pathFor(lang, "contact")}
                           data-testid={`trip-cta-${trip.id}`}
-                          className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300 border-b border-[#C16542]/40 pb-1">
+                          className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300 border-b border-[#C16542]/40 pb-1">
                       {t.cta_card}
                       <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
                     </Link>
@@ -639,14 +639,14 @@ const ProximasSalidas = ({ t, lang }) => {
                     {d.spots} {t.spots}
                   </span>
                   <Link to={pathFor(lang, "contact")} data-testid={`proxima-cta-${i}`}
-                        className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300">
+                        className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300">
                     {t.reserve}
                     <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
                   </Link>
                 </div>
                 {d.tripRouteId && (
                   <Link to={pathFor(lang, d.tripRouteId)} data-testid={`proxima-trip-cta-${i}`}
-                        className="mt-4 inline-flex min-h-11 max-w-full items-center justify-center gap-2 border border-[#C16542]/40 px-4 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-white transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2">
+                        className="xaluca-button mt-4 inline-flex min-h-11 max-w-full items-center justify-center gap-2 border border-[#C16542]/40 px-4 py-3 text-center text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-white transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2">
                     {t.view_trip}
                     <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.5} />
                   </Link>
@@ -742,7 +742,7 @@ const ContactIntro = ({ t, lang }) => (
           <p className="mt-6 text-base md:text-lg text-[#5C5248] leading-relaxed max-w-2xl">{t.body}</p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link to={pathFor(lang, "contact")} data-testid="viajes-contact-cta-form"
-               className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
+               className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors">
               {t.cta_form}<ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
             </Link>
             <button type="button" onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
@@ -1053,7 +1053,7 @@ const CatalogoCTA = ({ lang }) => {
               <Link
                 to={pathFor(lang, "catalog")}
                 data-testid="tours-landing-catalogo-cta-link"
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors"
               >
                 {c.cta}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />

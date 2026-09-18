@@ -208,7 +208,7 @@ export default function TravelFaq() {
             <Link
               to={pathFor(lang, "planTrip")}
               data-testid="faq-cta-plan"
-              className="inline-flex items-center gap-2.5 border border-[#FDFBF7]/50 hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex items-center gap-2.5 border border-[#FDFBF7]/50 hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               {pick(COPY.ctaPlan, lang)}
               <ArrowRight className="w-4 h-4" strokeWidth={1.6} />

@@ -89,8 +89,8 @@ export default function ClimatePage() {
         <p className="climate-eyebrow"><Sun size={16} />{copy("eyebrow")}</p>
         <h1 className="font-serif-x">{copy("title")}</h1>
         <p className="climate-lead">{copy("intro")}</p>
-        <div className="climate-actions"><a className="climate-button" href="#clima-ahora">{copy("now")}<ArrowRight size={17} /></a>
-          <a className="climate-hero-link" href="#clima-regiones">{copy("regions")}<CalendarDays size={17} /></a></div>
+        <div className="climate-actions"><a className="xaluca-button climate-button" href="#clima-ahora">{copy("now")}<ArrowRight size={17} /></a>
+          <a className="xaluca-button climate-hero-link" href="#clima-regiones">{copy("regions")}<CalendarDays size={17} /></a></div>
       </div>
     </section>
     <SectionNav items={NAV} testid="climate-nav" />
@@ -159,7 +159,7 @@ export default function ClimatePage() {
           </div>
         </div>
         <div className="climate-source"><p>{copy("normalsNote")}</p><External href="https://power.larc.nasa.gov/docs/methodology/data/processing/">NASA POWER · MERRA-2</External></div>
-        <Link className="climate-text-button" to={pathFor(lang, "whenToTravel")}>{copy("guide")}<ArrowRight size={17} /></Link>
+        <Link className="xaluca-button climate-text-button" to={pathFor(lang, "whenToTravel")}>{copy("guide")}<ArrowRight size={17} /></Link>
       </div>
     </section>
 
@@ -173,13 +173,13 @@ export default function ClimatePage() {
           <div className="climate-season-copy"><p className="climate-eyebrow">{pick(season.months, lang)}</p>
             <h3 className="font-serif-x">{pick(season.title, lang)}</h3><p>{pick(season.idealFor, lang)}</p>
             <h4>{copy("experience")}</h4><p>{pick(season.activities, lang)}</p>
-            <Link to={pathFor(lang, season.recommended[0].route)} className="climate-text-button">{pick(season.recommended[0].label, lang)}<ArrowRight size={16} /></Link>
+            <Link to={pathFor(lang, season.recommended[0].route)} className="xaluca-button climate-text-button">{pick(season.recommended[0].label, lang)}<ArrowRight size={16} /></Link>
           </div>
         </article>)}</div>
       </div>
     </section>
     <section className="climate-contact"><div className="climate-container"><div>
       <h2 className="font-serif-x">{copy("plan")}</h2><p>{copy("planBody")}</p></div>
-      <Link className="climate-button" to={pathFor(lang, "planTrip")}>{copy("contact")}<ArrowRight size={17} /></Link></div></section>
+      <Link className="xaluca-button climate-button" to={pathFor(lang, "planTrip")}>{copy("contact")}<ArrowRight size={17} /></Link></div></section>
   </div>;
 }

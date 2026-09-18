@@ -215,7 +215,7 @@ export const PricingSection = ({ id = "pricing", testid = "pricing-section", rou
           <Link
             to={pathFor(lang, "contact")}
             data-testid="pricing-cta"
-            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
             {p(L.cta)}
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />

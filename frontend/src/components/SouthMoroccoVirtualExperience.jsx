@@ -365,10 +365,10 @@ export default function SouthMoroccoVirtualExperience() {
                     </div>
 
                     <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                      <Link to={pathFor(lang, "archive")} className="inline-flex items-center justify-center gap-2 bg-[#C16542] px-5 py-4 text-center text-[9px] font-semibold uppercase tracking-[0.18em] hover:bg-[#A8533A]">
+                      <Link to={pathFor(lang, "archive")} className="xaluca-button inline-flex items-center justify-center gap-2 bg-[#C16542] px-5 py-4 text-center text-[9px] font-semibold uppercase tracking-[0.18em] hover:bg-[#A8533A]">
                         {pick(COPY.related, lang)} <ExternalLink className="h-3.5 w-3.5" />
                       </Link>
-                      <Link to={pathFor(lang, "planTrip")} className="inline-flex items-center justify-center gap-2 border border-white/25 px-5 py-4 text-center text-[9px] font-semibold uppercase tracking-[0.18em] hover:border-[#D4A373] hover:text-[#D4A373]">
+                      <Link to={pathFor(lang, "planTrip")} className="xaluca-button inline-flex items-center justify-center gap-2 border border-white/25 px-5 py-4 text-center text-[9px] font-semibold uppercase tracking-[0.18em] hover:border-[#D4A373] hover:text-[#D4A373]">
                         {pick(COPY.proposal, lang)} <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                     </div>

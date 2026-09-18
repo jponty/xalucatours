@@ -77,7 +77,7 @@ export default function FeaturedDepartureBanner() {
           <Link
             to={pathFor(lang, departure.tripRouteId)}
             data-testid="home-featured-departure-cta"
-            className="group inline-flex min-h-12 w-full items-center justify-center gap-3 border border-[#D4A373] bg-[#D4A373] px-6 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2C2621] transition-colors duration-200 hover:border-[#E4BC91] hover:bg-[#E4BC91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#FDFBF7] motion-reduce:transition-none sm:w-fit lg:justify-self-end"
+            className="xaluca-button group inline-flex min-h-12 w-full items-center justify-center gap-3 border border-[#D4A373] bg-[#D4A373] px-6 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2C2621] transition-colors duration-200 hover:border-[#E4BC91] hover:bg-[#E4BC91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#FDFBF7] motion-reduce:transition-none sm:w-fit lg:justify-self-end"
           >
             {pick(COPY.cta, lang)}
             <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none" strokeWidth={1.6} aria-hidden="true" />

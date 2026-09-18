@@ -263,7 +263,7 @@ export const FoundersSection = () => {
         <Link
           to={pathFor(lang, "about")}
           data-testid="founders-team-cta"
-          className="group inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] hover:text-[#C16542] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
+          className="xaluca-button group inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#C16542] text-[#2C2621] hover:text-[#C16542] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
         >
           <EditableText
             slot="home.founders.team_cta"

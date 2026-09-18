@@ -233,7 +233,7 @@ export default function HomePage() {
             <Link
               to={pathFor(lang, "opiniones")}
               data-testid="home-testimonials-all-reviews"
-              className="inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-3 border border-[#2C2621]/25 px-6 py-4 text-center text-[10px] uppercase leading-relaxed tracking-[0.24em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] sm:w-auto sm:px-7"
+              className="xaluca-button inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-3 border border-[#2C2621]/25 px-6 py-4 text-center text-[10px] uppercase leading-relaxed tracking-[0.24em] text-[#2C2621] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] sm:w-auto sm:px-7"
             >
               <span className="min-w-0">{REVIEWS_CTA[lang] || REVIEWS_CTA.es}</span>
               <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden="true" />

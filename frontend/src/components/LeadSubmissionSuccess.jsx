@@ -105,7 +105,7 @@ export default function LeadSubmissionSuccess({
             to={pathFor(lang, route)}
             onClick={onNavigate}
             data-testid={`lead-success-${key}`}
-            className={`inline-flex min-h-12 items-center justify-center gap-2 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors sm:px-3 ${buttonClass}`}
+            className={`xaluca-button inline-flex min-h-12 items-center justify-center gap-2 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors sm:px-3 ${buttonClass}`}
           >
             <Icon className="h-4 w-4 shrink-0" strokeWidth={1.6} aria-hidden="true" />
             <span>{pick(COPY[key], lang)}</span>

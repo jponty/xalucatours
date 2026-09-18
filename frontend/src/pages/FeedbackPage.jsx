@@ -406,7 +406,7 @@ export default function FeedbackPage() {
                     {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     {pick(copied ? COPY.copiedReview : COPY.copyReview, lang)}
                   </button>
-                  <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-3 bg-[#C16542] px-5 py-4 text-center text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#A8533A]" data-testid="feedback-publish-google">
+                  <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="xaluca-button inline-flex items-center justify-center gap-3 bg-[#C16542] px-5 py-4 text-center text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#A8533A]" data-testid="feedback-publish-google">
                     <ExternalLink className="h-4 w-4" /> {pick(COPY.publishGoogle, lang)}
                   </a>
                 </div>

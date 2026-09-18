@@ -99,7 +99,7 @@ export default function FavoritosPage() {
                 to={`${pathFor(lang, "planTrip")}?trips=${favorites.join(",")}`}
                 onClick={() => setTripContext(favorites)}
                 data-testid="favorites-plan-all"
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors text-left leading-snug"
+                className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors text-left leading-snug"
               >
                 <Compass className="w-4 h-4 shrink-0" strokeWidth={1.6} />
                 {pick(COPY.planAll, lang)}
@@ -122,7 +122,7 @@ export default function FavoritosPage() {
             <Link
               to={pathFor(lang, "toursLanding")}
               data-testid="favorites-explore-link"
-              className="mt-8 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button mt-8 inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
               {pick(COPY.explore, lang)}

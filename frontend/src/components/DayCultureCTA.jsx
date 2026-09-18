@@ -71,7 +71,7 @@ export default function DayCultureCTA({ accent = "#C16542" }) {
       <Link
         to={pathFor(lang, "appointment")}
         data-testid="day-culture-cta-button"
-        className="relative mt-5 inline-flex items-center gap-2 self-start px-5 py-3 text-[10px] tracking-[0.22em] uppercase transition-all duration-300 hover:opacity-90"
+        className="xaluca-button relative mt-5 inline-flex items-center gap-2 self-start px-5 py-3 text-[10px] tracking-[0.22em] uppercase transition-all duration-300 hover:opacity-90"
         style={{ background: accent, color: "#FDFBF7" }}
       >
         <CalendarCheck className="w-4 h-4" strokeWidth={1.7} />

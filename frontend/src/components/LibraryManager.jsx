@@ -264,7 +264,7 @@ export default function LibraryManager() {
                               href={pathFor(lang, t.routeId)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-[10px] text-white/70 border border-white/12 px-2 py-1 hover:border-[#C16542] hover:text-white"
+                              className="xaluca-button inline-flex items-center gap-1 text-[10px] text-white/70 border border-white/12 px-2 py-1 hover:border-[#C16542] hover:text-white"
                             >
                               {pick(t.title, lang) || t.routeId}
                               <ExternalLink className="w-2.5 h-2.5" strokeWidth={2} />

@@ -766,7 +766,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "planTrip")}
           data-testid="eq-cta-plan"
-          className="inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] hover:bg-[#A8533A] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           <E name="cta.planCta" defaults={COPY.cta.planCta} multiline={false} />
           <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -774,7 +774,7 @@ const FinalCta = ({ lang }) => (
         <Link
           to={pathFor(lang, "contact")}
           data-testid="eq-cta-contact"
-          className="inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
+          className="xaluca-button inline-flex items-center gap-2 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-3.5 text-sm tracking-[0.18em] uppercase transition-colors"
         >
           <E name="cta.contactCta" defaults={COPY.cta.contactCta} multiline={false} />
           <MapPin className="w-4 h-4" strokeWidth={1.6} />

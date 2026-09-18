@@ -56,7 +56,7 @@ export default function TripCustomizationSection({ routeId, lang = "es" }) {
             to={contactUrl}
             onClick={() => routeId && setTripContext([routeId])}
             data-testid="trip-customization-cta"
-            className="group mt-7 inline-flex min-h-12 w-full items-center justify-center gap-3 bg-[#A35133] px-5 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.15em] text-white transition-colors duration-200 hover:bg-[#843F28] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#A35133] motion-reduce:transition-none sm:w-auto sm:px-7"
+            className="xaluca-button group mt-7 inline-flex min-h-12 w-full items-center justify-center gap-3 bg-[#A35133] px-5 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.15em] text-white transition-colors duration-200 hover:bg-[#843F28] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#A35133] motion-reduce:transition-none sm:w-auto sm:px-7"
           >
             {pick(COPY.cta, lang)}
             <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none" strokeWidth={1.6} aria-hidden="true" />

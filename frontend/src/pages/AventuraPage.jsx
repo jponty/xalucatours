@@ -319,7 +319,7 @@ const ExperiencesGrid = ({ t, lang }) => (
                 <Link
                   to={e.id === "enduro-desierto" ? pathFor(lang, "tourAventuraEnduroHub") : pathFor(lang, "contact")}
                   data-testid={`aventura-exp-cta-${e.id}`}
-                  className="mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 self-start group-hover:gap-3 transition-all duration-300"
+                  className="xaluca-button mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase border-b pb-1 self-start group-hover:gap-3 transition-all duration-300"
                   style={{ borderColor: `${e.accent}66`, color: e.accent }}
                 >
                   {t.cta}
@@ -410,7 +410,7 @@ export default function AventuraPage() {
           <Link
             to={pathFor(lang, "tourAventuraEnduroHub")}
             data-testid="aventura-enduro-cta-link"
-            className="inline-flex items-center gap-3 bg-[#2C2621] hover:bg-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
+            className="xaluca-button inline-flex items-center gap-3 bg-[#2C2621] hover:bg-[#1A1513] text-[#FDFBF7] px-7 py-3.5 text-[11px] tracking-[0.25em] uppercase transition-colors duration-300"
           >
             {{ es: "Ver opciones de enduro", en: "View enduro options", fr: "Voir les options d'enduro" }[lang]}
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />

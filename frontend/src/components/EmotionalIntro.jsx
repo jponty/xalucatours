@@ -124,7 +124,7 @@ export const EmotionalIntro = () => {
             <Link
               to={pathFor(lang, "whatWeDo")}
               data-testid="emotional-intro-what-we-do"
-              className="mt-8 inline-flex items-center gap-3 bg-[#C16542] px-6 py-3.5 text-[10px] uppercase tracking-[0.24em] text-[#FDFBF7] transition-all duration-300 hover:gap-4 hover:bg-[#A35133] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
+              className="xaluca-button mt-8 inline-flex items-center gap-3 bg-[#C16542] px-6 py-3.5 text-[10px] uppercase tracking-[0.24em] text-[#FDFBF7] transition-all duration-300 hover:gap-4 hover:bg-[#A35133] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542] focus-visible:ring-offset-2"
             >
               {t("intro_cta")}
               <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.6} />

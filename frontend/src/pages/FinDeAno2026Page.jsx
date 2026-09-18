@@ -376,7 +376,7 @@ function Hero({ lang }) {
           <a
             href="#form"
             data-testid="findeano-hero-cta-primary"
-            className="inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A0532F] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center justify-center gap-3 bg-[#C16542] hover:bg-[#A0532F] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
             {pick(COPY.cta.primary, lang)}
             <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
@@ -384,7 +384,7 @@ function Hero({ lang }) {
           <a
             href={`tel:${CONTACT.phoneRaw}`}
             data-testid="findeano-hero-cta-secondary"
-            className="inline-flex items-center justify-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center justify-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
             <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
             {pick(COPY.cta.secondary, lang)}
@@ -751,7 +751,7 @@ function ContactBand({ lang }) {
           <a
             href={`tel:${CONTACT.phoneRaw}`}
             data-testid="findeano-contact-phone"
-            className="group inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] px-7 py-3.5 text-[12px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button group inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] px-7 py-3.5 text-[12px] tracking-[0.25em] uppercase transition-colors"
           >
             <Phone className="w-4 h-4" strokeWidth={1.6} />
             {CONTACT.phone}
@@ -759,7 +759,7 @@ function ContactBand({ lang }) {
           <a
             href={`mailto:${CONTACT.email}`}
             data-testid="findeano-contact-email"
-            className="group inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] px-7 py-3.5 text-[12px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button group inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#D4A373] hover:text-[#D4A373] px-7 py-3.5 text-[12px] tracking-[0.25em] uppercase transition-colors"
           >
             <Mail className="w-4 h-4" strokeWidth={1.6} />
             {CONTACT.email}

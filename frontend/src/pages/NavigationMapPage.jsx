@@ -76,7 +76,7 @@ export default function NavigationMapPage() {
                 </div>
               ))}
             </dl>
-            <a href="#navigation-index" className={`inline-flex min-h-12 items-center gap-3 border border-[#D4A373]/50 px-5 py-3 text-[10px] uppercase tracking-[0.15em] transition-colors hover:bg-[#D4A373] hover:text-[#1A1513] ${focus}`}>
+            <a href="#navigation-index" className={`xaluca-button inline-flex min-h-12 items-center gap-3 border border-[#D4A373]/50 px-5 py-3 text-[10px] uppercase tracking-[0.15em] transition-colors hover:bg-[#D4A373] hover:text-[#1A1513] ${focus}`}>
               {copy("browse")}<ArrowDown className="h-4 w-4" aria-hidden="true" />
             </a>
           </div>

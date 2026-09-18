@@ -36,7 +36,7 @@ const DestinationCard = ({ origin, dest, lang }) => (
       target="_blank"
       rel="noopener noreferrer"
       data-testid={`flight-link-${origin.id}-${dest.id}`}
-      className="flex items-center justify-between gap-3 px-6 md:px-7 py-4 border-t border-[#2C2621]/10 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] transition-colors duration-300"
+      className="xaluca-button flex items-center justify-between gap-3 px-6 md:px-7 py-4 border-t border-[#2C2621]/10 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] transition-colors duration-300"
     >
       <span className="inline-flex items-center gap-2">
         <Plane className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -253,7 +253,7 @@ export default function VuelosPage() {
             <Link
               to={pathFor(lang, "planTrip")}
               data-testid="vuelos-options-cta-plan"
-              className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <EditableText slot="vuelos.options.cta_plan" defaults={{ es: "Planificar mi viaje", en: "Plan my trip", fr: "Planifier mon voyage" }} multiline={false} />
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.7} />
@@ -261,7 +261,7 @@ export default function VuelosPage() {
             <Link
               to={pathFor(lang, "contact")}
               data-testid="vuelos-options-cta-contact"
-              className="inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <Check className="w-3.5 h-3.5" strokeWidth={1.7} />
               <EditableText slot="vuelos.options.cta_contact" defaults={{ es: "Consultar con un especialista", en: "Ask a specialist", fr: "Consulter un spécialiste" }} multiline={false} />

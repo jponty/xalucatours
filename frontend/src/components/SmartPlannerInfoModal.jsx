@@ -161,7 +161,7 @@ export const SmartPlannerInfoModal = ({ open, onOpenChange }) => {
                 <Link
                   to={pathFor(lang, "planner")}
                   data-testid="smart-planner-info-continue"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap bg-[#C16542] px-6 py-3.5 text-[10px] uppercase tracking-[0.22em] text-[#FDFBF7] transition-colors hover:bg-[#A35133]"
+                  className="xaluca-button inline-flex items-center justify-center gap-2 whitespace-nowrap bg-[#C16542] px-6 py-3.5 text-[10px] uppercase tracking-[0.22em] text-[#FDFBF7] transition-colors hover:bg-[#A35133]"
                 >
                   {pick(COPY.continue, lang)}
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.7} aria-hidden="true" />

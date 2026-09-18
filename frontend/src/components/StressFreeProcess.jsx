@@ -85,7 +85,7 @@ export const StressFreeProcess = () => {
           <Link
             to={pathFor(lang, "contact")}
             data-testid="process-cta-start"
-            className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+            className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
           >
             <EditableText
               slot="home.process.cta_start"
@@ -97,7 +97,7 @@ export const StressFreeProcess = () => {
           <Link
             to={pathFor(lang, "contact")}
             data-testid="process-cta-proposal"
-            className="inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+            className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#D4A373] hover:text-[#D4A373] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
           >
             <EditableText
               slot="home.process.cta_proposal"

@@ -81,7 +81,7 @@ export default function PracticalInfoPage() {
           <h1 className="mt-5 font-serif-x text-4xl leading-tight sm:text-5xl lg:text-6xl">{copy("title")}</h1>
           <p className="mt-5 max-w-2xl font-serif-x text-2xl leading-snug text-[#D4A373] md:text-3xl">{copy("heading")}</p>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-[#FDFBF7]/75 md:text-base">{copy("intro")}</p>
-          <a href="#travel-notes" className="mt-8 inline-flex min-h-12 items-center gap-3 border border-[#D4A373]/45 px-5 py-3 text-[10px] uppercase tracking-[0.16em] transition-colors hover:bg-[#D4A373] hover:text-[#1A1513]">
+          <a href="#travel-notes" className="xaluca-button mt-8 inline-flex min-h-12 items-center gap-3 border border-[#D4A373]/45 px-5 py-3 text-[10px] uppercase tracking-[0.16em] transition-colors hover:bg-[#D4A373] hover:text-[#1A1513]">
             {copy("start")}<ArrowDown className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </div>
@@ -143,7 +143,7 @@ export default function PracticalInfoPage() {
           <div className="min-w-0">
             {selected ? (
               <section id="info-selected-trip" aria-labelledby="info-trip-title" data-testid="info-selected-trip" className="min-w-0">
-                <a href="#trip-finder" className="mb-4 inline-flex min-h-11 items-center gap-2 text-xs text-[#C16542] lg:hidden"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />{copy("find")}</a>
+                <a href="#trip-finder" className="xaluca-button mb-4 inline-flex min-h-11 items-center gap-2 text-xs text-[#C16542] lg:hidden"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />{copy("find")}</a>
                 <div className="border border-[#2C2621]/10 bg-[#FDFBF7] p-6 md:p-8">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C16542]">{copy("selected")} · {pick(SECTIONS[selected.section].label, lang)}</p>
                   <h2 ref={contentRef} tabIndex={-1} id="info-trip-title" className="mt-4 scroll-mt-40 font-serif-x text-3xl leading-tight focus:outline-none md:text-4xl">
@@ -153,7 +153,7 @@ export default function PracticalInfoPage() {
                     <EditableText slot={`${namespaceForRouteId(selected.routeId)}.program.hero.duration`} defaults={selected.duration} multiline={false} />
                   </p>
                   {pick(selected.places, lang) && <p className="mt-3 flex items-start gap-2 text-xs leading-6 text-[#675D54]"><MapPin className="mt-1 h-4 w-4 shrink-0" aria-hidden="true" />{pick(selected.places, lang)}</p>}
-                  <Link to={pathFor(lang, selected.routeId)} className="mt-5 inline-flex min-h-11 items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C16542] hover:text-[#2C2621]">
+                  <Link to={pathFor(lang, selected.routeId)} className="xaluca-button mt-5 inline-flex min-h-11 items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C16542] hover:text-[#2C2621]">
                     {copy("view")}<ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </div>

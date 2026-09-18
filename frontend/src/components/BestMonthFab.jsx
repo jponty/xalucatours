@@ -447,7 +447,7 @@ export default function BestMonthPanel() {
                 to={pathFor(lang, "planTrip")}
                 onClick={() => setOpen(false)}
                 data-testid="best-month-cta-plan"
-                className="w-full inline-flex items-center justify-between gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3.5 text-[11px] tracking-[0.28em] uppercase transition-colors"
+                className="xaluca-button w-full inline-flex items-center justify-between gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-5 py-3.5 text-[11px] tracking-[0.28em] uppercase transition-colors"
               >
                 {pick(COPY.ctaPlan, lang)}
                 <ArrowRight className="w-4 h-4" strokeWidth={1.6} />
@@ -456,7 +456,7 @@ export default function BestMonthPanel() {
                 to={pathFor(lang, "whenToTravel")}
                 onClick={() => setOpen(false)}
                 data-testid="best-month-cta-guide"
-                className="w-full inline-flex items-center justify-between gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-5 py-3.5 text-[11px] tracking-[0.28em] uppercase transition-colors"
+                className="xaluca-button w-full inline-flex items-center justify-between gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-5 py-3.5 text-[11px] tracking-[0.28em] uppercase transition-colors"
               >
                 {pick(COPY.ctaGuide, lang)}
                 <ArrowRight className="w-4 h-4" strokeWidth={1.6} />

@@ -151,7 +151,7 @@ export const MoroccoCircuits = () => {
               <Link
                 to={pathFor(lang, "contact")}
                 data-testid={`circuit-cta-${active}`}
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-7 py-3.5 text-[10px] tracking-[0.3em] uppercase transition-colors"
               >
                 {t("cta_discover_routes")}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />

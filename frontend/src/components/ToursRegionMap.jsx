@@ -370,7 +370,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
                     <Link
                       to={pathFor(lang, it.routeId)}
                       data-testid={`region-map-itinerary-${active.id}-${i}`}
-                      className="group inline-flex items-center gap-2 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
+                      className="xaluca-button group inline-flex items-center gap-2 text-sm text-[#2C2621] hover:text-[#C16542] transition-colors"
                     >
                       <span className="w-5 h-px transition-all duration-300 group-hover:w-7" style={{ background: active.accent }} />
                       {pick(it.label, lang)}
@@ -384,7 +384,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
             <Link
               to={pathFor(lang, active.routeId)}
               data-testid={`region-map-cta-${active.id}`}
-              className="mt-auto pt-7 inline-flex items-center gap-3 self-start text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors"
+              className="xaluca-button mt-auto pt-7 inline-flex items-center gap-3 self-start text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors"
               style={{ color: active.accent }}
             >
               {t.cta} {pick(active.name, lang)}

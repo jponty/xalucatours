@@ -7,7 +7,7 @@ import { pathFor } from "@/lib/routes";
 import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
 import { requestDictationModal } from "@/lib/dictationModal";
 
-const ctaClass = "inline-flex min-h-12 w-full min-w-0 max-w-full items-center justify-center gap-3 px-5 py-3.5 text-center text-[11px] leading-relaxed font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+const ctaClass = "xaluca-button inline-flex min-h-12 w-full min-w-0 max-w-full items-center justify-center gap-3 px-5 py-3.5 text-center text-[11px] leading-relaxed font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
 export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = "contact", showContactCta = false }) {
   const { lang } = useLanguage();
@@ -29,7 +29,7 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
           <a
             href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
             data-testid={`${testIdPrefix}-card-phone`}
-            className="group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
+            className="xaluca-button group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
           >
             <Phone className="h-4 w-4 shrink-0 text-[#C16542]" strokeWidth={1.6} aria-hidden="true" />
             <span className="min-w-0">
@@ -45,7 +45,7 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
           <a
             href={`mailto:${CONTACT.email || "xalucatours@xaluca.com"}`}
             data-testid={`${testIdPrefix}-card-email`}
-            className="group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
+            className="xaluca-button group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
           >
             <Mail className="h-4 w-4 shrink-0 text-[#C16542]" strokeWidth={1.6} aria-hidden="true" />
             <span className="min-w-0">

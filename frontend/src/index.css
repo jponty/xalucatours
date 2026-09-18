@@ -23,6 +23,7 @@
     --xaluca-indigo: #3A4A5F;      /* twilight indigo */
     --xaluca-sunset: #D97742;      /* sunset orange */
     --xaluca-gold: #C8A24B;        /* deep gold */
+    --xaluca-button-radius: 30px;
 
     /* shadcn semantic tokens — tuned to brand */
     --background: 36 50% 97%;
@@ -59,6 +60,24 @@
         -moz-osx-font-smoothing: grayscale;
     }
     ::selection { background: var(--xaluca-terracotta); color: var(--xaluca-bg); }
+}
+
+/* One radius for native buttons, portalled controls and link CTAs.
+   Use Button (including asChild) or .xaluca-button for new link CTAs.
+   Keep this outside Tailwind layers; !important overrides legacy rounded-*
+   utilities and component styles at every breakpoint, for this property only.
+   Do not reuse --radius: it also controls cards, inputs and other surfaces. */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[role="button"],
+.xaluca-button {
+    border-radius: var(--xaluca-button-radius) !important;
+}
+
+input::file-selector-button {
+    border-radius: var(--xaluca-button-radius) !important;
 }
 
 /* ============================================================

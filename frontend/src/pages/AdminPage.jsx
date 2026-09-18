@@ -503,7 +503,7 @@ export default function AdminPage() {
         <a
           href={pathFor(previewLang, selectedRoute)}
           target="_blank" rel="noreferrer"
-          className="inline-flex items-center gap-2 text-[10px] tracking-[0.22em] uppercase bg-[#C16542] hover:bg-[#A8533A] px-3 py-2"
+          className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.22em] uppercase bg-[#C16542] hover:bg-[#A8533A] px-3 py-2"
         >
           <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.8} /> Open page
         </a>
@@ -742,7 +742,7 @@ export default function AdminPage() {
                     target="_blank"
                     rel="noreferrer"
                     data-testid="live-preview-open"
-                    className="inline-flex items-center gap-2 bg-[#C16542] px-3 py-2 text-[10px] tracking-[0.2em] uppercase text-white hover:bg-[#A8533A]"
+                    className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] px-3 py-2 text-[10px] tracking-[0.2em] uppercase text-white hover:bg-[#A8533A]"
                   >
                     <ExternalLink className="w-3.5 h-3.5" /> Abrir página
                   </a>

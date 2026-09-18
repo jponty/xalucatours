@@ -53,7 +53,7 @@ export default function StubPage({ routeId }) {
               <Link
                 to={pathFor(lang, "planTrip")}
                 data-testid="stub-cta-contact"
-                className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
               >
                 {t("cta_plan")}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
@@ -61,7 +61,7 @@ export default function StubPage({ routeId }) {
               <Link
                 to={pathFor(lang, "home")}
                 data-testid="stub-cta-home"
-                className="inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/30 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
               >
                 {t("nav_intro") || "Home"}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
