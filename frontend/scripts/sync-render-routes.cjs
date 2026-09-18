@@ -1,4 +1,4 @@
-/* Keep Render's exact HTML rewrites aligned with the public route registry.
+/* Keep Render's HTML rewrites aligned with the public route registry.
  * Run with --write after adding/removing routes; --check is part of prebuild.
  * Only the marked static-site block is changed. No API settings or secrets.
  */
@@ -9,13 +9,26 @@ const START = "      # BEGIN generated public HTML rewrites";
 const END = "      # END generated public HTML rewrites";
 const BLUEPRINT = path.resolve(__dirname, "../../render.yaml");
 
-async function publicRewrites() {
+async function publicPaths() {
   const { ROUTES, SUPPORTED_LANGS, pathFor, blogSlugs } = await loadSiteData();
   const paths = new Set(Object.keys(ROUTES).flatMap((id) => SUPPORTED_LANGS.map((lang) => pathFor(lang, id))));
   for (const slug of blogSlugs) for (const lang of SUPPORTED_LANGS) paths.add(`${pathFor(lang, "blog")}/${slug}`);
-  return [...new Set([...paths].map((url) => url.replace(/\/$/, "")))].filter(Boolean).sort().map((url) => ({
-    type: "rewrite", source: url, destination: `${url}/index.html`,
-  }));
+  return [...new Set([...paths].map((url) => url.replace(/\/$/, "")))].filter(Boolean).sort();
+}
+
+async function publicRewrites() {
+  const { pathFor } = await loadSiteData();
+  const paths = await publicPaths();
+  // Limit patterns to public travel/blog namespaces. No catch-all HTML rewrite:
+  // admin, API, assets and all other paths keep the existing SPA fallback.
+  const prefixes = ["es", "en", "fr"].flatMap((lang) => [pathFor(lang, "toursLanding"), pathFor(lang, "blog")]);
+  const rules = prefixes.map((prefix) => ({ type: "rewrite", source: `${prefix}/*`, destination: `${prefix}/*/index.html` }));
+  for (const lang of ["en", "fr"]) rules.push({ type: "rewrite", source: `/${lang}/:page`, destination: `/${lang}/:page/index.html` });
+  for (const url of paths) {
+    if (prefixes.some((prefix) => url.startsWith(`${prefix}/`)) || /^\/(en|fr)\/[^/]+$/.test(url)) continue;
+    rules.push({ type: "rewrite", source: url, destination: `${url}/index.html` });
+  }
+  return rules;
 }
 
 async function sync(write = false, file = BLUEPRINT) {
@@ -31,10 +44,10 @@ async function sync(write = false, file = BLUEPRINT) {
     if (!write) throw new Error("Render routes are out of date. Run npm run sync:render-routes and commit render.yaml.");
     fs.writeFileSync(file, after);
   }
-  console.log(`Render HTML rewrites ${write ? "synchronized" : "verified"}: ${rules.length} exact paths.`);
+  console.log(`Render HTML rewrites ${write ? "synchronized" : "verified"}: ${rules.length} rules covering ${(await publicPaths()).length} paths.`);
 }
 
 if (require.main === module) sync(process.argv.includes("--write")).catch((error) => {
   console.error(error.message); process.exitCode = 1;
 });
-module.exports = { publicRewrites, sync };
+module.exports = { publicPaths, publicRewrites, sync };

@@ -59,15 +59,19 @@ por publicar este repositorio: deben revisarse antes de futuros envíos.
 
 ### Publicación de metadatos por ruta
 
-Render necesita reglas exactas antes de `/* → /index.html` para servir el HTML
-de cada URL sin barra final. El bloque marcado en `render.yaml` se genera desde
-el registro de rutas y el blog, sin mantener una segunda lista manual.
+Render necesita reglas específicas antes de `/* → /index.html` para servir el
+HTML de cada URL sin barra final. El bloque marcado en `render.yaml` se genera
+desde el registro de rutas y el blog, agrupando sus espacios de URLs públicos
+(viajes, blog y páginas localizadas), sin mantener una segunda lista manual.
 
 Al añadir rutas, ejecutar `cd frontend && npm run sync:render-routes` y versionar
 el cambio de `render.yaml`. `prebuild` comprueba la sincronización. El Blueprint
 de Xaluca Tours debe sincronizarse para aplicar estas reglas en Render.
 No usar una reescritura general a `/*/index.html`: rompería rutas técnicas y
-URLs no generadas. Se mantiene el fallback SPA y los redirects de campañas.
+URLs no generadas. Se mantiene el fallback SPA fuera de los espacios públicos
+agrupados y los redirects de campañas. Una URL inexistente dentro de los espacios
+de viajes/blog/idiomas puede devolver 404 en vez de la Home: no se generan páginas
+ni metadatos para URLs que no existen.
 
 ### Resto de la migración
 
