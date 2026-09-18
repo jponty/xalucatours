@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Content as DialogContent } from "@radix-ui/react-dialog";
 import { Mic, X } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { Dialog, DialogPortal, DialogOverlay, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import DictationForm, { DICTATION_COPY } from "@/components/DictationForm";
 import { FloatingActionsDock } from "@/components/TripFloatingActions";
+import { OPEN_DICTATION_MODAL_EVENT } from "@/lib/dictationModal";
 import "./HomeDictationWidget.css";
 
 const CLOSE = { es: "Cerrar", en: "Close", fr: "Fermer" };
@@ -16,11 +17,23 @@ export default function HomeDictationWidget() {
   const [countryPortal, setCountryPortal] = useState(null);
   const closeButton = useRef(null);
   const triggerButton = useRef(null);
+  const returnFocusTarget = useRef(null);
+
+  useEffect(() => {
+    const openFromContent = event => {
+      returnFocusTarget.current = event.detail?.trigger instanceof HTMLElement
+        ? event.detail.trigger : document.activeElement;
+      setOpen(true);
+    };
+    window.addEventListener(OPEN_DICTATION_MODAL_EVENT, openFromContent);
+    return () => window.removeEventListener(OPEN_DICTATION_MODAL_EVENT, openFromContent);
+  }, []);
 
   return <Dialog open={open} onOpenChange={setOpen}>
     <FloatingActionsDock testId="home-dictation-dock">
       <DialogTrigger asChild>
         <button ref={triggerButton} type="button" data-testid="home-dictation-trigger" className="home-dictation-trigger"
+          onClick={event => { returnFocusTarget.current = event.currentTarget; }}
           aria-label={pick(DICTATION_COPY.title, lang)}>
           <Mic className="h-5 w-5 shrink-0" aria-hidden="true" />
         </button>
@@ -40,7 +53,7 @@ export default function HomeDictationWidget() {
           // An immediately restored focus would be lost while it is hidden.
           let frames = 0;
           const restoreFocus = () => {
-            const trigger = triggerButton.current;
+            const trigger = returnFocusTarget.current?.isConnected ? returnFocusTarget.current : triggerButton.current;
             if (!trigger || document.querySelector('[aria-modal="true"]')) return;
             if (trigger.closest('[inert]') || getComputedStyle(trigger).visibility === "hidden") {
               if (++frames < 60) requestAnimationFrame(restoreFocus);

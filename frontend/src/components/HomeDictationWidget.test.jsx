@@ -4,6 +4,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import GlobalDictationWidget from "./GlobalDictationWidget";
+import ContactDetailsCard from "./ContactDetailsCard";
 import { TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
 import { createVoiceRecorder, dictationAvailable, supportsDictation, transcribeVoice } from "@/lib/voiceDictation";
 import { ROUTES, SUPPORTED_LANGS, pathFor } from "@/lib/routes";
@@ -38,6 +39,7 @@ const change = async (id, value) => act(async () => {
   element.dispatchEvent(new Event("input", { bubbles: true }));
 });
 const render = async () => act(async () => root.render(<TripFloatingProvider>
+  <ContactDetailsCard showContactCta testIdPrefix="home-contact" />
   <GlobalDictationWidget />
   <TripFloatingSlot name="audio"><button data-testid="audio-control">Audio</button></TripFloatingSlot>
 </TripFloatingProvider>));
@@ -140,8 +142,10 @@ test("the modal keeps recording local and adds editable text only after stopping
   expect(axios.post).not.toHaveBeenCalled();
 });
 
-test("the shared two-step flow validates, retains the story and submits one home-attributed lead", async () => {
-  await click("home-dictation-trigger");
+test("the contact card opens the shared two-step flow, validates and submits one home-attributed lead", async () => {
+  await click("home-contact-card-dictation");
+  expect(document.querySelectorAll('[data-testid="home-dictation-modal"]')).toHaveLength(1);
+  expect(document.querySelectorAll('[data-testid="dictation-form"]')).toHaveLength(1);
   await change("dictation-message", "    ");
   await click("dictation-next");
   expect(get("dictation-full_name")).toBeNull();
@@ -169,6 +173,24 @@ test("the shared two-step flow validates, retains the story and submits one home
   get("lead-success-home").addEventListener("click", event => event.preventDefault());
   await click("lead-success-home");
   expect(get("home-dictation-modal")).toBeNull();
+});
+
+test("the inline CTA opens without navigation and restores focus to the correct entry point", async () => {
+  const url = window.location.href;
+  await click("home-contact-card-dictation");
+  expect(window.location.href).toBe(url);
+  expect(get("home-dictation-modal")).not.toBeNull();
+  expect(document.activeElement).toBe(get("home-dictation-close"));
+  await click("home-dictation-close");
+  await act(async () => new Promise(requestAnimationFrame));
+  await act(async () => new Promise(requestAnimationFrame));
+  expect(get("home-dictation-modal")).toBeNull();
+  expect(document.activeElement).toBe(get("home-contact-card-dictation"));
+  await click("home-dictation-trigger");
+  await click("home-dictation-close");
+  await act(async () => new Promise(requestAnimationFrame));
+  await act(async () => new Promise(requestAnimationFrame));
+  expect(document.activeElement).toBe(get("home-dictation-trigger"));
 });
 
 test.each([ ["en", "Your trip, in your own words."], ["fr", "Votre voyage, avec vos mots."] ])("%s widget and modal use the shared translated title", async (lang, title) => {

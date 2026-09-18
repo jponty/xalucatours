@@ -70,6 +70,7 @@ describe("shared direct contact card", () => {
     expect(page.querySelectorAll("a")).toHaveLength(2);
     expect(page.querySelector(`[data-testid="${prefix}-card-cta"]`)).toBeNull();
     expect(page.querySelector(`[data-testid="${prefix}-card-whatsapp"]`)).toBeNull();
+    expect(page.querySelector(`[data-testid="${prefix}-card-dictation"]`)).toBeNull();
   });
 
   test.each([
@@ -83,7 +84,6 @@ describe("shared direct contact card", () => {
     expect(cta.textContent).toBe(label);
     expect(cta.getAttribute("href")).toBe(href);
     expect(cta.classList.contains("w-full")).toBe(true);
-    expect(cta.classList.contains("sm:w-auto")).toBe(true);
     expect(card.querySelectorAll("a")).toHaveLength(4);
     expect(card.querySelector('[data-testid="home-contact-card-phone"]').getAttribute("href")).toBe(`tel:${CONTACT.phoneRaw}`);
     expect(card.querySelector('[data-testid="home-contact-card-email"]').getAttribute("href")).toBe(`mailto:${CONTACT.email}`);
@@ -108,14 +108,39 @@ describe("shared direct contact card", () => {
     expect(whatsapp.dataset.whatsappDirect).toBe("true");
     expect(whatsapp.classList.contains("w-full")).toBe(true);
     expect(whatsapp.classList.contains("max-w-full")).toBe(true);
-    expect(whatsapp.classList.contains("bg-[#15803D]")).toBe(true);
-    expect(whatsapp.classList.contains("hover:bg-[#166534]")).toBe(true);
+    expect(whatsapp.classList.contains("bg-[#25D366]")).toBe(true);
+    expect(whatsapp.classList.contains("hover:bg-[#1EBE5A]")).toBe(true);
     expect(whatsapp.classList.contains("text-white")).toBe(true);
     expect(whatsapp.querySelector("svg").getAttribute("fill")).toBe("currentColor");
     expect(whatsapp.querySelector("svg").getAttribute("viewBox")).toBe("0 0 24 24");
     expect(whatsapp.querySelector("svg").classList.contains("h-5")).toBe(true);
     expect(contact.classList.contains("bg-[#C16542]")).toBe(true);
-    expect(whatsapp.parentElement.classList.contains("sm:flex-wrap")).toBe(true);
+    expect(whatsapp.parentElement.classList.contains("sm:grid-cols-2")).toBe(true);
+  });
+
+  test.each([
+    ["es", "Tu viaje, con tus palabras"],
+    ["en", "Your trip, in your own words"],
+    ["fr", "Votre voyage, avec vos mots"],
+  ])("the %s home card groups all three CTAs and opens dictation as a dialog", (lang, label) => {
+    mockLang = lang;
+    const card = render(<HomeTrustStrip />).querySelector('[data-testid="home-contact-details-card"]');
+    const actions = card.querySelector('[data-testid="home-contact-card-actions"]');
+    const dictation = card.querySelector('[data-testid="home-contact-card-dictation"]');
+    expect(actions.children).toHaveLength(3);
+    expect(actions.lastElementChild).toBe(dictation);
+    expect(actions.classList.contains("grid-cols-1")).toBe(true);
+    expect(actions.classList.contains("lg:grid-cols-3")).toBe(true);
+    expect(dictation.tagName).toBe("BUTTON");
+    expect(dictation.getAttribute("type")).toBe("button");
+    expect(dictation.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(dictation.textContent).toBe(label);
+    expect(dictation.querySelector("svg").getAttribute("aria-hidden")).toBe("true");
+    for (const button of actions.children) {
+      expect(button.classList.contains("min-h-12")).toBe(true);
+      expect(button.classList.contains("w-full")).toBe(true);
+      expect(button.classList.contains("min-w-0")).toBe(true);
+    }
   });
 
   test.each([
