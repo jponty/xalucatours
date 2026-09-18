@@ -27,7 +27,6 @@ jest.mock("./EditableText", () => ({ defaults, as: Tag = "span", className }) =>
   <Tag className={className}>{defaults?.[require("@/contexts/LanguageContext").useLanguage().lang]}</Tag>
 ));
 jest.mock("./EditableImage", () => () => null);
-jest.mock("./BestMonthFab", () => ({ COPY: { fab: {} } }));
 jest.mock("./JourneyPageSections", () => ({ StickyNav: () => null }));
 jest.mock("./DayRouteMap", () => ({ DayRouteMap: () => null }));
 jest.mock("./DayGallery", () => ({ DayGallery: () => null }));
@@ -93,5 +92,13 @@ describe.each(["es", "en", "fr"])("customization rollout in %s", (lang) => {
     expect(sections[0].outerHTML).toBe(reference.firstElementChild.outerHTML);
     expect(sections[0].querySelector("a").getAttribute("href"))
       .toBe(`${pathFor(lang, "contact")}?trip=${routeId}`);
+
+    const monthButtons = container.querySelectorAll('[aria-controls="best-month-panel"]');
+    expect(monthButtons).toHaveLength(1);
+    expect(monthButtons[0].closest("section").dataset.testid).toBe(
+      routeId === "tourFinDeAno2025" ? "findeano-overview" : "program-quick"
+    );
+    expect(monthButtons[0].className).not.toMatch(/\b(fixed|sticky|absolute)\b/);
+    expect(container.querySelector('[data-testid="best-month-fab"]')).toBeNull();
   });
 });

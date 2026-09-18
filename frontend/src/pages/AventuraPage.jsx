@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { BestMonthButton } from "@/components/BestMonthFab";
 import EditableImage from "@/components/EditableImage";
 import CardBrandOverlay from "@/components/CardBrandOverlay";
 import { Link } from "react-router-dom";
@@ -232,6 +233,7 @@ const AdventureIntro = ({ lang }) => {
             </p>
           ))}
         </div>
+        <div className="mt-8"><BestMonthButton /></div>
       </div>
     </section>
   );

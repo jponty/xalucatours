@@ -4,36 +4,24 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 48px;
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
   max-width: 100%;
-  padding: 14px 20px;
+  padding: 0;
   border: 1px solid #d4a37380;
-  border-radius: 999px;
+  border-radius: 50%;
   background: #a35133;
   color: #fff;
   box-shadow: 0 12px 32px -14px #1a151399;
-  font-size: 14px;
-  line-height: 1.4;
-  text-align: left;
   transition: background 180ms ease;
 }
 .home-dictation-trigger:hover { background: #843f28; }
 .home-dictation-trigger:focus-visible,
 .home-dictation-toolbar button:focus-visible { outline: 2px solid #c16542; outline-offset: 3px; }
 
-/* Compact on mobile/tablet, including large touch-only tablets. */
-@media (max-width: 1279px), (hover: none) {
-  .home-dictation-trigger {
-    width: 56px;
-    height: 56px;
-    min-height: 56px;
-    padding: 0;
-    gap: 0;
-  }
-  .home-dictation-trigger-label { display: none; }
-  .home-dictation-trigger > svg { width: 24px; height: 24px; }
-}
+/* One icon-only touch target on desktop, tablet and mobile. */
+.home-dictation-trigger > svg { width: 24px; height: 24px; }
 
 /* Use the existing WhatsApp modal layers; all floating controls are below. */
 .home-dictation-overlay { z-index: 10020; background: #1a1513bf; backdrop-filter: blur(4px); }

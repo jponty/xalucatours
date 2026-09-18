@@ -4,6 +4,7 @@
 // Usage: const Component = ROUTE_COMPONENTS[routeId];
 
 import HomePage from "@/pages/HomePage";
+import ClimatePage from "@/pages/ClimatePage";
 import ToursLandingPage from "@/pages/ToursLandingPage";
 import MarruecosPage from "@/pages/MarruecosPage";
 import NortePage from "@/pages/NortePage";
@@ -131,6 +132,7 @@ export const ROUTE_COMPONENTS = {
   catalog:                       CatalogoPage,            // /catalogo · Publuu flipbook
   archive:                       ArchivoPage,             // /archivo · complete trip index
   practicalInfo:                 PracticalInfoPage,       // /info · shared travel notes
+  climate:                       ClimatePage,
   navigationMap:                 NavigationMapPage,       // /nav · complete route index
   tourFull:                      MarruecosPage,
   tourNorth:                     NortePage,

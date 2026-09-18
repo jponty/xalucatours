@@ -14,6 +14,7 @@
 ============================================================ */
 
 // Legacy programs (share variant copy from VARIANT_COPY)
+import { ROUTES } from "./routes";
 import {
   PROGRAM_45, PROGRAM_56, PROGRAM_67,
   PROGRAM_AD_45, PROGRAM_AD_56, PROGRAM_AD_67,
@@ -165,5 +166,14 @@ export const TRIP_PROGRAMS = {
 
 export const getTripProgram = (routeId) =>
   (routeId && TRIP_PROGRAMS[routeId]) || null;
+
+// Public trip-detail pages, not the destination/category hubs. Include the
+// standalone special departure and registered programs awaiting a template.
+// Use the canonical Spanish slug so localized URLs follow the same rule.
+export const isTripDetailRoute = (routeId) => Boolean(
+  getTripProgram(routeId)
+  || routeId === "tourFinDeAno2025"
+  || /\/programa_[^/]+$/.test(ROUTES[routeId]?.es || "")
+);
 
 export default TRIP_PROGRAMS;

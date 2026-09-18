@@ -26,6 +26,7 @@ export const ROUTES = {
   catalog:            { es: "catalogo",                  en: "catalogue",                fr: "catalogue" },
   archive:            { es: "archivo",                   en: "archive",                  fr: "archives" },
   practicalInfo:      { es: "info",                      en: "practical-information",    fr: "informations-pratiques" },
+  climate:            { es: "clima",                     en: "weather",                  fr: "climat" },
   navigationMap:      { es: "nav",                       en: "nav",                      fr: "nav" },
   tourSouth:          { es: "viajes/surdemarruecos",     en: "tours/southern-morocco",   fr: "voyages/sud-du-maroc" },
   tourDesiertoAtlas67:{ es: "viajes/desierto_atlas/programa_6n_7d", en: "tours/desert-atlas/program-6n-7d", fr: "voyages/desert-atlas/programme-6n-7j" },

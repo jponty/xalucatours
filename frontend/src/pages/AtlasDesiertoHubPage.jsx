@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { BestMonthButton } from "@/components/BestMonthFab";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, MapPin } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -506,6 +507,7 @@ export default function AtlasDesiertoHubPage() {
               <p key={`intro-${i}`} className={i === 0 ? "font-serif-x-italic text-xl md:text-2xl text-[#C16542]" : ""}>{p}</p>
             ))}
           </div>
+          <div className="mt-8"><BestMonthButton /></div>
         </div>
       </section>
 

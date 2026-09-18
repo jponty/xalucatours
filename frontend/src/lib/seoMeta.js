@@ -133,6 +133,15 @@ const SEO = {
     ),
   },
 
+  climate: {
+    title: withBrand(T("Clima en Marruecos y mejor época para viajar", "Morocco weather and best time to travel", "Climat du Maroc et meilleure saison pour partir")),
+    description: T(
+      "Consulta el tiempo actual en Marrakech, el Atlas y el sur de Marruecos. Compara temperaturas mensuales y descubre los mejores meses para cada región.",
+      "Check the current weather in Marrakech, the Atlas and southern Morocco. Compare monthly temperatures and find the best months for each region.",
+      "Consultez la météo actuelle à Marrakech, dans l'Atlas et le sud du Maroc. Comparez les températures mensuelles et les meilleures périodes par région."
+    ),
+  },
+
   precios: {
     title: withBrand(T("Precios y tarifas", "Pricing", "Tarifs")),
     description: T(

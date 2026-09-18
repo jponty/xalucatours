@@ -13,31 +13,45 @@ const IMAGE_VERSION = "20260811-2";
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const template = read("build/index.html");
+const importData = (file) => import(`data:text/javascript;base64,${Buffer.from(read(file)).toString("base64")}`);
+const escapeHtml = (value) => String(value).replace(/[<>&"']/g, (c) => ({
+  "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;",
+}[c]));
 
 async function main() {
   const { ROUTES, SUPPORTED_LANGS, pathFor, canonicalUrl, PUBLIC_SITE_ORIGIN: SITE, blogSlugs } = await loadSiteData();
+  const { seoImageForRoute } = await importData("src/lib/seoImages.js");
+  const { getSeoMeta } = await importData("src/lib/seoMeta.js");
   const written = new Set();
 
-  const replaceMeta = (html, { lang, url, image }) => {
+  const replaceMeta = (html, { lang, url, image, meta }) => {
     const canonical = canonicalUrl(url);
     const absoluteImage = `${SITE}${image}`;
-    return html
+    const result = html
       .replace(/<html lang="[^"]*">/, `<html lang="${lang}">`)
       .replace(/<link rel="canonical" href="[^"]*"\s*\/>/, `<link rel="canonical" href="${canonical}" />`)
       .replace(/<meta property="og:url" content="[^"]*"\s*\/>/, `<meta property="og:url" content="${canonical}" />`)
       .replace(/<meta property="og:image" content="[^"]*"\s*\/>/, `<meta property="og:image" content="${absoluteImage}" />`)
       .replace(/<meta property="og:image:secure_url" content="[^"]*"\s*\/>/, `<meta property="og:image:secure_url" content="${absoluteImage}" />`)
       .replace(/<meta name="twitter:image" content="[^"]*"\s*\/>/, `<meta name="twitter:image" content="${absoluteImage}" />`);
+    if (!meta) return result;
+    return result
+      .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
+      .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${escapeHtml(meta.description)}" />`)
+      .replace(/<meta property="og:title" content="[^"]*"\s*\/>/, `<meta property="og:title" content="${escapeHtml(meta.title)}" />`)
+      .replace(/<meta property="og:description" content="[^"]*"\s*\/>/, `<meta property="og:description" content="${escapeHtml(meta.description)}" />`)
+      .replace(/<meta name="twitter:title" content="[^"]*"\s*\/>/, `<meta name="twitter:title" content="${escapeHtml(meta.title)}" />`)
+      .replace(/<meta name="twitter:description" content="[^"]*"\s*\/>/, `<meta name="twitter:description" content="${escapeHtml(meta.description)}" />`);
   };
 
-  const writeRoute = ({ lang, url, image }) => {
+  const writeRoute = ({ lang, url, image, meta }) => {
     const normalizedUrl = url === "/" ? url : url.replace(/\/$/, "");
     if (written.has(normalizedUrl)) return;
     written.add(normalizedUrl);
     const relative = normalizedUrl.replace(/^\//, "");
     const output = path.join(BUILD, relative, "index.html");
     fs.mkdirSync(path.dirname(output), { recursive: true });
-    fs.writeFileSync(output, replaceMeta(template, { lang, url: normalizedUrl, image }));
+    fs.writeFileSync(output, replaceMeta(template, { lang, url: normalizedUrl, image, meta }));
   };
 
   for (const routeId of Object.keys(ROUTES)) {
@@ -47,8 +61,9 @@ async function main() {
         writeRoute({ lang, url, image: `/og-image.jpg?v=${IMAGE_VERSION}` });
         continue;
       }
-      const imageRoute = { practicalInfo: "whenToTravel", navigationMap: "archive" }[routeId] || routeId;
-      writeRoute({ lang, url, image: `/og/routes/${imageRoute}.jpg?v=${IMAGE_VERSION}` });
+      // Match the browser's asset resolver, including /clima's existing branded image.
+      // Populate the new page's static copy without changing other routes' SEO in this task.
+      writeRoute({ lang, url, image: seoImageForRoute(routeId), meta: routeId === "climate" ? getSeoMeta(routeId, lang) : undefined });
     }
   }
 

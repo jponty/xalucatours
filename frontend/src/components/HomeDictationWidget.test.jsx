@@ -3,16 +3,22 @@ import { createRoot } from "react-dom/client";
 import axios from "axios";
 import fs from "fs";
 import path from "path";
-import HomeDictationWidget from "./HomeDictationWidget";
+import GlobalDictationWidget from "./GlobalDictationWidget";
 import { TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
 import { createVoiceRecorder, dictationAvailable, supportsDictation, transcribeVoice } from "@/lib/voiceDictation";
+import { ROUTES, SUPPORTED_LANGS, pathFor } from "@/lib/routes";
+import { TRIP_PROGRAMS } from "@/lib/tripPrograms";
 
 jest.mock("axios");
 // CRA's Jest 27 does not resolve conditional package subpath exports.
 jest.mock("@radix-ui/primitive/is-development", () => jest.requireActual("../../node_modules/@radix-ui/primitive/dist/internal/is-development.true.js"), { virtual: true });
 let mockLang = "es";
+let mockPath = "/";
 jest.mock("@/contexts/LanguageContext", () => ({ pick: (obj, lang) => obj[lang] || obj.es, useLanguage: () => ({ lang: mockLang }) }));
-jest.mock("react-router-dom", () => ({ Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a> }));
+jest.mock("react-router-dom", () => ({
+  Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a>,
+  useLocation: () => ({ pathname: mockPath }),
+}));
 jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults }) => <Tag>{defaults.es}</Tag>);
 jest.mock("./JourneyChronology", () => ({ ChronologyButton: () => null }));
 jest.mock("@/components/InternationalPhoneInput", () => ({ __esModule: true,
@@ -32,13 +38,14 @@ const change = async (id, value) => act(async () => {
   element.dispatchEvent(new Event("input", { bubbles: true }));
 });
 const render = async () => act(async () => root.render(<TripFloatingProvider>
-  <HomeDictationWidget />
+  <GlobalDictationWidget />
   <TripFloatingSlot name="audio"><button data-testid="audio-control">Audio</button></TripFloatingSlot>
 </TripFloatingProvider>));
 beforeEach(async () => {
   global.IS_REACT_ACT_ENVIRONMENT = true;
   global.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
   mockLang = "es";
+  mockPath = "/";
   supportsDictation.mockReturnValue(false);
   dictationAvailable.mockResolvedValue(true);
   createVoiceRecorder.mockReset();
@@ -62,7 +69,8 @@ test("opens only on demand, uses the real shared form and closes with Escape or 
   expect(get("dictation-form")).toBeNull();
   expect(get("home-dictation-trigger").getAttribute("aria-haspopup")).toBe("dialog");
   expect(get("home-dictation-trigger").getAttribute("aria-label")).toBe("Tu viaje, con tus palabras.");
-  expect(get("home-dictation-trigger").querySelector(".home-dictation-trigger-label").getAttribute("aria-hidden")).toBe("true");
+  expect(get("home-dictation-trigger").textContent).toBe("");
+  expect(get("home-dictation-trigger").querySelector("svg").getAttribute("aria-hidden")).toBe("true");
   await click("home-dictation-trigger");
   expect(get("home-dictation-modal").getAttribute("aria-modal")).toBe("true");
   expect(get("dictation-form")).not.toBeNull();
@@ -165,16 +173,83 @@ test("the shared two-step flow validates, retains the story and submits one home
 
 test.each([ ["en", "Your trip, in your own words."], ["fr", "Votre voyage, avec vos mots."] ])("%s widget and modal use the shared translated title", async (lang, title) => {
   mockLang = lang; await render();
-  expect(get("home-dictation-trigger").textContent).toBe(title);
+  expect(get("home-dictation-trigger").textContent).toBe("");
   expect(get("home-dictation-trigger").getAttribute("aria-label")).toBe(title);
   await click("home-dictation-trigger");
   const dialog = get("home-dictation-modal");
   expect(document.getElementById(dialog.getAttribute("aria-labelledby")).textContent).toBe(title);
 });
 
-test("the floating entry is only mounted by Home; contact continues to use the shared form", () => {
+test("the entry is mounted once by the public layout; contact keeps the same shared form", () => {
   const base = path.resolve(__dirname, "..");
-  expect(fs.readFileSync(path.join(base, "pages/HomePage.jsx"), "utf8")).toContain("<HomeDictationWidget />");
+  expect(fs.readFileSync(path.join(base, "pages/HomePage.jsx"), "utf8")).not.toContain("HomeDictationWidget");
   expect(fs.readFileSync(path.join(base, "components/FormTabs.jsx"), "utf8")).toContain("<DictationForm");
-  expect(fs.readFileSync(path.join(base, "components/Layout.jsx"), "utf8")).not.toContain("HomeDictationWidget");
+  expect(fs.readFileSync(path.join(base, "components/Layout.jsx"), "utf8").match(/<GlobalDictationWidget\s*\/>/g)).toHaveLength(1);
+});
+
+const details = new Set([...Object.keys(TRIP_PROGRAMS), "tourFinDeAno2025", "tourErrAtlasFez56"]);
+test.each(Object.keys(ROUTES))("%s has the correct global widget visibility in every language", async routeId => {
+  for (const lang of SUPPORTED_LANGS) {
+    mockLang = lang;
+    mockPath = pathFor(lang, routeId);
+    await render();
+    if (details.has(routeId)) {
+      expect(get("home-dictation-trigger")).toBeNull();
+      expect(get("home-dictation-dock")).toBeNull();
+      expect(get("home-dictation-modal")).toBeNull();
+    } else {
+      expect(document.querySelectorAll('[data-testid="home-dictation-trigger"]')).toHaveLength(1);
+      expect(get("home-dictation-trigger").textContent).toBe("");
+      expect(get("home-dictation-dock").contains(get("audio-control"))).toBe(true);
+    }
+  }
+});
+
+test.each(["/findeano2025", "/en/newyear2025", "/fr/nouvelan2025", "/viajes/desierto_atlas/programa_4n_5d/"])(
+  "also excludes redirects and trailing-slash trip URLs: %s", async pathname => {
+    mockPath = pathname; await render();
+    expect(get("home-dictation-trigger")).toBeNull();
+  }
+);
+
+test("dynamic editorial pages still have the global widget", async () => {
+  mockPath = "/blog/preparar-un-viaje"; await render();
+  expect(get("home-dictation-trigger")).not.toBeNull();
+});
+
+test("navigation closes the modal, cancels recording and removes the dock on trip details", async () => {
+  supportsDictation.mockReturnValue(true);
+  const recording = { cancel: jest.fn(), stop: jest.fn() };
+  createVoiceRecorder.mockResolvedValue(recording);
+  mockPath = "/contacto"; await render();
+  await click("home-dictation-trigger");
+  await act(async () => get("home-dictation-modal").querySelector('button[aria-label^="Dictar"]').click());
+  mockPath = "/viajes/desierto_atlas/programa_4n_5d"; await render();
+  expect(recording.cancel).toHaveBeenCalledTimes(1);
+  expect(transcribeVoice).not.toHaveBeenCalled();
+  expect(get("home-dictation-modal")).toBeNull();
+  expect(get("home-dictation-trigger")).toBeNull();
+  expect(document.body.hasAttribute("data-scroll-locked")).toBe(false);
+  mockPath = "/opiniones"; await render();
+  expect(get("home-dictation-trigger")).not.toBeNull();
+  await click("home-dictation-trigger");
+  expect(get("dictation-message").value).toBe("");
+});
+
+test("non-home submissions retain the actual origin and trip context through the shared form", async () => {
+  mockPath = "/contacto";
+  window.history.replaceState({}, "", "/contacto?trip=tourMarrakechFez67");
+  await render(); await click("home-dictation-trigger");
+  await change("dictation-message", "Un viaje cultural por Marruecos de siete días.");
+  await click("dictation-next");
+  await change("dictation-full_name", "Prueba Xaluca");
+  await change("dictation-email", "test@example.com");
+  await click("dictation-pref-email");
+  await change("dictation-pref-email-detail", "test@example.com");
+  await click("dictation-consent");
+  await click("dictation-submit");
+  expect(axios.post).toHaveBeenCalledTimes(1);
+  expect(axios.post.mock.calls[0][1]).toEqual(expect.objectContaining({
+    capture_type: "dictation", source_path: "/contacto", source_route_id: "contact", related_trip_id: "tourMarrakechFez67",
+  }));
 });

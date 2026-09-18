@@ -14,6 +14,7 @@ import ImageBrandBadges from "@/components/ImageBrandBadges";
 import CardHighlightsMarquee from "@/components/CardHighlightsMarquee";
 import HeroMonogram from "@/components/HeroMonogram";
 import TripCardActions from "@/components/TripCardActions";
+import { BestMonthButton } from "@/components/BestMonthFab";
 import { useSlotId } from "@/components/slotScope";
 import SectionNav from "@/components/SectionNav";
 import { hubProgramRouteIds } from "@/lib/itineraryHubs";
@@ -461,6 +462,7 @@ export const ItinerariesOverview = ({ itineraries, t, lang }) => (
         </div>
         <div className="md:col-span-5">
           <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{t.body}</p>
+          <div className="mt-6"><BestMonthButton /></div>
         </div>
       </div>
 

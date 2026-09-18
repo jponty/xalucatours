@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
-import BestMonthFab from "./BestMonthFab";
+import BestMonthPanel from "./BestMonthFab";
 import NarrationMiniPlayer from "./NarrationMiniPlayer";
 import VirtualAssistantInfoModal from "./VirtualAssistantInfoModal";
 import ExitIntentModal from "./ExitIntentModal";
@@ -10,6 +10,7 @@ import WhatsAppContactModal from "./WhatsAppContactModal";
 import { Toaster } from "@/components/ui/sonner";
 import { TripFloatingProvider, TripFloatingSlot } from "./TripFloatingActions";
 import AgentDiscovery from "./AgentDiscovery";
+import GlobalDictationWidget from "./GlobalDictationWidget";
 
 export const Layout = ({ children }) => {
   return (
@@ -21,7 +22,8 @@ export const Layout = ({ children }) => {
         <main>{children}</main>
         <Footer />
         <div className="trip-floating-page-clearance" aria-hidden="true" />
-        <BestMonthFab />
+        <BestMonthPanel />
+        <GlobalDictationWidget />
         <TripFloatingSlot name="audio"><NarrationMiniPlayer /></TripFloatingSlot>
         <VirtualAssistantInfoModal />
         <ExitIntentModal />

@@ -4,17 +4,13 @@ import { Sunrise, X, ArrowRight, Sparkles } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { REGIONS, MONTHS } from "@/lib/bestTimeData";
-import { getTripProgram } from "@/lib/tripPrograms";
-import { TripFloatingSlot } from "./TripFloatingActions";
 
 /* ------------------------------------------------------------------
-   BestMonthFab
-   Floating pill (bottom-right) that opens a side modal with the
-   ideal travel-month extract for the current page's climate region.
-   Mounted globally in <Layout>; self-hides on irrelevant routes.
+   BestMonthPanel — the shared climate recommendations side panel.
+   Mounted globally in <Layout>; opened only by in-content buttons.
 ------------------------------------------------------------------- */
 
-/* Routes where the FAB should NOT show. */
+/* Routes where the panel is not available. */
 const HIDDEN_ROUTES = new Set([
   null, undefined, "home", "contact", "whenToTravel", "planTrip",
   "appointment", "toursLanding", "catalog", "morocco", "events",
@@ -104,6 +100,29 @@ export const COPY = {
   close:      { es: "Cerrar", en: "Close", fr: "Fermer" },
   noRegion:   { es: "Marruecos, todo el año", en: "Morocco, year-round", fr: "Maroc, toute l'année" },
 };
+
+/* Normal-flow launcher, shared by summaries, hubs and individual programs.
+   It deliberately has no fixed/sticky positioning or floating-action slot. */
+export function BestMonthButton({ testId = "best-month-trigger" }) {
+  const { lang } = useLanguage();
+  return (
+    <button
+      type="button"
+      data-testid={testId}
+      aria-haspopup="dialog"
+      aria-controls="best-month-panel"
+      onClick={() => window.dispatchEvent(new CustomEvent("xaluca:open-best-month"))}
+      className="inline-flex min-h-12 max-w-full items-center justify-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] motion-reduce:transition-none"
+    >
+      <span className="w-7 h-7 shrink-0 flex items-center justify-center rounded-full bg-[#A35133]" aria-hidden="true">
+        <Sunrise className="w-3.5 h-3.5" strokeWidth={1.7} />
+      </span>
+      <span className="min-w-0 text-[11px] leading-relaxed tracking-[0.18em] sm:tracking-[0.22em] uppercase font-medium">
+        {pick(COPY.fab, lang)}
+      </span>
+    </button>
+  );
+}
 
 /* Parse "Oct – Apr" English string into 1-12 month indexes (wrap-around aware). */
 export const parseBestMonthsEn = (bestEn) => {
@@ -264,7 +283,7 @@ export const MonthBar = ({ bestMonths, accent, lang, months }) => {
 
 /* ============================================================ */
 
-export default function BestMonthFab() {
+export default function BestMonthPanel() {
   const { lang } = useLanguage();
   const location = useLocation();
   const { routeId } = resolvePath(location.pathname);
@@ -282,9 +301,7 @@ export default function BestMonthFab() {
     }
   }, [open]);
 
-  /* Allow opening the panel from anywhere via a custom event — used by the
-     fixed in-page button inside a trip program's "Información rápida" section,
-     so it opens the same side panel as the hub-page launcher. */
+  /* Hubs and programs use the same in-content launcher and panel. */
   useEffect(() => {
     const handler = () => setOpen(true);
     window.addEventListener("xaluca:open-best-month", handler);
@@ -310,37 +327,8 @@ export default function BestMonthFab() {
 
   /* Hide entirely on irrelevant routes or when no region inferred. */
   if (HIDDEN_ROUTES.has(routeId) || !region) return null;
-  /* On single-trip program pages the floating launcher is hidden — the panel
-     is opened from a fixed button inside the "Información rápida" section
-     instead. The panel itself stays mounted so that button can open it. */
-  const isProgram = !!getTripProgram(routeId);
-
   return (
     <>
-      {/* Floating pill button — fixed terracotta. Hidden on program pages. */}
-      {!isProgram && (
-      <TripFloatingSlot name="auxiliary">
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        data-testid="best-month-fab"
-        aria-expanded={open}
-        aria-controls="best-month-panel"
-        className="fixed bottom-24 right-6 z-30 inline-flex items-center gap-2.5 bg-[#C16542] text-[#FDFBF7] pl-3 pr-4 py-2.5 border border-[#C16542] shadow-[0_10px_30px_-15px_rgba(26,21,19,0.6)] outline-none focus:outline-none focus-visible:outline-none"
-      >
-        <span
-          className="w-7 h-7 -ml-1 flex items-center justify-center rounded-full"
-          style={{ backgroundColor: "#A35133" }}
-        >
-          <Sunrise className="w-3.5 h-3.5" strokeWidth={1.7} />
-        </span>
-        <span className="text-[11px] tracking-[0.22em] uppercase font-medium">
-          {pick(COPY.fab, lang)}
-        </span>
-      </button>
-      </TripFloatingSlot>
-      )}
-
       {/* Overlay + side modal */}
       <div
         className={`fixed inset-0 z-[55] transition-opacity duration-400 ${

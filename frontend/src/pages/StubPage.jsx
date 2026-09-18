@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { STUB_CONTENT } from "@/lib/stubContent";
 import ContactForm from "@/components/ContactForm";
+import { BestMonthButton, routeToRegion } from "@/components/BestMonthFab";
 
 /**
  * Generic placeholder page for routes that don't yet have unique content.
@@ -65,6 +66,7 @@ export default function StubPage({ routeId }) {
                 {t("nav_intro") || "Home"}
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
               </Link>
+              {routeToRegion(routeId) && <BestMonthButton />}
             </div>
           </div>
         </div>

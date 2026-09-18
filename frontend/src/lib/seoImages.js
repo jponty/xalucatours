@@ -8,7 +8,7 @@ export const SEO_IMAGE_VERSION = "20260811-2";
 export const seoImageForRoute = (routeId) =>
   routeId === "home" || !routeId
     ? `/og-image.jpg?v=${SEO_IMAGE_VERSION}`
-    : routeId === "practicalInfo"
+    : routeId === "practicalInfo" || routeId === "climate"
     ? `/og/routes/whenToTravel.jpg?v=${SEO_IMAGE_VERSION}`
     : routeId === "navigationMap"
     ? `/og/routes/archive.jpg?v=${SEO_IMAGE_VERSION}`

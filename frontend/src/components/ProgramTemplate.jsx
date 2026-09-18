@@ -2,10 +2,10 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight, Compass, ChevronDown, ChevronUp, MapPin, Plane, Clock,
-  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset, Sunrise, Heart,
+  Calendar, Mountain, Sparkles, Phone, Mail, MessageCircle, Camera, Download, Tag, Headset, Heart,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { COPY as BEST_MONTH_COPY } from "@/components/BestMonthFab";
+import { BestMonthButton } from "@/components/BestMonthFab";
 import { pathFor, resolvePath } from "@/lib/routes";
 import { setTripContext } from "@/lib/tripContext";
 import { CONTACT } from "@/lib/data";
@@ -481,22 +481,9 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
           ))}
         </div>
 
-        {/* Fixed "best month for my trip" button — opens the same side panel
-            as the hub-page launcher (not floating). */}
+        {/* In-content launcher for the shared climate recommendations panel. */}
         <div className="mt-10 flex justify-center">
-          <button
-            type="button"
-            data-testid="program-best-month-trigger"
-            onClick={() => window.dispatchEvent(new CustomEvent("xaluca:open-best-month"))}
-            className="inline-flex items-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] pl-3 pr-5 py-3 transition-colors"
-          >
-            <span className="w-7 h-7 -ml-1 flex items-center justify-center rounded-full bg-[#A35133]">
-              <Sunrise className="w-3.5 h-3.5" strokeWidth={1.7} />
-            </span>
-            <span className="text-[11px] tracking-[0.22em] uppercase font-medium">
-              {pick(BEST_MONTH_COPY.fab, lang)}
-            </span>
-          </button>
+          <BestMonthButton testId="program-best-month-trigger" />
         </div>
       </div>
     </section>

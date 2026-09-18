@@ -32,6 +32,35 @@ afterEach(async () => {
 });
 
 test.each([
+  ["es", "Clima", "/clima"],
+  ["en", "Weather", "/en/weather"],
+  ["fr", "Climat", "/fr/climat"],
+])("the %s drawer has a direct climate link with the shared style and close behavior", async (lang, label, url) => {
+  mockLang = lang;
+  mockPath = pathFor(lang, "contact");
+  const onClose = jest.fn();
+  await act(async () => root.render(<SideMenu open onClose={onClose} />));
+  onClose.mockClear();
+
+  const link = container.querySelector('[data-testid="menu-link-climate"]');
+  const archive = container.querySelector('[data-testid="menu-link-archive"]');
+  expect(link.getAttribute("href")).toBe(url);
+  expect(link.textContent).toContain(label);
+  expect(link.className).toBe(archive.className);
+  expect(MENU_TREE.filter((item) => item.routeId === "climate")).toHaveLength(1);
+  expect(MENU_TREE.flatMap((item) => item.children || []).filter((item) => item.routeId === "climate")).toHaveLength(0);
+  expect(container.querySelectorAll(`a[href="${url}"]`)).toHaveLength(1);
+
+  await act(async () => link.click());
+  expect(mockNavigate).toHaveBeenCalledWith(url);
+  expect(onClose).toHaveBeenCalledTimes(1);
+
+  mockPath = url;
+  await act(async () => root.render(<SideMenu open onClose={onClose} />));
+  expect(container.querySelector('[data-testid="menu-link-climate"]').getAttribute("aria-current")).toBe("page");
+});
+
+test.each([
   ["es", "Catálogo", "/catalogo"],
   ["en", "Catalogue", "/en/catalogue"],
   ["fr", "Catalogue", "/fr/catalogue"],

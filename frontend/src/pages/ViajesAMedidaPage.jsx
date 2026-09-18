@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { BestMonthButton } from "@/components/BestMonthFab";
 import EditableImage from "@/components/EditableImage";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
@@ -364,6 +365,7 @@ const TripTypesGrid = ({ t, lang }) => (
         </div>
         <div className="md:col-span-5">
           <p className="text-base md:text-lg text-[#5C5248] leading-relaxed">{t.body}</p>
+          <div className="mt-6"><BestMonthButton /></div>
         </div>
       </div>
 

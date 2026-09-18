@@ -131,7 +131,7 @@ export const SEASONS = [
     id: "autumn",
     accent: "#D97742",
     months: { es: "Septiembre · Octubre · Noviembre", en: "September · October · November", fr: "Septembre · Octobre · Novembre" },
-    idealFor: { es: "el desierto recién reabierto, la mejor luz del año y rutas por todo el país.", en: "the freshly reopened desert, the year's best light and journeys countrywide.", fr: "le désert rouvert, la plus belle lumière de l'année et des itinéraires partout." },
+    idealFor: { es: "las dunas del Sáhara, la luz dorada y rutas por todo el país.", en: "the Sahara dunes, golden light and journeys countrywide.", fr: "les dunes du Sahara, la lumière dorée et des itinéraires partout." },
     recommended: [
       { route: "tourFezRak78", image: IMG.kasbahArch, duration: { es: "7 noches · 8 días", en: "7 nights · 8 days", fr: "7 nuits · 8 jours" }, region: { es: "Gran Sur", en: "Grand South", fr: "Grand Sud" }, label: { es: "Gran ruta Fez – Marrakech", en: "Grand route Fez – Marrakech", fr: "Grande route Fès – Marrakech" }, desc: { es: "La gran travesía de norte a sur con la mejor luz del año.", en: "The great north-to-south crossing with the year's best light.", fr: "La grande traversée nord-sud avec la plus belle lumière de l'année." } },
       { route: "tourMarrakechErg67", image: IMG.dunes, duration: { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" }, region: { es: "Sur · Sáhara", en: "South · Sahara", fr: "Sud · Sahara" }, label: { es: "Marrakech – Erg Chebbi", en: "Marrakech – Erg Chebbi", fr: "Marrakech – Erg Chebbi" }, desc: { es: "Dunas doradas y noches estrelladas en plena temporada del Sáhara.", en: "Golden dunes and starry nights in the peak Sahara season.", fr: "Dunes dorées et nuits étoilées en pleine saison du Sahara." } },
@@ -149,9 +149,9 @@ export const SEASONS = [
       fr: "Erg Chebbi, Erg Chigaga, Dadès, Aït Ben Haddou, Marrakech.",
     },
     activities: {
-      es: "Travesías en 4x4 por el Sáhara, noches bajo las estrellas, festivales (Festival de las Almendras, Festival del Dátil), trekking en el M'Goun.",
-      en: "4x4 crossings through the Sahara, nights under the stars, festivals (Almond, Date), trekking in the M'Goun.",
-      fr: "Traversées en 4x4 dans le Sahara, nuits sous les étoiles, festivals (Amande, Datte), trekking dans le M'Goun.",
+      es: "Travesías en 4x4 por el Sáhara, noches bajo las estrellas, fotografía de los oasis y trekking en el M'Goun según las condiciones.",
+      en: "4x4 crossings through the Sahara, nights under the stars, oasis photography and M'Goun trekking when conditions allow.",
+      fr: "Traversées en 4x4 dans le Sahara, nuits sous les étoiles, photographie des oasis et trekking dans le M'Goun selon les conditions.",
     },
     pros: {
       es: "La luz del desierto es la mejor del año, la sensación térmica es perfecta y el cielo se vacía de turistas. La temporada ideal para fotografía y aventura.",
@@ -214,9 +214,9 @@ export const REGIONS = [
     best: { es: "Oct – Abr", en: "Oct – Apr", fr: "Oct – Avr" },
     avoid: { es: "Jun–Ago: calor intenso de día", en: "Jun–Aug: very hot days", fr: "Juin–Août : journées très chaudes" },
     body: {
-      es: "Clima desértico extremo. De junio a agosto el termómetro supera los 45 °C — el bivouac queda cerrado y las salidas en dromedario se reducen al amanecer. De octubre a abril, en cambio, los días son perfectos (20–28 °C) y las noches estrelladas piden manta.",
-      en: "Extreme desert climate. June to August can top 45 °C — bivouacs close and camel rides are dawn-only. From October to April the days are perfect (20–28 °C) and the starry nights call for a blanket.",
-      fr: "Climat désertique extrême. De juin à août, plus de 45 °C — bivouac fermé, méharées limitées à l'aube. D'octobre à avril, journées parfaites (20–28 °C) et nuits étoilées qui réclament une couverture.",
+      es: "Clima desértico, con grandes contrastes entre el día y la noche. En verano el calor es intenso: conviene adaptar horarios y confirmar las actividades y alojamientos disponibles. De octubre a abril los días suelen ser más suaves, pero las noches de invierno pueden ser muy frías.",
+      en: "Desert climate with large contrasts between day and night. Summer heat is intense: adapt your schedule and confirm available activities and accommodation. October to April usually brings milder days, but winter nights can be very cold.",
+      fr: "Climat désertique aux forts contrastes entre jour et nuit. La chaleur estivale est intense : adaptez les horaires et confirmez les activités et hébergements disponibles. D'octobre à avril, les journées sont généralement plus douces, mais les nuits d'hiver peuvent être très froides.",
     },
   },
   {
@@ -262,9 +262,9 @@ export const REGIONS = [
     best: { es: "May – Sep (todo el verano)", en: "May – Sep (all summer)", fr: "Mai – Sep (tout l'été)" },
     avoid: { es: "Dic–Feb: mar fresco para el baño", en: "Dec–Feb: cool sea for swimming", fr: "Déc–Fév : mer fraîche pour la baignade" },
     body: {
-      es: "Essaouira, Agadir y Asilah viven verano largo: 22–28 °C, brisa atlántica y olas para el surf. La temperatura del mar nunca pasa de 21 °C, así que el baño requiere espíritu vasco más que mediterráneo.",
-      en: "Essaouira, Agadir and Asilah enjoy a long summer: 22–28 °C, Atlantic breeze and good surf. Sea temperature never tops 21 °C — swimming is closer to the Basque than to the Mediterranean.",
-      fr: "Essaouira, Agadir et Asilah connaissent un long été : 22–28 °C, brise atlantique et houle de surf. La mer ne dépasse jamais 21 °C — la baignade tient davantage du Pays basque que de la Méditerranée.",
+      es: "En Essaouira, Agadir y Asilah la influencia atlántica suaviza las temperaturas frente al interior. La brisa puede ser intensa, especialmente en Essaouira, y las tardes piden una capa ligera. El estado del mar y la temperatura del agua varían según el lugar y la temporada.",
+      en: "In Essaouira, Agadir and Asilah, Atlantic influence moderates temperatures compared with inland areas. The breeze can be strong, especially in Essaouira, and evenings call for a light layer. Sea conditions and water temperature vary by place and season.",
+      fr: "À Essaouira, Agadir et Asilah, l'influence atlantique adoucit les températures par rapport à l'intérieur. La brise peut être forte, surtout à Essaouira, et les soirées appellent une couche légère. L'état de la mer et la température de l'eau varient selon le lieu et la saison.",
     },
   },
 ];

@@ -27,6 +27,7 @@ from lead_registry import LeadCapture, register_lead_routes, save_submission
 from calendly_leads import register_calendly_routes
 from newsletter_leads import import_newsletter_leads
 from form_dictation import register_dictation_routes
+from climate import register_climate_routes
 
 
 ROOT_DIR = Path(__file__).parent
@@ -6201,6 +6202,7 @@ async def import_newsletter_history(authorization: str = Header(default="")):
 register_lead_routes(api_router, lambda: db, _require_admin)
 register_calendly_routes(api_router, lambda: db)
 register_dictation_routes(api_router)
+register_climate_routes(api_router)
 app.include_router(api_router)
 
 # Serve legacy uploaded files under /api/uploads for backward compatibility.

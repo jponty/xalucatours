@@ -29,7 +29,7 @@ const COPY = {
   fr: { title: "Ce voyage vous intéresse ?", cta: "Contactez-nous" },
 };
 
-// Shared by trip pages and the Home dictation widget. A single measured stack
+// Shared by trip pages and the global dictation widget. A single measured stack
 // keeps audio/editor controls and conversion actions clear of one another.
 export function FloatingActionsDock({ children, testId = "trip-floating-dock", className = "" }) {
   const context = useContext(DockContext);

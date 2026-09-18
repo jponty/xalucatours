@@ -92,6 +92,12 @@ export const MENU_TREE = [
     ],
   },
   {
+    id: "climate",
+    routeId: "climate",
+    label: { es: "Clima", en: "Weather", fr: "Climat" },
+    icon: "sun",
+  },
+  {
     id: "precios",
     routeId: "precios",
     label: { es: "Precios", en: "Pricing", fr: "Tarifs" },

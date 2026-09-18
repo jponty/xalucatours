@@ -39,7 +39,6 @@
   transform: none;
 }
 .trip-floating-slot [data-testid="narration-mini-player"],
-.trip-floating-slot [data-testid="best-month-fab"],
 .trip-floating-slot [data-testid="edit-mode-fab"] {
   position: static;
   width: 100%;

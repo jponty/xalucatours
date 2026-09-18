@@ -13,6 +13,7 @@ import VideoSection from "@/components/VideoSection";
 import JourneyChronology from "@/components/JourneyChronology";
 import TripFloatingActions from "@/components/TripFloatingActions";
 import TripCustomizationSection from "@/components/TripCustomizationSection";
+import { BestMonthButton } from "@/components/BestMonthFab";
 
 /* ============================================================
    FIN DE AÑO 2026 EN EL DESIERTO DE MARRUECOS
@@ -434,6 +435,7 @@ function Overview({ lang }) {
             </div>
           ))}
         </div>
+        <div className="mt-8"><BestMonthButton /></div>
       </div>
     </section>
   );

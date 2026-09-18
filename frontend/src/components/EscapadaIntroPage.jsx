@@ -9,6 +9,7 @@ import { tripHeroSlot, tripHeroImage } from "@/lib/tripHero";
 import ContactForm from "@/components/ContactForm";
 import ProgramFlipbook from "@/components/ProgramFlipbook";
 import RelatedJourneys from "@/components/RelatedJourneys";
+import { BestMonthButton } from "@/components/BestMonthFab";
 
 /* ============================================================
    EscapadaIntroPage — single-section editorial intro for each
@@ -131,6 +132,7 @@ const Description = ({ paragraphs, t }) => (
           </p>
         ))}
       </div>
+      <div className="mt-8"><BestMonthButton /></div>
     </div>
   </section>
 );

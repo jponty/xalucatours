@@ -491,6 +491,7 @@ export default function JuegoPage() {
         <div
           data-testid="juego-celebrate"
           className="fixed inset-x-0 bottom-6 z-[120] flex justify-center px-4 pointer-events-none"
+          style={{ bottom: "calc(var(--trip-floating-clearance, 0px) + 24px)" }}
         >
           <div
             className="pointer-events-auto flex items-center gap-4 bg-[#1A1513] text-[#FDFBF7] rounded-2xl pl-4 pr-3 py-3.5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] border"

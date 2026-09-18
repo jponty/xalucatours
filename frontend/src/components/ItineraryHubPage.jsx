@@ -16,6 +16,7 @@ import {
 } from "@/components/JourneyPageSections";
 import { COMMON_NIGHTS } from "@/lib/itineraryHubs";
 import ContactForm from "@/components/ContactForm";
+import { BestMonthButton } from "@/components/BestMonthFab";
 
 const LABELS = {
   es: {
@@ -122,6 +123,7 @@ const Intro = ({ intro, lang }) => {
             />
           ))}
         </div>
+        <div className="mt-8"><BestMonthButton /></div>
       </div>
     </section>
   );
