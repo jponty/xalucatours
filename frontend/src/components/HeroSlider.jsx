@@ -199,7 +199,7 @@ export const HeroSlider = () => {
                   type="button"
                   onClick={openChatbaseAssistant}
                   data-testid="hero-cta-assistant"
-                  className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 whitespace-nowrap"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300 whitespace-nowrap"
                 >
                   <Headset className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
                   <EditableText
@@ -212,7 +212,7 @@ export const HeroSlider = () => {
                   type="button"
                   onClick={requestIdealTripWizard}
                   data-testid="hero-cta-ideal-trip"
-                  className="inline-flex items-center gap-3 border border-[#D4A373]/70 bg-[#D4A373]/10 px-7 py-4 text-[11px] uppercase tracking-[0.25em] text-[#FDFBF7] transition-all duration-300 hover:border-[#D4A373] hover:bg-[#D4A373] hover:text-[#1A1513] whitespace-nowrap"
+                  className="xaluca-button inline-flex items-center gap-3 border border-[#D4A373]/70 bg-[#D4A373]/10 px-7 py-4 text-[11px] uppercase tracking-[0.25em] text-[#FDFBF7] transition-all duration-300 hover:border-[#D4A373] hover:bg-[#D4A373] hover:text-[#1A1513] whitespace-nowrap"
                 >
                   <Sparkles className="h-3.5 w-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
                   <EditableText
@@ -235,7 +235,7 @@ export const HeroSlider = () => {
                 <a
                   href={`tel:${CONTACT.phoneRaw}`}
                   data-testid="hero-phone"
-                  className="xaluca-button inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
                   {CONTACT.phone}
@@ -244,7 +244,7 @@ export const HeroSlider = () => {
                 <a
                   href={`mailto:${CONTACT.email}`}
                   data-testid="hero-email"
-                  className="xaluca-button inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-[#FDFBF7] hover:text-[#D4A373] transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 text-[#D4A373]" strokeWidth={1.5} />
                   {CONTACT.email}

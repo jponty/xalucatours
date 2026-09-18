@@ -223,7 +223,7 @@ const SeasonRecommendedCarousel = ({ season, lang, label }) => {
                   to={pathFor(lang, it.route)}
                   data-testid={`season-recommended-cta-${season.id}-${i}`}
                   aria-label={pick(it.label, lang)}
-                  className="xaluca-button inline-flex items-center justify-center w-9 h-9 shrink-0 text-[#FDFBF7] transition-transform duration-300 group-hover/reco:translate-x-0.5"
+                  className="inline-flex items-center justify-center w-9 h-9 shrink-0 text-[#FDFBF7] transition-transform duration-300 group-hover/reco:translate-x-0.5"
                   style={{ backgroundColor: season.accent }}
                 >
                   <ArrowRight className="w-4 h-4" strokeWidth={1.8} />

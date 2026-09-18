@@ -176,7 +176,7 @@ export const ContactOptionsInfoModal = ({ open, onOpenChange, onSelect }) => {
                 type="button"
                 onClick={() => selectOption(id)}
                 data-testid={`contact-options-select-${id}`}
-                className="mt-5 inline-flex items-center justify-center border border-[#2C2621]/20 px-4 py-3 text-[10px] uppercase tracking-[0.2em] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
+                className="xaluca-button mt-5 inline-flex items-center justify-center border border-[#2C2621]/20 px-4 py-3 text-[10px] uppercase tracking-[0.2em] transition-colors hover:border-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"
               >
                 {pick(COPY.choose, lang)}
               </button>

@@ -194,7 +194,7 @@ const FounderBlock = ({ f, reverse, lang, onContact }) => (
                 type="button"
                 onClick={() => onContact(f.id === "pont" ? "lluis" : "tayeb")}
                 data-testid={`founder-contact-${f.id}`}
-                className="inline-flex items-center gap-2.5 bg-[#2C2621] px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#C16542]"
+                className="xaluca-button inline-flex items-center gap-2.5 bg-[#2C2621] px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#C16542]"
               >
                 <Send className="h-4 w-4" strokeWidth={1.7} />
                 {COPY.contact[lang] ?? COPY.contact.es} {f.firstName}

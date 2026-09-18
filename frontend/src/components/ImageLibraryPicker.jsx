@@ -864,7 +864,7 @@ function LibraryThumb({ item, usage, onSelect, onDelete, onEdit, onReplace, sele
         <div className={`absolute inset-0 transition-colors flex items-center justify-center ${
           selected ? "bg-[#1A1513]/25" : "bg-[#1A1513]/0 group-hover:bg-[#1A1513]/35"
         }`}>
-          <span className={`xaluca-button transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2 text-[10px] tracking-[0.25em] uppercase ${
+          <span className={`transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2 text-[10px] tracking-[0.25em] uppercase ${
             selected ? "opacity-0" : "opacity-0 group-hover:opacity-100"
           }`}>
             <Check className="w-3.5 h-3.5" strokeWidth={2} />
@@ -1145,7 +1145,7 @@ function ConfirmDeleteDialog({ item, usage, onCancel, onConfirm }) {
                           href={pageHref}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="xaluca-button inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase text-[#C16542] hover:text-[#7C3B23] flex-shrink-0"
+                          className="inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase text-[#C16542] hover:text-[#7C3B23] flex-shrink-0"
                         >
                           ver <ExternalLink className="w-3 h-3" strokeWidth={1.8} />
                         </a>

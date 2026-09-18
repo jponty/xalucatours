@@ -234,7 +234,7 @@ export default function TextSlotsPanel() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="xaluca-button ml-auto inline-flex items-center gap-1 text-[10px] tracking-[0.18em] uppercase text-white/50 hover:text-[#C16542]"
+                      className="ml-auto inline-flex items-center gap-1 text-[10px] tracking-[0.18em] uppercase text-white/50 hover:text-[#C16542]"
                     >
                       Ver <ExternalLink className="w-3 h-3" strokeWidth={1.9} />
                     </a>

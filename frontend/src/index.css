@@ -62,21 +62,13 @@
     ::selection { background: var(--xaluca-terracotta); color: var(--xaluca-bg); }
 }
 
-/* One radius for native buttons, portalled controls and link CTAs.
-   Use Button (including asChild) or .xaluca-button for new link CTAs.
-   Keep this outside Tailwind layers; !important overrides legacy rounded-*
-   utilities and component styles at every breakpoint, for this property only.
-   Do not reuse --radius: it also controls cards, inputs and other surfaces. */
-button,
-input[type="button"],
+/* CTA-only radius. Opt action links and non-submit action buttons into
+   .xaluca-button explicitly. Form submit controls are CTAs by definition.
+   Never apply this token to generic buttons, role=button elements, tabs,
+   cards, thumbnails, galleries or other interactive surfaces. */
+button[type="submit"],
 input[type="submit"],
-input[type="reset"],
-[role="button"],
 .xaluca-button {
-    border-radius: var(--xaluca-button-radius) !important;
-}
-
-input::file-selector-button {
     border-radius: var(--xaluca-button-radius) !important;
 }
 

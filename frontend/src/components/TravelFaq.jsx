@@ -200,7 +200,7 @@ export default function TravelFaq() {
               type="button"
               onClick={openChatbaseAssistant}
               data-testid="faq-cta-assistant"
-              className="inline-flex items-center gap-2.5 bg-[#FDFBF7] hover:bg-white text-[#1A1513] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex items-center gap-2.5 bg-[#FDFBF7] hover:bg-white text-[#1A1513] px-7 py-3.5 text-[10px] sm:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               <Headset className="w-4 h-4" strokeWidth={1.7} />
               {pick(COPY.ctaAssistant, lang)}

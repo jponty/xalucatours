@@ -110,7 +110,7 @@ export const Header = () => {
               to={pathFor(lang, "favorites")}
               data-testid="header-favorites-button"
               aria-label={{ es: "Favoritos", en: "Favourites", fr: "Favoris" }[lang] || "Favoritos"}
-              className="xaluca-button relative inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
+              className="relative inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
             >
               <Heart className="w-5 h-5" strokeWidth={1.6} fill={favCount > 0 ? "#C16542" : "none"} />
               {favCount > 0 && (
@@ -138,7 +138,7 @@ export const Header = () => {
               data-testid="header-enquire-button"
               aria-label={pick(translations.cta_plan, lang)}
               aria-haspopup="dialog"
-              className="inline-flex min-h-10 items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-3 sm:px-4 lg:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
+              className="xaluca-button inline-flex min-h-10 items-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-3 sm:px-4 lg:px-6 py-2.5 md:py-3 text-[10px] md:text-[11px] tracking-[0.25em] uppercase transition-colors"
             >
               {/* Small screens: compact planner control keeps Contact visible. */}
               <Compass className="w-4 h-4 lg:hidden" strokeWidth={1.6} aria-hidden="true" />

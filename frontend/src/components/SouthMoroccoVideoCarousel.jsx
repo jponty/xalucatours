@@ -208,7 +208,7 @@ export default function SouthMoroccoVideoCarousel() {
                   href={videoUrl(selected.id)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="xaluca-button inline-flex shrink-0 items-center gap-2 text-[9px] uppercase tracking-[0.24em] text-[#D4A373] hover:text-white"
+                  className="inline-flex shrink-0 items-center gap-2 text-[9px] uppercase tracking-[0.24em] text-[#D4A373] hover:text-white"
                 >
                   {pick(COPY.youtube, lang)}
                   <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.6} />

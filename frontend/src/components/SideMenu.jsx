@@ -133,7 +133,7 @@ export const SideMenu = ({ open, onClose }) => {
             to={pathFor(lang, l0.routeIdHeader)}
             data-testid="menu-tours-all"
             onClick={(e) => { e.preventDefault(); goto(l0.routeIdHeader); }}
-            className="xaluca-button group flex items-center justify-between gap-3 mb-5 px-3 py-2.5 bg-[#FDFBF7]/[0.04] border border-[#D4A373]/25 hover:border-[#D4A373] hover:bg-[#FDFBF7]/[0.07] transition-all"
+            className="group flex items-center justify-between gap-3 mb-5 px-3 py-2.5 bg-[#FDFBF7]/[0.04] border border-[#D4A373]/25 hover:border-[#D4A373] hover:bg-[#FDFBF7]/[0.07] transition-all"
           >
             <span className="text-[11px] tracking-[0.28em] uppercase text-[#D4A373]">
               <EditableText as="span" slot={`menu.${l0.id}.header`} defaults={l0.headerLabel} multiline={false} />

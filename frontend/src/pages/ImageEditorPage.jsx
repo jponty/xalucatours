@@ -342,7 +342,7 @@ const EditorBody = ({ group, initialIndex, backHref, page, section, onCancel }) 
           <Link
             to={backHref}
             data-testid="image-editor-back"
-            className="xaluca-button inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
+            className="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-[#FDFBF7]/85 hover:text-[#FDFBF7] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.7} />
             Volver

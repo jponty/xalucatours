@@ -249,7 +249,7 @@ export const TravelCategories = () => {
                       data-testid={`category-plan-${c.slug}`}
                       aria-label={pick(PLAN_LABEL, lang)}
                       title={pick(PLAN_LABEL, lang)}
-                      className="xaluca-button inline-flex items-center justify-center w-[50px] h-[50px] bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors duration-300"
+                      className="inline-flex items-center justify-center w-[50px] h-[50px] bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] transition-colors duration-300"
                     >
                       <Compass className="w-4 h-4" strokeWidth={1.6} />
                     </Link>

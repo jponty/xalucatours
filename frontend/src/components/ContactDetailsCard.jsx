@@ -29,7 +29,7 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
           <a
             href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
             data-testid={`${testIdPrefix}-card-phone`}
-            className="xaluca-button group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
+            className="group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
           >
             <Phone className="h-4 w-4 shrink-0 text-[#C16542]" strokeWidth={1.6} aria-hidden="true" />
             <span className="min-w-0">
@@ -45,7 +45,7 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
           <a
             href={`mailto:${CONTACT.email || "xalucatours@xaluca.com"}`}
             data-testid={`${testIdPrefix}-card-email`}
-            className="xaluca-button group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
+            className="group flex min-h-14 items-center gap-3 border border-[#2C2621]/10 bg-white/55 px-4 py-3 transition-colors hover:border-[#C16542]/55 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C16542]"
           >
             <Mail className="h-4 w-4 shrink-0 text-[#C16542]" strokeWidth={1.6} aria-hidden="true" />
             <span className="min-w-0">

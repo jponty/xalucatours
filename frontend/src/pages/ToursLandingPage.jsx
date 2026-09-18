@@ -90,7 +90,7 @@ const Hero = ({ t }) => (
       </div>
 
       <a href="#intro" data-testid="viajes-scroll-indicator"
-         className="xaluca-button absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
+         className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
         <span className="text-[10px] tracking-[0.35em] uppercase">{t.scroll}</span>
         <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
       </a>
@@ -747,7 +747,7 @@ const ContactIntro = ({ t, lang }) => (
             </Link>
             <button type="button" onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
                data-testid="viajes-contact-cta-wa"
-               className="inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+               className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/25 hover:border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
               <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.6} />WhatsApp
             </button>
           </div>

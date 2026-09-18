@@ -379,7 +379,7 @@ const HomeAllTripsCatalog = ({ initialLimit = null, expandableCards = false }) =
                 type="button"
                 onClick={() => setShowAll((v) => !v)}
                 data-testid="all-trips-view-all"
-                className="inline-flex items-center gap-3 border border-[#2C2621]/30 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621]/30 hover:border-[#C16542] hover:text-[#C16542] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
               >
                 {showAll
                   ? pick(COPY.viewLess, lang)

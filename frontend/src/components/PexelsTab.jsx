@@ -358,7 +358,7 @@ export default function PexelsTab({ onSelect, selectionMode = false, selectedKey
                   }`}>
                     {selectionMode ? (
                       !selected && (
-                        <span className="xaluca-button opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
                           <Check className="w-3.5 h-3.5" strokeWidth={2} />
                           Seleccionar
                         </span>
@@ -378,7 +378,7 @@ export default function PexelsTab({ onSelect, selectionMode = false, selectedKey
                           </span>
                         )}
                         {!isImporting && !isImported && (
-                          <span className="xaluca-button opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-3 py-2 text-[10px] tracking-[0.25em] uppercase">
                             <Check className="w-3.5 h-3.5" strokeWidth={2} />
                             Usar esta
                           </span>

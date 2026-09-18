@@ -354,7 +354,7 @@ export const TripFinder = () => {
               type="button"
               data-testid="trip-finder-empty-reset"
               onClick={() => setRange(null)}
-              className="mt-6 inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
+              className="xaluca-button mt-6 inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
             >
               <RotateCcw className="w-4 h-4" strokeWidth={1.8} />
               {L(UI.emptyReset)}
@@ -378,7 +378,7 @@ export const TripFinder = () => {
               onClick={() => setPlannerInfoOpen(true)}
               data-testid="trip-finder-planner-cta"
               aria-haspopup="dialog"
-              className="inline-flex items-center justify-center gap-2.5 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
+              className="xaluca-button inline-flex items-center justify-center gap-2.5 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap"
             >
               <Compass className="w-4 h-4" strokeWidth={1.7} />
               {L(UI.plannerCta)}

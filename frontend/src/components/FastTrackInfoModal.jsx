@@ -113,7 +113,7 @@ export default function FastTrackInfoModal({ open, onOpenChange, onActivate }) {
               <button
                 type="button"
                 data-testid="fast-track-info-close"
-                className="px-5 py-3.5 text-[10px] uppercase tracking-[0.22em] text-[#2C2621]/60 transition-colors hover:text-[#C16542]"
+                className="xaluca-button px-5 py-3.5 text-[10px] uppercase tracking-[0.22em] text-[#2C2621]/60 transition-colors hover:text-[#C16542]"
               >
                 Seguir explorando
               </button>
@@ -122,7 +122,7 @@ export default function FastTrackInfoModal({ open, onOpenChange, onActivate }) {
               type="button"
               onClick={activate}
               data-testid="fast-track-info-activate"
-              className="inline-flex items-center justify-center gap-3 bg-[#C16542] px-7 py-4 text-[10px] uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#A35133]"
+              className="xaluca-button inline-flex items-center justify-center gap-3 bg-[#C16542] px-7 py-4 text-[10px] uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#A35133]"
             >
               Solicitar Fast Track
               <ArrowRight className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />

@@ -634,7 +634,7 @@ const DestinationCard = ({ card, sectionAccent, lang }) => (
                 <Link
                   to={pathFor(lang, trip.routeId)}
                   data-testid={`qvm-trip-${card.id}-${i}`}
-                  className="xaluca-button group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
+                  className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
                   style={{ borderLeft: `2px solid ${sectionAccent}55` }}
                 >
                   <span className="flex flex-col gap-0.5 min-w-0">
@@ -1065,7 +1065,7 @@ const DestinationsMap = ({ lang }) => {
                           <Link
                             to={pathFor(lang, trip.routeId)}
                             data-testid={`qvm-map-trip-${active.card.id}-${i}`}
-                            className="xaluca-button group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
+                            className="group/link flex items-center justify-between gap-3 px-3 py-2 -mx-3 hover:bg-[#F2EBE1] transition-colors duration-200 rounded-sm"
                             style={{ borderLeft: `2px solid ${active.section.accent}55` }}
                           >
                             <span className="flex flex-col gap-0.5 min-w-0">

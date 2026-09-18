@@ -377,7 +377,7 @@ const CitaPreviaPage = () => {
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.6} />
               </a>
               <a href={`tel:${CONTACT.phoneRaw || "+34937268366"}`} data-testid="citaprevia-outro-call"
-                 className="xaluca-button inline-flex items-center gap-3 text-[11px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors">
+                 className="inline-flex items-center gap-3 text-[11px] tracking-[0.25em] uppercase text-[#C16542] hover:text-[#A35133] transition-colors">
                 <Phone className="w-3.5 h-3.5" strokeWidth={1.6} />
                 {CONTACT.phone || "+34 937 268 366"}
               </a>

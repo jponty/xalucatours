@@ -126,7 +126,7 @@ export default function SouthTravelTimelinePage() {
           </div>
 
           <nav aria-label={p(T("Ir a un mes", "Jump to a month", "Aller à un mois"))} className="flex gap-2 overflow-x-auto pb-5 mb-12 snap-x">
-            {MONTHS.map((month) => <a key={month.id} href={`#mes-${month.id}`} className="xaluca-button shrink-0 snap-start border border-[#2C2621]/15 bg-white px-4 py-3 text-[10px] tracking-[0.18em] uppercase hover:border-[#C16542] hover:text-[#C16542] transition-colors">{p(month.name)}</a>)}
+            {MONTHS.map((month) => <a key={month.id} href={`#mes-${month.id}`} className="shrink-0 snap-start border border-[#2C2621]/15 bg-white px-4 py-3 text-[10px] tracking-[0.18em] uppercase hover:border-[#C16542] hover:text-[#C16542] transition-colors">{p(month.name)}</a>)}
           </nav>
 
           <div className="relative">

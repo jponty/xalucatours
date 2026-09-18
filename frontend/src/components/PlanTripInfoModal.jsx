@@ -152,7 +152,7 @@ export const PlanTripInfoModal = ({ open, onOpenChange }) => {
                 <button
                   type="button"
                   data-testid="plan-trip-info-cancel"
-                  className="whitespace-nowrap px-4 py-3 text-[10px] uppercase tracking-[0.22em] text-[#2C2621]/60 transition-colors hover:text-[#C16542]"
+                  className="xaluca-button whitespace-nowrap px-4 py-3 text-[10px] uppercase tracking-[0.22em] text-[#2C2621]/60 transition-colors hover:text-[#C16542]"
                 >
                   {pick(COPY.close, lang)}
                 </button>

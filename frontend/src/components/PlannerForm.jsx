@@ -820,7 +820,7 @@ function RecoCard({ trip, lang, tr, selected, onToggle }) {
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06] ${selected ? "scale-[1.03]" : ""}`}
           />
           <span
-            className={`xaluca-button absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] tracking-[0.26em] uppercase transition-all ${
+            className={`absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] tracking-[0.26em] uppercase transition-all ${
               selected
                 ? "bg-[#C16542] text-[#FDFBF7]"
                 : "bg-[#FDFBF7]/95 text-[#2C2621] opacity-0 group-hover:opacity-100"

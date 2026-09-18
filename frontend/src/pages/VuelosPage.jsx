@@ -36,7 +36,7 @@ const DestinationCard = ({ origin, dest, lang }) => (
       target="_blank"
       rel="noopener noreferrer"
       data-testid={`flight-link-${origin.id}-${dest.id}`}
-      className="xaluca-button flex items-center justify-between gap-3 px-6 md:px-7 py-4 border-t border-[#2C2621]/10 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] transition-colors duration-300"
+      className="flex items-center justify-between gap-3 px-6 md:px-7 py-4 border-t border-[#2C2621]/10 text-[11px] tracking-[0.22em] uppercase text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7] transition-colors duration-300"
     >
       <span className="inline-flex items-center gap-2">
         <Plane className="w-3.5 h-3.5" strokeWidth={1.7} />

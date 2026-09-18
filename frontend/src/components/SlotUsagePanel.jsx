@@ -204,7 +204,7 @@ export default function SlotUsagePanel({ slotId, compact = false }) {
                         rel="noopener noreferrer"
                         data-testid={`slot-usage-link-${s.slot_id.slice(0, 40)}`}
                         title="Abrir la página en una pestaña nueva"
-                        className="xaluca-button inline-flex items-center gap-1 shrink-0 text-[10px] tracking-[0.18em] uppercase text-[#5C5248] hover:text-[#C16542] transition-colors"
+                        className="inline-flex items-center gap-1 shrink-0 text-[10px] tracking-[0.18em] uppercase text-[#5C5248] hover:text-[#C16542] transition-colors"
                       >
                         Ver
                         <ExternalLink className="w-3 h-3" strokeWidth={1.9} />

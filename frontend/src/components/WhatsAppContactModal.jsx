@@ -208,7 +208,7 @@ export default function WhatsAppContactModal() {
   };
 
   const cardClass =
-    "xaluca-button group flex h-full flex-col border border-[#2C2621]/10 bg-white p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-[#C16542]/55 hover:shadow-[0_18px_45px_-30px_rgba(44,38,33,0.45)] sm:p-6";
+    "group flex h-full flex-col border border-[#2C2621]/10 bg-white p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-[#C16542]/55 hover:shadow-[0_18px_45px_-30px_rgba(44,38,33,0.45)] sm:p-6";
   const ctaClass =
     "mt-5 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C16542] transition-[gap] duration-300 group-hover:gap-3";
 

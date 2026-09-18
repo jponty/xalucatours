@@ -368,7 +368,7 @@ const VideoDialog = ({ video, lang, onClose }) => {
             target="_blank"
             rel="noopener noreferrer"
             data-testid="video-dialog-youtube"
-            className="xaluca-button mt-4 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#D4A373] hover:text-[#FDFBF7] transition-colors"
+            className="mt-4 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#D4A373] hover:text-[#FDFBF7] transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.8} />
             {pickL(COPY.watch, lang)}

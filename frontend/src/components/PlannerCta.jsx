@@ -56,7 +56,7 @@ export default function PlannerCta() {
               onClick={() => setPlannerInfoOpen(true)}
               data-testid="home-planner-cta-button"
               aria-haspopup="dialog"
-              className="group inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A85231] text-[#FDFBF7] text-[13px] tracking-[0.2em] uppercase font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:gap-5"
+              className="xaluca-button group inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A85231] text-[#FDFBF7] text-[13px] tracking-[0.2em] uppercase font-semibold px-8 py-4 transition-all duration-300 hover:gap-5"
             >
               {pick(COPY.cta, lang)}
               <ArrowRight className="w-4 h-4" strokeWidth={2} />

@@ -50,7 +50,7 @@ export default function FounderAudioButton({ src = null, founderName, playLabel,
       data-testid={testid}
       aria-pressed={src ? playing : undefined}
       aria-label={playing ? pauseLabel : playLabel}
-      className={`inline-flex min-h-11 items-center gap-2.5 px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] ${playing
+      className={`xaluca-button inline-flex min-h-11 items-center gap-2.5 px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] ${playing
         ? "bg-[#C16542] text-[#FDFBF7]"
         : "border border-[#C16542]/40 text-[#C16542] hover:bg-[#C16542] hover:text-[#FDFBF7]"}`}
     >
@@ -76,7 +76,7 @@ export default function FounderAudioButton({ src = null, founderName, playLabel,
         <p className="mt-5 text-xs font-semibold text-[#9C482C]">{pick(COPY.soon, lang)}</p>
         <div className="mt-7 border-t border-[#2C2621]/10 pt-6 sm:text-right">
           <DialogClose asChild>
-            <button type="button" data-testid={`${testid}-pending-close`} className="min-h-12 w-full bg-[#C16542] px-7 py-3 text-[11px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] sm:w-auto">{pick(COPY.close, lang)}</button>
+            <button type="button" data-testid={`${testid}-pending-close`} className="xaluca-button min-h-12 w-full bg-[#C16542] px-7 py-3 text-[11px] uppercase tracking-[0.18em] text-[#FDFBF7] transition-colors hover:bg-[#A35133] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] sm:w-auto">{pick(COPY.close, lang)}</button>
           </DialogClose>
         </div>
       </DialogContent>

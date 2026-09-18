@@ -143,7 +143,7 @@ export default function PracticalInfoPage() {
           <div className="min-w-0">
             {selected ? (
               <section id="info-selected-trip" aria-labelledby="info-trip-title" data-testid="info-selected-trip" className="min-w-0">
-                <a href="#trip-finder" className="xaluca-button mb-4 inline-flex min-h-11 items-center gap-2 text-xs text-[#C16542] lg:hidden"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />{copy("find")}</a>
+                <a href="#trip-finder" className="mb-4 inline-flex min-h-11 items-center gap-2 text-xs text-[#C16542] lg:hidden"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />{copy("find")}</a>
                 <div className="border border-[#2C2621]/10 bg-[#FDFBF7] p-6 md:p-8">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C16542]">{copy("selected")} · {pick(SECTIONS[selected.section].label, lang)}</p>
                   <h2 ref={contentRef} tabIndex={-1} id="info-trip-title" className="mt-4 scroll-mt-40 font-serif-x text-3xl leading-tight focus:outline-none md:text-4xl">

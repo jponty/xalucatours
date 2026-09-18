@@ -50,7 +50,7 @@ const PROMPTS = [
 ];
 const EMPTY = { message: "", full_name: "", email: "", phone: "", preferred_contact: [], preferred_contact_email: "", preferred_contact_phone: "", privacy_consent: false };
 const inputClass = "mt-2 w-full min-w-0 rounded-sm border border-[#2C2621]/25 bg-white p-3.5 text-base text-[#2C2621] outline-none focus:border-[#C16542] focus:ring-1 focus:ring-[#C16542]";
-const buttonClass = "inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 py-4 text-xs tracking-[0.12em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
+const buttonClass = "xaluca-button inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 py-4 text-xs tracking-[0.12em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
 const emailValid = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
 export default function DictationForm({ className = "", countryPortalContainer, onNavigate }) {

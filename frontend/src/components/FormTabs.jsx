@@ -160,7 +160,7 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
               type="button"
               onClick={openChatbaseAssistant}
               data-testid="form-tab-assistant-open"
-              className="mt-9 inline-flex items-center gap-2.5 px-9 py-4 text-[10px] sm:text-[11px] tracking-[0.28em] uppercase border-2 bg-[#2C2621] text-[#FDFBF7] border-[#2C2621] hover:bg-[#C16542] hover:border-[#C16542] transition-colors"
+              className="xaluca-button mt-9 inline-flex items-center gap-2.5 px-9 py-4 text-[10px] sm:text-[11px] tracking-[0.28em] uppercase border-2 bg-[#2C2621] text-[#FDFBF7] border-[#2C2621] hover:bg-[#C16542] hover:border-[#C16542] transition-colors"
             >
               <Headset className="w-4 h-4" strokeWidth={1.7} />
               {pick(ASSISTANT_PANEL.cta, lang)}

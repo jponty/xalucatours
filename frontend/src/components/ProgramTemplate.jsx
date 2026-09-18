@@ -353,17 +353,17 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
               <L k="cta_secondary" /><ArrowRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
             </a>
             <button type="button" onClick={onDownload} data-testid="program-hero-download"
-               className="inline-flex items-center gap-3 bg-[#FDFBF7] hover:bg-[#D4A373] text-[#1A1513] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
+               className="xaluca-button inline-flex items-center gap-3 bg-[#FDFBF7] hover:bg-[#D4A373] text-[#1A1513] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors whitespace-nowrap">
               {pick(DOWNLOAD_LABEL, lang)}<Download className="w-3.5 h-3.5 shrink-0" strokeWidth={1.7} />
             </button>
             <button type="button" onClick={openChatbaseAssistant} data-testid="program-hero-assistant"
-               className="inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 whitespace-nowrap">
+               className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-6 lg:px-7 py-4 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 whitespace-nowrap">
               <Headset className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />{pick(ASSISTANT_LABEL, lang)}
             </button>
           </div>
         </div>
       </div>
-      <a href="#description" className="xaluca-button absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
+      <a href="#description" className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-2 text-[#FDFBF7]/65 hover:text-[#D4A373] transition-colors">
         <L k="scroll" className="text-[10px] tracking-[0.35em] uppercase" />
         <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
       </a>
@@ -667,7 +667,7 @@ const DayTimeline = ({ days, lang, t }) => {
               onClick={(e) => jump(e, d.id)}
               data-testid={`day-timeline-item-${d.id}`}
               title={`${t.day_label} ${i + 1} · ${pick(d.title, lang)}`}
-              className="xaluca-button group shrink-0 flex flex-col gap-0.5 px-3.5 py-2 border border-[#FDFBF7]/15 hover:border-[#D4A373] hover:bg-[#D4A373]/10 transition-colors min-w-[148px] max-w-[230px]"
+              className="group shrink-0 flex flex-col gap-0.5 px-3.5 py-2 border border-[#FDFBF7]/15 hover:border-[#D4A373] hover:bg-[#D4A373]/10 transition-colors min-w-[148px] max-w-[230px]"
             >
               <span className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-[#D4A373] whitespace-nowrap">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: d.accent || "#D4A373" }} />
@@ -797,7 +797,7 @@ const ContactBand = ({ t, lang }) => (
         </Link>
         <button type="button" onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
            data-testid="program-cta-whatsapp"
-           className="inline-flex items-center gap-3 border border-[#25D366]/60 hover:bg-[#25D366] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
+           className="xaluca-button inline-flex items-center gap-3 border border-[#25D366]/60 hover:bg-[#25D366] hover:text-[#FDFBF7] text-[#2C2621] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300">
           <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.6} />WhatsApp
         </button>
       </div>

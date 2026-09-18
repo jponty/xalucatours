@@ -575,7 +575,7 @@ export const EditableImage = ({
 
           {/* Default hint badge — hidden while dragging / busy */}
           {!dragActive && !dropBusy && !dropOk && !dropError && (
-            <span className="xaluca-button absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none">
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-[#C16542] text-[#FDFBF7] px-4 py-2.5 text-[10px] tracking-[0.3em] uppercase shadow-lg pointer-events-none">
               {group ? <Images className="w-3 h-3" strokeWidth={1.8} /> : <Pencil className="w-3 h-3" strokeWidth={1.8} />}
               <span>{group ? "Editar galería" : "Editar"}</span>
             </span>

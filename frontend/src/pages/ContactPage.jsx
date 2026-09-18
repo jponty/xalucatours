@@ -396,7 +396,7 @@ const ContactPage = () => {
                   type="button"
                   data-testid="contact-chat-button"
                   onClick={openChatbaseAssistant}
-                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
+                  className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="contact.chatCta" defaults={COPY.contact.chatCta} multiline={false} />
@@ -530,7 +530,7 @@ const ContactPage = () => {
                   type="button"
                   data-testid="support-open-chat"
                   onClick={openChatbaseAssistant}
-                  className="inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                  className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="support.chatCta" defaults={COPY.support.chatCta} multiline={false} />

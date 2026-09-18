@@ -693,7 +693,7 @@ const WizardModal = ({ open, onClose, lang }) => {
                 else setStepIndex((index) => index + 1);
               }}
               data-testid="ideal-trip-next"
-              className="inline-flex items-center gap-2 bg-[#C16542] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#A35133] disabled:cursor-not-allowed disabled:bg-[#2C2621]/20 sm:px-6 sm:text-[10px]"
+              className="xaluca-button inline-flex items-center gap-2 bg-[#C16542] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#A35133] disabled:cursor-not-allowed disabled:bg-[#2C2621]/20 sm:px-6 sm:text-[10px]"
             >
               {pick(stepIndex === STEPS.length - 1 ? COPY.finish : COPY.next, lang)} <ArrowRight className="h-3.5 w-3.5" />
             </button>
@@ -740,7 +740,7 @@ export default function IdealTripWizard() {
               type="button"
               onClick={() => setOpen(true)}
               data-testid="ideal-trip-open"
-              className="group inline-flex w-full items-center justify-between gap-5 bg-[#C16542] px-6 py-5 text-left text-[10px] uppercase tracking-[0.2em] text-white shadow-[0_25px_55px_-28px_rgba(193,101,66,0.8)] transition-colors hover:bg-[#A35133] sm:w-auto sm:min-w-[280px]"
+              className="xaluca-button group inline-flex w-full items-center justify-between gap-5 bg-[#C16542] px-6 py-5 text-left text-[10px] uppercase tracking-[0.2em] text-white shadow-[0_25px_55px_-28px_rgba(193,101,66,0.8)] transition-colors hover:bg-[#A35133] sm:w-auto sm:min-w-[280px]"
             >
               <span>{pick(COPY.section.cta, lang)}</span>
               <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/35 transition-transform group-hover:translate-x-1">

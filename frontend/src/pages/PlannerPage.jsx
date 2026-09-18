@@ -232,7 +232,7 @@ export default function PlannerPage() {
                 {step === 0 ? pick(C.restart, lang) : pick(C.back, lang)}
               </button>
               <button type="button" onClick={goNext} disabled={!valid[step]} data-testid="planner-next"
-                className={`inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-[12px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 ${valid[step] ? "bg-[#C16542] text-[#FDFBF7] hover:bg-[#A85231]" : "bg-[#2C2621]/12 text-[#8A7E70] cursor-not-allowed"}`}>
+                className={`xaluca-button inline-flex items-center gap-2 px-6 py-3.5 text-[12px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 ${valid[step] ? "bg-[#C16542] text-[#FDFBF7] hover:bg-[#A85231]" : "bg-[#2C2621]/12 text-[#8A7E70] cursor-not-allowed"}`}>
                 {step === 5 ? <><Sparkles className="w-4 h-4" /> {pick(C.build, lang)}</> : <>{pick(C.next, lang)} <ArrowRight className="w-3.5 h-3.5" /></>}
               </button>
             </div>

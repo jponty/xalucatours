@@ -112,7 +112,7 @@ export function BestMonthButton({ testId = "best-month-trigger" }) {
       aria-haspopup="dialog"
       aria-controls="best-month-panel"
       onClick={() => window.dispatchEvent(new CustomEvent("xaluca:open-best-month"))}
-      className="inline-flex min-h-12 max-w-full items-center justify-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] motion-reduce:transition-none"
+      className="xaluca-button inline-flex min-h-12 max-w-full items-center justify-center gap-2.5 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C16542] motion-reduce:transition-none"
     >
       <span className="w-7 h-7 shrink-0 flex items-center justify-center rounded-full bg-[#A35133]" aria-hidden="true">
         <Sunrise className="w-3.5 h-3.5" strokeWidth={1.7} />

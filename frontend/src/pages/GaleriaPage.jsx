@@ -121,7 +121,7 @@ const RelatedTrips = ({ poiId, lang, t }) => {
             key={trip.routeId}
             to={pathFor(lang, trip.routeId)}
             data-testid={`galeria-trip-chip-${trip.routeId}`}
-            className="xaluca-button group inline-flex items-center gap-2 pl-3.5 pr-3 py-2 bg-[#FDFBF7] border border-[#2C2621]/15 hover:border-[#C16542] hover:bg-[#C16542]/[0.06] transition-colors"
+            className="group inline-flex items-center gap-2 pl-3.5 pr-3 py-2 bg-[#FDFBF7] border border-[#2C2621]/15 hover:border-[#C16542] hover:bg-[#C16542]/[0.06] transition-colors"
           >
             <span className="font-serif-x text-[14px] text-[#2C2621] group-hover:text-[#C16542] transition-colors">
               {pick(trip.title, lang)}
