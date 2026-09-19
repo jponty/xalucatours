@@ -36,7 +36,7 @@ export const NAV_TYPES = {
 const GROUP_ROUTES = {
   overview: ["home", "toursLanding", "catalog", "archive", "navigationMap"],
   planning: ["appointment", "planTrip", "planner", "precios", "vuelos", "fastTrack", "tourBespoke", "contact"],
-  inspiration: ["practicalInfo", "climate", "morocco", "whatToSee", "whenToTravel", "southTimeline", "galeria"],
+  inspiration: ["practicalInfo", "climate", "newsletter", "morocco", "whatToSee", "whenToTravel", "southTimeline", "galeria"],
   company: ["about", "whatWeDo", "events", "opiniones", "feedback"],
   tools: ["asistente", "juego", "concurso", "favorites"],
   departures: ["tourUpcoming", "upcomingDepartures", "tourFinDeAno2025"],

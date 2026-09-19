@@ -22,7 +22,7 @@ jest.mock("@/components/slotScope", () => ({ SlotScope: ({ children }) => <>{chi
 jest.mock("@/components/TripCardActions", () => ({ testidBase }) => <button data-testid={`${testidBase}-test-action`} onClick={mockAction}>Acción</button>);
 jest.mock("@/components/SectionNav", () => () => null);
 jest.mock("@/components/ContactForm", () => () => null);
-jest.mock("@/components/ToursVideoSection", () => () => null);
+jest.mock("@/components/PexelsMoroccoVideos", () => () => <section data-testid="pexels-morocco-videos" />);
 jest.mock("@/components/ToursRegionMap", () => () => null);
 jest.mock("@/components/ImageContactBubble", () => () => null);
 jest.mock("@/components/IdealTripWizard", () => () => null);
@@ -71,6 +71,11 @@ test.each(["es", "en", "fr"])("WhatsApp uses the Business number instead of the 
   click("viajes-contact-cta-wa");
   expect(requestWhatsAppContact).toHaveBeenCalledWith("https://wa.me/34626049676");
   expect(container.querySelector('a[href="tel:+34937268366"]')).not.toBeNull();
+});
+
+test("the journeys landing includes the dynamic Pexels video section", () => {
+  act(() => root.render(<ToursLandingPage />));
+  expect(get("pexels-morocco-videos")).not.toBeNull();
 });
 
 test("all explorer and departure cards have the shared extension and keep their existing destinations", () => {

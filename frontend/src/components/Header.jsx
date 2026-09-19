@@ -77,24 +77,29 @@ export const Header = () => {
       >
         <TopInfoBar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 h-16 md:h-20 flex items-center justify-between gap-2">
-          <button
-            data-testid="header-menu-button"
-            onClick={() => setOpen(true)}
-            data-edit-allow="true"
-            className="inline-flex shrink-0 items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
-            aria-label={t("nav_menu")}
+          <div
+            data-testid="header-mobile-brand-cluster"
+            className="flex min-w-0 shrink-0 items-center gap-2 sm:contents"
           >
-            <Menu className="w-4 h-4" strokeWidth={1.5} />
-            <span className="hidden sm:inline">
-              <EditableText
-                slot="header.nav_menu"
-                defaults={translations.nav_menu}
-                multiline={false}
-              />
-            </span>
-          </button>
+            <button
+              data-testid="header-menu-button"
+              onClick={() => setOpen(true)}
+              data-edit-allow="true"
+              className="inline-flex shrink-0 items-center gap-3 text-[11px] tracking-[0.3em] uppercase text-[#2C2621] hover:text-[#C16542] transition-colors"
+              aria-label={t("nav_menu")}
+            >
+              <Menu className="w-4 h-4" strokeWidth={1.5} />
+              <span className="hidden sm:inline">
+                <EditableText
+                  slot="header.nav_menu"
+                  defaults={translations.nav_menu}
+                  multiline={false}
+                />
+              </span>
+            </button>
 
-          <BrandMark compactHeader />
+            <BrandMark compactHeader />
+          </div>
 
           <div className="flex shrink-0 items-center gap-1 sm:gap-2 md:gap-3">
             <button
@@ -110,7 +115,7 @@ export const Header = () => {
               to={pathFor(lang, "favorites")}
               data-testid="header-favorites-button"
               aria-label={{ es: "Favoritos", en: "Favourites", fr: "Favoris" }[lang] || "Favoritos"}
-              className="relative inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
+              className="relative hidden sm:inline-flex items-center justify-center w-10 h-10 text-[#2C2621] hover:text-[#C16542] transition-colors"
             >
               <Heart className="w-5 h-5" strokeWidth={1.6} fill={favCount > 0 ? "#C16542" : "none"} />
               {favCount > 0 && (
@@ -126,10 +131,12 @@ export const Header = () => {
               to={pathFor(lang, "contact")}
               data-testid="header-contact-button"
               aria-label={pick(CONTACT_LABEL, lang)}
-              className="xaluca-button inline-flex min-h-10 shrink-0 items-center justify-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-3 lg:px-5 py-2 lg:py-3 text-[10px] lg:text-[11px] tracking-[0.12em] lg:tracking-[0.25em] uppercase transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]"
+              className="xaluca-button inline-flex min-h-10 w-10 sm:w-auto shrink-0 items-center justify-center gap-2 border border-[#2C2621]/25 text-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] hover:border-[#2C2621] px-0 sm:px-3 lg:px-5 py-2 lg:py-3 text-[10px] lg:text-[11px] tracking-[0.12em] lg:tracking-[0.25em] uppercase transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C16542]"
             >
-              <Mail className="hidden sm:block w-3.5 h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
-              <EditableText slot="header.cta_contact" defaults={CONTACT_LABEL} multiline={false} />
+              <Mail className="block w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+              <span className="hidden sm:inline">
+                <EditableText slot="header.cta_contact" defaults={CONTACT_LABEL} multiline={false} />
+              </span>
             </Link>
 
             <button

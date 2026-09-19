@@ -16,7 +16,7 @@ import ContactForm from "@/components/ContactForm";
 import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import EditableImage from "@/components/EditableImage";
 import FromPrice from "@/components/FromPrice";
-import ToursVideoSection from "@/components/ToursVideoSection";
+import PexelsMoroccoVideos from "@/components/PexelsMoroccoVideos";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import ImageContactBubble from "@/components/ImageContactBubble";
@@ -1101,6 +1101,7 @@ export default function ToursLandingPage() {
         testid="viajes-nav"
         items={[
           { id: "intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
+          { id: "videos-marruecos", label: { es: "Vídeos", en: "Videos", fr: "Vidéos" } },
           { id: "regions", label: { es: "Regiones", en: "Regions", fr: "Régions" } },
           { id: "experiences", label: { es: "Experiencias", en: "Experiences", fr: "Expériences" } },
           { id: "ideal-trip", label: { es: "Tu viaje ideal", en: "Your ideal trip", fr: "Votre voyage idéal" } },
@@ -1111,7 +1112,7 @@ export default function ToursLandingPage() {
       />
       <EditorialIntro t={t.intro} postcard={t.postcard} />
       <ToursRegionMap />
-      <ToursVideoSection videoId="nzD3e3Qr7g8" />
+      <PexelsMoroccoVideos />
       <RegionsSection t={t.regions} lang={lang} />
       <ExperiencesSection t={t.experiences} lang={lang} />
       <IdealTripWizard />

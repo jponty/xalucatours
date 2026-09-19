@@ -3225,15 +3225,18 @@ async def list_library_tags():
 # ----------------------------------------------------------
 PEXELS_API_KEY = os.environ.get("PEXELS_API_KEY", "").strip()
 PEXELS_BASE = "https://api.pexels.com/v1"
+PEXELS_VIDEO_BASE = "https://api.pexels.com/videos"
+PEXELS_VIDEO_CACHE_TTL = 15 * 60
+_pexels_video_cache: Dict[tuple, tuple] = {}
 
 
-async def _pexels_get(path: str, params: Dict | None = None) -> Dict:
+async def _pexels_api_get(base: str, path: str, params: Dict | None = None) -> Dict:
     if not PEXELS_API_KEY:
         raise HTTPException(status_code=503, detail="Pexels API key not configured.")
     headers = {"Authorization": PEXELS_API_KEY}
     async with httpx.AsyncClient(timeout=httpx.Timeout(15.0, connect=5.0)) as cx:
         try:
-            r = await cx.get(f"{PEXELS_BASE}{path}", headers=headers, params=params)
+            r = await cx.get(f"{base}{path}", headers=headers, params=params)
         except httpx.HTTPError as exc:
             raise HTTPException(status_code=502, detail=f"Pexels request failed: {exc}")
     if r.status_code == 429:
@@ -3241,6 +3244,14 @@ async def _pexels_get(path: str, params: Dict | None = None) -> Dict:
     if r.status_code >= 400:
         raise HTTPException(status_code=502, detail=f"Pexels error {r.status_code}: {r.text[:200]}")
     return r.json()
+
+
+async def _pexels_get(path: str, params: Dict | None = None) -> Dict:
+    return await _pexels_api_get(PEXELS_BASE, path, params)
+
+
+async def _pexels_video_get(path: str, params: Dict | None = None) -> Dict:
+    return await _pexels_api_get(PEXELS_VIDEO_BASE, path, params)
 
 
 def _photo_summary(p: Dict) -> Dict:
@@ -3258,6 +3269,96 @@ def _photo_summary(p: Dict) -> Dict:
         "avg_color": p.get("avg_color"),
         "alt": p.get("alt", ""),
     }
+
+
+def _video_summary(video: Dict) -> Optional[Dict]:
+    """Return one browser-friendly landscape source without exposing Pexels credentials."""
+    width = int(video.get("width") or 0)
+    height = int(video.get("height") or 0)
+    if width <= height or not video.get("id"):
+        return None
+
+    files = []
+    for item in video.get("video_files") or []:
+        file_width = int(item.get("width") or 0)
+        file_height = int(item.get("height") or 0)
+        file_type = str(item.get("file_type") or "").lower()
+        if (
+            item.get("link")
+            and file_type == "video/mp4"
+            and file_width > file_height > 0
+        ):
+            files.append(item)
+    if not files:
+        return None
+
+    # A source close to 1280px is sharp on the carousel without forcing every
+    # visitor to download the largest original rendition.
+    source = min(
+        files,
+        key=lambda item: (
+            abs(int(item.get("width") or 0) - 1280),
+            -int(item.get("width") or 0),
+        ),
+    )
+    user = video.get("user") or {}
+    return {
+        "id": video.get("id"),
+        "width": width,
+        "height": height,
+        "duration": int(video.get("duration") or 0),
+        "poster_url": video.get("image") or "",
+        "video_url": source.get("link"),
+        "video_width": int(source.get("width") or 0),
+        "video_height": int(source.get("height") or 0),
+        "file_type": source.get("file_type") or "video/mp4",
+        "photographer": user.get("name") or "",
+        "photographer_url": user.get("url") or "",
+        "pexels_url": video.get("url") or "",
+    }
+
+
+@api_router.get("/pexels/videos/morocco")
+async def pexels_morocco_videos(page: int = 1, per_page: int = 12, locale: Optional[str] = None):
+    """Public, cached landscape-video feed for the /viajes inspiration rail."""
+    page = max(1, min(page, 20))
+    per_page = max(1, min(per_page, 24))
+    safe_locale = (locale or "").strip() or None
+    cache_key = (page, per_page, safe_locale)
+    now = _time.monotonic()
+    cached = _pexels_video_cache.get(cache_key)
+    if cached and now - cached[0] < PEXELS_VIDEO_CACHE_TTL:
+        return cached[1]
+
+    params: Dict = {
+        "query": "Morocco",
+        "orientation": "landscape",
+        "page": page,
+        "per_page": per_page,
+    }
+    if safe_locale:
+        params["locale"] = safe_locale
+    raw = await _pexels_video_get("/search", params)
+
+    seen = set()
+    videos = []
+    for item in raw.get("videos") or []:
+        summary = _video_summary(item)
+        if not summary or summary["id"] in seen:
+            continue
+        seen.add(summary["id"])
+        videos.append(summary)
+
+    response = {
+        "query": "Morocco",
+        "page": raw.get("page", page),
+        "per_page": raw.get("per_page", per_page),
+        "total_results": raw.get("total_results", len(videos)),
+        "next_page": bool(raw.get("next_page")),
+        "videos": videos,
+    }
+    _pexels_video_cache[cache_key] = (now, response)
+    return response
 
 
 @api_router.get("/pexels/search")

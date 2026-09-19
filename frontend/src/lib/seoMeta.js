@@ -142,6 +142,15 @@ const SEO = {
     ),
   },
 
+  newsletter: {
+    title: withBrand(T("Newsletter de viajes a Marruecos", "Morocco travel newsletter", "Newsletter voyage au Maroc")),
+    description: T(
+      "Inspírate con nuevos viajes, rutas, experiencias y consejos seleccionados por los especialistas en Marruecos de Xaluca Tours.",
+      "Find inspiration in new journeys, routes, experiences and advice selected by Xaluca Tours' Morocco specialists.",
+      "Inspirez-vous de nouveaux voyages, itinéraires, expériences et conseils sélectionnés par les spécialistes du Maroc de Xaluca Tours."
+    ),
+  },
+
   precios: {
     title: withBrand(T("Precios y tarifas", "Pricing", "Tarifs")),
     description: T(

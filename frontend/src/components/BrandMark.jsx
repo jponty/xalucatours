@@ -20,15 +20,23 @@ export const BrandMark = ({ inverted = false, className = "", compactHeader = fa
       to="/"
       data-testid="brand-mark"
       aria-label={`Xaluca Tours — ${pick(TAGLINE, lang)}`}
-      className={`inline-flex ${compactHeader ? "shrink-0" : ""} items-center gap-2.5 group ${className}`}
+      className={`inline-flex ${compactHeader ? "shrink-0 gap-1.5 sm:gap-2.5" : "gap-2.5"} items-center group ${className}`}
       style={{ color: ink }}
     >
       <img
         src={grupXalucaLogo}
         alt="Xaluca"
         data-testid="brand-logo"
-        className="h-9 md:h-11 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
+        className={`${compactHeader ? "h-8 sm:h-9 md:h-11" : "h-9 md:h-11"} w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105`}
       />
+      {compactHeader && (
+        <span
+          data-testid="brand-mobile-title"
+          className="inline-flex sm:hidden whitespace-nowrap font-serif-x text-[17px] leading-none tracking-[-0.02em]"
+        >
+          Xaluca Tours
+        </span>
+      )}
       <span className={`${compactHeader ? "hidden sm:inline-flex" : "inline-flex"} items-baseline gap-2`}>
         <EditableText
           slot="brand.first"

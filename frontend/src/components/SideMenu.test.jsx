@@ -32,6 +32,26 @@ afterEach(async () => {
 });
 
 test.each([
+  ["es", "Newsletter", "/newsletter"],
+  ["en", "Newsletter", "/en/newsletter"],
+  ["fr", "Newsletter", "/fr/newsletter"],
+])("the %s drawer exposes the newsletter landing", async (lang, label, url) => {
+  mockLang = lang;
+  mockPath = pathFor(lang, "contact");
+  const onClose = jest.fn();
+  await act(async () => root.render(<SideMenu open onClose={onClose} />));
+  onClose.mockClear();
+
+  const link = container.querySelector('[data-testid="menu-link-newsletter"]');
+  expect(link.getAttribute("href")).toBe(url);
+  expect(link.textContent).toContain(label);
+  expect(MENU_TREE.filter((item) => item.routeId === "newsletter")).toHaveLength(1);
+  await act(async () => link.click());
+  expect(mockNavigate).toHaveBeenCalledWith(url);
+  expect(onClose).toHaveBeenCalledTimes(1);
+});
+
+test.each([
   ["es", "Clima", "/clima"],
   ["en", "Weather", "/en/weather"],
   ["fr", "Climat", "/fr/climat"],

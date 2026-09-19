@@ -10,6 +10,8 @@ export const seoImageForRoute = (routeId) =>
     ? `/og-image.jpg?v=${SEO_IMAGE_VERSION}`
     : routeId === "practicalInfo" || routeId === "climate"
     ? `/og/routes/whenToTravel.jpg?v=${SEO_IMAGE_VERSION}`
+    : routeId === "newsletter"
+    ? `/og/routes/blog.jpg?v=${SEO_IMAGE_VERSION}`
     : routeId === "navigationMap"
     ? `/og/routes/archive.jpg?v=${SEO_IMAGE_VERSION}`
     : `/og/routes/${routeId}.jpg?v=${SEO_IMAGE_VERSION}`;

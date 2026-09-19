@@ -55,9 +55,22 @@ test("compact branding is restricted to the header and retains the home link and
   const brand = page.querySelector('[data-testid="brand-mark"]');
   expect(brand.getAttribute("href")).toBe("/");
   expect(brand.getAttribute("aria-label")).toContain("Xaluca Tours");
+  expect(brand.querySelector('[data-testid="brand-mobile-title"]').textContent).toBe("Xaluca Tours");
+  expect(brand.querySelector('[data-testid="brand-mobile-title"]').classList.contains("sm:hidden")).toBe(true);
   expect(brand.querySelector('[data-slot="brand.first"]').parentElement.classList.contains("sm:inline-flex")).toBe(true);
   expect(brand.querySelector('[data-testid="brand-tagline"]').classList.contains("xl:inline-flex")).toBe(true);
   const normal = render(<BrandMark />);
   expect(normal.querySelector('[data-slot="brand.first"]').parentElement.classList.contains("hidden")).toBe(false);
   expect(normal.querySelector('[data-testid="brand-tagline"]').classList.contains("lg:inline-flex")).toBe(true);
+});
+
+test("the mobile header groups menu, logo and title while compacting secondary controls", () => {
+  mockLang = "es";
+  const page = render(<Header />);
+  const cluster = page.querySelector('[data-testid="header-mobile-brand-cluster"]');
+  expect(cluster.querySelector('[data-testid="header-menu-button"]')).not.toBeNull();
+  expect(cluster.querySelector('[data-testid="brand-logo"]')).not.toBeNull();
+  expect(cluster.querySelector('[data-testid="brand-mobile-title"]').textContent).toBe("Xaluca Tours");
+  expect(page.querySelector('[data-testid="header-favorites-button"]').classList.contains("hidden")).toBe(true);
+  expect(page.querySelector('[data-testid="header-contact-button"]').className).toContain("w-10");
 });

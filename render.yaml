@@ -244,6 +244,9 @@ services:
         source: /nav
         destination: /nav/index.html
       - type: rewrite
+        source: /newsletter
+        destination: /newsletter/index.html
+      - type: rewrite
         source: /opiniones
         destination: /opiniones/index.html
       - type: rewrite

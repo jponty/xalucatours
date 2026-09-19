@@ -134,6 +134,12 @@ export const MENU_TREE = [
     icon: "compass",
   },
   {
+    id: "newsletter",
+    routeId: "newsletter",
+    label: { es: "Newsletter", en: "Newsletter", fr: "Newsletter" },
+    icon: "mail",
+  },
+  {
     id: "contact",
     routeId: "contact",
     label: { es: "Contacto", en: "Contact", fr: "Contact" },

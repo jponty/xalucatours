@@ -109,6 +109,7 @@ import MoroccoLandingPage from "@/pages/MoroccoLandingPage";
 import EquipoPage from "@/pages/EquipoPage";
 import BlogPage from "@/pages/BlogPage";
 import ContactPage from "@/pages/ContactPage";
+import NewsletterPage from "@/pages/NewsletterPage";
 import CitaPreviaPage from "@/pages/CitaPreviaPage";
 import CatalogoPage from "@/pages/CatalogoPage";
 import ArchivoPage from "@/pages/ArchivoPage";
@@ -248,6 +249,7 @@ export const ROUTE_COMPONENTS = {
   about:                         EquipoPage,
   blog:                          BlogPage,
   contact:                       ContactPage,
+  newsletter:                    NewsletterPage,
   appointment:                   CitaPreviaPage,
   juego:                         JuegoPage,
   concurso:                      ConcursoPage,

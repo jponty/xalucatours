@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import {
   Compass, Calendar, CheckCircle2, Phone, Mail, MapPin, Clock,
   Headphones, Users, Sparkles, ShieldCheck, MessageCircle, Star,
-  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock, Car, Bus, Navigation,
+  MessagesSquare, BookOpen, Bot, Briefcase, LifeBuoy, CalendarClock, Car, Bus, Navigation, Mic,
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
@@ -246,7 +246,7 @@ const ContactPage = () => {
             <div className="pt-[112px] md:pt-[132px] px-6 md:px-12 max-w-7xl mx-auto w-full" />
             <div className="flex-1 flex items-end pt-32 md:pt-44 pb-24 md:pb-32">
               <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
-                <div className="max-w-3xl">
+                <div className="max-w-5xl">
                   <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
                     <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
                     <E name="hero.eyebrow" defaults={COPY.hero.eyebrow} multiline={false}
@@ -259,24 +259,57 @@ const ContactPage = () => {
                   <E name="hero.body" defaults={COPY.hero.body} as="p"
                      className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/85 leading-relaxed" />
 
-                  <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap items-center gap-4">
+                  <div className="fade-up fade-up-delay-3 mt-10 grid w-full grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                     <a
                       href="#booking"
                       data-testid="hero-cta-book"
-                      className="xaluca-button inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
+                      className="xaluca-button inline-flex min-h-12 items-center justify-center gap-2 bg-[#C16542] hover:bg-[#A35133] text-[#FDFBF7] px-4 py-3.5 text-center text-[10px] leading-relaxed tracking-[0.16em] uppercase transition-colors sm:text-[11px]"
                     >
                       <E name="hero.ctaBook" multiline={false}
                          defaults={{ es: "Reservar cita", en: "Book a session", fr: "Réserver une séance" }} />
-                      <Calendar className="w-3.5 h-3.5" strokeWidth={1.6} />
+                      <Calendar className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
                     </a>
                     <a
                       href={`tel:${CONTACT.phoneRaw || "+34937268366"}`}
                       data-testid="hero-cta-call"
-                      className="xaluca-button inline-flex items-center gap-3 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-7 py-4 text-[11px] tracking-[0.25em] uppercase transition-all duration-300"
+                      className="xaluca-button inline-flex min-h-12 items-center justify-center gap-2 border border-[#FDFBF7]/40 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-4 py-3.5 text-center text-[10px] leading-relaxed tracking-[0.16em] uppercase transition-all duration-300 sm:text-[11px]"
                     >
-                      <Phone className="w-3.5 h-3.5" strokeWidth={1.5} />
+                      <Phone className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
                       {CONTACT.phone || "+34 937 268 366"}
                     </a>
+                    <button
+                      type="button"
+                      data-testid="hero-cta-quick"
+                      aria-controls="contact-forms"
+                      onClick={() => openContactForm("quick")}
+                      className="xaluca-button inline-flex min-h-12 items-center justify-center gap-2 border border-[#FDFBF7]/40 bg-[#1A1513]/20 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-4 py-3.5 text-center text-[10px] leading-relaxed tracking-[0.16em] uppercase transition-all duration-300 sm:text-[11px]"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+                      <E name="hero.ctaQuick" multiline={false}
+                         defaults={{ es: "Contacto rápido", en: "Quick contact", fr: "Contact rapide" }} />
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="hero-cta-detailed"
+                      aria-controls="contact-forms"
+                      onClick={() => openContactForm("detailed")}
+                      className="xaluca-button inline-flex min-h-12 items-center justify-center gap-2 border border-[#FDFBF7]/40 bg-[#1A1513]/20 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-4 py-3.5 text-center text-[10px] leading-relaxed tracking-[0.16em] uppercase transition-all duration-300 sm:text-[11px]"
+                    >
+                      <Compass className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+                      <E name="hero.ctaDetailed" multiline={false}
+                         defaults={{ es: "Planificación detallada", en: "Detailed planning", fr: "Planification détaillée" }} />
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="hero-cta-dictation"
+                      aria-controls="contact-forms"
+                      onClick={() => openContactForm("dictation")}
+                      className="xaluca-button inline-flex min-h-12 items-center justify-center gap-2 border border-[#FDFBF7]/40 bg-[#1A1513]/20 hover:border-[#FDFBF7] hover:bg-[#FDFBF7] hover:text-[#1A1513] text-[#FDFBF7] px-4 py-3.5 text-center text-[10px] leading-relaxed tracking-[0.16em] uppercase transition-all duration-300 sm:text-[11px]"
+                    >
+                      <Mic className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+                      <E name="hero.ctaDictation" multiline={false}
+                         defaults={{ es: "Dictado", en: "Dictation", fr: "Dictée" }} />
+                    </button>
                   </div>
                 </div>
               </div>

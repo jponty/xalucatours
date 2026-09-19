@@ -101,6 +101,25 @@ test("each CTA opens and focuses the correct form, preserves the trip and suppor
   expect(get("quick-form")).not.toBeNull();
 });
 
+test("the contact hero exposes all five responsive actions and opens each existing form", async () => {
+  await render(<ContactPage />);
+  const hero = get("contact-hero");
+  expect(hero.querySelector('[data-testid="hero-cta-book"]').getAttribute("href")).toBe("#booking");
+  expect(hero.querySelector('[data-testid="hero-cta-call"]').getAttribute("href")).toBe("tel:+34937268366");
+  expect(hero.textContent).toContain("Contacto rápido");
+  expect(hero.textContent).toContain("Planificación detallada");
+  expect(hero.textContent).toContain("Dictado");
+
+  for (const id of ["quick", "detailed", "dictation"]) {
+    const cta = get(`hero-cta-${id}`);
+    expect(cta.getAttribute("aria-controls")).toBe("contact-forms");
+    await click(`hero-cta-${id}`);
+    expect(get(`form-tab-${id}`).getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(get(`form-tab-${id}`));
+    expect(Element.prototype.scrollIntoView).toHaveBeenLastCalledWith({ behavior: "smooth", block: "start" });
+  }
+});
+
 test("respects reduced motion when jumping to a form", async () => {
   window.matchMedia = jest.fn(() => ({ matches: true }));
   await render(<ContactPage />);
