@@ -10,13 +10,13 @@ jest.mock("react-router-dom", () => ({
   Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a>,
 }));
 jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults, id }) => <Tag id={id}>{defaults[mockLang] || defaults.es}</Tag>);
+jest.mock("@/components/WhatsAppContactModal", () => ({ requestWhatsAppContact: jest.fn() }));
 
 import ContactDetailsCard from "./ContactDetailsCard";
 import HomeTrustStrip from "./HomeTrustStrip";
 import { CONTACT } from "@/lib/data";
 import { HOME_HELP_OPTIONS } from "@/lib/homeHelpOptions";
 import { pathFor } from "@/lib/routes";
-import { WHATSAPP_URL } from "./WhatsAppIcon";
 
 const render = (component) => {
   const container = document.createElement("div");
@@ -84,7 +84,7 @@ describe("shared direct contact card", () => {
     expect(cta.textContent).toBe(label);
     expect(cta.getAttribute("href")).toBe(href);
     expect(cta.classList.contains("w-full")).toBe(true);
-    expect(card.querySelectorAll("a")).toHaveLength(4);
+    expect(card.querySelectorAll("a")).toHaveLength(3);
     expect(card.querySelector('[data-testid="home-contact-card-phone"]').getAttribute("href")).toBe(`tel:${CONTACT.phoneRaw}`);
     expect(card.querySelector('[data-testid="home-contact-card-email"]').getAttribute("href")).toBe(`mailto:${CONTACT.email}`);
   });
@@ -93,19 +93,18 @@ describe("shared direct contact card", () => {
     ["es", "Habla con nosotros por WhatsApp"],
     ["en", "Chat with us on WhatsApp"],
     ["fr", "Échangez avec nous sur WhatsApp"],
-  ])("the %s home WhatsApp CTA opens the shared chat directly", (lang, label) => {
+  ])("the %s home WhatsApp CTA opens the mandatory shared dialog", (lang, label) => {
     mockLang = lang;
     const card = render(<HomeTrustStrip />).querySelector('[data-testid="home-contact-details-card"]');
     const contact = card.querySelector('[data-testid="home-contact-card-cta"]');
     const whatsapp = card.querySelector('[data-testid="home-contact-card-whatsapp"]');
     expect(contact.nextElementSibling).toBe(whatsapp);
     expect(whatsapp.textContent).toBe(label);
-    expect(whatsapp.getAttribute("href")).toBe(WHATSAPP_URL);
-    expect(whatsapp.getAttribute("href")).toBe("https://wa.me/34626049676");
-    expect(whatsapp.getAttribute("target")).toBe("_blank");
-    expect(whatsapp.getAttribute("rel")).toBe("noopener noreferrer");
-    // The global WhatsApp handler must leave this direct-chat link alone.
-    expect(whatsapp.dataset.whatsappDirect).toBe("true");
+    expect(whatsapp.tagName).toBe("BUTTON");
+    expect(whatsapp.getAttribute("type")).toBe("button");
+    expect(whatsapp.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(whatsapp.getAttribute("href")).toBeNull();
+    expect(whatsapp.dataset.whatsappDirect).toBeUndefined();
     expect(whatsapp.classList.contains("w-full")).toBe(true);
     expect(whatsapp.classList.contains("max-w-full")).toBe(true);
     expect(whatsapp.classList.contains("bg-[#25D366]")).toBe(true);

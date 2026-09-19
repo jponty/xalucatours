@@ -5,6 +5,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
 import { pathFor } from "@/lib/routes";
 import { WhatsAppIcon, WHATSAPP_URL } from "@/components/WhatsAppIcon";
+import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import { requestDictationModal } from "@/lib/dictationModal";
 
 const ctaClass = "xaluca-button inline-flex min-h-12 w-full min-w-0 max-w-full items-center justify-center gap-3 px-5 py-3.5 text-center text-[11px] leading-relaxed font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
@@ -69,11 +70,10 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
               </span>
               <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} aria-hidden="true" />
             </Link>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-whatsapp-direct="true"
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => requestWhatsAppContact(WHATSAPP_URL)}
               data-testid={`${testIdPrefix}-card-whatsapp`}
               className={`${ctaClass} bg-[#25D366] text-white hover:bg-[#1EBE5A] focus-visible:ring-[#15803D]`}
             >
@@ -81,7 +81,7 @@ export default function ContactDetailsCard({ className = "mt-8", testIdPrefix = 
               <span className="min-w-0 break-words">
                 {pick({ es: "Habla con nosotros por WhatsApp", en: "Chat with us on WhatsApp", fr: "Échangez avec nous sur WhatsApp" }, lang)}
               </span>
-            </a>
+            </button>
             <button
               type="button"
               data-testid={`${testIdPrefix}-card-dictation`}

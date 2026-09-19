@@ -21,6 +21,7 @@ COLLECTIONS = {
 }
 KINDS = {
     "dictation": "Dictado",
+    "whatsapp_business": "WhatsApp Business",
     "quick_contact": "Contacto rápido", "detailed_planning": "Planificación detallada",
     "appointment": "Cita previa", "exit_intent": "Antes de irte",
     "trip_information": "Información de un viaje", "general_contact": "Contacto general",

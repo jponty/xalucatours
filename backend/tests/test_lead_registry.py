@@ -99,9 +99,28 @@ def test_requires_admin(client, path, method):
     ({'source_path': '/viajes/atlas_desierto/programa_4n_5d'}, 'trip_information'),
     ({'capture_type': 'appointment'}, 'appointment'),
     ({'capture_type': 'newsletter'}, 'newsletter'),
+    ({'capture_type': 'whatsapp_business'}, 'whatsapp_business'),
 ])
 def test_classifies_historical_and_current_sources(fields, expected):
     assert classify('contact', fields) == expected
+
+
+def test_whatsapp_business_requires_identity_phone_email_and_privacy():
+    import server
+    valid = {
+        'capture_type': 'whatsapp_business', 'full_name': 'Ana García',
+        'first_name': 'Ana', 'last_name': 'García', 'email': 'ana@example.com',
+        'phone': '+34612345678', 'privacy_consent': True,
+        'preferred_contact': ['phone'], 'preferred_contact_phone': '+34612345678',
+        'message': 'Solicitud de contacto a través de WhatsApp Business.',
+    }
+    created = server.ContactRequestCreate(**valid)
+    assert created.phone == '+34612345678'
+    assert created.capture_type == 'whatsapp_business'
+    for field in ('first_name', 'last_name', 'email', 'phone', 'privacy_consent'):
+        invalid = {**valid, field: False if field == 'privacy_consent' else None}
+        with pytest.raises(ValueError):
+            server.ContactRequestCreate(**invalid)
 
 
 def test_all_sources_one_view_without_merging_same_email(db, client):

@@ -8,6 +8,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { resolvePath } from "@/lib/routes";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
+import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const SESSION_SHOWN_KEY = "xaluca:exit-intent-shown";
@@ -36,6 +37,12 @@ const COPY = {
   lastName: T("Apellidos", "Last name", "Nom de famille"),
   email: T("Correo electrónico", "Email", "E-mail"),
   phone: T("Teléfono", "Phone", "Téléphone"),
+  message: T("Mensaje (opcional)", "Message (optional)", "Message (facultatif)"),
+  messagePlaceholder: T(
+    "Cuéntanos qué viaje tienes en mente, tus fechas o cualquier preferencia.",
+    "Tell us about the trip you have in mind, your dates or any preferences.",
+    "Parlez-nous du voyage que vous imaginez, de vos dates ou de vos préférences."
+  ),
   optional: T("Email o teléfono: completa al menos uno", "Email or phone: complete at least one", "E-mail ou téléphone : renseignez-en au moins un"),
   call: T("Prefiero que me llaméis por teléfono", "I would prefer a phone call", "Je préfère être contacté(e) par téléphone"),
   privacyPre: T("He leído y acepto la ", "I have read and accept the ", "J'ai lu et j'accepte la "),
@@ -58,7 +65,7 @@ const COPY = {
   ),
 };
 
-const initialForm = { firstName: "", lastName: "", email: "", phone: "", preferCall: false, privacy: false };
+const initialForm = { firstName: "", lastName: "", email: "", phone: "", message: "", preferCall: false, privacy: false };
 const emailValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const safeGet = (storage, key) => {
   try { return storage.getItem(key); } catch { return null; }
@@ -74,6 +81,7 @@ export default function ExitIntentModal() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [sending, setSending] = useState(false);
+  const [dictating, setDictating] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const dialogRef = useRef(null);
@@ -158,7 +166,7 @@ export default function ExitIntentModal() {
       if (event.defaultPrevented) return;
       if (event.key === "Escape") { setOpen(false); return; }
       if (event.key !== "Tab" || !dialogRef.current) return;
-      const focusable = [...dialogRef.current.querySelectorAll('button, a[href], input, [tabindex]:not([tabindex="-1"])')];
+      const focusable = [...dialogRef.current.querySelectorAll('button, a[href], input, textarea, select, [tabindex]:not([tabindex="-1"])')];
       if (!focusable.length) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -181,7 +189,7 @@ export default function ExitIntentModal() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    if (sending) return;
+    if (sending || dictating) return;
     const firstName = form.firstName.trim();
     const lastName = form.lastName.trim();
     if (!firstName || !lastName) { setError(pick(COPY.nameError, lang)); return; }
@@ -213,7 +221,10 @@ export default function ExitIntentModal() {
         preferred_contact: preferredContact,
         preferred_contact_email: preferredContact.includes("email") ? email : null,
         preferred_contact_phone: preferredContact.includes("phone") ? phone : null,
-        message: `Solicitud desde modal de intención de salida. Prefiere llamada: ${form.preferCall ? "Sí" : "No"}.`,
+        message: [
+          form.message.trim(),
+          `Solicitud desde modal de intención de salida. Prefiere llamada: ${form.preferCall ? "Sí" : "No"}.`,
+        ].filter(Boolean).join("\n\n"),
         language: lang,
         source_route_id: routeId,
         source_path: location.pathname,
@@ -275,6 +286,7 @@ export default function ExitIntentModal() {
               </div>
             </div>
 
+            <VoiceDictationProvider onBusyChange={setDictating}>
             <form onSubmit={onSubmit} data-testid="exit-intent-form" className="px-6 py-10 sm:px-9 md:px-10 md:py-14">
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block min-w-0">
@@ -308,6 +320,30 @@ export default function ExitIntentModal() {
               </div>
               <p className="mt-2 text-[10px] text-[#5C5248]/70">{pick(COPY.optional, lang)}</p>
 
+              <div className="mt-5">
+                <label htmlFor="exit-intent-message" className="text-[9px] uppercase tracking-[0.2em] text-[#5C5248]">
+                  {pick(COPY.message, lang)}
+                </label>
+                <VoiceTextField
+                  as="textarea"
+                  id="exit-intent-message"
+                  aria-label={pick(COPY.message, lang)}
+                  lang={lang}
+                  name="message"
+                  value={form.message}
+                  onValueChange={(message) => {
+                    setError("");
+                    setForm((current) => ({ ...current, message }));
+                  }}
+                  disabled={sending}
+                  rows={4}
+                  maxLength={2000}
+                  placeholder={pick(COPY.messagePlaceholder, lang)}
+                  data-testid="exit-intent-message"
+                  className="mt-2 w-full resize-y border border-[#2C2621]/15 bg-white px-4 py-3 text-sm leading-relaxed outline-none transition-colors focus:border-[#C16542]"
+                />
+              </div>
+
               <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#5C5248]">
                 <input type="checkbox" name="preferCall" checked={form.preferCall} onChange={onChange} data-testid="exit-intent-prefer-call" className="mt-0.5 h-4 w-4 accent-[#C16542]" />
                 <span>{pick(COPY.call, lang)}</span>
@@ -322,7 +358,7 @@ export default function ExitIntentModal() {
 
               {error && <p role="alert" data-testid="exit-intent-error" className="mt-4 border border-[#C16542]/25 bg-[#C16542]/[0.08] px-3 py-2 text-xs text-[#A35133]">{error}</p>}
 
-              <button type="submit" disabled={sending} data-testid="exit-intent-submit" className="mt-7 inline-flex w-full items-center justify-center gap-3 bg-[#C16542] px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#A35133] disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={sending || dictating} data-testid="exit-intent-submit" className="mt-7 inline-flex w-full items-center justify-center gap-3 bg-[#C16542] px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#A35133] disabled:cursor-not-allowed disabled:opacity-60">
                 {pick(sending ? COPY.sending : COPY.submit, lang)}
                 {!sending && <ArrowRight className="h-3.5 w-3.5" />}
               </button>
@@ -330,6 +366,7 @@ export default function ExitIntentModal() {
                 {pick(COPY.later, lang)}
               </button>
             </form>
+            </VoiceDictationProvider>
           </div>
         )}
       </div>

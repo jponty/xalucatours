@@ -210,6 +210,14 @@ class ContactRequestCreate(LeadCapture):
         return self
 
     @model_validator(mode="after")
+    def _validate_whatsapp_request(self):
+        if self.capture_type == "whatsapp_business":
+            if (not (self.first_name or "").strip() or not (self.last_name or "").strip()
+                    or not self.email or not (self.phone or "").strip() or not self.privacy_consent):
+                raise ValueError("First name, last name, email, phone and privacy consent are required")
+        return self
+
+    @model_validator(mode="after")
     def _require_preferred_contact_details(self):
         selected = set(self.preferred_contact or [])
         if selected - {"email", "phone"}:
@@ -1649,14 +1657,18 @@ async def create_contact_request(payload: ContactRequestCreate):
     notification_title = (
         "Contacto directo con fundadores" if founder_label
         else "Contacto directo con el equipo" if team_label
+        else "Contacto por WhatsApp Business" if obj.capture_type == "whatsapp_business"
         else "Solicitud de contacto"
     )
     notification_subject = (
         f"Consulta para {direct_label} · {obj.full_name}"
         if direct_label else f"Nuevo contacto · {obj.full_name}"
     )
+    if obj.capture_type == "whatsapp_business":
+        notification_subject = f"WhatsApp Business · {obj.full_name}"
     summary_rows = [
         *([("Tipo de solicitud", "Dictado")] if obj.capture_type == "dictation" else []),
+        *([("Tipo de solicitud", "WhatsApp Business")] if obj.capture_type == "whatsapp_business" else []),
         *([("Viaje consultado", obj.related_trip_title)] if obj.related_trip_title else []),
         ("Nombre", obj.full_name),
         ("Email", obj.email),

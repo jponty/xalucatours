@@ -2,6 +2,7 @@ import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import axios from "axios";
 import ExitIntentModal from "./ExitIntentModal";
+import { createVoiceRecorder, dictationAvailable, supportsDictation, transcribeVoice } from "@/lib/voiceDictation";
 
 let mockLang = "es";
 jest.mock("axios", () => ({ post: jest.fn() }));
@@ -19,6 +20,13 @@ jest.mock("@/components/InternationalPhoneInput", () => ({
   isValidInternationalPhone: (value) => /^\+\d{9,15}$/.test(value),
 }));
 jest.mock("@/components/LeadSubmissionSuccess", () => () => <p>Solicitud recibida</p>);
+jest.mock("@/lib/voiceDictation", () => ({
+  ...jest.requireActual("@/lib/voiceDictation"),
+  supportsDictation: jest.fn(),
+  dictationAvailable: jest.fn(),
+  createVoiceRecorder: jest.fn(),
+  transcribeVoice: jest.fn(),
+}));
 
 describe("ExitIntentModal contact names", () => {
   let container;
@@ -26,8 +34,10 @@ describe("ExitIntentModal contact names", () => {
   const field = (testId) => document.querySelector(`[data-testid="exit-intent-${testId}"]`);
   const fill = (testId, value) => {
     act(() => {
-      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(field(testId), value);
-      field(testId).dispatchEvent(new Event("input", { bubbles: true }));
+      const element = field(testId);
+      const prototype = element.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(prototype, "value").set.call(element, value);
+      element.dispatchEvent(new Event("input", { bubbles: true }));
     });
   };
   const open = () => {
@@ -52,6 +62,10 @@ describe("ExitIntentModal contact names", () => {
     mockLang = "es";
     axios.post.mockReset();
     axios.post.mockResolvedValue({ data: { id: "test-lead" } });
+    supportsDictation.mockReturnValue(false);
+    dictationAvailable.mockResolvedValue(true);
+    createVoiceRecorder.mockReset();
+    transcribeVoice.mockReset();
     window.sessionStorage.clear();
     window.localStorage.clear();
     window.sessionStorage.setItem("xaluca:exit-intent-started", String(Date.now() - 11_000));
@@ -119,6 +133,42 @@ describe("ExitIntentModal contact names", () => {
       source_path: "/",
     }));
     expect(field("success")).not.toBeNull();
+  });
+
+  test("adds the optional editable message to the same lead submission", async () => {
+    open();
+    fillValidForm();
+    fill("message", "Quiero conocer Fez y Chefchaouen en familia.");
+    await submit();
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post.mock.calls[0][1].message).toContain("Quiero conocer Fez y Chefchaouen en familia.");
+    expect(axios.post.mock.calls[0][1].message).toContain("Solicitud desde modal de intención de salida.");
+  });
+
+  test("reuses dictation and adds the transcript to the editable message only after stopping", async () => {
+    supportsDictation.mockReturnValue(true);
+    const audio = new Blob(["recorded audio"]);
+    createVoiceRecorder.mockResolvedValue({ stop: jest.fn().mockResolvedValue(audio), cancel: jest.fn() });
+    transcribeVoice.mockResolvedValue("Queremos recorrer el norte de Marruecos.");
+    open();
+    await act(async () => Promise.resolve());
+
+    const voice = field("message-voice");
+    const dictate = voice.querySelector('button[aria-label^="Dictar"]');
+    expect(dictate).not.toBeNull();
+    await act(async () => dictate.click());
+    expect(field("message").value).toBe("");
+    expect(transcribeVoice).not.toHaveBeenCalled();
+    expect(field("submit").disabled).toBe(true);
+
+    const stop = [...voice.querySelectorAll("button")].find((button) => button.textContent === "Detener y transcribir");
+    await act(async () => stop.click());
+    expect(transcribeVoice).toHaveBeenCalledWith(audio, "es", expect.any(AbortSignal));
+    expect(field("message").value).toBe("Queremos recorrer el norte de Marruecos.");
+    expect(field("submit").disabled).toBe(false);
+
+    fill("message", "Texto revisado por el usuario.");
+    expect(field("message").value).toBe("Texto revisado por el usuario.");
   });
 
   test("validates the existing API's full-name length limit without truncating", async () => {
