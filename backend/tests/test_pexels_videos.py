@@ -42,30 +42,64 @@ def test_video_summary_rejects_portrait_and_chooses_bounded_landscape_source():
     assert summary["photographer"] == "Pexels Creator"
 
 
-def test_morocco_feed_hardcodes_query_filters_landscape_and_deduplicates(monkeypatch):
-    captured = {}
+def test_morocco_feed_rotates_city_queries_filters_landscape_and_deduplicates(monkeypatch):
+    captured = []
 
     async def fake_get(path, params):
-        captured.update({"path": path, "params": params})
+        captured.append({"path": path, "params": params})
+        city_index = server.PEXELS_VIDEO_CITY_QUERIES.index(params["query"])
         return {
-            "page": 2,
-            "per_page": 8,
+            "page": params["page"],
+            "per_page": params["per_page"],
             "total_results": 40,
             "next_page": "https://api.pexels.com/videos/search?page=3",
-            "videos": [_video(10), _video(10), _video(11, width=720, height=1280)],
+            "videos": [
+                _video(100 + city_index),
+                _video(100 + city_index),
+                _video(200 + city_index, width=720, height=1280),
+            ],
         }
 
     monkeypatch.setattr(server, "_pexels_video_get", fake_get)
     server._pexels_video_cache.clear()
     response = asyncio.run(server.pexels_morocco_videos(page=2, per_page=8, locale="es-ES"))
 
-    assert captured["path"] == "/search"
-    assert captured["params"] == {
-        "query": "Morocco",
-        "orientation": "landscape",
-        "page": 2,
-        "per_page": 8,
-        "locale": "es-ES",
-    }
-    assert [video["id"] for video in response["videos"]] == [10]
+    assert [call["path"] for call in captured] == ["/search"] * 4
+    assert [call["params"]["query"] for call in captured] == [
+        "Tangier",
+        "Chefchaouen",
+        "Essaouira",
+        "Agadir",
+    ]
+    assert all(call["params"]["query"] != "Morocco" for call in captured)
+    assert all(call["params"]["orientation"] == "landscape" for call in captured)
+    assert all(call["params"]["page"] == 1 for call in captured)
+    assert all(call["params"]["per_page"] == 3 for call in captured)
+    assert all(call["params"]["locale"] == "es-ES" for call in captured)
+    assert [video["id"] for video in response["videos"]] == [104, 105, 106, 107]
+    assert [query["city"] for query in response["queries"]] == [
+        "Tangier",
+        "Chefchaouen",
+        "Essaouira",
+        "Agadir",
+    ]
     assert response["next_page"] is True
+
+
+def test_city_rotation_advances_each_city_search_page_after_a_full_cycle(monkeypatch):
+    captured = []
+
+    async def fake_get(path, params):
+        captured.append(params)
+        return {"videos": [_video(len(captured))], "next_page": True, "total_results": 1}
+
+    monkeypatch.setattr(server, "_pexels_video_get", fake_get)
+    server._pexels_video_cache.clear()
+    asyncio.run(server.pexels_morocco_videos(page=3, per_page=12))
+
+    assert [(call["query"], call["page"]) for call in captured] == [
+        ("Ouarzazate", 1),
+        ("Merzouga", 1),
+        ("Marrakech", 2),
+        ("Casablanca", 2),
+    ]

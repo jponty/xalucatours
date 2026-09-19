@@ -12,16 +12,15 @@ const COPY = {
   eyebrow: T("Marruecos en movimiento", "Morocco in motion", "Le Maroc en mouvement"),
   title: T("Vídeos de Marruecos", "Videos of Morocco", "Vidéos du Maroc"),
   body: T(
-    "Descubre paisajes, ciudades y experiencias del país a través de una selección dinámica de vídeos de Pexels.",
-    "Discover the country's landscapes, cities and experiences through a dynamic selection of Pexels videos.",
-    "Découvrez les paysages, les villes et les expériences du pays grâce à une sélection dynamique de vidéos Pexels.",
+    "Descubre paisajes, ciudades y experiencias del país a través de una selección audiovisual dinámica.",
+    "Discover the country's landscapes, cities and experiences through a dynamic audiovisual selection.",
+    "Découvrez les paysages, les villes et les expériences du pays grâce à une sélection audiovisuelle dynamique.",
   ),
   hint: T("Desliza para seguir explorando", "Swipe to keep exploring", "Faites glisser pour continuer à explorer"),
   previous: T("Vídeos anteriores", "Previous videos", "Vidéos précédentes"),
   next: T("Vídeos siguientes", "Next videos", "Vidéos suivantes"),
   videoLabel: T("Vídeo de Marruecos", "Morocco video", "Vidéo du Maroc"),
-  by: T("Vídeo de", "Video by", "Vidéo de"),
-  onPexels: T("en Pexels", "on Pexels", "sur Pexels"),
+  attribution: T("Vídeos proporcionados por Pexels", "Videos provided by Pexels", "Vidéos fournies par Pexels"),
   more: T("Mostrar más vídeos", "Show more videos", "Voir plus de vidéos"),
   loading: T("Cargando vídeos de Marruecos", "Loading Morocco videos", "Chargement des vidéos du Maroc"),
   unavailable: T(
@@ -30,9 +29,9 @@ const COPY = {
     "Les vidéos ne sont pas disponibles pour le moment.",
   ),
   empty: T(
-    "Pexels no ha devuelto vídeos horizontales para esta selección.",
-    "Pexels did not return landscape videos for this selection.",
-    "Pexels n’a renvoyé aucune vidéo horizontale pour cette sélection.",
+    "No hay vídeos horizontales disponibles para esta selección.",
+    "There are no landscape videos available for this selection.",
+    "Aucune vidéo horizontale n’est disponible pour cette sélection.",
   ),
   retry: T("Volver a intentar", "Try again", "Réessayer"),
 };
@@ -41,6 +40,8 @@ const mergeUnique = (current, incoming) => {
   const byId = new Map();
   [...current, ...incoming].forEach((video) => {
     if (!video?.id || !video.video_url || !video.poster_url) return;
+    if (Number(video.width) <= Number(video.height)) return;
+    if (Number(video.video_width) <= Number(video.video_height)) return;
     if (![...byId.values()].some((item) => item.video_url === video.video_url)) {
       byId.set(video.id, video);
     }
@@ -305,39 +306,25 @@ export default function PexelsMoroccoVideos() {
                       <source src={video.video_url} type={video.file_type || "video/mp4"} />
                     </video>
                   </div>
-                  <div className="mt-4 flex items-start justify-between gap-4 border-t border-white/15 pt-4">
-                    <div className="min-w-0">
-                      <span className="block text-[9px] font-semibold uppercase tracking-[0.24em] text-[#D4A373]">
-                        {String(index + 1).padStart(2, "0")} · {pick(COPY.videoLabel, lang)}
-                      </span>
-                      <p className="mt-2 truncate text-sm text-white/70">
-                        {pick(COPY.by, lang)}{" "}
-                        {video.photographer_url ? (
-                          <a href={video.photographer_url} target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#D4A373]">
-                            {video.photographer || "Pexels"}
-                          </a>
-                        ) : (video.photographer || "Pexels")}
-                      </p>
-                    </div>
-                    {video.pexels_url && (
-                      <a
-                        href={video.pexels_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="shrink-0 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/55 hover:text-[#D4A373]"
-                      >
-                        {pick(COPY.onPexels, lang)}
-                      </a>
-                    )}
-                  </div>
                 </article>
               ))}
             </div>
 
             <div className="mt-7 flex flex-wrap items-center justify-between gap-5 border-t border-white/12 pt-6">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45" aria-live="polite">
-                {String(Math.min(active + 1, visibleVideos.length)).padStart(2, "0")} / {String(visibleVideos.length).padStart(2, "0")}
-              </span>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45" aria-live="polite">
+                  {String(Math.min(active + 1, visibleVideos.length)).padStart(2, "0")} / {String(visibleVideos.length).padStart(2, "0")}
+                </span>
+                <a
+                  href="https://www.pexels.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="pexels-attribution"
+                  className="text-[10px] uppercase tracking-[0.18em] text-white/55 transition-colors hover:text-[#D4A373]"
+                >
+                  {pick(COPY.attribution, lang)}
+                </a>
+              </div>
               {hasMore && (
                 <button
                   type="button"

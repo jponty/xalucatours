@@ -3225,8 +3225,21 @@ async def list_library_tags():
 # ----------------------------------------------------------
 PEXELS_API_KEY = os.environ.get("PEXELS_API_KEY", "").strip()
 PEXELS_BASE = "https://api.pexels.com/v1"
-PEXELS_VIDEO_BASE = "https://api.pexels.com/videos"
+PEXELS_VIDEO_BASE = "https://api.pexels.com/v1/videos"
 PEXELS_VIDEO_CACHE_TTL = 15 * 60
+PEXELS_VIDEO_CITY_QUERIES = (
+    "Marrakech",
+    "Casablanca",
+    "Fez",
+    "Rabat",
+    "Tangier",
+    "Chefchaouen",
+    "Essaouira",
+    "Agadir",
+    "Ouarzazate",
+    "Merzouga",
+)
+PEXELS_VIDEO_QUERIES_PER_PAGE = 4
 _pexels_video_cache: Dict[tuple, tuple] = {}
 
 
@@ -3320,41 +3333,75 @@ def _video_summary(video: Dict) -> Optional[Dict]:
 
 @api_router.get("/pexels/videos/morocco")
 async def pexels_morocco_videos(page: int = 1, per_page: int = 12, locale: Optional[str] = None):
-    """Public, cached landscape-video feed for the /viajes inspiration rail."""
+    """Cached landscape-video feed rotating through Moroccan city searches."""
     page = max(1, min(page, 20))
     per_page = max(1, min(per_page, 24))
     safe_locale = (locale or "").strip() or None
-    cache_key = (page, per_page, safe_locale)
+    cache_key = ("cities-v1", page, per_page, safe_locale)
     now = _time.monotonic()
     cached = _pexels_video_cache.get(cache_key)
     if cached and now - cached[0] < PEXELS_VIDEO_CACHE_TTL:
         return cached[1]
 
-    params: Dict = {
-        "query": "Morocco",
-        "orientation": "landscape",
-        "page": page,
-        "per_page": per_page,
-    }
-    if safe_locale:
-        params["locale"] = safe_locale
-    raw = await _pexels_video_get("/search", params)
+    query_count = min(PEXELS_VIDEO_QUERIES_PER_PAGE, per_page)
+    rotation_start = (page - 1) * query_count
+    per_city = max(2, ((per_page + query_count - 1) // query_count) + 1)
+    searches = []
+    search_meta = []
+    for offset in range(query_count):
+        absolute_position = rotation_start + offset
+        city = PEXELS_VIDEO_CITY_QUERIES[absolute_position % len(PEXELS_VIDEO_CITY_QUERIES)]
+        city_page = (absolute_position // len(PEXELS_VIDEO_CITY_QUERIES)) + 1
+        params: Dict = {
+            "query": city,
+            "orientation": "landscape",
+            "page": city_page,
+            "per_page": per_city,
+        }
+        if safe_locale:
+            params["locale"] = safe_locale
+        searches.append(_pexels_video_get("/search", params))
+        search_meta.append({"city": city, "page": city_page})
 
-    seen = set()
+    results = await asyncio.gather(*searches, return_exceptions=True)
+    successful_results = [result for result in results if isinstance(result, dict)]
+    if not successful_results:
+        first_error = next((result for result in results if isinstance(result, Exception)), None)
+        if isinstance(first_error, HTTPException):
+            raise first_error
+        raise HTTPException(status_code=502, detail="Pexels city video searches failed.")
+
+    grouped_videos = []
+    for result in successful_results:
+        grouped_videos.append(
+            [summary for item in result.get("videos") or [] if (summary := _video_summary(item))]
+        )
+
+    seen_ids = set()
+    seen_sources = set()
     videos = []
-    for item in raw.get("videos") or []:
-        summary = _video_summary(item)
-        if not summary or summary["id"] in seen:
-            continue
-        seen.add(summary["id"])
-        videos.append(summary)
+    max_group_size = max((len(group) for group in grouped_videos), default=0)
+    for item_index in range(max_group_size):
+        for group in grouped_videos:
+            if item_index >= len(group):
+                continue
+            summary = group[item_index]
+            if summary["id"] in seen_ids or summary["video_url"] in seen_sources:
+                continue
+            seen_ids.add(summary["id"])
+            seen_sources.add(summary["video_url"])
+            videos.append(summary)
+            if len(videos) >= per_page:
+                break
+        if len(videos) >= per_page:
+            break
 
     response = {
-        "query": "Morocco",
-        "page": raw.get("page", page),
-        "per_page": raw.get("per_page", per_page),
-        "total_results": raw.get("total_results", len(videos)),
-        "next_page": bool(raw.get("next_page")),
+        "queries": search_meta,
+        "page": page,
+        "per_page": per_page,
+        "total_results": sum(int(result.get("total_results") or 0) for result in successful_results),
+        "next_page": page < 20 and any(bool(result.get("next_page")) for result in successful_results),
         "videos": videos,
     }
     _pexels_video_cache[cache_key] = (now, response)

@@ -14,6 +14,8 @@ const video = (id, url = `https://videos.pexels.com/${id}.mp4`) => ({
   height: 1080,
   poster_url: `https://images.pexels.com/${id}.jpg`,
   video_url: url,
+  video_width: 1280,
+  video_height: 720,
   file_type: "video/mp4",
   photographer: `Creator ${id}`,
   photographer_url: `https://www.pexels.com/@creator-${id}`,
@@ -65,6 +67,8 @@ test("deduplicates the dynamic feed and keeps every player lazy, landscape and u
   expect(global.fetch.mock.calls[0][0]).toContain("/api/pexels/videos/morocco?");
   expect(global.fetch.mock.calls[0][0]).toContain("page=1");
   expect(container.querySelectorAll("[data-pexels-video-card]")).toHaveLength(2);
+  expect(container.textContent).not.toContain("Creator 1");
+  expect(container.querySelector('[data-testid="pexels-attribution"]')).not.toBeNull();
   expect(container.querySelector('[data-testid="pexels-videos-track"]').className).toContain("overflow-x-auto");
   for (const player of container.querySelectorAll("video")) {
     expect(player.hasAttribute("controls")).toBe(true);
@@ -98,4 +102,12 @@ test("shows a clean localized fallback instead of broken media when the proxy fa
 
 test("mergeUnique rejects duplicate ids, duplicate files and incomplete media", () => {
   expect(mergeUnique([video(1)], [video(1), video(2, video(1).video_url), { id: 3 }])).toHaveLength(1);
+});
+
+test("mergeUnique rejects portrait source videos", () => {
+  expect(mergeUnique([], [
+    { ...video(1), width: 720, height: 1280 },
+    { ...video(2), video_width: 720, video_height: 1280 },
+    video(3),
+  ])).toEqual([video(3)]);
 });
