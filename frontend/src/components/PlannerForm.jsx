@@ -16,6 +16,7 @@ import { SlotScope, useSlotId } from "@/components/slotScope";
 import { pathFor } from "@/lib/routes";
 import { resolveTripContext, getTripParams, setTripContext } from "@/lib/tripContext";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, contactSubmissionError, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
 import { optimizedSrc } from "@/lib/imageUrl";
 import { WhatHappensNext, ContactPreference } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
@@ -77,11 +78,12 @@ export const PLANNER_COPY = {
   s5_help:     T("Solo te escribimos para preparar tu propuesta.", "We will only write to prepare your proposal.", "Nous vous écrivons uniquement pour préparer votre proposition."),
   name:        T("Nombre completo", "Full name", "Nom complet"),
   email:       T("Email", "Email", "Email"),
-  phone:       T("Teléfono (opcional)", "Phone (optional)", "Téléphone (facultatif)"),
+  phone:       T("Teléfono", "Phone", "Téléphone"),
   notes:       T("Comentarios o ideas", "Notes or ideas", "Commentaires ou idées"),
   // Submit
   submit:      T("Enviar mi solicitud", "Send my request", "Envoyer ma demande"),
   sending:     T("Enviando…", "Sending…", "Envoi…"),
+  submit_error: T("No hemos podido enviar la solicitud. Revisa tus datos e inténtalo de nuevo.", "We could not send your request. Please check your details and try again.", "Nous n’avons pas pu envoyer votre demande. Vérifiez vos coordonnées et réessayez."),
   success_t:   T("¡Recibido! Te respondemos en 24-48 h.", "Got it! We will reply within 24-48 h.", "Reçu ! Nous répondons sous 24-48 h."),
   success_b:   T(
     "Mientras tanto, explora nuestros viajes a medida o reserva una cita previa con el equipo.",
@@ -188,8 +190,7 @@ export default function PlannerForm() {
     selectedTrips: initialTrips.routeIds,
     activities: [],
     fullName: "", email: "", phone: "", notes: "",
-    preferredContact: [],
-    preferredContactEmail: "", preferredContactPhone: "",
+    preferredContact: DEFAULT_CONTACT_PREFERENCE,
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
@@ -213,16 +214,6 @@ export default function PlannerForm() {
   const toggleRegion   = toggleArrayItem("regions");
   const toggleActivity = toggleArrayItem("activities");
   const toggleTrip     = toggleArrayItem("selectedTrips");
-  const togglePref = (id) => setForm((f) => {
-    const removing = f.preferredContact.includes(id);
-    return {
-      ...f,
-      preferredContact: removing
-        ? f.preferredContact.filter((x) => x !== id)
-        : [...f.preferredContact, id],
-      ...(removing ? { [id === "email" ? "preferredContactEmail" : "preferredContactPhone"]: "" } : {}),
-    };
-  });
 
   // Banner reflects the LIVE selection: every selected itinerary,
   // resolved (catalog + program registry) and updated on add/remove.
@@ -236,15 +227,9 @@ export default function PlannerForm() {
   const validate = () => {
     const e = {};
     if (!form.fullName || form.fullName.trim().length < 2) e.fullName = tr("required");
-    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = tr("required");
-    if (form.phone && !isValidInternationalPhone(form.phone)) e.phone = tr("required");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = tr("required");
+    if (!isValidInternationalPhone(form.phone)) e.phone = tr("required");
     if (!form.preferredContact.length) e.preferredContact = tr("required");
-    if (form.preferredContact.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.preferredContactEmail.trim())) {
-      e.preferredContactEmail = tr("required");
-    }
-    if (form.preferredContact.includes("phone") && !isValidInternationalPhone(form.preferredContactPhone)) {
-      e.preferredContactPhone = tr("required");
-    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -260,8 +245,9 @@ export default function PlannerForm() {
       const payload = {
         ...leadCapture(),
         full_name: form.fullName.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim() || null,
+        ...contactSubmissionFields({
+          email: form.email, phone: form.phone, preferred_contact: form.preferredContact,
+        }),
         date_mode: form.dateMode,
         start_date: form.dateMode === "range"   ? (form.startDate || null) : (form.dateMode === "exact" ? (form.exactDate || null) : null),
         end_date:   form.dateMode === "range"   ? (form.endDate   || null) : null,
@@ -282,9 +268,6 @@ export default function PlannerForm() {
         }),
         activities: form.activities,
         notes: form.notes.trim() || null,
-        preferred_contact: form.preferredContact,
-        preferred_contact_email: form.preferredContact.includes("email") ? form.preferredContactEmail.trim() : null,
-        preferred_contact_phone: form.preferredContact.includes("phone") ? form.preferredContactPhone.trim() : null,
         language: lang,
       };
       const res = await fetch(API_URL, {
@@ -293,7 +276,7 @@ export default function PlannerForm() {
         body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
+      if (!res.ok) throw new Error(contactSubmissionError(data.detail, tr("submit_error")));
       setStatus("success");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -575,8 +558,9 @@ export default function PlannerForm() {
                   onChange={(e) => set("email", e.target.value)}
                 />
               </Field>
-              <Field as="div" label={<ET k="phone" multiline={false} />} error={errors.phone}>
+              <Field as="div" label={tr("phone")} required error={errors.phone}>
                 <InternationalPhoneInput
+                  required
                   name="phone"
                   value={form.phone}
                   onValueChange={(phone) => {
@@ -608,20 +592,8 @@ export default function PlannerForm() {
                 tone="light"
                 lang={lang}
                 value={form.preferredContact}
-                onToggle={(id) => togglePref(id)}
+                onChange={(value) => set("preferredContact", value)}
                 error={errors.preferredContact}
-                details={{ email: form.preferredContactEmail, phone: form.preferredContactPhone }}
-                onDetailChange={(id, value) => {
-                  set(id === "email" ? "preferredContactEmail" : "preferredContactPhone", value);
-                  setErrors((current) => ({
-                    ...current,
-                    [id === "email" ? "preferredContactEmail" : "preferredContactPhone"]: "",
-                  }));
-                }}
-                detailErrors={{
-                  email: errors.preferredContactEmail,
-                  phone: errors.preferredContactPhone,
-                }}
                 testidPrefix="planner-pref"
               />
             </div>

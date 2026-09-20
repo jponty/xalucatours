@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import ExitIntentModal from "./ExitIntentModal";
 
 jest.mock("axios", () => ({ post: jest.fn() }));
+jest.mock("@/components/EditableText", () => ({ defaults }) => <span>{defaults?.es}</span>);
 // CRA's Jest resolver predates Radix's package subpath exports.
 jest.mock("@radix-ui/primitive/is-development", () => ({ IS_DEVELOPMENT: true }), { virtual: true });
 jest.mock("react-router-dom", () => ({ useLocation: () => ({ pathname: "/" }) }));

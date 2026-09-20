@@ -6,6 +6,7 @@ import { createVoiceRecorder, dictationAvailable, supportsDictation, transcribeV
 
 let mockLang = "es";
 jest.mock("axios", () => ({ post: jest.fn() }));
+jest.mock("@/components/EditableText", () => ({ children }) => <>{children}</>);
 jest.mock("react-router-dom", () => ({ useLocation: () => ({ pathname: "/" }) }));
 jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ lang: mockLang }),
@@ -49,6 +50,7 @@ describe("ExitIntentModal contact names", () => {
     fill("name", "Joan");
     fill("last-name", "Pont");
     fill("email", "joan@example.com");
+    fill("phone", "+34612345678");
     act(() => field("privacy").click());
   };
   const submit = async () => {
@@ -128,8 +130,8 @@ describe("ExitIntentModal contact names", () => {
       full_name: "María José García de la Cruz",
       email: "joan@example.com",
       journey_interest: "exit-intent",
-      preferred_contact: ["email"],
-      preferred_contact_email: "joan@example.com",
+      preferred_contact: ["email", "phone"],
+      phone: "+34612345678",
       source_path: "/",
     }));
     expect(field("success")).not.toBeNull();

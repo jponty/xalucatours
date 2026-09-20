@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, contactSubmissionError, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 const MAX_RECORDING_SECONDS = 180;
@@ -62,12 +65,14 @@ const COPY = {
   },
   rating: { es: "¿Cómo valorarías tu experiencia?", en: "How would you rate your experience?", fr: "Comment évaluez-vous votre expérience ?" },
   name: { es: "Nombre (opcional)", en: "Name (optional)", fr: "Nom (facultatif)" },
-  email: { es: "Email (opcional)", en: "Email (optional)", fr: "E-mail (facultatif)" },
+  email: { es: "Email", en: "Email", fr: "E-mail" },
+  phone: { es: "Teléfono", en: "Phone", fr: "Téléphone" },
+  contactError: { es: "Introduce un email y un teléfono internacional válidos.", en: "Enter a valid email and international phone number.", fr: "Saisissez un e-mail et un téléphone international valides." },
   trip: { es: "Viaje o fecha (opcional)", en: "Trip or date (optional)", fr: "Voyage ou date (facultatif)" },
   consent: {
-    es: "Acepto que Xaluca Tours trate este comentario y, si incluyo mi email, pueda contactarme para ampliar la información.",
-    en: "I agree that Xaluca Tours may process this feedback and, if I include my email, contact me for further information.",
-    fr: "J'accepte que Xaluca Tours traite ce commentaire et, si j'indique mon e-mail, puisse me contacter pour plus d'informations.",
+    es: "Acepto que Xaluca Tours trate este comentario y mis datos de contacto, y pueda contactarme según mi preferencia para ampliar la información.",
+    en: "I agree that Xaluca Tours may process this feedback and my contact details and contact me according to my preference for further information.",
+    fr: "J'accepte que Xaluca Tours traite ce commentaire et mes coordonnées et me contacte selon ma préférence pour plus d'informations.",
   },
   submit: { es: "Enviar feedback", en: "Send feedback", fr: "Envoyer" },
   sending: { es: "Guardando tu comentario…", en: "Saving your feedback…", fr: "Enregistrement de votre commentaire…" },
@@ -154,6 +159,8 @@ export default function FeedbackPage() {
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [preference, setPreference] = useState(DEFAULT_CONTACT_PREFERENCE);
   const [tripReference, setTripReference] = useState("");
   const [rating, setRating] = useState(0);
   const [consent, setConsent] = useState(false);
@@ -295,7 +302,7 @@ export default function FeedbackPage() {
   };
 
   const resetForm = () => {
-    setMessage(""); setName(""); setEmail(""); setTripReference("");
+    setMessage(""); setName(""); setEmail(""); setPhone(""); setPreference(DEFAULT_CONTACT_PREFERENCE); setTripReference("");
     setRating(0); setConsent(false); setError(""); setSent(false);
     setSubmittedFeedback(null); setCopied(false); resetAudio();
   };
@@ -324,6 +331,9 @@ export default function FeedbackPage() {
   const submit = async (event) => {
     event.preventDefault();
     setError("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || !isValidInternationalPhone(phone)) {
+      setError(pick(COPY.contactError, lang)); return;
+    }
     if (mode === "text" && !message.trim()) {
       setError("Escribe tu comentario antes de enviarlo."); return;
     }
@@ -340,7 +350,10 @@ export default function FeedbackPage() {
     try {
       const body = new FormData();
       body.append("name", name);
-      body.append("email", email);
+      const contact = contactSubmissionFields({ email, phone, preferred_contact: preference });
+      body.append("email", contact.email);
+      body.append("phone", contact.phone);
+      contact.preferred_contact.forEach(method => body.append("preferred_contact", method));
       body.append("trip_reference", tripReference);
       if (rating) body.append("rating", String(rating));
       body.append("submission_type", mode === "voice" ? "voice" : "text");
@@ -354,7 +367,7 @@ export default function FeedbackPage() {
       if (mode === "voice" && transcriptionLanguage) body.append("transcription_language", transcriptionLanguage);
       const response = await fetch(`${API}/api/feedback`, { method: "POST", body });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.detail || "No se pudo enviar el comentario.");
+      if (!response.ok) throw new Error(contactSubmissionError(data.detail, "No se pudo enviar el comentario."));
       setSubmittedFeedback({
         rating,
         text: mode === "voice" ? transcript.trim() : message.trim(),
@@ -537,10 +550,12 @@ export default function FeedbackPage() {
 
               <div className="grid gap-5 md:grid-cols-2">
                 <label><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.name, lang)}</span><input value={name} onChange={(e) => setName(e.target.value)} maxLength={120} className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>
-                <label><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.email, lang)}</span><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>
+                <label><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.email, lang)} *</span><input required data-testid="feedback-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>
+                <div><label htmlFor="feedback-phone" className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.phone, lang)} *</label><InternationalPhoneInput required id="feedback-phone" name="phone" value={phone} onValueChange={setPhone} lang={lang} testId="feedback-phone" /></div>
                 <label className="md:col-span-2"><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.trip, lang)}</span><input value={tripReference} onChange={(e) => setTripReference(e.target.value)} maxLength={200} placeholder="Ej. Gran Sur · mayo 2026" className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>
               </div>
 
+              <ContactPreference lang={lang} value={preference} onChange={setPreference} testidPrefix="feedback-pref" />
               <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#5C5248]">
                 <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#C16542]" />
                 <span>{pick(COPY.consent, lang)}</span>

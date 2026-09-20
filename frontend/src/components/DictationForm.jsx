@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Mic, Check } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
 import { getTripParam, resolveTripContext } from "@/lib/tripContext";
 import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
@@ -25,7 +26,7 @@ export const DICTATION_COPY = {
   sending: T("Enviando…", "Sending…", "Envoi…"),
   name: T("Nombre completo", "Full name", "Nom complet"),
   email: T("Correo electrónico", "Email address", "Adresse e-mail"),
-  phone: T("Teléfono (opcional)", "Phone (optional)", "Téléphone (facultatif)"),
+  phone: T("Teléfono", "Phone", "Téléphone"),
   required: T("Completa los campos obligatorios marcados con *.", "Complete the required fields marked *.", "Complétez les champs obligatoires marqués *."),
   invalid: T("Revisa los datos indicados antes de continuar.", "Please check the highlighted details before continuing.", "Vérifiez les informations indiquées avant de continuer."),
   messageError: T("Cuéntanos un poco más sobre tu viaje (entre 4 y 4000 caracteres).", "Tell us a little more about your trip (4–4000 characters).", "Précisez votre voyage (4 à 4000 caractères)."),
@@ -49,7 +50,7 @@ const PROMPTS = [
   T("Presupuesto aproximado, si ya lo tenéis definido.", "An approximate budget, if you have one.", "Votre budget approximatif, si vous le connaissez."),
   T("Cualquier necesidad especial, duda, preferencia o detalle importante.", "Any special needs, questions, preferences or important details.", "Tout besoin particulier, question, préférence ou détail important."),
 ];
-const EMPTY = { message: "", full_name: "", email: "", phone: "", preferred_contact: [], preferred_contact_email: "", preferred_contact_phone: "", privacy_consent: false };
+const EMPTY = { message: "", full_name: "", email: "", phone: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE, privacy_consent: false };
 const EMPTY_TRIP = { dateMode: "range", startDate: "", endDate: "", exactDate: "", flexMonth: "", adults: "", children: "" };
 const inputClass = "mt-2 w-full min-w-0 rounded-sm border border-[#2C2621]/25 bg-white p-3.5 text-base text-[#2C2621] outline-none focus:border-[#C16542] focus:ring-1 focus:ring-[#C16542]";
 const buttonClass = "xaluca-button inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 py-4 text-xs tracking-[0.12em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
@@ -86,10 +87,8 @@ export default function DictationForm({ className = "", countryPortalContainer, 
     const invalid = {};
     if (form.full_name.trim().length < 2) invalid.full_name = text("required");
     if (!emailValid(form.email)) invalid.email = text("emailError");
-    if (form.phone && !isValidInternationalPhone(form.phone)) invalid.phone = text("phoneError");
+    if (!isValidInternationalPhone(form.phone)) invalid.phone = text("phoneError");
     if (!form.preferred_contact.length) invalid.preference = text("contactError");
-    if (form.preferred_contact.includes("email") && !emailValid(form.preferred_contact_email)) invalid.preferred_contact_email = text("emailError");
-    if (form.preferred_contact.includes("phone") && !isValidInternationalPhone(form.preferred_contact_phone)) invalid.preferred_contact_phone = text("phoneError");
     if (!form.privacy_consent) invalid.privacy_consent = text("required");
     setErrors(invalid);
     if (Object.keys(invalid).length) return;
@@ -97,7 +96,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
     try {
       const trip = resolveTripContext(getTripParam(), lang);
       await axios.post(`${(process.env.REACT_APP_BACKEND_URL || "").replace(/\/$/, "")}/api/contact-requests`, {
-        ...capture(), ...form, full_name: form.full_name.trim(), email: form.email.trim(), message: form.message.trim(), language: lang,
+        ...capture(), ...form, ...contactSubmissionFields(form), full_name: form.full_name.trim(), message: form.message.trim(), language: lang,
         ...serializeOptionalTripDetails(tripDetails),
         related_trip_id: trip?.routeId || null, related_trip_title: trip?.title || null,
       });
@@ -147,21 +146,15 @@ export default function DictationForm({ className = "", countryPortalContainer, 
                   aria-invalid={Boolean(errors[key])} aria-describedby={errors[key] ? `${id}-${key}-error` : undefined} className={inputClass} data-testid={`dictation-${key}`} />{error(key)}
               </div>)}
               <div className="sm:col-span-2">
-                <label htmlFor={`${id}-phone`} className="mb-2 block text-sm text-[#2C2621]">{text("phone")}</label>
-                <InternationalPhoneInput countryPortalContainer={countryPortalContainer} id={`${id}-phone`} name="phone" value={form.phone} onValueChange={value => update("phone", value)} lang={lang} invalid={Boolean(errors.phone)} testId="dictation-phone" />{error("phone")}
+                <label htmlFor={`${id}-phone`} className="mb-2 block text-sm text-[#2C2621]">{text("phone")} *</label>
+                <InternationalPhoneInput required countryPortalContainer={countryPortalContainer} id={`${id}-phone`} name="phone" value={form.phone} onValueChange={value => update("phone", value)} lang={lang} invalid={Boolean(errors.phone)} testId="dictation-phone" />{error("phone")}
               </div>
             </div>
             <div className="space-y-10 border-y border-[#2C2621]/15 py-8" data-testid="dictation-optional-trip-details">
               <TripPlanningFields value={tripDetails} onChange={(key, value) => setTripDetails(current => ({ ...current, [key]: value }))}
                 lang={lang} optional monthInputType="month" testidPrefix="dictation-" headingAs="h4" />
             </div>
-            <ContactPreference countryPortalContainer={countryPortalContainer} lang={lang} value={form.preferred_contact} onToggle={key => {
-              const removing = form.preferred_contact.includes(key);
-              update("preferred_contact", removing ? form.preferred_contact.filter(value => value !== key) : [...form.preferred_contact, key]);
-              if (removing) update(`preferred_contact_${key}`, "");
-              setErrors(current => ({ ...current, preference: "" }));
-            }} error={errors.preference} details={{ email: form.preferred_contact_email, phone: form.preferred_contact_phone }} onDetailChange={(key, value) => update(`preferred_contact_${key}`, value)}
-              detailErrors={{ email: errors.preferred_contact_email, phone: errors.preferred_contact_phone }} testidPrefix="dictation-pref" />
+            <ContactPreference lang={lang} value={form.preferred_contact} onChange={value => update("preferred_contact", value)} error={errors.preference} testidPrefix="dictation-pref" />
             <div className="border-t border-[#2C2621]/15 pt-6 text-sm leading-relaxed text-[#5C5248]">
               <h4 className="font-medium text-[#2C2621]">{text("privacy")}</h4>
               <p className="mt-2 text-xs">{text("privacyBody")} <a href={`mailto:${CONTACT.email}`} className="break-all text-[#A35133] underline">{CONTACT.email}</a>.</p>

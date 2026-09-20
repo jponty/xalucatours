@@ -2,6 +2,8 @@ import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 
 let mockLang = "es";
+// CRA's Jest resolver predates Radix's package subpath exports.
+jest.mock("@radix-ui/primitive/is-development", () => ({ IS_DEVELOPMENT: true }), { virtual: true });
 jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ lang: mockLang }),
   pick: (copy, lang) => copy[lang] || copy.es,

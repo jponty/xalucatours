@@ -111,7 +111,7 @@ def test_whatsapp_business_requires_identity_phone_email_and_privacy():
         'capture_type': 'whatsapp_business', 'full_name': 'Ana García',
         'first_name': 'Ana', 'last_name': 'García', 'email': 'ana@example.com',
         'phone': '+34612345678', 'privacy_consent': True,
-        'preferred_contact': ['phone'], 'preferred_contact_phone': '+34612345678',
+        'preferred_contact': ['email', 'phone'],
         'message': 'Solicitud de contacto a través de WhatsApp Business.',
     }
     created = server.ContactRequestCreate(**valid)
@@ -210,3 +210,22 @@ def test_calendly_rejects_forged_and_stale_events(client, monkeypatch):
     assert client.post('/api/webhooks/calendly', content=body, headers=headers).status_code == 401
     body, headers = signed_event({}, timestamp=int(time.time()) - 1000)
     assert client.post('/api/webhooks/calendly', content=body, headers=headers).status_code == 401
+
+
+@pytest.mark.parametrize('label,preference', [('Email + Teléfono', ['email', 'phone']), ('Solamente Email', ['email'])])
+def test_calendly_saves_contact_preference_without_mistaking_it_for_phone(db, client, monkeypatch, label, preference):
+    monkeypatch.setenv('CALENDLY_WEBHOOK_SIGNING_KEY', 'test-key')
+    event = {'event': 'invitee.created', 'payload': {
+        'uri': 'https://api.calendly.com/scheduled_events/event/invitees/contact',
+        'email': 'ana@example.com',
+        'questions_and_answers': [
+            {'question': '¿Cómo prefieres que te contactemos? Email o teléfono', 'answer': label},
+            {'question': 'Teléfono con prefijo internacional', 'answer': '+34 612 345 678'},
+        ],
+    }}
+    body, headers = signed_event(event)
+    assert client.post('/api/webhooks/calendly', content=body, headers=headers).status_code == 200
+    saved = next(iter(db.contact_requests.rows.values()))
+    assert saved['phone'] == '+34612345678'
+    assert saved['email'] == 'ana@example.com'
+    assert saved['preferred_contact'] == preference

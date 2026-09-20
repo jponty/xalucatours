@@ -152,16 +152,15 @@ test("the contact card opens the shared two-step flow, validates and submits one
   await change("dictation-message", "Un viaje cultural por Marruecos de siete días.");
   await click("dictation-next");
   expect(get("dictation-phone").dataset.portal).toBe("home-dictation-country-layer");
-  await click("dictation-pref-phone");
-  expect(get("dictation-pref-phone-detail").dataset.portal).toBe("home-dictation-country-layer");
-  await click("dictation-pref-phone");
+  expect(get("dictation-pref-both").checked).toBe(true);
+  expect(get("dictation-pref-phone-detail")).toBeNull();
   await click("dictation-back");
   expect(get("dictation-message").value).toContain("siete días");
   await click("dictation-next");
   await change("dictation-full_name", "Prueba Xaluca");
   await change("dictation-email", "test@example.com");
   await click("dictation-pref-email");
-  await change("dictation-pref-email-detail", "test@example.com");
+  await change("dictation-phone", "+34612345678");
   await click("dictation-submit");
   expect(axios.post).not.toHaveBeenCalled();
   await click("dictation-consent");
@@ -267,7 +266,7 @@ test("non-home submissions retain the actual origin and trip context through the
   await change("dictation-full_name", "Prueba Xaluca");
   await change("dictation-email", "test@example.com");
   await click("dictation-pref-email");
-  await change("dictation-pref-email-detail", "test@example.com");
+  await change("dictation-phone", "+34612345678");
   await click("dictation-consent");
   await click("dictation-submit");
   expect(axios.post).toHaveBeenCalledTimes(1);

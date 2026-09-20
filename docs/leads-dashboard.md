@@ -1,5 +1,7 @@
 # Leads centralizados · Xaluca Tours
 
+Actualización 20/09/2026: consultar [datos de contacto unificados](./lead-contact-preferences.md). Los formularios nuevos exigen email y teléfono; feedback requiere una migración aditiva de dos columnas, aplicada sin cambiar RLS. Las notas de ausencia de migración de la auditoría siguiente describen la versión original del dashboard.
+
 ## Arquitectura y auditoría (17/09/2026)
 
 Se reutilizan las tablas de producción existentes; no hace falta una migración SQL ni copiar los leads a una segunda tabla.

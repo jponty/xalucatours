@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
 import { ArrowRight, Mail, Phone, Sparkles, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -43,8 +45,6 @@ const COPY = {
     "Tell us about the trip you have in mind, your dates or any preferences.",
     "Parlez-nous du voyage que vous imaginez, de vos dates ou de vos préférences."
   ),
-  optional: T("Email o teléfono: completa al menos uno", "Email or phone: complete at least one", "E-mail ou téléphone : renseignez-en au moins un"),
-  call: T("Prefiero que me llaméis por teléfono", "I would prefer a phone call", "Je préfère être contacté(e) par téléphone"),
   privacyPre: T("He leído y acepto la ", "I have read and accept the ", "J'ai lu et j'accepte la "),
   privacy: T("política de privacidad", "privacy policy", "politique de confidentialité"),
   submit: T("Quiero que me ayudéis", "I would like your help", "Je souhaite votre aide"),
@@ -53,8 +53,7 @@ const COPY = {
   close: T("Cerrar", "Close", "Fermer"),
   nameError: T("Introduce tu nombre y tus apellidos.", "Enter your first and last name.", "Saisissez votre prénom et votre nom de famille."),
   nameLengthError: T("El nombre y los apellidos no pueden superar los 120 caracteres en total.", "Your first and last name must not exceed 120 characters in total.", "Votre prénom et votre nom ne doivent pas dépasser 120 caractères au total."),
-  contactError: T("Introduce un correo electrónico válido o un teléfono.", "Enter a valid email address or phone number.", "Saisissez une adresse e-mail valide ou un numéro de téléphone."),
-  phoneError: T("Añade un teléfono para solicitar una llamada.", "Add a phone number to request a call.", "Ajoutez un numéro pour demander un appel."),
+  contactError: T("Introduce un email y un teléfono internacional válidos.", "Enter a valid email and international phone number.", "Saisissez un e-mail et un téléphone international valides."),
   privacyError: T("Debes aceptar la política de privacidad.", "You must accept the privacy policy.", "Vous devez accepter la politique de confidentialité."),
   genericError: T("No se pudo enviar la solicitud. Inténtalo de nuevo.", "We couldn't send your request. Please try again.", "La demande n'a pas pu être envoyée. Veuillez réessayer."),
   successTitle: T("¡Gracias! Empezamos a preparar tu próxima aventura", "Thank you! We're starting to prepare your next adventure", "Merci ! Nous commençons à préparer votre prochaine aventure"),
@@ -65,7 +64,7 @@ const COPY = {
   ),
 };
 
-const initialForm = { firstName: "", lastName: "", email: "", phone: "", message: "", preferCall: false, privacy: false };
+const initialForm = { firstName: "", lastName: "", email: "", phone: "", message: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE, privacy: false };
 const emailValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const safeGet = (storage, key) => {
   try { return storage.getItem(key); } catch { return null; }
@@ -198,32 +197,25 @@ export default function ExitIntentModal() {
     if (fullName.length > 120) { setError(pick(COPY.nameLengthError, lang)); return; }
     const email = form.email.trim();
     const phone = form.phone.trim();
-    if ((!email && !phone) || (email && !emailValid(email)) || (phone && !isValidInternationalPhone(phone))) {
+    if (!emailValid(email) || !isValidInternationalPhone(phone)) {
       setError(pick(COPY.contactError, lang)); return;
     }
-    if (form.preferCall && !phone) { setError(pick(COPY.phoneError, lang)); return; }
     if (!form.privacy) { setError(pick(COPY.privacyError, lang)); return; }
     setSending(true);
     try {
       let routeId = null;
       try { routeId = resolvePath(location.pathname)?.routeId || null; } catch { routeId = null; }
-      const preferredContact = form.preferCall
-        ? ["phone"]
-        : [email && "email", phone && "phone"].filter(Boolean);
       await axios.post(`${API}/contact-requests`, {
         ...leadCapture(),
         first_name: firstName,
         last_name: lastName,
         full_name: fullName,
-        email: email || null,
-        phone: phone || null,
+        ...contactSubmissionFields(form),
+        privacy_consent: form.privacy,
         journey_interest: "exit-intent",
-        preferred_contact: preferredContact,
-        preferred_contact_email: preferredContact.includes("email") ? email : null,
-        preferred_contact_phone: preferredContact.includes("phone") ? phone : null,
         message: [
           form.message.trim(),
-          `Solicitud desde modal de intención de salida. Prefiere llamada: ${form.preferCall ? "Sí" : "No"}.`,
+          "Solicitud desde modal de intención de salida.",
         ].filter(Boolean).join("\n\n"),
         language: lang,
         source_route_id: routeId,
@@ -300,12 +292,13 @@ export default function ExitIntentModal() {
               </div>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
                 <label className="block">
-                  <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Mail className="h-3 w-3" />{pick(COPY.email, lang)}</span>
-                  <input type="email" name="email" value={form.email} onChange={onChange} maxLength={254} data-testid="exit-intent-email" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
+                  <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Mail className="h-3 w-3" />{pick(COPY.email, lang)} *</span>
+                  <input required type="email" name="email" value={form.email} onChange={onChange} maxLength={254} data-testid="exit-intent-email" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
                 </label>
                 <div className="block">
-                  <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Phone className="h-3 w-3" />{pick(COPY.phone, lang)}</span>
+                  <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#5C5248]"><Phone className="h-3 w-3" />{pick(COPY.phone, lang)} *</span>
                   <InternationalPhoneInput
+                    required
                     // Keep the country portal in this modal's stacking context,
                     // outside the overflow-y-auto dialog so it cannot be clipped.
                     countryPortalContainer={countryPortalContainer}
@@ -318,7 +311,6 @@ export default function ExitIntentModal() {
                   />
                 </div>
               </div>
-              <p className="mt-2 text-[10px] text-[#5C5248]/70">{pick(COPY.optional, lang)}</p>
 
               <div className="mt-5">
                 <label htmlFor="exit-intent-message" className="text-[9px] uppercase tracking-[0.2em] text-[#5C5248]">
@@ -344,10 +336,7 @@ export default function ExitIntentModal() {
                 />
               </div>
 
-              <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#5C5248]">
-                <input type="checkbox" name="preferCall" checked={form.preferCall} onChange={onChange} data-testid="exit-intent-prefer-call" className="mt-0.5 h-4 w-4 accent-[#C16542]" />
-                <span>{pick(COPY.call, lang)}</span>
-              </label>
+              <div className="mt-6"><ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="exit-intent-pref" /></div>
               <label className="mt-4 flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#5C5248]">
                 <input type="checkbox" name="privacy" checked={form.privacy} onChange={onChange} required data-testid="exit-intent-privacy" className="mt-0.5 h-4 w-4 accent-[#C16542]" />
                 <span>

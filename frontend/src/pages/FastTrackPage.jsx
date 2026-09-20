@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionError, contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import {
@@ -127,6 +129,7 @@ const FAQ = [
 ];
 
 const EMPTY_FORM = {
+  preferred_contact: DEFAULT_CONTACT_PREFERENCE,
   full_name: "",
   email: "",
   phone: "",
@@ -190,9 +193,7 @@ export default function FastTrackPage() {
         ...leadCapture(),
         ...form,
         journey_interest: "fast-track",
-        preferred_contact: ["email", "phone"],
-        preferred_contact_email: form.email,
-        preferred_contact_phone: form.phone,
+        ...contactSubmissionFields(form),
         language: "es",
         source_route_id: "fastTrack",
         source_path: "/fast-track",
@@ -203,7 +204,7 @@ export default function FastTrackPage() {
       setForm(EMPTY_FORM);
       toast.success("Solicitud Fast Track enviada correctamente");
     } catch (error) {
-      toast.error(error?.response?.data?.detail || "No se pudo enviar la solicitud. Inténtalo de nuevo o contacta con nuestro equipo.");
+      toast.error(contactSubmissionError(error?.response?.data?.detail, "No se pudo enviar la solicitud. Inténtalo de nuevo o contacta con nuestro equipo."));
     } finally {
       setSending(false);
     }
@@ -520,6 +521,7 @@ export default function FastTrackPage() {
                     <textarea required name="message" value={form.message} onChange={onChange} rows={5} data-testid="fast-track-message" className="fast-track-input resize-none" />
                   </FastTrackField>
                 </div>
+                <div className="mt-6"><ContactPreference tone="dark" lang="es" value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="fast-track-pref" /></div>
                 <label className="mt-6 flex items-start gap-3 text-xs leading-relaxed text-white/60">
                   <input required type="checkbox" className="mt-0.5 h-4 w-4 accent-[#C16542]" data-testid="fast-track-terms" />
                   <span>Entiendo que el servicio cuesta 150 €, que el importe no es reembolsable y que se descontará íntegramente del viaje si finalmente confirmo la reserva con Xaluca Tours.</span>

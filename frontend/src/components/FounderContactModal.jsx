@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, contactSubmissionError, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
 import { ArrowRight, Mail, Send, ShieldCheck, Users } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -84,6 +86,7 @@ const emptyForm = (recipient = "lluis") => ({
   message: "",
   recipient,
   privacy: false,
+  preferred_contact: DEFAULT_CONTACT_PREFERENCE,
 });
 
 const Field = ({ label, children, wide = false, as: Wrapper = "label" }) => (
@@ -172,11 +175,7 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
         first_name: form.firstName.trim(),
         last_name: form.lastName.trim(),
         full_name: fullName,
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        preferred_contact: ["email", "phone"],
-        preferred_contact_email: form.email.trim(),
-        preferred_contact_phone: form.phone.trim(),
+        ...contactSubmissionFields(form),
         message: form.message.trim(),
         ...recipientPayload,
         journey_interest: isTeamContact ? "team-contact" : "founder-contact",
@@ -188,7 +187,7 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
       setSuccess(true);
       toast.success(pick(COPY.successTitle, lang));
     } catch (error) {
-      toast.error(error?.response?.data?.detail || pick(COPY.error, lang));
+      toast.error(contactSubmissionError(error?.response?.data?.detail, pick(COPY.error, lang)));
     } finally {
       setSending(false);
     }
@@ -259,6 +258,7 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
                 </div>
               </fieldset>}
 
+              <div className="mt-6"><ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="founder-contact-pref" /></div>
               <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#62584E]">
                 <input required type="checkbox" name="privacy" checked={form.privacy} onChange={onChange} data-testid="founder-contact-privacy" className="mt-0.5 h-4 w-4 shrink-0 accent-[#C16542]" />
                 <span>{pick(COPY.privacyPre, lang)}<a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacy, lang)}</a>.</span>

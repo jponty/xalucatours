@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import axios from "axios";
 
 jest.mock("axios", () => ({ post: jest.fn() }));
+jest.mock("@/components/EditableText", () => ({ children }) => <>{children}</>);
 jest.mock("react-router-dom", () => ({ useLocation: () => ({ pathname: "/contacto" }) }));
 jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ lang: "es" }),
@@ -116,8 +117,7 @@ describe("mandatory WhatsApp Business lead gate", () => {
       email: "joan@example.com",
       phone: "+34612345678",
       privacy_consent: true,
-      preferred_contact: ["phone"],
-      preferred_contact_phone: "+34612345678",
+      preferred_contact: ["email", "phone"],
       source_url: "https://xalucatours.com/contacto?utm_source=home",
       source_path: "/contacto",
     }));

@@ -23,9 +23,9 @@ def payload(**changes):
 
 
 @pytest.mark.parametrize("changes", [
-    {"privacy_consent": False}, {"preferred_contact": []}, {"email": None},
+    {"privacy_consent": False}, {"preferred_contact": []},
     {"full_name": "  "}, {"message": "    "}, {"message": "x" * 4001},
-    {"preferred_contact_email": None}, {"preferred_contact_phone": None},
+    {"email": None}, {"phone": None},
     {"phone": "612345678"},
 ])
 def test_dictation_requires_valid_contact_consent_and_story(changes):
@@ -54,7 +54,8 @@ def test_dictation_uses_existing_lead_and_both_email_summaries_idempotently(monk
     assert len(database.contact_requests.rows) == 1
     row = next(iter(database.contact_requests.rows.values()))
     assert row["privacy_consent"] is True
-    assert row["preferred_contact_phone"] == "+34699123456"
+    assert row["phone"] == "+34612345678"
+    assert row["preferred_contact"] == ["email", "phone"]
     lead = project_lead("contact", row, detail=True)
     assert lead["type_label"] == "Dictado"
     assert lead["trip"] == data["related_trip_title"]

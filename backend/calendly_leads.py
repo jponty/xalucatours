@@ -9,6 +9,31 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from fastapi import HTTPException, Request
+from lead_contact import normalize_international_phone
+
+
+def appointment_contact(answers, reminder_phone=None):
+    """Mirror the external form without inventing preferences on older bookings."""
+    preference = None
+    for item in answers:
+        answer = str(item.get("answer", "")).strip().casefold()
+        if answer in {"email + teléfono", "email + phone", "e-mail + téléphone"}:
+            preference = ["email", "phone"]
+        elif answer in {"solamente email", "email only", "e-mail uniquement"}:
+            preference = ["email"]
+    candidates = [reminder_phone] + [item.get("answer") for item in answers
+        if any(word in str(item.get("question", "")).casefold() for word in ("phone", "teléfono", "telefono", "téléphone", "whatsapp"))]
+    phone = None
+    for value in candidates:
+        try:
+            phone = normalize_international_phone(value)
+        except ValueError:
+            continue
+        if phone:
+            break
+    # Legacy local numbers are preserved as supplied; only the external form
+    # can enforce an international prefix on new Calendly reservations.
+    return phone or next((value for value in candidates if value and any(c.isdigit() for c in str(value))), None), preference
 
 
 def verify_signature(body, header, secret):
@@ -56,14 +81,11 @@ def register_calendly_routes(router, get_db):
         source_path = urlsplit(origin).path or None
         scheduled = payload.get("scheduled_event") or {}
         answers = payload.get("questions_and_answers") or []
-        phone = payload.get("text_reminder_number")
-        if not phone:
-            phone = next((answer.get("answer") for answer in answers
-                          if any(word in str(answer.get("question", "")).lower() for word in ("phone", "teléfono", "telefono", "whatsapp"))), None)
+        phone, preference = appointment_contact(answers, payload.get("text_reminder_number"))
         record = {
             "id": record_id, "capture_type": "appointment", "created_at": payload.get("created_at") or event.get("created_at") or now,
             "full_name": payload.get("name") or "", "first_name": payload.get("first_name"), "last_name": payload.get("last_name"),
-            "email": payload.get("email"), "phone": phone,
+            "email": payload.get("email"), "phone": phone, "preferred_contact": preference,
             "source_url": origin or None, "source_path": source_path,
             "source_label": "Calendly · Cita previa", "source_route_id": "appointment",
             "related_trip_id": tracking.get("utm_term"),

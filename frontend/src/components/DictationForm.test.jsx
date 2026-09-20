@@ -56,22 +56,19 @@ test("prevents advancing on empty/whitespace message and preserves all values wh
   expect(axios.post).not.toHaveBeenCalled();
 });
 
-test("requires contact method, independent contact details and privacy; sends one contextual lead", async () => {
+test("requires both contact fields and privacy without repeating details; sends one contextual lead", async () => {
   await change("dictation-message", "Del 12 al 18 de octubre, dos adultos, cultura y desierto."); await click("dictation-next");
   await change("dictation-full_name", "Ana García"); await change("dictation-email", "ana@example.com");
   await submit(); expect(axios.post).not.toHaveBeenCalled();
-  await click("dictation-pref-email"); await click("dictation-pref-phone");
-  expect(get("dictation-pref-email-detail").value).toBe("");
-  expect(get("dictation-pref-phone-detail").value).toBe("");
-  await submit(); expect(axios.post).not.toHaveBeenCalled();
-  await change("dictation-pref-email-detail", "respuesta@example.com");
-  await change("dictation-pref-phone-detail", "+34699123456");
+  expect(get("dictation-pref-both").checked).toBe(true);
+  expect(get("dictation-pref-details")).toBeNull();
+  await change("dictation-phone", "+34699123456");
   await click("dictation-consent"); await click("dictation-submit");
   expect(axios.post).toHaveBeenCalledTimes(1);
   const [url, data] = axios.post.mock.calls[0];
   expect(url).toMatch(/\/api\/contact-requests$/);
   expect(data).toEqual(expect.objectContaining({ capture_type: "dictation", related_trip_id: "tourAtlasDesierto67",
-    email: "ana@example.com", preferred_contact_email: "respuesta@example.com", preferred_contact_phone: "+34699123456", privacy_consent: true }));
+    email: "ana@example.com", preferred_contact: ["email", "phone"], phone: "+34699123456", privacy_consent: true }));
   expect(data.source_url).toContain("/contacto?trip=tourAtlasDesierto67");
   expect(data.message).toContain("dos adultos");
   expect(data.travel_dates).toBeNull();
@@ -84,9 +81,27 @@ const fillContact = async () => {
   await change("dictation-full_name", "Ana García");
   await change("dictation-email", "ana@example.com");
   await click("dictation-pref-email");
-  await change("dictation-pref-email-detail", "respuesta@example.com");
+  await change("dictation-phone", "+34612345678");
   await click("dictation-consent");
 };
+
+test.each([["email"], ["email", "phone"]].map(methods => [methods.join(" + "), methods]))("dictation supports %s and shows confirmation", async (_label, methods) => {
+  await change("dictation-message", "Un viaje en familia al Atlas.");
+  await click("dictation-next");
+  await change("dictation-full_name", "Ana García");
+  await change("dictation-email", "ana@example.com");
+  await change("dictation-phone", "+34612345678");
+  if (methods.length === 1) await click("dictation-pref-email");
+  await click("dictation-consent");
+  expect(get("dictation-email").required).toBe(true);
+  expect(get("dictation-form").checkValidity()).toBe(true);
+  await click("dictation-submit");
+  expect(axios.post).toHaveBeenCalledTimes(1);
+  expect(axios.post.mock.calls[0][1]).toMatchObject({
+    email: "ana@example.com", phone: "+34612345678", preferred_contact: methods,
+  });
+  expect(get("success")).not.toBeNull();
+});
 
 test("optional range and traveller counts survive step navigation and reach the existing contact request", async () => {
   await change("dictation-message", "Queremos recorrer Marruecos en familia.");
@@ -148,7 +163,7 @@ test("failed send retains the story and reuses the submission identity on retry"
   axios.post.mockRejectedValueOnce(new Error("offline"));
   await change("dictation-message", "Un viaje cultural de siete días."); await click("dictation-next");
   await change("dictation-full_name", "Ana García"); await change("dictation-email", "ana@example.com");
-  await click("dictation-pref-email"); await change("dictation-pref-email-detail", "reply@example.com");
+  await click("dictation-pref-email"); await change("dictation-phone", "+34612345678");
   await click("dictation-consent"); await click("dictation-submit");
   expect(get("success")).toBeNull();
   expect(get("dictation-message").value).toBe("Un viaje cultural de siete días.");

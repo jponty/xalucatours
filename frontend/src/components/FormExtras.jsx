@@ -2,17 +2,17 @@
    FormExtras — shared bits used by both the detailed planner
    (PlannerForm) and the quick contact form (ContactForm):
      • <WhatHappensNext> — "¿Qué sucede después?" info block.
-     • <ContactPreference> — preferred contact channels and their
-       independently supplied contact details (phone / email).
+     • <ContactPreference> — channel preference, without duplicate fields.
    Both accept a `tone` ("light" | "dark") so they blend into
    each form's background.
 ============================================================ */
-import React from "react";
+import React, { useId } from "react";
 import { Phone, Mail, Check, Clock, CalendarDays } from "lucide-react";
 import { pick } from "@/contexts/LanguageContext";
 import { calculateInclusiveTripDays } from "@/lib/utils";
 import EditableText from "@/components/EditableText";
-import InternationalPhoneInput from "@/components/InternationalPhoneInput";
+import { DEFAULT_CONTACT_PREFERENCE, contactPrefLabel } from "@/lib/contactSubmission";
+export { contactPrefLabel } from "@/lib/contactSubmission";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -46,25 +46,15 @@ export const CONTACT_PREF_LABEL = T(
 );
 
 export const CONTACT_PREF_HINT = T(
-  "Puedes elegir una o ambas opciones.",
-  "You can choose one or both options.",
-  "Vous pouvez choisir une ou les deux options.",
+  "Indica tu preferencia. Usaremos los datos de contacto que has facilitado.",
+  "Choose your preference. We will use the contact details you provided.",
+  "Indiquez votre préférence. Nous utiliserons les coordonnées déjà fournies.",
 );
 
 export const CONTACT_PREF_OPTIONS = [
-  { id: "phone", Icon: Phone, label: T("Teléfono / WhatsApp", "Phone / WhatsApp", "Téléphone / WhatsApp") },
-  { id: "email", Icon: Mail,  label: T("Correo electrónico", "Email", "E-mail") },
+  { id: "both", value: DEFAULT_CONTACT_PREFERENCE, Icon: Phone },
+  { id: "email", value: ["email"], Icon: Mail },
 ];
-
-const CONTACT_PREF_DETAIL = {
-  email: T("Correo electrónico de contacto", "Contact email", "E-mail de contact"),
-  phone: T("Teléfono / WhatsApp de contacto", "Contact phone / WhatsApp", "Téléphone / WhatsApp de contact"),
-  hint: T(
-    "Puedes indicar unos datos distintos de los facilitados anteriormente.",
-    "These details can be different from those provided above.",
-    "Ces coordonnées peuvent être différentes de celles indiquées précédemment.",
-  ),
-};
 
 const TRIP_DURATION_LABELS = {
   es: (days) => String(days) + " " + (days === 1 ? "día" : "días") + " de viaje",
@@ -107,18 +97,6 @@ export const TripDurationSummary = ({
   );
 };
 
-/* Human-readable label(s) for stored value(s). Accepts a string or an
-   array of ids and returns a comma-joined, localized label. */
-export const contactPrefLabel = (value, lang) => {
-  const ids = Array.isArray(value) ? value : (value ? [value] : []);
-  return ids
-    .map((id) => {
-      const o = CONTACT_PREF_OPTIONS.find((x) => x.id === id);
-      return o ? pick(o.label, lang) : id;
-    })
-    .join(", ");
-};
-
 const TONES = {
   light: {
     box: "bg-white border-[#2C2621]/12",
@@ -132,7 +110,6 @@ const TONES = {
     optIconOn: "#D4A373",
     reqLabel: "text-[#A07042]",
     error: "text-[#C16542]",
-    detailInput: "text-[#2C2621] border-[#2C2621]/25 focus:border-[#C16542] placeholder:text-[#5C5248]/45",
   },
   dark: {
     box: "bg-[#FDFBF7]/[0.04] border-[#FDFBF7]/15",
@@ -146,7 +123,6 @@ const TONES = {
     optIconOn: "#FDFBF7",
     reqLabel: "text-[#FDFBF7]/55",
     error: "text-[#E8A98C]",
-    detailInput: "text-[#FDFBF7] border-[#FDFBF7]/25 focus:border-[#D4A373] placeholder:text-[#FDFBF7]/35",
   },
 };
 
@@ -186,96 +162,41 @@ export const WhatHappensNext = ({ tone = "light", lang, testid = "what-happens-n
 export const ContactPreference = ({
   tone = "light",
   lang,
-  value = [],
-  onToggle,
+  value = DEFAULT_CONTACT_PREFERENCE,
+  onChange,
   error,
-  details,
-  onDetailChange,
-  detailErrors = {},
   testidPrefix = "contact-pref",
-  countryPortalContainer,
 }) => {
+  const id = useId();
   const c = TONES[tone] || TONES.light;
-  const selected = Array.isArray(value) ? value : (value ? [value] : []);
-  const showDetails = details && typeof onDetailChange === "function";
+  const selected = value.includes("phone") ? "both" : "email";
   return (
-    <div data-testid={`${testidPrefix}-group`}>
-      <span className={`block text-[11px] tracking-[0.3em] uppercase mb-1.5 ${c.reqLabel}`}>
+    <fieldset data-testid={`${testidPrefix}-group`} className="min-w-0">
+      <legend className={`block text-[11px] tracking-[0.3em] uppercase mb-1.5 ${c.reqLabel}`}>
         <EditableText as="span" slot="form.pref.label" defaults={CONTACT_PREF_LABEL} multiline={false} />{" "}
         <span style={{ color: c.eyebrowAccent }}>*</span>
-      </span>
+      </legend>
       <span className={`block text-[12px] mb-3 ${c.body}`}>
-        <EditableText as="span" slot="form.pref.hint" defaults={CONTACT_PREF_HINT} multiline={false} />
+        {pick(CONTACT_PREF_HINT, lang)}
       </span>
-      <div role="group" aria-required="true" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CONTACT_PREF_OPTIONS.map((opt) => {
-          const on = selected.includes(opt.id);
+          const on = selected === opt.id;
           return (
-            <button
-              key={opt.id}
-              type="button"
-              role="checkbox"
-              aria-checked={on}
-              data-testid={`${testidPrefix}-${opt.id}`}
-              onClick={() => onToggle(opt.id)}
-              className={`group inline-flex items-center gap-3 px-5 py-4 text-[13px] tracking-[0.05em] border-2 transition-colors ${on ? c.optOn : c.optIdle}`}
-            >
+            <label key={opt.id} className={`relative cursor-pointer inline-flex min-w-0 items-center gap-3 px-4 py-4 text-[13px] tracking-[0.05em] border-2 transition-colors focus-within:ring-2 focus-within:ring-[#C16542] ${on ? c.optOn : c.optIdle}`}>
+              <input type="radio" name={`${id}-preference`} value={opt.id} checked={on} required
+                onChange={() => onChange([...opt.value])} data-testid={`${testidPrefix}-${opt.id}`} className="sr-only" />
               <opt.Icon className="w-4 h-4 shrink-0" strokeWidth={1.7}
                 style={{ color: on ? c.optIconOn : c.optIconIdle }} />
               <span className="flex-1 text-left">
-                <EditableText as="span" slot={`form.pref.option.${opt.id}`} defaults={opt.label} multiline={false} />
+                {contactPrefLabel(opt.value, lang)}
               </span>
               {on && <Check className="w-4 h-4 shrink-0" strokeWidth={2.2} style={{ color: c.optIconOn }} />}
-            </button>
+            </label>
           );
         })}
       </div>
       {error && <span className={`block mt-2 text-xs ${c.error}`} data-testid={`${testidPrefix}-error`}>{error}</span>}
-      {showDetails && (selected.includes("email") || selected.includes("phone")) && (
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5" data-testid={`${testidPrefix}-details`}>
-          {selected.includes("email") && (
-            <label className="block">
-              <span className={`block text-[10px] tracking-[0.22em] uppercase ${c.reqLabel}`}>
-                {pick(CONTACT_PREF_DETAIL.email, lang)} <span style={{ color: c.eyebrowAccent }}>*</span>
-              </span>
-              <input
-                type="email"
-                name="preferred_contact_email"
-                value={details.email || ""}
-                onChange={(event) => onDetailChange("email", event.target.value)}
-                required
-                autoComplete="off"
-                maxLength={254}
-                data-testid={`${testidPrefix}-email-detail`}
-                className={`mt-2 w-full bg-transparent border-b outline-none py-3 text-[14px] transition-colors ${c.detailInput}`}
-              />
-              {detailErrors.email && <span className={`block mt-2 text-xs ${c.error}`}>{detailErrors.email}</span>}
-            </label>
-          )}
-          {selected.includes("phone") && (
-            <div className="block">
-              <span className={`block text-[10px] tracking-[0.22em] uppercase ${c.reqLabel}`}>
-                {pick(CONTACT_PREF_DETAIL.phone, lang)} <span style={{ color: c.eyebrowAccent }}>*</span>
-              </span>
-              <InternationalPhoneInput
-                countryPortalContainer={countryPortalContainer}
-                name="preferred_contact_phone"
-                value={details.phone || ""}
-                onValueChange={(phone) => onDetailChange("phone", phone)}
-                required
-                autoComplete="off"
-                lang={lang}
-                tone={tone}
-                invalid={Boolean(detailErrors.phone)}
-                testId={`${testidPrefix}-phone-detail`}
-                className="mt-2"
-              />
-              {detailErrors.phone && <span className={`block mt-2 text-xs ${c.error}`}>{detailErrors.phone}</span>}
-            </div>
-          )}
-          <p className={`sm:col-span-2 text-[12px] ${c.body}`}>{pick(CONTACT_PREF_DETAIL.hint, lang)}</p>
-        </div>
-      )}
-    </div>
+    </fieldset>
   );
 };

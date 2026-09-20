@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import { WHATSAPP_URL } from "@/components/WhatsAppIcon";
 
@@ -93,6 +95,7 @@ export default function WhatsAppContactModal() {
   const leadCapture = useLeadCapture("whatsapp_business", lang);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(INITIAL_FORM);
+  const [preference, setPreference] = useState(DEFAULT_CONTACT_PREFERENCE);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [whatsappUrl, setWhatsappUrl] = useState(WHATSAPP_URL);
@@ -102,6 +105,7 @@ export default function WhatsAppContactModal() {
     const showModal = (url) => {
       setWhatsappUrl(isWhatsAppUrl(url) ? url : WHATSAPP_URL);
       setForm(INITIAL_FORM);
+      setPreference(DEFAULT_CONTACT_PREFERENCE);
       setError("");
       setOpen(true);
     };
@@ -171,13 +175,10 @@ export default function WhatsAppContactModal() {
         first_name: firstName,
         last_name: lastName,
         full_name: fullName,
-        email,
-        phone,
+        ...contactSubmissionFields({ email, phone, preferred_contact: preference }),
         privacy_consent: true,
         message: "Solicitud de contacto a través de WhatsApp Business.",
         journey_interest: "whatsapp-business",
-        preferred_contact: ["phone"],
-        preferred_contact_phone: phone,
         language: lang,
         source_path: location.pathname,
         source_label: `WhatsApp Business · ${document.title || location.pathname}`,
@@ -257,6 +258,7 @@ export default function WhatsAppContactModal() {
               </Field>
             </div>
 
+            <div className="mt-6"><ContactPreference lang={lang} value={preference} onChange={setPreference} testidPrefix="whatsapp-pref" /></div>
             <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#2C2621]/68">
               <input required type="checkbox" name="privacy" checked={form.privacy} onChange={updateForm} data-testid="whatsapp-contact-privacy" className="mt-0.5 h-4 w-4 shrink-0 accent-[#C16542]" />
               <span>

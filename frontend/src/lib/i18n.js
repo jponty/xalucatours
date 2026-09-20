@@ -185,7 +185,7 @@ export const translations = {
 
   form_name:       { en: "Full name",           fr: "Nom complet",            es: "Nombre completo" },
   form_email:      { en: "Email",               fr: "E-mail",                 es: "Correo electrónico" },
-  form_phone:      { en: "Phone (optional)",    fr: "Téléphone (optionnel)",  es: "Teléfono (opcional)" },
+  form_phone:      { en: "Phone",    fr: "Téléphone",  es: "Teléfono" },
   form_dates:      { en: "Travel dates",        fr: "Dates de voyage",        es: "Fechas del viaje" },
   form_party:      { en: "Travellers",          fr: "Voyageurs",              es: "Viajeros" },
   form_interest:   { en: "Travel style of interest", fr: "Style de voyage",   es: "Estilo de viaje de interés" },

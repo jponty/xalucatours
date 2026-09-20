@@ -12,6 +12,7 @@ import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/compo
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, contactSubmissionError, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
 import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -24,9 +25,7 @@ const initialState = {
   travel_end_date: "",
   party_size: "",
   journey_interest: "",
-  preferred_contact: [],
-  preferred_contact_email: "",
-  preferred_contact_phone: "",
+  preferred_contact: DEFAULT_CONTACT_PREFERENCE,
   message: "",
 };
 
@@ -41,30 +40,14 @@ export const ContactForm = () => {
   const [done, setDone] = useState(false);
   const [prefError, setPrefError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [prefDetailErrors, setPrefDetailErrors] = useState({});
 
   const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
-  const togglePref = (id) => setForm((p) => {
-    const removing = p.preferred_contact.includes(id);
-    return {
-      ...p,
-      preferred_contact: removing
-        ? p.preferred_contact.filter((x) => x !== id)
-        : [...p.preferred_contact, id],
-      ...(removing ? { [`preferred_contact_${id}`]: "" } : {}),
-    };
-  });
-
-  const changePrefDetail = (id, value) => {
-    setForm((p) => ({ ...p, [`preferred_contact_${id}`]: value }));
-    setPrefDetailErrors((p) => ({ ...p, [id]: "" }));
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (sending || dictating) return;
     const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
-    if (form.phone && !isValidInternationalPhone(form.phone)) {
+    if (!isValidInternationalPhone(form.phone)) {
       setPhoneError(required);
       toast.error(t("form_error"));
       return;
@@ -75,20 +58,11 @@ export const ContactForm = () => {
       toast.error(t("form_error"));
       return;
     }
-    const detailErrors = {};
-    if (form.preferred_contact.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.preferred_contact_email.trim())) {
-      detailErrors.email = required;
-    }
-    if (form.preferred_contact.includes("phone") && !isValidInternationalPhone(form.preferred_contact_phone)) {
-      detailErrors.phone = required;
-    }
-    if (Object.keys(detailErrors).length) {
-      setPrefDetailErrors(detailErrors);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
       toast.error(t("form_error"));
       return;
     }
     setPrefError("");
-    setPrefDetailErrors({});
     setSending(true);
     try {
       let routeId = null;
@@ -98,6 +72,7 @@ export const ContactForm = () => {
       await axios.post(`${API}/contact-requests`, {
         ...leadCapture(),
         ...requestFields,
+        ...contactSubmissionFields(form),
         travel_dates: travel_dates || null,
         language: lang,
         source_route_id: routeId,
@@ -108,7 +83,7 @@ export const ContactForm = () => {
       toast.success(t("form_success"));
       setForm(initialState);
     } catch (error) {
-      toast.error(error?.response?.data?.detail || t("form_error"));
+      toast.error(contactSubmissionError(error?.response?.data?.detail, t("form_error")));
     } finally {
       setSending(false);
     }
@@ -191,8 +166,9 @@ export const ContactForm = () => {
                       data-testid="contact-input-email" className="form-input" />
                   </Field>
 
-                  <Field as="div" labelSlot="home.contact.form_phone" labelDefaults={translations.form_phone} testId="form-phone">
+                  <Field as="div" labelSlot="home.contact.form_phone_required" labelDefaults={translations.form_phone} testId="form-phone" required>
                     <InternationalPhoneInput
+                      required
                       name="phone"
                       value={form.phone}
                       onValueChange={(phone) => { setPhoneError(""); setForm((current) => ({ ...current, phone })); }}
@@ -279,14 +255,8 @@ export const ContactForm = () => {
                     tone="dark"
                     lang={lang}
                     value={form.preferred_contact}
-                    onToggle={(id) => { togglePref(id); setPrefError(""); }}
+                    onChange={(preferred_contact) => { setForm(current => ({ ...current, preferred_contact })); setPrefError(""); }}
                     error={prefError}
-                    details={{
-                      email: form.preferred_contact_email,
-                      phone: form.preferred_contact_phone,
-                    }}
-                    onDetailChange={changePrefDetail}
-                    detailErrors={prefDetailErrors}
                     testidPrefix="contact-pref"
                   />
                 </div>

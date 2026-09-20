@@ -24,6 +24,7 @@ from storage import init_storage, put_object, get_object
 from supabase_db import SupabaseDatabase, UpdateOne
 from contest_prize_policy import contest_prize_policy_error, normalize_legacy_contest_prize
 from lead_registry import LeadCapture, register_lead_routes, save_submission
+from lead_contact import LeadContactInput, normalize_international_phone, contact_preference_label
 from calendly_leads import register_calendly_routes
 from newsletter_leads import import_newsletter_leads
 from form_dictation import register_dictation_routes
@@ -110,21 +111,6 @@ def verify_admin_token(token: str) -> bool:
         return False
 
 
-def normalize_international_phone(value: Optional[str]) -> Optional[str]:
-    """Normalize submitted phone numbers to compact E.164 form."""
-    if value is None:
-        return None
-    raw = str(value).strip()
-    if not raw:
-        return None
-    if not raw.startswith("+"):
-        raise ValueError("Phone must include an international calling code")
-    digits = re.sub(r"\D", "", raw)
-    if not 7 <= len(digits) <= 15 or digits.startswith("0"):
-        raise ValueError("Invalid international phone number")
-    return f"+{digits}"
-
-
 # ---------- Models ----------
 class ContactRequest(LeadCapture):
     model_config = ConfigDict(extra="ignore")
@@ -160,19 +146,14 @@ class ContactRequest(LeadCapture):
         return v
 
 
-class ContactRequestCreate(LeadCapture):
+class ContactRequestCreate(LeadCapture, LeadContactInput):
     full_name: str = Field(..., min_length=2, max_length=120)
     privacy_consent: bool = False
     first_name: Optional[str] = Field(default=None, max_length=120)
     last_name: Optional[str] = Field(default=None, max_length=150)
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = Field(default=None, max_length=40)
     travel_dates: Optional[str] = Field(default=None, max_length=120)
     party_size: Optional[str] = Field(default=None, max_length=40)
     journey_interest: Optional[str] = Field(default=None, max_length=120)
-    preferred_contact: Optional[List[str]] = Field(default=None, max_length=4)
-    preferred_contact_email: Optional[EmailStr] = None
-    preferred_contact_phone: Optional[str] = Field(default=None, max_length=40)
     message: str = Field(..., min_length=4, max_length=4000)
     source_route_id: Optional[str] = Field(default=None, max_length=120)
     source_path: Optional[str] = Field(default=None, max_length=300)
@@ -181,32 +162,12 @@ class ContactRequestCreate(LeadCapture):
     team_recipient: Optional[str] = Field(default=None, max_length=20)
     language: Optional[str] = "en"
 
-    @field_validator("phone", "preferred_contact_phone", mode="before")
-    @classmethod
-    def _normalize_phone_fields(cls, value):
-        return normalize_international_phone(value)
-
-    @field_validator("preferred_contact", mode="before")
-    @classmethod
-    def _coerce_pref_contact(cls, v):
-        if v is None:
-            return None
-        if isinstance(v, str):
-            return [v] if v else []
-        return v
-
-    @model_validator(mode="after")
-    def _require_email_or_phone(self):
-        if not self.email and not (self.phone or "").strip():
-            raise ValueError("Email or phone is required")
-        return self
-
     @model_validator(mode="after")
     def _validate_dictation_request(self):
         if self.capture_type == "dictation":
             if (len(self.full_name.strip()) < 2 or len(self.message.strip()) < 4
-                    or not self.email or not self.preferred_contact or not self.privacy_consent):
-                raise ValueError("Name, message, email, preferred contact and privacy consent are required")
+                    or not self.preferred_contact or not self.privacy_consent):
+                raise ValueError("Name, message, preferred contact and privacy consent are required")
         return self
 
     @model_validator(mode="after")
@@ -215,17 +176,6 @@ class ContactRequestCreate(LeadCapture):
             if (not (self.first_name or "").strip() or not (self.last_name or "").strip()
                     or not self.email or not (self.phone or "").strip() or not self.privacy_consent):
                 raise ValueError("First name, last name, email, phone and privacy consent are required")
-        return self
-
-    @model_validator(mode="after")
-    def _require_preferred_contact_details(self):
-        selected = set(self.preferred_contact or [])
-        if selected - {"email", "phone"}:
-            raise ValueError("Invalid preferred contact method")
-        if "email" in selected and not self.preferred_contact_email:
-            raise ValueError("Preferred contact email is required")
-        if "phone" in selected and not (self.preferred_contact_phone or "").strip():
-            raise ValueError("Preferred contact phone is required")
         return self
 
     @field_validator("founder_recipient")
@@ -269,7 +219,7 @@ class TripPlannerRequest(LeadCapture):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     # contact
     full_name: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     phone: Optional[str] = None
     # itinerary
     date_mode: str = "range"            # "range" | "exact" | "flexible"
@@ -300,10 +250,8 @@ class TripPlannerRequest(LeadCapture):
         return v
 
 
-class TripPlannerCreate(LeadCapture):
+class TripPlannerCreate(LeadCapture, LeadContactInput):
     full_name: str = Field(..., min_length=2, max_length=120)
-    email: EmailStr
-    phone: Optional[str] = Field(default=None, max_length=40)
     date_mode: str = Field(default="range", pattern="^(range|exact|flexible)$")
     start_date: Optional[str] = Field(default=None, max_length=20)
     end_date: Optional[str] = Field(default=None, max_length=20)
@@ -316,35 +264,7 @@ class TripPlannerCreate(LeadCapture):
     selected_trips_detail: List[TripRef] = Field(default_factory=list, max_length=50)
     activities: List[str] = Field(default_factory=list, max_length=20)
     notes: Optional[str] = Field(default=None, max_length=4000)
-    preferred_contact: Optional[List[str]] = Field(default=None, max_length=4)
-    preferred_contact_email: Optional[EmailStr] = None
-    preferred_contact_phone: Optional[str] = Field(default=None, max_length=40)
     language: Optional[str] = "es"
-
-    @field_validator("phone", "preferred_contact_phone", mode="before")
-    @classmethod
-    def _normalize_phone_fields(cls, value):
-        return normalize_international_phone(value)
-
-    @field_validator("preferred_contact", mode="before")
-    @classmethod
-    def _coerce_pref_contact(cls, v):
-        if v is None:
-            return None
-        if isinstance(v, str):
-            return [v] if v else []
-        return v
-
-    @model_validator(mode="after")
-    def _require_preferred_contact_details(self):
-        selected = set(self.preferred_contact or [])
-        if selected - {"email", "phone"}:
-            raise ValueError("Invalid preferred contact method")
-        if "email" in selected and not self.preferred_contact_email:
-            raise ValueError("Preferred contact email is required")
-        if "phone" in selected and not (self.preferred_contact_phone or "").strip():
-            raise ValueError("Preferred contact phone is required")
-        return self
 
 
 # ---------- Program brochure download (lead-gated) ----------
@@ -361,6 +281,7 @@ def resolve_program_download_url(route_id: Optional[str]) -> str:
 
 
 class ProgramDownloadRequest(LeadCapture):
+    preferred_contact: Optional[List[str]] = None
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     first_name: str
@@ -376,24 +297,14 @@ class ProgramDownloadRequest(LeadCapture):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-class ProgramDownloadCreate(LeadCapture):
+class ProgramDownloadCreate(LeadCapture, LeadContactInput):
     first_name: str = Field(..., min_length=1, max_length=80)
     last_name: str = Field(..., min_length=1, max_length=80)
-    email: EmailStr
-    phone: str = Field(..., min_length=4, max_length=40)
     newsletter: bool = False
     privacy_accepted: bool
     route_id: Optional[str] = Field(default=None, max_length=120)
     program_title: Optional[str] = Field(default=None, max_length=200)
     language: Optional[str] = "es"
-
-    @field_validator("phone", mode="before")
-    @classmethod
-    def _normalize_phone(cls, value):
-        normalized = normalize_international_phone(value)
-        if normalized is None:
-            raise ValueError("Phone is required")
-        return normalized
 
     @field_validator("privacy_accepted")
     @classmethod
@@ -404,10 +315,9 @@ class ProgramDownloadCreate(LeadCapture):
 
 
 # ---------- Newsletter subscriptions ----------
-class NewsletterSubscriptionCreate(LeadCapture):
+class NewsletterSubscriptionCreate(LeadCapture, LeadContactInput):
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=150)
-    email: EmailStr
     consent: bool
     language: str = Field(default="es", max_length=5)
     source_path: Optional[str] = Field(default="/", max_length=300)
@@ -482,6 +392,7 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
     await db.contact_requests.update_one({"id": newsletter_id}, {"$set": {
         "first_name": payload.first_name, "last_name": payload.last_name,
         "full_name": newsletter_doc["full_name"], "consent": True,
+        "phone": payload.phone, "preferred_contact": payload.preferred_contact,
         "last_signup_at": now, "subscription_sync": "pending",
     }})
     try:
@@ -1321,7 +1232,7 @@ def _reply_cta_html(name: str, email: str, subject: str, lang: str = "es") -> st
     )
 
 
-def _lead_email_html(title: str, subtitle: str, rows: List[tuple], reply_cta: str = "") -> str:
+def _lead_email_html(title: str, subtitle: str, rows: List[tuple], reply_cta: str = "", *, can_reply_by_email: bool = True) -> str:
     """Build a simple, email-client-safe HTML (inline CSS, table layout)."""
     body_rows = ""
     for label, value in rows:
@@ -1349,8 +1260,9 @@ def _lead_email_html(title: str, subtitle: str, rows: List[tuple], reply_cta: st
         + f'<tr><td style="padding:8px 12px"><table role="presentation" width="100%">{body_rows}</table></td></tr>'
         + (reply_cta or "")
         + '<tr><td style="padding:16px 28px;background:#faf6ef;color:#8a7d6e;font-size:12px">'
-        'Responde directamente a este correo para contactar con el cliente.</td></tr>'
-        '</table></div>'
+        + ('Responde directamente a este correo para contactar con el cliente.' if can_reply_by_email
+           else 'Contacta con el cliente por teléfono / WhatsApp al número indicado en esta solicitud.')
+        + '</td></tr></table></div>'
     )
 
 
@@ -1555,14 +1467,10 @@ def send_client_confirmation(
     )
 
 
-_CONTACT_PREF_LABELS = {"phone": "Teléfono / WhatsApp", "email": "Correo electrónico"}
 
 
 def _contact_pref_label(value):
-    if not value:
-        return None
-    ids = value if isinstance(value, (list, tuple)) else [value]
-    return ", ".join(_CONTACT_PREF_LABELS.get((v or "").strip(), v) for v in ids if v)
+    return contact_preference_label(value)
 
 
 def _founder_recipient_label(value: Optional[str]) -> str:
@@ -1677,8 +1585,6 @@ async def create_contact_request(payload: ContactRequestCreate):
         ("Viajeros", obj.party_size),
         ("Interés", obj.journey_interest),
         ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
-        ("Email preferido de contacto", obj.preferred_contact_email),
-        ("Teléfono / WhatsApp preferido", obj.preferred_contact_phone),
         ("Destinatario", direct_label),
         ("Mensaje", obj.message),
         ("Página origen", obj.source_label or obj.source_path),
@@ -1688,6 +1594,7 @@ async def create_contact_request(payload: ContactRequestCreate):
         notification_title,
         f"{obj.full_name} · {contact_summary}",
         summary_rows,
+        can_reply_by_email=bool(obj.preferred_contact_email or obj.email),
         reply_cta=_reply_cta_html(
             obj.full_name,
             obj.preferred_contact_email or obj.email,
@@ -1802,14 +1709,13 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
         ("Actividades", activities),
         ("Notas", obj.notes),
         ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
-        ("Email preferido de contacto", obj.preferred_contact_email),
-        ("Teléfono / WhatsApp preferido", obj.preferred_contact_phone),
         ("Idioma", obj.language),
     ]
     html = _lead_email_html(
         "Planifica tu viaje",
-        f"{obj.full_name} · {obj.email}",
+        f"{obj.full_name} · {obj.email or obj.phone or ''}",
         planner_rows,
+        can_reply_by_email=bool(obj.preferred_contact_email or obj.email),
         reply_cta=_reply_cta_html(
             obj.full_name,
             obj.preferred_contact_email or obj.email,
@@ -1817,25 +1723,25 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
             obj.language,
         ),
     )
+    deliveries = [asyncio.to_thread(
+        send_lead_notification,
+        planner_subject,
+        html,
+        str(obj.preferred_contact_email or obj.email) if (obj.preferred_contact_email or obj.email) else None,
+        None,
+        f"planner-{obj.id}-internal",
+    )]
+    if obj.email:
+        deliveries.append(asyncio.to_thread(
+            send_client_confirmation,
+            str(obj.email),
+            obj.full_name,
+            obj.language,
+            f"planner-{obj.id}-client",
+            summary_rows=planner_rows,
+        ))
     try:
-        notification_id, confirmation_id = await asyncio.gather(
-            asyncio.to_thread(
-                send_lead_notification,
-                planner_subject,
-                html,
-                str(obj.preferred_contact_email or obj.email),
-                None,
-                f"planner-{obj.id}-internal",
-            ),
-            asyncio.to_thread(
-                send_client_confirmation,
-                str(obj.email),
-                obj.full_name,
-                obj.language,
-                f"planner-{obj.id}-client",
-                summary_rows=planner_rows,
-            ),
-        )
+        message_ids = await asyncio.gather(*deliveries)
     except EmailDeliveryError as exc:
         await _record_lead_email_delivery(db.trip_planner_requests, obj.id, "failed", error=str(exc))
         raise _email_delivery_http_error() from exc
@@ -1843,8 +1749,8 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
         db.trip_planner_requests,
         obj.id,
         "accepted",
-        notification_id=notification_id,
-        confirmation_id=confirmation_id,
+        notification_id=message_ids[0],
+        confirmation_id=message_ids[1] if len(message_ids) > 1 else None,
     )
     return obj
 
@@ -1879,6 +1785,7 @@ async def create_program_download(payload: ProgramDownloadCreate):
             ("Email", obj.email),
             ("Teléfono", obj.phone),
             ("Programa", obj.program_title or obj.route_id),
+            ("Canal preferido", _contact_pref_label(obj.preferred_contact)),
             ("Newsletter", "Sí" if obj.newsletter else "No"),
             ("Idioma", obj.language),
         ],
@@ -1970,10 +1877,9 @@ _feedback_rate: Dict[str, List[float]] = {}
 _feedback_transcription_rate: Dict[str, List[float]] = {}
 
 
-class FeedbackFields(BaseModel):
+class FeedbackFields(LeadContactInput):
     submission_type: str = Field(default="text", pattern="^(text|voice)$")
     name: Optional[str] = Field(default=None, max_length=120)
-    email: Optional[EmailStr] = None
     trip_reference: Optional[str] = Field(default=None, max_length=200)
     rating: Optional[int] = Field(default=None, ge=1, le=5)
     message: str = Field(min_length=1, max_length=12000)
@@ -2281,6 +2187,8 @@ async def create_feedback(
     submission_type: str = Form(default="text"),
     name: Optional[str] = Form(default=None),
     email: Optional[str] = Form(default=None),
+    phone: Optional[str] = Form(default=None),
+    preferred_contact: List[str] = Form(default=["email", "phone"]),
     trip_reference: Optional[str] = Form(default=None),
     rating: Optional[int] = Form(default=None),
     message: Optional[str] = Form(default=None),
@@ -2300,6 +2208,8 @@ async def create_feedback(
             submission_type=(submission_type or "text").strip(),
             name=(name or "").strip() or None,
             email=(email or "").strip() or None,
+            phone=phone,
+            preferred_contact=preferred_contact,
             trip_reference=(trip_reference or "").strip() or None,
             rating=rating,
             message=(message or "").strip(),
@@ -2322,6 +2232,8 @@ async def create_feedback(
         "submission_type": fields.submission_type,
         "name": fields.name,
         "email": str(fields.email) if fields.email else None,
+        "phone": fields.phone,
+        "preferred_contact": fields.preferred_contact,
         "trip_reference": fields.trip_reference,
         "rating": fields.rating,
         "feedback_text": fields.message,
@@ -2351,6 +2263,8 @@ async def create_feedback(
         [
             ("Nombre", fields.name or "Anónimo"),
             ("Email", str(fields.email) if fields.email else None),
+            ("Teléfono", fields.phone),
+            ("Canal preferido", _contact_pref_label(fields.preferred_contact)),
             ("Viaje o programa", fields.trip_reference),
             ("Valoración", f"{fields.rating}/5" if fields.rating else "Sin valoración"),
             ("Tipo", "Voz transcrita" if fields.submission_type == "voice" else "Texto"),
@@ -5994,18 +5908,11 @@ def send_contest_prize_email(
 
 
 # ---------- Public contest endpoints ----------
-class ContestSpinPayload(LeadCapture):
+class ContestSpinPayload(LeadCapture, LeadContactInput):
     contest_id: Optional[str] = Field(default=None, max_length=64)
     first_name: str = Field(..., min_length=1, max_length=80)
     last_name: str = Field(..., min_length=1, max_length=80)
-    phone: Optional[str] = Field(default="", max_length=40)
-    email: EmailStr
     language: Optional[str] = Field(default="es", max_length=5)
-
-    @field_validator("phone", mode="before")
-    @classmethod
-    def _normalize_phone(cls, value):
-        return normalize_international_phone(value)
 
 
 async def _get_active_contest() -> Optional[dict]:
@@ -6191,6 +6098,7 @@ async def contest_spin(payload: ContestSpinPayload):
             ("Apellidos", payload.last_name.strip()),
             ("Teléfono", (payload.phone or "").strip() or "—"),
             ("Email", payload.email.strip()),
+            ("Canal preferido", _contact_pref_label(payload.preferred_contact)),
             ("Premio ganado", prize_label_localized),
             ("Idioma", lang),
         ],

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Download, Eye, Inbox, RefreshCw, Search } from "lucide-react";
 import { adminAuthHeaders } from "@/lib/adminSession";
+import { contactPrefLabel } from "@/lib/contactSubmission";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api/admin/leads`;
@@ -32,7 +33,7 @@ const safeLink = value => typeof value === "string" && (/^https?:\/\//i.test(val
 function DataValue({ value }) {
   if (typeof value === "boolean") return value ? "Sí" : "No";
   if (Array.isArray(value)) return <ul className="space-y-2 list-disc pl-4">{value.map((item, i) => <li key={i}><DataValue value={item} /></li>)}</ul>;
-  if (typeof value === "object") return <dl className="space-y-2">{Object.entries(value).filter(([, v]) => visible(v)).map(([key, item]) => <div key={key}><dt className="text-white/50 text-xs">{LABELS[key] || key.replaceAll("_", " ")}</dt><dd><DataValue value={item} /></dd></div>)}</dl>;
+  if (typeof value === "object") return <dl className="space-y-2">{Object.entries(value).filter(([, v]) => visible(v)).map(([key, item]) => <div key={key}><dt className="text-white/50 text-xs">{LABELS[key] || key.replaceAll("_", " ")}</dt><dd>{key === "preferred_contact" ? contactPrefLabel(item, "es") : <DataValue value={item} />}</dd></div>)}</dl>;
   return <span className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{String(value)}</span>;
 }
 
@@ -161,7 +162,7 @@ export default function LeadsPanel() {
           <label className="text-sm">Estado del lead<select data-testid="lead-status" disabled={saving} className={`${fieldClass} mt-2`} value={detail.status} onChange={e => changeStatus(e.target.value)}>{Object.entries(STATUSES).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
           <p className="text-xs text-white/50">Archivar conserva la solicitud. Cambiar este estado no suscribe ni da de baja al contacto en Resend.</p>
           {safeLink(detail.source_url) && <a href={safeLink(detail.source_url)} target="_blank" rel="noopener noreferrer" className="text-[#D4A373] underline">Abrir página de origen</a>}
-          <dl className="divide-y divide-white/10 min-w-0">{Object.entries(detail.details || {}).filter(([key, value]) => visible(value) && !["id", "email_lower", "lead_status", "status"].includes(key)).map(([key, value]) => <div key={key} className="py-3 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-2"><dt className="text-xs text-[#D4A373]">{LABELS[key] || key.replaceAll("_", " ")}</dt><dd className="min-w-0 text-sm"><DataValue value={value} /></dd></div>)}</dl>
+          <dl className="divide-y divide-white/10 min-w-0">{Object.entries(detail.details || {}).filter(([key, value]) => visible(value) && !["id", "email_lower", "lead_status", "status"].includes(key)).map(([key, value]) => <div key={key} className="py-3 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-2"><dt className="text-xs text-[#D4A373]">{LABELS[key] || key.replaceAll("_", " ")}</dt><dd className="min-w-0 text-sm">{key === "preferred_contact" ? contactPrefLabel(value, "es") : <DataValue value={value} />}</dd></div>)}</dl>
         </>}
       </DialogContent>
     </Dialog>

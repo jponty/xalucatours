@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionError, contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Gift, Mail, User, Phone, Loader2, RotateCw, PartyPopper, X, ArrowRight } from "lucide-react";
@@ -144,7 +146,7 @@ export default function ConcursoPage() {
   const [contest, setContest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState("form"); // form | ready | spinning | done
-  const [form, setForm] = useState({ first_name: "", last_name: "", phone: "", email: "" });
+  const [form, setForm] = useState({ first_name: "", last_name: "", phone: "", email: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE });
   const [accepted, setAccepted] = useState(false);
   const [errors, setErrors] = useState({});
   const [rotation, setRotation] = useState(0);
@@ -205,8 +207,7 @@ export default function ConcursoPage() {
         contest_id: contest.id,
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
-        phone: form.phone.trim(),
-        email: form.email.trim(),
+        ...contactSubmissionFields(form),
         language: lang,
       });
       setResult({ prize: data.prize });
@@ -227,9 +228,9 @@ export default function ConcursoPage() {
         setPhase("ready");
       } else if (status === 403) {
         setContest((c) => (c ? { ...c, open: false } : c));
-        toast.error(err?.response?.data?.detail || L(UI.genericError, lang));
+        toast.error(contactSubmissionError(err?.response?.data?.detail, L(UI.genericError, lang)));
       } else {
-        toast.error(err?.response?.data?.detail || L(UI.genericError, lang));
+        toast.error(contactSubmissionError(err?.response?.data?.detail, L(UI.genericError, lang)));
         setPhase("ready");
       }
     }
@@ -342,10 +343,11 @@ export default function ConcursoPage() {
                       <label className="flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#8A7C64] mb-2">
                         <Mail className="w-3.5 h-3.5" /> {L(UI.email, lang)}
                       </label>
-                      <input data-testid="concurso-email" type="email" value={form.email} onChange={set("email")} className={inputCls("email")} placeholder="tucorreo@email.com" />
+                      <input required data-testid="concurso-email" type="email" value={form.email} onChange={set("email")} className={inputCls("email")} placeholder="tucorreo@email.com" />
                       {errors.email && <p className="mt-1 text-xs text-[#C16542]">{errors.email}</p>}
                     </div>
 
+                    <ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="concurso-pref" />
                     <label className="flex items-start gap-3 cursor-pointer pt-1" data-testid="concurso-legal-label">
                       <input
                         type="checkbox"

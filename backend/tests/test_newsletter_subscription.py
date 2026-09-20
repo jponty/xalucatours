@@ -73,7 +73,7 @@ def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch, ne
     )
 
     result = asyncio.run(server.create_newsletter_subscription(
-        server.NewsletterSubscriptionCreate(
+        server.NewsletterSubscriptionCreate(phone="+34612345678",
             first_name="  Joan  ",
             last_name="  Pont  Serra ",
             email="Viajes@Example.COM",
@@ -88,11 +88,24 @@ def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch, ne
     saved = next(iter(newsletter_database.contact_requests.rows.values()))
     assert saved['capture_type'] == 'newsletter'
     assert saved['subscription_sync'] == 'accepted'
+    assert saved['phone'] == '+34612345678'
+    assert saved['preferred_contact'] == ['email', 'phone']
+
+
+def test_newsletter_repeat_updates_contact_preference_without_duplicate(monkeypatch, newsletter_database):
+    monkeypatch.setattr(server, 'sync_newsletter_contact', lambda *args: 'contact-id')
+    base = dict(first_name='Ana', last_name='García', email='ana@example.com', consent=True)
+    asyncio.run(server.create_newsletter_subscription(server.NewsletterSubscriptionCreate(**base, phone='+34612345678')))
+    asyncio.run(server.create_newsletter_subscription(server.NewsletterSubscriptionCreate(**base, phone='+34699123456', preferred_contact=['email'])))
+    assert len(newsletter_database.contact_requests.rows) == 1
+    saved = next(iter(newsletter_database.contact_requests.rows.values()))
+    assert saved['phone'] == '+34699123456'
+    assert saved['preferred_contact'] == ['email']
 
 
 def test_newsletter_signup_rejects_missing_consent():
     with pytest.raises(ValueError, match="Newsletter consent is required"):
-        server.NewsletterSubscriptionCreate(
+        server.NewsletterSubscriptionCreate(phone="+34612345678",
             first_name="Joan",
             last_name="Pont",
             email="viajes@example.com",
@@ -102,7 +115,7 @@ def test_newsletter_signup_rejects_missing_consent():
 
 def test_newsletter_signup_rejects_blank_names():
     with pytest.raises(ValueError, match="Name is required"):
-        server.NewsletterSubscriptionCreate(
+        server.NewsletterSubscriptionCreate(phone="+34612345678",
             first_name="   ",
             last_name="Pont",
             email="viajes@example.com",
@@ -115,7 +128,7 @@ def test_newsletter_signup_does_not_claim_success_after_resend_failure(monkeypat
         raise server.NewsletterSubscriptionError("rejected")
 
     monkeypatch.setattr(server, "sync_newsletter_contact", reject)
-    payload = server.NewsletterSubscriptionCreate(
+    payload = server.NewsletterSubscriptionCreate(phone="+34612345678",
         first_name="Joan",
         last_name="Pont",
         email="viajes@example.com",
@@ -137,7 +150,7 @@ def test_newsletter_signup_does_not_claim_success_after_resend_failure(monkeypat
 def test_newsletter_honeypot_does_not_reach_resend(monkeypatch):
     called = []
     monkeypatch.setattr(server, "sync_newsletter_contact", lambda *args: called.append(args))
-    payload = server.NewsletterSubscriptionCreate(
+    payload = server.NewsletterSubscriptionCreate(phone="+34612345678",
         first_name="Bot",
         last_name="Spam",
         email="bot@example.com",

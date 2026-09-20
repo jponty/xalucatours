@@ -12,6 +12,36 @@ from starlette.requests import Request
 import server
 
 
+@pytest.mark.parametrize("preference", [["email"], ["email", "phone"]])
+def test_feedback_http_form_persists_and_notifies_both_contact_details(monkeypatch, preference):
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+    from unittest.mock import Mock
+
+    records = []
+    async def save(method, table, **kwargs):
+        assert method == "POST" and table == "feedback"
+        records.append(kwargs["json"])
+    monkeypatch.setattr(server.db, "request", save)
+    notify = Mock(return_value="internal-id")
+    monkeypatch.setattr(server, "send_lead_notification", notify)
+    server._feedback_rate.clear()
+    app = FastAPI(); app.include_router(server.api_router)
+    client = TestClient(app)
+    data = {"name": "Ana", "email": "ana@example.com", "phone": "+34 612 345 678",
+            "message": "Gracias por organizar nuestro viaje.", "consent": "true", "preferred_contact": preference}
+    response = client.post("/api/feedback", data=data)
+    assert response.status_code == 201, response.text
+    assert records[0]["phone"] == "+34612345678"
+    assert records[0]["email"] == "ana@example.com"
+    assert records[0]["preferred_contact"] == preference
+    assert server._contact_pref_label(preference) in notify.call_args.args[1]
+    for field in ("email", "phone"):
+        assert client.post("/api/feedback", data={**data, field: ""}).status_code == 422
+    assert len(records) == 1
+    notify.assert_called_once()
+
+
 def test_feedback_retries_reuse_record_and_notification_identity(monkeypatch):
     records = []
     notifications = []
@@ -26,7 +56,7 @@ def test_feedback_retries_reuse_record_and_notification_identity(monkeypatch):
     monkeypatch.setattr(server, "send_lead_notification", lambda *args: notifications.append(args[-1]) or "notification-id")
     server._feedback_rate.clear()
     request = Request({"type": "http", "method": "POST", "path": "/api/feedback", "headers": [], "client": ("127.0.0.1", 12121)})
-    payload = dict(request=request, submission_type="text", name="Cliente", email=None,
+    payload = dict(request=request, submission_type="text", name="Cliente", email="cliente@example.com", phone="+34612345678", preferred_contact=["email"],
                    trip_reference="Atlas", rating=3, message="Nuestro comentario del viaje.",
                    transcription_language=None, language="es", source_url="https://xalucatravel.com/feedback",
                    consent=True, website=None, submission_id=uuid.uuid4())
@@ -76,9 +106,10 @@ def test_voice_feedback_persists_only_reviewed_text(monkeypatch):
         request=request,
         submission_type="voice",
         name="Cliente",
-        email=None,
+        email="cliente@example.com",
+        phone="+34612345678", preferred_contact=["email"],
         trip_reference="Gran Sur",
-        rating=5,
+        rating=3,
         message="Texto revisado por el cliente.",
         transcription_language="es",
         language="es",
@@ -92,6 +123,8 @@ def test_voice_feedback_persists_only_reviewed_text(monkeypatch):
     assert captured["table"] == "feedback"
     assert stored["feedback_text"] == "Texto revisado por el cliente."
     assert stored["transcription_language"] == "es"
+    assert stored["phone"] == "+34612345678"
+    assert stored["preferred_contact"] == ["email"]
     assert not any("audio" in key or key == "transcript" for key in stored)
 
 
@@ -117,6 +150,7 @@ def test_positive_feedback_with_email_waits_for_both_emails(monkeypatch):
         submission_type="text",
         name="Ana",
         email="ana@example.com",
+        phone="+34612345678", preferred_contact=["email"],
         trip_reference="Gran Sur",
         rating=5,
         message="Una experiencia excelente.",
@@ -140,7 +174,7 @@ def test_followup_is_not_sent_without_both_conditions(monkeypatch):
     monkeypatch.setattr(server, "send_feedback_review_followup", lambda *args, **kwargs: calls.append("followup") or "followup-id")
     cases = [
         {"rating": 3, "email": "ana@example.com"},
-        {"rating": 5, "email": None},
+        {"rating": 2, "email": "ana@example.com"},
     ]
     for index, case in enumerate(cases):
         server._feedback_rate.clear()
@@ -156,6 +190,7 @@ def test_followup_is_not_sent_without_both_conditions(monkeypatch):
             submission_type="text",
             name="Ana",
             email=case["email"],
+            phone="+34612345678", preferred_contact=["email"],
             trip_reference="Gran Sur",
             rating=case["rating"],
             message="Comentario del viaje.",

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
 import { toast } from "sonner";
 import { X, Download, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -62,7 +64,7 @@ const COPY = {
 
 const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
-const initialForm = { first_name: "", last_name: "", email: "", phone: "", newsletter: false, privacy: false };
+const initialForm = { first_name: "", last_name: "", email: "", phone: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE, newsletter: false, privacy: false };
 
 export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) => {
   const leadCapture = useLeadCapture("program_download");
@@ -124,8 +126,7 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
         ...leadCapture(),
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
+        ...contactSubmissionFields(form),
         newsletter: form.newsletter,
         privacy_accepted: form.privacy,
         route_id: routeId || null,
@@ -220,6 +221,7 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
                 </DLField>
               </div>
 
+              <ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="download-pref" />
               <label className="flex items-start gap-3 cursor-pointer" data-testid="download-newsletter-label">
                 <input type="checkbox" name="newsletter" checked={form.newsletter} onChange={onField}
                   data-testid="download-checkbox-newsletter" className="dl-checkbox mt-0.5" />

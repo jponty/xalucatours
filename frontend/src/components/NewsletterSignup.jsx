@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionError, contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import { ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { CONTACT } from "@/lib/data";
@@ -40,6 +43,13 @@ const COPY = {
   lastNameLabel: { es: "Apellido(s)", en: "Last name(s)", fr: "Nom(s) de famille" },
   lastNamePlaceholder: { es: "Tus apellidos", en: "Your last name(s)", fr: "Votre nom" },
   emailLabel: { es: "Tu email", en: "Your email", fr: "Votre e-mail" },
+  phoneLabel: { es: "Teléfono", en: "Phone", fr: "Téléphone" },
+  invalidPhone: { es: "Introduce un teléfono internacional válido.", en: "Enter a valid international phone number.", fr: "Saisissez un téléphone international valide." },
+  contactUse: {
+    es: "Guardamos tu teléfono y tu preferencia de contacto junto a tus datos. Esta elección no modifica tu suscripción por email ni autoriza envíos promocionales por teléfono o WhatsApp.",
+    en: "We store your phone and contact preference with your details. This choice does not change your email subscription or authorise promotional calls or WhatsApp messages.",
+    fr: "Nous conservons votre téléphone et votre préférence de contact. Ce choix ne modifie pas votre abonnement par e-mail et n’autorise pas de communications promotionnelles par téléphone ou WhatsApp.",
+  },
   emailPlaceholder: { es: "tu@email.com", en: "you@email.com", fr: "vous@email.com" },
   consentPre: {
     es: "Quiero recibir novedades y contenido de Xaluca Tours y acepto el tratamiento de mis datos según la ",
@@ -85,6 +95,8 @@ export default function NewsletterSignup() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [preference, setPreference] = useState(DEFAULT_CONTACT_PREFERENCE);
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
   const [sending, setSending] = useState(false);
@@ -110,6 +122,7 @@ export default function NewsletterSignup() {
       setError(t("consentError"));
       return;
     }
+    if (!isValidInternationalPhone(phone)) { setError(t("invalidPhone")); return; }
 
     setError("");
     setSending(true);
@@ -118,7 +131,7 @@ export default function NewsletterSignup() {
         ...leadCapture(),
         first_name: normalizedFirstName,
         last_name: normalizedLastName,
-        email: normalizedEmail,
+        ...contactSubmissionFields({ email: normalizedEmail, phone, preferred_contact: preference }),
         consent: true,
         language: lang,
         source_path: typeof window !== "undefined" ? window.location.pathname : "/",
@@ -128,10 +141,12 @@ export default function NewsletterSignup() {
       setFirstName("");
       setLastName("");
       setEmail("");
+      setPhone("");
+      setPreference(DEFAULT_CONTACT_PREFERENCE);
       setConsent(false);
       setWebsite("");
     } catch (requestError) {
-      setError(requestError?.response?.data?.detail || t("genericError"));
+      setError(contactSubmissionError(requestError?.response?.data?.detail, t("genericError")));
     } finally {
       setSending(false);
     }
@@ -257,6 +272,9 @@ export default function NewsletterSignup() {
                     placeholder={t("emailPlaceholder")}
                     className="min-h-14 min-w-0 flex-1 border border-[#2C2621]/18 bg-white px-4 text-base text-[#2C2621] outline-none transition-colors placeholder:text-[#82756A]/65 focus:border-[#C16542]"
                   />
+                  <label htmlFor="newsletter-phone" className="mt-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">{t("phoneLabel")} *</label>
+                  <InternationalPhoneInput id="newsletter-phone" name="phone" required value={phone} onValueChange={value => { setPhone(value); setError(""); }} lang={lang} testId="newsletter-phone" />
+                  <div className="my-3"><ContactPreference lang={lang} value={preference} onChange={setPreference} testidPrefix="newsletter-pref" /></div>
                   <button
                     type="submit"
                     disabled={sending}
@@ -295,6 +313,7 @@ export default function NewsletterSignup() {
                     {t("privacyBody")} {" "}
                     <a className="underline decoration-[#C16542]/60 underline-offset-2 hover:text-[#A95739]" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.
                   </p>
+                  <p className="mt-3 leading-[1.7]">{t("contactUse")}</p>
                 </details>
               </form>
             )}

@@ -10,6 +10,7 @@ from datetime import date, datetime, timezone
 
 from fastapi import Header, HTTPException, Query, Response
 from pydantic import BaseModel, Field
+from lead_contact import contact_preference_label
 
 
 COLLECTIONS = {
@@ -74,6 +75,8 @@ def project_lead(source, row, detail=False):
         "type": kind, "type_label": KINDS[kind],
         "full_name": row.get("full_name") or row.get("name") or " ".join(filter(None, [row.get("first_name"), row.get("last_name")])),
         "email": row.get("email"), "phone": row.get("phone"),
+        "preferred_contact": row.get("preferred_contact"),
+        "preferred_contact_label": contact_preference_label(row.get("preferred_contact")),
         "preferred_contact_email": row.get("preferred_contact_email"),
         "preferred_contact_phone": row.get("preferred_contact_phone"),
         "created_at": row.get("created_at"),
@@ -170,7 +173,7 @@ def register_lead_routes(router, get_db, require_admin):
         writer = csv.writer(output)
         columns = {"id": "ID", "created_at": "Fecha UTC", "full_name": "Nombre", "email": "Email", "phone": "Teléfono",
                    "type_label": "Tipo", "source_url": "Origen", "trip": "Viaje", "status": "Estado", "message": "Mensaje",
-                   "preferred_contact_email": "Email preferido", "preferred_contact_phone": "Teléfono preferido", "details": "Datos completos"}
+                   "preferred_contact_label": "Canal preferido", "preferred_contact_email": "Email preferido (histórico)", "preferred_contact_phone": "Teléfono preferido (histórico)", "details": "Datos completos"}
         writer.writerow(columns.values())
         for row in rows:
             values = [json.dumps(row[k], ensure_ascii=False, default=str) if isinstance(row.get(k), (dict, list)) else str(row.get(k) or "") for k in columns]
