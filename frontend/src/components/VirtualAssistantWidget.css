@@ -1,0 +1,45 @@
+/* The contact action stays outside the scrollable flow, at every step. */
+.virtual-assistant-overlay { z-index: 10020; background: #1a1513bf; backdrop-filter: blur(4px); }
+.virtual-assistant-dialog {
+  position: fixed; z-index: 10030; inset: 0; margin: auto;
+  display: flex; flex-direction: column;
+  width: min(44rem, calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  height: min(55rem, calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  min-width: 0; border: 1px solid #2c262126; background: #fdfbf7; color: #2c2621;
+  box-shadow: 0 35px 100px -35px #1a1513bf; outline: none;
+}
+.virtual-assistant-header { display: flex; align-items: center; gap: 12px; flex-shrink: 0; padding: 16px 20px; background: #2c2621; color: #fff; }
+.virtual-assistant-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: clamp(16px, 3vw, 28px); overflow-wrap: anywhere; }
+.virtual-assistant-answer { background: #fff; border: 1px solid #2c262115; padding: 16px; }
+.virtual-assistant-options { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.virtual-assistant-option {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 48px; max-width: 100%; padding: 12px 18px;
+  border: 1px solid #c1654259; border-radius: 30px; background: #fbf5ea;
+  color: #2c2621; font-size: 14px; line-height: 1.5; text-align: left;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.virtual-assistant-option span { min-width: 0; overflow-wrap: anywhere; }
+.virtual-assistant-option:disabled { opacity: .55; cursor: wait; }
+@media (hover: hover) { .virtual-assistant-option:not(:disabled):hover { background: #c1654217; border-color: #c16542; } }
+.virtual-assistant-footer { flex: 0 0 auto; border-top: 1px solid #2c26211a; padding: 12px 20px; background: #fbf5ea; }
+.virtual-assistant-navigation { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
+.virtual-assistant-navigation button { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; color: #5c5248; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.virtual-assistant-navigation button:disabled { opacity: .4; cursor: default; }
+.virtual-assistant-dialog :focus-visible { outline: 2px solid #c16542; outline-offset: 3px; }
+@media (max-width: 480px) {
+  .virtual-assistant-header { padding: 12px; gap: 8px; }
+  .virtual-assistant-footer { padding: 10px 14px; }
+  .virtual-assistant-answer { padding: 12px; }
+  .virtual-assistant-options { gap: 10px; }
+  .virtual-assistant-option { width: 100%; }
+}
+@media (max-height: 480px) {
+  .virtual-assistant-header { padding-block: 8px; }
+  .virtual-assistant-footer { padding-block: 6px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .virtual-assistant-dialog[data-state="open"] { animation: assistant-enter 180ms ease-out; }
+  @keyframes assistant-enter { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+}
+@media (prefers-reduced-motion: reduce) { .virtual-assistant-overlay { animation: none !important; } .virtual-assistant-option { transition: none; } }

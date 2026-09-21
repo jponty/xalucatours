@@ -158,6 +158,16 @@ test("FormTabs retains its standalone default and tab switching on other pages",
   expect(get("quick-form")).toBeNull();
 });
 
+test.each(["es", "en", "fr"])("contact help links remain on the internal assistant page in %s", async (lang) => {
+  mockLang = lang;
+  await render(<ContactPage />);
+  for (const id of ["contact-help-link", "support-open-page"]) {
+    expect(get(id).getAttribute("href")).toBe("/asistente");
+    expect(get(id).getAttribute("target")).toBeNull();
+  }
+  expect(container.querySelector('a[href*="chatbase.co"]')).toBeNull();
+});
+
 test("both pages share the five ordered tabs and an accessible dictation panel", async () => {
   for (const element of [<ContactPage />, <FormTabs defaultTab="detailed" />]) {
     await render(element);

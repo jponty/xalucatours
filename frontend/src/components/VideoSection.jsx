@@ -10,7 +10,7 @@ import {
   toggleNarrationMuted,
 } from "@/lib/narrationStore";
 
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+// Navigate to the site's virtual-assistant page (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
 import { supabaseMedia } from "@/lib/supabaseMedia";
 

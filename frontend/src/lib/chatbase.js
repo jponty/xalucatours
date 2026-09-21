@@ -1,30 +1,24 @@
-/* ============================================================
-   chatbase — single source of truth for opening the Chatbase
-   "Asistente Virtual" widget across the whole site.
+import { resolvePath } from "./routes";
 
-   Use openChatbaseAssistant as a click handler anywhere:
-     <button onClick={openChatbaseAssistant} />
-   It opens the shared informational modal before launching the widget.
-   launchChatbaseAssistant is reserved for the modal's confirmed action.
-============================================================ */
-
-// Public fallback URL (used when the embedded widget hasn't loaded).
-export const CHATBASE_HELP_URL = "https://www.chatbase.co/0g0xD-K8_amm7Ihz-vPj2/help";
+// Shared entry point for the site's own virtual-assistant page.
+// Legacy Chatbase-named exports are retained for existing consumers.
+export const VIRTUAL_ASSISTANT_PATH = "/asistente";
+export const VIRTUAL_ASSISTANT_OPEN_EVENT = "xaluca:open-virtual-assistant";
+export const CHATBASE_HELP_URL = VIRTUAL_ASSISTANT_PATH;
 export const VIRTUAL_ASSISTANT_INFO_EVENT = "xaluca:open-virtual-assistant-info";
 
-export const launchChatbaseAssistant = () => {
-  try {
-    if (window.chatbase && typeof window.chatbase.open === "function") {
-      window.chatbase.open();
-      return;
-    }
-  } catch (_) { /* fall through to URL */ }
-  window.open(CHATBASE_HELP_URL, "_blank", "noopener,noreferrer");
-};
-
-export const openChatbaseAssistant = (e) => {
+export const openVirtualAssistant = (e) => {
   if (e && typeof e.preventDefault === "function") e.preventDefault();
   if (e && typeof e.stopPropagation === "function") e.stopPropagation();
   if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent(VIRTUAL_ASSISTANT_INFO_EVENT));
+
+  if (resolvePath(window.location.pathname)?.routeId === "asistente") {
+    window.dispatchEvent(new CustomEvent(VIRTUAL_ASSISTANT_OPEN_EVENT));
+    return;
+  }
+
+  window.location.assign(VIRTUAL_ASSISTANT_PATH);
 };
+
+export const openChatbaseAssistant = openVirtualAssistant;
+export const launchChatbaseAssistant = openVirtualAssistant;

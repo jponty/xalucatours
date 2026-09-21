@@ -31,14 +31,14 @@ const TABS_COPY = {
 
 const ASSISTANT_PANEL = {
   title: {
-    es: "Habla con nuestro Asistente Virtual",
-    en: "Chat with our Virtual Assistant",
-    fr: "Discutez avec notre Assistant Virtuel",
+    es: "Explora las opciones de nuestro Asistente Virtual",
+    en: "Explore our Virtual Assistant's options",
+    fr: "Explorez les options de notre Assistant Virtuel",
   },
   body: {
-    es: "Resuelve tus dudas al instante, obtén recomendaciones personalizadas y consulta rutas, precios y alojamientos. Nuestro asistente virtual te orienta en tiempo real, paso a paso, para diseñar tu viaje a Marruecos.",
-    en: "Get your questions answered instantly, receive personalised recommendations and check routes, prices and accommodation. Our virtual assistant guides you in real time, step by step, to design your trip to Morocco.",
-    fr: "Obtenez des réponses instantanées, des recommandations personnalisées et consultez itinéraires, prix et hébergements. Notre assistant virtuel vous guide en temps réel, étape par étape, pour concevoir votre voyage au Maroc.",
+    es: "Identifícate y selecciona las opciones que te interesen para descubrir rutas, etapas e información práctica publicada por Xaluca Tours, con enlaces a sus fuentes. Cada elección te guía al siguiente paso. Si falta información, te ayudaremos a contactar con nuestro equipo.",
+    en: "Enter your details and select the options that interest you to discover routes, stages and practical information published by Xaluca Tours, with links to their sources. Each choice guides you to the next step. If information is missing, we will help you contact our team.",
+    fr: "Présentez-vous et sélectionnez les options qui vous intéressent pour découvrir les circuits, étapes et informations pratiques publiés par Xaluca Tours, avec leurs sources. Chaque choix vous guide vers l'étape suivante. Si des informations manquent, nous vous aiderons à contacter notre équipe.",
   },
   cta: {
     es: "Abrir Asistente Virtual",
@@ -47,7 +47,7 @@ const ASSISTANT_PANEL = {
   },
 };
 
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+// Navigate to the site's virtual-assistant page (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
 
 /* Inline-CMS text helper, page-namespaced under the `formtabs` scope. */
@@ -152,9 +152,9 @@ export default function FormTabs({ defaultTab = "detailed", activeTab, onTabChan
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#2C2621] text-[#FDFBF7] mb-7">
               <Headset className="w-7 h-7" strokeWidth={1.6} />
             </span>
-            <FT k="assistant.title" defaults={ASSISTANT_PANEL.title} as="h3"
+            <FT k="assistant.guided.title" defaults={ASSISTANT_PANEL.title} as="h3"
                 className="font-serif-x text-2xl md:text-3xl leading-tight tracking-tight text-[#2C2621] block" />
-            <FT k="assistant.body" defaults={ASSISTANT_PANEL.body} as="p" multiline
+            <FT k="assistant.guided.body" defaults={ASSISTANT_PANEL.body} as="p" multiline
                 className="mt-5 text-base text-[#5C5248] leading-relaxed block" />
             <button
               type="button"

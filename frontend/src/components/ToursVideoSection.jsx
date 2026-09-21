@@ -5,7 +5,7 @@ import { Img } from "@/components/Img";
 import EditableText from "@/components/EditableText";
 import { loadYouTubeAPI } from "@/lib/youtubeApi";
 
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+// Navigate to the site's virtual-assistant page (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
 
 /* ============================================================

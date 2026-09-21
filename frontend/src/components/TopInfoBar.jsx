@@ -27,7 +27,7 @@ const EMAIL = { es: "xalucatours@xaluca.com", en: "xalucatours@xaluca.com", fr: 
 export const TopInfoBar = () => {
   const { lang } = useLanguage();
 
-  // Open the Chatbase virtual assistant (centralised in lib/chatbase).
+  // Navigate to the site's virtual-assistant page (centralised in lib/chatbase).
   const openAssistant = openChatbaseAssistant;
 
   return (
@@ -47,7 +47,7 @@ export const TopInfoBar = () => {
           <EditableText slot="topbar.phone" defaults={PHONE} multiline={false} />
         </a>
 
-        {/* Virtual assistant — mobile only — opens the Chatbase chat */}
+        {/* Virtual assistant — mobile only — opens the internal assistant page */}
         <span className="sm:hidden inline-block w-px h-3.5 bg-[#FDFBF7]/20" aria-hidden="true" />
         <button
           type="button"

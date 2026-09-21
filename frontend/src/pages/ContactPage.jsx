@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
-import { openChatbaseAssistant, CHATBASE_HELP_URL } from "@/lib/chatbase";
+import { openChatbaseAssistant, VIRTUAL_ASSISTANT_PATH } from "@/lib/chatbase";
 import YouTubeHeroBackground from "@/components/YouTubeHeroBackground";
 import { MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
 import HeroMonogram from "@/components/HeroMonogram";
@@ -118,42 +118,42 @@ const COPY = {
                    en: "Book an appointment with our team and plan your trip in a personalized way, by phone or at our offices.",
                    fr: "Réservez un rendez-vous avec notre équipe et planifiez votre voyage de façon personnalisée, par téléphone ou dans nos bureaux." },
     apptCta:     { es: "Reservar cita", en: "Book appointment", fr: "Réserver" },
-    chatTitle:   { es: "Chat", en: "Chat", fr: "Chat" },
-    chatBody:    { es: "Contacta mediante el chat de asistencia y recibe ayuda inmediata para resolver tus dudas al instante.",
-                   en: "Reach out via the support chat and get instant help to resolve your questions right away.",
-                   fr: "Contactez-nous via le chat d'assistance et recevez une aide immédiate pour répondre à vos questions." },
-    chatCta:     { es: "Abrir el chat", en: "Open the chat", fr: "Ouvrir le chat" },
+    chatTitle:   { es: "Asistente virtual", en: "Virtual assistant", fr: "Assistant virtuel" },
+    chatBody:    { es: "Explora nuestro asistente virtual mediante botones de selección. Elige un tema y avanza paso a paso por la información publicada sobre nuestros viajes.",
+                   en: "Explore our virtual assistant using selectable buttons. Choose a topic and move step by step through published information about our trips.",
+                   fr: "Explorez notre assistant virtuel à l'aide de boutons de sélection. Choisissez un sujet et parcourez étape par étape les informations publiées sur nos voyages." },
+    chatCta:     { es: "Abrir el asistente", en: "Open the assistant", fr: "Ouvrir l'assistant" },
     helpTitle:   { es: "Página de asistencia", en: "Help center", fr: "Centre d'aide" },
-    helpBody:    { es: "Accede al centro de ayuda y consulta preguntas frecuentes, información útil y los distintos canales de soporte disponibles.",
-                   en: "Access the help center to browse FAQs, useful information and the different support channels available.",
-                   fr: "Accédez au centre d'aide pour consulter la FAQ, des informations utiles et les différents canaux de support disponibles." },
+    helpBody:    { es: "Accede a la página del asistente para explorar opciones guiadas y consultar sus fuentes publicadas. También encontrarás un enlace a Contacto para dirigirte a nuestro equipo.",
+                   en: "Visit the assistant page to explore guided options and their published sources. You will also find a Contact link to reach our team.",
+                   fr: "Consultez la page de l'assistant pour explorer les options guidées et leurs sources publiées. Vous y trouverez aussi un lien vers Contact pour joindre notre équipe." },
     helpCta:     { es: "Centro de ayuda", en: "Help center", fr: "Centre d'aide" },
   },
   support: {
     eyebrow: { es: "Asistencia", en: "Support", fr: "Assistance" },
     title:   { es: "¿Necesitas ayuda?", en: "Need help?", fr: "Besoin d'aide ?" },
-    body:    { es: "Estamos aquí para ayudarte de la forma que te resulte más cómoda. Nuestro sistema combina la asistencia inmediata de un asistente virtual con la atención personalizada de nuestro equipo cuando sea necesario.",
-               en: "We're here to help in whatever way suits you best. Our system combines the instant support of a virtual assistant with the personal attention of our team whenever needed.",
-               fr: "Nous sommes là pour vous aider de la manière qui vous convient le mieux. Notre système combine l'assistance immédiate d'un assistant virtuel et l'attention personnalisée de notre équipe lorsque c'est nécessaire." },
-    chatCta: { es: "Abrir el chat de asistencia", en: "Open the support chat", fr: "Ouvrir le chat d'assistance" },
+    body:    { es: "El asistente te permite explorar nuestros viajes mediante opciones seleccionables y enlaces a información publicada. Si necesitas atención personalizada, utiliza su enlace a Contacto para consultar con nuestro equipo.",
+               en: "The assistant lets you explore our trips through selectable options and links to published information. For personal assistance, use its Contact link to reach our team.",
+               fr: "L'assistant vous permet d'explorer nos voyages grâce à des options sélectionnables et des liens vers les informations publiées. Pour un accompagnement personnalisé, utilisez son lien vers Contact pour joindre notre équipe." },
+    chatCta: { es: "Abrir el asistente virtual", en: "Open the virtual assistant", fr: "Ouvrir l'assistant virtuel" },
     pageCta: { es: "Abrir la página de asistencia", en: "Open the support page", fr: "Ouvrir la page d'assistance" },
     items: [
-      { icon: MessageCircle, title: { es: "Chat de asistencia", en: "Support chat", fr: "Chat d'assistance" },
-        body: { es: "Obtén ayuda inmediata a través del chat disponible en esta página.",
-                en: "Get instant help through the chat available on this page.",
-                fr: "Obtenez une aide immédiate via le chat disponible sur cette page." } },
-      { icon: BookOpen, title: { es: "Conversaciones guiadas", en: "Guided conversations", fr: "Conversations guidées" },
-        body: { es: "Resuelve dudas frecuentes mediante conversaciones guiadas conectadas a nuestra base de conocimientos y documentación.",
-                en: "Resolve common questions through guided conversations connected to our knowledge base and documentation.",
-                fr: "Résolvez les questions fréquentes grâce à des conversations guidées connectées à notre base de connaissances et à notre documentation." } },
-      { icon: Bot, title: { es: "Asistente virtual y agentes humanos", en: "Virtual assistant & human agents", fr: "Assistant virtuel et agents humains" },
-        body: { es: "Nuestro sistema combina respuestas automáticas con la supervisión de agentes humanos para ofrecer una atención más eficiente y personalizada.",
-                en: "Our system combines automatic responses with human agent oversight to deliver more efficient and personalized support.",
-                fr: "Notre système combine des réponses automatiques et la supervision d'agents humains pour offrir une assistance plus efficace et personnalisée." } },
+      { icon: MessageCircle, title: { es: "Opciones paso a paso", en: "Step-by-step options", fr: "Des options étape par étape" },
+        body: { es: "Identifícate y pulsa la opción que te interese. Cada elección te muestra el siguiente paso para explorar rutas, etapas y otros temas disponibles.",
+                en: "Enter your details and select the option that interests you. Each choice shows the next step for exploring routes, stages and other available topics.",
+                fr: "Présentez-vous et sélectionnez l'option qui vous intéresse. Chaque choix affiche l'étape suivante pour explorer les circuits, les étapes et les autres sujets disponibles." } },
+      { icon: BookOpen, title: { es: "Información con fuentes", en: "Information with sources", fr: "Des informations sourcées" },
+        body: { es: "Consulta fragmentos de los programas y páginas publicados por Xaluca Tours. Abre los enlaces de cada fuente para ampliar la información.",
+                en: "Read excerpts from programmes and pages published by Xaluca Tours. Open each source link for more information.",
+                fr: "Consultez des extraits des programmes et pages publiés par Xaluca Tours. Ouvrez les liens vers chaque source pour en savoir plus." } },
+      { icon: Bot, title: { es: "Orientación sin suposiciones", en: "Guidance without assumptions", fr: "Une orientation sans suppositions" },
+        body: { es: "El asistente no confirma precios, disponibilidad ni reservas. Cuando la información publicada no sea suficiente, puedes utilizar el enlace a Contacto para consultar con el equipo.",
+                en: "The assistant cannot confirm prices, availability or bookings. When the published information is not enough, you can use the Contact link to ask our team.",
+                fr: "L'assistant ne confirme ni tarifs, ni disponibilités, ni réservations. Si les informations publiées ne suffisent pas, vous pouvez utiliser le lien vers Contact pour consulter notre équipe." } },
       { icon: Briefcase, title: { es: "Departamento de viajes", en: "Travel department", fr: "Service voyages" },
-        body: { es: "Si necesitas atención personalizada, nuestro equipo te atenderá dentro del horario de oficina. Todas las conversaciones son revisadas y supervisadas por nuestro equipo de viajes para garantizar que recibas la mejor asistencia posible. Además del chat, puedes contactar por teléfono, correo electrónico o formulario.",
-                en: "If you need personalized attention, our team will help you during office hours. All conversations are reviewed and supervised by our travel team to ensure you receive the best possible assistance. Beyond the chat, you can contact us by phone, email or form.",
-                fr: "Si vous avez besoin d’une attention personnalisée, notre équipe vous répondra pendant les heures de bureau. Toutes les conversations sont vérifiées et supervisées par notre équipe voyages afin de vous garantir la meilleure assistance possible. Au-delà du chat, vous pouvez nous contacter par téléphone, e-mail ou formulaire." } },
+        body: { es: "Para recibir una propuesta personalizada, contacta con nuestro equipo por teléfono, correo electrónico o formulario. Te atenderemos dentro del horario de oficina. Seleccionar opciones en el asistente no envía una consulta al equipo.",
+                en: "For a personalised proposal, contact our team by phone, email or form. We will help you during office hours. Selecting options in the assistant does not send an enquiry to the team.",
+                fr: "Pour une proposition personnalisée, contactez notre équipe par téléphone, e-mail ou formulaire. Nous vous répondrons pendant les heures de bureau. Sélectionner des options dans l'assistant n'envoie pas de demande à l'équipe." } },
     ],
   },
   reasons: {
@@ -413,9 +413,9 @@ const ContactPage = () => {
               {/* Chat card */}
               <div className="border border-[#2C2621]/12 p-7 md:p-9 hover:border-[#C16542]/50 transition-colors flex flex-col">
                 <MessageCircle className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
-                <E name="contact.chatTitle" defaults={COPY.contact.chatTitle} multiline={false} as="h3"
+                <E name="contact.guided.chatTitle" defaults={COPY.contact.chatTitle} multiline={false} as="h3"
                    className="font-serif text-2xl text-[#2C2621] mb-3" />
-                <E name="contact.chatBody" defaults={COPY.contact.chatBody} as="p"
+                <E name="contact.guided.chatBody" defaults={COPY.contact.chatBody} as="p"
                    className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
                 <button
                   type="button"
@@ -433,18 +433,16 @@ const ContactPage = () => {
                 <LifeBuoy className="w-6 h-6 text-[#C16542] mb-5" strokeWidth={1.6} />
                 <E name="contact.helpTitle" defaults={COPY.contact.helpTitle} multiline={false} as="h3"
                    className="font-serif text-2xl text-[#2C2621] mb-3" />
-                <E name="contact.helpBody" defaults={COPY.contact.helpBody} as="p"
+                <E name="contact.guided.helpBody" defaults={COPY.contact.helpBody} as="p"
                    className="text-[14px] text-[#5C5248] leading-relaxed mb-7 flex-1" />
-                <a
-                  href={CHATBASE_HELP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  to={VIRTUAL_ASSISTANT_PATH}
                   data-testid="contact-help-link"
                   className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-6 py-4 text-[11px] tracking-[0.28em] uppercase transition-colors w-fit"
                 >
                   <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="contact.helpCta" defaults={COPY.contact.helpCta} multiline={false} />
-                </a>
+                </Link>
               </div>
 
               <OfficeContactCard />
@@ -547,7 +545,7 @@ const ContactPage = () => {
               </span>
               <E name="support.title" defaults={COPY.support.title} multiline={false} as="h2"
                  className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
-              <E name="support.body" defaults={COPY.support.body} as="p"
+              <E name="support.guided.body" defaults={COPY.support.body} as="p"
                  className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -561,16 +559,14 @@ const ContactPage = () => {
                   <E name="support.chatCta" defaults={COPY.support.chatCta} multiline={false} />
                 </button>
 
-                <a
-                  href={CHATBASE_HELP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  to={VIRTUAL_ASSISTANT_PATH}
                   data-testid="support-open-page"
                   className="xaluca-button inline-flex items-center gap-3 border border-[#2C2621] hover:bg-[#2C2621] hover:text-[#FDFBF7] text-[#2C2621] px-8 py-4 text-[11px] tracking-[0.25em] uppercase transition-colors"
                 >
                   <LifeBuoy className="w-3.5 h-3.5" strokeWidth={1.7} />
                   <E name="support.pageCta" defaults={COPY.support.pageCta} multiline={false} />
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -582,9 +578,9 @@ const ContactPage = () => {
                   className="border border-[#2C2621]/12 p-7 md:p-8 hover:border-[#C16542]/50 hover:shadow-[0_18px_40px_-22px_rgba(44,38,33,0.35)] transition-all duration-300 flex flex-col"
                 >
                   <s.icon className="w-7 h-7 text-[#C16542] mb-5" strokeWidth={1.5} />
-                  <E name={`support.items.${i}.title`} defaults={s.title} multiline={false} as="h3"
+                  <E name={`support.guided.items.${i}.title`} defaults={s.title} multiline={false} as="h3"
                      className="font-serif text-xl md:text-2xl text-[#2C2621] leading-tight mb-3" />
-                  <E name={`support.items.${i}.body`} defaults={s.body} as="p"
+                  <E name={`support.guided.items.${i}.body`} defaults={s.body} as="p"
                      className="text-[14px] text-[#5C5248] leading-relaxed" />
                 </div>
               ))}

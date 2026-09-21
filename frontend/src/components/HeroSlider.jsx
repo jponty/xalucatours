@@ -27,7 +27,7 @@ const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: 
 const VIEW_TRIPS_LABEL = { es: "Ver viajes", en: "View trips", fr: "Voir les voyages" };
 const IDEAL_TRIP_LABEL = { es: "Encontrar viaje ideal", en: "Find ideal journey", fr: "Trouver le voyage idéal" };
 
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+// Navigate to the site's virtual-assistant page (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const HERO_PLACE = {

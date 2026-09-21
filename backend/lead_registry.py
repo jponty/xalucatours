@@ -21,6 +21,7 @@ COLLECTIONS = {
     "feedback": None,
 }
 KINDS = {
+    "assistant": "Asistente virtual",
     "dictation": "Dictado",
     "whatsapp_business": "WhatsApp Business",
     "quick_contact": "Contacto rápido", "detailed_planning": "Planificación detallada",

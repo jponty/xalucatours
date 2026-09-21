@@ -65,7 +65,10 @@
   "scripts": {
     "prestart": "node scripts/generate-discovery.cjs",
     "start": "craco start",
-    "prebuild": "node scripts/sync-render-routes.cjs --check && node scripts/generate-discovery.cjs",
+    "prebuild": "node scripts/generate-assistant-knowledge.cjs --check && node scripts/sync-render-routes.cjs --check && node scripts/generate-discovery.cjs",
+    "assistant:generate": "node scripts/generate-assistant-knowledge.cjs",
+    "assistant:check": "node scripts/generate-assistant-knowledge.cjs --check",
+    "assistant:test": "node --test scripts/generate-assistant-knowledge.test.cjs",
     "sync:render-routes": "node scripts/sync-render-routes.cjs --write",
     "build": "craco build && node scripts/generate-social-pages.cjs",
     "test": "craco test"

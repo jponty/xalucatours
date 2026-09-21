@@ -28,6 +28,7 @@ from lead_contact import LeadContactInput, normalize_international_phone, contac
 from calendly_leads import register_calendly_routes
 from newsletter_leads import import_newsletter_leads
 from form_dictation import register_dictation_routes
+from virtual_assistant import register_assistant_routes
 from climate import register_climate_routes
 from featured_trip_email import render_featured_trip, email_plain_text
 
@@ -6282,6 +6283,7 @@ async def import_newsletter_history(authorization: str = Header(default="")):
 register_lead_routes(api_router, lambda: db, _require_admin)
 register_calendly_routes(api_router, lambda: db)
 register_dictation_routes(api_router)
+register_assistant_routes(api_router, lambda: db)
 register_climate_routes(api_router)
 app.include_router(api_router)
 

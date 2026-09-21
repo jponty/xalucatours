@@ -4,7 +4,6 @@ import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
 import BestMonthPanel from "./BestMonthFab";
 import NarrationMiniPlayer from "./NarrationMiniPlayer";
-import VirtualAssistantInfoModal from "./VirtualAssistantInfoModal";
 import ExitIntentModal from "./ExitIntentModal";
 import WhatsAppContactModal from "./WhatsAppContactModal";
 import { Toaster } from "@/components/ui/sonner";
@@ -25,7 +24,6 @@ export const Layout = ({ children }) => {
         <BestMonthPanel />
         <GlobalDictationWidget />
         <TripFloatingSlot name="audio"><NarrationMiniPlayer /></TripFloatingSlot>
-        <VirtualAssistantInfoModal />
         <ExitIntentModal />
         <WhatsAppContactModal />
         <Toaster position="bottom-right" style={{ "--offset-bottom": "calc(var(--trip-floating-clearance, 0px) + 24px)", "--mobile-offset-bottom": "calc(var(--trip-floating-clearance, 0px) + 16px)" }} />

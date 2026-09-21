@@ -86,7 +86,7 @@ const PendingAudioGuide = ({ routeId, lang }) => {
   );
 };
 
-// Open the Chatbase virtual assistant (centralised in lib/chatbase).
+// Navigate to the site's virtual-assistant page (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
 
 const PRICE_LABEL = { es: "Precio", en: "Price", fr: "Prix" };

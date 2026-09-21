@@ -159,9 +159,10 @@
         <!-- Chatbase chat widget -->
         <script>
             (function(){
-                // Keep Chatbase configured but do not mount its visible widget unless
-                // the feature flag is explicitly enabled.
-                const widgetEnabled = "%REACT_APP_CHATBASE_WIDGET_ENABLED%" === "true";
+                // Retained for rollback only. The internal /asistente experience
+                // replaces Chatbase; a legacy deployment flag must not bypass
+                // its identity gate or open a second, ungrounded assistant.
+                const widgetEnabled = false;
                 window.__XALUCA_CHATBASE_WIDGET_ENABLED__ = widgetEnabled;
                 if (!widgetEnabled) return;
 
