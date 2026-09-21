@@ -15,11 +15,13 @@ import { useLeadCapture } from "@/lib/leadCapture";
 import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
 import { errorToastMessage } from "@/components/GenericErrorMessage";
 import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
+import PersonalNameFields, { personalNameFields, hasPersonalName } from "@/components/PersonalNameFields";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const initialState = {
-  full_name: "",
+  first_name: "",
+  last_name: "",
   email: "",
   phone: "",
   travel_start_date: "",
@@ -48,6 +50,7 @@ export const ContactForm = () => {
     e.preventDefault();
     if (sending || dictating) return;
     const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
+    if (!hasPersonalName(form)) { toast.error(required); return; }
     if (!isValidInternationalPhone(form.phone)) {
       setPhoneError(required);
       toast.error(errorToastMessage(undefined, lang));
@@ -73,6 +76,7 @@ export const ContactForm = () => {
       await axios.post(`${API}/contact-requests`, {
         ...leadCapture(),
         ...requestFields,
+        ...personalNameFields(form),
         ...contactSubmissionFields(form),
         travel_dates: travel_dates || null,
         language: lang,
@@ -155,12 +159,8 @@ export const ContactForm = () => {
                 className="bg-[#FDFBF7]/[0.04] border border-[#FDFBF7]/15 p-8 md:p-12 backdrop-blur-sm"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Field as="div" inputId={`${voiceId}-name`} labelSlot="home.contact.form_name" labelDefaults={translations.form_name} testId="form-name" required>
-                    <input id={`${voiceId}-name`} aria-label={t("form_name")} disabled={sending}
-                      required aria-required="true" name="full_name" value={form.full_name}
-                      onChange={onChange}
-                      data-testid="contact-input-name" className="form-input" />
-                  </Field>
+                  <PersonalNameFields value={form} onChange={(key, value) => setForm(current => ({ ...current, [key]: value }))}
+                    lang={lang} disabled={sending} inputClass="form-input" labelClass="text-[10px] uppercase tracking-[0.22em] text-[#FDFBF7]/70" testIdPrefix="contact" />
 
                   <Field labelSlot="home.contact.form_email" labelDefaults={translations.form_email} testId="form-email" required>
                     <input required aria-required="true" type="email" name="email" value={form.email} onChange={onChange}

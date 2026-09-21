@@ -29,6 +29,7 @@ from calendly_leads import register_calendly_routes
 from newsletter_leads import import_newsletter_leads
 from form_dictation import register_dictation_routes
 from virtual_assistant import register_assistant_routes
+from lead_name import LeadNameInput, clean_person_name
 from climate import register_climate_routes
 from featured_trip_email import render_featured_trip, email_plain_text
 
@@ -148,11 +149,8 @@ class ContactRequest(LeadCapture):
         return v
 
 
-class ContactRequestCreate(LeadCapture, LeadContactInput):
-    full_name: str = Field(..., min_length=2, max_length=120)
+class ContactRequestCreate(LeadCapture, LeadContactInput, LeadNameInput):
     privacy_consent: bool = False
-    first_name: Optional[str] = Field(default=None, max_length=120)
-    last_name: Optional[str] = Field(default=None, max_length=150)
     travel_dates: Optional[str] = Field(default=None, max_length=120)
     party_size: Optional[str] = Field(default=None, max_length=40)
     journey_interest: Optional[str] = Field(default=None, max_length=120)
@@ -221,6 +219,8 @@ class TripPlannerRequest(LeadCapture):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     # contact
     full_name: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
     # itinerary
@@ -252,8 +252,7 @@ class TripPlannerRequest(LeadCapture):
         return v
 
 
-class TripPlannerCreate(LeadCapture, LeadContactInput):
-    full_name: str = Field(..., min_length=2, max_length=120)
+class TripPlannerCreate(LeadCapture, LeadContactInput, LeadNameInput):
     date_mode: str = Field(default="range", pattern="^(range|exact|flexible)$")
     start_date: Optional[str] = Field(default=None, max_length=20)
     end_date: Optional[str] = Field(default=None, max_length=20)
@@ -308,6 +307,11 @@ class ProgramDownloadCreate(LeadCapture, LeadContactInput):
     program_title: Optional[str] = Field(default=None, max_length=200)
     language: Optional[str] = "es"
 
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def normalize_name(cls, value):
+        return clean_person_name(value)
+
     @field_validator("privacy_accepted")
     @classmethod
     def _privacy_must_be_accepted(cls, v: bool) -> bool:
@@ -326,10 +330,10 @@ class NewsletterSubscriptionCreate(LeadCapture, LeadContactInput):
     # Honeypot: real visitors never see or fill this field.
     website: Optional[str] = Field(default="", max_length=200)
 
-    @field_validator("first_name", "last_name")
+    @field_validator("first_name", "last_name", mode="before")
     @classmethod
     def _newsletter_name_required(cls, value: str) -> str:
-        normalized = " ".join(value.split())
+        normalized = clean_person_name(value)
         if not normalized:
             raise ValueError("Name is required")
         return normalized
@@ -1584,7 +1588,8 @@ async def create_contact_request(payload: ContactRequestCreate):
         *([("Tipo de solicitud", "Dictado")] if obj.capture_type == "dictation" else []),
         *([("Tipo de solicitud", "WhatsApp Business")] if obj.capture_type == "whatsapp_business" else []),
         *([("Viaje consultado", obj.related_trip_title)] if obj.related_trip_title else []),
-        ("Nombre", obj.full_name),
+        ("Nombre", obj.first_name),
+        ("Apellido(s)", obj.last_name),
         ("Email", obj.email),
         ("Teléfono", obj.phone),
         ("Fechas", obj.travel_dates),
@@ -1703,7 +1708,8 @@ async def create_trip_planner(payload: TripPlannerCreate, request: Request):
     trips_value = _build_trips_email_value(selected_trips_detail, selected_trips, obj.language, origin)
     planner_subject = _planner_subject(obj.full_name, len(selected_trips_detail or selected_trips), regions)
     planner_rows = [
-        ("Nombre", obj.full_name),
+        ("Nombre", obj.first_name),
+        ("Apellido(s)", obj.last_name),
         ("Email", obj.email),
         ("Teléfono", obj.phone),
         ("Fechas", dates),
@@ -1787,7 +1793,8 @@ async def create_program_download(payload: ProgramDownloadCreate):
         "Descarga de programa",
         f"{obj.first_name} {obj.last_name} · {obj.email}",
         [
-            ("Nombre", f"{obj.first_name} {obj.last_name}"),
+            ("Nombre", obj.first_name),
+            ("Apellido(s)", obj.last_name),
             ("Email", obj.email),
             ("Teléfono", obj.phone),
             ("Programa", obj.program_title or obj.route_id),
@@ -1885,7 +1892,9 @@ _feedback_transcription_rate: Dict[str, List[float]] = {}
 
 class FeedbackFields(LeadContactInput):
     submission_type: str = Field(default="text", pattern="^(text|voice)$")
-    name: Optional[str] = Field(default=None, max_length=120)
+    name: Optional[str] = Field(default=None, max_length=271)
+    first_name: Optional[str] = Field(default=None, max_length=120)
+    last_name: Optional[str] = Field(default=None, max_length=150)
     trip_reference: Optional[str] = Field(default=None, max_length=200)
     rating: Optional[int] = Field(default=None, ge=1, le=5)
     message: str = Field(min_length=1, max_length=12000)
@@ -1893,6 +1902,17 @@ class FeedbackFields(LeadContactInput):
     language: str = Field(default="es", pattern="^(es|en|fr)$")
     source_url: Optional[str] = Field(default=None, max_length=1000)
     consent: bool
+
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def normalize_feedback_name(cls, value):
+        return clean_person_name(value) or None if value is not None else None
+
+    @model_validator(mode="after")
+    def compose_feedback_name(self):
+        if self.first_name or self.last_name:
+            self.name = " ".join(filter(None, [self.first_name, self.last_name]))
+        return self
 
 
 class FeedbackAdminUpdate(BaseModel):
@@ -2194,6 +2214,8 @@ async def create_feedback(
     request: Request,
     submission_type: str = Form(default="text"),
     name: Optional[str] = Form(default=None),
+    first_name: Annotated[Optional[str], Form()] = None,
+    last_name: Annotated[Optional[str], Form()] = None,
     email: Optional[str] = Form(default=None),
     phone: Optional[str] = Form(default=None),
     preferred_contact: List[str] = Form(default=["email", "phone"]),
@@ -2215,6 +2237,8 @@ async def create_feedback(
         fields = FeedbackFields(
             submission_type=(submission_type or "text").strip(),
             name=(name or "").strip() or None,
+            first_name=first_name,
+            last_name=last_name,
             email=(email or "").strip() or None,
             phone=phone,
             preferred_contact=preferred_contact,
@@ -2239,6 +2263,8 @@ async def create_feedback(
         "id": feedback_id,
         "submission_type": fields.submission_type,
         "name": fields.name,
+        "first_name": fields.first_name,
+        "last_name": fields.last_name,
         "email": str(fields.email) if fields.email else None,
         "phone": fields.phone,
         "preferred_contact": fields.preferred_contact,
@@ -2269,7 +2295,9 @@ async def create_feedback(
         "Nuevo feedback de viaje",
         f"{fields.name or 'Anónimo'} · {fields.trip_reference or 'Viaje no indicado'}",
         [
-            ("Nombre", fields.name or "Anónimo"),
+            ("Nombre", fields.first_name),
+            ("Apellido(s)", fields.last_name),
+            ("Nombre original (sin separar)", fields.name if not fields.first_name and not fields.last_name else None),
             ("Email", str(fields.email) if fields.email else None),
             ("Teléfono", fields.phone),
             ("Canal preferido", _contact_pref_label(fields.preferred_contact)),
@@ -5926,6 +5954,11 @@ class ContestSpinPayload(LeadCapture, LeadContactInput):
     last_name: str = Field(..., min_length=1, max_length=80)
     language: Optional[str] = Field(default="es", max_length=5)
 
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def normalize_name(cls, value):
+        return clean_person_name(value)
+
 
 async def _get_active_contest() -> Optional[dict]:
     return await db.contests.find_one({"active": True}, {"_id": 0}, sort=[("created_at", -1)])
@@ -6107,7 +6140,7 @@ async def contest_spin(payload: ContestSpinPayload):
         [
             ("Concurso", contest_name_localized),
             ("Nombre", payload.first_name.strip()),
-            ("Apellidos", payload.last_name.strip()),
+            ("Apellido(s)", payload.last_name.strip()),
             ("Teléfono", (payload.phone or "").strip() or "—"),
             ("Email", payload.email.strip()),
             ("Canal preferido", _contact_pref_label(payload.preferred_contact)),

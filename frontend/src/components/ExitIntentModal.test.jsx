@@ -87,7 +87,7 @@ describe("ExitIntentModal contact names", () => {
   });
 
   test.each([
-    ["es", "Nombre *", "Apellidos *"],
+    ["es", "Nombre *", "Apellido(s) *"],
     ["en", "First name *", "Last name *"],
     ["fr", "Prénom *", "Nom de famille *"],
   ])("shows separate required fields with matching styles in %s", (lang, firstLabel, lastLabel) => {
@@ -127,7 +127,7 @@ describe("ExitIntentModal contact names", () => {
     await submit();
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/api\/contact-requests$/), expect.objectContaining({
-      full_name: "María José García de la Cruz",
+
       email: "joan@example.com",
       journey_interest: "exit-intent",
       preferred_contact: ["email", "phone"],
@@ -173,10 +173,10 @@ describe("ExitIntentModal contact names", () => {
     expect(field("message").value).toBe("Texto revisado por el usuario.");
   });
 
-  test("validates the existing API's full-name length limit without truncating", async () => {
+  test("validates each independent name length without truncating", async () => {
     open();
     fillValidForm();
-    fill("name", "A".repeat(60));
+    fill("name", "A".repeat(121));
     fill("last-name", "B".repeat(60));
     await submit();
     expect(axios.post).not.toHaveBeenCalled();

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import PersonalNameFields, { personalNameFields } from "@/components/PersonalNameFields";
 import {
   ArrowUpRight, Check, Copy, ExternalLink, Heart, Loader2, MessageSquareText, Mic, Pause,
   QrCode, RotateCcw, Send, ShieldCheck, Sparkles, Star,
@@ -64,7 +65,6 @@ const COPY = {
     fr: "L'enregistrement sert uniquement à la transcription puis est supprimé immédiatement. Seul le texte relu est conservé. Maximum 3 minutes et 25 Mo.",
   },
   rating: { es: "¿Cómo valorarías tu experiencia?", en: "How would you rate your experience?", fr: "Comment évaluez-vous votre expérience ?" },
-  name: { es: "Nombre (opcional)", en: "Name (optional)", fr: "Nom (facultatif)" },
   email: { es: "Email", en: "Email", fr: "E-mail" },
   phone: { es: "Teléfono", en: "Phone", fr: "Téléphone" },
   contactError: { es: "Introduce un email y un teléfono internacional válidos.", en: "Enter a valid email and international phone number.", fr: "Saisissez un e-mail et un téléphone international valides." },
@@ -157,7 +157,7 @@ export default function FeedbackPage() {
   const leadCapture = useLeadCapture("feedback", lang);
   const [mode, setMode] = useState("voice");
   const [message, setMessage] = useState("");
-  const [name, setName] = useState("");
+  const [personName, setPersonName] = useState({ first_name: "", last_name: "" });
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [preference, setPreference] = useState(DEFAULT_CONTACT_PREFERENCE);
@@ -302,7 +302,7 @@ export default function FeedbackPage() {
   };
 
   const resetForm = () => {
-    setMessage(""); setName(""); setEmail(""); setPhone(""); setPreference(DEFAULT_CONTACT_PREFERENCE); setTripReference("");
+    setMessage(""); setPersonName({ first_name: "", last_name: "" }); setEmail(""); setPhone(""); setPreference(DEFAULT_CONTACT_PREFERENCE); setTripReference("");
     setRating(0); setConsent(false); setError(""); setSent(false);
     setSubmittedFeedback(null); setCopied(false); resetAudio();
   };
@@ -349,7 +349,7 @@ export default function FeedbackPage() {
     setBusy(true);
     try {
       const body = new FormData();
-      body.append("name", name);
+      Object.entries(personalNameFields(personName)).forEach(([key, value]) => body.append(key, value));
       const contact = contactSubmissionFields({ email, phone, preferred_contact: preference });
       body.append("email", contact.email);
       body.append("phone", contact.phone);
@@ -549,7 +549,8 @@ export default function FeedbackPage() {
               </div>
 
               <div className="grid gap-5 md:grid-cols-2">
-                <label><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.name, lang)}</span><input value={name} onChange={(e) => setName(e.target.value)} maxLength={120} className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>
+                <PersonalNameFields value={personName} onChange={(key, value) => setPersonName(current => ({ ...current, [key]: value }))} lang={lang} required={false}
+                  labelClass="text-[10px] uppercase tracking-[0.18em] text-[#5C5248]" inputClass="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" testIdPrefix="feedback" />
                 <label><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.email, lang)} *</span><input required data-testid="feedback-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>
                 <div><label htmlFor="feedback-phone" className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.phone, lang)} *</label><InternationalPhoneInput required id="feedback-phone" name="phone" value={phone} onValueChange={setPhone} lang={lang} testId="feedback-phone" /></div>
                 <label className="md:col-span-2"><span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-[#5C5248]">{pick(COPY.trip, lang)}</span><input value={tripReference} onChange={(e) => setTripReference(e.target.value)} maxLength={200} placeholder="Ej. Gran Sur · mayo 2026" className="w-full border border-[#2C2621]/15 bg-white px-4 py-3 outline-none focus:border-[#C16542]" /></label>

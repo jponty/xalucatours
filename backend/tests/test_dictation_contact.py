@@ -12,7 +12,7 @@ from .test_lead_registry import Database
 
 def payload(**changes):
     return {
-        "capture_type": "dictation", "full_name": "Ana García", "email": "ana@example.com",
+        "capture_type": "dictation", "first_name": "Ana", "last_name": "García", "email": "ana@example.com",
         "phone": "+34 612 345 678", "message": "Queremos recorrer el Atlas en familia durante siete días.",
         "preferred_contact": ["email", "phone"], "preferred_contact_email": "respuesta@example.com",
         "preferred_contact_phone": "+34 699 123 456", "privacy_consent": True,
@@ -24,7 +24,7 @@ def payload(**changes):
 
 @pytest.mark.parametrize("changes", [
     {"privacy_consent": False}, {"preferred_contact": []},
-    {"full_name": "  "}, {"message": "    "}, {"message": "x" * 4001},
+    {"first_name": "  "}, {"message": "    "}, {"message": "x" * 4001},
     {"email": None}, {"phone": None},
     {"phone": "612345678"},
 ])

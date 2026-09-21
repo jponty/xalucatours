@@ -52,7 +52,8 @@ const change = async (id, value) => act(async () => {
 });
 const open = () => click("test-assistant-trigger");
 const fillIdentity = async () => {
-  await change("assistant-full_name", "  Test Traveller  ");
+  await change("assistant-first_name", "  Test  ");
+  await change("assistant-last_name", "  Traveller  ");
   await change("assistant-email", "  traveller@example.com  ");
   await change("assistant-phone", "+34612345678");
 };
@@ -120,7 +121,7 @@ test("opens on demand with identity, permanent contact and no freeform input or 
 
 test("requires every identity field and privacy consent, even for email-only preference", async () => {
   await open(); await click("assistant-identify");
-  expect(document.querySelectorAll('[role="alert"]')).toHaveLength(4);
+  expect(document.querySelectorAll('[role="alert"]')).toHaveLength(5);
   expect(identifyForAssistant).not.toHaveBeenCalled();
   await fillIdentity(); await click("assistant-pref-email"); await click("assistant-identify");
   expect(identifyForAssistant).not.toHaveBeenCalled();
@@ -131,7 +132,7 @@ test("requires every identity field and privacy consent, even for email-only pre
   await change("assistant-email", "  traveller@example.com  "); await click("assistant-identify");
   expect(identifyForAssistant).toHaveBeenCalledTimes(1);
   const [payload, signal] = identifyForAssistant.mock.calls[0];
-  expect(payload).toEqual(expect.objectContaining({ full_name: "Test Traveller", email: "traveller@example.com", phone: "+34612345678", privacy_consent: true, preferred_contact: ["email"], language: "es", capture_type: "assistant", source_path: "/asistente", source_route_id: "asistente" }));
+  expect(payload).toEqual(expect.objectContaining({ first_name: "Test", last_name: "Traveller", email: "traveller@example.com", phone: "+34612345678", privacy_consent: true, preferred_contact: ["email"], language: "es", capture_type: "assistant", source_path: "/asistente", source_route_id: "asistente" }));
   expect(payload.submission_id).toMatch(/^[a-f0-9-]{36}$/);
   expect(payload.source_url).toContain("utm_source=assistant-test");
   expect(payload.source_url).not.toContain("not-for-attribution");
@@ -148,7 +149,7 @@ test("requires every identity field and privacy consent, even for email-only pre
 test("retrying failed identification reuses its submission ID and keeps entered details", async () => {
   identifyForAssistant.mockRejectedValueOnce(Object.assign(new Error("failed"), { status: 503 }));
   await open(); await identify();
-  expect(get("assistant-full_name").value).toContain("Test Traveller");
+  expect(get("assistant-first_name").value).toContain("Test");
   expect(get("assistant-consent").checked).toBe(true);
   expect(document.querySelector('[role="alert"]')).not.toBeNull();
   expect(loadAssistantGuide).not.toHaveBeenCalled();
@@ -313,7 +314,7 @@ test("closing during identification aborts it, preserves retry details and ignor
   await act(async () => response.resolve({ token: "stale-token" }));
   expect(loadAssistantGuide).not.toHaveBeenCalled();
   await open();
-  expect(get("assistant-full_name").value).toContain("Test Traveller");
+  expect(get("assistant-first_name").value).toContain("Test");
   expect(get("assistant-consent").checked).toBe(true);
   await click("assistant-identify");
   expect(identifyForAssistant.mock.calls[1][0].submission_id).toBe(payload.submission_id);
@@ -359,7 +360,7 @@ test("finishing clears identity and guide state and uses a new submission ID wit
   await open(); await identify();
   const firstId = identifyForAssistant.mock.calls[0][0].submission_id;
   await click("assistant-finish"); await open();
-  expect(get("assistant-full_name").value).toBe("");
+  expect(get("assistant-first_name").value).toBe("");
   expect(get("assistant-email").value).toBe("");
   expect(get("assistant-phone").value).toBe("");
   expect(get("assistant-consent").checked).toBe(false);

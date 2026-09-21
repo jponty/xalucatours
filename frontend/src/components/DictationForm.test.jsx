@@ -46,19 +46,19 @@ test("step one only asks for a story with all ten optional prompts", () => {
 
 test("prevents advancing on empty/whitespace message and preserves all values when going back", async () => {
   await change("dictation-message", "    "); await submit();
-  expect(get("dictation-full_name")).toBeNull();
+  expect(get("dictation-first_name")).toBeNull();
   expect(container.textContent).toContain("entre 4 y 4000");
   await change("dictation-message", "Un viaje en familia al Atlas."); await click("dictation-next");
-  await change("dictation-full_name", "Ana García"); await click("dictation-back");
+  await change("dictation-first_name", "Ana"); await change("dictation-last_name", "García"); await click("dictation-back");
   expect(get("dictation-message").value).toBe("Un viaje en familia al Atlas.");
   await click("dictation-next");
-  expect(get("dictation-full_name").value).toBe("Ana García");
+  expect(get("dictation-first_name").value).toBe("Ana");
   expect(axios.post).not.toHaveBeenCalled();
 });
 
 test("requires both contact fields and privacy without repeating details; sends one contextual lead", async () => {
   await change("dictation-message", "Del 12 al 18 de octubre, dos adultos, cultura y desierto."); await click("dictation-next");
-  await change("dictation-full_name", "Ana García"); await change("dictation-email", "ana@example.com");
+  await change("dictation-first_name", "Ana"); await change("dictation-last_name", "García"); await change("dictation-email", "ana@example.com");
   await submit(); expect(axios.post).not.toHaveBeenCalled();
   expect(get("dictation-pref-both").checked).toBe(true);
   expect(get("dictation-pref-details")).toBeNull();
@@ -78,7 +78,7 @@ test("requires both contact fields and privacy without repeating details; sends 
 });
 
 const fillContact = async () => {
-  await change("dictation-full_name", "Ana García");
+  await change("dictation-first_name", "Ana"); await change("dictation-last_name", "García");
   await change("dictation-email", "ana@example.com");
   await click("dictation-pref-email");
   await change("dictation-phone", "+34612345678");
@@ -88,7 +88,7 @@ const fillContact = async () => {
 test.each([["email"], ["email", "phone"]].map(methods => [methods.join(" + "), methods]))("dictation supports %s and shows confirmation", async (_label, methods) => {
   await change("dictation-message", "Un viaje en familia al Atlas.");
   await click("dictation-next");
-  await change("dictation-full_name", "Ana García");
+  await change("dictation-first_name", "Ana"); await change("dictation-last_name", "García");
   await change("dictation-email", "ana@example.com");
   await change("dictation-phone", "+34612345678");
   if (methods.length === 1) await click("dictation-pref-email");
@@ -162,7 +162,7 @@ test("clearing optional fields submits no assumed dates or traveller count", asy
 test("failed send retains the story and reuses the submission identity on retry", async () => {
   axios.post.mockRejectedValueOnce(new Error("offline"));
   await change("dictation-message", "Un viaje cultural de siete días."); await click("dictation-next");
-  await change("dictation-full_name", "Ana García"); await change("dictation-email", "ana@example.com");
+  await change("dictation-first_name", "Ana"); await change("dictation-last_name", "García"); await change("dictation-email", "ana@example.com");
   await click("dictation-pref-email"); await change("dictation-phone", "+34612345678");
   await click("dictation-consent"); await click("dictation-submit");
   expect(get("success")).toBeNull();

@@ -183,7 +183,8 @@ export const translations = {
                           fr: "Un spécialiste réel vous répondra sous 24 heures — jamais d'automatisation.",
                           es: "Un especialista en Marruecos te responderá personalmente en un plazo de 24 a 48 horas laborables. Nuestro horario de atención es de lunes a viernes, de 10:00 a 20:00 h." },
 
-  form_name:       { en: "Full name",           fr: "Nom complet",            es: "Nombre completo" },
+  form_name:       { en: "First name",          fr: "Prénom",                 es: "Nombre" },
+  form_last_name:  { en: "Last name(s)",        fr: "Nom de famille",         es: "Apellido(s)" },
   form_email:      { en: "Email",               fr: "E-mail",                 es: "Correo electrónico" },
   form_phone:      { en: "Phone",    fr: "Téléphone",  es: "Teléfono" },
   form_dates:      { en: "Travel dates",        fr: "Dates de voyage",        es: "Fechas del viaje" },

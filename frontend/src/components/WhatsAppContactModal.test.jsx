@@ -113,7 +113,7 @@ describe("mandatory WhatsApp Business lead gate", () => {
       capture_type: "whatsapp_business",
       first_name: "Joan",
       last_name: "Pont",
-      full_name: "Joan Pont",
+
       email: "joan@example.com",
       phone: "+34612345678",
       privacy_consent: true,

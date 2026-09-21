@@ -11,7 +11,7 @@ const fieldClass = "min-w-0 w-full bg-[#211B17] border border-white/20 px-3 py-2
 const buttonClass = "inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 text-sm hover:bg-white/10 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D4A373]";
 const dateLabel = value => value ? new Date(value).toLocaleString("es-ES", { timeZone: "UTC", dateStyle: "medium", timeStyle: "short" }) + " UTC" : "No registrada";
 const LABELS = {
-  full_name: "Nombre completo", first_name: "Nombre", last_name: "Apellidos", name: "Nombre", email: "Email", phone: "Teléfono internacional",
+  full_name: "Nombre original (sin separar)", first_name: "Nombre", last_name: "Apellido(s)", name: "Nombre original (sin separar)", email: "Email", phone: "Teléfono internacional",
   created_at: "Fecha de creación", source_url: "URL de origen", source_path: "Página de origen", source_route_id: "Identificador de página", source_label: "Página / punto de captación",
   capture_type: "Tipo de captación", related_trip_id: "Identificador del viaje", related_trip_title: "Viaje relacionado",
   preferred_contact: "Forma de contacto preferida", preferred_contact_email: "Email preferido de contacto", preferred_contact_phone: "Teléfono / WhatsApp preferido",
@@ -141,6 +141,7 @@ export default function LeadsPanel() {
       {!loading && data.items.map(lead => <article key={lead.id} className="min-w-0 border border-white/15 bg-white/[0.02] p-4" data-testid="admin-lead-row">
         <div className="flex flex-wrap justify-between gap-2"><span className="text-xs text-[#D4A373]">{lead.type_label}</span><span className="text-xs border border-white/20 px-2 py-1">{STATUSES[lead.status] || lead.status}</span></div>
         <h3 className="font-serif-x text-xl mt-3 break-words">{lead.full_name || "Nombre no facilitado"}</h3>
+        <dl className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 text-sm break-words"><div><dt className="text-white/50 text-xs">Nombre</dt><dd>{lead.first_name || "No registrado por separado"}</dd></div><div><dt className="text-white/50 text-xs">Apellido(s)</dt><dd>{lead.last_name || "No registrado por separado"}</dd></div></dl>
         <div className="text-sm mt-2 space-y-1 [overflow-wrap:anywhere]">{lead.email && <p><a className="hover:underline" href={`mailto:${lead.email}`}>{lead.email}</a></p>}{lead.phone && <p><a className="hover:underline" href={`tel:${lead.phone}`}>{lead.phone}</a></p>}</div>
         <p className="text-xs text-white/50 mt-3">{dateLabel(lead.created_at)}</p>
         <p className="text-sm text-white/65 mt-2 break-words [overflow-wrap:anywhere]">Origen: {lead.source_url || lead.source_label || "No registrado"}</p>
@@ -162,7 +163,8 @@ export default function LeadsPanel() {
           <label className="text-sm">Estado del lead<select data-testid="lead-status" disabled={saving} className={`${fieldClass} mt-2`} value={detail.status} onChange={e => changeStatus(e.target.value)}>{Object.entries(STATUSES).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
           <p className="text-xs text-white/50">Archivar conserva la solicitud. Cambiar este estado no suscribe ni da de baja al contacto en Resend.</p>
           {safeLink(detail.source_url) && <a href={safeLink(detail.source_url)} target="_blank" rel="noopener noreferrer" className="text-[#D4A373] underline">Abrir página de origen</a>}
-          <dl className="divide-y divide-white/10 min-w-0">{Object.entries(detail.details || {}).filter(([key, value]) => visible(value) && !["id", "email_lower", "lead_status", "status"].includes(key)).map(([key, value]) => <div key={key} className="py-3 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-2"><dt className="text-xs text-[#D4A373]">{LABELS[key] || key.replaceAll("_", " ")}</dt><dd className="min-w-0 text-sm">{key === "preferred_contact" ? contactPrefLabel(value, "es") : <DataValue value={value} />}</dd></div>)}</dl>
+          <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 [overflow-wrap:anywhere]"><div><dt className="text-xs text-[#D4A373]">Nombre</dt><dd>{detail.first_name || "No registrado por separado"}</dd></div><div><dt className="text-xs text-[#D4A373]">Apellido(s)</dt><dd>{detail.last_name || "No registrado por separado"}</dd></div></dl>
+          <dl className="divide-y divide-white/10 min-w-0">{Object.entries(detail.details || {}).filter(([key, value]) => visible(value) && !["id", "email_lower", "lead_status", "status", "first_name", "last_name", ...((detail.first_name || detail.last_name) ? ["full_name", "name"] : [])].includes(key)).map(([key, value]) => <div key={key} className="py-3 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-2"><dt className="text-xs text-[#D4A373]">{LABELS[key] || key.replaceAll("_", " ")}</dt><dd className="min-w-0 text-sm">{key === "preferred_contact" ? contactPrefLabel(value, "es") : <DataValue value={value} />}</dd></div>)}</dl>
         </>}
       </DialogContent>
     </Dialog>

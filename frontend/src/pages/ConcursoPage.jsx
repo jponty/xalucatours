@@ -34,7 +34,7 @@ const UI = {
     { t: T("Recibe tu premio", "Get your prize", "Recevez votre lot"), b: T("Te enviamos un email con tu premio y cómo canjearlo.", "We email you your prize and how to redeem it.", "Nous vous envoyons votre lot et comment en profiter.") },
   ],
   firstName: T("Nombre", "First name", "Prénom"),
-  lastName: T("Apellidos", "Last name", "Nom"),
+  lastName: T("Apellido(s)", "Last name", "Nom"),
   phone: T("Teléfono", "Phone", "Téléphone"),
   email: T("Email de contacto", "Contact email", "E-mail de contact"),
   participate: T("Participar", "Enter", "Participer"),

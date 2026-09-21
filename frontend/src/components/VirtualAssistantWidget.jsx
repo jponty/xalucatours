@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
+import PersonalNameFields, { personalNameFields } from "@/components/PersonalNameFields";
 import { Content as DialogContent } from "@radix-ui/react-dialog";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BookOpen, Bot, ChevronRight, Loader2, RotateCcw, ShieldCheck, X } from "lucide-react";
@@ -40,7 +41,7 @@ const COPY = {
   retry: T("Volver a intentar", "Try again", "Réessayer"),
   privacyNote: T("Registraremos tus datos como consulta de Asistente Virtual. No te suscribiremos a la newsletter. Tus selecciones no se guardan en el navegador al salir de esta página.", "We will register your details as a Virtual Assistant enquiry. We won't subscribe you to the newsletter. Your choices are not saved in your browser after leaving this page.", "Vos coordonnées seront enregistrées comme demande à l'assistant virtuel. Cela ne vous inscrit pas à la newsletter. Vos choix ne sont pas conservés dans votre navigateur après avoir quitté cette page."),
 };
-const emptyForm = () => ({ full_name: "", email: "", phone: "", privacy_consent: false, preferred_contact: [...DEFAULT_CONTACT_PREFERENCE] });
+const emptyForm = () => ({ first_name: "", last_name: "", email: "", phone: "", privacy_consent: false, preferred_contact: [...DEFAULT_CONTACT_PREFERENCE] });
 const inputClass = "mt-2 w-full border border-[#2C2621]/20 bg-white px-3 py-3 text-base text-[#2C2621] outline-none focus:border-[#C16542] disabled:opacity-60";
 const ctaClass = "xaluca-button inline-flex min-h-11 items-center justify-center gap-2 px-5 py-3 text-sm transition-colors disabled:cursor-wait disabled:opacity-60";
 
@@ -130,7 +131,7 @@ export default function VirtualAssistantWidget({ open, onOpenChange, triggerRef 
     event.preventDefault();
     if (sending) return;
     const invalid = {};
-    if (form.full_name.trim().length < 2) invalid.full_name = pick(DICTATION_COPY.required, lang);
+    for (const [key, value] of Object.entries(personalNameFields(form))) if (!value) invalid[key] = pick(DICTATION_COPY.required, lang);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) invalid.email = pick(DICTATION_COPY.emailError, lang);
     if (!isValidInternationalPhone(form.phone)) invalid.phone = pick(DICTATION_COPY.phoneError, lang);
     if (!form.privacy_consent) invalid.privacy_consent = pick(DICTATION_COPY.required, lang);
@@ -140,7 +141,7 @@ export default function VirtualAssistantWidget({ open, onOpenChange, triggerRef 
     setSending(true);
     try {
       if (!sessionCapture.current) sessionCapture.current = capture();
-      const data = await identifyForAssistant({ ...sessionCapture.current, ...form, full_name: form.full_name.trim(), email: form.email.trim(), language: lang }, controller.signal);
+      const data = await identifyForAssistant({ ...sessionCapture.current, ...form, ...personalNameFields(form), email: form.email.trim(), language: lang }, controller.signal);
       if (controller.signal.aborted) return;
       if (typeof data.token !== "string" || !data.token) throw new Error("missing_session");
       setToken(data.token); setForm(emptyForm()); setErrors({});
@@ -189,9 +190,10 @@ export default function VirtualAssistantWidget({ open, onOpenChange, triggerRef 
             <p className="mt-3 text-sm leading-relaxed text-[#5C5248]">{text("identifyBody")}</p>
             <form onSubmit={identify} noValidate className="mt-6 space-y-5" data-testid="assistant-identity-form">
               <fieldset disabled={sending} className="min-w-0 space-y-5">
-                {["full_name", "email"].map(key => <div key={key}>
-                  <label htmlFor={`${id}-${key}`} className="text-sm">{pick(DICTATION_COPY[key === "full_name" ? "name" : "email"], lang)} *</label>
-                  <input id={`${id}-${key}`} name={key} required type={key === "email" ? "email" : "text"} autoComplete={key === "email" ? "email" : "name"} maxLength={key === "email" ? 254 : 120} className={inputClass} value={form[key]} onChange={event => update(key, event.target.value)} aria-invalid={Boolean(errors[key])} aria-describedby={errors[key] ? `${id}-${key}-error` : undefined} data-testid={`assistant-${key}`} />
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2"><PersonalNameFields value={form} onChange={update} lang={lang} errors={errors} inputClass={inputClass} testIdPrefix="assistant" /></div>
+                {["email"].map(key => <div key={key}>
+                  <label htmlFor={`${id}-${key}`} className="text-sm">{pick(DICTATION_COPY.email, lang)} *</label>
+                  <input id={`${id}-${key}`} name={key} required type="email" autoComplete="email" maxLength={254} className={inputClass} value={form[key]} onChange={event => update(key, event.target.value)} aria-invalid={Boolean(errors[key])} aria-describedby={errors[key] ? `${id}-${key}-error` : undefined} data-testid={`assistant-${key}`} />
                   {fieldError(key)}
                 </div>)}
                 <div><label htmlFor={`${id}-phone`} className="mb-2 block text-sm">{pick(DICTATION_COPY.phone, lang)} *</label><InternationalPhoneInput id={`${id}-phone`} value={form.phone} onValueChange={value => update("phone", value)} lang={lang} required countryPortalContainer={countryPortal} invalid={Boolean(errors.phone)} testId="assistant-phone" />{fieldError("phone")}</div>

@@ -26,6 +26,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, ValidationError, field_validator
 
 from lead_contact import LeadContactInput
+from lead_name import LeadNameInput
 from lead_registry import LeadCapture, save_submission
 
 TOKEN_TTL = 2 * 3600
@@ -105,19 +106,11 @@ def fail(status, code, retry_after=None):
     raise HTTPException(status, detail={"code": code}, headers=headers)
 
 
-class SessionInput(LeadCapture, LeadContactInput):
+class SessionInput(LeadCapture, LeadContactInput, LeadNameInput):
     model_config = ConfigDict(extra="forbid")
-    full_name: str = Field(min_length=2, max_length=120)
     privacy_consent: StrictBool
     language: Literal["es", "en", "fr"] = "es"
     submission_id: uuid.UUID
-
-    @field_validator("full_name", mode="before")
-    @classmethod
-    def clean_name(cls, value):
-        if not isinstance(value, str) or any(unicodedata.category(char).startswith("C") for char in value):
-            raise ValueError("Invalid name")
-        return " ".join(value.split())
 
     @field_validator("privacy_consent")
     @classmethod

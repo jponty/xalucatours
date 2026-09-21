@@ -148,7 +148,7 @@ test("the contact card opens the shared two-step flow, validates and submits one
   expect(document.querySelectorAll('[data-testid="dictation-form"]')).toHaveLength(1);
   await change("dictation-message", "    ");
   await click("dictation-next");
-  expect(get("dictation-full_name")).toBeNull();
+  expect(get("dictation-first_name")).toBeNull();
   await change("dictation-message", "Un viaje cultural por Marruecos de siete días.");
   await click("dictation-next");
   expect(get("dictation-phone").dataset.portal).toBe("home-dictation-country-layer");
@@ -157,7 +157,7 @@ test("the contact card opens the shared two-step flow, validates and submits one
   await click("dictation-back");
   expect(get("dictation-message").value).toContain("siete días");
   await click("dictation-next");
-  await change("dictation-full_name", "Prueba Xaluca");
+  await change("dictation-first_name", "Prueba"); await change("dictation-last_name", "Xaluca");
   await change("dictation-email", "test@example.com");
   await click("dictation-pref-email");
   await change("dictation-phone", "+34612345678");
@@ -263,7 +263,7 @@ test("non-home submissions retain the actual origin and trip context through the
   await render(); await click("home-dictation-trigger");
   await change("dictation-message", "Un viaje cultural por Marruecos de siete días.");
   await click("dictation-next");
-  await change("dictation-full_name", "Prueba Xaluca");
+  await change("dictation-first_name", "Prueba"); await change("dictation-last_name", "Xaluca");
   await change("dictation-email", "test@example.com");
   await click("dictation-pref-email");
   await change("dictation-phone", "+34612345678");

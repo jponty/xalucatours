@@ -64,7 +64,7 @@ def flow(monkeypatch):
 
 def identity(**overrides):
     return {
-        "full_name": "Ana García", "email": "ana@example.com", "phone": "+34 612 345 678",
+        "first_name": "Ana", "last_name": "García", "email": "ana@example.com", "phone": "+34 612 345 678",
         "privacy_consent": True, "submission_id": str(uuid.uuid4()),
         "source_url": "https://xalucatours.com/viajes/atlas-desierto",
         "source_path": "/viajes/atlas-desierto", "source_route_id": "atlas-desierto",
@@ -176,7 +176,7 @@ def test_session_retry_does_not_duplicate_or_reset_crm_status(flow):
 
 
 @pytest.mark.parametrize("overrides", [
-    {"full_name": ""}, {"full_name": " "}, {"full_name": None}, {"full_name": 123},
+    {"first_name": ""}, {"first_name": " "}, {"last_name": None}, {"last_name": 123},
     {"email": ""}, {"email": None}, {"email": "not-an-email"},
     {"phone": ""}, {"phone": None}, {"phone": "123"},
     {"privacy_consent": False}, {"privacy_consent": "true"}, {"privacy_consent": 1},
@@ -193,7 +193,7 @@ def test_invalid_session_never_creates_lead(flow, overrides):
     assert "+34 612 345 678" not in response.text
 
 
-@pytest.mark.parametrize("field", ["full_name", "email", "phone", "privacy_consent", "submission_id"])
+@pytest.mark.parametrize("field", ["first_name", "last_name", "email", "phone", "privacy_consent", "submission_id"])
 def test_session_requires_explicit_identity_consent_and_retry_identifier(flow, field):
     client, database = flow
     payload = identity()

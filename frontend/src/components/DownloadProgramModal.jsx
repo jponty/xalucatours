@@ -22,7 +22,7 @@ const COPY = {
     fr: "Remplissez vos coordonnées et nous vous dirigerons vers le programme complet de ce voyage.",
   },
   first_name: { es: "Nombre", en: "First name", fr: "Prénom" },
-  last_name: { es: "Apellidos", en: "Last name", fr: "Nom" },
+  last_name: { es: "Apellido(s)", en: "Last name", fr: "Nom" },
   email: { es: "Correo electrónico", en: "Email", fr: "E-mail" },
   phone: { es: "Teléfono", en: "Phone", fr: "Téléphone" },
   newsletter: {

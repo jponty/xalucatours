@@ -204,6 +204,21 @@ def test_calendly_verified_idempotent_and_cancel_not_reverted(db, client, monkey
     assert saved['related_trip_id'] == 'atlas'
 
 
+def test_calendly_keeps_separately_configured_invitee_names(db, client, monkeypatch):
+    monkeypatch.setenv('CALENDLY_WEBHOOK_SIGNING_KEY', 'test-key')
+    event = {'event': 'invitee.created', 'payload': {
+        'uri': 'https://api.calendly.com/scheduled_events/event/invitees/split-person',
+        'name': 'María José de la Cruz', 'first_name': 'María José', 'last_name': 'de la Cruz',
+        'email': 'visitor@example.com',
+    }}
+    body, headers = signed_event(event)
+    assert client.post('/api/webhooks/calendly', content=body, headers=headers).status_code == 200
+    saved = next(iter(db.contact_requests.rows.values()))
+    assert saved['first_name'] == 'María José' and saved['last_name'] == 'de la Cruz'
+    lead = client.get('/api/admin/leads', headers={'Authorization': 'Bearer test-admin'}).json()['items'][0]
+    assert lead['first_name'] == 'María José' and lead['last_name'] == 'de la Cruz'
+
+
 def test_calendly_rejects_forged_and_stale_events(client, monkeypatch):
     monkeypatch.setenv('CALENDLY_WEBHOOK_SIGNING_KEY', 'test-key')
     body, headers = signed_event({}, secret='wrong')

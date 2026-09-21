@@ -20,8 +20,8 @@ jest.mock("@/components/InternationalPhoneInput", () => ({ __esModule: true,
 }));
 
 const forms = [
-  { kind: "quick", Form: ContactForm, name: "contact-input-name", email: "contact-input-email", phone: "contact-input-phone", message: "contact-input-message", pref: "contact-pref", form: "contact-form" },
-  { kind: "detailed", Form: PlannerForm, name: "full-name", email: "email", phone: "phone", message: "notes", pref: "planner-pref", form: "plan-trip-form" },
+  { kind: "quick", Form: ContactForm, name: "contact-first_name", surname: "contact-last_name", email: "contact-input-email", phone: "contact-input-phone", message: "contact-input-message", pref: "contact-pref", form: "contact-form" },
+  { kind: "detailed", Form: PlannerForm, name: "planner-first_name", surname: "planner-last_name", email: "email", phone: "phone", message: "notes", pref: "planner-pref", form: "plan-trip-form" },
 ];
 let container, root;
 const get = id => container.querySelector(`[data-testid="${id}"]`);
@@ -50,7 +50,8 @@ afterEach(() => { act(() => root.unmount()); container.remove(); delete global.I
 describe.each(forms)("$kind contact submission", config => {
   const fill = async methods => {
     await act(async () => root.render(<config.Form />));
-    await change(config.name, "Ana García");
+    await change(config.name, "Ana");
+    await change(config.surname, "García");
     await change(config.message, "Queremos conocer Marruecos en familia.");
     await change(config.email, "ana@example.com");
     await change(config.phone, "+34612345678");
@@ -61,6 +62,16 @@ describe.each(forms)("$kind contact submission", config => {
   };
   const request = () => config.kind === "quick" ? axios.post.mock.calls[0]?.[1] : JSON.parse(global.fetch.mock.calls[0]?.[1].body || "null");
 
+  test.each(["name", "surname"])("rejects a missing %s without submitting", async key => {
+    await fill(["email", "phone"]);
+    expect(get(config[key]).required).toBe(true);
+    await change(config[key], "  ");
+    await submit(config.form);
+    expect(axios.post).not.toHaveBeenCalled();
+    expect(fetch).not.toHaveBeenCalled();
+    expect(get(config.form)).not.toBeNull();
+  });
+
   test.each([["email"], ["email", "phone"]].map(methods => [methods.join(" + "), methods]))("%s reaches the same confirmation and stores usable contact data", async (_label, methods) => {
     await fill(methods);
     expect(get(config.email).required).toBe(true);
@@ -69,9 +80,10 @@ describe.each(forms)("$kind contact submission", config => {
     expect(container.textContent).toContain("¡Recibido! Te respondemos en 24–48 h.");
     expect(get("lead-success-home").getAttribute("href")).toBe("/");
     expect(request()).toMatchObject({
-      email: "ana@example.com", phone: "+34612345678", preferred_contact: methods,
+      first_name: "Ana", last_name: "García", email: "ana@example.com", phone: "+34612345678", preferred_contact: methods,
       source_path: "/contacto",
     });
+    expect(request()).not.toHaveProperty("full_name");
   });
 
   test("a structured validation error leaves the form intact and displays safe text", async () => {
@@ -81,7 +93,7 @@ describe.each(forms)("$kind contact submission", config => {
     global.fetch.mockResolvedValueOnce({ ok: false, status: 422, json: async () => ({ detail }) });
     await submit(config.form);
     expect(get(config.form)).not.toBeNull();
-    expect(get(config.name).value).toBe("Ana García");
+    expect(get(config.name).value).toBe("Ana");
     expect(get(config.phone).value).toContain("612");
     if (config.kind === "quick") {
       const notification = document.createElement("div");

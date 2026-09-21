@@ -1,4 +1,5 @@
 import React, { useId, useMemo, useState, useEffect } from "react";
+import PersonalNameFields, { personalNameFields } from "@/components/PersonalNameFields";
 import { Link } from "react-router-dom";
 import {
   Calendar, CalendarClock,
@@ -76,7 +77,6 @@ export const PLANNER_COPY = {
   // Section 5
   s5_title:    T("Tus datos", "Your details", "Vos coordonnées"),
   s5_help:     T("Solo te escribimos para preparar tu propuesta.", "We will only write to prepare your proposal.", "Nous vous écrivons uniquement pour préparer votre proposition."),
-  name:        T("Nombre completo", "Full name", "Nom complet"),
   email:       T("Email", "Email", "Email"),
   phone:       T("Teléfono", "Phone", "Téléphone"),
   notes:       T("Comentarios o ideas", "Notes or ideas", "Commentaires ou idées"),
@@ -189,7 +189,7 @@ export default function PlannerForm() {
     regions: initialTrips.regions,
     selectedTrips: initialTrips.routeIds,
     activities: [],
-    fullName: "", email: "", phone: "", notes: "",
+    first_name: "", last_name: "", email: "", phone: "", notes: "",
     preferredContact: DEFAULT_CONTACT_PREFERENCE,
   });
   const [errors, setErrors] = useState({});
@@ -226,7 +226,7 @@ export default function PlannerForm() {
 
   const validate = () => {
     const e = {};
-    if (!form.fullName || form.fullName.trim().length < 2) e.fullName = tr("required");
+    for (const [key, value] of Object.entries(personalNameFields(form))) if (!value) e[key] = tr("required");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = tr("required");
     if (!isValidInternationalPhone(form.phone)) e.phone = tr("required");
     if (!form.preferredContact.length) e.preferredContact = tr("required");
@@ -244,7 +244,7 @@ export default function PlannerForm() {
       const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/trip-planner`;
       const payload = {
         ...leadCapture(),
-        full_name: form.fullName.trim(),
+        ...personalNameFields(form),
         ...contactSubmissionFields({
           email: form.email, phone: form.phone, preferred_contact: form.preferredContact,
         }),
@@ -532,19 +532,8 @@ export default function PlannerForm() {
             title={<ET k="s5_title" multiline={false} />} help={<ET k="s5_help" />}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
-              <Field as="div" inputId={`${voiceId}-name`} label={<ET k="name" multiline={false} />} required error={errors.fullName}>
-                <input id={`${voiceId}-name`} aria-label={tr("name")} disabled={status === "sending"}
-                  type="text"
-                  data-testid="full-name"
-                  required
-                  aria-required="true"
-                  autoComplete="name"
-                  maxLength={120}
-                  className={inputCls}
-                  value={form.fullName}
-                  onChange={event => set("fullName", event.target.value)}
-                />
-              </Field>
+              <PersonalNameFields value={form} onChange={set} lang={lang} errors={errors} disabled={status === "sending"}
+                inputClass={inputCls} labelClass="text-[10px] uppercase tracking-[0.22em] text-[#5C5248]" testIdPrefix="planner" />
               <Field label={<ET k="email" multiline={false} />} required error={errors.email}>
                 <input
                   type="email"

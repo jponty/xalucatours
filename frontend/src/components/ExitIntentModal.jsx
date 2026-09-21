@@ -36,7 +36,7 @@ const COPY = {
     "Laissez-nous vos coordonnées et notre équipe vous contactera pour concevoir un voyage adapté à vos dates, préférences et type d'expérience."
   ),
   name: T("Nombre", "First name", "Prénom"),
-  lastName: T("Apellidos", "Last name", "Nom de famille"),
+  lastName: T("Apellido(s)", "Last name", "Nom de famille"),
   email: T("Correo electrónico", "Email", "E-mail"),
   phone: T("Teléfono", "Phone", "Téléphone"),
   message: T("Mensaje (opcional)", "Message (optional)", "Message (facultatif)"),
@@ -52,7 +52,7 @@ const COPY = {
   later: T("Ahora no, seguir explorando", "Not now, keep exploring", "Pas maintenant, continuer à explorer"),
   close: T("Cerrar", "Close", "Fermer"),
   nameError: T("Introduce tu nombre y tus apellidos.", "Enter your first and last name.", "Saisissez votre prénom et votre nom de famille."),
-  nameLengthError: T("El nombre y los apellidos no pueden superar los 120 caracteres en total.", "Your first and last name must not exceed 120 characters in total.", "Votre prénom et votre nom ne doivent pas dépasser 120 caractères au total."),
+  nameLengthError: T("El nombre no puede superar 120 caracteres ni los apellidos 150.", "First name must not exceed 120 characters and last name 150.", "Le prénom est limité à 120 caractères et le nom à 150."),
   contactError: T("Introduce un email y un teléfono internacional válidos.", "Enter a valid email and international phone number.", "Saisissez un e-mail et un téléphone international valides."),
   privacyError: T("Debes aceptar la política de privacidad.", "You must accept the privacy policy.", "Vous devez accepter la politique de confidentialité."),
   genericError: T("No se pudo enviar la solicitud. Inténtalo de nuevo.", "We couldn't send your request. Please try again.", "La demande n'a pas pu être envoyée. Veuillez réessayer."),
@@ -192,9 +192,7 @@ export default function ExitIntentModal() {
     const firstName = form.firstName.trim();
     const lastName = form.lastName.trim();
     if (!firstName || !lastName) { setError(pick(COPY.nameError, lang)); return; }
-    // Preserve the contact API's full_name contract and length limit.
-    const fullName = `${firstName} ${lastName}`;
-    if (fullName.length > 120) { setError(pick(COPY.nameLengthError, lang)); return; }
+    if (firstName.length > 120 || lastName.length > 150) { setError(pick(COPY.nameLengthError, lang)); return; }
     const email = form.email.trim();
     const phone = form.phone.trim();
     if (!emailValid(email) || !isValidInternationalPhone(phone)) {
@@ -209,7 +207,6 @@ export default function ExitIntentModal() {
         ...leadCapture(),
         first_name: firstName,
         last_name: lastName,
-        full_name: fullName,
         ...contactSubmissionFields(form),
         privacy_consent: form.privacy,
         journey_interest: "exit-intent",
@@ -287,7 +284,7 @@ export default function ExitIntentModal() {
                 </label>
                 <label className="block min-w-0">
                   <span className="text-[9px] uppercase tracking-[0.24em] text-[#5C5248]">{pick(COPY.lastName, lang)} *</span>
-                  <input type="text" name="lastName" autoComplete="family-name" value={form.lastName} onChange={onChange} required maxLength={120} data-testid="exit-intent-last-name" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
+                  <input type="text" name="lastName" autoComplete="family-name" value={form.lastName} onChange={onChange} required maxLength={150} data-testid="exit-intent-last-name" className="mt-2 w-full border border-[#2C2621]/15 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C16542]" />
                 </label>
               </div>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">

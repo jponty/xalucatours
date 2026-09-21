@@ -28,12 +28,16 @@ def test_feedback_http_form_persists_and_notifies_both_contact_details(monkeypat
     server._feedback_rate.clear()
     app = FastAPI(); app.include_router(server.api_router)
     client = TestClient(app)
-    data = {"name": "Ana", "email": "ana@example.com", "phone": "+34 612 345 678",
+    data = {"first_name": "Ana María", "last_name": "García de la Torre", "email": "ana@example.com", "phone": "+34 612 345 678",
             "message": "Gracias por organizar nuestro viaje.", "consent": "true", "preferred_contact": preference}
     response = client.post("/api/feedback", data=data)
     assert response.status_code == 201, response.text
     assert records[0]["phone"] == "+34612345678"
     assert records[0]["email"] == "ana@example.com"
+    assert records[0]["first_name"] == "Ana María"
+    assert records[0]["last_name"] == "García de la Torre"
+    assert records[0]["name"] == "Ana María García de la Torre"
+    assert "Apellido(s)" in notify.call_args.args[1]
     assert records[0]["preferred_contact"] == preference
     assert server._contact_pref_label(preference) in notify.call_args.args[1]
     for field in ("email", "phone"):

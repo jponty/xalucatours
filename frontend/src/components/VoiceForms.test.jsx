@@ -72,8 +72,8 @@ test("quick contact offers dictation exclusively on the trip message", async () 
   await act(async () => root.render(<ContactForm />));
   const field = container.querySelector('[data-testid="contact-input-message-voice"]');
   expect(field.querySelector("button").type).toBe("button");
-  for (const name of ["name", "party", "message"]) {
-    const input = container.querySelector(`[data-testid="contact-input-${name}"]`);
+  for (const testId of ["contact-first_name", "contact-last_name", "contact-input-party", "contact-input-message"]) {
+    const input = container.querySelector(`[data-testid="${testId}"]`);
     expect(container.querySelector(`label[for="${input.id}"]`)).not.toBeNull();
   }
   expect(container.querySelectorAll('button[aria-label^="Dictar"]')).toHaveLength(1);
@@ -82,7 +82,8 @@ test("quick contact offers dictation exclusively on the trip message", async () 
   expect(container.querySelector("label button")).toBeNull();
   expect(container.querySelector('[data-testid="contact-input-email"]').type).toBe("email");
   expect(container.querySelector('[data-testid="contact-submit-button"]').disabled).toBe(false);
-  await changeInput('[data-testid="contact-input-name"]', "Laura García");
+  await changeInput('[data-testid="contact-first_name"]', "Laura");
+  await changeInput('[data-testid="contact-last_name"]', "García");
   await changeInput('[data-testid="contact-input-party"]', "2 adultos");
 });
 
@@ -93,7 +94,7 @@ test("detailed planning offers dictation exclusively on notes, including flexibl
   await act(async () => flexible.click());
   const field = container.querySelector('[data-testid="notes-voice"]');
   expect(field.querySelector("button").type).toBe("button");
-  for (const name of ["full-name", "notes", "flex-month"]) {
+  for (const name of ["planner-first_name", "notes", "flex-month"]) {
     const input = container.querySelector(`[data-testid="${name}"]`);
     expect(container.querySelector(`label[for="${input.id}"]`)).not.toBeNull();
   }
@@ -103,6 +104,6 @@ test("detailed planning offers dictation exclusively on notes, including flexibl
   expect(container.querySelector("label button")).toBeNull();
   expect(container.querySelector('[data-testid="notes"]').maxLength).toBe(3000);
   expect(container.querySelector('[data-testid="plan-trip-submit"]').disabled).toBe(false);
-  await changeInput('[data-testid="full-name"]', "Laura García");
+  await changeInput('[data-testid="planner-first_name"]', "Laura García");
   await changeInput('[data-testid="flex-month"]', "Octubre 2026");
 });

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PersonalNameFields, { personalNameFields, hasPersonalName } from "@/components/PersonalNameFields";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
 import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
@@ -131,7 +132,8 @@ const FAQ = [
 
 const EMPTY_FORM = {
   preferred_contact: DEFAULT_CONTACT_PREFERENCE,
-  full_name: "",
+  first_name: "",
+  last_name: "",
   email: "",
   phone: "",
   travel_dates: "",
@@ -183,6 +185,7 @@ export default function FastTrackPage() {
   const onSubmit = async (event) => {
     event.preventDefault();
     if (sending) return;
+    if (!hasPersonalName(form)) { toast.error("Completa Nombre y Apellido(s)."); return; }
     if (!isValidInternationalPhone(form.phone)) {
       toast.error("Introduce un teléfono válido con su prefijo internacional.");
       return;
@@ -193,6 +196,7 @@ export default function FastTrackPage() {
       await axios.post(`${API}/contact-requests`, {
         ...leadCapture(),
         ...form,
+        ...personalNameFields(form),
         journey_interest: "fast-track",
         ...contactSubmissionFields(form),
         language: "es",
@@ -490,9 +494,8 @@ export default function FastTrackPage() {
             ) : (
               <form onSubmit={onSubmit} data-testid="fast-track-form" className="border border-white/15 bg-white/[0.04] p-7 md:p-10">
                 <div className="grid gap-6 sm:grid-cols-2">
-                  <FastTrackField label="Nombre completo">
-                    <input required name="full_name" value={form.full_name} onChange={onChange} data-testid="fast-track-name" className="fast-track-input" />
-                  </FastTrackField>
+                  <PersonalNameFields value={form} onChange={(key, value) => setForm(current => ({ ...current, [key]: value }))} disabled={sending}
+                    inputClass="fast-track-input" labelClass="text-xs uppercase tracking-[0.18em] text-white/70" testIdPrefix="fast-track" />
                   <FastTrackField label="Email">
                     <input required type="email" name="email" value={form.email} onChange={onChange} data-testid="fast-track-email" className="fast-track-input" />
                   </FastTrackField>

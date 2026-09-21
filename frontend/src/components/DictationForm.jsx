@@ -1,4 +1,5 @@
 import React, { useId, useRef, useState } from "react";
+import PersonalNameFields, { personalNameFields } from "@/components/PersonalNameFields";
 import axios from "axios";
 import { ArrowLeft, ArrowRight, Mic, Check } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
@@ -24,7 +25,6 @@ export const DICTATION_COPY = {
   back: T("Volver a mi viaje", "Back to my trip", "Revenir à mon voyage"),
   submit: T("Enviar consulta", "Send enquiry", "Envoyer ma demande"),
   sending: T("Enviando…", "Sending…", "Envoi…"),
-  name: T("Nombre completo", "Full name", "Nom complet"),
   email: T("Correo electrónico", "Email address", "Adresse e-mail"),
   phone: T("Teléfono", "Phone", "Téléphone"),
   required: T("Completa los campos obligatorios marcados con *.", "Complete the required fields marked *.", "Complétez les champs obligatoires marqués *."),
@@ -50,7 +50,7 @@ const PROMPTS = [
   T("Presupuesto aproximado, si ya lo tenéis definido.", "An approximate budget, if you have one.", "Votre budget approximatif, si vous le connaissez."),
   T("Cualquier necesidad especial, duda, preferencia o detalle importante.", "Any special needs, questions, preferences or important details.", "Tout besoin particulier, question, préférence ou détail important."),
 ];
-const EMPTY = { message: "", full_name: "", email: "", phone: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE, privacy_consent: false };
+const EMPTY = { message: "", first_name: "", last_name: "", email: "", phone: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE, privacy_consent: false };
 const EMPTY_TRIP = { dateMode: "range", startDate: "", endDate: "", exactDate: "", flexMonth: "", adults: "", children: "" };
 const inputClass = "mt-2 w-full min-w-0 rounded-sm border border-[#2C2621]/25 bg-white p-3.5 text-base text-[#2C2621] outline-none focus:border-[#C16542] focus:ring-1 focus:ring-[#C16542]";
 const buttonClass = "xaluca-button inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 py-4 text-xs tracking-[0.12em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
@@ -85,7 +85,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
     }
     if (step === 1) { move(2); return; }
     const invalid = {};
-    if (form.full_name.trim().length < 2) invalid.full_name = text("required");
+    for (const [key, value] of Object.entries(personalNameFields(form))) if (!value) invalid[key] = text("required");
     if (!emailValid(form.email)) invalid.email = text("emailError");
     if (!isValidInternationalPhone(form.phone)) invalid.phone = text("phoneError");
     if (!form.preferred_contact.length) invalid.preference = text("contactError");
@@ -96,7 +96,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
     try {
       const trip = resolveTripContext(getTripParam(), lang);
       await axios.post(`${(process.env.REACT_APP_BACKEND_URL || "").replace(/\/$/, "")}/api/contact-requests`, {
-        ...capture(), ...form, ...contactSubmissionFields(form), full_name: form.full_name.trim(), message: form.message.trim(), language: lang,
+        ...capture(), ...form, ...contactSubmissionFields(form), ...personalNameFields(form), message: form.message.trim(), language: lang,
         ...serializeOptionalTripDetails(tripDetails),
         related_trip_id: trip?.routeId || null, related_trip_title: trip?.title || null,
       });
@@ -140,9 +140,10 @@ export default function DictationForm({ className = "", countryPortalContainer, 
             <legend className="sr-only">{text("contact")}</legend>
             <p className="text-xs text-[#5C5248]">{text("required")}</p>
             <div className="grid gap-5 sm:grid-cols-2">
-              {["full_name", "email"].map(key => <div key={key}>
-                <label htmlFor={`${id}-${key}`} className="text-sm text-[#2C2621]">{text(key === "full_name" ? "name" : key)} *</label>
-                <input id={`${id}-${key}`} name={key} value={form[key]} onChange={event => update(key, event.target.value)} required minLength={key === "full_name" ? 2 : undefined} maxLength={key === "full_name" ? 120 : 254} autoComplete={key === "full_name" ? "name" : "email"} type={key === "email" ? "email" : "text"}
+              <PersonalNameFields value={form} onChange={update} lang={lang} errors={errors} inputClass={inputClass} testIdPrefix="dictation" />
+              {["email"].map(key => <div key={key} className="sm:col-span-2">
+                <label htmlFor={`${id}-${key}`} className="text-sm text-[#2C2621]">{text(key)} *</label>
+                <input id={`${id}-${key}`} name={key} value={form[key]} onChange={event => update(key, event.target.value)} required maxLength={254} autoComplete="email" type="email"
                   aria-invalid={Boolean(errors[key])} aria-describedby={errors[key] ? `${id}-${key}-error` : undefined} className={inputClass} data-testid={`dictation-${key}`} />{error(key)}
               </div>)}
               <div className="sm:col-span-2">

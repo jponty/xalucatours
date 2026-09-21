@@ -85,7 +85,7 @@ def test_configuration_can_change_or_disable_block(monkeypatch, tmp_path):
 def test_planner_and_download_use_same_customer_only_block(outbox, kind):
     if kind == "planner":
         payload = server.TripPlannerCreate(
-            full_name="Ana García", email="client@example.com", phone="+34612345678",
+            first_name="Ana", last_name="García", email="client@example.com", phone="+34612345678",
         )
         request = Request({"type": "http", "headers": []})
         asyncio.run(server.create_trip_planner(payload, request))

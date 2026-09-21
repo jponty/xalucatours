@@ -1,5 +1,7 @@
 # Leads centralizados · Xaluca Tours
 
+Actualización 21/09/2026: [Nombre y Apellido(s) independientes](./lead-contact-preferences.md#nombre-y-apellidos-independientes-21092026) en captación, ficha, CSV e emails; nueva migración aditiva de feedback aplicada. Los nombres históricos no se dividen por inferencia.
+
 Actualización 20/09/2026: consultar [datos de contacto unificados](./lead-contact-preferences.md). Los formularios nuevos exigen email y teléfono; feedback requiere una migración aditiva de dos columnas, aplicada sin cambiar RLS. Las notas de ausencia de migración de la auditoría siguiente describen la versión original del dashboard.
 
 ## Arquitectura y auditoría (17/09/2026)

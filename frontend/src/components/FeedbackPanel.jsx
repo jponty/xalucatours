@@ -166,6 +166,8 @@ export default function FeedbackPanel() {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <Info icon={Mail} label="Nombre" value={selected.first_name || "No registrado por separado"} />
+                <Info icon={Mail} label="Apellido(s)" value={selected.last_name || "No registrado por separado"} />
                 <Info icon={Mail} label="Email" value={selected.email || "No facilitado"} />
                 <Info icon={Clock3} label="Viaje o fecha" value={selected.trip_reference || "No indicado"} />
                 <Info icon={Star} label="Valoración" value={selected.rating ? `${selected.rating} / 5` : "Sin valoración"} />

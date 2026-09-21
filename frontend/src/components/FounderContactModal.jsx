@@ -34,7 +34,7 @@ const COPY = {
     "Partagez une question, une proposition ou un besoin. Choisissez votre destinataire et nous lui transmettrons personnellement.",
   ),
   firstName: T("Nombre", "First name", "Prénom"),
-  lastName: T("Apellidos", "Last name", "Nom"),
+  lastName: T("Apellido(s)", "Last name", "Nom"),
   phone: T("Teléfono", "Phone", "Téléphone"),
   email: T("Correo electrónico", "Email", "E-mail"),
   message: T("Comentario o mensaje", "Comment or message", "Commentaire ou message"),
@@ -166,7 +166,6 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
     try {
       let routeId = null;
       try { routeId = resolvePath(location.pathname)?.routeId || null; } catch { routeId = null; }
-      const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
       const recipientPayload = isTeamContact
         ? { team_recipient: form.recipient }
         : { founder_recipient: form.recipient };
@@ -174,7 +173,6 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
         ...leadCapture(),
         first_name: form.firstName.trim(),
         last_name: form.lastName.trim(),
-        full_name: fullName,
         ...contactSubmissionFields(form),
         message: form.message.trim(),
         ...recipientPayload,

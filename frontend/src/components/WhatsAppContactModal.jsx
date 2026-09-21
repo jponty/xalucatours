@@ -38,7 +38,7 @@ const COPY = {
     fr: "Laissez-nous vos coordonnées afin que l’équipe Xaluca Tours puisse identifier votre demande et vous accompagner personnellement. En continuant, nous enregistrerons cette demande et ouvrirons notre chat WhatsApp Business officiel.",
   },
   firstName: { es: "Nombre", en: "First name", fr: "Prénom" },
-  lastName: { es: "Apellidos", en: "Last name", fr: "Nom de famille" },
+  lastName: { es: "Apellido(s)", en: "Last name", fr: "Nom de famille" },
   email: { es: "Email", en: "Email", fr: "E-mail" },
   phone: { es: "Teléfono", en: "Phone", fr: "Téléphone" },
   privacyPre: { es: "He leído y acepto la ", en: "I have read and accept the ", fr: "J’ai lu et j’accepte la " },
@@ -168,13 +168,11 @@ export default function WhatsAppContactModal() {
     setSending(true);
     setError("");
     try {
-      const fullName = `${firstName} ${lastName}`;
       await axios.post(`${API}/contact-requests`, {
         ...leadCapture(),
         capture_type: "whatsapp_business",
         first_name: firstName,
         last_name: lastName,
-        full_name: fullName,
         ...contactSubmissionFields({ email, phone, preferred_contact: preference }),
         privacy_consent: true,
         message: "Solicitud de contacto a través de WhatsApp Business.",

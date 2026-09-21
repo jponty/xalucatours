@@ -20,7 +20,7 @@ test("availability is an uncached GET and requires literal true", async () => {
 
 test("identification is a JSON POST with consent and preferences but no session token", async () => {
   const signal = new AbortController().signal;
-  const body = { full_name: "Test Traveller", email: "test@example.com", phone: "+34612345678", language: "es", privacy_consent: true, preferred_contact: ["email"], capture_type: "assistant", submission_id: "test-id" };
+  const body = { first_name: "Test", last_name: "Traveller", email: "test@example.com", phone: "+34612345678", language: "es", privacy_consent: true, preferred_contact: ["email"], capture_type: "assistant", submission_id: "test-id" };
   fetch.mockResolvedValueOnce(respond({ token: "memory-only-token" }));
   await expect(identifyForAssistant(body, signal)).resolves.toEqual({ token: "memory-only-token" });
   expect(fetch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/assistant\/session$/), {

@@ -36,7 +36,7 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
     captured = []
     _accepted_senders(monkeypatch, captured)
     payload = server.ContactRequestCreate(
-        full_name="Ana García",
+        first_name="Ana", last_name="García",
         email="ana@example.com",
         phone="+34 600 111 222",
         travel_dates="Octubre 2026",
@@ -69,7 +69,8 @@ def test_contact_waits_for_resend_and_includes_every_field(monkeypatch):
     assert captured[1][0] == "confirmation"
     confirmation_rows = captured[1][5]["summary_rows"]
     assert confirmation_rows == [
-        ("Nombre", "Ana García"),
+        ("Nombre", "Ana"),
+        ("Apellido(s)", "García"),
         ("Email", "ana@example.com"),
         ("Teléfono", "+34600111222"),
         ("Fechas", "Octubre 2026"),
@@ -101,7 +102,7 @@ def test_team_contact_preserves_recipient_in_storage_and_both_emails(monkeypatch
     monkeypatch.setattr(server, f"TEAM_{recipient.upper()}_EMAIL", recipient_email)
     monkeypatch.setattr(server, "NOTIFY_EMAILS", ["xalucatours@xaluca.com", "joan@xaluca.com"])
     payload = server.ContactRequestCreate(
-        full_name="Ana García",
+        first_name="Ana", last_name="García",
         phone="+34612345678",
         email="ana@example.com",
         team_recipient=recipient.upper(),
@@ -155,7 +156,7 @@ def test_direct_contact_sends_to_personal_and_central_recipients(
 
     monkeypatch.setattr(server.resend.Emails, "send", accept)
     payload = server.ContactRequestCreate(
-        full_name="Ana García",
+        first_name="Ana", last_name="García",
         phone="+34612345678",
         email="ana@example.com",
         message="Quiero preparar mi viaje a Marruecos.",
@@ -225,7 +226,7 @@ def test_contact_never_returns_success_when_resend_rejects(monkeypatch):
     )
     monkeypatch.setattr(server, "send_client_confirmation", lambda *args, **kwargs: "client-id")
     payload = server.ContactRequestCreate(
-        full_name="Ana García",
+        first_name="Ana", last_name="García",
         phone="+34612345678",
         email="ana@example.com",
         message="Necesito información del viaje.",
@@ -252,7 +253,7 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
         "client": ("127.0.0.1", 12345),
     })
     planner = server.TripPlannerCreate(
-        full_name="Marc Vidal",
+        first_name="Marc", last_name="Vidal",
         email="marc@example.com",
         phone="+34 611 222 333",
         date_mode="range",
@@ -304,7 +305,7 @@ def test_planner_and_program_download_wait_for_both_messages(monkeypatch):
 
 def test_phone_fields_are_normalized_and_require_country_code():
     contact = server.ContactRequestCreate(
-        full_name="Ana García",
+        first_name="Ana", last_name="García",
         email="ana@example.com",
         phone="+34 600 111 222",
         message="Necesito información del viaje.",
@@ -322,7 +323,7 @@ def test_phone_fields_are_normalized_and_require_country_code():
 
     with pytest.raises(ValueError, match="international calling code"):
         server.ContactRequestCreate(
-            full_name="Ana García",
+            first_name="Ana", last_name="García",
             email="ana@example.com",
             phone="600 111 222",
             message="Necesito información del viaje.",
@@ -347,7 +348,7 @@ def test_resend_acceptance_requires_recipient_and_message_id(monkeypatch):
 def test_both_primary_details_are_required_independently_of_preference():
     with pytest.raises(ValueError, match="phone"):
         server.ContactRequestCreate(
-            full_name="Ana García",
+            first_name="Ana", last_name="García",
             email="ana@example.com",
             preferred_contact=["email"],
             message="Necesito información del viaje.",
@@ -355,7 +356,7 @@ def test_both_primary_details_are_required_independently_of_preference():
 
     with pytest.raises(ValueError, match="phone"):
         server.TripPlannerCreate(
-            full_name="Marc Vidal",
+            first_name="Marc", last_name="Vidal",
             email="marc@example.com",
             preferred_contact=["phone"],
         )

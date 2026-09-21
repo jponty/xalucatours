@@ -32,7 +32,7 @@ def test_contact_methods_save_lead_notify_and_return_success(flow, kind, endpoin
     email = "ana@example.com"
     phone = "+34612345678"
     payload = {
-        "capture_type": kind, "full_name": "Ana García", "message": "Queremos conocer Marruecos en familia.",
+        "capture_type": kind, "first_name": "Ana", "last_name": "García", "message": "Queremos conocer Marruecos en familia.",
         "email": email, "phone": phone, "preferred_contact": methods,
         "privacy_consent": True, "source_url": "https://xalucatours.com/contacto", "source_path": "/contacto",
         "submission_id": str(uuid.uuid4()),
@@ -74,7 +74,7 @@ def test_contact_methods_save_lead_notify_and_return_success(flow, kind, endpoin
 ])
 def test_invalid_contact_does_not_create_or_notify(flow, endpoint, overrides):
     client, database, internal, confirmation = flow
-    payload = {"full_name": "Ana García", "message": "Un viaje a Marruecos", "email": "ana@example.com",
+    payload = {"first_name": "Ana", "last_name": "García", "message": "Un viaje a Marruecos", "email": "ana@example.com",
                "preferred_contact": ["email"], "phone": "+34612345678", **overrides}
     assert client.post(f"/api/{endpoint}", json=payload).status_code == 422
     assert not database.contact_requests.rows and not database.trip_planner_requests.rows
@@ -83,8 +83,8 @@ def test_invalid_contact_does_not_create_or_notify(flow, endpoint, overrides):
 
 
 @pytest.mark.parametrize("model,extra", [
-    (server.ContactRequestCreate, {"full_name": "Ana García", "message": "Un viaje a Marruecos"}),
-    (server.TripPlannerCreate, {"full_name": "Ana García"}),
+    (server.ContactRequestCreate, {"first_name": "Ana", "last_name": "García", "message": "Un viaje a Marruecos"}),
+    (server.TripPlannerCreate, {"first_name": "Ana", "last_name": "García"}),
     (server.ProgramDownloadCreate, {"first_name": "Ana", "last_name": "García", "privacy_accepted": True}),
     (server.NewsletterSubscriptionCreate, {"first_name": "Ana", "last_name": "García", "consent": True}),
     (server.ContestSpinPayload, {"first_name": "Ana", "last_name": "García"}),
@@ -108,7 +108,7 @@ def test_every_capture_requires_both_details_and_only_two_preferences(model, ext
 
 
 def test_legacy_contact_fields_cannot_override_current_identity():
-    data = server.ContactRequestCreate(full_name="Ana García", email="ana@example.com", phone="+34612345678",
+    data = server.ContactRequestCreate(first_name="Ana", last_name="García", email="ana@example.com", phone="+34612345678",
         message="Un viaje a Marruecos", preferred_contact=["email"],
         preferred_contact_email="other@example.com", preferred_contact_phone="+34699123456")
     assert data.email == "ana@example.com"
@@ -125,5 +125,5 @@ def test_historical_phone_only_records_still_load():
 def test_direct_recipient_validation_remains_independent_of_contact_preference():
     from pydantic import ValidationError
     with pytest.raises(ValidationError, match="Choose either a founder or a team recipient"):
-        server.ContactRequestCreate(full_name="Ana García", email="ana@example.com", phone="+34612345678",
+        server.ContactRequestCreate(first_name="Ana", last_name="García", email="ana@example.com", phone="+34612345678",
             message="Consulta de viaje", founder_recipient="lluis", team_recipient="noemi")

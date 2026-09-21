@@ -9,7 +9,7 @@ jest.mock("@/components/ui/dialog", () => ({
   DialogTitle: ({ children }) => <h2>{children}</h2>,
   DialogDescription: ({ children }) => <p>{children}</p>,
 }));
-const lead = { id: "contact:1", record_id: "1", source: "contact", full_name: "Ana García", email: "ana@example.com", phone: "+34612345678", type_label: "Antes de irte", type: "exit_intent", source_url: "/contacto", created_at: "2026-09-17T10:00:00Z", status: "new" };
+const lead = { id: "contact:1", record_id: "1", source: "contact", first_name: "Ana", last_name: "García", full_name: "Ana García", email: "ana@example.com", phone: "+34612345678", type_label: "Antes de irte", type: "exit_intent", source_url: "/contacto", created_at: "2026-09-17T10:00:00Z", status: "new" };
 let root, container;
 beforeEach(() => {
   global.IS_REACT_ACT_ENVIRONMENT = true;
@@ -27,6 +27,8 @@ test("loads all leads with admin auth and displays origin and phone", async () =
   expect(fetch.mock.calls[0][1].headers.Authorization).toBe("Bearer test-admin");
   expect(container.textContent).toContain("Todos los leads");
   expect(container.textContent).toContain("Ana García");
+  expect(container.querySelector("dl").textContent).toContain("NombreAna");
+  expect(container.querySelector("dl").textContent).toContain("Apellido(s)García");
   expect(container.textContent).toContain("+34612345678");
   expect(container.textContent).toContain("/contacto");
 });
@@ -43,6 +45,7 @@ test("opens all submitted data and saves management state on the original lead",
   await render();
   await act(async () => button("Ver ficha").click());
   expect(container.querySelector('[role="dialog"]').textContent).toContain("Familia con dos niños");
+  expect(container.querySelector('[role="dialog"] dl').textContent).toContain("NombreAnaApellido(s)García");
   expect(container.textContent).toContain("+33612345678");
   expect(container.textContent).toContain("Sáhara");
   await act(async () => input(container.querySelector('[data-testid="lead-status"]'), "reviewed"));

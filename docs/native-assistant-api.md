@@ -5,7 +5,7 @@ El asistente es un flujo guiado de botones, sin preguntas libres ni dictado. Rec
 ## Identificación y CRM
 
 - `GET /api/assistant/status` devuelve únicamente `{ "available": true|false }`.
-- `POST /api/assistant/session` requiere nombre completo, email válido, teléfono internacional, `privacy_consent: true`, idioma `es|en|fr` y `submission_id` UUID. `preferred_contact` admite `['email', 'phone']` (predeterminado) o `['email']`; el teléfono sigue siendo obligatorio.
+- `POST /api/assistant/session` requiere `first_name` (Nombre) y `last_name` (Apellido(s)) independientes, email válido, teléfono internacional, `privacy_consent: true`, idioma `es|en|fr` y `submission_id` UUID. `preferred_contact` admite `['email', 'phone']` (predeterminado) o `['email']`; el teléfono sigue siendo obligatorio. `full_name` se deriva de ambos campos para visualización, nunca sustituye a los campos independientes.
 - Los metadatos de origen usan el contrato `LeadCapture` existente. La API impone `capture_type: 'assistant'` y crea el registro idempotente en `contact_requests`, visible como **Asistente virtual** en el administrador. No hay tablas ni migraciones nuevas.
 - Identificarse no envía una consulta humana, un email de confirmación, una notificación interna ni una suscripción comercial. La nota guardada lo indica expresamente. La derivación a Contacto necesita una solicitud explícita adicional en el flujo habitual.
 - La respuesta contiene `token` y `expires_at` (fecha ISO). El token contiene únicamente UUID del lead y caducidad; no incluye nombre, email, teléfono ni conversación. La firma está separada criptográficamente de la administración.
