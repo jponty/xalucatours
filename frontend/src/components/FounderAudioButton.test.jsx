@@ -12,6 +12,7 @@ jest.mock("@/contexts/LanguageContext", () => ({
 }));
 jest.mock("react-router-dom", () => ({ Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a> }));
 jest.mock("@/components/FounderContactModal", () => () => null);
+jest.mock("@/lib/featureFlags", () => ({ SHOW_FOUNDER_AUDIO_CONTROLS: true }));
 jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults }) => <Tag>{defaults.es}</Tag>);
 jest.mock("@/components/EditableImage", () => ({ fallback, alt }) => <img src={fallback} alt={alt} />);
 

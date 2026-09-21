@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Headphones, Pause, Play } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { SHOW_FOUNDER_AUDIO_CONTROLS } from "@/lib/featureFlags";
 
 const T = (es, en, fr) => ({ es, en, fr });
 const COPY = {
@@ -14,7 +15,14 @@ const COPY = {
 
 // Leave src empty until this founder's own recording is available. Adding the
 // final URL enables the existing player without changing the surrounding card.
-export default function FounderAudioButton({ src = null, founderName, playLabel, pauseLabel, testid }) {
+export default function FounderAudioButton(props) {
+  if (!SHOW_FOUNDER_AUDIO_CONTROLS) return null;
+  return <FounderAudioControl {...props} />;
+}
+
+// Kept intact while hidden: enabling the feature flag restores both the
+// pending-message modal and the final audio-player path everywhere at once.
+function FounderAudioControl({ src = null, founderName, playLabel, pauseLabel, testid }) {
   const { lang } = useLanguage();
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
