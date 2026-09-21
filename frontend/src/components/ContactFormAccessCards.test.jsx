@@ -18,8 +18,11 @@ jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults, clas
 jest.mock("@/components/slotScope", () => ({ SlotScope: ({ children }) => children, useSlotId: (id) => id }));
 jest.mock("@/components/SectionNav", () => () => null);
 jest.mock("@/components/EditableImage", () => () => null);
-jest.mock("@/components/YouTubeHeroBackground", () => ({ videoId, endSeconds, children }) => (
-  <div data-testid="contact-video" data-video-id={videoId} data-end-seconds={endSeconds}>{children}</div>
+jest.mock("@/components/YouTubeHeroBackground", () => ({ videoId, endSeconds, posterSrc, posterTestId, children }) => (
+  <div data-testid="contact-video" data-video-id={videoId} data-end-seconds={endSeconds}>
+    {posterSrc ? <img data-testid={posterTestId} src={posterSrc} alt="" /> : null}
+    {children}
+  </div>
 ));
 jest.mock("@/components/HeroMonogram", () => () => null);
 jest.mock("@/components/TripContextBanner", () => () => null);
@@ -31,6 +34,7 @@ jest.mock("@/components/PlannerForm", () => () => <form data-testid="detailed-fo
 jest.mock("@/components/DictationForm", () => () => <form data-testid="dictated-form" />);
 
 import ContactPage from "@/pages/ContactPage";
+import { MOROCCO_HERO_POSTER } from "@/lib/heroVideo";
 import FormTabs from "./FormTabs";
 
 let container, root;
@@ -111,6 +115,7 @@ test("the contact hero exposes all five responsive actions and opens each existi
   const hero = get("contact-hero");
   expect(get("contact-video").dataset.videoId).toBe("hVvEISFw9w0");
   expect(get("contact-video").dataset.endSeconds).toBe("275");
+  expect(get("contact-video-poster").getAttribute("src")).toBe(MOROCCO_HERO_POSTER);
   expect(hero.querySelector('[data-testid="hero-cta-book"]').getAttribute("href")).toBe("#booking");
   expect(hero.querySelector('[data-testid="hero-cta-call"]').getAttribute("href")).toBe("tel:+34937268366");
   expect(hero.textContent).toContain("Contacto rápido");

@@ -2,8 +2,10 @@ import React, { act, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import YouTubeHeroBackground from "./YouTubeHeroBackground";
 import { loadYouTubeAPI } from "@/lib/youtubeApi";
+import { preloadImageLink } from "@/lib/imageUrl";
 
 jest.mock("@/lib/youtubeApi", () => ({ loadYouTubeAPI: jest.fn() }));
+jest.mock("@/lib/imageUrl", () => ({ preloadImageLink: jest.fn(() => jest.fn()) }));
 
 let container, root, api, players, preference, resizeObserver;
 const originalMatchMedia = window.matchMedia;
@@ -21,6 +23,7 @@ const emit = async (name, data) => act(async () => {
 beforeEach(() => {
   global.IS_REACT_ACT_ENVIRONMENT = true;
   loadYouTubeAPI.mockReset();
+  preloadImageLink.mockClear();
   preference = { matches: false, addEventListener: jest.fn(), removeEventListener: jest.fn() };
   window.matchMedia = jest.fn(() => preference);
   window.ResizeObserver = jest.fn(callback => {
@@ -67,6 +70,28 @@ test("starts muted, inline, with no controls and a hard 275-second boundary", as
   expect(players[0].player.mute.mock.invocationCallOrder[0]).toBeLessThan(players[0].player.loadVideoById.mock.invocationCallOrder[0]);
   await emit("onStateChange", api.PlayerState.PLAYING);
   expect(state()).toBe("true");
+});
+
+test("keeps an eagerly loaded cover poster beneath the video during loading and failures", async () => {
+  await render(
+    <YouTubeHeroBackground
+      videoId={clip.videoId}
+      endSeconds={275}
+      posterSrc="/shared-hero-poster.jpg"
+      posterTestId="shared-poster"
+    />,
+  );
+  const poster = container.querySelector('[data-testid="shared-poster"]');
+  expect(poster.getAttribute("src")).toBe("/shared-hero-poster.jpg");
+  expect(poster.getAttribute("loading")).toBe("eager");
+  expect(poster.classList.contains("object-cover")).toBe(true);
+  expect(preloadImageLink).toHaveBeenCalledWith("/shared-hero-poster.jpg", { width: 1280 });
+  expect(state()).toBe("false");
+  await emit("onStateChange", api.PlayerState.PLAYING);
+  expect(state()).toBe("true");
+  await emit("onError", 100);
+  expect(state()).toBe("false");
+  expect(container.querySelector('[data-testid="shared-poster"]')).toBe(poster);
 });
 
 test("every loop starts at zero and reapplies the clip boundary instead of seeking", async () => {

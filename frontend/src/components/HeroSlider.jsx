@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Compass, Phone, Mail, Headset, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -10,7 +10,6 @@ import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import HeroMonogram from "@/components/HeroMonogram";
 import YouTubeHeroBackground from "@/components/YouTubeHeroBackground";
 import { MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
-import { preloadImageLink } from "@/lib/imageUrl";
 import { requestIdealTripWizard } from "@/components/IdealTripWizard";
 /* ============================================================
    Hero (formerly HeroSlider)
@@ -24,9 +23,6 @@ import { requestIdealTripWizard } from "@/components/IdealTripWizard";
    • The existing poster remains as an autoplay/error fallback.
    • Component kept named `HeroSlider` to avoid touching imports.
 ============================================================ */
-const HERO_VIDEO_POSTER =
-  "https://image.mux.com/HlwGpYi2dBcP007P3601vNiRiY9acrPyBB/thumbnail.jpg?width=1280&time=0";
-
 const ASSISTANT_LABEL = { es: "Asistente Virtual", en: "Virtual Assistant", fr: "Assistant Virtuel" };
 const VIEW_TRIPS_LABEL = { es: "Ver viajes", en: "View trips", fr: "Voir les voyages" };
 const IDEAL_TRIP_LABEL = { es: "Encontrar viaje ideal", en: "Find ideal journey", fr: "Trouver le voyage idéal" };
@@ -43,10 +39,6 @@ const HERO_PLACE = {
 export const HeroSlider = () => {
   const { lang } = useLanguage();
 
-  /* Preload the video poster (the home LCP element shown before the clip
-     plays) at high priority so it appears as fast as possible. */
-  useEffect(() => preloadImageLink(HERO_VIDEO_POSTER, { width: 1280 }), []);
-
   return (
     <section
       data-testid="hero-section"
@@ -58,17 +50,7 @@ export const HeroSlider = () => {
         className="absolute inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
-        <YouTubeHeroBackground {...MOROCCO_HERO_VIDEO}>
-          <img
-            data-testid="hero-video-poster"
-            src={HERO_VIDEO_POSTER}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover select-none"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
-        </YouTubeHeroBackground>
+        <YouTubeHeroBackground {...MOROCCO_HERO_VIDEO} posterTestId="hero-video-poster" />
       </div>
 
       {/* ---------- Legibility overlays (in order, bottom → top) ---------- */}

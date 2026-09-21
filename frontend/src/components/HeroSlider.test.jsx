@@ -11,12 +11,15 @@ jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults, clas
 ));
 jest.mock("@/components/HeroMonogram", () => () => <div data-testid="hero-monogram" />);
 jest.mock("@/components/IdealTripWizard", () => ({ requestIdealTripWizard: jest.fn() }));
-jest.mock("@/components/YouTubeHeroBackground", () => ({ videoId, endSeconds, children }) => (
-  <div data-testid="shared-video" data-video-id={videoId} data-end-seconds={endSeconds}>{children}</div>
+jest.mock("@/components/YouTubeHeroBackground", () => ({ videoId, endSeconds, posterSrc, posterTestId, children }) => (
+  <div data-testid="shared-video" data-video-id={videoId} data-end-seconds={endSeconds}>
+    {posterSrc ? <img data-testid={posterTestId} src={posterSrc} alt="" className="object-cover" loading="eager" /> : null}
+    {children}
+  </div>
 ));
 
 import HeroSlider from "./HeroSlider";
-import { MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
+import { MOROCCO_HERO_POSTER, MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
 import { pathFor } from "@/lib/routes";
 import { CONTACT } from "@/lib/data";
 
@@ -49,6 +52,7 @@ test.each(["es", "en", "fr"])("the %s Home reuses the same bounded video as Cont
 test("preserves the poster and clipping for loading, reduced-motion and autoplay fallback", () => {
   const page = render();
   const poster = page.querySelector('[data-testid="hero-video-poster"]');
+  expect(poster.getAttribute("src")).toBe(MOROCCO_HERO_POSTER);
   expect(poster.getAttribute("loading")).toBe("eager");
   expect(poster.getAttribute("alt")).toBe("");
   expect(poster.classList.contains("object-cover")).toBe(true);

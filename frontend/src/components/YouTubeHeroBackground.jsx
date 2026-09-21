@@ -1,10 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { loadYouTubeAPI } from "@/lib/youtubeApi";
+import { preloadImageLink } from "@/lib/imageUrl";
 
 // The poster stays underneath: loading, blocked autoplay and embed failures
 // must never leave an empty hero. YouTube may still display its own branding;
 // controls=0 is not a promise of a completely chrome-free video service.
-export default function YouTubeHeroBackground({ videoId, endSeconds, children }) {
+export default function YouTubeHeroBackground({
+  videoId,
+  endSeconds,
+  posterSrc,
+  posterTestId = "hero-video-poster",
+  children,
+}) {
   const containerRef = useRef(null);
   const stageRef = useRef(null);
   const [playbackState, setPlaybackState] = useState("loading");
@@ -12,6 +19,11 @@ export default function YouTubeHeroBackground({ videoId, endSeconds, children })
   const [reducedMotion, setReducedMotion] = useState(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false,
   );
+
+  useEffect(() => {
+    if (!posterSrc) return undefined;
+    return preloadImageLink(posterSrc, { width: 1280 });
+  }, [posterSrc]);
 
   useEffect(() => {
     const preference = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -133,7 +145,18 @@ export default function YouTubeHeroBackground({ videoId, endSeconds, children })
 
   return (
     <div ref={containerRef} data-testid="youtube-hero-background" data-playing={playing && !reducedMotion} data-playback-state={playbackState}
-      className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      className="absolute inset-0 overflow-hidden bg-stone-950 pointer-events-none" aria-hidden="true">
+      {posterSrc ? (
+        <img
+          data-testid={posterTestId}
+          src={posterSrc}
+          alt=""
+          className="absolute inset-0 h-full w-full select-none object-cover"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
+      ) : null}
       {children}
       <div className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${playing && !reducedMotion ? "opacity-100" : "opacity-0"}`}>
         <div ref={stageRef} data-testid="youtube-hero-stage"

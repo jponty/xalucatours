@@ -26,7 +26,6 @@ import {
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { openChatbaseAssistant, CHATBASE_HELP_URL } from "@/lib/chatbase";
-import EditableImage from "@/components/EditableImage";
 import YouTubeHeroBackground from "@/components/YouTubeHeroBackground";
 import { MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
 import HeroMonogram from "@/components/HeroMonogram";
@@ -35,7 +34,6 @@ import { SlotScope } from "@/components/slotScope";
 import FormTabs from "@/components/FormTabs";
 import { CalendlyEmbed, useCalendlyScript, CALENDLY_PHONE, CALENDLY_OFFICE } from "@/components/CalendlyEmbed";
 import TripContextBanner from "@/components/TripContextBanner";
-import { IMG } from "@/lib/imageBank";
 import { CONTACT } from "@/lib/data";
 import ContactDetailsCard from "@/components/ContactDetailsCard";
 import ContactFormAccessCards from "@/components/ContactFormAccessCards";
@@ -229,17 +227,7 @@ const ContactPage = () => {
           data-testid="contact-hero"
           className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]"
         >
-          <YouTubeHeroBackground {...MOROCCO_HERO_VIDEO}>
-            <EditableImage
-              slot="contact.hero"
-              fallback={IMG.medinaPeople || IMG.koutoubia}
-              alt=""
-              priority
-              aspectRatio="auto"
-              imgProps={{ loading: "eager" }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </YouTubeHeroBackground>
+          <YouTubeHeroBackground {...MOROCCO_HERO_VIDEO} posterTestId="contact-video-poster" />
           {/* Legibility stack — identical to QueHacemos hero */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
           <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />
