@@ -14,7 +14,7 @@ import { DEST_BY_ID } from "@/lib/planner/plannerData";
 import { SPAIN_ORIGINS } from "@/lib/flights";
 import { TRAVEL_STYLES } from "@/lib/bestTimeData";
 import { getFromPrice } from "@/lib/pricing";
-import { getProgramTiers } from "@/lib/programPricing";
+import { getProgramTiers, hasHiddenProgramPrices } from "@/lib/programPricing";
 import { priceRouteIds } from "@/lib/programNav";
 
 const T = (es, en, fr) => ({ es, en, fr });
@@ -93,6 +93,7 @@ export const nodeName = (id, lang) => tt(DEST_BY_ID[id]?.name, lang) || id;
    otherwise the live global pricing tiers. Never a hardcoded value.
 ------------------------------------------------------------------ */
 export const tripFromPrice = (routeId, pricing) => {
+  if (hasHiddenProgramPrices(routeId)) return null;
   const routeIds = priceRouteIds(routeId);
   const fromPrices = routeIds
     .map((id) => getProgramTiers(id))

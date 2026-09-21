@@ -3,6 +3,7 @@
 // The individual programme detail pages are not built yet — option CTAs land on the contact form.
 
 const COMMON_NIGHTS = {
+  "3n4d": { es: "3 noches · 4 días", en: "3 nights · 4 days", fr: "3 nuits · 4 jours" },
   "4n5d": { es: "4 noches · 5 días", en: "4 nights · 5 days", fr: "4 nuits · 5 jours" },
   "5n6d": { es: "5 noches · 6 días", en: "5 nights · 6 days", fr: "5 nuits · 6 jours" },
   "6n7d": { es: "6 noches · 7 días", en: "6 nights · 7 days", fr: "6 nuits · 7 jours" },
@@ -1269,20 +1270,19 @@ export const HUB_ESCAPADA_TANGER = {
 /* ============================================================
    Hub · Aventura · Enduro por Marruecos
    ----
-   Sub-hub of /viajes/aventura. Currently surfaces the 4n/5d
-   and 6n/7d programmes.
+   Sub-hub of /viajes/aventura. Only the approved 3n/4d and 4n/5d programmes.
 ============================================================ */
 export const HUB_AVENTURA_ENDURO = {
   id: "aventura-enduro",
   hero: {
     image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=2400&q=85",
     eyebrow: { es: "Viajes de aventura · Sur de Marruecos", en: "Adventure trips · Southern Morocco", fr: "Voyages d'aventure · Sud du Maroc" },
-    place: { es: "Erfoud · Erg Chebbi · Merzouga · Saghro · Anti Atlas", en: "Erfoud · Erg Chebbi · Merzouga · Saghro · Anti-Atlas", fr: "Erfoud · Erg Chebbi · Merzouga · Saghro · Anti-Atlas" },
+    place: { es: "Erfoud · Tisserdimine · Erg Chebbi · Merzouga", en: "Erfoud · Tisserdimine · Erg Chebbi · Merzouga", fr: "Erfoud · Tisserdimine · Erg Chebbi · Merzouga" },
     title: { es: "Enduro por Marruecos.", en: "Enduro across Morocco.", fr: "Enduro au Maroc." },
     subtitle: {
-      es: "Pistas dakarianas, dunas, montañas y oasis sobre una moto de enduro — la libertad del Sahara en estado puro.",
-      en: "Dakar-style tracks, dunes, mountains and oases on an enduro bike — Saharan freedom in its purest form.",
-      fr: "Pistes dakariennes, dunes, montagnes et oasis sur une moto d'enduro — la liberté du Sahara à l'état pur.",
+      es: "Dos programas de 3 o 4 noches, con 2 o 3 días de moto con guía entre pistas, oasis y dunas del sur de Marruecos.",
+      en: "Two programmes of 3 or 4 nights, with 2 or 3 guided riding days among tracks, oases and dunes in southern Morocco.",
+      fr: "Deux programmes de 3 ou 4 nuits, avec 2 ou 3 jours à moto avec guide entre pistes, oasis et dunes du sud du Maroc.",
     },
   },
   intro: {
@@ -1322,23 +1322,23 @@ export const HUB_AVENTURA_ENDURO = {
   },
   programs: [
     {
-      id: "enduro-4-5", direction: "a", nights: "4n5d", accent: "#C16542",
+      id: "enduro-3-4", direction: "a", nights: "3n4d", accent: "#C16542",
       image: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=85",
-      link: "tourEnduroAventura45",
+      link: "tourEnduroAventura34",
       blurb: {
-        es: "Viaje de 4 noches y 5 días haciendo enduro por el sur de Marruecos.",
-        en: "4-night/5-day enduro trip across southern Morocco.",
-        fr: "Voyage de 4 nuits et 5 jours en enduro dans le sud du Maroc.",
+        es: "3 noches / 4 días · 2 días de moto con guía. Erfoud, Tisserdimine, Erg Chebbi y Merzouga.",
+        en: "3 nights / 4 days · 2 guided riding days. Erfoud, Tisserdimine, Erg Chebbi and Merzouga.",
+        fr: "3 nuits / 4 jours · 2 jours de moto avec guide. Erfoud, Tisserdimine, Erg Chebbi et Merzouga.",
       },
     },
     {
-      id: "enduro-6-7", direction: "a", nights: "6n7d", accent: "#A07042",
+      id: "enduro-4-5", direction: "a", nights: "4n5d", accent: "#A07042",
       image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85",
-      link: "tourEnduroAventura67",
+      link: "tourEnduroAventura45",
       blurb: {
-        es: "Viaje de 6 noches y 7 días haciendo enduro entre el desierto, el Saghro y el Anti Atlas.",
-        en: "6-night/7-day enduro trip between the desert, the Saghro and the Anti-Atlas.",
-        fr: "Voyage de 6 nuits et 7 jours en enduro entre désert, Saghro et Anti-Atlas.",
+        es: "4 noches / 5 días · 3 días de moto con guía. Oasis, Erg Chebbi y posibles visitas a Rissani y Khamlia.",
+        en: "4 nights / 5 days · 3 guided riding days. Oases, Erg Chebbi and possible visits to Rissani and Khamlia.",
+        fr: "4 nuits / 5 jours · 3 jours de moto avec guide. Oasis, Erg Chebbi et visites possibles de Rissani et Khamlia.",
       },
     },
   ],

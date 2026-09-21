@@ -15,6 +15,8 @@
    ROUTE_OVERRIDES keyed by routeId.
 ============================================================ */
 
+import { PROGRAM_ENDURO_34 } from "./programs/enduroAventura34";
+
 const T = (es, en, fr) => ({ es, en, fr });
 
 const ACCENT = {
@@ -501,7 +503,15 @@ const PROFILES = {
 /* ------------------------------------------------------------
    Bespoke per-route overrides (optional). Keyed by routeId.
 ------------------------------------------------------------ */
-const ROUTE_OVERRIDES = {};
+// Enduro packing notes reuse the approved programme, not the trekking profile.
+const enduroNote = (index) => T(...["es", "en", "fr"].map(lang => PROGRAM_ENDURO_34.details.notes[lang][index]));
+const ENDURO = [
+  note("adventure", T("Equipación", "Equipment", "Équipement"),
+    T("Prepárate para el enduro", "Prepare for enduro", "Préparez-vous à l’enduro"), [enduroNote(3), enduroNote(2)]),
+  note("comfort", T("Antes de viajar", "Before travelling", "Avant de partir"),
+    T("Documentación y seguro", "Documents and insurance", "Documents et assurance"), [enduroNote(1), enduroNote(5)]),
+];
+const ROUTE_OVERRIDES = { tourEnduroAventura34: ENDURO, tourEnduroAventura45: ENDURO };
 
 /* ------------------------------------------------------------
    Classify a programme routeId into a packing profile.

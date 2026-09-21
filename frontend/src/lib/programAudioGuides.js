@@ -61,8 +61,7 @@ export const AVAILABLE_PROGRAM_AUDIO_PATHS = Object.freeze([
   "/viajes/norte/tanger_fez/programa_5n_6d",
   "/viajes/norte/fez_tanger/programa_5n_6d",
   "/viajes/norte/fez_tanger/programa_6n_7d",
-  "/viajes/aventura/enduro/programa_4n_5d",
-  "/viajes/aventura/enduro/programa_6n_7d",
+  // Enduro itineraries were replaced: do not play the old programmes' audio.
   "/viajes/escapadas/desierto/programa_3n_4d",
   "/viajes/escapadas/atlas/programa_3n_4d",
   "/viajes/escapadas/fez/programa_2n_3d",

@@ -132,6 +132,25 @@ services:
         name: Content-Type
         value: text/markdown; charset=utf-8
     routes:
+      # Replaced enduro programme: keep incoming links working.
+      - type: redirect
+        source: /viajes/aventura/enduro/programa_6n_7d
+        destination: /viajes/aventura/enduro/programa_3n_4d
+      - type: redirect
+        source: /viajes/aventura/enduro/programa_6n_7d/
+        destination: /viajes/aventura/enduro/programa_3n_4d
+      - type: redirect
+        source: /en/tours/adventure/enduro/program-6n-7d
+        destination: /en/tours/adventure/enduro/program-3n-4d
+      - type: redirect
+        source: /en/tours/adventure/enduro/program-6n-7d/
+        destination: /en/tours/adventure/enduro/program-3n-4d
+      - type: redirect
+        source: /fr/voyages/aventure/enduro/programme-6n-7j
+        destination: /fr/voyages/aventure/enduro/programme-3n-4j
+      - type: redirect
+        source: /fr/voyages/aventure/enduro/programme-6n-7j/
+        destination: /fr/voyages/aventure/enduro/programme-3n-4j
       # Retired campaign URLs are inbound redirects, not public navigation.
       - type: redirect
         source: /findeano2025

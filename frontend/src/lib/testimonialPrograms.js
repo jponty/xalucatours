@@ -34,7 +34,7 @@ export const CIRCUIT_TESTIMONIAL_PROGRAMS = {
   kasbahs: ["tourDesiertoAtlas45", "tourMarrakechFez78", "tourOzzSidialiFez67"],
   north: ["tourTangerFez45", "tourFezTanger56", "tourCiudadesImperialesRif67"],
   short: ["tourEscapadaDesierto34", "tourEscapadaFez23", "tourEscapadaMarrakech23"],
-  adventure: ["tourEnduroAventura45", "tourEnduroAventura67", "tourMarrakechLoop56"],
+  adventure: ["tourEnduroAventura45", "tourEnduroAventura34", "tourMarrakechLoop56"],
 };
 
 export const circuitTestimonialProgram = (slug, index) => {

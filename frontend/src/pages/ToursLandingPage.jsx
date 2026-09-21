@@ -453,7 +453,7 @@ const TripExplorer = ({ t, lang }) => {
             return (
               <ExpandableTripCard key={trip.id} title={pick(trip.title, lang)} lang={lang}
                 description={pick(trip.summary, lang)} destinations={exps.map((e) => pick(e.label, lang))}
-                href={pathFor(lang, "contact")} ctaLabel={t.cta_card}
+                href={pathFor(lang, trip.routeId || "contact")} ctaLabel={t.cta_card}
                 testIdPrefix={`trip-${trip.id}`} testIds={{ card: `trip-card-${trip.id}` }}>
                 <div data-trip-card-image="" className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
                   <EditableImage
@@ -511,8 +511,8 @@ const TripExplorer = ({ t, lang }) => {
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-[#2C2621]/10 flex flex-wrap items-end justify-between gap-3">
-                    <FromPrice tone="dark" size="sm" className="flex-wrap" testid={`trip-from-${trip.id}`} />
-                    <Link to={pathFor(lang, "contact")}
+                    <FromPrice routeId={trip.routeId} tone="dark" size="sm" className="flex-wrap" testid={`trip-from-${trip.id}`} />
+                    <Link to={pathFor(lang, trip.routeId || "contact")}
                           data-testid={`trip-cta-${trip.id}`}
                           className="xaluca-button inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[#C16542] hover:gap-3 transition-all duration-300 border-b border-[#C16542]/40 pb-1">
                       {t.cta_card}

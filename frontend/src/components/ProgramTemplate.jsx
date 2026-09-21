@@ -216,8 +216,10 @@ const L = ({ k, as = "span", className, multiline = false, ...rest }) => (
   />
 );
 
+const ProgramContentVersion = React.createContext("");
 const C = ({ name, defaults, as = "span", className, multiline = true, ...rest }) => {
-  const slot = useSlotId(`program.${name}`);
+  const version = React.useContext(ProgramContentVersion);
+  const slot = useSlotId(`program.${version ? `${version}.` : ""}${name}`);
   return (
     <EditableText slot={slot} defaults={defaults || {}} as={as} multiline={multiline} className={className} {...rest} />
   );
@@ -276,7 +278,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
             <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
               <C name="hero.subtitle" defaults={metaAllLangs(program, variant, "subtitle")} />
             </p>
-            <dl className="fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-4xl">
+            <dl className={`fade-up fade-up-delay-3 mt-10 grid grid-cols-1 sm:grid-cols-2 ${program.hidePrices ? "lg:grid-cols-5" : "lg:grid-cols-6"} gap-px bg-[#FDFBF7]/10 border border-[#FDFBF7]/15 max-w-4xl`}>
               {[
                 { id: "duration",   Icon: Clock,    label: <L k="eyebrow_duration" />,   value: <C name="hero.q.duration" defaults={program.duration} multiline={false} /> },
                 { id: "airports",   Icon: Plane,    label: <L k="eyebrow_airports" />,   value: <C name="hero.q.airports" defaults={metaAllLangs(program, variant, "airports")} multiline={false} /> },
@@ -290,7 +292,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                 </div>
               ))}
               {/* Price "from" — anchors to the full pricing table */}
-              <a
+              {!program.hidePrices && <a
                 href="#pricing"
                 data-testid="program-hero-price"
                 className="group bg-[#1A1513]/80 hover:bg-[#C16542]/90 backdrop-blur-md p-5 flex flex-col gap-2 transition-colors"
@@ -302,7 +304,7 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
                 <span className="text-sm md:text-[15px] text-[#FDFBF7] leading-snug">
                   <FromPrice tone="light" layout="stacked" routeId={routeId} testid="program-hero-from-price" />
                 </span>
-              </a>
+              </a>}
               {/* Talk to an expert — tap-to-call on supported devices */}
               <a
                 href={`tel:${CONTACT.phoneRaw}`}
@@ -456,8 +458,8 @@ const QuickInfo = ({ t, vt, program, lang, variant }) => {
     { id: "duration",    Icon: Clock,    label: <L k="card_duration" />,    value: <C name="quick.duration" defaults={program.duration} multiline={false} /> },
     { id: "places",      Icon: MapPin,   label: <L k="card_places" />,      value: <C name="quick.places" defaults={metaAllLangs(program, variant, "quick_places")} /> },
     { id: "airports",    Icon: Plane,    label: <L k="card_airports" />,    value: <C name="quick.airports" defaults={metaAllLangs(program, variant, "quick_airports")} multiline={false} /> },
-    { id: "type",        Icon: Mountain, label: <L k="card_type" />,        value: <L k={typeKey} /> },
-    { id: "experiences", Icon: Sparkles, label: <L k="card_experiences" />, value: <L k="experiences_value" multiline /> },
+    { id: "type",        Icon: Mountain, label: <L k="card_type" />,        value: program.ridingDays ? <C name="quick.type" defaults={metaAllLangs(program, variant, "place")} /> : <L k={typeKey} /> },
+    { id: "experiences", Icon: Sparkles, label: <L k="card_experiences" />, value: program.ridingDays ? <C name="quick.experiences" defaults={metaAllLangs(program, variant, "riding_summary")} /> : <L k="experiences_value" multiline /> },
   ];
   return (
     <section id="quick" data-testid="program-quick"
@@ -844,7 +846,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
     { id: "quick",       label: t.nav_quick },
     { id: "itinerary",   label: t.nav_itinerary },
     { id: "overview",    label: pick(navOverview, lang) },
-    { id: "pricing",     label: t.nav_pricing },
+    ...(!program.hidePrices ? [{ id: "pricing", label: t.nav_pricing }] : []),
     { id: "includes",    label: t.nav_includes },
     { id: "contact",     label: t.nav_contact },
   ];
@@ -873,6 +875,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
   );
 
   return (
+    <ProgramContentVersion.Provider value={program.contentVersion || ""}>
     <div data-testid={`program-page-${program.duration_key}`}>
       <TripFloatingActions key={routeId} routeId={routeId} lang={lang} hasChronology={showJourneyChronology && Boolean(program.days?.length)} />
       <ProgramHero vt={vt} t={t} program={program} lang={lang} variant={variant} routeId={routeId} onDownload={() => setDownloadOpen(true)} />
@@ -922,5 +925,6 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
         programTitle={vt.title}
       />
     </div>
+    </ProgramContentVersion.Provider>
   );
 }

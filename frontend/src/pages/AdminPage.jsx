@@ -138,7 +138,7 @@ const URL_TAXONOMY = [
     region: true,
     routes: [
       { label: "Landing Aventura", keys: ["tourAdventure"] },
-      { label: "Enduro", keys: ["tourAventuraEnduroHub", "tourEnduroAventura45", "tourEnduroAventura67"] },
+      { label: "Enduro", keys: ["tourAventuraEnduroHub", "tourEnduroAventura45", "tourEnduroAventura34"] },
     ],
   },
   {

@@ -7,9 +7,11 @@ import {
 } from "./programAudioGuides";
 
 describe("program audio guide registry", () => {
-  test("contains exactly the 58 storage objects verified in Supabase", () => {
-    expect(AVAILABLE_PROGRAM_AUDIO_PATHS).toHaveLength(58);
-    expect(new Set(AVAILABLE_PROGRAM_AUDIO_PATHS).size).toBe(58);
+  test("contains 56 active recordings, excluding the two outdated enduro narrations", () => {
+    expect(AVAILABLE_PROGRAM_AUDIO_PATHS).toHaveLength(56);
+    expect(new Set(AVAILABLE_PROGRAM_AUDIO_PATHS).size).toBe(56);
+    expect(programAudioGuideForRoute("tourEnduroAventura34", "es")).toBeNull();
+    expect(programAudioGuideForRoute("tourEnduroAventura45", "es")).toBeNull();
   });
 
   test("every registered path belongs to a real Spanish programme route", () => {

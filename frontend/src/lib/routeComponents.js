@@ -86,7 +86,7 @@ import {
 import EscapadaRakErgRakHubPage from "@/pages/EscapadaRakErgRakHubPage";
 import AventuraEnduroHubPage from "@/pages/AventuraEnduroHubPage";
 import EnduroAventura45Page from "@/pages/EnduroAventura45Page";
-import EnduroAventura67Page from "@/pages/EnduroAventura67Page";
+import EnduroAventura34Page from "@/pages/EnduroAventura34Page";
 import FinDeAno2026Page from "@/pages/FinDeAno2026Page";
 import NorteCiudadesImperialesHubPage from "@/pages/NorteCiudadesImperialesHubPage";
 import NorteTangerFezHubPage from "@/pages/NorteTangerFezHubPage";
@@ -141,7 +141,7 @@ export const ROUTE_COMPONENTS = {
   tourAdventure:                 AventuraPage,
   tourAventuraEnduroHub:         AventuraEnduroHubPage,
   tourEnduroAventura45:          EnduroAventura45Page,
-  tourEnduroAventura67:          EnduroAventura67Page,
+  tourEnduroAventura34:          EnduroAventura34Page,
   tourFinDeAno2025:              FinDeAno2026Page,
   tourShort:                     EscapadasPage,
   tourBespoke:                   ViajesAMedidaPage,

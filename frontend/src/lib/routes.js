@@ -123,7 +123,7 @@ export const ROUTES = {
   tourAdventure:      { es: "viajes/aventura",           en: "tours/adventure",          fr: "voyages/aventure" },
   tourAventuraEnduroHub:  { es: "viajes/aventura/enduro",                en: "tours/adventure/enduro",                fr: "voyages/aventure/enduro" },
   tourEnduroAventura45:   { es: "viajes/aventura/enduro/programa_4n_5d", en: "tours/adventure/enduro/program-4n-5d",  fr: "voyages/aventure/enduro/programme-4n-5j" },
-  tourEnduroAventura67:   { es: "viajes/aventura/enduro/programa_6n_7d", en: "tours/adventure/enduro/program-6n-7d",  fr: "voyages/aventure/enduro/programme-6n-7j" },
+  tourEnduroAventura34:   { es: "viajes/aventura/enduro/programa_3n_4d", en: "tours/adventure/enduro/program-3n-4d",  fr: "voyages/aventure/enduro/programme-3n-4j" },
   upcomingDepartures: { es: "proximas_salidas",          en: "upcoming-departures",      fr: "prochains-departs" },
   tourBespoke:        { es: "viajesamedida",             en: "tailor-made-tours",        fr: "voyages-sur-mesure" },
 
@@ -162,6 +162,9 @@ export const pathFor = (lang, routeId = "home") => {
 // Inbound compatibility only: never enumerate legacy URLs as navigation links.
 // Keep in sync with the permanent redirect rules in render.yaml.
 const LEGACY_REDIRECTS = {
+  "/viajes/aventura/enduro/programa_6n_7d": { lang: "es", routeId: "tourEnduroAventura34" },
+  "/en/tours/adventure/enduro/program-6n-7d": { lang: "en", routeId: "tourEnduroAventura34" },
+  "/fr/voyages/aventure/enduro/programme-6n-7j": { lang: "fr", routeId: "tourEnduroAventura34" },
   "/findeano2025": { lang: "es", routeId: "tourFinDeAno2025" },
   "/en/newyear2025": { lang: "en", routeId: "tourFinDeAno2025" },
   "/fr/nouvelan2025": { lang: "fr", routeId: "tourFinDeAno2025" },

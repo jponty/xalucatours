@@ -449,7 +449,7 @@ const deriveDayNotes = (routeId, dayIndex) => {
 
   // Top up to 3 with practical, theme-based preparation tips. Rotate the
   // start index by day so consecutive days don't repeat the same tips.
-  if (notes.length > 0 && notes.length < 3) {
+  if (notes.length > 0 && notes.length < 3 && !day.sourceNotesOnly) {
     const theme = detectTheme(day);
     const pool = [...(THEME_TIPS[theme] || []), ...THEME_TIPS.general];
     const start = pool.length ? (dayIndex - 1) % pool.length : 0;

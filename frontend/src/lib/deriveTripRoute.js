@@ -55,7 +55,7 @@ export function deriveTripRoute(program) {
 
     // 1) Places named in the day's own narrative (trilingual + kind).
     const places = deriveDayPlaces(day, "es");
-    if (places.length) {
+    if (places.length && !program.routeFromDayIds) {
       const dest = [...places].reverse().find((p) => DEST_KINDS.has(p.kind));
       const p = dest || places[places.length - 1];
       anchor = { name: p.name, lat: p.lat, lng: p.lng, kind: p.kind };
@@ -63,7 +63,10 @@ export function deriveTripRoute(program) {
 
     // 2) Fallback: parse the day route_id token stream.
     if (!anchor) {
-      const wp = resolveDayRoute(day.route_id);
+      // Source-controlled itineraries may return to their starting town;
+      // the route parser deduplicates stops, so resolve the final token itself.
+      const destinationId = program.routeFromDayIds ? day.route_id?.split(/[-_]/).pop() : day.route_id;
+      const wp = resolveDayRoute(destinationId);
       if (wp.length) {
         const last = wp[wp.length - 1]; // [name, lat, lng, kind, profileKey]
         anchor = { name: asTri(last[0]), lat: last[1], lng: last[2], kind: "town" };

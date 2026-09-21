@@ -62,7 +62,7 @@ export const ROUTE_IMAGES = {
   tourEscapadaAtlas34: "https://images.unsplash.com/photo-1539790721942-75e9e9840c0c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHw1fHxIaWdoJTIwQXRsYXMlMjBrYXNiYWglMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3Mzh8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourEscapadaDesierto34: "https://images.unsplash.com/photo-1769537145747-ff380b863f49?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxFcmclMjBDaGViYmklMjBzdW5yaXNlJTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM5fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourEnduroAventura45: "https://images.unsplash.com/photo-1545167496-31b3aa75296c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmN5Y2xlJTIwZGVzZXJ0JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM5fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
-  tourEnduroAventura67: "https://images.unsplash.com/photo-1535191059345-c16453b851b2?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmJpa2UlMjBTYWhhcmElMjBkdW5lcyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc0MHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
+  tourEnduroAventura34: "https://images.unsplash.com/photo-1535191059345-c16453b851b2?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmJpa2UlMjBTYWhhcmElMjBkdW5lcyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc0MHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourFinDeAno2025: "https://images.unsplash.com/photo-1697666326566-a405766d995f?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxkZXNlcnQlMjBjYW1wJTIwbmlnaHQlMjBzdGFycyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc0MHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourDesiertoAtlas45: "https://images.unsplash.com/photo-1731169243672-9f935e40b6c8?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxFcmclMjBDaGViYmklMjBjYW1lbCUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc2M3ww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
   tourMarrakechEss67: "https://images.unsplash.com/photo-1624802704371-c76faa34c3a0?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwyfHxFc3Nhb3VpcmElMjBNb3JvY2NvfGVufDF8MHx8fDE3ODA0MzU3NjR8MA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format",
@@ -241,10 +241,10 @@ export const ALL_TRIPS = [
   // ── Aventura · Enduro ──
   mk({ routeId: "tourEnduroAventura45", region: "aventura", pace: "equilibrado", nights: 4, image: IMG.dunesRocky,
     title: i18n("Enduro Sahara · 4 noches", "Sahara enduro · 4 nights", "Enduro Sahara · 4 nuits"),
-    summary: i18n("Pistas del Drâa en moto enduro, grupo reducido.", "Drâa tracks on enduro bikes, small group.", "Pistes du Drâa en moto enduro, petit groupe.") }),
-  mk({ routeId: "tourEnduroAventura67", region: "aventura", pace: "intenso", nights: 6, image: IMG.dunes,
-    title: i18n("Enduro Sahara · 6 noches", "Sahara enduro · 6 nights", "Enduro Sahara · 6 nuits"),
-    summary: i18n("Expedición larga incluyendo Erg Chebbi.", "Long expedition including Erg Chebbi.", "Expédition longue incluant l'Erg Chebbi.") }),
+    summary: i18n("3 días de moto con guía por Tisserdimine, Erg Chebbi y Merzouga.", "3 guided riding days through Tisserdimine, Erg Chebbi and Merzouga.", "3 jours de moto avec guide par Tisserdimine, Erg Chebbi et Merzouga.") }),
+  mk({ routeId: "tourEnduroAventura34", region: "aventura", pace: "intenso", nights: 3, image: IMG.dunes,
+    title: i18n("Enduro Sahara · 3 noches", "Sahara enduro · 3 nights", "Enduro Sahara · 3 nuits"),
+    summary: i18n("2 días de moto con guía entre oasis, dunas y Merzouga.", "2 guided riding days among oases, dunes and Merzouga.", "2 jours de moto avec guide entre oasis, dunes et Merzouga.") }),
 
   // ── Eventos ──
   mk({ routeId: "tourFinDeAno2025", region: "eventos", pace: "equilibrado", nights: 5, image: IMG.camelDunes,

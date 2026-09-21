@@ -837,7 +837,7 @@ export const ROUTE_FAMILY = {
   tourEscapadaRakAgafay34: "escapadaAgafay",
   // O — Enduro adventure
   tourEnduroAventura45: "enduro",
-  tourEnduroAventura67: "enduro",
+  tourEnduroAventura34: "enduro",
 };
 
 /* Returns the 3 postcards for a given routeId (falls back to a

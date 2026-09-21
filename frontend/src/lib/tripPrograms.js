@@ -35,7 +35,7 @@ import { PROGRAM_TF_56 } from "@/lib/programs/tangerFez56";
 import { PROGRAM_FT_56 } from "@/lib/programs/fezTanger56";
 import { PROGRAM_FT_67 } from "@/lib/programs/fezTanger67";
 import { PROGRAM_ENDURO_45 } from "@/lib/programs/enduroAventura45";
-import { PROGRAM_ENDURO_67 } from "@/lib/programs/enduroAventura67";
+import { PROGRAM_ENDURO_34 } from "@/lib/programs/enduroAventura34";
 import { PROGRAM_DESIERTO_34 } from "@/lib/programs/escapadaDesierto34";
 import { PROGRAM_ATLAS_34 } from "@/lib/programs/escapadaAtlas34";
 import { PROGRAM_ESCAPADA_FEZ_23 } from "@/lib/programs/escapadaFez23";
@@ -151,7 +151,7 @@ export const TRIP_PROGRAMS = {
 
   // Aventura · Enduro
   tourEnduroAventura45: P(PROGRAM_ENDURO_45, "enduro"),
-  tourEnduroAventura67: P(PROGRAM_ENDURO_67, "enduro"),
+  tourEnduroAventura34: P(PROGRAM_ENDURO_34, "enduro"),
 
   // Escapadas cortas
   tourEscapadaDesierto34: P(PROGRAM_DESIERTO_34, "desierto"),

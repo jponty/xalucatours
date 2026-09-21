@@ -445,7 +445,7 @@ const TESTIMONIAL_ROUTES = {
   "ricardo-stars": "tourMarrakechLoop45",
   "ines-camel": "tourMarrakechErg45",
   "hugo-gnawa": "tourDesiertoAtlas56",
-  "thomas-mgoun": "tourEnduroAventura67",
+  "thomas-mgoun": "tourEnduroAventura34",
   "claudia-berber": "tourEscapadaAtlas34",
   "emma-todra": "tourAtlasDesierto56",
   "oliver-atlas-escape": "tourAtlasDesierto45",

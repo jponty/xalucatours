@@ -493,16 +493,16 @@
     },
     "image": "https://images.unsplash.com/photo-1545167496-31b3aa75296c?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmN5Y2xlJTIwZGVzZXJ0JTIwTW9yb2Njb3xlbnwxfDB8fHwxNzgwNDM1NzM5fDA&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format"
   },
-  "tourEnduroAventura67": {
+  "tourEnduroAventura34": {
     "title": {
-      "es": "Enduro Sahara · 6 noches",
-      "en": "Sahara enduro · 6 nights",
-      "fr": "Enduro Sahara · 6 nuits"
+      "es": "Enduro Sahara · 3 noches",
+      "en": "Sahara enduro · 3 nights",
+      "fr": "Enduro Sahara · 3 nuits"
     },
     "path": {
-      "es": "viajes/aventura/enduro/programa_6n_7d",
-      "en": "tours/adventure/enduro/program-6n-7d",
-      "fr": "voyages/aventure/enduro/programme-6n-7j"
+      "es": "viajes/aventura/enduro/programa_3n_4d",
+      "en": "tours/adventure/enduro/program-3n-4d",
+      "fr": "voyages/aventure/enduro/programme-3n-4j"
     },
     "image": "https://images.unsplash.com/photo-1535191059345-c16453b851b2?ixid=M3w5NjI2MDV8MHwxfHNlYXJjaHwxfHxtb3RvcmJpa2UlMjBTYWhhcmElMjBkdW5lcyUyME1vcm9jY298ZW58MXwwfHx8MTc4MDQzNTc0MHww&ixlib=rb-4.1.0&w=1600&q=80&fit=crop&fm=jpg&auto=format"
   },

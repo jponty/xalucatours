@@ -214,14 +214,14 @@ export const TRIP_DESCRIPTIONS = {
 
   // ── Aventura · Enduro ──
   tourEnduroAventura45: {
-    es: "Aventura en moto enduro por las pistas del valle del Drâa, en grupo reducido y con apoyo logístico. Cuatro noches de adrenalina, paisajes desérticos y noches bajo las estrellas.",
-    en: "An enduro-bike adventure along the tracks of the Drâa valley, in a small group with full logistical support. Four nights of adrenaline, desert landscapes and nights under the stars.",
-    fr: "Aventure en moto enduro sur les pistes de la vallée du Drâa, en petit groupe et avec soutien logistique. Quatre nuits d'adrénaline, de paysages désertiques et de nuits sous les étoiles.",
+    es: "4 noches / 5 días con 3 jornadas de moto con guía por Tisserdimine, Erg Chebbi y Merzouga. Dos noches en Kasbah Xaluca Arfoud y dos en Kasbah Tombouctou, con bivouac opcional la tercera noche.",
+    en: "4 nights / 5 days with 3 guided riding days through Tisserdimine, Erg Chebbi and Merzouga. Two nights at Kasbah Xaluca Arfoud and two at Kasbah Tombouctou, with an optional bivouac on night three.",
+    fr: "4 nuits / 5 jours avec 3 journées de moto avec guide par Tisserdimine, Erg Chebbi et Merzouga. Deux nuits au Kasbah Xaluca Arfoud et deux au Kasbah Tombouctou, avec bivouac en option la troisième nuit.",
   },
-  tourEnduroAventura67: {
-    es: "Expedición larga en moto enduro que llega hasta las dunas del Erg Chebbi, combinando pistas técnicas y grandes paisajes. Seis noches de aventura off-road en el corazón del sur.",
-    en: "A long enduro expedition reaching the dunes of Erg Chebbi, combining technical tracks and vast landscapes. Six nights of off-road adventure in the heart of the south.",
-    fr: "Longue expédition en moto enduro jusqu'aux dunes de l'Erg Chebbi, alliant pistes techniques et grands paysages. Six nuits d'aventure off-road au cœur du sud.",
+  tourEnduroAventura34: {
+    es: "3 noches / 4 días con 2 jornadas de moto con guía entre oasis y dunas de Erg Chebbi. Dos noches en Kasbah Xaluca Arfoud y una en Kasbah Tombouctou, con bivouac opcional la segunda noche.",
+    en: "3 nights / 4 days with 2 guided riding days among oases and Erg Chebbi dunes. Two nights at Kasbah Xaluca Arfoud and one at Kasbah Tombouctou, with an optional bivouac on night two.",
+    fr: "3 nuits / 4 jours avec 2 journées de moto avec guide entre oasis et dunes de l’Erg Chebbi. Deux nuits au Kasbah Xaluca Arfoud et une au Kasbah Tombouctou, avec bivouac en option la deuxième nuit.",
   },
 
   // ── Eventos ──

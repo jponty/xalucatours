@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
 import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
-import { getProgramTiers, getProgramExtras } from "@/lib/programPricing";
+import { getProgramTiers, getProgramExtras, hasHiddenProgramPrices } from "@/lib/programPricing";
 
 /* ============================================================
    <PricingSection> — dedicated, standardised pricing block for
@@ -23,6 +23,7 @@ import { getProgramTiers, getProgramExtras } from "@/lib/programPricing";
 export const PricingSection = ({ id = "pricing", testid = "pricing-section", routeId = null }) => {
   const { lang } = useLanguage();
   const pricing = usePricing();
+  if (hasHiddenProgramPrices(routeId)) return null;
   const L = pricing.labels;
   const p = (o) => pickLang(o, lang);
   // Per-program tariff (if this itinerary has its own) overrides the global

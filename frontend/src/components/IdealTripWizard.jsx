@@ -201,7 +201,7 @@ const OPTION_IMAGES = {
     "very-calm": ROUTE_IMAGES.tourEscapadaMarrakech23,
     balanced: ROUTE_IMAGES.tourDesiertoAtlas45,
     active: ROUTE_IMAGES.tourAtlasDesierto67,
-    adventurous: ROUTE_IMAGES.tourEnduroAventura67,
+    adventurous: ROUTE_IMAGES.tourEnduroAventura34,
   },
   places: {
     marrakech: ROUTE_IMAGES.tourMarrakechErg45,

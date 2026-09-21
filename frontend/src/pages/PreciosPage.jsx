@@ -4,7 +4,7 @@ import { Check, ArrowRight, ShieldCheck, Sparkles, Search, X, ChevronDown } from
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { usePricing } from "@/lib/pricingStore";
-import { getProgramTiers } from "@/lib/programPricing";
+import { getProgramTiers, hasHiddenProgramPrices } from "@/lib/programPricing";
 import { getFromPrice, fmtEuro, DEFAULT_PRICING } from "@/lib/pricing";
 import { getTripDescription } from "@/lib/tripDescriptions";
 import EditableText from "@/components/EditableText";
@@ -18,6 +18,7 @@ const SEASONS = DEFAULT_PRICING.seasons;
    price and a compact per-person price matrix by group size. */
 const TripPriceCard = ({ trip, lang, pricing }) => {
   const [open, setOpen] = useState(true);
+  if (hasHiddenProgramPrices(trip.routeId)) return null;
   const prog = getProgramTiers(trip.routeId);
   const tiers = prog || pricing.tiers || DEFAULT_PRICING.tiers;
   // "From" = lowest price across the SAME tiers shown in the table, so the

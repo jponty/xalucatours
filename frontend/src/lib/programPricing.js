@@ -697,7 +697,13 @@ const _entry = (routeId) => {
 };
 
 /* Per-program tier array for a routeId, or null (route uses global pricing). */
+export const hasHiddenProgramPrices = (routeId) => [
+  "tourEnduroAventura34", "tourEnduroAventura45", "tourEnduroAventura67", "tourAventuraEnduroHub",
+].includes(routeId);
+
 export const getProgramTiers = (routeId) => {
+  // An empty matrix deliberately suppresses the global/admin fallback.
+  if (hasHiddenProgramPrices(routeId)) return [];
   const e = _entry(routeId);
   return (e && e.tiers) || null;
 };
@@ -705,6 +711,7 @@ export const getProgramTiers = (routeId) => {
 /* Per-program single-supplement / child prices, or null when the program
    has neither. Shape: { supplement: {low,high}|null, child: {low,high}|null }. */
 export const getProgramExtras = (routeId) => {
+  if (hasHiddenProgramPrices(routeId)) return null;
   const e = _entry(routeId);
   if (!e) return null;
   const supplement = e.supplement || null;

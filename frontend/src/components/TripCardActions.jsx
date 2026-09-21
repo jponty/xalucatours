@@ -19,7 +19,7 @@ import { openChatbaseAssistant } from "@/lib/chatbase";
 import ShareTripButton from "@/components/ShareTripButton";
 import { usePricing } from "@/lib/pricingStore";
 import { getFromPrice, fmtEuro, pickLang } from "@/lib/pricing";
-import { getProgramTiers } from "@/lib/programPricing";
+import { getProgramTiers, hasHiddenProgramPrices } from "@/lib/programPricing";
 
 const PRICE_LABEL = { es: "Ver precios", en: "View prices", fr: "Voir les prix" };
 
@@ -107,7 +107,7 @@ export default function TripCardActions({
       >
         <CalendarClock className={s.icon} strokeWidth={1.7} />
       </button>
-      <button
+      {!hasHiddenProgramPrices(routeId) && <button
         type="button"
         onClick={() => setPriceOpen(true)}
         data-testid={`${testidBase}-price`}
@@ -117,7 +117,7 @@ export default function TripCardActions({
         className={outline}
       >
         <Euro className={s.icon} strokeWidth={1.7} />
-      </button>
+      </button>}
       <ShareTripButton
         testid={`${testidBase}-share`}
         shareUrl={shareUrl}
