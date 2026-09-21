@@ -22,3 +22,17 @@ export const loadSupabaseImages = () => {
   }
   return manifestPromise;
 };
+
+// Keep later SPA navigations (admin, archive and trip finder) on the same
+// saved state as the live day-gallery cache, without refetching stale data.
+export const updateManifestGallery = (key, images) => {
+  manifestPromise = loadSupabaseImages().then(manifest => ({
+    ...manifest,
+    galleries: [
+      ...(manifest.galleries || []).filter(gallery => gallery.key !== key),
+      { key, images },
+    ],
+  }));
+  // Public pages already handle manifest failure via their existing fallback.
+  manifestPromise.catch(() => {});
+};

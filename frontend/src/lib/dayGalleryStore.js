@@ -8,7 +8,8 @@
    so the editor preview reflects changes instantly.
 ============================================================ */
 import { useEffect, useState } from "react";
-import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { loadSupabaseImages, updateManifestGallery } from "@/lib/supabaseImages";
+import { galleryReadKeys, resolveManagedGallery } from "@/lib/galleryCompatibility";
 
 const store = {
   ready: false,
@@ -18,8 +19,11 @@ const store = {
 };
 
 const notify = (key) => {
-  const set = store.subs.get(key);
-  if (set) set.forEach((cb) => cb(store.map.get(key) || null));
+  store.subs.forEach((callbacks, subscribedKey) => {
+    if (galleryReadKeys(subscribedKey).includes(key)) {
+      callbacks.forEach((cb) => cb(getDayGallery(subscribedKey)));
+    }
+  });
 };
 
 export const ensureDayGalleries = () => {
@@ -32,14 +36,16 @@ export const ensureDayGalleries = () => {
       });
       store.ready = true;
       // Notify any keys that were subscribed before data arrived.
-      store.subs.forEach((_set, key) => notify(key));
+      store.subs.forEach((callbacks, key) => {
+        callbacks.forEach(cb => cb(getDayGallery(key)));
+      });
     })
     .catch(() => { store.ready = true; })
     .finally(() => { store.loading = null; });
   return store.loading;
 };
 
-export const getDayGallery = (key) => store.map.get(key) || null;
+export const getDayGallery = (key) => resolveManagedGallery(key, candidate => store.map.get(candidate))?.images ?? null;
 
 /* Canonical key segment for a per-day managed gallery. Uses the day's
    1-based POSITION within the programme so each day is INDEPENDENT even
@@ -52,8 +58,9 @@ export const dayGallerySegment = (index, dayId) => `day.${index}.${dayId}`;
    the live preview updates without a refetch). */
 export const setDayGalleryLocal = (key, images) => {
   if (!key) return;
-  if (images && images.length) store.map.set(key, images);
+  if (Array.isArray(images)) store.map.set(key, images);
   else store.map.delete(key);
+  updateManifestGallery(key, images || []);
   notify(key);
 };
 

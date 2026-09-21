@@ -18,7 +18,7 @@ import { Img } from "@/components/Img";
 import { resolveGalleryUrl } from "@/lib/dayGalleryStore";
 import ImageLibraryPicker from "@/components/ImageLibraryPicker";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ""}/api`;
 
 export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent = "#C16542", initial, onSaved }) => {
   const [images, setImages] = useState(initial || []);
@@ -28,6 +28,10 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
   const [pickerOpen, setPickerOpen] = useState(false);
   const imagesRef = useRef(images);
   useEffect(() => { imagesRef.current = images; }, [images]);
+  useEffect(() => {
+    setImages(initial || []);
+    imagesRef.current = initial || [];
+  }, [initial]);
 
   const flash = () => {
     setSavedTick(true);
@@ -41,6 +45,7 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
   };
 
   const persist = async (next) => {
+    const previous = images;
     setImages(next);
     setBusy(true);
     try {
@@ -49,11 +54,16 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ images: next }),
       });
+      if (!r.ok) throw new Error("Gallery save failed");
       const data = await r.json();
       const imgs = data.images || next;
       setImages(imgs);
       onSaved?.(galleryKey, imgs);
       flash();
+    } catch {
+      setImages(previous);
+      imagesRef.current = previous;
+      toast.error("No se pudo guardar la galería. Los cambios no se han publicado; inténtalo de nuevo.");
     } finally {
       setBusy(false);
     }
@@ -88,6 +98,7 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
     e.target.value = "";
     if (!files.length) return;
     setBusy(true);
+    let confirmedImages;
     try {
       // Persist the current (possibly seeded-but-unsaved) list FIRST so the
       // uploaded files ADD to what's shown instead of replacing the seed on a
@@ -99,26 +110,33 @@ export const DayGalleryEditor = ({ galleryKey, dayNum, dayTitle, dayBody, accent
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ images: latest }),
         });
-        if (r0.ok) {
+        if (!r0.ok) throw new Error("Gallery seed save failed");
+        {
           const d0 = await r0.json();
           latest = d0.images || latest;
           setImages(latest);
           imagesRef.current = latest;
+          confirmedImages = latest;
         }
       }
       for (const f of files) {
         const fd = new FormData();
         fd.append("file", f);
         const r = await fetch(`${API}/day-galleries/${encodeURIComponent(galleryKey)}/upload`, { method: "POST", body: fd });
-        if (r.ok) {
+        if (!r.ok) throw new Error("Gallery upload failed");
+        {
           const data = await r.json();
           latest = data.images || latest;
           setImages(latest);
           imagesRef.current = latest;
+          confirmedImages = latest;
         }
       }
       onSaved?.(galleryKey, latest);
       flash();
+    } catch {
+      if (confirmedImages) onSaved?.(galleryKey, confirmedImages);
+      toast.error("No se pudo completar la subida. Revisa las imágenes guardadas antes de intentarlo de nuevo.");
     } finally {
       setBusy(false);
     }

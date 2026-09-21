@@ -78,9 +78,7 @@ export const DayImageGallery = ({ day, dayLabel, dayNum, dayIndex }) => {
   // key change were stored under the id-based key (`base`). Prefer the new
   // index key, but fall back to the legacy key so previously-configured
   // galleries are recovered without re-uploading.
-  const dynamicNew = useDayGallery(galleryKey);
-  const dynamicLegacy = useDayGallery(base);
-  const dynamic = (dynamicNew && dynamicNew.length) ? dynamicNew : dynamicLegacy;
+  const dynamic = useDayGallery(galleryKey);
 
   // Inline gallery editor (Image Edit Mode) — opens the SAME DayGalleryEditor
   // the Admin uses, on the SAME `day_galleries/{galleryKey}` record.

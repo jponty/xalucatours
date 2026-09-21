@@ -3,6 +3,7 @@ import { TRIP_PROGRAMS } from "@/lib/tripPrograms";
 import { namespaceForRouteId } from "@/components/slotScope";
 import { dayGallerySegment, resolveGalleryUrl } from "@/lib/dayGalleryStore";
 import { tripHeroImage, tripHeroSlot } from "@/lib/tripHero";
+import { resolveManagedGallery, resolveImageSlot } from "@/lib/galleryCompatibility";
 import { FIN_DE_ANO_ITINERARY } from "@/pages/FinDeAno2026Page";
 
 const catalogueByRoute = new Map(ALL_TRIPS.map((trip) => [trip.routeId, trip]));
@@ -37,12 +38,12 @@ export const tripImages = (routeId, program, catalogue, manifest, options = {}) 
     images.push(url);
   };
 
-  add(slots.get(tripHeroSlot(routeId)) || tripHeroImage(routeId) || catalogue?.image);
+  add(resolveImageSlot(tripHeroSlot(routeId), key => slots.get(key)) || tripHeroImage(routeId) || catalogue?.image);
 
   const candidatesByDay = days.map((day, dayIndex) => {
     const legacyBase = `${namespace}.day.${day.id}`;
     const galleryKey = `${namespace}.${dayGallerySegment(dayIndex + 1, day.id)}`;
-    const managed = galleries.get(galleryKey) || galleries.get(legacyBase);
+    const managed = resolveManagedGallery(galleryKey, key => galleries.get(key))?.images;
     if (managed?.length) return managed.map((image) => image?.url).filter(Boolean);
 
     return [

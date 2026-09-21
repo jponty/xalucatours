@@ -15,6 +15,7 @@ import EditableImageMeta from "@/components/EditableImageMeta";
 import SlotUsagePanel from "@/components/SlotUsagePanel";
 import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { imageSlotReadKeys, resolveImageSlot } from "@/lib/galleryCompatibility";
 import { adminAuthHeaders } from "@/lib/adminSession";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
@@ -40,8 +41,12 @@ const imgCache = {
 };
 
 const notifyImg = (slot) => {
-  const subs = imgCache.subscribers.get(slot);
-  if (subs) subs.forEach((cb) => cb(imgCache.values.get(slot)));
+  imgCache.subscribers.forEach((subs, target) => {
+    if (imageSlotReadKeys(target).includes(slot)) {
+      const value = resolveImageSlot(target, key => imgCache.values.get(key));
+      subs.forEach(cb => cb(value));
+    }
+  });
 };
 
 const ensureImgLoaded = () => {
@@ -65,7 +70,10 @@ const ensureImgLoaded = () => {
     imgCache.ready = true;
     imgCache.loading = null;
     // Notify every mounted instance so it re-renders with hydrated data.
-    for (const slot of imgCache.subscribers.keys()) notifyImg(slot);
+    imgCache.subscribers.forEach((subs, slot) => {
+      const value = resolveImageSlot(slot, key => imgCache.values.get(key));
+      subs.forEach(cb => cb(value));
+    });
   })();
   return imgCache.loading;
 };
@@ -93,7 +101,7 @@ const imgCacheSet = (slot, val) => {
    callers that may run before any mount can await ensureSlotsLoaded(). */
 export const getSlotUrl = (slotId) => {
   if (!slotId) return null;
-  const v = imgCache.values.get(slotId);
+  const v = resolveImageSlot(slotId, key => imgCache.values.get(key));
   return v && !v.cleared ? (v.url || null) : null;
 };
 export const ensureSlotsLoaded = ensureImgLoaded;
@@ -369,7 +377,7 @@ export const EditableImage = ({
   // Hydrate synchronously from the global slot cache when it is already
   // warm — so a definitive (saved/Pexels) URL renders on the very first
   // paint and we never flash the code fallback.
-  const initial = slot ? imgCache.values.get(slot) : undefined;
+  const initial = slot ? resolveImageSlot(slot, key => imgCache.values.get(key)) : undefined;
   const [url, setUrl] = useState(initial ? initial.url : (fallback || null));
   const [cleared, setCleared] = useState(initial ? !!initial.cleared : false);
   const [altI18n, setAltI18n] = useState(initial ? (initial.alt_i18n || null) : null);
@@ -411,7 +419,7 @@ export const EditableImage = ({
         setCleared(false);
       }
     };
-    apply(imgCache.values.get(slot));
+    apply(resolveImageSlot(slot, key => imgCache.values.get(key)));
     const unsub = subscribeImg(slot, apply);
     ensureImgLoaded().then(() => { if (active) setReady(true); });
     return () => { active = false; unsub(); };

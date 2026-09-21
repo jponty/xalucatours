@@ -178,9 +178,7 @@ const ChronologyDayCard = ({ day, index, lang, t }) => {
   // day instead of relying on a generic programme image.
   const legacyBase = useSlotId(`day.${day.id}`);
   const indexedKey = useSlotId(dayGallerySegment(index + 1, day.id));
-  const indexedGallery = useDayGallery(indexedKey);
-  const legacyGallery = useDayGallery(legacyBase);
-  const managedGallery = indexedGallery?.length ? indexedGallery : legacyGallery;
+  const managedGallery = useDayGallery(indexedKey);
   const selectedImage = resolveGalleryUrl(managedGallery?.[0]?.url)
     || getSlotUrl(`${legacyBase}.image`)
     || (Array.isArray(day.gallery) ? day.gallery[0] : null)

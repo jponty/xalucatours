@@ -21,8 +21,9 @@ import { namespaceForRouteId } from "@/components/slotScope";
 import { pick } from "@/contexts/LanguageContext";
 import { setDayGalleryLocal, dayGallerySegment, buildDaySeed } from "@/lib/dayGalleryStore";
 import { DayGalleryEditor } from "@/components/DayGalleryEditor";
+import { loadSupabaseImages } from "@/lib/supabaseImages";
+import { resolveManagedGallery } from "@/lib/galleryCompatibility";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const MAX_SEED_SLIDES = 12;
 
 const prettifyRoute = (routeId) =>
@@ -64,22 +65,20 @@ export default function GalleryManager({ lang = "es" }) {
   const [galleries, setGalleries] = useState({}); // key -> [{url,alt}]
   const [slots, setSlots] = useState({});         // slotId -> url
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let alive = true;
-    Promise.all([
-      fetch(`${API}/day-galleries`).then((r) => (r.ok ? r.json() : { galleries: [] })).catch(() => ({ galleries: [] })),
-      fetch(`${API}/slots`).then((r) => (r.ok ? r.json() : { slots: [] })).catch(() => ({ slots: [] })),
-    ]).then(([g, s]) => {
+    loadSupabaseImages().then((manifest) => {
       if (!alive) return;
       const gm = {};
-      (g.galleries || []).forEach((x) => { if (x.key) gm[x.key] = x.images || []; });
+      (manifest.galleries || []).forEach((x) => { if (x.key) gm[x.key] = x.images || []; });
       const sm = {};
-      (s.slots || []).forEach((x) => { if (x.slot_id && x.url && !x.cleared) sm[x.slot_id] = x.url; });
+      (manifest.slots || []).forEach((x) => { if (x.slot_id && x.url && !x.cleared) sm[x.slot_id] = x.url; });
       setGalleries(gm);
       setSlots(sm);
       setLoaded(true);
-    });
+    }).catch(() => { if (alive) setLoadError(true); });
     return () => { alive = false; };
   }, []);
 
@@ -107,8 +106,8 @@ export default function GalleryManager({ lang = "es" }) {
   // index-based key change. We recover those legacy galleries so previously
   // configured images are not lost (they migrate to the new key on next save).
   const seedFor = (key, legacyBase, day) => {
-    if (galleries[key] && galleries[key].length) return galleries[key];
-    if (galleries[legacyBase] && galleries[legacyBase].length) return galleries[legacyBase];
+    const managed = resolveManagedGallery(key, candidate => galleries[candidate]);
+    if (managed) return managed.images;
     return buildDaySeed({
       day,
       mainAlt: pick(day.title, lang),
@@ -198,7 +197,11 @@ export default function GalleryManager({ lang = "es" }) {
 
       {/* Days + gallery editors */}
       <div className="flex-1 overflow-y-auto max-h-[calc(100vh-56px)] bg-[#0F0D0B]">
-        {!loaded ? (
+        {loadError ? (
+          <div role="alert" className="p-8 text-sm text-white/70">
+            No hemos podido cargar las galerías guardadas. Recarga la página antes de editar para evitar sobrescribir imágenes existentes.
+          </div>
+        ) : !loaded ? (
           <div className="h-full flex items-center justify-center text-white/40 gap-2 py-20">
             <Loader2 className="w-4 h-4 animate-spin" /> Cargando…
           </div>
