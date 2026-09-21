@@ -18,6 +18,9 @@ jest.mock("@/components/EditableText", () => ({ as: Tag = "span", defaults, clas
 jest.mock("@/components/slotScope", () => ({ SlotScope: ({ children }) => children, useSlotId: (id) => id }));
 jest.mock("@/components/SectionNav", () => () => null);
 jest.mock("@/components/EditableImage", () => () => null);
+jest.mock("@/components/YouTubeHeroBackground", () => ({ videoId, endSeconds, children }) => (
+  <div data-testid="contact-video" data-video-id={videoId} data-end-seconds={endSeconds}>{children}</div>
+));
 jest.mock("@/components/HeroMonogram", () => () => null);
 jest.mock("@/components/TripContextBanner", () => () => null);
 jest.mock("@/components/CalendlyEmbed", () => ({ CalendlyEmbed: () => null, useCalendlyScript: () => {} }));
@@ -106,6 +109,8 @@ test("each CTA opens and focuses the correct form, preserves the trip and suppor
 test("the contact hero exposes all five responsive actions and opens each existing form", async () => {
   await render(<ContactPage />);
   const hero = get("contact-hero");
+  expect(get("contact-video").dataset.videoId).toBe("hVvEISFw9w0");
+  expect(get("contact-video").dataset.endSeconds).toBe("275");
   expect(hero.querySelector('[data-testid="hero-cta-book"]').getAttribute("href")).toBe("#booking");
   expect(hero.querySelector('[data-testid="hero-cta-call"]').getAttribute("href")).toBe("tel:+34937268366");
   expect(hero.textContent).toContain("Contacto rápido");

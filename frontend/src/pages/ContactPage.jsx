@@ -27,6 +27,8 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { openChatbaseAssistant, CHATBASE_HELP_URL } from "@/lib/chatbase";
 import EditableImage from "@/components/EditableImage";
+import YouTubeHeroBackground from "@/components/YouTubeHeroBackground";
+import { MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
 import HeroMonogram from "@/components/HeroMonogram";
 import { E } from "@/components/EditableSection";
 import { SlotScope } from "@/components/slotScope";
@@ -222,20 +224,22 @@ const ContactPage = () => {
     <SlotScope id="contact">
       <main data-testid="contact-page" className="bg-[#FDFBF7]">
 
-        {/* ============== HERO · same pattern as /quehacemos (image + Ken Burns, no video) ============== */}
+        {/* ============== HERO · muted YouTube background, looping 0–4:35 ============== */}
         <section
           data-testid="contact-hero"
           className="relative min-h-[100svh] w-full overflow-hidden bg-[#1A1513]"
         >
-          <EditableImage
-            slot="contact.hero"
-            fallback={IMG.medinaPeople || IMG.koutoubia}
-            alt=""
-            priority
-            aspectRatio="auto"
-            imgProps={{ loading: "eager" }}
-            className="ken-burns absolute inset-0 w-full h-full object-cover"
-          />
+          <YouTubeHeroBackground {...MOROCCO_HERO_VIDEO}>
+            <EditableImage
+              slot="contact.hero"
+              fallback={IMG.medinaPeople || IMG.koutoubia}
+              alt=""
+              priority
+              aspectRatio="auto"
+              imgProps={{ loading: "eager" }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </YouTubeHeroBackground>
           {/* Legibility stack — identical to QueHacemos hero */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/50 to-[#1A1513]/30 pointer-events-none" />
           <div className="absolute inset-0 berber-bg-cross opacity-40 pointer-events-none" aria-hidden="true" />

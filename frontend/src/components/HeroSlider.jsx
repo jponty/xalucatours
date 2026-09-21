@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Compass, Phone, Mail, Headset, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,21 +8,22 @@ import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 import HeroMonogram from "@/components/HeroMonogram";
+import YouTubeHeroBackground from "@/components/YouTubeHeroBackground";
+import { MOROCCO_HERO_VIDEO } from "@/lib/heroVideo";
 import { preloadImageLink } from "@/lib/imageUrl";
 import { requestIdealTripWizard } from "@/components/IdealTripWizard";
 /* ============================================================
    Hero (formerly HeroSlider)
    ----
-   Full-bleed background video using a native <video> element
-   (muted autoplay + seamless loop + playsInline, no chrome).
+   Full-bleed background using the same YouTube component and clip
+   as Contact (muted autoplay, inline, looping from 0:00 to 4:35).
    The clip is layered under a brand-coloured gradient + berber
    pattern so the title, CTAs and quick-contact pill stay legible.
 
-   • Source: Sendspark video (delivered via Mux progressive mp4).
-   • object-cover keeps the 16:9 clip filling any viewport.
+   • Shared responsive cover sizing fills any hero aspect ratio.
+   • The existing poster remains as an autoplay/error fallback.
    • Component kept named `HeroSlider` to avoid touching imports.
 ============================================================ */
-const HERO_VIDEO_SRC = "https://stream.mux.com/HlwGpYi2dBcP007P3601vNiRiY9acrPyBB/high.mp4";
 const HERO_VIDEO_POSTER =
   "https://image.mux.com/HlwGpYi2dBcP007P3601vNiRiY9acrPyBB/thumbnail.jpg?width=1280&time=0";
 
@@ -41,16 +42,6 @@ const HERO_PLACE = {
 
 export const HeroSlider = () => {
   const { lang } = useLanguage();
-  const videoRef = useRef(null);
-
-  /* Force muted autoplay (some mobile browsers ignore the attribute alone). */
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    const p = v.play();
-    if (p && typeof p.catch === "function") p.catch(() => { /* autoplay blocked — poster shows */ });
-  }, []);
 
   /* Preload the video poster (the home LCP element shown before the clip
      plays) at high priority so it appears as fast as possible. */
@@ -67,20 +58,17 @@ export const HeroSlider = () => {
         className="absolute inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
       >
-        <video
-          ref={videoRef}
-          data-testid="hero-video"
-          className="absolute inset-0 w-full h-full object-cover select-none"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster={HERO_VIDEO_POSTER}
-          tabIndex={-1}
-        >
-          <source src={HERO_VIDEO_SRC} type="video/mp4" />
-        </video>
+        <YouTubeHeroBackground {...MOROCCO_HERO_VIDEO}>
+          <img
+            data-testid="hero-video-poster"
+            src={HERO_VIDEO_POSTER}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover select-none"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </YouTubeHeroBackground>
       </div>
 
       {/* ---------- Legibility overlays (in order, bottom → top) ---------- */}
@@ -91,13 +79,6 @@ export const HeroSlider = () => {
       {/* 3. Berber pattern + film-grain (consistent with the rest of the site) */}
       <div className="absolute inset-0 berber-bg-cross opacity-30 pointer-events-none" aria-hidden="true" />
       <span className="film-grain" />
-      {/* 4. Bottom-right corner mask — hides the Xaluca watermark baked into the
-            background video, blending into the existing brand vignette. */}
-      <div
-        className="absolute bottom-0 right-0 w-80 h-64 z-[2] pointer-events-none"
-        style={{ background: "radial-gradient(130% 130% at 100% 100%, #1A1513 0%, rgba(26,21,19,0.92) 42%, rgba(26,21,19,0) 75%)" }}
-        aria-hidden="true"
-      />
       {/* Xaluca brand monogram integrated into the bottom-right edge (desktop). */}
       <HeroMonogram zClass="z-[3]" />
 

@@ -3,6 +3,7 @@ import { Play, Pause, Volume2, VolumeX, Film, Headset } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { Img } from "@/components/Img";
 import EditableText from "@/components/EditableText";
+import { loadYouTubeAPI } from "@/lib/youtubeApi";
 
 // Open the Chatbase virtual assistant (centralised in lib/chatbase).
 import { openChatbaseAssistant } from "@/lib/chatbase";
@@ -19,30 +20,6 @@ import { openChatbaseAssistant } from "@/lib/chatbase";
    • Cover poster + skeleton with a smooth fade-in on load.
    • Custom play / pause / mute controls.
 ============================================================ */
-
-/* Lazy-load the YouTube IFrame API exactly once (shared promise). */
-let ytApiPromise = null;
-const loadYouTubeAPI = () => {
-  if (ytApiPromise) return ytApiPromise;
-  ytApiPromise = new Promise((resolve) => {
-    if (window.YT && window.YT.Player) {
-      resolve(window.YT);
-      return;
-    }
-    const prev = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      if (typeof prev === "function") prev();
-      resolve(window.YT);
-    };
-    if (!document.getElementById("youtube-iframe-api")) {
-      const tag = document.createElement("script");
-      tag.id = "youtube-iframe-api";
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.head.appendChild(tag);
-    }
-  });
-  return ytApiPromise;
-};
 
 const COPY = {
   es: {
@@ -146,7 +123,7 @@ export const ToursVideoSection = ({ videoId = "nzD3e3Qr7g8" }) => {
         },
       });
       playerRef.current = player;
-    });
+    }).catch(() => { /* Keep the existing cover if YouTube is unavailable. */ });
 
     return () => {
       cancelled = true;
