@@ -83,8 +83,14 @@ describe.each(forms)("$kind contact submission", config => {
     expect(get(config.form)).not.toBeNull();
     expect(get(config.name).value).toBe("Ana García");
     expect(get(config.phone).value).toContain("612");
-    if (config.kind === "quick") expect(typeof toast.error.mock.calls[0]?.[0]).toBe("string");
-    else expect(container.querySelector('[role="alert"]').textContent).not.toContain("[object Object]");
+    if (config.kind === "quick") {
+      const notification = document.createElement("div");
+      const notificationRoot = createRoot(notification);
+      await act(async () => notificationRoot.render(toast.error.mock.calls[0]?.[0]));
+      expect(notification.textContent).toBe("Algo ha salido mal. Inténtalo de nuevo o escríbenos a xalucatours@xaluca.com.");
+      expect(notification.querySelector("a").getAttribute("href")).toBe("mailto:xalucatours@xaluca.com");
+      await act(async () => notificationRoot.unmount());
+    } else expect(container.querySelector('[role="alert"]').textContent).not.toContain("[object Object]");
     await submit(config.form);
     expect(container.textContent).toContain("¡Recibido! Te respondemos en 24–48 h.");
   });

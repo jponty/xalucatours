@@ -29,6 +29,7 @@ from calendly_leads import register_calendly_routes
 from newsletter_leads import import_newsletter_leads
 from form_dictation import register_dictation_routes
 from climate import register_climate_routes
+from featured_trip_email import render_featured_trip, email_plain_text
 
 
 ROOT_DIR = Path(__file__).parent
@@ -1413,6 +1414,7 @@ def send_client_confirmation(
     safe_name = _html.escape(safe_name)
     archive_url = _html.escape(_public_site_link("/archivo"), quote=True)
     summary_html = _client_summary_html(summary_rows)
+    featured_html, featured_text = render_featured_trip(lang, _public_site_link)
     html = (
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
@@ -1445,6 +1447,7 @@ def send_client_confirmation(
             '</td></tr>'
             if summary_html else ""
         )
+        + featured_html
         + f'<tr><td style="padding:18px 30px;background:#faf6ef;color:#8a7d6e;font-size:12px;text-align:center">{c["footer"]}</td></tr>'
         '</table></div>'
     )
@@ -1453,6 +1456,8 @@ def send_client_confirmation(
         "to": [to_email],
         "subject": c["subject"],
         "html": html,
+        "text": email_plain_text(html.replace(featured_html, "") if featured_html else html)
+        + f'\n\n{c["archive_cta"]}: {_public_site_link("/archivo")}\n\n{featured_text}',
         "tags": [{"name": "flow", "value": "client-confirmation"}],
     }
     attachments = _email_attachments()
@@ -1971,6 +1976,7 @@ def send_feedback_review_followup(
     safe_trip = _html.escape((trip_reference or "").strip() or copy["fallback_trip"])
     safe_review = _html.escape((review_text or "").strip()).replace("\n", "<br>")
     greeting_name = f" {safe_name}" if safe_name else ""
+    featured_html, featured_text = render_featured_trip(lang, _public_site_link)
     stars = (
         f'<span style="color:#E2AE36;font-size:24px;letter-spacing:3px">{"★" * rating}</span>'
         f'<span style="color:#D8D0C5;font-size:24px;letter-spacing:3px">{"★" * (5 - rating)}</span>'
@@ -2005,7 +2011,8 @@ def send_feedback_review_followup(
         'style="display:block;background:#C16542;color:#FFFFFF;text-decoration:none;padding:16px 18px;'
         'font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase">'
         f'{copy["button"]}</a></td></tr>'
-        f'<tr><td style="padding:18px 24px;background:#F7F0E4;color:#6F6258;font-size:12px;text-align:center">{copy["closing"]}</td></tr>'
+        + featured_html
+        + f'<tr><td style="padding:18px 24px;background:#F7F0E4;color:#6F6258;font-size:12px;text-align:center">{copy["closing"]}</td></tr>'
         '</table></div>'
     )
     plain_review = (review_text or "").strip()
@@ -2013,7 +2020,7 @@ def send_feedback_review_followup(
         f'{copy["greeting"].format(name=(" " + (name or "").strip()) if name else "")}\n\n'
         f'{copy["body"]}\n\n{copy["trip"]}: {(trip_reference or "").strip() or copy["fallback_trip"]}\n'
         f'{copy["rating"]}: {rating}/5\n\n{copy["review"]}:\n{plain_review}\n\n'
-        f'{copy["reuse"]}\n{copy["button"]}: {FEEDBACK_GOOGLE_REVIEW_URL}\n\n{copy["closing"]}'
+        f'{copy["reuse"]}\n{copy["button"]}: {FEEDBACK_GOOGLE_REVIEW_URL}\n\n{featured_text}\n\n{copy["closing"]}'
     )
     params = {
         "from": LEADS_FROM_EMAIL,
@@ -5866,6 +5873,7 @@ def send_contest_prize_email(
         raise EmailDeliveryError("Contest confirmation has no recipient")
     c = _CONTEST_MAIL.get(lang if lang in _CONTEST_MAIL else "es")
     safe_name = (name or "").strip() or {"es": "viajero/a", "en": "traveller", "fr": "voyageur"}[lang if lang in _CONTEST_MAIL else "es"]
+    featured_html, featured_text = render_featured_trip(lang, _public_site_link)
     html = (
         '<div style="background:#f4efe7;padding:24px;font-family:Arial,Helvetica,sans-serif">'
         '<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">'
@@ -5886,13 +5894,16 @@ def send_contest_prize_email(
         f'<p style="color:#2C2621;font-size:15px;margin:0">{c["closing"]}</p>'
         f'<p style="color:#2C2621;font-size:15px;margin:4px 0 0;font-weight:600">{c["team"]}</p>'
         '</td></tr>'
-        '</table></div>'
+        + featured_html
+        + '</table></div>'
     )
     params = {
         "from": LEADS_FROM_EMAIL,
         "to": [to_email],
         "subject": c["subject"],
         "html": html,
+        "text": email_plain_text(html.replace(featured_html, "") if featured_html else html)
+        + f"\n\n{featured_text}",
         "tags": [{"name": "flow", "value": "contest-prize"}],
     }
     attachments = _email_attachments()

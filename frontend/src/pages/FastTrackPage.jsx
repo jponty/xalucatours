@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
-import { contactSubmissionError, contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { errorToastMessage } from "@/components/GenericErrorMessage";
 import { ContactPreference } from "@/components/FormExtras";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -204,7 +205,7 @@ export default function FastTrackPage() {
       setForm(EMPTY_FORM);
       toast.success("Solicitud Fast Track enviada correctamente");
     } catch (error) {
-      toast.error(contactSubmissionError(error?.response?.data?.detail, "No se pudo enviar la solicitud. Inténtalo de nuevo o contacta con nuestro equipo."));
+      toast.error(errorToastMessage(error?.response?.data?.detail));
     } finally {
       setSending(false);
     }

@@ -5,6 +5,7 @@ import { useLeadCapture } from "@/lib/leadCapture";
 import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
 import { ContactPreference } from "@/components/FormExtras";
 import { toast } from "sonner";
+import { errorToastMessage } from "@/components/GenericErrorMessage";
 import { X, Download, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
@@ -49,11 +50,6 @@ const COPY = {
     es: "No se puede conectar con el servidor. Comprueba que esté disponible e inténtalo de nuevo.",
     en: "We cannot connect to the server. Please check that it is available and try again.",
     fr: "Impossible de se connecter au serveur. Vérifiez qu’il est disponible et réessayez.",
-  },
-  server_error: {
-    es: "El servidor no ha podido procesar la descarga. Inténtalo de nuevo en unos instantes.",
-    en: "The server could not process the download. Please try again in a few moments.",
-    fr: "Le serveur n’a pas pu traiter le téléchargement. Réessayez dans quelques instants.",
   },
   request_error: {
     es: "No se pudo completar la solicitud. Revisa los datos e inténtalo de nuevo.",
@@ -149,7 +145,7 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
       } else if (!error?.response) {
         toast.error(L("network_error"));
       } else if (error.response.status >= 500) {
-        toast.error(L("server_error"));
+        toast.error(errorToastMessage(undefined, lang));
       } else {
         toast.error(L("request_error"));
       }

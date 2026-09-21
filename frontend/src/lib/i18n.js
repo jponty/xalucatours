@@ -195,9 +195,9 @@ export const translations = {
   form_success:    { en: "Thank you — we'll be in touch within 24 hours.",
                      fr: "Merci — nous vous répondrons sous 24 heures.",
                      es: "Gracias — te responderemos en 24 horas." },
-  form_error:      { en: "Something went wrong. Please try again or write to us directly.",
-                     fr: "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
-                     es: "Algo salió mal. Inténtalo de nuevo o escríbenos directamente." },
+  form_error:      { en: "Something went wrong. Please try again or email us at xalucatours@xaluca.com.",
+                     fr: "Une erreur est survenue. Réessayez ou écrivez-nous à xalucatours@xaluca.com.",
+                     es: "Algo ha salido mal. Inténtalo de nuevo o escríbenos a xalucatours@xaluca.com." },
   form_no_preference: { en: "No preference yet", fr: "Pas encore de préférence", es: "Sin preferencia" },
   send_another:    { en: "Send another", fr: "Envoyer une autre demande", es: "Enviar otra consulta" },
 

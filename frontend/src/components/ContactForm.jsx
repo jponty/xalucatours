@@ -12,7 +12,8 @@ import { WhatHappensNext, ContactPreference, TripDurationSummary } from "@/compo
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 import { useLeadCapture } from "@/lib/leadCapture";
-import { contactSubmissionFields, contactSubmissionError, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { errorToastMessage } from "@/components/GenericErrorMessage";
 import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -49,17 +50,17 @@ export const ContactForm = () => {
     const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
     if (!isValidInternationalPhone(form.phone)) {
       setPhoneError(required);
-      toast.error(t("form_error"));
+      toast.error(errorToastMessage(undefined, lang));
       return;
     }
     if (!form.preferred_contact.length) {
       const req = { es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" };
       setPrefError(pick(req, lang));
-      toast.error(t("form_error"));
+      toast.error(errorToastMessage(undefined, lang));
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      toast.error(t("form_error"));
+      toast.error(errorToastMessage(undefined, lang));
       return;
     }
     setPrefError("");
@@ -83,7 +84,7 @@ export const ContactForm = () => {
       toast.success(t("form_success"));
       setForm(initialState);
     } catch (error) {
-      toast.error(contactSubmissionError(error?.response?.data?.detail, t("form_error")));
+      toast.error(errorToastMessage(error?.response?.data?.detail, lang));
     } finally {
       setSending(false);
     }

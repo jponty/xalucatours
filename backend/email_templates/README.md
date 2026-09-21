@@ -1,5 +1,35 @@
 # Xaluca Tours · Broadcasts en Resend
 
+## Viaje destacado en confirmaciones de clientes
+
+`featured-trip.json` es la única configuración del bloque: activación (`enabled`),
+imagen JPEG/PNG HTTPS y textos, CTA y ruta por idioma (es/en/fr). Actualmente
+promociona **Fin de Año 2026**, con destino `/findeano2026` (y sus traducciones).
+Para cambiarlo, editar ese archivo y desplegar el backend; no hay que editar cada
+email ni crear una plantilla en Resend. `enabled: false` oculta el bloque.
+
+El render compartido está en `backend/featured_trip_email.py`. Lo usan las
+confirmaciones de contacto (incluidos dictado, exit-intent, WhatsApp, Fast Track,
+equipo y fundadores), planificación, descargas, concurso y el seguimiento de
+feedback. No se aplica a notificaciones internas, newsletters, autenticación ni
+mensajes gestionados externamente por Calendly. No crea nuevos envíos donde no
+existían ni modifica preferencias o suscripciones de los clientes.
+
+Mantener el mensaje de confirmación como contenido principal. Revisar la base
+de consentimiento comercial antes de publicar promociones en estos emails.
+
+Previsualizar **sin enviar correos** desde la raíz del repositorio:
+
+```sh
+.venv/bin/python backend/email_templates/preview_confirmations.py
+```
+
+Genera HTML y texto en un directorio temporal. Comprobar también Gmail, Outlook
+y Apple Mail con un envío de prueba autorizado antes de publicar: una vista en
+el navegador no reproduce todos sus motores de renderizado.
+
+## Broadcasts
+
 Fuente maestra de email para comunicar viajes, rutas, salidas, novedades y propuestas de Xaluca Tours.
 
 ## Archivos

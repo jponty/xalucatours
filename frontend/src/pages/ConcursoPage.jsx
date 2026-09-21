@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
-import { contactSubmissionError, contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { errorToastMessage } from "@/components/GenericErrorMessage";
 import { ContactPreference } from "@/components/FormExtras";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
@@ -53,7 +54,6 @@ const UI = {
   legalPrivacy: T("Política de Privacidad", "Privacy Policy", "Politique de Confidentialité"),
   legalPost: T(".", ".", "."),
   dupError: T("Este email ya ha participado en el concurso.", "This email has already entered the giveaway.", "Cet e-mail a déjà participé au concours."),
-  genericError: T("No se ha podido completar la participación. Inténtalo de nuevo.", "We couldn't complete your entry. Please try again.", "Impossible de finaliser la participation. Réessayez."),
   closedTitle: T("El concurso no está disponible", "The giveaway isn't available", "Le concours n'est pas disponible"),
   closedBody: T("Vuelve pronto para participar en nuestro próximo sorteo.", "Come back soon to enter our next giveaway.", "Revenez bientôt pour participer à notre prochain concours."),
   winTitle: T("¡Enhorabuena!", "Congratulations!", "Félicitations !"),
@@ -228,9 +228,9 @@ export default function ConcursoPage() {
         setPhase("ready");
       } else if (status === 403) {
         setContest((c) => (c ? { ...c, open: false } : c));
-        toast.error(contactSubmissionError(err?.response?.data?.detail, L(UI.genericError, lang)));
+        toast.error(errorToastMessage(err?.response?.data?.detail, lang));
       } else {
-        toast.error(contactSubmissionError(err?.response?.data?.detail, L(UI.genericError, lang)));
+        toast.error(errorToastMessage(err?.response?.data?.detail, lang));
         setPhase("ready");
       }
     }

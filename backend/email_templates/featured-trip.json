@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "image_url": "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_1703316_fe362842.jpg",
+  "locales": {
+    "es": {
+      "label": "Viaje destacado",
+      "name": "Viaje de Fin de Año 2026",
+      "description": "Despide el año entre las dunas del Sáhara y los paisajes del Atlas. Descubre una salida especial para empezar 2027 de una forma inolvidable.",
+      "image_alt": "Descubre el viaje de Fin de Año 2026 en Marruecos",
+      "cta": "Descubre el viaje",
+      "path": "/findeano2026"
+    },
+    "en": {
+      "label": "Featured journey",
+      "name": "New Year's Eve 2026 journey",
+      "description": "See out the year among the Sahara dunes and Atlas landscapes. Discover a special departure for an unforgettable start to 2027.",
+      "image_alt": "Discover the New Year's Eve 2026 journey in Morocco",
+      "cta": "Discover the journey",
+      "path": "/en/newyear2026"
+    },
+    "fr": {
+      "label": "Voyage à la une",
+      "name": "Voyage du Réveillon 2026",
+      "description": "Terminez l’année entre les dunes du Sahara et les paysages de l’Atlas. Découvrez un départ spécial pour commencer 2027 autrement.",
+      "image_alt": "Découvrez le voyage du Réveillon 2026 au Maroc",
+      "cta": "Découvrez le voyage",
+      "path": "/fr/nouvelan2026"
+    }
+  }
+}

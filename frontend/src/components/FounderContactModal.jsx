@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
-import { contactSubmissionFields, contactSubmissionError, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { errorToastMessage } from "@/components/GenericErrorMessage";
 import { ContactPreference } from "@/components/FormExtras";
 import { ArrowRight, Mail, Send, ShieldCheck, Users } from "lucide-react";
 import { useLocation } from "react-router-dom";
@@ -52,7 +53,6 @@ const COPY = {
     "Nous avons enregistré votre demande et l’avons adressée au destinataire choisi. Vous recevrez également une confirmation par e-mail.",
   ),
   close: T("Cerrar", "Close", "Fermer"),
-  error: T("No se ha podido enviar la consulta. Inténtalo de nuevo.", "We couldn't send your enquiry. Please try again.", "Impossible d’envoyer votre demande. Veuillez réessayer."),
   teamEyebrow: T("Contacto directo con el equipo", "Direct team contact", "Contact direct avec l’équipe"),
   teamTitle: T("Habla directamente con la persona adecuada.", "Speak directly with the right person.", "Échangez directement avec la bonne personne."),
   teamDescription: T(
@@ -159,7 +159,7 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
     event.preventDefault();
     if (sending) return;
     if (!isValidInternationalPhone(form.phone)) {
-      toast.error(pick(COPY.error, lang));
+      toast.error(errorToastMessage(undefined, lang));
       return;
     }
     setSending(true);
@@ -187,7 +187,7 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
       setSuccess(true);
       toast.success(pick(COPY.successTitle, lang));
     } catch (error) {
-      toast.error(contactSubmissionError(error?.response?.data?.detail, pick(COPY.error, lang)));
+      toast.error(errorToastMessage(error?.response?.data?.detail, lang));
     } finally {
       setSending(false);
     }
