@@ -518,7 +518,7 @@ export const ItinerariesOverview = ({ itineraries, t, lang }) => (
 
 
 /* ============================================================
-   WhyXaluca — 4 brand pillars (Atención 24/7, Personalización, Calidad, Garantía)
+   WhyXaluca — 4 brand pillars (Asistencia en viaje 24/7, Personalización, Calidad, Garantía)
 ============================================================ */
 export const WhyXaluca = ({ pillars, t, lang, testid = "why-xaluca", variant = "light" }) => {
   const isDark = variant === "dark";

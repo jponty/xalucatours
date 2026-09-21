@@ -330,13 +330,13 @@ export const SHARED_DETAILS = {
   includes: {
     es: ["Vuelos internacionales con conexión vía Casablanca", "Vehículo 4x4 con chófer-guía privado durante todo el circuito",
          "Hoteles Xaluca y bivouac tradicional", "Pensión completa según itinerario",
-         "Paseo en dromedario en Erg Chebbi", "Visitas culturales con guía local", "Asistencia 24/7 desde Xaluca Tours"],
+         "Paseo en dromedario en Erg Chebbi", "Visitas culturales con guía local", "Asistencia en viaje 24/7 de Xaluca Tours"],
     en: ["International flights with connection via Casablanca", "Private 4x4 with driver-guide throughout the circuit",
          "Xaluca hotels and traditional bivouac", "Full board according to itinerary",
-         "Camel ride in Erg Chebbi", "Cultural visits with local guide", "24/7 assistance from Xaluca Tours"],
+         "Camel ride in Erg Chebbi", "Cultural visits with local guide", "24/7 assistance during your trip from Xaluca Tours"],
     fr: ["Vols internationaux avec correspondance via Casablanca", "4x4 privé avec chauffeur-guide pendant tout le circuit",
          "Hôtels Xaluca et bivouac traditionnel", "Pension complète selon l'itinéraire",
-         "Balade à dromadaire à l'Erg Chebbi", "Visites culturelles avec guide local", "Assistance 24/7 par Xaluca Tours"],
+         "Balade à dromadaire à l'Erg Chebbi", "Visites culturelles avec guide local", "Assistance en voyage 24h/24 et 7j/7 par Xaluca Tours"],
   },
   excludes: {
     es: ["Tasas aéreas y carburante (sujetas a variación)", "Bebidas no incluidas en menús",
@@ -3682,7 +3682,7 @@ export const PROGRAM_MES_45 = {
         "Transfer Marrakech → Essaouira con vehículo y chófer",
         "Transfer Essaouira → aeropuerto de Marrakech",
         "Seguro de asistencia en viaje",
-        "Teléfono de asistencia 24 horas",
+        "Teléfono de asistencia en viaje 24/7",
       ],
       en: [
         "Two nights in Marrakech in a Riad or 4* / 5* Hotel, bed and breakfast",
@@ -3693,7 +3693,7 @@ export const PROGRAM_MES_45 = {
         "Marrakech → Essaouira transfer with vehicle and driver",
         "Essaouira → Marrakech airport transfer",
         "Travel assistance insurance",
-        "24-hour assistance phone",
+        "24/7 in-trip assistance phone",
       ],
       fr: [
         "Deux nuits à Marrakech en Riad ou Hôtel 4* / 5* en logement et petit déjeuner",
@@ -3704,7 +3704,7 @@ export const PROGRAM_MES_45 = {
         "Transfert Marrakech → Essaouira avec véhicule et chauffeur",
         "Transfert Essaouira → aéroport de Marrakech",
         "Assurance assistance voyage",
-        "Téléphone d'assistance 24 h",
+        "Téléphone d'assistance en voyage 24h/24 et 7j/7",
       ],
     },
     excludes: {
@@ -3951,7 +3951,7 @@ export const PROGRAM_MES_67 = {
         "Transfer Marrakech → Essaouira con vehículo y chófer",
         "Transfer Essaouira → aeropuerto de Marrakech",
         "Seguro de asistencia en viaje",
-        "Teléfono de asistencia 24 horas",
+        "Teléfono de asistencia en viaje 24/7",
       ],
       en: [
         "Three nights in Marrakech in a Riad or 4* / 5* Hotel, bed and breakfast",
@@ -3962,7 +3962,7 @@ export const PROGRAM_MES_67 = {
         "Marrakech → Essaouira transfer with vehicle and driver",
         "Essaouira → Marrakech airport transfer",
         "Travel assistance insurance",
-        "24-hour assistance phone",
+        "24/7 in-trip assistance phone",
       ],
       fr: [
         "Trois nuits à Marrakech en Riad ou Hôtel 4* / 5* en logement et petit déjeuner",
@@ -3973,7 +3973,7 @@ export const PROGRAM_MES_67 = {
         "Transfert Marrakech → Essaouira avec véhicule et chauffeur",
         "Transfert Essaouira → aéroport de Marrakech",
         "Assurance assistance voyage",
-        "Téléphone d'assistance 24 h",
+        "Téléphone d'assistance en voyage 24h/24 et 7j/7",
       ],
     },
     excludes: {

@@ -110,9 +110,9 @@ export const STUB_CONTENT = {
     title:    { es: "Diseñamos viajes a medida por Marruecos.",
                 en: "We design tailor-made journeys across Morocco.",
                 fr: "Nous concevons des voyages sur mesure au Maroc." },
-    body:     { es: "Itinerarios, alojamientos, guías locales, transporte privado, experiencias auténticas, seguros y asistencia 24/7. Te acompañamos antes, durante y después del viaje.",
-                en: "Itineraries, accommodations, local guides, private transport, authentic experiences, insurance and 24/7 assistance. We're with you before, during and after the trip.",
-                fr: "Itinéraires, hébergements, guides locaux, transports privés, expériences authentiques, assurances et assistance 24/7. Avant, pendant et après le voyage." },
+    body:     { es: "Itinerarios, alojamientos, guías locales, transporte privado, experiencias auténticas, seguros y asistencia en viaje 24/7. Te acompañamos en la preparación y, mientras viajas, ante cualquier necesidad o incidencia.",
+                en: "Itineraries, accommodations, local guides, private transport, authentic experiences, insurance and 24/7 assistance during your trip. We help you prepare and support you with any need or incident while you travel.",
+                fr: "Itinéraires, hébergements, guides locaux, transports privés, expériences authentiques, assurances et assistance en voyage 24h/24 et 7j/7. Nous vous accompagnons dans la préparation et pendant le voyage en cas de besoin ou d’incident." },
   },
   whatToSee: {
     image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",

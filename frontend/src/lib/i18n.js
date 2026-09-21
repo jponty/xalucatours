@@ -213,9 +213,10 @@ export const translations = {
   office_hours_value: { en: "Monday — Friday · 10:00 — 20:00",
                         fr: "Lundi — Vendredi · 10h00 — 20h00",
                         es: "Lunes — Viernes · 10:00 — 20:00" },
-  contact_24_7:      { en: "24/7 assistance, 365 days a year.",
-                       fr: "Assistance 24/7, 365 jours par an.",
-                       es: "Asistencia 24/7, los 365 días del año." },
+  travel_assistance_label: { en: "Trip assistance", fr: "Assistance en voyage", es: "Asistencia en viaje" },
+  contact_24_7:      { en: "24/7 while you are travelling.",
+                       fr: "24h/24 et 7j/7 pendant votre voyage.",
+                       es: "24/7 mientras estás de viaje." },
 
   /* ---------------- Footer ---------------- */
   footer_tag:      { en: "Tailor-made Morocco. Hand-crafted, one journey at a time.",

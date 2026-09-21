@@ -216,9 +216,9 @@ const COPY = {
       fr: "Derrière chaque proposition, une équipe qui connaît déjà le chemin.",
     },
     body: {
-      es: "Estamos a tu disposición las 24 horas. Diseñamos tu próximo viaje a Marruecos a partir de una conversación.",
-      en: "We're available 24 hours a day. We design your next Morocco trip starting from a conversation.",
-      fr: "Nous sommes disponibles 24 h/24. Nous concevons votre prochain voyage au Maroc à partir d'une conversation.",
+      es: "Durante tu viaje dispones de asistencia en viaje 24/7. Para diseñar tu próximo viaje a Marruecos, nuestro equipo te atiende en horario de oficina.",
+      en: "During your trip, you have 24/7 travel assistance. To design your next Morocco journey, our team is available during office hours.",
+      fr: "Pendant votre voyage, vous bénéficiez d’une assistance 24h/24 et 7j/7. Pour concevoir votre prochain voyage au Maroc, notre équipe vous répond pendant les heures de bureau.",
     },
     phoneLabel: { es: "Teléfono",      en: "Phone",        fr: "Téléphone" },
     emailLabel: { es: "Email",         en: "Email",        fr: "Email" },

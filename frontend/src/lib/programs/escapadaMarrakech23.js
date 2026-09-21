@@ -112,7 +112,7 @@ export const PROGRAM_ESCAPADA_MARRAKECH_23 = {
         "Entrada al Palacio de la Bahía",
         "Transfers aeropuerto – riad – aeropuerto",
         "Seguro de asistencia en viaje",
-        "Teléfono de asistencia 24 horas",
+        "Teléfono de asistencia en viaje 24/7",
       ],
       en: [
         "Two nights in Marrakech in a Medina riad or hotel · bed & breakfast",
@@ -120,7 +120,7 @@ export const PROGRAM_ESCAPADA_MARRAKECH_23 = {
         "Bahia Palace admission",
         "Airport – riad – airport transfers",
         "Travel assistance insurance",
-        "24/7 assistance phone",
+        "24/7 in-trip assistance phone",
       ],
       fr: [
         "Deux nuits à Marrakech en riad de la médina ou hôtel · petit-déjeuner",
@@ -128,7 +128,7 @@ export const PROGRAM_ESCAPADA_MARRAKECH_23 = {
         "Entrée au palais de la Bahia",
         "Transferts aéroport – riad – aéroport",
         "Assistance voyage",
-        "Téléphone d'assistance 24h/24",
+        "Téléphone d'assistance en voyage 24h/24 et 7j/7",
       ],
     },
     excludes: {

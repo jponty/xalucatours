@@ -59,7 +59,7 @@ const COPY = {
     why: {
       overline: "Razones para viajar con Xaluca Tours",
       title: "Cuatro garantías para tu aventura.",
-      body: "Aventura no significa improvisación. Significa preparación, equipo experto, atención 24/7 y la garantía Grup Xaluca en cada kilómetro.",
+      body: "Aventura no significa improvisación. Significa preparación, equipo experto, asistencia en viaje 24/7 y la garantía Grup Xaluca en cada kilómetro.",
     },
     catalog: {
       overline: "Descubre todos nuestros circuitos",
@@ -108,7 +108,7 @@ const COPY = {
     why: {
       overline: "Reasons to travel with Xaluca Tours",
       title: "Four guarantees for your adventure.",
-      body: "Adventure does not mean improvisation. It means preparation, expert teams, 24/7 attention and the Grup Xaluca guarantee at every kilometre.",
+      body: "Adventure does not mean improvisation. It means preparation, expert teams, 24/7 assistance during your trip and the Grup Xaluca guarantee at every kilometre.",
     },
     catalog: {
       overline: "Discover all our circuits",
@@ -157,7 +157,7 @@ const COPY = {
     why: {
       overline: "Pourquoi voyager avec Xaluca Tours",
       title: "Quatre garanties pour votre aventure.",
-      body: "Aventure ne rime pas avec improvisation. Préparation, équipes expertes, attention 24/7 et garantie Grup Xaluca à chaque kilomètre.",
+      body: "Aventure ne rime pas avec improvisation. Préparation, équipes expertes, assistance en voyage 24h/24 et 7j/7 et garantie Grup Xaluca à chaque kilomètre.",
     },
     catalog: {
       overline: "Découvrez tous nos circuits",

@@ -115,11 +115,11 @@ const COPY = {
       {
         id: "disponibilidad",
         icon: "Clock",
-        title: { es: "Disponibilidad 24/7", en: "24/7 availability", fr: "Disponibilité 24/7" },
+        title: { es: "Asistencia en viaje 24/7", en: "24/7 assistance during your trip", fr: "Assistance en voyage 24h/24 et 7j/7" },
         body: {
-          es: "Estamos a tu disposición las 24 horas del día, 365 días al año, para darte servicio, organizar una salida inminente o atender cualquier duda durante tu viaje por Marruecos.",
-          en: "We're available 24 hours a day, 365 days a year — to serve you, arrange a last-minute departure or address any question during your trip in Morocco.",
-          fr: "Nous sommes à votre disposition 24 h/24 et 365 j/an pour vous servir, organiser un départ imminent ou répondre à toute question pendant votre voyage au Maroc.",
+          es: "Durante tu viaje dispones de asistencia 24/7 para cualquier necesidad o incidencia relacionada con tu itinerario. La planificación y la atención comercial se prestan en horario de oficina.",
+          en: "During your trip, 24/7 assistance is available for any need or incident related to your itinerary. Trip planning and customer service are provided during office hours.",
+          fr: "Pendant votre voyage, vous bénéficiez d’une assistance 24h/24 et 7j/7 pour tout besoin ou incident lié à votre itinéraire. La planification et le service commercial sont assurés pendant les heures de bureau.",
         },
       },
       {

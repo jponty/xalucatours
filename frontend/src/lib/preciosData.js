@@ -32,7 +32,7 @@ export const PRICING_PACKAGES = [
       { es: "Vehículo 4x4 privado con chófer local", en: "Private 4x4 with a local chauffeur", fr: "4x4 privé avec chauffeur local" },
       { es: "Media pensión (desayuno y cena)", en: "Half board (breakfast & dinner)", fr: "Demi-pension (petit-déjeuner et dîner)" },
       { es: "Excursión en dromedario al atardecer", en: "Sunset camel ride into the dunes", fr: "Balade à dos de dromadaire au coucher du soleil" },
-      { es: "Asistencia 24/7 durante todo el viaje", en: "24/7 assistance throughout your trip", fr: "Assistance 24/7 pendant tout le voyage" },
+      { es: "Asistencia en viaje 24/7", en: "24/7 assistance during your trip", fr: "Assistance en voyage 24h/24 et 7j/7" },
     ],
   },
   {

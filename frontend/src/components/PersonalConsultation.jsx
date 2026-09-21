@@ -95,9 +95,13 @@ export const PersonalConsultation = () => {
                 />
               </div>
               <div>
-                <p className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248]">
-                  24/7
-                </p>
+                <EditableText
+                  as="p"
+                  slot="home.consult.travel_assistance_label"
+                  defaults={translations.travel_assistance_label}
+                  multiline={false}
+                  className="text-[10px] tracking-[0.3em] uppercase text-[#5C5248] block"
+                />
                 <EditableText
                   as="p"
                   slot="home.consult.24_7"

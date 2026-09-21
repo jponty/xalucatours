@@ -208,11 +208,11 @@ export const AVENTURA_PILLARS = [
   {
     id: "attention",
     icon: "Headphones",
-    title: { es: "Atención personalizada 24/7", en: "Personal 24/7 attention", fr: "Attention personnalisée 24/7" },
+    title: { es: "Asistencia en viaje 24/7", en: "24/7 assistance during your trip", fr: "Assistance en voyage 24h/24 et 7j/7" },
     body: {
-      es: "Estamos disponibles las 24 horas del día, los 365 días del año, para ayudarte antes, durante y después de tu aventura en Marruecos.",
-      en: "We are available 24 hours a day, 365 days a year — before, during and after your Moroccan adventure.",
-      fr: "Disponibles 24 heures sur 24, 365 jours par an — avant, pendant et après votre aventure au Maroc.",
+      es: "Durante tu aventura en Marruecos dispones de asistencia 24/7 para cualquier necesidad o incidencia relacionada con el viaje. La planificación y la atención comercial se prestan en horario de oficina.",
+      en: "During your Moroccan adventure, 24/7 assistance is available for any need or incident related to the trip. Planning and customer service are provided during office hours.",
+      fr: "Pendant votre aventure au Maroc, vous bénéficiez d’une assistance 24h/24 et 7j/7 pour tout besoin ou incident lié au voyage. La planification et le service commercial sont assurés pendant les heures de bureau.",
     },
   },
   {

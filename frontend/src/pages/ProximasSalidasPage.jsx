@@ -66,7 +66,7 @@ const COPY = {
     process: {
       overline: "Cómo reservar",
       title: "Tres pasos para asegurar tu plaza.",
-      body: "Sin sorpresas: depósito reducido al confirmar, pago final 30 días antes de la salida y atención 24/7 durante todo el viaje.",
+      body: "Sin sorpresas: depósito reducido al confirmar, pago final 30 días antes de la salida y asistencia en viaje 24/7.",
       steps: [
         { n: "01", title: "Elige tu salida",
           body: "Selecciona la fecha que mejor encaje con tu agenda y confirma las plazas que necesitas." },
@@ -136,7 +136,7 @@ const COPY = {
     process: {
       overline: "How to book",
       title: "Three steps to lock your spot.",
-      body: "No surprises: a small deposit at booking, final payment 30 days before departure, and 24/7 support throughout the journey.",
+      body: "No surprises: a small deposit at booking, final payment 30 days before departure, and 24/7 assistance during your trip.",
       steps: [
         { n: "01", title: "Pick your departure", body: "Choose the date that best fits your agenda and confirm the spots you need." },
         { n: "02", title: "Confirm with deposit", body: "Secure your spot with a deposit from €300. You'll get the travel document and packing list." },
@@ -203,7 +203,7 @@ const COPY = {
     process: {
       overline: "Comment réserver",
       title: "Trois étapes pour bloquer votre place.",
-      body: "Aucune surprise : acompte réduit à la réservation, solde 30 jours avant le départ et assistance 24/7 pendant tout le voyage.",
+      body: "Aucune surprise : acompte réduit à la réservation, solde 30 jours avant le départ et assistance en voyage 24h/24 et 7j/7.",
       steps: [
         { n: "01", title: "Choisissez votre départ", body: "Sélectionnez la date qui correspond le mieux à votre agenda et confirmez les places nécessaires." },
         { n: "02", title: "Confirmez avec acompte", body: "Sécurisez votre place avec un acompte dès 300 €. Vous recevrez le carnet de voyage et la liste de bagages." },
