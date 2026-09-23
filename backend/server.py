@@ -4980,11 +4980,12 @@ class TextSlotPayload(BaseModel):
 
 
 @api_router.get("/text_slots/registry")
-async def get_text_slot_registry():
+async def get_text_slot_registry(authorization: str = Header(default="")):
     """Return every editable text slot known site-wide (harvested from the
     client as <EditableText> instances render), with its code defaults.
     Lets the admin Textos browser list 100% of editable copy, even slots
     that have never been edited/saved yet."""
+    _require_admin(authorization)
     cursor = db.text_slot_registry.find({}, {"updated_at": 0, "first_seen": 0}).limit(20000)
     items: Dict[str, Dict[str, Any]] = {}
     async for doc in cursor:
@@ -5004,9 +5005,9 @@ class SlotRegisterPayload(BaseModel):
 
 
 @api_router.post("/text_slots/register")
-async def register_text_slots(payload: SlotRegisterPayload):
-    """Upsert a batch of {slot_id, defaults} into the slot registry. Idempotent
-    and best-effort — called fire-and-forget by the frontend on first render."""
+async def register_text_slots(payload: SlotRegisterPayload, authorization: str = Header(default="")):
+    """Register code defaults during authenticated admin navigation only."""
+    _require_admin(authorization)
     if not payload.slots:
         return {"registered": 0}
     now = datetime.now(timezone.utc).isoformat()
@@ -5048,9 +5049,10 @@ class ImageSlotRegisterPayload(BaseModel):
 
 
 @api_router.get("/image_slots/registry")
-async def get_image_slot_registry():
+async def get_image_slot_registry(authorization: str = Header(default="")):
     """Return every editable IMAGE slot known site-wide, with its code default
     (fallback) URL. Harvested from the client as <EditableImage> renders."""
+    _require_admin(authorization)
     cursor = db.image_slot_registry.find({}, {"updated_at": 0, "first_seen": 0}).limit(50000)
     items: Dict[str, Dict[str, Any]] = {}
     async for doc in cursor:
@@ -5061,9 +5063,9 @@ async def get_image_slot_registry():
 
 
 @api_router.post("/image_slots/register")
-async def register_image_slots(payload: ImageSlotRegisterPayload):
-    """Upsert a batch of {slot_id, fallback, alt}. Idempotent + best-effort —
-    called fire-and-forget by the frontend on first render."""
+async def register_image_slots(payload: ImageSlotRegisterPayload, authorization: str = Header(default="")):
+    """Register image defaults during authenticated admin navigation only."""
+    _require_admin(authorization)
     if not payload.slots:
         return {"registered": 0}
     now = datetime.now(timezone.utc).isoformat()
@@ -5101,7 +5103,8 @@ class RemoteUrlRegisterPayload(BaseModel):
 
 
 @api_router.post("/image_urls/register")
-async def register_remote_image_urls(payload: RemoteUrlRegisterPayload):
+async def register_remote_image_urls(payload: RemoteUrlRegisterPayload, authorization: str = Header(default="")):
+    _require_admin(authorization)
     if not payload.urls:
         return {"registered": 0}
     now = datetime.now(timezone.utc).isoformat()

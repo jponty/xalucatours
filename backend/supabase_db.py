@@ -14,9 +14,11 @@ from __future__ import annotations
 import asyncio
 import copy
 import json
+import logging
 import os
 import re
 import uuid
+import time
 from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Any, AsyncIterator
@@ -26,6 +28,45 @@ import httpx
 
 _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 _MISSING = object()
+logger = logging.getLogger(__name__)
+# These fields are scalar strings in the application's document contract.
+# Array/nested/regex queries retain the compatibility matcher; never translate
+# them to a SQL condition that might silently omit matching documents.
+_STRING_FIELDS = {"id", "email", "storage_path", "sha256", "migrated_from",
+                  "key", "contest_id", "submission_id", "slot_id"}
+
+
+def _read_filters(query: dict | None) -> tuple[dict, bool]:
+    params = {}
+    exact = True
+    for field, value in (query or {}).items():
+        column = "id" if field == "_id" else f"data->>{field}"
+        if field != "_id" and field not in _STRING_FIELDS:
+            exact = False
+        elif isinstance(value, str):
+            params[column] = f"eq.{value}"
+        elif (isinstance(value, dict) and set(value) == {"$in"}
+              and isinstance(value["$in"], list) and value["$in"]
+              and all(isinstance(item, str) for item in value["$in"])):
+            params[column] = "in.(" + ",".join(json.dumps(item, ensure_ascii=False) for item in value["$in"]) + ")"
+        else:
+            exact = False
+    return params, exact
+
+
+def _id_batches(ids):
+    """Bound both item count and encoded URL size (remote URL IDs can be long)."""
+    batch = []
+    size = 0
+    for row_id in dict.fromkeys(ids):
+        cost = len(str(httpx.QueryParams({"id": json.dumps(row_id)}))) + 1
+        if batch and (len(batch) >= 100 or size + cost > 6000):
+            yield batch
+            batch, size = [], 0
+        batch.append(row_id)
+        size += cost
+    if batch:
+        yield batch
 
 
 def _safe_json(value: Any) -> Any:
@@ -305,15 +346,16 @@ class SupabaseCollection:
         self.table = f"mirror_{name}"
         self._lock = asyncio.Lock()
 
-    async def _all(self) -> list[dict]:
+    async def _all(self, filters: dict | None = None, max_rows: int | None = None) -> list[dict]:
         rows: list[dict] = []
         offset = 0
         page_size = 1000
-        while True:
+        while max_rows is None or len(rows) < max_rows:
+            limit = min(page_size, max_rows - len(rows)) if max_rows is not None else page_size
             response = await self.database.request(
                 "GET",
                 self.table,
-                params={"select": "data", "offset": offset, "limit": page_size},
+                params={"select": "data", "order": "id.asc", "offset": offset, "limit": limit, **(filters or {})},
             )
             page = response.json()
             rows.extend(
@@ -323,10 +365,28 @@ class SupabaseCollection:
                 for row in page
                 if row.get("data") is not None
             )
-            if len(page) < page_size:
+            if len(page) < limit:
                 break
-            offset += page_size
+            offset += len(page)
         return rows
+
+    async def _candidates(self, query: dict | None, max_rows: int | None = None):
+        filters, exact = _read_filters(query)
+        return await self._all(filters, max_rows if exact else None)
+
+    async def _save_many(self, documents: list[dict]):
+        rows = []
+        for doc in documents:
+            clean = _safe_json(doc)
+            row_id = str(clean.get("_id") or clean.get("id") or uuid.uuid4())
+            clean.setdefault("_id", row_id)
+            rows.append({"id": row_id, "data": clean})
+        if rows:
+            await self.database.request(
+                "POST", self.table, params={"on_conflict": "id"},
+                headers={"Prefer": "resolution=merge-duplicates,return=minimal"}, json=rows,
+            )
+        return [row["id"] for row in rows]
 
     async def _save(self, doc: dict) -> str:
         clean = _safe_json(doc)
@@ -347,7 +407,7 @@ class SupabaseCollection:
         projection: dict | None = None,
         sort: list[tuple[str, int]] | None = None,
     ):
-        matches = [doc for doc in await self._all() if _matches(doc, query)]
+        matches = [doc for doc in await self._candidates(query, None if sort else 1) if _matches(doc, query)]
         cursor = SupabaseCursor(matches, projection)
         if sort:
             cursor.sort(sort)
@@ -355,9 +415,9 @@ class SupabaseCollection:
         return rows[0] if rows else None
 
     def find(self, query: dict | None = None, projection: dict | None = None):
-        async def load():
-            return [doc for doc in await self._all() if _matches(doc, query)]
-        return DeferredCursor(load, projection)
+        async def load(max_rows=None):
+            return [doc for doc in await self._candidates(query, max_rows) if _matches(doc, query)]
+        return DeferredCursor(load, projection, bounded=True)
 
     async def insert_one(self, document: dict):
         async with self._lock:
@@ -388,11 +448,12 @@ class SupabaseCollection:
 
     async def update_one(self, query: dict, update: dict, upsert: bool = False):
         async with self._lock:
-            docs = await self._all()
+            docs = await self._candidates(query, 1)
             for doc in docs:
                 if _matches(doc, query):
                     changed = _apply_update(doc, update, query, False)
-                    await self._save(changed)
+                    if changed != doc:
+                        await self._save(changed)
                     return UpdateResult(1, int(changed != doc))
             if not upsert:
                 return UpdateResult()
@@ -408,12 +469,13 @@ class SupabaseCollection:
     async def update_many(self, query: dict, update: dict):
         matched = modified = 0
         async with self._lock:
-            for doc in await self._all():
+            for doc in await self._candidates(query):
                 if _matches(doc, query):
                     matched += 1
                     changed = _apply_update(doc, update, query, False)
                     modified += int(changed != doc)
-                    await self._save(changed)
+                    if changed != doc:
+                        await self._save(changed)
         return UpdateResult(matched, modified)
 
     async def delete_one(self, query: dict):
@@ -423,7 +485,7 @@ class SupabaseCollection:
         return await self._delete(query, one=False)
 
     async def _delete(self, query: dict, one: bool):
-        ids = [str(doc.get("_id") or doc.get("id")) for doc in await self._all() if _matches(doc, query)]
+        ids = [str(doc.get("_id") or doc.get("id")) for doc in await self._candidates(query, 1 if one else None) if _matches(doc, query)]
         if one:
             ids = ids[:1]
         if ids:
@@ -438,12 +500,54 @@ class SupabaseCollection:
         return DeleteResult(len(ids))
 
     async def count_documents(self, query: dict | None = None, **_kwargs):
-        return sum(1 for doc in await self._all() if _matches(doc, query))
+        filters, exact = _read_filters(query)
+        if exact:
+            response = await self.database.request(
+                "HEAD", self.table, params={"select": "id", **filters},
+                headers={"Prefer": "count=exact"},
+            )
+            total = response.headers.get("content-range", "").rsplit("/", 1)[-1]
+            if total.isdigit():
+                return int(total)
+        return sum(1 for doc in await self._candidates(query) if _matches(doc, query))
 
     async def create_index(self, *args, **kwargs):
         return None
 
     async def bulk_write(self, operations, ordered: bool = True):
+        operations = list(operations)
+        # Registry writes always target primary keys. Read ONLY those keys once,
+        # then upsert a JSON array; preserve insert-only fields and operation order.
+        if operations and all(
+            set(getattr(op, "_filter", {})) == {"_id"}
+            and isinstance(op._filter["_id"], str) for op in operations
+        ):
+            upserted = modified = 0
+            async with self._lock:
+                by_id = {}
+                for op in operations:
+                    by_id.setdefault(op._filter["_id"], []).append(op)
+                for ids in _id_batches(by_id):
+                    docs = await self._candidates({"_id": {"$in": ids}})
+                    existing = {doc["_id"]: doc for doc in docs}
+                    writes = []
+                    for row_id in ids:
+                        original = existing.get(row_id)
+                        doc = original
+                        for op in by_id[row_id]:
+                            if doc is None:
+                                if not op._upsert:
+                                    continue
+                                doc = _apply_update({"_id": row_id}, op._doc, op._filter, True)
+                                upserted += 1
+                            else:
+                                changed = _apply_update(doc, op._doc, op._filter, False)
+                                modified += int(changed != doc)
+                                doc = changed
+                        if doc is not None and doc != original:
+                            writes.append(doc)
+                    await self._save_many(writes)
+            return BulkWriteResult(upserted, modified)
         upserted = modified = 0
         for operation in operations:
             query = getattr(operation, "_filter", {})
@@ -500,16 +604,24 @@ class SupabaseCollection:
 
 
 class DeferredCursor(SupabaseCursor):
-    def __init__(self, loader, projection: dict | None = None):
+    def __init__(self, loader, projection: dict | None = None, bounded=False):
         super().__init__([], projection)
         self._loader = loader
+        self._bounded = bounded
 
-    async def _loaded_result(self):
-        self._documents = await self._loader()
+    async def _loaded_result(self, length=None):
+        bound = None
+        if self._bounded and not self._sort_specs:
+            limits = [n for n in (self._limit, length) if n is not None and n > 0]
+            if limits:
+                bound = self._skip + min(limits)
+        self._documents = await self._loader(bound) if self._bounded else await self._loader()
         return self._result()
 
     async def to_list(self, length: int | None = None):
-        rows = await self._loaded_result()
+        if length == 0:
+            return []
+        rows = await self._loaded_result(length)
         return rows if length is None else rows[:length]
 
     def __aiter__(self):
@@ -543,6 +655,25 @@ class SupabaseDatabase:
             timeout=httpx.Timeout(120.0, connect=15.0),
         )
         self._collections: dict[str, SupabaseCollection] = {}
+        self._transfer_window = time.monotonic()
+        self._transfer_stats: dict[tuple[str, str], dict] = {}
+
+    def _record_transfer(self, method: str, table: str, response: httpx.Response):
+        """Aggregate response bytes without logging queries, credentials or PII.
+
+        These are HTTP payload bytes observed by this process, NOT Supabase's
+        billing meter. Retries count too, so failures cannot hide amplification.
+        """
+        stats = self._transfer_stats.setdefault((table, method), {"requests": 0, "bytes": 0, "errors": 0})
+        stats["requests"] += 1
+        stats["bytes"] += len(response.content)
+        stats["errors"] += int(response.is_error)
+        if time.monotonic() - self._transfer_window >= 60:
+            for (name, verb), values in self._transfer_stats.items():
+                logger.info("supabase_transfer table=%s method=%s requests=%s response_bytes=%s errors=%s",
+                            name, verb, values["requests"], values["bytes"], values["errors"])
+            self._transfer_stats.clear()
+            self._transfer_window = time.monotonic()
 
     async def request(self, method: str, table: str, **kwargs):
         if not _SAFE_NAME.fullmatch(table):
@@ -551,6 +682,7 @@ class SupabaseDatabase:
         for attempt in range(2):
             try:
                 response = await self._http.request(method, table, **kwargs)
+                self._record_transfer(method, table, response)
                 response.raise_for_status()
                 return response
             except (httpx.TransportError, httpx.HTTPStatusError) as exc:

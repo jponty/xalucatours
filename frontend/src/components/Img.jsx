@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { optimizedSrc, buildSrcSet, defaultSizes, isOptimizable, lqipSrc, preloadImageLink } from "@/lib/imageUrl";
+import { useAdminRegistryEntry } from "@/lib/adminRegistry";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -8,7 +9,7 @@ const API = process.env.REACT_APP_BACKEND_URL || "";
    ------------------------------------------------------------
    Cards / postcards / posters render remote Unsplash·Pexels URLs
    directly (hotlinked). To centralise everything in the CMS we:
-     1. report each remote URL to the backend (it gets imported
+     1. during admin navigation, report each remote URL (it gets imported
         into our storage by the "migrate" job), and
      2. swap the remote URL for its /api/files copy via the map
         below — so the image is served from the CMS, not hotlinked.
@@ -38,25 +39,6 @@ const resolveCmsUrl = (src) => {
   return m && m[src] ? m[src] : src;
 };
 
-const remoteReg = { known: new Set(), queue: new Set(), timer: null };
-const flushRemoteReg = () => {
-  remoteReg.timer = null;
-  if (remoteReg.queue.size === 0) return;
-  const urls = Array.from(remoteReg.queue);
-  remoteReg.queue.clear();
-  fetch(`${API}/api/image_urls/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ urls }),
-  }).catch(() => {});
-};
-const registerRemoteUrl = (src) => {
-  if (!isRemoteStock(src) || remoteReg.known.has(src)) return;
-  remoteReg.known.add(src);
-  remoteReg.queue.add(src);
-  if (!remoteReg.timer) remoteReg.timer = setTimeout(flushRemoteReg, 1500);
-};
-
 /* ============================================================
    <Img> — drop-in <img> replacement for NON-editable imagery
    (carousels, galleries, catalogs, admin thumbnails…). Routes
@@ -83,9 +65,9 @@ export const Img = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [, force] = useReducer((x) => x + 1, 0);
+  useAdminRegistryEntry("image_urls", isRemoteStock(src) ? src : null, src || null);
   useEffect(() => {
     ensureUrlMap();
-    if (isRemoteStock(src)) registerRemoteUrl(src);
     const sub = () => force();
     urlMapStore.subs.add(sub);
     return () => urlMapStore.subs.delete(sub);

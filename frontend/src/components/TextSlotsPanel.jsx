@@ -36,8 +36,9 @@ export default function TextSlotsPanel() {
     try {
       const [vRes, rRes] = await Promise.all([
         fetch(`${API}/text_slots`),
-        fetch(`${API}/text_slots/registry`),
+        fetch(`${API}/text_slots/registry`, { headers: adminAuthHeaders() }),
       ]);
+      if (!vRes.ok || !rRes.ok) throw new Error("text-registry-load-failed");
       const vData = await vRes.json();
       const rData = await rRes.json();
       setValues((vData && vData.slots) || {});

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useEditMode } from "@/contexts/EditModeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { adminAuthHeaders } from "@/lib/adminSession";
+import { useAdminRegistryEntry } from "@/lib/adminRegistry";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -51,45 +52,6 @@ const pickStored = (slot, lang) => {
   return v[lang] ?? v.es ?? v.en ?? v.fr ?? null;
 };
 
-/* ============================================================
-   Slot registry — report each slot + its code defaults to the
-   backend so the admin "Textos" browser can list 100% of the
-   editable copy site-wide, even strings never edited yet.
-   Batched + deduped per session, fire-and-forget.
-============================================================ */
-const registry = {
-  known: new Set(),       // slots already queued/sent this session
-  queue: new Map(),       // slot_id → defaults
-  timer: null,
-};
-
-const flushRegistry = async () => {
-  registry.timer = null;
-  if (registry.queue.size === 0) return;
-  const slots = Array.from(registry.queue.entries()).map(([slot_id, defaults]) => ({ slot_id, defaults }));
-  registry.queue.clear();
-  try {
-    await fetch(`${API}/api/text_slots/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slots }),
-    });
-  } catch {
-    // best-effort; registry is a convenience index, not critical state
-  }
-};
-
-const registerSlot = (slot, defaults) => {
-  if (!slot || registry.known.has(slot)) return;
-  registry.known.add(slot);
-  const d = {};
-  for (const l of ["es", "en", "fr"]) {
-    if (defaults && typeof defaults[l] === "string" && defaults[l].trim()) d[l] = defaults[l];
-  }
-  registry.queue.set(slot, d);
-  if (!registry.timer) registry.timer = setTimeout(flushRegistry, 1500);
-};
-
 const persistSlot = async (slot, values) => {
   cache.values.set(slot, values);
   notify(slot);
@@ -131,6 +93,11 @@ export const EditableText = ({
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const elRef = useRef(null);
+  const registryDefaults = Object.fromEntries(
+    ["es", "en", "fr"].filter((key) => typeof defaults[key] === "string" && defaults[key].trim())
+      .map((key) => [key, defaults[key]])
+  );
+  useAdminRegistryEntry("text_slots", slot, { slot_id: slot, defaults: registryDefaults });
 
   // Subscribe to cache updates
   useEffect(() => {
@@ -138,7 +105,6 @@ export const EditableText = ({
     const cb = (v) => setStored(v ? { ...v } : v);
     cache.subscribers.get(slot).add(cb);
     ensureLoaded();
-    registerSlot(slot, defaults);
     return () => {
       const s = cache.subscribers.get(slot);
       if (s) s.delete(cb);

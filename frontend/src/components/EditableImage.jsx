@@ -17,6 +17,7 @@ import { buildSrcSet, optimizedSrc, defaultSizes, isOptimizable, lqipSrc, preloa
 import { loadSupabaseImages } from "@/lib/supabaseImages";
 import { imageSlotReadKeys, resolveImageSlot } from "@/lib/galleryCompatibility";
 import { adminAuthHeaders } from "@/lib/adminSession";
+import { useAdminRegistryEntry } from "@/lib/adminRegistry";
 
 const API = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -105,44 +106,6 @@ export const getSlotUrl = (slotId) => {
   return v && !v.cleared ? (v.url || null) : null;
 };
 export const ensureSlotsLoaded = ensureImgLoaded;
-
-/* ============================================================
-   Image-slot registry — report each slot + its code default
-   (fallback) URL to the backend so it knows EVERY image slot
-   site-wide. Powers the admin "migrate fallbacks → CMS" job.
-   Batched + deduped per session, fire-and-forget.
-============================================================ */
-const imgRegistry = {
-  known: new Set(),
-  queue: new Map(),   // slot_id → { fallback, alt }
-  timer: null,
-};
-
-const flushImgRegistry = async () => {
-  imgRegistry.timer = null;
-  if (imgRegistry.queue.size === 0) return;
-  const slots = Array.from(imgRegistry.queue.entries()).map(
-    ([slot_id, meta]) => ({ slot_id, fallback: meta.fallback || null, alt: meta.alt || null })
-  );
-  imgRegistry.queue.clear();
-  try {
-    await fetch(`${API}/api/image_slots/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slots }),
-    });
-  } catch {
-    // best-effort convenience index; not critical state
-  }
-};
-
-const registerImageSlot = (slot, fallback, alt) => {
-  if (!slot || imgRegistry.known.has(slot)) return;
-  imgRegistry.known.add(slot);
-  imgRegistry.queue.set(slot, { fallback: fallback || null, alt: alt || null });
-  if (!imgRegistry.timer) imgRegistry.timer = setTimeout(flushImgRegistry, 1500);
-};
-
 
 /* URLs already loaded+decoded this session → render instantly (no shimmer,
    no fade) on subsequent mounts/navigations, on top of the browser HTTP
@@ -399,13 +362,11 @@ export const EditableImage = ({
   // child's current url after a save.
   const urlRef = useRef(effectiveUrl);
   urlRef.current = effectiveUrl;
+  useAdminRegistryEntry("image_slots", slot, { slot_id: slot, fallback: fallback || null, alt: alt || null });
 
   // Hydrate from the global slot cache (single bulk fetch) + live updates.
   useEffect(() => {
     if (!slot) { setReady(true); return undefined; }
-    // Report this slot + its code default to the registry (fire-and-forget)
-    // so the backend can list/migrate every image slot site-wide.
-    registerImageSlot(slot, fallback, alt);
     let active = true;
     const apply = (val) => {
       if (!active) return;
