@@ -106,6 +106,7 @@ test("opens on demand with identity, permanent contact and no freeform input or 
   expect(get("virtual-assistant-widget").getAttribute("aria-modal")).toBe("true");
   expect(document.activeElement).toBe(get("assistant-close"));
   expect(get("assistant-identity-form")).not.toBeNull();
+  expect(get("assistant-identity-form").textContent).toContain("avisaremos a nuestro equipo");
   expect(get("assistant-phone").dataset.portal).toBe("assistant-country-layer");
   expect(get("assistant-pref-both").checked).toBe(true);
   expect(get("assistant-finish")).toBeNull();

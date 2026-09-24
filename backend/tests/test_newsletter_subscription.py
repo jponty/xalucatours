@@ -12,7 +12,18 @@ from .test_lead_registry import Database
 @pytest.fixture(autouse=True)
 def newsletter_database(monkeypatch):
     database = Database()
+    database.notifications = []
     monkeypatch.setattr(server, "db", database)
+    monkeypatch.setattr(server, "NOTIFY_EMAILS", [
+        "xalucatours@xaluca.com", "joan@xaluca.com", "eli@xaluca.com",
+    ])
+    monkeypatch.setattr(server, "_email_attachments", lambda: [])
+
+    def accept(params, *, delivery_name, idempotency_key=None):
+        database.notifications.append((params, idempotency_key))
+        return "resend-notification-id"
+
+    monkeypatch.setattr(server, "_send_resend_email", accept)
     return database
 
 
@@ -90,6 +101,13 @@ def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch, ne
     assert saved['subscription_sync'] == 'accepted'
     assert saved['phone'] == '+34612345678'
     assert saved['preferred_contact'] == ['email', 'phone']
+    assert saved['email_delivery']['status'] == 'accepted'
+    assert saved['email_delivery']['notification_id'] == 'resend-notification-id'
+    notification, key = newsletter_database.notifications[0]
+    assert notification['to'] == ["xalucatours@xaluca.com", "joan@xaluca.com", "eli@xaluca.com"]
+    assert notification['reply_to'] == 'viajes@example.com'
+    assert 'Joan' in notification['html'] and 'Pont Serra' in notification['html']
+    assert key == f"newsletter-{saved['id']}-internal"
 
 
 def test_newsletter_repeat_updates_contact_preference_without_duplicate(monkeypatch, newsletter_database):
@@ -101,6 +119,7 @@ def test_newsletter_repeat_updates_contact_preference_without_duplicate(monkeypa
     saved = next(iter(newsletter_database.contact_requests.rows.values()))
     assert saved['phone'] == '+34699123456'
     assert saved['preferred_contact'] == ['email']
+    assert len(newsletter_database.notifications) == 1
 
 
 def test_newsletter_signup_rejects_missing_consent():
@@ -142,12 +161,13 @@ def test_newsletter_signup_does_not_claim_success_after_resend_failure(monkeypat
     assert exc_info.value.status_code == 502
     saved = next(iter(newsletter_database.contact_requests.rows.values()))
     assert saved['subscription_sync'] == 'failed'
+    assert newsletter_database.notifications == []
     with pytest.raises(HTTPException):
         asyncio.run(server.create_newsletter_subscription(payload))
     assert len(newsletter_database.contact_requests.rows) == 1
 
 
-def test_newsletter_honeypot_does_not_reach_resend(monkeypatch):
+def test_newsletter_honeypot_does_not_reach_resend(monkeypatch, newsletter_database):
     called = []
     monkeypatch.setattr(server, "sync_newsletter_contact", lambda *args: called.append(args))
     payload = server.NewsletterSubscriptionCreate(phone="+34612345678",
@@ -162,6 +182,30 @@ def test_newsletter_honeypot_does_not_reach_resend(monkeypatch):
 
     assert result.status == "subscribed"
     assert called == []
+    assert newsletter_database.notifications == []
+
+
+def test_newsletter_notification_failure_is_retryable_without_new_lead(monkeypatch, newsletter_database):
+    monkeypatch.setattr(server, "sync_newsletter_contact", lambda *args: "contact-id")
+    payload = server.NewsletterSubscriptionCreate(
+        first_name="Ana", last_name="García", email="ana@example.com",
+        phone="+34612345678", consent=True, source_path="/newsletter",
+    )
+    def reject(*_args, **_kwargs):
+        raise server.EmailDeliveryError("internal notification rejected")
+    monkeypatch.setattr(server, "_send_resend_email", reject)
+    with pytest.raises(HTTPException) as error:
+        asyncio.run(server.create_newsletter_subscription(payload))
+    assert error.value.status_code == 502
+    saved = next(iter(newsletter_database.contact_requests.rows.values()))
+    assert saved['subscription_sync'] == 'accepted'
+    assert saved['email_delivery']['status'] == 'failed'
+    sent = []
+    monkeypatch.setattr(server, "_send_resend_email", lambda params, **kwargs: sent.append(params) or "retry-id")
+    assert asyncio.run(server.create_newsletter_subscription(payload)).status == "subscribed"
+    assert len(newsletter_database.contact_requests.rows) == 1
+    assert len(sent) == 1
+    assert saved['email_delivery']['status'] == 'accepted'
 
 
 def test_new_resend_contact_includes_first_and_last_name(monkeypatch):

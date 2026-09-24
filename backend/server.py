@@ -394,7 +394,7 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
         "capture_type": "newsletter", "created_at": now,
         "message": "Suscripción a la newsletter", "subscription_sync": "pending",
     }
-    await db.contact_requests.insert_once(newsletter_doc)
+    stored = await db.contact_requests.insert_once(newsletter_doc)
     await db.contact_requests.update_one({"id": newsletter_id}, {"$set": {
         "first_name": payload.first_name, "last_name": payload.last_name,
         "full_name": newsletter_doc["full_name"], "consent": True,
@@ -421,6 +421,26 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
         "subscription_sync": "accepted", "resend_contact_id": contact_id,
         "subscription_synced_at": datetime.now(timezone.utc).isoformat(),
     }})
+    notification_subject = f"Nueva suscripción a la newsletter · {newsletter_doc['full_name']}"
+    notification_html = _lead_email_html(
+        "Suscripción a la newsletter",
+        "Nuevo contacto suscrito desde la web",
+        [
+            ("Nombre", _html.escape(payload.first_name)),
+            ("Apellido(s)", _html.escape(payload.last_name)),
+            ("Email", _html.escape(email)),
+            ("Teléfono", _html.escape(payload.phone)),
+            ("Página origen", _html.escape(payload.source_url or payload.source_path or "/")),
+            ("Canal preferido", _contact_pref_label(payload.preferred_contact)),
+        ],
+    )
+    try:
+        await _notify_internal_capture(
+            db.contact_requests, stored, notification_subject, notification_html,
+            email, f"newsletter-{newsletter_id}-internal",
+        )
+    except EmailDeliveryError as exc:
+        raise _email_delivery_http_error() from exc
     return NewsletterSubscriptionResponse(message=messages[lang])
 
 
@@ -1299,6 +1319,23 @@ def send_lead_notification(
         params,
         delivery_name="Lead notification email",
         idempotency_key=idempotency_key,
+    )
+
+
+async def _notify_internal_capture(collection, stored: dict, subject: str, html: str,
+                                   reply_to: str, idempotency_key: str) -> None:
+    """Notify staff once per saved capture, including safe client retries."""
+    if (stored.get("email_delivery") or {}).get("status") == "accepted":
+        return
+    try:
+        notification_id = await asyncio.to_thread(
+            send_lead_notification, subject, html, reply_to, None, idempotency_key,
+        )
+    except EmailDeliveryError as exc:
+        await _record_lead_email_delivery(collection, stored["id"], "failed", error=str(exc))
+        raise
+    await _record_lead_email_delivery(
+        collection, stored["id"], "accepted", notification_id=notification_id,
     )
 
 
@@ -6316,10 +6353,32 @@ async def import_newsletter_history(authorization: str = Header(default="")):
     return await import_newsletter_leads(db, RESEND_CONTACTS_API_KEY, RESEND_NEWSLETTER_SEGMENT_ID)
 
 
+async def _notify_assistant_identity(record, stored: dict) -> None:
+    """Alert staff to an assistant identification without treating it as an enquiry."""
+    subject = f"Nueva identificación en el Asistente Virtual · {record.full_name}"
+    html = _lead_email_html(
+        "Identificación en el Asistente Virtual",
+        "El usuario se ha identificado para acceder al asistente; no ha enviado una consulta.",
+        [
+            ("Nombre", _html.escape(record.first_name)),
+            ("Apellido(s)", _html.escape(record.last_name)),
+            ("Email", _html.escape(str(record.email))),
+            ("Teléfono", _html.escape(record.phone)),
+            ("Página origen", _html.escape(record.source_url or record.source_path or "/asistente")),
+            ("Viaje relacionado", _html.escape(record.related_trip_title or "")),
+            ("Canal preferido", _contact_pref_label(record.preferred_contact)),
+        ],
+    )
+    await _notify_internal_capture(
+        db.contact_requests, stored, subject, html, str(record.email),
+        f"assistant-{record.id}-internal",
+    )
+
+
 register_lead_routes(api_router, lambda: db, _require_admin)
 register_calendly_routes(api_router, lambda: db)
 register_dictation_routes(api_router)
-register_assistant_routes(api_router, lambda: db)
+register_assistant_routes(api_router, lambda: db, notify_identity=_notify_assistant_identity)
 register_climate_routes(api_router)
 app.include_router(api_router)
 

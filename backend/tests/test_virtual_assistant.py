@@ -838,12 +838,12 @@ def test_untrusted_forwarded_headers_do_not_bypass_session_rate_limit(flow):
     assert 0 < len(database.contact_requests.rows) < 30
 
 
-def test_server_registers_assistant_and_identity_capture_sends_no_emails(monkeypatch):
+def test_server_registers_assistant_and_notifies_staff_without_client_email(monkeypatch):
     import server
     import virtual_assistant
 
     database = Database()
-    internal = Mock(side_effect=AssertionError("Assistant identification must not email staff"))
+    internal = Mock(return_value="resend-assistant-id")
     confirmation = Mock(side_effect=AssertionError("Assistant identification must not email the traveller"))
     monkeypatch.setenv("ASSISTANT_TOKEN_SECRET", SECRET.decode())
     monkeypatch.setattr(server, "db", database)
@@ -864,5 +864,39 @@ def test_server_registers_assistant_and_identity_capture_sends_no_emails(monkeyp
     assert leads.status_code == 200, leads.text
     assert leads.json()["total"] == 1
     assert leads.json()["items"][0]["type"] == "assistant"
-    internal.assert_not_called()
+    internal.assert_called_once()
+    assert internal.call_args.args[3] is None  # use the shared /admin recipient list
+    assert internal.call_args.args[4].startswith("assistant-")
+    assert "no ha enviado una consulta" in internal.call_args.args[1]
+    stored = next(iter(database.contact_requests.rows.values()))
+    assert stored["email_delivery"]["status"] == "accepted"
+    assert stored["email_delivery"]["notification_id"] == "resend-assistant-id"
     confirmation.assert_not_called()
+
+
+def test_assistant_identity_notification_retries_without_duplicate(monkeypatch):
+    import server
+    import virtual_assistant
+
+    database = Database()
+    delivery = Mock(side_effect=[server.EmailDeliveryError("rejected"), "resend-retry-id"])
+    monkeypatch.setenv("ASSISTANT_TOKEN_SECRET", SECRET.decode())
+    monkeypatch.setattr(server, "db", database)
+    monkeypatch.setattr(server, "send_lead_notification", delivery)
+    monkeypatch.setattr(virtual_assistant, "load_knowledge", lambda: KnowledgeBase(copy.deepcopy(DOCUMENTS)))
+    app = FastAPI()
+    app.include_router(server.api_router)
+    client = TestClient(app)
+    body = identity()
+
+    first = client.post("/api/assistant/session", json=body)
+    assert_error(first, 503)
+    saved = next(iter(database.contact_requests.rows.values()))
+    assert saved["email_delivery"]["status"] == "failed"
+    second = client.post("/api/assistant/session", json=body)
+    assert second.status_code == 200
+    assert len(database.contact_requests.rows) == 1
+    assert saved["email_delivery"]["status"] == "accepted"
+    third = client.post("/api/assistant/session", json=body)
+    assert third.status_code == 200
+    assert delivery.call_count == 2

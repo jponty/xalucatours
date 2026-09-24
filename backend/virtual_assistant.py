@@ -1,7 +1,7 @@
 """Private identity gate and deterministic, source-only website assistant.
 
-No model, external search, email delivery or conversation persistence is used.
-Only the checked-in corpus can supply factual content and citation targets.
+No model, external search or conversation persistence is used. Only the
+checked-in corpus can supply factual content and citation targets.
 """
 import asyncio
 import base64
@@ -597,7 +597,7 @@ def load_knowledge():
     return KnowledgeBase(data.get("documents"))
 
 
-def register_assistant_routes(router, get_db, knowledge=None):
+def register_assistant_routes(router, get_db, knowledge=None, notify_identity=None):
     guard = RequestGuard()
 
     def configured():
@@ -631,11 +631,13 @@ def register_assistant_routes(router, get_db, knowledge=None):
             fail(408, "request_timeout")
         data = payload.model_dump()
         # Identity capture is separate from an enquiry. Never call the contact
-        # endpoint, email senders, newsletter sync or a model from this gate.
+        # endpoint, newsletter sync or a model from this gate.
         data.update(capture_type="assistant", message=COPY[payload.language]["identity"])
         record = AssistantLead(**data)
         try:
-            record, _ = await asyncio.wait_for(save_submission(get_db().contact_requests, record), timeout=15)
+            record, stored = await asyncio.wait_for(save_submission(get_db().contact_requests, record), timeout=15)
+            if notify_identity is not None:
+                await notify_identity(record, stored)
         except Exception:
             # Neither database diagnostics nor submitted contact data are public.
             fail(503, "unavailable")
