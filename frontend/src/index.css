@@ -60,6 +60,11 @@
         -moz-osx-font-smoothing: grayscale;
     }
     ::selection { background: var(--xaluca-terracotta); color: var(--xaluca-bg); }
+
+    /* Keep page and section titles consistently semibold across all routes. */
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 600 !important;
+    }
 }
 
 /* CTA-only radius. Opt action links and non-submit action buttons into
