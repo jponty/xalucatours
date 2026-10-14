@@ -92,6 +92,17 @@ test("opens only on demand, uses the real shared form and closes with Escape or 
   expect(document.body.hasAttribute("data-scroll-locked")).toBe(false);
 });
 
+test("shows five distinct Moroccan banner images before the shared dictation form", async () => {
+  await click("home-dictation-trigger");
+  const banner = get("home-dictation-banner");
+  const images = [...banner.querySelectorAll("img")];
+  expect(images.map(image => image.alt)).toEqual([
+    "Paisajes del desierto", "Merzouga", "Erg Chebbi", "Aït Ben Haddou", "Chefchaouen",
+  ]);
+  expect(new Set(images.map(image => new URL(image.src).pathname)).size).toBe(5);
+  expect(banner.compareDocumentPosition(get("dictation-form-section")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+});
+
 test("keeps other floating controls in the same stack and yields to blocking UI", async () => {
   const dock = get("home-dictation-dock");
   expect(dock.contains(get("audio-control"))).toBe(true);

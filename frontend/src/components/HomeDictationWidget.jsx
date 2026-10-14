@@ -6,10 +6,19 @@ import { Dialog, DialogPortal, DialogOverlay, DialogTitle, DialogClose, DialogTr
 import DictationForm, { DICTATION_COPY } from "@/components/DictationForm";
 import { FloatingActionsDock } from "@/components/TripFloatingActions";
 import { OPEN_DICTATION_MODAL_EVENT } from "@/lib/dictationModal";
+import { banner } from "@/lib/imageBank";
 import "./HomeDictationWidget.css";
 
 const CLOSE = { es: "Cerrar", en: "Close", fr: "Fermer" };
 const LABEL = { es: "Dictado", en: "Dictation", fr: "Dictée" };
+// Existing Aït Ben Haddou and Merzouga gallery photos, served by Pexels to avoid Storage egress.
+const MOROCCO_BANNER = [
+  { image: "dunesRocky", label: { es: "Paisajes del desierto", en: "Desert landscapes", fr: "Paysages du désert" } },
+  { src: "https://images.pexels.com/photos/11294565/pexels-photo-11294565.jpeg?auto=compress&cs=tinysrgb&w=400", label: { es: "Merzouga", en: "Merzouga", fr: "Merzouga" } },
+  { image: "dunes", label: { es: "Erg Chebbi", en: "Erg Chebbi", fr: "Erg Chebbi" } },
+  { src: "https://images.pexels.com/photos/5541277/pexels-photo-5541277.jpeg?auto=compress&cs=tinysrgb&w=400", label: { es: "Aït Ben Haddou", en: "Aït Ben Haddou", fr: "Aït Ben Haddou" } },
+  { image: "chefBlueCity", label: { es: "Chefchaouen", en: "Chefchaouen", fr: "Chefchaouen" } },
+];
 
 export default function HomeDictationWidget() {
   const { lang } = useLanguage();
@@ -74,6 +83,11 @@ export default function HomeDictationWidget() {
           </DialogClose>
         </div>
         <div className="home-dictation-scroll" data-testid="home-dictation-scroll">
+          <div className="home-dictation-banner" data-testid="home-dictation-banner" aria-label={pick({ es: "Paisajes de Marruecos", en: "Moroccan landscapes", fr: "Paysages du Maroc" }, lang)}>
+            {MOROCCO_BANNER.map(({ image, src, label }, index) => <div className="home-dictation-banner-frame" key={image || src}>
+              <img src={src || banner(image, index === 0 ? 640 : 400)} alt={pick(label, lang)} loading="lazy" decoding="async" />
+            </div>)}
+          </div>
           <DictationForm className="home-dictation-form" countryPortalContainer={countryPortal} onNavigate={() => setOpen(false)} />
         </div>
         {/* Outside the scrolling body, inside the dialog's focus/layer scope. */}
