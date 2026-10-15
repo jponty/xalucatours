@@ -16,6 +16,7 @@ import { setTripContext } from "@/lib/tripContext";
 import { IMG } from "@/lib/imageBank";
 import ImageContactBubble from "@/components/ImageContactBubble";
 import Img from "@/components/Img";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
 
 const T = (es, en, fr) => ({ es, en, fr });
 const IDEAL_TRIP_WIZARD_EVENT = "xaluca:open-ideal-trip-wizard";
@@ -393,6 +394,7 @@ const OptionCard = ({ option, image, selected, onClick, lang }) => {
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
         />
         <span className={`absolute inset-0 transition-colors ${selected ? "bg-[#8D3F28]/25" : "bg-gradient-to-t from-[#1A1513]/45 via-transparent to-transparent"}`} aria-hidden="true" />
+        <img src={xMonogramBorde} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-0 right-0 h-[92%] w-auto max-w-none select-none object-contain opacity-[0.28] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]" />
         <span className={`absolute bottom-2.5 left-2.5 inline-flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-colors sm:bottom-3 sm:left-3 sm:h-10 sm:w-10 ${selected ? "bg-[#C16542] text-white" : "bg-[#FDFBF7]/95 text-[#C16542]"}`}>
           <Icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" strokeWidth={1.55} />
         </span>
@@ -434,6 +436,7 @@ const Results = ({ answers, lang, onRestart, onClose }) => {
             <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1513]">
               <img src={trip.image} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/75 via-transparent to-[#1A1513]/10" />
+              <img src={xMonogramBorde} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-0 right-0 h-[92%] w-auto max-w-none select-none object-contain opacity-[0.28] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]" />
               <span className="absolute left-3 top-3 bg-[#FDFBF7] px-3 py-1.5 text-[9px] uppercase tracking-[0.22em] text-[#C16542]">
                 #{index + 1} · {trip.compatibility}% {pick(COPY.results.compatible, lang)}
               </span>

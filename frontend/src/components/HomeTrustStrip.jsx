@@ -6,6 +6,7 @@ import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { pathFor } from "@/lib/routes";
 import { HOME_HELP_COPY, HOME_HELP_OPTIONS } from "@/lib/homeHelpOptions";
 import ContactDetailsCard from "@/components/ContactDetailsCard";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
 
 const COPY = {
   eyebrow: {
@@ -242,8 +243,9 @@ export default function HomeTrustStrip() {
                   className="absolute inset-0 -z-20 h-full w-full object-cover opacity-48 transition duration-[900ms] ease-out group-hover:scale-[1.055] group-hover:opacity-60"
                 />
                 <span className="absolute inset-0 -z-10 bg-gradient-to-t from-[#17120F]/95 via-[#17120F]/46 to-[#17120F]/12" />
+                <img src={xMonogramBorde} alt="" aria-hidden="true" data-testid={`home-trust-help-${option.routeId}-monogram`} className="pointer-events-none absolute bottom-0 right-0 z-0 h-[92%] w-auto max-w-none select-none object-contain opacity-[0.28] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]" />
 
-                <span className="flex w-full flex-col justify-between p-5 sm:p-6">
+                <span className="relative z-10 flex w-full flex-col justify-between p-5 sm:p-6">
                   <span className="flex items-center justify-between gap-4">
                     <span className="text-[10px] font-semibold tracking-[0.28em] text-[#E8B493]">
                       {String(index + 1).padStart(2, "0")}

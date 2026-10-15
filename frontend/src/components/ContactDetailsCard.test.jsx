@@ -56,6 +56,7 @@ describe("shared direct contact card", () => {
     expect([...help.querySelectorAll("a")].map((link) => link.getAttribute("href"))).toEqual(
       HOME_HELP_OPTIONS.map((option) => pathFor("es", option.routeId))
     );
+    expect(help.querySelectorAll('img[data-testid$="-monogram"]')).toHaveLength(HOME_HELP_OPTIONS.length);
   });
 
   test.each(["contact", "home-contact"])("keeps %s phone and email links tied to the shared contact data", (prefix) => {
