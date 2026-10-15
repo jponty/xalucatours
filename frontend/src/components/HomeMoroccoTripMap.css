@@ -1,0 +1,31 @@
+.morocco-trip-map-section { background: #f2ebe1; }
+.morocco-trip-map-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+.morocco-trip-map-frame { min-width: 0; background: #e9e1d0; border: 1px solid rgba(110, 45, 23, .22); padding: clamp(14px, 2vw, 26px); }
+.morocco-trip-map-art { min-height: 320px; background: radial-gradient(circle at 54% 48%, #f5efe3 0%, #e8ddca 75%); }
+.morocco-trip-map-art svg { width: 100%; height: auto; max-height: 610px; display: block; }
+.morocco-trip-map-loading { width: min(80%, 350px); height: 440px; margin: auto; background: #d9be9c; clip-path: polygon(73% 0, 61% 13%, 50% 32%, 37% 56%, 25% 74%, 15% 100%, 61% 100%, 61% 71%, 77% 71%, 88% 48%, 86% 20%); opacity: .5; }
+.morocco-trip-map-zone { cursor: pointer; outline: none; }
+.morocco-trip-map-zone-area { cursor: pointer; transition: opacity .2s; }
+.morocco-trip-map-zone-area:hover { opacity: .58; }
+.morocco-trip-map-zone-hit { fill: transparent; }
+.morocco-trip-map-zone-dot { fill: #fff7e9; stroke: #8a3a1e; stroke-width: 2.5; transition: r .18s, fill .18s; }
+.morocco-trip-map-zone:hover .morocco-trip-map-zone-dot, .morocco-trip-map-zone:focus-visible .morocco-trip-map-zone-dot, .morocco-trip-map-zone[aria-pressed="true"] .morocco-trip-map-zone-dot { r: 11; fill: #c16542; }
+.morocco-trip-map-legend { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+.morocco-trip-map-legend button { border: 1px solid rgba(44, 38, 33, .22); background: #fdfbf7; color: #5c5248; padding: 8px 13px; border-radius: 30px; font-size: 12px; line-height: 1.2; transition: background .2s, color .2s, border-color .2s; }
+.morocco-trip-map-legend button:hover, .morocco-trip-map-legend button:focus-visible, .morocco-trip-map-legend button.is-active { color: #fff; background: #8a3a1e; border-color: #8a3a1e; }
+.morocco-trip-map-results { min-width: 0; }
+.morocco-trip-map-results-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid rgba(44, 38, 33, .18); padding-bottom: 19px; margin-bottom: 20px; }
+.morocco-trip-map-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.morocco-trip-map-card { display: flex; background: #fdfbf7; border: 1px solid rgba(44, 38, 33, .13); min-width: 0; }
+.morocco-trip-map-card-image { display: block; width: 35%; flex: 0 0 35%; overflow: hidden; min-height: 168px; }
+.morocco-trip-map-card-image img { transition: transform .4s; }
+.morocco-trip-map-card:hover img { transform: scale(1.04); }
+.morocco-trip-map-card-body { display: flex; flex-direction: column; align-items: flex-start; padding: 16px; min-width: 0; }
+.morocco-trip-map-card-body p { display: -webkit-box !important; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.morocco-trip-map-card-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 15px; color: #8a3a1e; font-size: 12px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.morocco-trip-map-card-link:hover, .morocco-trip-map-card-link:focus-visible { color: #c16542; }
+.morocco-trip-map-more { margin-top: 22px; padding: 11px 22px; color: #fff; background: #1a1513; border-radius: 30px; font-size: 13px; font-weight: 600; }
+.morocco-trip-map-more:hover { background: #c16542; }
+@media (max-width: 1150px) { .morocco-trip-map-cards { grid-template-columns: 1fr; } }
+@media (max-width: 800px) { .morocco-trip-map-layout { grid-template-columns: 1fr; } .morocco-trip-map-art svg { max-height: 480px; } .morocco-trip-map-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 590px) { .morocco-trip-map-cards { grid-template-columns: 1fr; } .morocco-trip-map-card-image { min-height: 150px; } .morocco-trip-map-frame { padding: 12px; } }

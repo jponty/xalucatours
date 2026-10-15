@@ -15,6 +15,7 @@ import HomeAllTripsCatalog from "@/components/HomeAllTripsCatalog";
 import Marquee from "@/components/Marquee";
 import EmotionalIntro from "@/components/EmotionalIntro";
 import WorldMapSection from "@/components/WorldMapSection";
+import HomeMoroccoTripMap from "@/components/HomeMoroccoTripMap";
 import RuletaPromo from "@/components/RuletaPromo";
 import PlannerCta from "@/components/PlannerCta";
 import WhyXaluca from "@/components/WhyXaluca";
@@ -128,6 +129,7 @@ export default function HomePage() {
       <FeaturedDepartureBanner />
       <HomeTrustStrip />
       <HomeSectionNav />
+      <HomeMoroccoTripMap />
       <MoroccoLightFilm lang={lang} />
       <DualTimezoneClock />
       <div id="buscador" className="scroll-mt-[172px]">
