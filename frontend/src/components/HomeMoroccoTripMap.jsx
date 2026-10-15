@@ -9,6 +9,7 @@ import { MAP_ZONES, buildMoroccoTripMapIndex, tripsForMapSelection } from "@/lib
 import { tripHeroSlot, tripTextSlot } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
 import "./HomeMoroccoTripMap.css";
 
 const COPY = {
@@ -112,7 +113,8 @@ export default function HomeMoroccoTripMap() {
             {available.length ? <div className="morocco-trip-map-cards">
               {available.slice(0, visibleCount).map((trip) => <article className="morocco-trip-map-card" key={trip.routeId}>
                 <Link to={pathFor(lang, trip.routeId)} className="morocco-trip-map-card-image" aria-label={`${pick(COPY.view, lang)}: ${pick(trip.title, lang)}`}>
-                  <EditableImage slot={tripHeroSlot(trip.routeId)} fallback={trip.image} alt={pick(trip.title, lang)} imgProps={{ loading: "lazy" }} className="w-full h-full object-cover" />
+                  <EditableImage slot={tripHeroSlot(trip.routeId)} fallback={trip.image} alt={pick(trip.title, lang)} imgProps={{ loading: "lazy" }} className="morocco-trip-map-card-photo w-full h-full object-cover" />
+                  <img src={xMonogramBorde} alt="" aria-hidden="true" className="morocco-trip-map-card-monogram" />
                 </Link>
                 <div className="morocco-trip-map-card-body">
                   <EditableText as="span" slot={tripTextSlot(trip.routeId, "duration")} defaults={trip.duration} multiline={false} className="overline text-[#C16542] block" />
