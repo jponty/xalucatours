@@ -22,6 +22,7 @@ import Testimonials from "@/components/Testimonials";
 import { MARRUECOS_GALLERIES } from "@/lib/sectionGalleries";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 /* ============================================================
    Trilingual copy for the Marruecos gateway
@@ -275,6 +276,7 @@ export default function MarruecosPage() {
       />
 
       <StickyNav items={navItems} testid="marruecos-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       <EditorialBlock block={t.intro} lang={lang} />
       <VideoSection {...MARRUECOS_VIDEOS.intro} testid="marruecos-video-intro" />

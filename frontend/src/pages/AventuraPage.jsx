@@ -21,6 +21,7 @@ import {
 import ContactForm from "@/components/ContactForm";
 import Testimonials from "@/components/Testimonials";
 import ToursRegionMap from "@/components/ToursRegionMap";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 const EXP_ICONS = { Bike, Mountain, Truck, Tent, Palmtree, Flame, Sparkles, Trophy };
 
@@ -371,6 +372,7 @@ export default function AventuraPage() {
       />
 
       <StickyNav items={navItems} testid="aventura-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       {/* 1. Intro band */}
       <AdventureIntro lang={lang} />

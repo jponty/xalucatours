@@ -8,12 +8,22 @@ import {
   BookOpen, Sunrise, Images, Tag, Star, Plane,
   Zap, Archive,
 } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, pick } from "@/contexts/LanguageContext";
 import { MENU_TREE } from "@/lib/menu";
 import { pathFor } from "@/lib/routes";
+import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
 import { CONTACT } from "@/lib/data";
 import { translations } from "@/lib/i18n";
 import EditableText from "@/components/EditableText";
+import EditableImage from "@/components/EditableImage";
+import xMonogramBorde from "@/assets/monograma-x-borde.png";
+
+const featuredDeparture = UPCOMING_DEPARTURES.find((departure) => departure.id === "nye-2026");
+const FEATURED_LABEL = {
+  es: "Viajes destacados",
+  en: "Featured journeys",
+  fr: "Voyages à la une",
+};
 
 const ICONS = {
   "home": Home, "calendar-clock": CalendarClock, "compass": Compass,
@@ -140,6 +150,39 @@ export const SideMenu = ({ open, onClose }) => {
             </span>
             <ArrowRight className="w-3.5 h-3.5 text-[#D4A373] group-hover:translate-x-1 transition-transform" strokeWidth={1.6} />
           </Link>
+        )}
+
+        {featuredDeparture?.tripRouteId && (
+          <div className="mb-6" data-testid="menu-featured-section">
+            <div className="mb-3 flex items-center gap-3">
+              <Star className="h-3.5 w-3.5 shrink-0 text-[#D4A373]" strokeWidth={1.6} aria-hidden="true" />
+              <span className="text-[10px] uppercase tracking-[0.32em] text-[#D4A373]">{pick(FEATURED_LABEL, lang)}</span>
+              <span className="h-px flex-1 bg-[#D4A373]/25" />
+            </div>
+            <Link
+              to={pathFor(lang, featuredDeparture.tripRouteId)}
+              data-testid="menu-featured-new-year"
+              onClick={(event) => { event.preventDefault(); goto(featuredDeparture.tripRouteId); }}
+              className="group relative isolate flex min-h-[178px] overflow-hidden border border-[#D4A373]/30 bg-[#2C2621] text-[#FDFBF7] transition-colors hover:border-[#D4A373] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4A373]"
+            >
+              <EditableImage
+                slot="findeano.hero.bg"
+                fallback={featuredDeparture.image}
+                alt=""
+                sizes="(max-width: 479px) 80vw, 380px"
+                className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              />
+              <span className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-[#1A1513]/95 via-[#1A1513]/45 to-[#1A1513]/10" aria-hidden="true" />
+              <img src={xMonogramBorde} alt="" aria-hidden="true" className="pointer-events-none absolute bottom-0 right-0 h-[85%] w-auto max-w-none select-none object-contain opacity-[0.2]" />
+              <span className="relative z-10 flex w-full flex-col justify-end gap-2 p-4">
+                <span className="font-serif-x text-lg leading-tight">{pick(featuredDeparture.title, lang)}</span>
+                <span className="flex items-center justify-between gap-3 text-[10px] uppercase tracking-[0.12em] text-[#FDFBF7]/80">
+                  <span>{pick(featuredDeparture.dates, lang)}</span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-[#D4A373] transition-transform group-hover:translate-x-1" strokeWidth={1.6} aria-hidden="true" />
+                </span>
+              </span>
+            </Link>
+          </div>
         )}
 
         {l0.groups.map((g, gi) => (

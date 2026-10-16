@@ -41,6 +41,11 @@ describe("published group departures", () => {
     useLanguage.mockReturnValue({ lang });
     const page = document.createElement("div");
     page.innerHTML = renderToStaticMarkup(<ProximasSalidasPage />);
+    const featured = page.querySelector('[data-testid="viajes-featured-departure"]');
+    expect(featured).not.toBeNull();
+    expect(featured.querySelector('[data-testid="viajes-featured-departure-cta"]').getAttribute("href"))
+      .toBe(pathFor(lang, UPCOMING_DEPARTURES[0].tripRouteId));
+    expect(featured.compareDocumentPosition(page.querySelector('[data-testid="departure-card-nye-2026"]')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(page.querySelectorAll('[data-testid^="departure-card-"]')).toHaveLength(1);
     const card = page.querySelector('[data-testid="departure-card-nye-2026"]');
     expect(card.textContent).toContain(UPCOMING_DEPARTURES[0].badge[lang]);

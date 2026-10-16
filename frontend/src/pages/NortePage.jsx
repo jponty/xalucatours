@@ -19,6 +19,7 @@ import { NORTE_GALLERIES } from "@/lib/sectionGalleries";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
 import { NORTH_HUB_IMAGES } from "@/lib/northHubImages";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 // Overview cards have their own photos, distinct from the full itinerary blocks.
 const OVERVIEW_ITINERARIES = NORTE_ITINERARIES.map((itinerary) => ({
@@ -226,6 +227,7 @@ export default function NortePage() {
       />
 
       <StickyNav items={navItems} testid="norte-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       <ItinerariesOverview itineraries={OVERVIEW_ITINERARIES} t={t.overview} lang={lang} />
 

@@ -19,6 +19,7 @@ import {
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
 import Testimonials from "@/components/Testimonials";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 const TRIP_ICONS = { Compass, Heart, Users, Sparkles, Baby, Activity };
 
@@ -580,6 +581,7 @@ export default function ViajesAMedidaPage() {
       />
 
       <StickyNav items={navItems} testid="bespoke-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       <TripTypesGrid t={t.types} lang={lang} />
 

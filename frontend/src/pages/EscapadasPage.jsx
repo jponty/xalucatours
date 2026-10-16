@@ -20,6 +20,7 @@ import Testimonials from "@/components/Testimonials";
 import { ESCAPADAS_GALLERIES } from "@/lib/sectionGalleries";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 /* ============================================================
    Trilingual copy for /viajes/escapadas
@@ -207,6 +208,7 @@ export default function EscapadasPage() {
       />
 
       <StickyNav items={navItems} testid="escapadas-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       <ItinerariesOverview itineraries={ESCAPADAS_ITEMS} t={t.overview} lang={lang} />
 

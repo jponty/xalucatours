@@ -14,8 +14,10 @@ jest.mock("react-router-dom", () => ({
 }));
 jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ lang: mockLang, t: () => "Cerrar menú" }),
+  pick: (value, lang) => value?.[lang] || value?.es || "",
 }));
 jest.mock("./EditableText", () => ({ as: Tag = "span", defaults }) => <Tag>{defaults?.[mockLang]}</Tag>);
+jest.mock("./EditableImage", () => ({ slot, fallback, alt, className }) => <img data-slot={slot} src={fallback} alt={alt} className={className} />);
 
 let root, container;
 beforeEach(() => {
@@ -29,6 +31,28 @@ afterEach(async () => {
   await act(async () => root.unmount());
   container.remove();
   delete global.IS_REACT_ACT_ENVIRONMENT;
+});
+
+test.each([
+  ["es", "Viajes destacados", "/findeano2026"],
+  ["en", "Featured journeys", "/en/newyear2026"],
+  ["fr", "Voyages à la une", "/fr/nouvelan2026"],
+])("the %s drawer features the New Year trip and closes after navigation", async (lang, label, url) => {
+  mockLang = lang;
+  mockPath = pathFor(lang, "home");
+  const onClose = jest.fn();
+  await act(async () => root.render(<SideMenu open onClose={onClose} />));
+  onClose.mockClear();
+
+  const section = container.querySelector('[data-testid="menu-featured-section"]');
+  const link = container.querySelector('[data-testid="menu-featured-new-year"]');
+  expect(section.textContent).toContain(label);
+  expect(link.getAttribute("href")).toBe(url);
+  expect(link.querySelector('[data-slot="findeano.hero.bg"]')).not.toBeNull();
+  expect(link.textContent).toContain("2026");
+  await act(async () => link.click());
+  expect(mockNavigate).toHaveBeenCalledWith(url);
+  expect(onClose).toHaveBeenCalledTimes(1);
 });
 
 test.each([

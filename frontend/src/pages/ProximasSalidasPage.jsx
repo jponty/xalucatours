@@ -14,6 +14,7 @@ import {
   CommunityCta,
 } from "@/components/JourneyPageSections";
 import ContactForm from "@/components/ContactForm";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 /* ============================================================
    Trilingual copy
@@ -614,6 +615,7 @@ export default function ProximasSalidasPage() {
       />
 
       <StickyNav items={navItems} testid="upcoming-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       <DeparturesList t={t.list} filters_t={t.filters} lang={lang} />
 
