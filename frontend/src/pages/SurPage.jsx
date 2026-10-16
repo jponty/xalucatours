@@ -28,6 +28,7 @@ import VideoSection from "@/components/VideoSection";
 import ToursRegionMap from "@/components/ToursRegionMap";
 import { BrandedImagesProvider } from "@/contexts/BrandedImagesContext";
 import ImageBrandBadges from "@/components/ImageBrandBadges";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 /* ----------------------------------------------------------------
    Sur de Marruecos — 3 immersive videos paired to the editorial
@@ -280,6 +281,7 @@ export default function SurPage() {
       />
 
       <StickyNav items={navItems} testid="sur-nav" />
+      <FeaturedDepartureBanner context="tours" />
 
       {/* 1. Editorial opener: the route of a thousand kasbahs */}
       <EditorialBlock block={SUR_EDITORIAL[0]} lang={lang} />
