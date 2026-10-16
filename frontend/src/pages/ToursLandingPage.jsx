@@ -25,6 +25,7 @@ import { requestWhatsAppContact } from "@/components/WhatsAppContactModal";
 import { WHATSAPP_URL } from "@/components/WhatsAppIcon";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS } from "@/lib/homeCarousels";
 import ExpandableTripCard from "@/components/ExpandableTripCard";
+import FeaturedDepartureBanner from "@/components/FeaturedDepartureBanner";
 
 const ICONS = { Sparkles, BookOpen, Mountain, Crown, Users, Leaf };
 
@@ -1100,6 +1101,7 @@ export default function ToursLandingPage() {
       <SectionNav
         testid="viajes-nav"
         items={[
+          { id: "destacados", label: { es: "Destacados", en: "Featured", fr: "À la une" } },
           { id: "intro", label: { es: "Introducción", en: "Overview", fr: "Introduction" } },
           { id: "videos-marruecos", label: { es: "Vídeos", en: "Videos", fr: "Vidéos" } },
           { id: "regions", label: { es: "Regiones", en: "Regions", fr: "Régions" } },
@@ -1110,6 +1112,7 @@ export default function ToursLandingPage() {
           { id: "asesoramiento", label: { es: "Asesoramiento", en: "Advice", fr: "Conseil" } },
         ]}
       />
+      <FeaturedDepartureBanner context="tours" />
       <EditorialIntro t={t.intro} postcard={t.postcard} />
       <ToursRegionMap />
       <PexelsMoroccoVideos />

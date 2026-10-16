@@ -17,9 +17,9 @@ import FeaturedDepartureBanner from "./FeaturedDepartureBanner";
 import { UPCOMING_DEPARTURES } from "@/lib/upcomingDepartures";
 import grupXalucaLogo from "@/assets/grup-xaluca-logo.webp";
 
-const render = () => {
+const render = (props) => {
   const container = document.createElement("div");
-  container.innerHTML = renderToStaticMarkup(<FeaturedDepartureBanner />);
+  container.innerHTML = renderToStaticMarkup(<FeaturedDepartureBanner {...props} />);
   return container;
 };
 
@@ -41,6 +41,21 @@ test.each([
   expect(link.textContent).toBe(cta);
   expect(link.getAttribute("href")).toBe(href);
   expect(page.querySelectorAll("a")).toHaveLength(1);
+});
+
+test.each([
+  ["es", "Viajes destacados", "/findeano2026"],
+  ["en", "Featured journeys", "/en/newyear2026"],
+  ["fr", "Voyages à la une", "/fr/nouvelan2026"],
+])("reuses the featured departure in the %s journeys landing", (lang, eyebrow, href) => {
+  mockLang = lang;
+  const page = render({ context: "tours" });
+  const section = page.querySelector('[data-testid="viajes-featured-departure"]');
+  expect(section.id).toBe("destacados");
+  expect(section.textContent).toContain(eyebrow);
+  expect(section.querySelector('[data-slot="findeano.hero.bg"]')).not.toBeNull();
+  expect(section.querySelector('[data-testid="viajes-featured-departure-monogram"]')).not.toBeNull();
+  expect(section.querySelector('[data-testid="viajes-featured-departure-cta"]').getAttribute("href")).toBe(href);
 });
 
 test("reuses the trip's editable photograph and keeps the CTA responsive and accessible", () => {

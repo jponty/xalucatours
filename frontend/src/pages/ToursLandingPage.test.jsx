@@ -78,6 +78,15 @@ test("the journeys landing includes the dynamic Pexels video section", () => {
   expect(get("pexels-morocco-videos")).not.toBeNull();
 });
 
+test("the featured New Year journey appears near the start and links to its programme", () => {
+  act(() => root.render(<ToursLandingPage />));
+  const featured = get("viajes-featured-departure");
+  expect(featured).not.toBeNull();
+  expect(featured.id).toBe("destacados");
+  expect(featured.compareDocumentPosition(get("viajes-intro")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(get("viajes-featured-departure-cta").getAttribute("href")).toBe(pathFor("es", "tourFinDeAno2025"));
+});
+
 test("all explorer and departure cards have the shared extension and keep their existing destinations", () => {
   act(() => root.render(<ToursLandingPage />));
   expect(cards("trip-card-")).toHaveLength(TRIPS.length);
