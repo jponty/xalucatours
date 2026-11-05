@@ -533,8 +533,8 @@ export const PROGRAM_PRICING = {
     ],
   },
 
-  // 69. Ciudades Imperiales 6n7d  (/viajes/norte/ciudades_imperiales/programa_6n_7d)
-  tourCiudadesImperiales67: {
+  // 69. Ciudades Imperiales 5n6d  (/viajes/norte/ciudades_imperiales/programa_5n_6d)
+  tourCiudadesImperiales56: {
     tiers: [
       { people: 2, low: 1450, high: 1450 },
       { people: 3, low: 1190, high: 1190 },

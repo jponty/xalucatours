@@ -91,6 +91,7 @@ import FinDeAno2026Page from "@/pages/FinDeAno2026Page";
 import NorteCiudadesImperialesHubPage from "@/pages/NorteCiudadesImperialesHubPage";
 import NorteTangerFezHubPage from "@/pages/NorteTangerFezHubPage";
 import CiudadesImperiales45Page from "@/pages/CiudadesImperiales45Page";
+import CiudadesImperiales56Page from "@/pages/CiudadesImperiales56Page";
 import CiudadesImperiales67Page from "@/pages/CiudadesImperiales67Page";
 import CiudadesImperialesRif67Page from "@/pages/CiudadesImperialesRif67Page";
 import CiudadesImperialesRif78Page from "@/pages/CiudadesImperialesRif78Page";
@@ -203,6 +204,7 @@ export const ROUTE_COMPONENTS = {
   // Norte
   tourNorteCiudadesImperiales:   NorteCiudadesImperialesHubPage,
   tourCiudadesImperiales45:      CiudadesImperiales45Page,
+  tourCiudadesImperiales56:      CiudadesImperiales56Page,
   tourCiudadesImperiales67:      CiudadesImperiales67Page,
   tourCiudadesImperialesRif67:   CiudadesImperialesRif67Page,
   tourCiudadesImperialesRif78:   CiudadesImperialesRif78Page,

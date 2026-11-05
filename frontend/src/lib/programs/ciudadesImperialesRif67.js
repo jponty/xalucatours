@@ -7,19 +7,19 @@ export const DAY_CIRF_TANGER_TETUAN = {
   image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=85",
   accent: "#5A7F9C",
   title: T(
-    "Tánger · Cabo Espartel · Tetuán",
-    "Tangier · Cape Spartel · Tetouan",
-    "Tanger · Cap Spartel · Tétouan",
+    "Tánger · Tetuán",
+    "Tangier · Tetouan",
+    "Tanger · Tétouan",
   ),
   chronologySummary: T(
-    "Llegada a Tánger, encuentro entre Atlántico y Mediterráneo en Cabo Espartel, Grutas de Hércules y primera inmersión en la medina de Tetuán.",
-    "Arrival in Tangier, the Atlantic and Mediterranean meeting at Cape Spartel, the Caves of Hercules and a first immersion in Tetouan medina.",
-    "Arrivée à Tanger, rencontre de l’Atlantique et de la Méditerranée au Cap Spartel, Grottes d’Hercule et première immersion dans la médina de Tétouan.",
+    "Llegada a Tánger y continuación a Tetuán para conocer su medina con un guía local.",
+    "Arrival in Tangier and onward to Tetouan for a guided visit of its medina.",
+    "Arrivée à Tanger puis route vers Tétouan pour une visite guidée de sa médina.",
   ),
   body: {
-    es: "Llegada por la mañana a Tánger. Dependiendo de la época del año puede existir diferencia horaria. Tras el control de pasaportes y la recogida de equipajes, encuentro con el chófer que acompañará al grupo durante todo el recorrido. Comenzaremos visitando Cabo Espartel, el lugar donde convergen las aguas del océano Atlántico y el mar Mediterráneo. A continuación visitaremos las famosas Grutas de Hércules. Seguiremos hacia Tetuán, conocida como «La Paloma Blanca» por el color predominante de sus casas y su luminosidad. Visita guiada de la medina de Tetuán, declarada Patrimonio de la Humanidad por la UNESCO, donde todavía se aprecia una fuerte influencia andalusí heredada de la época del Protectorado español. Cena y alojamiento en riad dentro de la medina o hotel 4★. Nota: dependiendo del horario de llegada del vuelo, la visita de Tetuán podría trasladarse a la mañana siguiente.",
-    en: "Morning arrival in Tangier (time difference depending on the season). After passport control and luggage pickup we meet the driver who will accompany the group throughout the route. We start with Cape Spartel, where the Atlantic Ocean meets the Mediterranean Sea, followed by the famous Caves of Hercules. We then continue to Tetouan, known as «the White Dove» for the predominant colour of its houses and its luminous light. Guided visit to the Tetouan medina — a UNESCO World Heritage site that still keeps a strong Andalusian influence inherited from the Spanish Protectorate era. Dinner and overnight in a medina riad or 4★ hotel. Note: depending on the flight schedule, the Tetouan tour may be moved to the following morning.",
-    fr: "Arrivée le matin à Tanger (décalage horaire possible selon la saison). Après les formalités, rencontre avec le chauffeur qui nous accompagnera tout au long du parcours. Visite du Cap Spartel, où l'océan Atlantique rejoint la mer Méditerranée, puis des célèbres Grottes d'Hercule. Route vers Tétouan, surnommée « la Colombe Blanche » pour la couleur dominante de ses maisons et sa lumière. Visite guidée de la médina de Tétouan — site UNESCO qui conserve une forte influence andalouse héritée du Protectorat espagnol. Dîner et nuit en riad de la médina ou hôtel 4★. Note : selon l'horaire d'arrivée, la visite de Tétouan peut être reportée au lendemain matin.",
+    es: "Llegada por la mañana a Tánger. Tras el control de pasaportes y la recogida de equipajes, encuentro con el chófer y salida hacia Tetuán, conocida como «La Paloma Blanca». Visita guiada de su medina, declarada Patrimonio de la Humanidad por la UNESCO, donde se aprecia la influencia andalusí. Cena y alojamiento en riad dentro de la medina u hotel 4★. Según el horario de llegada, la visita podría trasladarse a la mañana siguiente.",
+    en: "Morning arrival in Tangier. After passport control and baggage collection, meet the driver and travel to Tetouan, known as the White Dove. Guided visit of its UNESCO-listed medina and Andalusian heritage. Dinner and overnight in a medina riad or 4-star hotel. Depending on arrival time, the visit may take place the following morning.",
+    fr: "Arrivée le matin à Tanger. Après les formalités et la récupération des bagages, rencontre avec le chauffeur et route vers Tétouan, la Colombe Blanche. Visite guidée de sa médina classée UNESCO et de son héritage andalou. Dîner et nuit en riad de la médina ou hôtel 4 étoiles. Selon l'heure d'arrivée, la visite pourra avoir lieu le lendemain matin.",
   },
   culture: [
     {
@@ -244,7 +244,7 @@ export const PROGRAM_CI_RIF_67 = {
       airports: "Entrada Tánger · Salida Marrakech",
       quick_airports: "Tánger / Marrakech",
       quick_places: "Tánger · Tetuán · Chefchaouen · Volubilis · Meknes · Fez · Ifrane · Marrakech",
-      highlights: "Cabo Espartel · Chefchaouen · Volubilis · Fez el-Bali · Jemaa el-Fna",
+      highlights: "Tetuán · Chefchaouen · Volubilis · Fez el-Bali · Jemaa el-Fna",
       description_title: "Una inmersión total en el Marruecos cultural.",
       description: [
         "Marruecos posee un rico legado histórico y arquitectónico que podemos apreciar en sus «Ciudades Imperiales».",
@@ -261,7 +261,7 @@ export const PROGRAM_CI_RIF_67 = {
       airports: "In Tangier · Out Marrakech",
       quick_airports: "Tangier / Marrakech",
       quick_places: "Tangier · Tetouan · Chefchaouen · Volubilis · Meknes · Fez · Ifrane · Marrakech",
-      highlights: "Cape Spartel · Chefchaouen · Volubilis · Fez el-Bali · Jemaa el-Fna",
+      highlights: "Tetouan · Chefchaouen · Volubilis · Fez el-Bali · Jemaa el-Fna",
       description_title: "A total immersion in cultural Morocco.",
       description: [
         "Morocco holds a rich historic and architectural legacy clearly seen in its «Imperial Cities».",
@@ -278,7 +278,7 @@ export const PROGRAM_CI_RIF_67 = {
       airports: "Arrivée Tanger · Sortie Marrakech",
       quick_airports: "Tanger / Marrakech",
       quick_places: "Tanger · Tétouan · Chefchaouen · Volubilis · Meknès · Fès · Ifrane · Marrakech",
-      highlights: "Cap Spartel · Chefchaouen · Volubilis · Fès el-Bali · Jemaa el-Fna",
+      highlights: "Tétouan · Chefchaouen · Volubilis · Fès el-Bali · Jemaa el-Fna",
       description_title: "Une immersion totale dans le Maroc culturel.",
       description: [
         "Le Maroc conserve un riche héritage historique et architectural particulièrement visible dans ses « cités impériales ».",
@@ -289,7 +289,6 @@ export const PROGRAM_CI_RIF_67 = {
   },
   route: [
     { day: 1, lat: 35.7595, lng: -5.8340, type: "airport", name: T("Tánger · Aeropuerto", "Tangier · Airport", "Tanger · Aéroport") },
-    { day: 1, lat: 35.7956, lng: -5.9376, type: "city",    name: T("Cabo Espartel · Grutas de Hércules", "Cape Spartel · Caves of Hercules", "Cap Spartel · Grottes d'Hercule") },
     { day: 1, lat: 35.5728, lng: -5.3725, type: "unesco",  name: T("Tetuán · medina UNESCO", "Tetouan · UNESCO medina", "Tétouan · médina UNESCO") },
     { day: 2, lat: 35.2330, lng: -5.1690, type: "kasbah",  name: T("Cascadas de Akchour", "Akchour Waterfalls", "Cascades d'Akchour") },
     { day: 2, lat: 35.1689, lng: -5.2636, type: "city",    name: T("Chefchaouen · pueblo azul", "Chefchaouen · blue town", "Chefchaouen · village bleu") },
@@ -313,7 +312,6 @@ export const PROGRAM_CI_RIF_67 = {
         "Dos noches en Fez en riad dentro de la medina u Hotel 4★ · Media Pensión",
         "Dos noches en Marrakech en riad dentro de la medina u Hotel 5★ · Alojamiento y Desayuno",
         "Vehículo turismo o 4x4 con chófer del día 1 al día 5",
-        "Visita de las Grutas de Hércules",
         "Visita guiada de Tetuán",
         "Visita guiada de Chefchaouen",
         "Visita guiada y entrada a Volubilis",
@@ -330,7 +328,6 @@ export const PROGRAM_CI_RIF_67 = {
         "Two nights in Fez in a medina riad or 4★ hotel · half board",
         "Two nights in Marrakech in a medina riad or 5★ hotel · bed & breakfast",
         "Car or 4x4 with driver from day 1 to day 5",
-        "Visit to the Caves of Hercules",
         "Guided tour of Tetouan",
         "Guided tour of Chefchaouen",
         "Guided tour and entrance to Volubilis",
@@ -347,7 +344,6 @@ export const PROGRAM_CI_RIF_67 = {
         "Deux nuits à Fès en riad de la médina ou hôtel 4★ · demi-pension",
         "Deux nuits à Marrakech en riad de la médina ou hôtel 5★ · logement et petit-déjeuner",
         "Véhicule tourisme ou 4x4 avec chauffeur du jour 1 au jour 5",
-        "Visite des Grottes d'Hercule",
         "Visite guidée de Tétouan",
         "Visite guidée de Chefchaouen",
         "Visite guidée et entrée à Volubilis",
@@ -394,7 +390,6 @@ export const PROGRAM_CI_RIF_67 = {
         "Los chóferes hispanohablantes son limitados en temporada alta.",
         "Los guías locales en medinas pueden compartirse con otros viajeros.",
         "El viaje se realiza en vehículo turismo o 4x4 con chófer local.",
-        "Pasaporte obligatorio con vigencia mínima de 6 meses.",
         "Seguro de cancelación opcional · 45 € por persona para viajes de máximo 9 días.",
       ],
       en: [
@@ -405,7 +400,6 @@ export const PROGRAM_CI_RIF_67 = {
         "Spanish-speaking drivers are limited in high season.",
         "In high season, medina guides may be shared with other travellers.",
         "Travel by car or 4x4 with local driver.",
-        "Valid passport required with at least 6 months remaining.",
         "Optional cancellation insurance · €45 per person for trips of up to 9 days.",
       ],
       fr: [
@@ -416,7 +410,6 @@ export const PROGRAM_CI_RIF_67 = {
         "Chauffeurs hispanophones limités en haute saison.",
         "En haute saison, les guides de médina peuvent être partagés.",
         "Voyage en voiture ou 4x4 avec chauffeur local.",
-        "Passeport valable au minimum 6 mois.",
         "Assurance annulation en option · 45 € par personne pour les voyages jusqu'à 9 jours.",
       ],
     },

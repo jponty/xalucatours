@@ -27,6 +27,7 @@ import {
 
 // Newer per-program modules (each defines its own meta.highlights)
 import { PROGRAM_CI_45 } from "@/lib/programs/ciudadesImperiales45";
+import { PROGRAM_CI_56 } from "@/lib/programs/ciudadesImperiales56";
 import { PROGRAM_CI_67 } from "@/lib/programs/ciudadesImperiales67";
 import { PROGRAM_CI_RIF_67 } from "@/lib/programs/ciudadesImperialesRif67";
 import { PROGRAM_CI_RIF_78 } from "@/lib/programs/ciudadesImperialesRif78";
@@ -141,6 +142,7 @@ export const TRIP_PROGRAMS = {
 
   // Norte · Ciudades imperiales & Tánger ↔ Fez
   tourCiudadesImperiales45: P(PROGRAM_CI_45, "ci"),
+  tourCiudadesImperiales56: P(PROGRAM_CI_56, "ci"),
   tourCiudadesImperiales67: P(PROGRAM_CI_67, "ci"),
   tourCiudadesImperialesRif67: P(PROGRAM_CI_RIF_67, "ci"),
   tourCiudadesImperialesRif78: P(PROGRAM_CI_RIF_78, "ci"),

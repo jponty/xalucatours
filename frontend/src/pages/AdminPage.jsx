@@ -127,7 +127,7 @@ const URL_TAXONOMY = [
     region: true,
     routes: [
       { label: "Landing Norte de Marruecos", keys: ["tourNorth"] },
-      { label: "Ciudades Imperiales", keys: ["tourNorteCiudadesImperiales", "tourCiudadesImperiales45", "tourCiudadesImperiales67"] },
+      { label: "Ciudades Imperiales", keys: ["tourNorteCiudadesImperiales", "tourCiudadesImperiales45", "tourCiudadesImperiales56", "tourCiudadesImperiales67"] },
       { label: "Ciudades Imperiales + Rif", keys: ["tourCiudadesImperialesRif67", "tourCiudadesImperialesRif78"] },
       { label: "Tánger → Fez", keys: ["tourNorteTangerFez", "tourTangerFez45", "tourTangerFez56"] },
       { label: "Fez → Tánger", keys: ["tourFezTanger56", "tourFezTanger67"] },

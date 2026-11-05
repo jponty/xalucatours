@@ -551,12 +551,21 @@ export const JOURNEY_POSTCARDS = {
     ],
     closing: { es: "Siete días para viajar por la historia, la cultura y los paisajes de Marruecos. De Casablanca a Marrakech, un recorrido donde cada ciudad revela una forma diferente de sentir el país." },
   },
+  tourCiudadesImperiales56: {
+    sourcePath: "/viajes/norte/ciudades_imperiales/programa_5n_6d",
+    paragraphs: [
+      { es: "De Casablanca y la Mezquita Hassan II viajamos a Rabat antes de alcanzar el pueblo azul de Chefchaouen." },
+      { es: "Las cascadas de Akchour y las ruinas de Volubilis añaden naturaleza e historia a este recorrido." },
+      { es: "Tras pasar por Moulay Idriss y Meknes, la medina de Fez pone fin al viaje." },
+    ],
+    closing: { es: "Seis días de Casablanca a Fez por las ciudades imperiales y el Rif." },
+  },
   tourCiudadesImperialesRif67: {
     sourcePath: "/viajes/norte/ciudadesimperiales_rif/programa_6n_7d",
     paragraphs: [
-      { es: "Imagina comenzar donde el Atlántico y el Mediterráneo se encuentran… y terminar siete días después entre los colores y la energía de Marrakech." },
+      { es: "Imagina comenzar en Tánger y terminar siete días después entre los colores y la energía de Marrakech." },
       { es: "Este viaje te llevará por un Marruecos lleno de contrastes." },
-      { es: "Desde Tánger descubrirás Cabo Espartel y Tetuán, antes de adentrarte en las montañas del Rif y llegar a las inconfundibles callejuelas azules de Chefchaouen." },
+      { es: "Desde Tánger descubrirás Tetuán, antes de adentrarte en las montañas del Rif y llegar a las inconfundibles callejuelas azules de Chefchaouen." },
       { es: "Después, viajarás entre siglos de historia: las ruinas romanas de Volubilis, Moulay Idriss, Meknes y la fascinante medina de Fez." },
       { es: "Desde allí, el paisaje volverá a cambiar." },
       { es: "Cruzarás el Medio Atlas, pasando por Ifrane, bosques de cedros, Khenifra y Beni Mellal hasta llegar a Marrakech." },

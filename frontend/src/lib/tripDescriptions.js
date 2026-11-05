@@ -128,9 +128,14 @@ export const TRIP_DESCRIPTIONS = {
 
   // ── Norte · Ciudades Imperiales ──
   tourCiudadesImperiales45: {
-    es: "Un recorrido por las ciudades imperiales —Fez, Mequinez, Salé y Rabat— con encuentros con tres artesanos locales. Cuatro noches de historia, medinas y tradición viva.",
-    en: "A tour of the imperial cities —Fez, Meknès, Salé and Rabat— with visits to three local artisans. Four nights of history, medinas and living tradition.",
-    fr: "Un circuit des villes impériales —Fès, Meknès, Salé et Rabat— avec la rencontre de trois artisans locaux. Quatre nuits d'histoire, de médinas et de tradition vivante.",
+    es: "De Casablanca a Fez, pasando por Rabat, las ruinas de Volubilis y Meknes. Cuatro noches de historia, medinas y tradición viva.",
+    en: "From Casablanca to Fez via Rabat, the ruins of Volubilis and Meknes. Four nights of history, medinas and living tradition.",
+    fr: "De Casablanca à Fès via Rabat, les ruines de Volubilis et Meknès. Quatre nuits d'histoire, de médinas et de tradition vivante.",
+  },
+  tourCiudadesImperiales56: {
+    es: "De Casablanca a Fez por Rabat y Chefchaouen, con parada en las cascadas de Akchour, Volubilis y Meknes. Cinco noches de cultura y paisajes del Rif.",
+    en: "From Casablanca to Fez via Rabat and Chefchaouen, with Akchour waterfalls, Volubilis and Meknes. Five nights of culture and Rif landscapes.",
+    fr: "De Casablanca à Fès via Rabat et Chefchaouen, avec Akchour, Volubilis et Meknès. Cinq nuits de culture et de paysages du Rif.",
   },
   tourCiudadesImperiales67: {
     es: "Versión ampliada que añade Volúbilis, Moulay Idriss y Casablanca al circuito de ciudades imperiales. Seis noches entre ruinas romanas, mausoleos y la gran mezquita Hassan II.",
@@ -143,9 +148,9 @@ export const TRIP_DESCRIPTIONS = {
     fr: "Associe les villes impériales du nord à la ville bleue de Chefchaouen et à Tétouan, dans le Rif. Six nuits de médinas historiques et de montagnes aux racines andalouses.",
   },
   tourCiudadesImperialesRif78: {
-    es: "Versión completa con dos noches en Chefchaouen para perderte con calma por sus callejones índigo, además de Fez, Mequinez y Tetuán. Siete noches por el norte culto y luminoso.",
-    en: "A full version with two nights in Chefchaouen to wander its indigo alleys at leisure, plus Fez, Meknès and Tetouan. Seven nights through the cultured, luminous north.",
-    fr: "Version complète avec deux nuits à Chefchaouen pour flâner dans ses ruelles indigo, en plus de Fès, Meknès et Tétouan. Sept nuits dans le nord cultivé et lumineux.",
+    es: "De Tánger a Marrakech con una noche en Chefchaouen y otra en Rabat, además de Tetuán, Volubilis, Meknes y Fez. Siete noches por el Marruecos cultural.",
+    en: "From Tangier to Marrakech with one night in Chefchaouen and one in Rabat, plus Tetouan, Volubilis, Meknes and Fez. Seven nights of cultural Morocco.",
+    fr: "De Tanger à Marrakech avec une nuit à Chefchaouen et une à Rabat, puis Tétouan, Volubilis, Meknès et Fès. Sept nuits de Maroc culturel.",
   },
 
   // ── Norte · Tánger ↔ Fez ──

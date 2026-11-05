@@ -807,6 +807,7 @@ export const ROUTE_FAMILY = {
   tourFezAtlasErr56: "grandCrossing",
   // E — Imperial cities
   tourCiudadesImperiales45: "imperial",
+  tourCiudadesImperiales56: "imperialRif",
   tourCiudadesImperiales67: "imperial",
   // F — Imperial + Rif (Chefchaouen)
   tourCiudadesImperialesRif67: "imperialRif",

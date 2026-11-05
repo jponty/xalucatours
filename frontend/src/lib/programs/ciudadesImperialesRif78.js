@@ -109,7 +109,7 @@ export const PROGRAM_CI_RIF_78 = {
       airports: "Entrada Tánger · Salida Marrakech",
       quick_airports: "Tánger / Marrakech",
       quick_places: "Tánger · Tetuán · Chefchaouen · Rabat · Volubilis · Meknès · Fez · Ifrane · Marrakech",
-      highlights: "Cabo Espartel · Chefchaouen · Chellah · Volubilis · Fez el-Bali · Djemaa el-Fna",
+      highlights: "Tetuán · Chefchaouen · Chellah · Volubilis · Fez el-Bali · Djemaa el-Fna",
       description_title: "El Marruecos más cultural · norte a sur.",
       description: [
         "Marruecos posee un rico legado histórico y arquitectónico que podemos apreciar especialmente en sus llamadas «Ciudades Imperiales».",
@@ -126,7 +126,7 @@ export const PROGRAM_CI_RIF_78 = {
       airports: "In Tangier · Out Marrakech",
       quick_airports: "Tangier / Marrakech",
       quick_places: "Tangier · Tetouan · Chefchaouen · Rabat · Volubilis · Meknès · Fez · Ifrane · Marrakech",
-      highlights: "Cape Spartel · Chefchaouen · Chellah · Volubilis · Fez el-Bali · Jemaa el-Fna",
+      highlights: "Tetouan · Chefchaouen · Chellah · Volubilis · Fez el-Bali · Jemaa el-Fna",
       description_title: "Morocco at its most cultural · north to south.",
       description: [
         "Morocco holds a rich historic and architectural legacy especially visible in its «Imperial Cities».",
@@ -143,7 +143,7 @@ export const PROGRAM_CI_RIF_78 = {
       airports: "Arrivée Tanger · Sortie Marrakech",
       quick_airports: "Tanger / Marrakech",
       quick_places: "Tanger · Tétouan · Chefchaouen · Rabat · Volubilis · Meknès · Fès · Ifrane · Marrakech",
-      highlights: "Cap Spartel · Chefchaouen · Chellah · Volubilis · Fès el-Bali · Jemaa el-Fna",
+      highlights: "Tétouan · Chefchaouen · Chellah · Volubilis · Fès el-Bali · Jemaa el-Fna",
       description_title: "Le Maroc le plus culturel · nord vers sud.",
       description: [
         "Le Maroc conserve un riche héritage historique et architectural particulièrement visible dans ses « cités impériales ».",
@@ -153,7 +153,7 @@ export const PROGRAM_CI_RIF_78 = {
     },
   },
   route: [
-    { day: 1, lat: 35.7595, lng: -5.8340, type: "city",    name: T("Tánger · Cabo Espartel · Grutas de Hércules", "Tangier · Cape Spartel · Caves of Hercules", "Tanger · Cap Spartel · Grottes d'Hercule") },
+    { day: 1, lat: 35.7595, lng: -5.8340, type: "airport", name: T("Tánger · llegada", "Tangier · arrival", "Tanger · arrivée") },
     { day: 1, lat: 35.5732, lng: -5.3729, type: "city",    name: T("Tetuán · «La Paloma Blanca»", "Tetouan · «the White Dove»", "Tétouan · « la Colombe Blanche »") },
     { day: 2, lat: 35.1714, lng: -5.2700, type: "city",    name: T("Chefchaouen · el pueblo azul", "Chefchaouen · the blue town", "Chefchaouen · le village bleu") },
     { day: 3, lat: 34.0209, lng: -6.8416, type: "city",    name: T("Rabat · Kasbah des Oudaias · Chellah", "Rabat · Kasbah des Oudaias · Chellah", "Rabat · Kasbah des Oudaïas · Chellah") },
@@ -183,7 +183,6 @@ export const PROGRAM_CI_RIF_78 = {
         "Dos noches en Fez en Riad en la Medina u Hotel 4★ · Media Pensión",
         "Dos noches en Marrakech en Riad en la Medina u Hotel 5★ · Alojamiento y Desayuno",
         "Vehículo turismo o 4x4 con chófer del día 1 al día 6 del itinerario, ambos incluidos",
-        "Visita de las Grutas de Hércules",
         "Visita con guía local en Tetuán (medio día)",
         "Visita con guía local en Chefchaouen (medio día)",
         "Visita con guía local en Rabat (medio día) · Entrada al Chellah",
@@ -201,7 +200,6 @@ export const PROGRAM_CI_RIF_78 = {
         "Two nights in Fez in a Medina riad or 4★ hotel · half board",
         "Two nights in Marrakech in a Medina riad or 5★ hotel · bed & breakfast",
         "Car or 4x4 with driver from day 1 to day 6 inclusive",
-        "Caves of Hercules entrance",
         "Local guided tour in Tetouan (half day)",
         "Local guided tour in Chefchaouen (half day)",
         "Local guided tour in Rabat (half day) · Chellah entrance",
@@ -219,7 +217,6 @@ export const PROGRAM_CI_RIF_78 = {
         "Deux nuits à Fès en riad de la médina ou hôtel 4★ · demi-pension",
         "Deux nuits à Marrakech en riad de la médina ou hôtel 5★ · petit-déjeuner",
         "Voiture ou 4x4 avec chauffeur du jour 1 au jour 6 inclus",
-        "Entrée aux Grottes d'Hercule",
         "Guide local à Tétouan (demi-journée)",
         "Guide local à Chefchaouen (demi-journée)",
         "Guide local à Rabat (demi-journée) · Entrée du Chellah",
@@ -270,7 +267,6 @@ export const PROGRAM_CI_RIF_78 = {
         "Los chóferes hispanohablantes son limitados — reservar con antelación.",
         "El viaje se realiza en vehículo turismo o 4x4 con chófer. Los guías oficiales se reservan exclusivamente para las medinas, no para las rutas.",
         "Consultar alternativas opcionales para hacer el trayecto Fez-Marrakech en avión o ampliar una noche en el Lago Bin el Ouidane.",
-        "Pasaporte obligatorio con vigencia mínima de 6 meses.",
       ],
       en: [
         "Flight options: Royal Air Maroc via Casablanca or low-cost (Vueling, Ryanair) with direct flights from major cities.",
@@ -281,7 +277,6 @@ export const PROGRAM_CI_RIF_78 = {
         "Spanish-speaking drivers are limited — book early.",
         "Travel by car or 4x4 with driver. Official guides are reserved for medina visits only.",
         "Alternatives available: Fez-Marrakech leg by plane or extra night at Bin el Ouidane Lake.",
-        "Valid passport required with at least 6 months remaining.",
       ],
       fr: [
         "Options de vol : Royal Air Maroc via Casablanca ou low-cost (Vueling, Ryanair).",
@@ -292,7 +287,6 @@ export const PROGRAM_CI_RIF_78 = {
         "Chauffeurs hispanophones limités — réserver tôt.",
         "Voyage en voiture ou 4x4 avec chauffeur. Les guides officiels sont réservés aux médinas.",
         "Alternatives : trajet Fès-Marrakech en avion ou nuit supplémentaire au lac Bin el Ouidane.",
-        "Passeport valable au moins 6 mois.",
       ],
     },
     terms: {

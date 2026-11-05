@@ -59,7 +59,7 @@ const REGIONS = [
     ],
     itineraries: [
       { routeId: "tourCiudadesImperiales45", label: T("Ciudades imperiales · 4n/5d", "Imperial cities · 4n/5d", "Cités impériales · 4n/5j") },
-      { routeId: "tourCiudadesImperiales67", label: T("Imperiales ampliado · 6n/7d", "Extended imperial · 6n/7d", "Impériales étendu · 6n/7j") },
+      { routeId: "tourCiudadesImperiales56", label: T("Imperiales y Chefchaouen · 5n/6d", "Imperial and Chefchaouen · 5n/6d", "Impériales et Chefchaouen · 5n/6j") },
     ],
   },
   {
