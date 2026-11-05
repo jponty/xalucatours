@@ -269,12 +269,64 @@ class TripPlannerCreate(LeadCapture, LeadContactInput, LeadNameInput):
 
 
 # ---------- Program brochure download (lead-gated) ----------
-# Default link used for every trip page for now. Each route can be assigned
-# its own brochure URL in the future by adding an entry to PROGRAM_DOWNLOAD_LINKS
-# (keyed by the frontend routeId) — the endpoint resolves per-route first,
-# then falls back to the default.
+# Links are keyed by the frontend routeId. Keep ambiguous Canva variants
+# unmapped until their exact itinerary can be confirmed.
 DEFAULT_PROGRAM_DOWNLOAD_URL = os.environ.get("DEFAULT_PROGRAM_DOWNLOAD_URL", "https://xalucatours.com/")
-PROGRAM_DOWNLOAD_LINKS: Dict[str, str] = {}
+PROGRAM_DOWNLOAD_LINKS: Dict[str, str] = {
+    "tourMarrakechFez78": "https://canva.link/zkm6na3qbnnb6fu",
+    "tourMarrakechFez89": "https://canva.link/a4ij2u5fk0j682u",
+    "tourMarrakechFez910": "https://canva.link/qsh1k30payloggu",
+    "tourFezRak78": "https://canva.link/ui93ekj9drnrfxi",
+    "tourFezRak89": "https://canva.link/onkv2xlni75wuy1",
+    "tourFezRak910": "https://canva.link/go1az578girgm29",
+    "tourFezSidialiRak78": "https://canva.link/cogvkk9fwag0piy",
+    "tourFezSidialiRak89": "https://canva.link/h9xd30oihpqevxt",
+    "tourFezSidialiRak910": "https://canva.link/0vzrhqnf25estsf",
+    "tourMarrakechSidialiFez78": "https://canva.link/vcqt1di6262swn2",
+    "tourMarrakechSidialiFez89": "https://canva.link/xref0ppaj7yfciz",
+    "tourMarrakechSidialiFez910": "https://canva.link/83lwkj5zuim1p69",
+    "tourTangerRak89": "https://canva.link/p61zbghtxfqpg7e",
+    "tourTangerRak910": "https://canva.link/udo549qgqxcbfxd",
+    "tourMarrakechEss45": "https://canva.link/r9jy7o0qig6t60x",
+    "tourMarrakechEss67": "https://canva.link/qc6sjashch4ourn",
+    "tourMarrakechLoop56": "https://canva.link/xp1sb2t73upq4ws",
+    "tourMarrakechLoop67": "https://canva.link/spjgeaqewuj4ig5",
+    "tourMarrakechLoop78": "https://canva.link/gy7p4zgpxfud4vh",
+    "tourMarrakechErg67": "https://canva.link/vc0x9j6fr97xqbp",
+    "tourMarrakechErg78": "https://canva.link/bc5eb10d573plnt",
+    "tourErgMarrakech45": "https://canva.link/n9qu601xeou2aso",
+    "tourErgMarrakech56": "https://canva.link/w3j3nwyu8ofniqp",
+    "tourErgMarrakech67": "https://canva.link/jis9x0iubb86qha",
+    "tourErgMarrakech78": "https://canva.link/js5o41873b7wkm8",
+    "tourAtlasDesierto45": "https://canva.link/bf7nkgcocw0d86r",
+    "tourAtlasDesierto56": "https://canva.link/wrzldql09b4ngqq",
+    "tourFezAtlasErr56": "https://canva.link/2np2rhemfn41x5r",
+    "tourDesiertoAtlas45": "https://canva.link/oevkg48oz0ob8sg",
+    "tourDesiertoAtlas56": "https://canva.link/zkuicaho92cvwq9",
+    "tourDesiertoAtlas67": "https://canva.link/45tqxjh040zq6nk",
+    "tourTangerFez45": "https://canva.link/zzw398xqb650prh",
+    "tourTangerFez56": "https://canva.link/8rsqvg5sallubwp",
+    "tourFezTanger56": "https://canva.link/inw239swrsz2jdg",
+    "tourFezTanger67": "https://canva.link/c0187dpfp00to3q",
+    "tourCiudadesImperiales45": "https://canva.link/oqxddba662bsxs0",
+    "tourCiudadesImperialesRif67": "https://canva.link/ba5w15qtb54s3t9",
+    "tourCiudadesImperialesRif78": "https://canva.link/cz332usinf3vii8",
+    "tourEscapadaFez23": "https://canva.link/zqc95dcuna4gm2p",
+    "tourEscapadaFez34": "https://canva.link/a7jnfm77a0yhdas",
+    "tourEscapadaFezSidiali34": "https://canva.link/wp15uwozobfimwu",
+    "tourEscapadaFezSidiali45": "https://canva.link/mhud0heluej1ygy",
+    "tourEscapadaAtlas34": "https://canva.link/towrgdw32rze3z5",
+    "tourEscapadaMarrakech23": "https://canva.link/xuo1zr82uuzep4w",
+    "tourEscapadaRakAgafay34": "https://canva.link/jzr6qwxq9h6tdq6",
+    "tourEscapadaDesierto34": "https://canva.link/bhs18hsdwmtm7lc",
+    # These route IDs are aliases of the same three Marrakech loop pages.
+    "tourMarrakechLoop23": "https://canva.link/qllpuhe7o8eokyf",
+    "tourEscapadaRakErgRak23": "https://canva.link/qllpuhe7o8eokyf",
+    "tourMarrakechLoop34": "https://canva.link/khqbi8ekn832gfz",
+    "tourEscapadaRakErgRak34": "https://canva.link/khqbi8ekn832gfz",
+    "tourMarrakechLoop45": "https://canva.link/bxxipxqcl9pflwh",
+    "tourEscapadaRakErgRak45": "https://canva.link/bxxipxqcl9pflwh",
+}
 
 
 def resolve_program_download_url(route_id: Optional[str]) -> str:
