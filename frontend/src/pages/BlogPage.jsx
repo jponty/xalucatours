@@ -11,6 +11,7 @@ import { banner } from "@/lib/imageBank";
 import EditableImage from "@/components/EditableImage";
 import { SlotScope } from "@/components/slotScope";
 import SeoHead from "@/components/SeoHead";
+import SaharaMarrakechArticle from "@/pages/SaharaMarrakechArticle";
 
 const COPY = {
   breadcrumb: { es: "Inicio",  en: "Home",  fr: "Accueil" },
@@ -449,7 +450,9 @@ export function BlogPostPage() {
 
       {/* Body */}
       <article className="relative max-w-3xl mx-auto px-6 md:px-12 py-20 md:py-28">
-        {post.body.map((block, i) => renderBlock(block, lang, i))}
+        {post.id === "sahara-desde-marrakech"
+          ? <SaharaMarrakechArticle lang={lang} />
+          : post.body.map((block, i) => renderBlock(block, lang, i))}
 
         <div className="mt-16 pt-8 border-t border-[#2C2621]/10 flex flex-wrap items-center justify-between gap-4">
           <div className="text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">

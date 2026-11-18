@@ -23,6 +23,33 @@ export const CATEGORIES = [
    - callout:  { type:'callout', title:{...i18n}, text:{...i18n} } */
 export const POSTS = [
   {
+    id: "sahara-desde-marrakech",
+    slug: "viajes-desierto-sahara-desde-marrakech",
+    category: "desierto",
+    cover: "https://vcznwmkvphvkpkucciyw.supabase.co/storage/v1/object/public/xaluca/xaluca/library/pexels_37441710_9c6b3110.jpg",
+    readingTime: 12,
+    publishedAt: "2026-11-18",
+    author: "Equipo Xaluca",
+    keywords: ["viaje al desierto del Sahara desde Marrakech", "Merzouga desde Marrakech", "Zagora desde Marrakech", "Agafay", "Erg Chebbi"],
+    cta: {
+      route: "tourMarrakechErgHub",
+      eyebrow: { es: "Planifica tu ruta", en: "Plan your route", fr: "Planifiez votre itinéraire" },
+      title: { es: "De Marrakech a Erg Chebbi", en: "From Marrakech to Erg Chebbi", fr: "De Marrakech à Erg Chebbi" },
+      body: { es: "Explora los programas reales y elige el ritmo que encaja con tus días.", en: "Explore the available itineraries and find the pace that suits your trip.", fr: "Découvrez les itinéraires disponibles et choisissez votre rythme." },
+    },
+    title: {
+      es: "Viajes al desierto del Sahara desde Marrakech",
+      en: "Sahara desert trips from Marrakech",
+      fr: "Voyages dans le désert du Sahara depuis Marrakech",
+    },
+    excerpt: {
+      es: "Agafay, Zagora o Merzouga: qué paisaje encontrarás, cuántos días reservar y cómo organizar la ruta desde Marrakech sin prisas innecesarias.",
+      en: "Agafay, Zagora or Merzouga: the landscapes, travel times and routes to consider from Marrakech.",
+      fr: "Agafay, Zagora ou Merzouga : paysages, temps de trajet et itinéraires à envisager depuis Marrakech.",
+    },
+    body: [], // Rendered by the dedicated editorial component in BlogPage.
+  },
+  {
     id: "noche-en-erg-chebbi",
     slug: "noche-en-erg-chebbi",
     category: "desierto",
