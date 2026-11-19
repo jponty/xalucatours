@@ -14,3 +14,23 @@ test("renders editorial HTML without executable elements or attributes", () => {
   expect(output).not.toContain("alert(");
   expect(output).not.toContain("<img");
 });
+
+test("keeps comparison tables readable on narrow screens", () => {
+  const output = renderToStaticMarkup(
+    <SafeArticleHtml html={'<table><thead><tr><th>Destino</th><th>Tiempo</th></tr></thead><tbody><tr><td>Merzouga</td><td>Tres días</td></tr></tbody></table>'} />
+  );
+  expect(output).toContain('overflow-x-auto');
+  expect(output).toContain('<table');
+  expect(output).toContain('<th');
+  expect(output).toContain('Merzouga');
+});
+
+test("shows only privacy-enhanced YouTube embeds", () => {
+  const output = renderToStaticMarkup(
+    <SafeArticleHtml html={'<div data-youtube-video=""><iframe src="https://www.youtube-nocookie.com/embed/HGx1E_-3shM" onload="alert(1)"></iframe></div><iframe src="https://untrusted.example/embed/123"></iframe>'} />
+  );
+  expect(output).toContain('https://www.youtube-nocookie.com/embed/HGx1E_-3shM');
+  expect(output.match(/<iframe/g)).toHaveLength(1);
+  expect(output).not.toContain('onload');
+  expect(output).not.toContain('untrusted.example');
+});
