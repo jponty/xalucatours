@@ -17,12 +17,22 @@ async function publicPaths() {
 }
 
 async function publicRewrites() {
-  const { pathFor } = await loadSiteData();
+  const { pathFor, blogSlugs } = await loadSiteData();
   const paths = await publicPaths();
   // Limit patterns to public travel/blog namespaces. No catch-all HTML rewrite:
   // admin, API, assets and all other paths keep the existing SPA fallback.
   const prefixes = ["es", "en", "fr"].flatMap((lang) => [pathFor(lang, "toursLanding"), pathFor(lang, "blog")]);
-  const rules = prefixes.map((prefix) => ({ type: "rewrite", source: `${prefix}/*`, destination: `${prefix}/*/index.html` }));
+  const blogPrefixes = ["es", "en", "fr"].map((lang) => pathFor(lang, "blog"));
+  const rules = prefixes.filter((prefix) => !blogPrefixes.includes(prefix))
+    .map((prefix) => ({ type: "rewrite", source: `${prefix}/*`, destination: `${prefix}/*/index.html` }));
+  // Existing editorial posts retain their generated route-specific HTML.
+  for (const prefix of blogPrefixes) for (const slug of blogSlugs) {
+    rules.push({ type: "rewrite", source: `${prefix}/${slug}`, destination: `${prefix}/${slug}/index.html` });
+  }
+  // RankSpot posts are created after build; serve the SPA for unknown slugs.
+  for (const prefix of blogPrefixes) {
+    rules.push({ type: "rewrite", source: `${prefix}/*`, destination: "/index.html" });
+  }
   for (const lang of ["en", "fr"]) rules.push({ type: "rewrite", source: `/${lang}/:page`, destination: `/${lang}/:page/index.html` });
   for (const url of paths) {
     if (prefixes.some((prefix) => url.startsWith(`${prefix}/`)) || /^\/(en|fr)\/[^/]+$/.test(url)) continue;

@@ -34,6 +34,7 @@ from lead_name import LeadNameInput, clean_person_name
 from climate import register_climate_routes
 from featured_trip_email import render_featured_trip, email_plain_text
 from public_snapshot_cache import PublicSnapshotCache
+from rankspot_webhook import register_rankspot_routes
 
 
 ROOT_DIR = Path(__file__).parent
@@ -66,6 +67,20 @@ api_router = APIRouter(prefix="/api")
 _public_snapshots = PublicSnapshotCache(ttl_seconds=5)
 _expensive_reads = frozenset({"/api/content-manifest", "/api/image-url-map", "/api/text_slots"})
 _read_slots = asyncio.Semaphore(8)
+
+
+@app.middleware("http")
+async def authenticate_rankspot_webhook(request: Request, call_next):
+    if request.url.path == "/api/webhooks/rankspot" and request.method == "POST":
+        configured = os.environ.get("RANKSPOT_WEBHOOK_API_KEY", "")
+        supplied = request.headers.get("X-API-Key", "")
+        if not configured or not _hmac.compare_digest(supplied, configured):
+            return JSONResponse({"detail": "Unauthorized"}, status_code=401)
+        if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "application/json":
+            return JSONResponse({"detail": "Content-Type must be application/json"}, status_code=415)
+        if request.headers.get("content-length", "").isdigit() and int(request.headers["content-length"]) > 1_100_000:
+            return JSONResponse({"detail": "Payload too large"}, status_code=413)
+    return await call_next(request)
 
 
 @app.middleware("http")
@@ -6498,6 +6513,7 @@ register_calendly_routes(api_router, lambda: db)
 register_dictation_routes(api_router)
 register_assistant_routes(api_router, lambda: db, notify_identity=_notify_assistant_identity)
 register_climate_routes(api_router)
+register_rankspot_routes(api_router, lambda: db)
 app.include_router(api_router)
 
 # Serve legacy uploaded files under /api/uploads for backward compatibility.

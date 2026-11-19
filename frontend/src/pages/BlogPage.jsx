@@ -12,6 +12,8 @@ import EditableImage from "@/components/EditableImage";
 import { SlotScope } from "@/components/slotScope";
 import SeoHead from "@/components/SeoHead";
 import SaharaMarrakechArticle from "@/pages/SaharaMarrakechArticle";
+import SafeArticleHtml from "@/components/SafeArticleHtml";
+import { fetchRankspotPost, fetchRankspotPosts } from "@/lib/rankspotBlog";
 
 const COPY = {
   breadcrumb: { es: "Inicio",  en: "Home",  fr: "Accueil" },
@@ -110,6 +112,7 @@ const Hero = ({ lang, postTitle }) => (
 
 const PostCard = ({ post, lang, featured = false }) => {
   const cat = CATEGORIES.find((c) => c.id === post.category);
+  const categoryName = cat ? pick(cat.label, lang) : post.categoryLabel;
   return (
     <SlotScope id={post.slug}>
       <Link
@@ -127,9 +130,9 @@ const PostCard = ({ post, lang, featured = false }) => {
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.05]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1513]/40 to-transparent pointer-events-none" />
-          {cat && (
+          {categoryName && (
             <span className="absolute top-3 left-3 inline-flex items-center gap-2 bg-[#FDFBF7]/95 backdrop-blur-sm px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase text-[#C16542]">
-              {pick(cat.label, lang)}
+              {categoryName}
             </span>
           )}
         </div>
@@ -159,7 +162,18 @@ const PostCard = ({ post, lang, featured = false }) => {
 
 const BlogIndexBody = ({ lang }) => {
   const [active, setActive] = useState("all");
-  const filtered = useMemo(() => getPostsByCategory(active), [active]);
+  const [remotePosts, setRemotePosts] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    setRemotePosts([]);
+    if (lang === "es") fetchRankspotPosts().then((posts) => { if (mounted) setRemotePosts(posts); }).catch(() => {});
+    return () => { mounted = false; };
+  }, [lang]);
+  const filtered = useMemo(() => {
+    const remote = remotePosts.filter((post) => active === "all" || post.category === active);
+    const staticPosts = getPostsByCategory(active).filter((post) => !remotePosts.some((item) => item.slug === post.slug));
+    return [...remote, ...staticPosts];
+  }, [active, remotePosts]);
   const [featured, ...rest] = filtered;
 
   return (
@@ -330,7 +344,17 @@ export function BlogPostPage() {
     const m = location.pathname.match(/\/blog\/([^/?#]+)\/?$/);
     return m ? m[1] : "";
   }, [location.pathname]);
-  const post = useMemo(() => getPostBySlug(slug), [slug]);
+  const [remotePost, setRemotePost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let mounted = true;
+    setRemotePost(null);
+    setLoading(lang === "es");
+    if (lang === "es") fetchRankspotPost(slug).then((article) => { if (mounted) setRemotePost(article); })
+      .catch(() => {}).finally(() => { if (mounted) setLoading(false); });
+    return () => { mounted = false; };
+  }, [slug, lang]);
+  const post = remotePost || getPostBySlug(slug);
 
   useEffect(() => {
     if (post) {
@@ -338,6 +362,7 @@ export function BlogPostPage() {
     }
   }, [post, lang]);
 
+  if (!post && loading) return <div className="min-h-[60vh] bg-[#FDFBF7]" />;
   if (!post) {
     return (
       <div data-testid="blog-post-not-found" className="bg-[#FDFBF7] min-h-[60vh] pt-32 md:pt-40 px-6 md:px-12 max-w-3xl mx-auto">
@@ -373,7 +398,7 @@ export function BlogPostPage() {
     image: [post.cover],
     inLanguage: lang,
     datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
+    dateModified: post.updatedAt || post.publishedAt,
     author: { "@type": "Organization", name: post.author },
     publisher: {
       "@type": "Organization",
@@ -394,7 +419,7 @@ export function BlogPostPage() {
       { "@type": "ListItem", position: 3, name: pick(post.title, lang),      item: articleUrl },
     ],
   };
-  const seoHreflang = {
+  const seoHreflang = post.contentHtml ? undefined : {
     es: pathFor("es", "blog") + "/" + post.slug,
     en: pathFor("en", "blog") + "/" + post.slug,
     fr: pathFor("fr", "blog") + "/" + post.slug,
@@ -430,7 +455,7 @@ export function BlogPostPage() {
         <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-8 pb-20 md:pb-28">
           <InlineBreadcrumb lang={lang} postTitle={pick(post.title, lang)} />
           <div className="mt-10 md:mt-14 flex items-center gap-3 text-[10px] tracking-[0.25em] uppercase text-[#D4A373]">
-            {cat && <span>{pick(cat.label, lang)}</span>}
+            {(cat || post.categoryLabel) && <span>{cat ? pick(cat.label, lang) : post.categoryLabel}</span>}
             <span className="w-6 h-px bg-[#D4A373]/40" />
             <span className="text-[#FDFBF7]/70">{fmtDate(post.publishedAt, lang)}</span>
             <span className="text-[#FDFBF7]/40">·</span>
@@ -450,7 +475,7 @@ export function BlogPostPage() {
 
       {/* Body */}
       <article className="relative max-w-3xl mx-auto px-6 md:px-12 py-20 md:py-28">
-        {post.id === "sahara-desde-marrakech"
+        {post.contentHtml ? <SafeArticleHtml html={post.contentHtml} /> : post.id === "sahara-desde-marrakech"
           ? <SaharaMarrakechArticle lang={lang} />
           : post.body.map((block, i) => renderBlock(block, lang, i))}
 

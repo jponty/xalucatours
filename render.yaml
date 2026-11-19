@@ -16,6 +16,8 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      - key: RANKSPOT_WEBHOOK_API_KEY
+        sync: false
       - key: SUPABASE_STORAGE_BUCKET
         value: xaluca
       - key: BUNNY_STORAGE_ZONE
@@ -176,20 +178,83 @@ services:
         source: /viajes/*
         destination: /viajes/*/index.html
       - type: rewrite
-        source: /blog/*
-        destination: /blog/*/index.html
-      - type: rewrite
         source: /en/tours/*
         destination: /en/tours/*/index.html
-      - type: rewrite
-        source: /en/blog/*
-        destination: /en/blog/*/index.html
       - type: rewrite
         source: /fr/voyages/*
         destination: /fr/voyages/*/index.html
       - type: rewrite
+        source: /blog/viajes-desierto-sahara-desde-marrakech
+        destination: /blog/viajes-desierto-sahara-desde-marrakech/index.html
+      - type: rewrite
+        source: /blog/noche-en-erg-chebbi
+        destination: /blog/noche-en-erg-chebbi/index.html
+      - type: rewrite
+        source: /blog/ruta-kasbahs-valle-draa
+        destination: /blog/ruta-kasbahs-valle-draa/index.html
+      - type: rewrite
+        source: /blog/titan-desert-bikepacking-marruecos
+        destination: /blog/titan-desert-bikepacking-marruecos/index.html
+      - type: rewrite
+        source: /blog/musica-gnaoua-essaouira-sur
+        destination: /blog/musica-gnaoua-essaouira-sur/index.html
+      - type: rewrite
+        source: /blog/rutas-4x4-anti-atlas-draa
+        destination: /blog/rutas-4x4-anti-atlas-draa/index.html
+      - type: rewrite
+        source: /blog/que-comer-sur-marruecos
+        destination: /blog/que-comer-sur-marruecos/index.html
+      - type: rewrite
+        source: /en/blog/viajes-desierto-sahara-desde-marrakech
+        destination: /en/blog/viajes-desierto-sahara-desde-marrakech/index.html
+      - type: rewrite
+        source: /en/blog/noche-en-erg-chebbi
+        destination: /en/blog/noche-en-erg-chebbi/index.html
+      - type: rewrite
+        source: /en/blog/ruta-kasbahs-valle-draa
+        destination: /en/blog/ruta-kasbahs-valle-draa/index.html
+      - type: rewrite
+        source: /en/blog/titan-desert-bikepacking-marruecos
+        destination: /en/blog/titan-desert-bikepacking-marruecos/index.html
+      - type: rewrite
+        source: /en/blog/musica-gnaoua-essaouira-sur
+        destination: /en/blog/musica-gnaoua-essaouira-sur/index.html
+      - type: rewrite
+        source: /en/blog/rutas-4x4-anti-atlas-draa
+        destination: /en/blog/rutas-4x4-anti-atlas-draa/index.html
+      - type: rewrite
+        source: /en/blog/que-comer-sur-marruecos
+        destination: /en/blog/que-comer-sur-marruecos/index.html
+      - type: rewrite
+        source: /fr/blog/viajes-desierto-sahara-desde-marrakech
+        destination: /fr/blog/viajes-desierto-sahara-desde-marrakech/index.html
+      - type: rewrite
+        source: /fr/blog/noche-en-erg-chebbi
+        destination: /fr/blog/noche-en-erg-chebbi/index.html
+      - type: rewrite
+        source: /fr/blog/ruta-kasbahs-valle-draa
+        destination: /fr/blog/ruta-kasbahs-valle-draa/index.html
+      - type: rewrite
+        source: /fr/blog/titan-desert-bikepacking-marruecos
+        destination: /fr/blog/titan-desert-bikepacking-marruecos/index.html
+      - type: rewrite
+        source: /fr/blog/musica-gnaoua-essaouira-sur
+        destination: /fr/blog/musica-gnaoua-essaouira-sur/index.html
+      - type: rewrite
+        source: /fr/blog/rutas-4x4-anti-atlas-draa
+        destination: /fr/blog/rutas-4x4-anti-atlas-draa/index.html
+      - type: rewrite
+        source: /fr/blog/que-comer-sur-marruecos
+        destination: /fr/blog/que-comer-sur-marruecos/index.html
+      - type: rewrite
+        source: /blog/*
+        destination: /index.html
+      - type: rewrite
+        source: /en/blog/*
+        destination: /index.html
+      - type: rewrite
         source: /fr/blog/*
-        destination: /fr/blog/*/index.html
+        destination: /index.html
       - type: rewrite
         source: /en/:page
         destination: /en/:page/index.html
