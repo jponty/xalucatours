@@ -155,7 +155,7 @@ export default function DictationForm({ className = "", countryPortalContainer, 
               <TripPlanningFields value={tripDetails} onChange={(key, value) => setTripDetails(current => ({ ...current, [key]: value }))}
                 lang={lang} optional monthInputType="month" testidPrefix="dictation-" headingAs="h4" />
             </div>
-            <ContactPreference lang={lang} value={form.preferred_contact} onChange={value => update("preferred_contact", value)} error={errors.preference} testidPrefix="dictation-pref" />
+            <ContactPreference lang={lang} showTravelDetails value={form.preferred_contact} onChange={value => update("preferred_contact", value)} error={errors.preference} testidPrefix="dictation-pref" />
             <div className="border-t border-[#2C2621]/15 pt-6 text-sm leading-relaxed text-[#5C5248]">
               <h4 className="font-medium text-[#2C2621]">{text("privacy")}</h4>
               <p className="mt-2 text-xs">{text("privacyBody")} <a href={`mailto:${CONTACT.email}`} className="break-all text-[#A35133] underline">{CONTACT.email}</a>.</p>

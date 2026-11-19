@@ -51,6 +51,35 @@ export const CONTACT_PREF_HINT = T(
   "Indiquez votre préférence. Nous utiliserons les coordonnées déjà fournies.",
 );
 
+const TRAVEL_PREF_INTRO = T(
+  "Selecciona cómo prefieres que el Equipo de Viajes de Xaluca Tours se comunique contigo para atender tu solicitud, compartir información y ayudarte a organizar tu viaje.",
+  "Choose how you would like the Xaluca Tours Travel Team to contact you about your enquiry, share information and help plan your trip.",
+  "Choisis comment l’équipe Voyages de Xaluca Tours peut te contacter au sujet de ta demande, partager des informations et t’aider à organiser ton voyage.",
+);
+
+const TRAVEL_PREF_DETAILS = {
+  both: T(
+    "Te enviaremos toda la información y las propuestas por email. Además, nuestro equipo podrá contactar contigo por teléfono para realizar un seguimiento personalizado, resolver dudas, solicitar información adicional y ayudarte a planificar tu viaje.",
+    "We will email you information and proposals. Our team may also call you to follow up personally, answer questions, request further details and help plan your trip.",
+    "Nous t’enverrons les informations et les propositions par email. Notre équipe pourra aussi t’appeler pour assurer un suivi personnalisé, répondre à tes questions, demander des précisions et t’aider à planifier ton voyage.",
+  ),
+  email: T(
+    "Todas las comunicaciones relacionadas con tu solicitud se realizarán exclusivamente por email, incluyendo el envío de información y propuestas, la resolución de dudas y el seguimiento de tu viaje.",
+    "All communication about your enquiry will take place by email only, including information, proposals, answers to questions and follow-up about your trip.",
+    "Toutes les communications concernant ta demande se feront exclusivement par email : informations, propositions, réponses à tes questions et suivi de ton voyage.",
+  ),
+  emailExtra: T(
+    "No obstante, si en cualquier momento prefieres una atención más personalizada, nuestro equipo también estará a tu disposición para atenderte por teléfono, videoconferencia o presencialmente, siempre que lo necesites.",
+    "If you later prefer more personal assistance, our team can also help you by phone, video call or in person whenever you need it.",
+    "Si tu préfères ensuite un accompagnement plus personnalisé, notre équipe pourra aussi t’aider par téléphone, visioconférence ou en personne, selon tes besoins.",
+  ),
+  note: T(
+    "Utilizaremos los datos de contacto que nos hayas facilitado y respetaremos tu preferencia de comunicación.",
+    "We will use the contact details you provided and respect your communication preference.",
+    "Nous utiliserons les coordonnées que tu nous as fournies et respecterons ta préférence de communication.",
+  ),
+};
+
 export const CONTACT_PREF_OPTIONS = [
   { id: "both", value: DEFAULT_CONTACT_PREFERENCE, Icon: Phone },
   { id: "email", value: ["email"], Icon: Mail },
@@ -166,6 +195,7 @@ export const ContactPreference = ({
   onChange,
   error,
   testidPrefix = "contact-pref",
+  showTravelDetails = false,
 }) => {
   const id = useId();
   const c = TONES[tone] || TONES.light;
@@ -177,7 +207,7 @@ export const ContactPreference = ({
         <span style={{ color: c.eyebrowAccent }}>*</span>
       </legend>
       <span className={`block text-[12px] mb-3 ${c.body}`}>
-        {pick(CONTACT_PREF_HINT, lang)}
+        {pick(showTravelDetails ? TRAVEL_PREF_INTRO : CONTACT_PREF_HINT, lang)}
       </span>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CONTACT_PREF_OPTIONS.map((opt) => {
@@ -196,6 +226,14 @@ export const ContactPreference = ({
           );
         })}
       </div>
+      {showTravelDetails && (
+        <div className={`mt-3 border-l-2 px-4 py-3 text-[12px] leading-relaxed ${c.body}`}
+          style={{ borderColor: c.eyebrowAccent }} data-testid={`${testidPrefix}-explanation`} aria-live="polite">
+          <p>{pick(TRAVEL_PREF_DETAILS[selected], lang)}</p>
+          {selected === "email" && <p className="mt-2">{pick(TRAVEL_PREF_DETAILS.emailExtra, lang)}</p>}
+          <p className="mt-2 italic">{pick(TRAVEL_PREF_DETAILS.note, lang)}</p>
+        </div>
+      )}
       {error && <span className={`block mt-2 text-xs ${c.error}`} data-testid={`${testidPrefix}-error`}>{error}</span>}
     </fieldset>
   );

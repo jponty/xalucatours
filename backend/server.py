@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Response, Header, BackgroundTasks, Request
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import JSONResponse
 import resend
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -32,6 +33,7 @@ from virtual_assistant import register_assistant_routes
 from lead_name import LeadNameInput, clean_person_name
 from climate import register_climate_routes
 from featured_trip_email import render_featured_trip, email_plain_text
+from public_snapshot_cache import PublicSnapshotCache
 
 
 ROOT_DIR = Path(__file__).parent
@@ -61,6 +63,24 @@ db = SupabaseDatabase()
 
 app = FastAPI(title="Xaluca Tours API")
 api_router = APIRouter(prefix="/api")
+_public_snapshots = PublicSnapshotCache(ttl_seconds=5)
+_expensive_reads = frozenset({"/api/content-manifest", "/api/image-url-map", "/api/text_slots"})
+_read_slots = asyncio.Semaphore(8)
+
+
+@app.middleware("http")
+async def bound_expensive_public_reads(request: Request, call_next):
+    if request.method != "GET" or request.url.path not in _expensive_reads:
+        return await call_next(request)
+    try:
+        await asyncio.wait_for(_read_slots.acquire(), timeout=0.25)
+    except asyncio.TimeoutError:
+        return JSONResponse({"detail": "Servicio ocupado. Inténtalo de nuevo."}, status_code=503,
+                            headers={"Retry-After": "1"})
+    try:
+        return await call_next(request)
+    finally:
+        _read_slots.release()
 
 
 @app.get("/")
@@ -5228,6 +5248,10 @@ async def register_remote_image_urls(payload: RemoteUrlRegisterPayload, authoriz
 
 @api_router.get("/image-url-map")
 async def get_image_url_map():
+    return await _public_snapshots.get("image-url-map", _build_image_url_map)
+
+
+async def _build_image_url_map():
     """Map of {original_remote_url → /api/files copy} for every image already
     imported into our storage. Consumed once by <Img> to serve non-slot
     imagery from the CMS instead of hotlinking Unsplash/Pexels."""
@@ -5595,6 +5619,10 @@ async def delete_text_slot(
 
 @api_router.get("/text_slots")
 async def list_text_slots():
+    return await _public_snapshots.get("text_slots", _build_text_slots)
+
+
+async def _build_text_slots():
     """Return every saved text slot as a dict {slot_id: values}. Used by
     the frontend to hydrate copy without one request per slot on first
     render."""
@@ -6092,6 +6120,10 @@ def _supabase_public_file_url(value: Optional[str]) -> Optional[str]:
 
 @api_router.get("/content-manifest")
 async def content_manifest():
+    return await _public_snapshots.get("content-manifest", _build_content_manifest)
+
+
+async def _build_content_manifest():
     """Current public CMS/media state, read live from Supabase.
 
     The frontend caches this response for the current browser session. Unlike

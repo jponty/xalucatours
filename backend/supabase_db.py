@@ -358,10 +358,11 @@ class SupabaseCollection:
                 params={"select": "data", "order": "id.asc", "offset": offset, "limit": limit, **(filters or {})},
             )
             page = response.json()
+            # response.json() has already made fresh Python objects. Copying
+            # every JSONB document again here doubles peak memory during the
+            # large public CMS scans; projections and updates copy as needed.
             rows.extend(
-                copy.deepcopy(
-                    json.loads(row["data"]) if isinstance(row.get("data"), str) else row.get("data")
-                )
+                json.loads(row["data"]) if isinstance(row.get("data"), str) else row["data"]
                 for row in page
                 if row.get("data") is not None
             )

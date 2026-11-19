@@ -255,6 +255,7 @@ export const ContactForm = () => {
                   <ContactPreference
                     tone="dark"
                     lang={lang}
+                    showTravelDetails
                     value={form.preferred_contact}
                     onChange={(preferred_contact) => { setForm(current => ({ ...current, preferred_contact })); setPrefError(""); }}
                     error={prefError}

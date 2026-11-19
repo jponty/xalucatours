@@ -580,6 +580,7 @@ export default function PlannerForm() {
               <ContactPreference
                 tone="light"
                 lang={lang}
+                showTravelDetails
                 value={form.preferredContact}
                 onChange={(value) => set("preferredContact", value)}
                 error={errors.preferredContact}

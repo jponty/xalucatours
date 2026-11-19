@@ -62,6 +62,18 @@ describe.each(forms)("$kind contact submission", config => {
   };
   const request = () => config.kind === "quick" ? axios.post.mock.calls[0]?.[1] : JSON.parse(global.fetch.mock.calls[0]?.[1].body || "null");
 
+  test("explains each contact channel without adding contact fields", async () => {
+    await act(async () => root.render(<config.Form />));
+    const explanation = get(config.pref + "-explanation");
+    expect(get(config.pref + "-group").textContent).toContain("Equipo de Viajes de Xaluca Tours");
+    expect(explanation.textContent).toContain("propuestas por email");
+    expect(explanation.textContent).toContain("respetaremos tu preferencia de comunicación");
+    await click(config.pref + "-email");
+    expect(explanation.textContent).toContain("exclusivamente por email");
+    expect(explanation.textContent).toContain("videoconferencia o presencialmente");
+    expect(get(config.pref + "-group").querySelectorAll("input")).toHaveLength(2);
+  });
+
   test.each(["name", "surname"])("rejects a missing %s without submitting", async key => {
     await fill(["email", "phone"]);
     expect(get(config[key]).required).toBe(true);

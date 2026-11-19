@@ -525,7 +525,7 @@ export default function FastTrackPage() {
                     <textarea required name="message" value={form.message} onChange={onChange} rows={5} data-testid="fast-track-message" className="fast-track-input resize-none" />
                   </FastTrackField>
                 </div>
-                <div className="mt-6"><ContactPreference tone="dark" lang="es" value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="fast-track-pref" /></div>
+                <div className="mt-6"><ContactPreference tone="dark" lang="es" showTravelDetails value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="fast-track-pref" /></div>
                 <label className="mt-6 flex items-start gap-3 text-xs leading-relaxed text-white/60">
                   <input required type="checkbox" className="mt-0.5 h-4 w-4 accent-[#C16542]" data-testid="fast-track-terms" />
                   <span>Entiendo que el servicio cuesta 150 €, que el importe no es reembolsable y que se descontará íntegramente del viaje si finalmente confirmo la reserva con Xaluca Tours.</span>
