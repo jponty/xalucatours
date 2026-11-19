@@ -24,6 +24,18 @@ def contest_with(prizes):
     return {"id": "test-contest", "slug": "test", "active": True, "name": {"es": "Ruleta"}, "prizes": prizes}
 
 
+def test_contest_access_is_checked_server_side(monkeypatch):
+    monkeypatch.delenv("CONTEST_ACCESS_CODE", raising=False)
+    assert server._valid_contest_access_code("xalucatours")
+    assert not server._valid_contest_access_code("wrong")
+    with pytest.raises(HTTPException) as error:
+        asyncio.run(server.contest_spin(server.ContestSpinPayload(
+            access_code="wrong", first_name="Test", last_name="User",
+            email="test@example.com", phone="+34612345678",
+        )))
+    assert error.value.status_code == 403
+
+
 def test_default_discounts_are_spa_only_without_changing_other_gifts_or_odds():
     prizes = server._default_contest_prizes()
     assert len(prizes) == 15
@@ -127,12 +139,13 @@ def test_spin_stores_and_emails_only_the_spa_discount(monkeypatch):
         return "test-team-id"
     monkeypatch.setattr(server, "send_contest_prize_email", winner)
     monkeypatch.setattr(server, "send_lead_notification", team)
-    payload = server.ContestSpinPayload(contest_id="test-contest", first_name="Test", last_name="User", email="test@example.com")
+    payload = server.ContestSpinPayload(contest_id="test-contest", access_code="xalucatours", first_name="Test", last_name="User", email="test@example.com", phone="+34612345678")
     result = asyncio.run(server.contest_spin(payload))
     assert result["prize_index"] == 0
     assert result["prize"]["label"]["es"] == "10% de descuento en tratamientos de Spa"
     assert len(mails) == 2
     assert all("10% de descuento en tratamientos de Spa" in text for text in mails)
     stored = participants.insert_one.await_args.args[0]
+    assert "access_code" not in stored
     assert stored["prize_id"] == "legacy-discount"
     assert stored["prize_label"] == result["prize"]["label"]

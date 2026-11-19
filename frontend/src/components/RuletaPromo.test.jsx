@@ -1,6 +1,9 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
+jest.mock("@/lib/leadCapture", () => ({ useLeadCapture: () => () => ({ capture_type: "magic_lamp", source_path: "/" }) }));
+jest.mock("@/components/InternationalPhoneInput", () => ({ __esModule: true, default: () => <input type="tel" required />, isValidInternationalPhone: () => true }));
+
 let mockLang = "es";
 jest.mock("react-router-dom", () => ({
   Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a>,
@@ -14,15 +17,19 @@ import RuletaPromo from "./RuletaPromo";
 import manifest from "../../public/supabase-images.json";
 
 test.each([
-  ["es", "descuentos exclusivos en tratamientos de spa"],
-  ["en", "discounts exclusively on spa treatments"],
-  ["fr", "réductions exclusivement sur les soins du spa"],
-])("home only advertises spa discounts in %s", (lang, expected) => {
+  ["es", "detalle de bienvenida"],
+  ["en", "welcome gift"],
+  ["fr", "cadeau de bienvenue"],
+])("home magic lamp keeps the gift a surprise in %s", (lang, expected) => {
   mockLang = lang;
   const page = document.createElement("div");
   page.innerHTML = renderToStaticMarkup(<RuletaPromo />);
   expect(page.textContent).toContain(expected);
-  expect(page.querySelector('[data-testid="home-ruleta-cta"]')).not.toBeNull();
+  expect(page.textContent.toLowerCase()).not.toMatch(/sorteo|random prize|tirage au sort/);
+  expect(page.textContent).not.toContain(lang === "es" ? "té a la menta" : lang === "en" ? "mint tea" : "thé à la menthe");
+  expect(page.textContent).toContain(lang === "es" ? "Descubrir mi regalo" : lang === "en" ? "Discover my gift" : "Découvrir mon cadeau");
+  expect(page.querySelector('[data-testid="magic-lamp-form"]')).not.toBeNull();
+  expect(page.querySelector('[data-testid="concurso-wheel"]')).toBeNull();
 });
 
 test("offline contest snapshot keeps 15 prizes, with only 10% and 15% Spa discounts", () => {

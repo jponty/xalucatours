@@ -6084,6 +6084,7 @@ def send_contest_prize_email(
 # ---------- Public contest endpoints ----------
 class ContestSpinPayload(LeadCapture, LeadContactInput):
     contest_id: Optional[str] = Field(default=None, max_length=64)
+    access_code: str = Field(..., min_length=1, max_length=100)
     first_name: str = Field(..., min_length=1, max_length=80)
     last_name: str = Field(..., min_length=1, max_length=80)
     language: Optional[str] = Field(default="es", max_length=5)
@@ -6096,6 +6097,23 @@ class ContestSpinPayload(LeadCapture, LeadContactInput):
 
 async def _get_active_contest() -> Optional[dict]:
     return await db.contests.find_one({"active": True}, {"_id": 0}, sort=[("created_at", -1)])
+
+
+class ContestAccessPayload(BaseModel):
+    access_code: str = Field(..., min_length=1, max_length=100)
+
+
+def _valid_contest_access_code(code: str) -> bool:
+    # The public page never receives the code. Override before rotating it.
+    expected = os.environ.get("CONTEST_ACCESS_CODE", "xalucatours")
+    return bool(expected) and _hmac.compare_digest(code.strip(), expected)
+
+
+@api_router.post("/contest/access")
+async def contest_access(payload: ContestAccessPayload):
+    if not _valid_contest_access_code(payload.access_code):
+        raise HTTPException(status_code=403, detail="Código de acceso incorrecto.")
+    return {"valid": True}
 
 
 @api_router.get("/contest/active")
@@ -6206,6 +6224,8 @@ async def _build_content_manifest():
 async def contest_spin(payload: ContestSpinPayload):
     """Validate the participant, decide the prize (server-side, weighted),
     persist the entry and email the winner. Returns the prize + its wheel index."""
+    if not _valid_contest_access_code(payload.access_code):
+        raise HTTPException(status_code=403, detail="Código de acceso incorrecto.")
     contest = None
     if payload.contest_id:
         contest = await db.contests.find_one({"id": payload.contest_id}, {"_id": 0})
@@ -6247,7 +6267,7 @@ async def contest_spin(payload: ContestSpinPayload):
 
     name = f"{payload.first_name.strip()} {payload.last_name.strip()}".strip()
     participant = {
-        **payload.model_dump(mode="json"),
+        **payload.model_dump(mode="json", exclude={"access_code"}),
         "id": str(uuid.uuid4()),
         "contest_id": contest["id"],
         "first_name": payload.first_name.strip(),

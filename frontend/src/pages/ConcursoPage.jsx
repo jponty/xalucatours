@@ -144,6 +144,10 @@ export default function ConcursoPage() {
   const leadCapture = useLeadCapture("contest");
   const { lang } = useLanguage();
   const [contest, setContest] = useState(null);
+  const [accessCode, setAccessCode] = useState("");
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [accessError, setAccessError] = useState("");
+  const [checkingAccess, setCheckingAccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState("form"); // form | ready | spinning | done
   const [form, setForm] = useState({ first_name: "", last_name: "", phone: "", email: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE });
@@ -188,6 +192,20 @@ export default function ConcursoPage() {
     if (validate()) setPhase("ready");
   };
 
+  const checkAccess = async (e) => {
+    e.preventDefault();
+    setCheckingAccess(true);
+    setAccessError("");
+    try {
+      await axios.post(`${API}/contest/access`, { access_code: accessCode.trim() });
+      setAccessGranted(true);
+    } catch {
+      setAccessError("Código de acceso incorrecto. Compruébalo con tu equipo de viaje.");
+    } finally {
+      setCheckingAccess(false);
+    }
+  };
+
   const fireConfetti = (grand) => {
     const base = { colors: CONFETTI_COLORS, disableForReducedMotion: true };
     confetti({ ...base, particleCount: grand ? 220 : 140, spread: grand ? 110 : 80, origin: { y: 0.55 } });
@@ -204,6 +222,7 @@ export default function ConcursoPage() {
     try {
       const { data } = await axios.post(`${API}/contest/spin`, {
         ...leadCapture(),
+        access_code: accessCode.trim(),
         contest_id: contest.id,
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
@@ -267,7 +286,18 @@ export default function ConcursoPage() {
         </div>
       </section>
 
-      {loading ? (
+      {!accessGranted ? (
+        <section className="max-w-xl mx-auto px-6 py-16 md:py-24">
+          <form onSubmit={checkAccess} className="bg-[#FDFBF7] text-[#2C2621] p-7 md:p-10 space-y-5">
+            <h2 className="font-serif-x text-3xl">Acceso exclusivo para viajeros Xaluca Tours</h2>
+            <p className="text-sm text-[#5C5248]">Introduce el código que te hemos facilitado con tu viaje para acceder al concurso.</p>
+            <label className="block text-xs uppercase tracking-widest" htmlFor="contest-access-code">Código de acceso</label>
+            <input id="contest-access-code" data-testid="contest-access-code" type="text" autoComplete="off" required maxLength={100} value={accessCode} onChange={e => setAccessCode(e.target.value)} className="w-full border border-[#2C2621]/30 px-4 py-3 text-[#2C2621]" />
+            {accessError && <p role="alert" className="text-sm text-[#A85231]">{accessError}</p>}
+            <button type="submit" disabled={checkingAccess} className="xaluca-button bg-[#C16542] text-white px-8 py-3 disabled:opacity-60">{checkingAccess ? "Comprobando…" : "Acceder"}</button>
+          </form>
+        </section>
+      ) : loading ? (
         <div className="flex items-center justify-center py-28">
           <Loader2 className="w-8 h-8 animate-spin text-[#D4A373]" />
         </div>

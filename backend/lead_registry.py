@@ -30,6 +30,7 @@ KINDS = {
     "trip_information": "Información de un viaje", "general_contact": "Contacto general",
     "fast_track": "Fast Track", "program_download": "Descarga de programa",
     "newsletter": "Newsletter", "contest": "Ruleta de la suerte",
+    "magic_lamp": "Lámpara mágica · té a la menta",
     "team_contact": "Contacto con el equipo", "founder_contact": "Contacto con fundadores",
     "feedback": "Opinión del viajero",
 }

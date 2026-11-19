@@ -6,7 +6,7 @@ import SectionNav from "@/components/SectionNav";
 const SECTIONS = [
   { id: "buscador",  label: { es: "Buscador",        en: "Search",          fr: "Recherche" } },
   { id: "destinos",  label: { es: "Dónde viajamos",  en: "Where we travel", fr: "Où voyager" } },
-  { id: "ruleta",    label: { es: "Ruleta Xaluca",   en: "Xaluca Wheel",    fr: "Roue Xaluca" } },
+  { id: "lampara-magica", label: { es: "Lámpara mágica", en: "Magic lamp", fr: "Lampe magique" } },
   { id: "por-que",   label: { es: "Por qué Xaluca",  en: "Why Xaluca",      fr: "Pourquoi Xaluca" } },
   { id: "viajes",    label: { es: "Nuestros viajes", en: "Our trips",       fr: "Nos voyages" } },
   { id: "opiniones", label: { es: "Opiniones",       en: "Reviews",         fr: "Avis" } },

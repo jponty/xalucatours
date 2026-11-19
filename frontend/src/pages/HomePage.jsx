@@ -141,7 +141,7 @@ export default function HomePage() {
       <div id="destinos" className="scroll-mt-[172px]">
         <WorldMapSection />
       </div>
-      <div id="ruleta" className="scroll-mt-[172px]">
+      <div id="lampara-magica" className="scroll-mt-[172px]">
         <RuletaPromo />
       </div>
       <PlannerCta />

@@ -56,6 +56,10 @@ test.each([
   ["feedback", <FeedbackPage />],
 ])("%s requires both primary fields and has no duplicated preference fields", async (prefix, element) => {
   await act(async () => root.render(element));
+  if (prefix === "concurso") {
+    await change("contest-access-code", "xalucatours");
+    await act(async () => get("contest-access-code").closest("form").dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
+  }
   const group = get(`${prefix}-pref-group`);
   const form = group.closest("form");
   expect(get(`${prefix}-pref-both`).checked).toBe(true);

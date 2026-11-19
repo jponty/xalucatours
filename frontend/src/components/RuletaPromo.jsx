@@ -1,204 +1,90 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Gift, Sparkles, Star, PartyPopper, ArrowRight, Ticket } from "lucide-react";
+import React, { useState } from "react";
+import axios from "axios";
+import { Gift, Sparkles, Send } from "lucide-react";
+import { toast } from "sonner";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { pathFor } from "@/lib/routes";
-import monogramWhite from "@/assets/monograma-x-white.png";
+import { useLeadCapture } from "@/lib/leadCapture";
+import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { ContactPreference } from "@/components/FormExtras";
+import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
+import { errorToastMessage } from "@/components/GenericErrorMessage";
 
-/* ============================================================
-   RuletaPromo — playful promo banner for the "Ruleta Xaluca"
-   giveaway (/concurso). Fun, surprise & reward vibe: a
-   decorative prize wheel that spins slowly, twinkling rim
-   lights, floating gift/sparkle icons and a bold CTA.
-============================================================ */
-
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const T = (es, en, fr) => ({ es, en, fr });
 const COPY = {
-  eyebrow: { es: "La Ruleta Xaluca", en: "The Xaluca Wheel", fr: "La Roue Xaluca" },
-  title: {
-    es: "Gira la ruleta y llévate un premio",
-    en: "Spin the wheel and win a prize",
-    fr: "Tournez la roue et gagnez un lot",
-  },
-  text: {
-    es: "Masajes, cenas, estancias, descuentos exclusivos en tratamientos de spa… y hasta ¡un viaje gratuito! Deja tus datos, gira la ruleta y descubre al instante tu regalo de Xaluca Tours. Sin sorteos ni esperas: siempre hay premio.",
-    en: "Massages, dinners, stays, discounts exclusively on spa treatments… and even a free trip! Leave your details, spin the wheel and instantly discover your gift from Xaluca Tours. No draws, no waiting: there's always a prize.",
-    fr: "Massages, dîners, séjours, réductions exclusivement sur les soins du spa… et même un voyage gratuit ! Laissez vos coordonnées, tournez la roue et découvrez aussitôt votre cadeau Xaluca Tours. Sans tirage ni attente : il y a toujours un lot.",
-  },
-  cta: { es: "Prueba tu suerte", en: "Try your luck", fr: "Tentez votre chance" },
-  note: {
-    es: "Gratis · Una participación por email",
-    en: "Free · One entry per email",
-    fr: "Gratuit · Une participation par e-mail",
-  },
-  f1: { es: "Gira", en: "Spin", fr: "Tournez" },
-  f2: { es: "Sorpréndete", en: "Get surprised", fr: "Surprenez-vous" },
-  f3: { es: "Gana", en: "Win", fr: "Gagnez" },
-  badge: { es: "15 premios", en: "15 prizes", fr: "15 lots" },
+  eyebrow: T("La lámpara mágica de Xaluca", "The Xaluca magic lamp", "La lampe magique de Xaluca"),
+  title: T("Un regalo te espera en Marruecos", "A gift awaits you in Morocco", "Un cadeau vous attend au Maroc"),
+  body: T("Déjanos tus datos y descubre el detalle de bienvenida que hemos preparado para cuando vengas a visitarnos a Marruecos.", "Leave your details and discover the welcome gift we have prepared for your visit to Morocco.", "Laissez-nous vos coordonnées et découvrez le cadeau de bienvenue préparé pour votre visite au Maroc."),
+  steps: [T("Deja tus datos", "Leave your details", "Laissez vos coordonnées"), T("Descubre tu regalo", "Discover your gift", "Découvrez votre cadeau"), T("Disfrútalo en Marruecos", "Enjoy it in Morocco", "Profitez-en au Maroc")],
+  first: T("Nombre", "First name", "Prénom"), last: T("Apellido(s)", "Last name", "Nom"),
+  phone: T("Teléfono", "Phone", "Téléphone"), email: T("Correo electrónico", "Email", "E-mail"),
+  consent: T("He leído y acepto la política de privacidad.", "I have read and accept the privacy policy.", "J'ai lu et j'accepte la politique de confidentialité."),
+  submit: T("Descubrir mi regalo", "Discover my gift", "Découvrir mon cadeau"),
+  reveal: T("¡Tu regalo es un té a la menta!", "Your gift is a mint tea!", "Votre cadeau est un thé à la menthe !"),
+  success: T("Hemos recibido tus datos. Te enviaremos una confirmación por email; nuestro equipo te indicará cómo disfrutar del té durante tu visita a Marruecos.", "We have received your details. We will email you a confirmation; our team will explain how to enjoy your tea during your visit to Morocco.", "Nous avons reçu vos coordonnées. Nous vous enverrons une confirmation par e-mail ; notre équipe vous indiquera comment savourer votre thé lors de votre visite au Maroc."),
+  note: T("Un detalle de bienvenida para tu próxima visita a Marruecos.", "A welcome gift for your next visit to Morocco.", "Un cadeau de bienvenue pour votre prochaine visite au Maroc."),
 };
-
-const SEG_COLORS = [
-  "#C16542", "#D4A373", "#7A4A32", "#B8862F",
-  "#A35133", "#E0A85C", "#6E2D17", "#C99A5B",
-  "#C16542", "#D4A373", "#7A4A32", "#B8862F",
-];
-
-const polar = (deg, r) => {
-  const a = ((deg - 90) * Math.PI) / 180;
-  return [100 + r * Math.cos(a), 100 + r * Math.sin(a)];
-};
-
-const STAR = "M0 -5 L1.3 -1.6 L5 -1.6 L2 0.6 L3.1 4.3 L0 2 L-3.1 4.3 L-2 0.6 L-5 -1.6 L-1.3 -1.6 Z";
-
-const DecorWheel = () => {
-  const n = SEG_COLORS.length;
-  const seg = 360 / n;
-  const segments = SEG_COLORS.map((color, i) => {
-    const start = i * seg;
-    const end = (i + 1) * seg;
-    const [x1, y1] = polar(start, 92);
-    const [x2, y2] = polar(end, 92);
-    const large = seg > 180 ? 1 : 0;
-    const d = `M100 100 L ${x1.toFixed(2)} ${y1.toFixed(2)} A 92 92 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} Z`;
-    const [sx, sy] = polar(start + seg / 2, 62);
-    return { d, color, sx, sy, star: i % 3 === 0 };
-  });
-  const lights = Array.from({ length: 24 }, (_, i) => {
-    const [x, y] = polar(i * 15, 97);
-    return { x, y, i };
-  });
-
-  return (
-    <div className="relative w-[min(78vw,400px)] aspect-square mx-auto select-none" aria-hidden="true">
-      {/* Pointer */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2 -top-1.5 z-30"
-        style={{
-          width: 0, height: 0,
-          borderLeft: "16px solid transparent",
-          borderRight: "16px solid transparent",
-          borderTop: "30px solid #E0A85C",
-          filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.4))",
-        }}
-      />
-      {/* Bezel + rotating wheel */}
-      <div className="absolute inset-0 rounded-full p-3 bg-[#14100E] shadow-[0_50px_90px_-30px_rgba(0,0,0,0.8)] ring-1 ring-[#E0A85C]/30">
-        <div className="relative w-full h-full rounded-full overflow-hidden animate-[ruleta-spin_22s_linear_infinite] motion-reduce:animate-none">
-          <svg viewBox="0 0 200 200" className="w-full h-full">
-            {segments.map((s, i) => (
-              <g key={i}>
-                <path d={s.d} fill={s.color} stroke="#FDFBF7" strokeWidth="0.7" />
-                {s.star && (
-                  <path d={STAR} transform={`translate(${s.sx} ${s.sy}) scale(1.5)`} fill="#FDFBF7" fillOpacity="0.85" />
-                )}
-              </g>
-            ))}
-          </svg>
-        </div>
-      </div>
-      {/* Twinkling rim lights (static ring, on top of the spinning wheel) */}
-      <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full pointer-events-none z-20">
-        {lights.map((l) => (
-          <circle
-            key={l.i}
-            cx={l.x} cy={l.y} r="2.4"
-            fill={l.i % 2 ? "#E0A85C" : "#FDFBF7"}
-            className="animate-[ruleta-twinkle_1.8s_ease-in-out_infinite] motion-reduce:animate-none"
-            style={{ animationDelay: `${(l.i % 6) * 0.12}s` }}
-          />
-        ))}
-      </svg>
-      {/* Hub */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-[20%] h-[20%] rounded-full bg-[#1A1513] border-[3px] border-[#E0A85C] shadow-lg flex items-center justify-center">
-        <img src={monogramWhite} alt="" className="w-1/2 h-1/2 object-contain" />
-      </div>
-    </div>
-  );
-};
-
-const Float = ({ icon: Icon, className, delay = 0 }) => (
-  <span
-    className={`absolute z-30 text-[#E0A85C] animate-[ruleta-float_4s_ease-in-out_infinite] motion-reduce:animate-none ${className}`}
-    style={{ animationDelay: `${delay}s` }}
-    aria-hidden="true"
-  >
-    <Icon className="w-full h-full" strokeWidth={1.6} />
-  </span>
-);
-
-const Step = ({ n, label }) => (
-  <span className="inline-flex items-center gap-2 text-[13px] tracking-[0.04em] text-[#FDFBF7]/85">
-    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#C16542] text-[#FDFBF7] text-[11px] font-semibold">{n}</span>
-    {label}
-  </span>
-);
 
 export default function RuletaPromo() {
   const { lang } = useLanguage();
-  return (
-    <section data-testid="home-ruleta-promo" className="relative bg-[#1A1513] text-[#FDFBF7] overflow-hidden">
-      <style>{`
-        @keyframes ruleta-spin { to { transform: rotate(360deg); } }
-        @keyframes ruleta-twinkle { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
-        @keyframes ruleta-float { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-14px) rotate(6deg); } }
-      `}</style>
+  const leadCapture = useLeadCapture("magic_lamp");
+  const [form, setForm] = useState({ first_name: "", last_name: "", email: "", phone: "", preferred_contact: DEFAULT_CONTACT_PREFERENCE });
+  const [consent, setConsent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const set = key => event => setForm(current => ({ ...current, [key]: event.target.value }));
 
-      {/* Warm glow + pattern */}
+  const submit = async event => {
+    event.preventDefault();
+    if (sending || sent) return;
+    if (!isValidInternationalPhone(form.phone) || !consent) {
+      toast.error(lang === "es" ? "Revisa el teléfono y acepta la política de privacidad." : "Check your phone and accept the privacy policy.");
+      return;
+    }
+    setSending(true);
+    try {
+      await axios.post(`${API}/contact-requests`, {
+        ...leadCapture(), first_name: form.first_name.trim(), last_name: form.last_name.trim(),
+        ...contactSubmissionFields(form), privacy_consent: true,
+        message: "Solicitud de regalo garantizado: té a la menta durante su visita a Marruecos.",
+        source_label: "Home · Lámpara mágica · Té a la menta", language: lang,
+      });
+      setSent(true);
+    } catch (error) {
+      toast.error(errorToastMessage(error?.response?.data?.detail, lang));
+    } finally { setSending(false); }
+  };
+
+  return (
+    <section data-testid="home-magic-lamp" className="relative overflow-hidden bg-[#1A1513] text-[#FDFBF7]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_50%,rgba(224,168,92,0.20),transparent_55%),radial-gradient(circle_at_10%_15%,rgba(193,101,66,0.22),transparent_50%)]" aria-hidden="true" />
       <div className="absolute inset-0 berber-bg-diamond opacity-[0.07] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#E0A85C]/60 to-transparent" aria-hidden="true" />
-
       <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        {/* Text */}
-        <div className="order-2 lg:order-1 text-center lg:text-left">
-          <span className="overline inline-flex items-center gap-2 text-[#E0A85C]">
-            <PartyPopper className="w-4 h-4" strokeWidth={1.8} /> {pick(COPY.eyebrow, lang)}
-          </span>
-          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.06] tracking-tight mt-4">
-            {pick(COPY.title, lang)}
-          </h2>
-          <p className="text-base text-[#FDFBF7]/80 leading-relaxed mt-5 max-w-xl mx-auto lg:mx-0">
-            {pick(COPY.text, lang)}
-          </p>
-
-          <div className="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-x-7 gap-y-3">
-            <Step n="1" label={pick(COPY.f1, lang)} />
-            <Step n="2" label={pick(COPY.f2, lang)} />
-            <Step n="3" label={pick(COPY.f3, lang)} />
-          </div>
-
-          <div className="mt-9 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <Link
-              to={pathFor(lang, "concurso")}
-              data-testid="home-ruleta-cta"
-              className="xaluca-button group inline-flex items-center gap-3 bg-[#C16542] hover:bg-[#A85231] text-[#FDFBF7] text-[13px] tracking-[0.2em] uppercase font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:gap-5 shadow-[0_18px_40px_-16px_rgba(193,101,66,0.8)]"
-            >
-              <Gift className="w-4 h-4" strokeWidth={2} />
-              {pick(COPY.cta, lang)}
-              <ArrowRight className="w-4 h-4" strokeWidth={2} />
-            </Link>
-            <span className="inline-flex items-center gap-2 text-[12px] text-[#FDFBF7]/60">
-              <Ticket className="w-4 h-4 text-[#E0A85C]" strokeWidth={1.8} /> {pick(COPY.note, lang)}
-            </span>
-          </div>
+        <div className="text-center lg:text-left">
+          <svg viewBox="0 0 240 128" className="w-48 h-28 mx-auto lg:mx-0 mb-3 text-[#E0A85C]" role="img" aria-label={lang === "es" ? "Lámpara mágica" : lang === "fr" ? "Lampe magique" : "Magic lamp"}>
+            <path d="M53 83c18 3 30 9 69 9 38 0 60-10 68-23-16 4-35 3-46-2-13-6-26-7-41-4-20 4-42 5-67-7 4 12 12 21 17 27Z" fill="currentColor" opacity=".8" />
+            <path d="M53 83c18 3 30 9 69 9 38 0 60-10 68-23-16 4-35 3-46-2-13-6-26-7-41-4-20 4-42 5-67-7 4 12 12 21 17 27Zm137-14c17-7 31-21 37-36-23 6-34 8-48 4M76 93c14 10 65 13 93 0M89 103h63M63 60c-9-12-1-29 13-30 11-1 18 8 16 19M93 62c-3-6-5-14-1-19 8-9 21-7 26 2" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M127 34c-2-7 6-12 9-18 2 7 10 11 7 18M151 26l2-8m7 14 8-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+          <span className="overline inline-flex items-center gap-2 text-[#E0A85C]"><Sparkles className="w-4 h-4" />{pick(COPY.eyebrow, lang)}</span>
+          <h2 className="font-serif-x text-3xl md:text-4xl lg:text-5xl leading-[1.06] tracking-tight mt-4">{sent ? pick(COPY.reveal, lang) : pick(COPY.title, lang)}</h2>
+          <p className="text-base text-[#FDFBF7]/80 leading-relaxed mt-5 max-w-xl mx-auto lg:mx-0">{pick(COPY.body, lang)}</p>
+          <div className="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-x-7 gap-y-3">{COPY.steps.map((step, i) => <span key={i} className="inline-flex items-center gap-2 text-sm text-[#FDFBF7]/85"><span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#C16542] text-xs font-semibold">{i + 1}</span>{pick(step, lang)}</span>)}</div>
+          <p className="mt-7 text-sm text-[#E0A85C]">{pick(COPY.note, lang)}</p>
         </div>
-
-        {/* Wheel */}
-        <div className="order-1 lg:order-2 relative flex items-center justify-center py-4">
-          {/* floating decorations */}
-          <Float icon={Gift} className="w-9 h-9 top-2 left-[12%]" delay={0} />
-          <Float icon={Sparkles} className="w-7 h-7 top-[18%] right-[8%] text-[#FDFBF7]/80" delay={0.8} />
-          <Float icon={Star} className="w-6 h-6 bottom-[12%] left-[6%]" delay={1.6} />
-          <Float icon={Sparkles} className="w-8 h-8 bottom-3 right-[16%]" delay={1.1} />
-
-          <DecorWheel />
-
-          {/* reward badge */}
-          <span
-            data-testid="home-ruleta-badge"
-            className="absolute z-30 -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 whitespace-nowrap bg-[#B8862F] text-[#1A1513] text-[11px] font-bold tracking-[0.14em] uppercase px-3.5 py-1.5 rounded-full shadow-lg"
-          >
-            <Star className="w-3.5 h-3.5 shrink-0" fill="#1A1513" strokeWidth={0} /> {pick(COPY.badge, lang)}
-          </span>
+        <div className="bg-[#FDFBF7] text-[#2C2621] p-7 md:p-9 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]">
+          <div className="flex items-center gap-3 mb-6"><Gift className="w-8 h-8 text-[#C16542]" /><h3 className="font-serif-x text-2xl">{pick(COPY.eyebrow, lang)}</h3></div>
+          {sent ? <div role="status" aria-live="polite" data-testid="magic-lamp-reveal" className="text-center py-8"><Sparkles className="w-12 h-12 text-[#B8862F] mx-auto mb-4" /><p className="font-serif-x text-3xl mb-4">{pick(COPY.reveal, lang)}</p><p className="text-base leading-relaxed">{pick(COPY.success, lang)}</p></div> : <form onSubmit={submit} className="space-y-4" data-testid="magic-lamp-form">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label className="block text-xs font-semibold">{pick(COPY.first, lang)}<input required maxLength={120} value={form.first_name} onChange={set("first_name")} className="mt-2 w-full border border-[#2C2621]/20 p-3" /></label>
+              <label className="block text-xs font-semibold">{pick(COPY.last, lang)}<input required maxLength={150} value={form.last_name} onChange={set("last_name")} className="mt-2 w-full border border-[#2C2621]/20 p-3" /></label>
+            </div>
+            <label className="block text-xs font-semibold">{pick(COPY.email, lang)}<input required type="email" value={form.email} onChange={set("email")} className="mt-2 w-full border border-[#2C2621]/20 p-3" /></label>
+            <div><label className="block text-xs font-semibold mb-2">{pick(COPY.phone, lang)}</label><InternationalPhoneInput required value={form.phone} onValueChange={phone => setForm(current => ({ ...current, phone }))} lang={lang} /></div>
+            <ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="magic-lamp-pref" />
+            <label className="flex items-start gap-3 text-xs leading-relaxed"><input type="checkbox" required checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-0.5 accent-[#C16542]" /><span>{pick(COPY.consent, lang)} <a href="https://xalucatours.com/" target="_blank" rel="noopener noreferrer" className="underline">{lang === "es" ? "Ver política" : "Privacy policy"}</a></span></label>
+            <button type="submit" disabled={sending} className="xaluca-button w-full inline-flex items-center justify-center gap-2 bg-[#C16542] hover:bg-[#A85231] text-white px-6 py-4 text-xs tracking-[0.18em] uppercase font-semibold disabled:opacity-60"><Send className="w-4 h-4" />{sending ? "Enviando…" : pick(COPY.submit, lang)}</button>
+          </form>}
         </div>
       </div>
     </section>
