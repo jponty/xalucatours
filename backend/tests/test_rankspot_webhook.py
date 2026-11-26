@@ -71,3 +71,21 @@ def test_rejects_empty_article_and_unsafe_slug(monkeypatch):
     assert client.post("/api/webhooks/rankspot", json=empty, headers={"X-API-Key": "secret"}).status_code == 422
     bad_slug = {**PAYLOAD, "post": {**PAYLOAD["post"], "slug": "../admin"}}
     assert client.post("/api/webhooks/rankspot", json=bad_slug, headers={"X-API-Key": "secret"}).status_code == 422
+
+
+def test_updates_published_article(monkeypatch):
+    monkeypatch.setenv("RANKSPOT_WEBHOOK_API_KEY", "secret")
+    db = FakeDb()
+    client = client_for(db)
+    headers = {"X-API-Key": "secret"}
+    assert client.post("/api/webhooks/rankspot", json=PAYLOAD, headers=headers).status_code == 200
+    update = {**PAYLOAD, "event": "post.updated", "post": {
+        **PAYLOAD["post"], "contentHtml": "<p>Contenido actualizado</p>",
+        "coverImageUrl": "https://example.com/new-cover.jpg",
+    }}
+    response = client.post("/api/webhooks/rankspot", json=update, headers=headers)
+    assert response.status_code == 200
+    assert db.rows["marruecos-en-otono"]["content_html"] == "<p>Contenido actualizado</p>"
+    assert db.rows["marruecos-en-otono"]["cover_image_url"] == "https://example.com/new-cover.jpg"
+    update["post"]["contentHtml"] = None
+    assert client.post("/api/webhooks/rankspot", json=update, headers=headers).status_code == 422

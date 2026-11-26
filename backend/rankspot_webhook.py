@@ -66,8 +66,10 @@ def register_rankspot_routes(router: APIRouter, get_db):
         configured_key = os.environ.get("RANKSPOT_WEBHOOK_API_KEY", "")
         if not configured_key or not hmac.compare_digest(x_api_key, configured_key):
             raise HTTPException(status_code=401, detail="Unauthorized")
-        if payload.event != "post.published" or not payload.post.content_html:
-            raise HTTPException(status_code=422, detail="A published article with contentHtml is required")
+        if payload.event not in {"post.published", "post.updated"}:
+            raise HTTPException(status_code=422, detail="Unsupported article event")
+        if not payload.post.content_html:
+            raise HTTPException(status_code=422, detail="Article contentHtml is required")
 
         db = get_db()
         post = payload.post
