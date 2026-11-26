@@ -55,8 +55,8 @@ const LocalizedRouter = () => {
   }
 
   // Per-page SEO: title + description + canonical + hreflang + a branded,
-  // content-specific 1200x630 social image for every resolved page.
-  const meta = getSeoMeta(routeId, lang);
+  // shared 1200x630 brand social image for every resolved page.
+  const meta = getSeoMeta(routeId, lang, routeId ? pathFor(lang, routeId) : undefined);
   const hreflang = routeId
     ? { es: pathFor("es", routeId), en: pathFor("en", routeId), fr: pathFor("fr", routeId) }
     : undefined;

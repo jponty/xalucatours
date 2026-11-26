@@ -51,5 +51,5 @@ test.each([
   expect(pathFor(lang, "newsletter")).toBe(url);
   expect(resolvePath(url)).toMatchObject({ lang, routeId: "newsletter" });
   expect(getSeoMeta("newsletter", lang).title).toContain("Xaluca Tours");
-  expect(seoImageForRoute("newsletter")).toContain("blog.jpg");
+  expect(seoImageForRoute("newsletter")).toContain("og-brand-sand.jpg");
 });

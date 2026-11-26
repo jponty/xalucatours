@@ -24,12 +24,18 @@ async function loadSiteData() {
   const ast = parse(fs.readFileSync(path.join(ROOT, "src/lib/blog.js"), "utf8"), { sourceType: "module" });
   const posts = ast.program.body.flatMap((node) => node.declaration?.declarations || []).find((node) => node.id.name === "POSTS");
   if (posts?.init?.type !== "ArrayExpression") throw new Error("POSTS must be an explicit array; update the discovery generator for the new data source.");
-  const blogSlugs = posts.init.elements.map((post) => {
-    const slug = post.properties.find((property) => (property.key.name || property.key.value) === "slug");
-    if (slug?.value?.type !== "StringLiteral") throw new Error("Blog slug must be a string literal.");
-    return slug.value.value;
+  const propertyValue = (object, name) => object?.properties?.find((property) => (property.key.name || property.key.value) === name)?.value;
+  const translated = (object) => Object.fromEntries(["es", "en", "fr"].map((lang) => [lang, propertyValue(object, lang)?.value || ""]));
+  const blogPosts = posts.init.elements.map((post) => {
+    const slug = propertyValue(post, "slug");
+    if (slug?.type !== "StringLiteral") throw new Error("Blog slug must be a string literal.");
+    return {
+      slug: slug.value,
+      title: translated(propertyValue(post, "title")),
+      excerpt: translated(propertyValue(post, "excerpt")),
+    };
   });
-  return { ...registry, ...config, blogSlugs };
+  return { ...registry, ...config, blogSlugs: blogPosts.map((post) => post.slug), blogPosts };
 }
 
 function buildPages({ ROUTES, SUPPORTED_LANGS, pathFor, blogSlugs }) {

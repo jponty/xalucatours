@@ -2,8 +2,7 @@
    seoMeta.js — per-route SEO copy (title + meta description),
    trilingual (es/en/fr). Consumed by <SeoHead> in LocalizedRouter
    so every page sets its own <title>, <meta description>, canonical
-   and hreflang. Social crawlers (no JS) fall back to the static
-   defaults baked into public/index.html.
+   and hreflang. Build-time HTML uses the same metadata for crawlers.
 
    Keep titles ≲ 60 chars and descriptions ≲ 160 chars.
 ============================================================ */
@@ -206,8 +205,36 @@ const SEO = {
   },
 };
 
-export const getSeoMeta = (routeId, lang = "es") => {
-  const entry = (routeId && SEO[routeId]) || DEFAULT_SEO;
+const prettySegment = (segment) => segment
+  .replace(/_/g, " ")
+  .replace(/\b(?:ozz|ouarzazate)\b/gi, "Ouarzazate")
+  .replace(/\b(?:rak|marrakech)\b/gi, "Marrakech")
+  .replace(/\b(?:fez|fes)\b/gi, "Fez")
+  .replace(/\bsidiali\b/gi, "Sidi Ali")
+  .replace(/\bergchebbi\b/gi, "Erg Chebbi")
+  .replace(/\bgransur\b/gi, "Gran Sur")
+  .replace(/\b([a-záéíóúàèùç])/g, (letter) => letter.toUpperCase());
+
+const fallbackMeta = (routePath, lang) => {
+  const parts = (routePath || "").split("/").filter(Boolean);
+  const last = parts.at(-1) || "";
+  const programme = last.match(/^(?:programa|program|programme)[_-](\d+)n[_-](\d+)[dDjJ]$/);
+  const topic = prettySegment(programme ? parts.at(-2) || "Viaje" : last);
+  const label = programme
+    ? `${topic} · ${programme[1]} ${lang === "en" ? "nights" : lang === "fr" ? "nuits" : "noches"} / ${programme[2]} ${lang === "en" ? "days" : lang === "fr" ? "jours" : "días"}`
+    : topic;
+  const title = `${label} · ${BRAND}`;
+  const description = lang === "en"
+    ? `Explore ${label} with Xaluca Tours. See the itinerary and plan your Morocco trip.`
+    : lang === "fr"
+    ? `Découvrez ${label} avec Xaluca Tours. Consultez l'itinéraire et préparez votre voyage au Maroc.`
+    : `Descubre ${label} con Xaluca Tours. Consulta el itinerario y prepara tu viaje por Marruecos.`;
+  return { title, description };
+};
+
+export const getSeoMeta = (routeId, lang = "es", routePath) => {
+  const entry = (routeId && SEO[routeId]) || (!routePath && DEFAULT_SEO);
+  if (!entry) return fallbackMeta(routePath, lang);
   const pickLang = (o) => (o && (o[lang] || o.es)) || "";
   return {
     title: pickLang(entry.title),

@@ -11,7 +11,6 @@ const { loadSiteData } = require("./generate-discovery.cjs");
 const ROOT = path.resolve(__dirname, "..");
 const outputArg = process.argv.indexOf("--output");
 const BUILD = outputArg < 0 ? path.join(ROOT, "build") : path.resolve(process.argv[outputArg + 1]);
-const IMAGE_VERSION = "20260811-2";
 
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const template = fs.readFileSync(path.join(BUILD, "index.html"), "utf8");
@@ -21,23 +20,30 @@ const escapeHtml = (value) => String(value).replace(/[<>&"']/g, (c) => ({
 }[c]));
 
 async function main() {
-  const { ROUTES, SUPPORTED_LANGS, pathFor, canonicalUrl, PUBLIC_SITE_ORIGIN: SITE, blogSlugs } = await loadSiteData();
+  const { ROUTES, SUPPORTED_LANGS, pathFor, canonicalUrl, PUBLIC_SITE_ORIGIN: SITE, blogPosts } = await loadSiteData();
   const { seoImageForRoute } = await importData("src/lib/seoImages.js");
   const { getSeoMeta } = await importData("src/lib/seoMeta.js");
   const written = new Set();
 
-  const replaceMeta = (html, { lang, url, image, meta }) => {
+  const replaceMeta = (html, { lang, url, image, meta, alternates, noindex, article }) => {
     const canonical = canonicalUrl(url);
     const absoluteImage = `${SITE}${image}`;
     const result = html
       .replace(/<html lang="[^"]*">/, `<html lang="${lang}">`)
+      .replace(/<meta property="og:locale" content="[^"]*"\s*\/>/, `<meta property="og:locale" content="${{ es: "es_ES", en: "en_GB", fr: "fr_FR" }[lang]}" />`)
+      .replace(/<meta property="og:type" content="[^"]*"\s*\/>/, `<meta property="og:type" content="${article ? "article" : "website"}" />`)
       .replace(/<link rel="canonical" href="[^"]*"\s*\/>/, `<link rel="canonical" href="${canonical}" />`)
       .replace(/<meta property="og:url" content="[^"]*"\s*\/>/, `<meta property="og:url" content="${canonical}" />`)
       .replace(/<meta property="og:image" content="[^"]*"\s*\/>/, `<meta property="og:image" content="${absoluteImage}" />`)
       .replace(/<meta property="og:image:secure_url" content="[^"]*"\s*\/>/, `<meta property="og:image:secure_url" content="${absoluteImage}" />`)
       .replace(/<meta name="twitter:image" content="[^"]*"\s*\/>/, `<meta name="twitter:image" content="${absoluteImage}" />`);
-    if (!meta) return result;
-    return result
+    const withAlternates = result.replace("</head>", [
+      ...Object.entries({ ...alternates, "x-default": alternates.es }).map(([code, path]) =>
+        `<link rel="alternate" hreflang="${code}" href="${canonicalUrl(path)}" />`),
+      ...(noindex ? ['<meta name="robots" content="noindex,follow" />'] : []),
+      "</head>",
+    ].join("\n"));
+    return withAlternates
       .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
       .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${escapeHtml(meta.description)}" />`)
       .replace(/<meta property="og:title" content="[^"]*"\s*\/>/, `<meta property="og:title" content="${escapeHtml(meta.title)}" />`)
@@ -46,34 +52,32 @@ async function main() {
       .replace(/<meta name="twitter:description" content="[^"]*"\s*\/>/, `<meta name="twitter:description" content="${escapeHtml(meta.description)}" />`);
   };
 
-  const writeRoute = ({ lang, url, image, meta }) => {
+  const writeRoute = ({ lang, url, image, meta, alternates, noindex, article }) => {
     const normalizedUrl = url === "/" ? url : url.replace(/\/$/, "");
     if (written.has(normalizedUrl)) return;
     written.add(normalizedUrl);
     const relative = normalizedUrl.replace(/^\//, "");
     const output = path.join(BUILD, relative, "index.html");
     fs.mkdirSync(path.dirname(output), { recursive: true });
-    const html = replaceMeta(template, { lang, url: normalizedUrl, image, meta });
+    const html = replaceMeta(template, { lang, url: normalizedUrl, image, meta, alternates, noindex, article });
     fs.writeFileSync(output, html);
     if (relative) fs.writeFileSync(path.join(BUILD, `${relative}.html`), html);
   };
 
   for (const routeId of Object.keys(ROUTES)) {
+    const alternates = Object.fromEntries(SUPPORTED_LANGS.map((code) => [code, pathFor(code, routeId)]));
     for (const lang of SUPPORTED_LANGS) {
       const url = pathFor(lang, routeId);
-      if (routeId === "home") {
-        writeRoute({ lang, url, image: `/og-image.jpg?v=${IMAGE_VERSION}` });
-        continue;
-      }
-      // Match the browser's asset resolver, including /clima's existing branded image.
-      // Populate the new page's static copy without changing other routes' SEO in this task.
-      writeRoute({ lang, url, image: seoImageForRoute(routeId), meta: routeId === "climate" ? getSeoMeta(routeId, lang) : undefined });
+      writeRoute({ lang, url, image: seoImageForRoute(routeId),
+        meta: getSeoMeta(routeId, lang, url), alternates, noindex: routeId === "favorites" });
     }
   }
 
-  for (const slug of blogSlugs) {
+  for (const post of blogPosts) {
+    const alternates = Object.fromEntries(SUPPORTED_LANGS.map((code) => [code, `${pathFor(code, "blog")}/${post.slug}`]));
     for (const lang of SUPPORTED_LANGS) {
-      writeRoute({ lang, url: `${pathFor(lang, "blog")}/${slug}`, image: `/og/blog/${slug}.jpg?v=${IMAGE_VERSION}` });
+      writeRoute({ lang, url: alternates[lang], image: seoImageForRoute(),
+        meta: { title: `${post.title[lang]} · Xaluca Tours`, description: post.excerpt[lang] }, alternates, article: true });
     }
   }
 

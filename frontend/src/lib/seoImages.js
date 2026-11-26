@@ -1,24 +1,12 @@
 /*
- * Social preview images are generated at 1200x630 in public/og.
- * Keeping the URL derivation here means every React-rendered page and the
- * build-time static social pages use the exact same asset convention.
+ * The approved 1200x630 brand card is shared by every public route and post.
+ * Browser-rendered and build-time HTML use the same asset.
  */
-export const SEO_IMAGE_VERSION = "20260811-2";
+export const SEO_IMAGE_VERSION = "20261126-4";
+export const BRAND_SOCIAL_IMAGE = `/og-brand-sand.jpg?v=${SEO_IMAGE_VERSION}`;
 
-export const seoImageForRoute = (routeId) =>
-  routeId === "home" || !routeId
-    ? `/og-image.jpg?v=${SEO_IMAGE_VERSION}`
-    : routeId === "practicalInfo" || routeId === "climate"
-    ? `/og/routes/whenToTravel.jpg?v=${SEO_IMAGE_VERSION}`
-    : routeId === "newsletter"
-    ? `/og/routes/blog.jpg?v=${SEO_IMAGE_VERSION}`
-    : routeId === "navigationMap"
-    ? `/og/routes/archive.jpg?v=${SEO_IMAGE_VERSION}`
-    : `/og/routes/${routeId}.jpg?v=${SEO_IMAGE_VERSION}`;
+export const seoImageForRoute = () => BRAND_SOCIAL_IMAGE;
 
-export const seoImageForBlogPost = (slug) =>
-  slug
-    ? `/og/blog/${slug}.jpg?v=${SEO_IMAGE_VERSION}`
-    : `/og/routes/blog.jpg?v=${SEO_IMAGE_VERSION}`;
+export const seoImageForBlogPost = () => BRAND_SOCIAL_IMAGE;
 
 export default seoImageForRoute;

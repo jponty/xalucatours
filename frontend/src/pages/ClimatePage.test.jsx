@@ -34,7 +34,7 @@ afterEach(async () => { await act(async () => root.unmount()); container.remove(
 test.each(["es", "en", "fr"])("%s route, shared content, weather and links", async lang => {
   mockLang = lang; await render();
   expect(resolvePath(pathFor(lang, "climate")).routeId).toBe("climate");
-  expect(seoImageForRoute("climate")).toContain("whenToTravel.jpg");
+  expect(seoImageForRoute("climate")).toContain("og-brand-sand.jpg");
   expect(container.querySelectorAll(".climate-weather-card")).toHaveLength(7);
   expect(container.querySelectorAll("time")).toHaveLength(21);
   expect(container.textContent).toContain(REGIONS[0].body[lang]);
