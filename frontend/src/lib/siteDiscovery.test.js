@@ -37,7 +37,7 @@ describe("public discovery files generated from real routes", () => {
     const urls = [...xml.getElementsByTagName("url")];
     const locations = urls.map((node) => node.getElementsByTagName("loc")[0].textContent);
     const expected = new Set([
-      ...Object.keys(ROUTES).filter((id) => id !== "favorites").flatMap((id) => SUPPORTED_LANGS.map((lang) => canonicalUrl(pathFor(lang, id)))),
+      ...Object.keys(ROUTES).filter((id) => !["favorites", "tourErrAtlasFez56"].includes(id)).flatMap((id) => SUPPORTED_LANGS.map((lang) => canonicalUrl(pathFor(lang, id)))),
       ...POSTS.flatMap((post) => SUPPORTED_LANGS.map((lang) => canonicalUrl(`${pathFor(lang, "blog")}/${post.slug}`))),
     ]);
     expect(locations.sort()).toEqual([...expected].sort());

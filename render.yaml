@@ -134,6 +134,25 @@ services:
         name: Content-Type
         value: text/markdown; charset=utf-8
     routes:
+      # This reverse itinerary has no published programme; keep old links on its hub.
+      - type: redirect
+        source: /viajes/errachidia-atlas-fez/programa_5n_6d
+        destination: /viajes/sur/errachidia-atlas-fez
+      - type: redirect
+        source: /viajes/errachidia-atlas-fez/programa_5n_6d/
+        destination: /viajes/sur/errachidia-atlas-fez
+      - type: redirect
+        source: /en/tours/errachidia-atlas-fez/program-5n-6d
+        destination: /en/tours/south/errachidia-atlas-fez
+      - type: redirect
+        source: /en/tours/errachidia-atlas-fez/program-5n-6d/
+        destination: /en/tours/south/errachidia-atlas-fez
+      - type: redirect
+        source: /fr/voyages/errachidia-atlas-fes/programme-5n-6j
+        destination: /fr/voyages/sud/errachidia-atlas-fes
+      - type: redirect
+        source: /fr/voyages/errachidia-atlas-fes/programme-5n-6j/
+        destination: /fr/voyages/sud/errachidia-atlas-fes
       # Retired RankSpot delivery test: do not serve the SPA at this old URL.
       - type: redirect
         source: /blog/test-article-from-rankspot

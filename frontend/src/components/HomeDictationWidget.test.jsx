@@ -221,7 +221,7 @@ test("the entry is mounted once by the public layout; contact keeps the same sha
   expect(fs.readFileSync(path.join(base, "components/Layout.jsx"), "utf8").match(/<GlobalDictationWidget\s*\/>/g)).toHaveLength(1);
 });
 
-const details = new Set([...Object.keys(TRIP_PROGRAMS), "tourFinDeAno2025", "tourErrAtlasFez56"]);
+const details = new Set([...Object.keys(TRIP_PROGRAMS), "tourFinDeAno2025"]);
 test.each(Object.keys(ROUTES))("%s has the correct global widget visibility in every language", async routeId => {
   for (const lang of SUPPORTED_LANGS) {
     mockLang = lang;

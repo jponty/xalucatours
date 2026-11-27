@@ -9,7 +9,7 @@ const { parse } = require("@babel/parser");
 const ROOT = path.resolve(__dirname, "..");
 const API = "https://xaluca-tours-api.onrender.com";
 const SKILL_PATH = ".well-known/agent-skills/explore-xaluca-trips/SKILL.md";
-const NON_INDEXED = new Set(["favorites"]);
+const NON_INDEXED = new Set(["favorites", "tourErrAtlasFez56"]);
 const escapeXml = (value) => String(value).replace(/[<>&"']/g, (char) => ({
   "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;",
 }[char]));

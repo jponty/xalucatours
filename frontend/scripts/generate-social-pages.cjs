@@ -73,6 +73,7 @@ async function main() {
   };
 
   for (const routeId of Object.keys(ROUTES)) {
+    if (routeId === "tourErrAtlasFez56") continue; // The route redirects to its hub.
     const alternates = Object.fromEntries(SUPPORTED_LANGS.map((code) => [code, pathFor(code, routeId)]));
     for (const lang of SUPPORTED_LANGS) {
       const url = pathFor(lang, routeId);

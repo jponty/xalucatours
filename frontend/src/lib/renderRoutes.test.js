@@ -28,7 +28,7 @@ function resolveRule(url) {
 
 test("public HTML paths resolve while unknown paths are not globally rewritten", () => {
   const paths = new Set([
-    ...Object.keys(ROUTES).flatMap((id) => SUPPORTED_LANGS.map((lang) => pathFor(lang, id))),
+    ...Object.keys(ROUTES).filter((id) => id !== "tourErrAtlasFez56").flatMap((id) => SUPPORTED_LANGS.map((lang) => pathFor(lang, id))),
     ...POSTS.flatMap((post) => SUPPORTED_LANGS.map((lang) => `${pathFor(lang, "blog")}/${post.slug}`)),
   ].map((url) => url.replace(/\/$/, "")).filter(Boolean));
   expect(rules.some((rule) => rule.source === "/*")).toBe(false);
@@ -36,6 +36,11 @@ test("public HTML paths resolve while unknown paths are not globally rewritten",
   expect(new Set(rules.map((rule) => rule.source)).size).toBe(rules.length);
   for (const url of paths) {
     expect(resolveRule(url)).toEqual({ type: "rewrite", destination: `${url}/index.html` });
+  }
+  for (const lang of SUPPORTED_LANGS) {
+    expect(resolveRule(pathFor(lang, "tourErrAtlasFez56"))).toEqual({
+      type: "redirect", destination: pathFor(lang, "tourErrAtlasFezHub"),
+    });
   }
   for (const url of ["/admin", "/admin/leads"]) {
     expect(resolveRule(url)).toEqual({ type: "rewrite", destination: "/index.html" });

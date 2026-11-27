@@ -10,7 +10,7 @@ const paths = entries.flatMap((entry) => entry.urls.map((url) => url.path));
 describe("complete navigation map", () => {
   test("covers every registered page, every article and every standalone URL in all languages", () => {
     const expected = new Set([
-      ...Object.keys(ROUTES).flatMap((id) => SUPPORTED_LANGS.map((lang) => pathFor(lang, id))),
+      ...Object.keys(ROUTES).filter((id) => id !== "tourErrAtlasFez56").flatMap((id) => SUPPORTED_LANGS.map((lang) => pathFor(lang, id))),
       ...POSTS.flatMap((post) => SUPPORTED_LANGS.map((lang) => `${pathFor(lang, "blog")}/${post.slug}`)),
       ...Object.values(STANDALONE_PATHS),
     ]);
@@ -38,7 +38,7 @@ describe("complete navigation map", () => {
     }
     expect(paths).toContain("/viajes/marrakech_ergchebbi_marrakech/programa_3n_4d");
     expect(paths).toContain("/viajes/escapadas/rak_erg_rak/programa_3n_4d");
-    expect(paths).toContain("/viajes/errachidia-atlas-fez/programa_5n_6d");
+    expect(paths).not.toContain("/viajes/errachidia-atlas-fez/programa_5n_6d");
     expect(paths.filter((path) => path === "/proximas_salidas")).toHaveLength(1);
   });
 

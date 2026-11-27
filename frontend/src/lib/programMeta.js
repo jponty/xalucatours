@@ -1069,3 +1069,51 @@ export const VARIANT_COPY = {
     },
   },
 };
+
+// Marrakech → Sidi Ali → Fez has its own route through the Middle Atlas.
+// Reuse the shared Marrakech → Fez details, but keep its visible copy specific
+// to this itinerary in every language.
+VARIANT_COPY.msf = {
+  es: {
+    ...VARIANT_COPY.frm.es,
+    title: "Marrakech · Erg Chebbi · Sidi Ali · Fez.",
+    eyebrow_prefix: "Circuito Gran Sur · Marrakech → Sidi Ali → Fez",
+    place: "Marrakech · Alto Atlas · Erg Chebbi · Aguelmane Sidi Ali · Fez",
+    subtitle: "De Marrakech a Fez entre el Sáhara, el lago de Sidi Ali y los cedros del Medio Atlas.",
+    quick_places: "Marrakech · Aït Ben Haddou · Boumalne Dades · Todra · Erfoud · Erg Chebbi · Rissani · Valle del Ziz · Aguelmane Sidi Ali · Ifrane · Fez",
+    description_title: "Del Sáhara al lago de Sidi Ali, camino de Fez.",
+    description: [
+      "Comienza en Marrakech y cruza el Alto Atlas hacia Aït Ben Haddou, el valle del Dades y las Gargantas del Todra antes de llegar a Erfoud.",
+      "En Erg Chebbi descubrirás las dunas del Sáhara y pasarás una noche en el desierto. La ruta continúa por Rissani y el Valle del Ziz hasta el entorno natural del lago Aguelmane Sidi Ali.",
+      "Atravesarás los bosques de cedros de Ifrane antes de llegar a Fez y explorar su medina. Las estancias y visitas concretas dependen de la duración del programa elegido.",
+    ],
+  },
+  en: {
+    ...VARIANT_COPY.frm.en,
+    title: "Marrakech · Erg Chebbi · Sidi Ali · Fez.",
+    eyebrow_prefix: "Grand South circuit · Marrakech → Sidi Ali → Fez",
+    place: "Marrakech · High Atlas · Erg Chebbi · Aguelmane Sidi Ali · Fez",
+    subtitle: "From Marrakech to Fez through the Sahara, Lake Sidi Ali and the Middle Atlas cedar forests.",
+    quick_places: "Marrakech · Aït Ben Haddou · Boumalne Dades · Todra · Erfoud · Erg Chebbi · Rissani · Ziz Valley · Aguelmane Sidi Ali · Ifrane · Fez",
+    description_title: "From the Sahara to Lake Sidi Ali, on the way to Fez.",
+    description: [
+      "Begin in Marrakech and cross the High Atlas towards Aït Ben Haddou, the Dades Valley and the Todra Gorges before reaching Erfoud.",
+      "At Erg Chebbi, discover the Sahara dunes and spend a night in the desert. Continue via Rissani and the Ziz Valley to the natural setting of Lake Aguelmane Sidi Ali.",
+      "Travel through Ifrane's cedar forests before arriving in Fez to explore its medina. Specific stays and visits depend on the length of the programme you choose.",
+    ],
+  },
+  fr: {
+    ...VARIANT_COPY.frm.fr,
+    title: "Marrakech · Erg Chebbi · Sidi Ali · Fès.",
+    eyebrow_prefix: "Circuit Grand Sud · Marrakech → Sidi Ali → Fès",
+    place: "Marrakech · Haut Atlas · Erg Chebbi · Aguelmane Sidi Ali · Fès",
+    subtitle: "De Marrakech à Fès par le Sahara, le lac Sidi Ali et les cédraies du Moyen Atlas.",
+    quick_places: "Marrakech · Aït Ben Haddou · Boumalne Dadès · Todra · Erfoud · Erg Chebbi · Rissani · Vallée du Ziz · Aguelmane Sidi Ali · Ifrane · Fès",
+    description_title: "Du Sahara au lac Sidi Ali, en route vers Fès.",
+    description: [
+      "Partez de Marrakech et traversez le Haut Atlas vers Aït Ben Haddou, la vallée du Dadès et les gorges du Todra avant de rejoindre Erfoud.",
+      "À Erg Chebbi, découvrez les dunes du Sahara et passez une nuit dans le désert. L'itinéraire se poursuit par Rissani et la vallée du Ziz jusqu'au lac Aguelmane Sidi Ali.",
+      "Traversez les forêts de cèdres d'Ifrane avant d'arriver à Fès pour découvrir sa médina. Les étapes et visites précises dépendent de la durée du programme choisi.",
+    ],
+  },
+};

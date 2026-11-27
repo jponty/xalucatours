@@ -124,9 +124,9 @@ export const TRIP_PROGRAMS = {
   tourMarrakechFez78: P(PROGRAM_FRM_78, "frm"),
   tourMarrakechFez89: P(PROGRAM_FRM_89, "frm"),
   tourMarrakechFez910: P(PROGRAM_FRM_910, "frm"),
-  tourMarrakechSidialiFez78: P(PROGRAM_MSF_78, "frm"),
-  tourMarrakechSidialiFez89: P(PROGRAM_MSF_89, "frm"),
-  tourMarrakechSidialiFez910: P(PROGRAM_MSF_910, "frm"),
+  tourMarrakechSidialiFez78: P(PROGRAM_MSF_78, "msf"),
+  tourMarrakechSidialiFez89: P(PROGRAM_MSF_89, "msf"),
+  tourMarrakechSidialiFez910: P(PROGRAM_MSF_910, "msf"),
 
   // Fez · Sidi Ali · Ouarzazate (both directions)
   tourFezSidialiOzz56: P(PROGRAM_FOZ_56, "foz"),

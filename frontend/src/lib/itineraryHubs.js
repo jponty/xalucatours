@@ -545,9 +545,9 @@ export const HUB_ERRACHIDIA_ATLAS_FEZ = {
   intro: {
     overline: { es: "Errachidia · Alto Atlas · Fez", en: "Errachidia · High Atlas · Fez", fr: "Errachidia · Haut Atlas · Fès" },
     title: {
-      es: "Dos viajes posibles, una misma travesía.",
-      en: "Two possible journeys, one same crossing.",
-      fr: "Deux voyages possibles, une même traversée.",
+      es: "Una travesía entre Fez y Errachidia.",
+      en: "A journey between Fez and Errachidia.",
+      fr: "Un voyage entre Fès et Errachidia.",
     },
     body: {
       es: [
@@ -575,20 +575,14 @@ export const HUB_ERRACHIDIA_ATLAS_FEZ = {
       fr: "Choisissez votre direction.",
     },
     body: {
-      es: "Dependiendo de dónde prefieras comenzar tu viaje, selecciona entre las dos opciones disponibles según los días que tengas disponibles.",
-      en: "Pick where you'd rather start your journey, between the two available options depending on the days you have.",
-      fr: "Selon l'endroit où vous préférez commencer votre voyage, choisissez entre les deux options disponibles selon les jours dont vous disposez.",
+      es: "Consulta el programa disponible de Fez a Errachidia, atravesando el Atlas.",
+      en: "Explore the available programme from Fez to Errachidia through the Atlas.",
+      fr: "Découvrez le programme disponible de Fès à Errachidia à travers l'Atlas.",
     },
     group_a: { es: "Errachidia → Atlas → Fez", en: "Errachidia → Atlas → Fez", fr: "Errachidia → Atlas → Fès" },
     group_b: { es: "Fez → Atlas → Errachidia", en: "Fez → Atlas → Errachidia", fr: "Fès → Atlas → Errachidia" },
   },
   programs: [
-    { id: "eaf-5-6", direction: "a", nights: "5n6d", accent: "#C16542",
-      image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1800&q=85",
-      link: "tourErrAtlasFez56",
-      blurb: { es: "Viaje de 5 noches y 6 días desde Errachidia hasta Fez.",
-               en: "5-night/6-day journey from Errachidia to Fez.",
-               fr: "Voyage de 5 nuits et 6 jours d'Errachidia à Fès." } },
     { id: "fae-5-6", direction: "b", nights: "5n6d", accent: "#5A7F9C",
       image: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1800&q=85",
       link: "tourFezAtlasErr56",

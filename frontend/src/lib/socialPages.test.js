@@ -17,6 +17,7 @@ test("every route publishes identical clean-URL HTML and directory metadata on t
     fs.copyFileSync(path.resolve("public/index.html"), path.join(output, "index.html"));
     execFileSync(process.execPath, [path.resolve("scripts/generate-social-pages.cjs"), "--output", output]);
     for (const id of Object.keys(ROUTES)) {
+      if (id === "tourErrAtlasFez56") continue; // Retired detail URL redirects to its hub.
       for (const lang of SUPPORTED_LANGS) {
         const route = pathFor(lang, id).replace(/\/$/, "");
         const relative = route.replace(/^\//, "");

@@ -164,6 +164,11 @@ export const pathFor = (lang, routeId = "home") => {
 // Inbound compatibility only: never enumerate legacy URLs as navigation links.
 // Keep in sync with the permanent redirect rules in render.yaml.
 const LEGACY_REDIRECTS = {
+  // No Errachidia → Atlas → Fez programme exists yet. Keep inbound links useful
+  // without presenting the generic enquiry stub as an available programme.
+  "/viajes/errachidia-atlas-fez/programa_5n_6d": { lang: "es", routeId: "tourErrAtlasFezHub" },
+  "/en/tours/errachidia-atlas-fez/program-5n-6d": { lang: "en", routeId: "tourErrAtlasFezHub" },
+  "/fr/voyages/errachidia-atlas-fes/programme-5n-6j": { lang: "fr", routeId: "tourErrAtlasFezHub" },
   "/viajes/aventura/enduro/programa_6n_7d": { lang: "es", routeId: "tourEnduroAventura34" },
   "/en/tours/adventure/enduro/program-6n-7d": { lang: "en", routeId: "tourEnduroAventura34" },
   "/fr/voyages/aventure/enduro/programme-6n-7j": { lang: "fr", routeId: "tourEnduroAventura34" },

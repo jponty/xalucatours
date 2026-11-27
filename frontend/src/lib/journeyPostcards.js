@@ -753,4 +753,11 @@ export const JOURNEY_POSTCARDS = {
   },
 };
 
-export const journeyPostcardFor = (routeId) => JOURNEY_POSTCARDS[routeId] || null;
+const POSTCARD_ROUTE_ALIASES = {
+  tourEscapadaRakErgRak23: "tourMarrakechLoop23",
+  tourEscapadaRakErgRak34: "tourMarrakechLoop34",
+  tourEscapadaRakErgRak45: "tourMarrakechLoop45",
+};
+
+export const journeyPostcardFor = (routeId) =>
+  JOURNEY_POSTCARDS[routeId] || JOURNEY_POSTCARDS[POSTCARD_ROUTE_ALIASES[routeId]] || null;

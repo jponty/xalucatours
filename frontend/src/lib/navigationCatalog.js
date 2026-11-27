@@ -91,6 +91,7 @@ export function buildNavigationCatalog() {
   const entries = [];
   const seen = new Set();
   for (const [id, slugs] of Object.entries(ROUTES)) {
+    if (id === "tourErrAtlasFez56") continue; // Legacy redirect, not a published programme.
     const urls = SUPPORTED_LANGS.map((lang) => ({ lang, path: pathFor(lang, id) }))
       .filter(({ path }) => !seen.has(path));
     if (!urls.length) continue;

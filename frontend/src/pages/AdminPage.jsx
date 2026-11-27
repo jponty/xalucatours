@@ -87,7 +87,7 @@ const URL_TAXONOMY = [
       { label: "Erg Chebbi → Marrakech", keys: ["tourErgChebbiMarrakechHub", "tourErgMarrakech45", "tourErgMarrakech56", "tourErgMarrakech67", "tourErgMarrakech78"] },
       { label: "Marrakech → Erg Chebbi → Marrakech", keys: ["tourMarrakechLoopHub", "tourMarrakechLoop23", "tourMarrakechLoop34", "tourMarrakechLoop45", "tourMarrakechLoop56", "tourMarrakechLoop67", "tourMarrakechLoop78"] },
       { label: "Marrakech → Essaouira", keys: ["tourMarrakechEssHub", "tourMarrakechEss45", "tourMarrakechEss67"] },
-      { label: "Errachidia → Atlas → Fez", keys: ["tourErrAtlasFezHub", "tourErrAtlasFez56"] },
+      { label: "Errachidia → Atlas → Fez", keys: ["tourErrAtlasFezHub"] },
       { label: "Fez → Atlas → Errachidia", keys: ["tourFezAtlasErr56"] },
     ],
   },
