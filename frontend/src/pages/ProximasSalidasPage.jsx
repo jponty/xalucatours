@@ -351,7 +351,9 @@ const DepartureCard = ({ dep, t, lang }) => {
             </p>
             <p className="text-[#2C2621] font-serif-x text-base normal-case tracking-normal">
               {formatDepartureEuro(dep.price, lang)}
-              <span className="block text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">{t.per_person}</span>
+              <span className="block text-[10px] tracking-[0.25em] uppercase text-[#5C5248]">
+                {t.per_person}{dep.id === "nye-2026" ? ` · ${pick({ es: "tasas incluidas", en: "taxes included", fr: "taxes comprises" }, lang)}` : ""}
+              </span>
             </p>
           </div>
         </div>

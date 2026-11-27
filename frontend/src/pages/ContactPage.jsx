@@ -7,7 +7,7 @@ import SectionNav from "@/components/SectionNav";
      2. 3-step "how it works" rail (Planifica → Reserva → Confirma)
      3. Calendly booking surface with two tabs:
           · Telephone consultation
-          · Office visit (Tremp HQ)
+          · Office visit (Sabadell, Barcelona)
      4. Direct-contact section (phone + form CTA)
      5. "Why Xaluca Tours" 5-card grid
      6. Quick-info footer block
@@ -79,9 +79,9 @@ const COPY = {
     title:   { es: "Asesoramiento en tiempo real o visita a la oficina",
                en: "Real-time advice — by phone or at the office",
                fr: "Conseils en temps réel — par téléphone ou en agence" },
-    body:    { es: "Reserva una cita telefónica para el día y la hora que mejor te convenga, o ven a visitarnos a nuestras oficinas en Tremp para planificar tu próxima aventura cara a cara.",
-               en: "Book a phone call at a time that suits you, or come visit our office in Tremp to plan your next adventure face to face.",
-               fr: "Réservez un appel téléphonique quand il vous convient, ou venez nous voir à notre bureau de Tremp pour planifier votre prochaine aventure en personne." },
+    body:    { es: "Reserva una cita telefónica o visítanos en nuestra oficina de Sabadell (Barcelona): calle Latorre, 52, 08201 Sabadell.",
+               en: "Book a phone call or visit our office in Sabadell (Barcelona): Carrer Latorre 52, 08201 Sabadell.",
+               fr: "Réservez un appel téléphonique ou venez nous voir à notre bureau de Sabadell (Barcelone) : Carrer Latorre 52, 08201 Sabadell." },
     tabPhone:  { es: "Sesión telefónica", en: "Phone session", fr: "Séance téléphonique" },
     tabOffice: { es: "Visita en oficina", en: "Visit at our office", fr: "Visite au bureau" },
   },
@@ -492,7 +492,7 @@ const ContactPage = () => {
                  className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
               <E name="booking.title" defaults={COPY.booking.title} multiline={false} as="h2"
                  className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
-              <E name="booking.body" defaults={COPY.booking.body} as="p"
+              <E name="booking.body.sabadell" defaults={COPY.booking.body} as="p"
                  className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
             </div>
 

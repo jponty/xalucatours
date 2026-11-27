@@ -19,9 +19,9 @@ export const BOOKING_COPY = {
   eyebrow: { es: "Reserva tu sesión", en: "Book your session", fr: "Réservez votre séance" },
   title: { es: "Selecciona el día y la hora", en: "Select the day and time", fr: "Choisissez le jour et l'heure" },
   body: {
-    es: "Elige una sesión telefónica para el día y la hora que mejor te convenga, o reserva una visita a nuestras oficinas en Tremp para planificar tu próxima aventura cara a cara.",
-    en: "Choose a phone session at a time that suits you, or book a visit to our offices in Tremp to plan your next adventure face to face.",
-    fr: "Choisissez une séance téléphonique quand cela vous convient, ou réservez une visite à nos bureaux de Tremp pour planifier votre prochaine aventure en personne.",
+    es: "Elige una sesión telefónica para el día y la hora que mejor te convenga, o reserva una visita a nuestra oficina en Sabadell (Barcelona): calle Latorre, 52, 08201 Sabadell.",
+    en: "Choose a phone session at a time that suits you, or book a visit to our office in Sabadell (Barcelona): Carrer Latorre 52, 08201 Sabadell.",
+    fr: "Choisissez une séance téléphonique quand cela vous convient, ou réservez une visite à notre bureau de Sabadell (Barcelone) : Carrer Latorre 52, 08201 Sabadell.",
   },
   tabPhone: { es: "Sesión telefónica", en: "Phone session", fr: "Séance téléphonique" },
   tabOffice: { es: "Visita en oficina", en: "Visit at our office", fr: "Visite au bureau" },
@@ -41,7 +41,7 @@ export default function BookingSession({ testid = "booking-session" }) {
           className="block text-[11px] tracking-[0.4em] uppercase text-[#C16542] mb-4" />
         <EditableText slot={SLOT("title")} defaults={BOOKING_COPY.title} multiline={false} as="h2"
           className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#2C2621] leading-tight tracking-tight" />
-        <EditableText slot={SLOT("body")} defaults={BOOKING_COPY.body} as="p"
+        <EditableText slot={SLOT("body.sabadell")} defaults={BOOKING_COPY.body} as="p"
           className="mt-5 text-[14px] md:text-base text-[#5C5248] leading-relaxed" />
       </div>
 

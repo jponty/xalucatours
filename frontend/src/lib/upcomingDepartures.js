@@ -19,7 +19,8 @@ const DEPARTURE_CATALOG = [
     dates: { es: "27 Dic 2026 – 01 Ene 2027", en: "27 Dec 2026 – 01 Jan 2027", fr: "27 Déc 2026 – 01 Jan 2027" },
     nights: { es: "5 noches · 6 días", en: "5 nights · 6 days", fr: "5 nuits · 6 jours" },
     image: "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=2000&q=85",
-    price: 1980,
+    // Public adult total: 1,980 € fare + 120 € airport taxes.
+    price: 2100,
     childPrice: 1540,
     airportTaxes: 120,
     singleSupplement: 335,

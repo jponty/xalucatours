@@ -1,5 +1,6 @@
 // Generated from Postales.csv. Keep one entry per specific trip route.
-// The source currently provides Spanish copy; pick() falls back to ES on untranslated locales.
+// The source currently provides Spanish copy. Untranslated postcards are not
+// rendered in other locales, so visitors never see Spanish fallback prose.
 export const JOURNEY_POSTCARDS = {
   tourDesiertoAtlas45: {
     sourcePath: "/viajes/desierto_atlas/programa_4n_5d",
@@ -602,14 +603,14 @@ export const JOURNEY_POSTCARDS = {
   tourTangerFez56: {
     sourcePath: "/viajes/norte/tanger_fez/programa_5n_6d",
     paragraphs: [
-      { es: "Imagina comenzar allí donde el Atlántico y el Mediterráneo se encuentran… y terminar seis días después en el corazón de la histórica Fez." },
-      { es: "Desde Tánger, Cabo Espartel y las Grutas de Hércules abrirán el camino hacia Asilah, con sus calles blancas, murales y murallas frente al Atlántico." },
-      { es: "Después llegará Tetuán, antes de adentrarte entre las montañas del Rif y las cascadas de Akchour hasta alcanzar las inconfundibles callejuelas azules de Chefchaouen." },
-      { es: "El viaje continuará entre siglos de historia: las ruinas romanas de Volubilis, Moulay Idriss y la ciudad imperial de Meknes." },
-      { es: "Y finalmente, Fez." },
-      { es: "Una ciudad para descubrir a pie, entre callejuelas medievales, zocos, talleres artesanales, escuelas coránicas y tenerías tradicionales." },
+      { es: "Imagina comenzar allí donde el Atlántico y el Mediterráneo se encuentran… y terminar seis días después en el corazón de la histórica Fez.", fr: "Imaginez commencer là où l'Atlantique et la Méditerranée se rencontrent… et terminer six jours plus tard au cœur de la Fès historique." },
+      { es: "Desde Tánger, Cabo Espartel y las Grutas de Hércules abrirán el camino hacia Asilah, con sus calles blancas, murales y murallas frente al Atlántico.", fr: "Depuis Tanger, le cap Spartel et les grottes d'Hercule ouvrent la route vers Asilah, ses ruelles blanches, ses fresques et ses remparts face à l'Atlantique." },
+      { es: "Después llegará Tetuán, antes de adentrarte entre las montañas del Rif y las cascadas de Akchour hasta alcanzar las inconfundibles callejuelas azules de Chefchaouen.", fr: "Vient ensuite Tétouan, avant de traverser les montagnes du Rif et les cascades d'Akchour pour rejoindre les ruelles bleues de Chefchaouen." },
+      { es: "El viaje continuará entre siglos de historia: las ruinas romanas de Volubilis, Moulay Idriss y la ciudad imperial de Meknes.", fr: "Le voyage se poursuit à travers les siècles d'histoire : les ruines romaines de Volubilis, Moulay Idriss et la ville impériale de Meknès." },
+      { es: "Y finalmente, Fez.", fr: "Et enfin, Fès." },
+      { es: "Una ciudad para descubrir a pie, entre callejuelas medievales, zocos, talleres artesanales, escuelas coránicas y tenerías tradicionales.", fr: "Une ville à découvrir à pied, entre ruelles médiévales, souks, ateliers d'artisans, médersas et tanneries traditionnelles." },
     ],
-    closing: { es: "Seis días entre dos mares, ciudades blancas y azules, montañas y medinas. Un viaje por el norte de Marruecos donde cada etapa parece cambiar por completo el escenario." },
+    closing: { es: "Seis días entre dos mares, ciudades blancas y azules, montañas y medinas. Un viaje por el norte de Marruecos donde cada etapa parece cambiar por completo el escenario.", fr: "Six jours entre deux mers, villes blanches et bleues, montagnes et médinas. Un voyage dans le nord du Maroc où chaque étape semble transformer le paysage." },
   },
   tourFezTanger56: {
     sourcePath: "/viajes/norte/fez_tanger/programa_5n_6d",

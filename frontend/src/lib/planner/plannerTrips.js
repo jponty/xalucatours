@@ -16,6 +16,7 @@
 ============================================================ */
 import { tripHeroImage } from "@/lib/tripHero";
 import { SOUTH_TRIPS, NORTH_TRIPS, FULL_TRIPS, SHORT_TRIPS } from "@/lib/homeCarousels";
+import { PROGRAM_TRK_89 } from "@/lib/programs/tangerRak89";
 
 const T = (es, en, fr) => ({ es, en, fr });
 
@@ -72,7 +73,7 @@ export const XALUCA_TRIPS = [
     themes: ["ciudades-imperiales", "desierto", "atlas", "kasbahs", "cultura"], pace: "equilibrado",
   },
   {
-    routeId: "tourGransurTangerRak", days: 12, entry: "tanger", exit: "marrakech", loop: false,
+    routeId: "tourTangerRak89", days: PROGRAM_TRK_89.days.length, entry: "tanger", exit: "marrakech", loop: false,
     name: T("Tánger · Chefchaouen · Fez · Sahara · Marrakech", "Tangier · Chefchaouen · Fez · Sahara · Marrakech", "Tanger · Chefchaouen · Fès · Sahara · Marrakech"),
     stops: ["tanger", "chefchaouen", "fez", "volubilis", "sidiali", "ergchebbi", "todra", "dades", "ouarzazate", "aitbenhaddou", "marrakech"],
     themes: ["ciudades-imperiales", "desierto", "costa", "cultura", "kasbahs", "atlas"], pace: "equilibrado",

@@ -30,7 +30,7 @@ describe("published group departures", () => {
     const [departure] = UPCOMING_DEPARTURES;
     expect(departure.badge.es).toBe("Año Nuevo 2027");
     expect(departure.dates.es).toBe("27 Dic 2026 – 01 Ene 2027");
-    expect(departure.price).toBe(1980);
+    expect(departure.price).toBe(2100);
     expect(pathFor("es", departure.tripRouteId)).toBe("/findeano2026");
     expect(TRAVEL_CATEGORIES.find((category) => category.slug === "group-departures").departures).toEqual([
       { id: departure.id, tripRouteId: departure.tripRouteId, label: departure.badge, dates: departure.dates, spots: departure.spots },

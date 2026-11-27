@@ -20,6 +20,7 @@ export default function JourneyStoryPostcard({ content, image, tripTitle, durati
   const { lang } = useLanguage();
 
   if (!content) return null;
+  if (lang !== "es" && (!content.paragraphs?.every((paragraph) => paragraph[lang]) || !content.closing?.[lang])) return null;
 
   const eyebrow = content.eyebrow || META.eyebrow;
   const title = content.title || META.title;

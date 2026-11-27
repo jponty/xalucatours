@@ -23,8 +23,18 @@ import { XALUCA_TRIPS } from "@/lib/planner/plannerTrips";
 import { pathFor } from "@/lib/routes";
 import { tt } from "@/lib/tripFinder";
 import { getTripParams, resolveTripContext, setTripContext } from "@/lib/tripContext";
+import { getProgramTiers } from "@/lib/programPricing";
+import { getFromPrice } from "@/lib/pricing";
+import { PROGRAM_TRK_89 } from "@/lib/programs/tangerRak89";
 
 const trip = XALUCA_TRIPS.find(({ routeId }) => routeId === "tourMarrakechFez67");
+test("Tangier–Marrakech finder card uses the exact nine-day programme and its tariff", () => {
+  const tangierTrip = XALUCA_TRIPS.find(({ routeId }) => routeId === "tourTangerRak89");
+  expect(tangierTrip.days).toBe(PROGRAM_TRK_89.days.length);
+  expect(tangierTrip.days).toBe(9);
+  expect(pathFor("es", tangierTrip.routeId)).toBe("/viajes/gransur/tanger-rak/programa_8n_9d");
+  expect(getFromPrice({ tiers: getProgramTiers(tangierTrip.routeId) })).toBe(1535);
+});
 const images = ["/day-one.jpg", "/day-two.jpg", "/day-three.jpg"];
 let container, root, mockToggleFavorite, originalMatchMedia;
 const get = (suffix) => container.querySelector(`[data-testid="trip-finder-${suffix}-${trip.routeId}"]`);
