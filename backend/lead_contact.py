@@ -2,7 +2,7 @@
 import re
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 
 
 def normalize_international_phone(value: Optional[str]) -> Optional[str]:
@@ -47,6 +47,36 @@ class LeadContactInput(BaseModel):
                 and set(values) == {"email", "phone"}):
             return ["email", "phone"]
         raise ValueError("Choose Email + Phone or Email only")
+
+
+class NewsletterContactInput(BaseModel):
+    """Newsletter email is mandatory; a phone is only needed for phone contact."""
+    email: EmailStr
+    phone: Optional[str] = None
+    preferred_contact: list[str] = Field(default_factory=lambda: ["email"])
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def trim_email(cls, value):
+        return value.strip() if isinstance(value, str) else value
+
+    @field_validator("phone", mode="before")
+    @classmethod
+    def optional_phone(cls, value):
+        return normalize_international_phone(value)
+
+    @field_validator("preferred_contact", mode="before")
+    @classmethod
+    def validate_preference(cls, value):
+        return LeadContactInput.validate_preference(value)
+
+    @model_validator(mode="after")
+    def require_phone_when_requested(self):
+        if self.phone and "preferred_contact" not in self.model_fields_set:
+            self.preferred_contact = ["email", "phone"]
+        if "phone" in self.preferred_contact and not self.phone:
+            raise ValueError("Phone is required for Email + Phone contact")
+        return self
 
 
 def contact_preference_label(value):

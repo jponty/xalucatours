@@ -8,6 +8,7 @@ import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/conta
 import { ContactPreference } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import { errorToastMessage } from "@/components/GenericErrorMessage";
+import { pathFor } from "@/lib/routes";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const T = (es, en, fr) => ({ es, en, fr });
@@ -18,7 +19,7 @@ const COPY = {
   steps: [T("Deja tus datos", "Leave your details", "Laissez vos coordonnées"), T("Descubre tu regalo", "Discover your gift", "Découvrez votre cadeau"), T("Disfrútalo en Marruecos", "Enjoy it in Morocco", "Profitez-en au Maroc")],
   first: T("Nombre", "First name", "Prénom"), last: T("Apellido(s)", "Last name", "Nom"),
   phone: T("Teléfono", "Phone", "Téléphone"), email: T("Correo electrónico", "Email", "E-mail"),
-  consent: T("He leído y acepto la política de privacidad.", "I have read and accept the privacy policy.", "J'ai lu et j'accepte la politique de confidentialité."),
+  consent: T("He leído la información de privacidad y acepto el tratamiento de mis datos para gestionar esta solicitud.", "I have read the privacy information and agree to the use of my data to handle this request.", "J'ai lu les informations de confidentialité et j'accepte le traitement de mes données pour gérer cette demande."),
   submit: T("Descubrir mi regalo", "Discover my gift", "Découvrir mon cadeau"),
   reveal: T("¡Tu regalo es un té a la menta!", "Your gift is a mint tea!", "Votre cadeau est un thé à la menthe !"),
   success: T("Hemos recibido tus datos. Te enviaremos una confirmación por email; nuestro equipo te indicará cómo disfrutar del té durante tu visita a Marruecos.", "We have received your details. We will email you a confirmation; our team will explain how to enjoy your tea during your visit to Morocco.", "Nous avons reçu vos coordonnées. Nous vous enverrons une confirmation par e-mail ; notre équipe vous indiquera comment savourer votre thé lors de votre visite au Maroc."),
@@ -82,7 +83,7 @@ export default function RuletaPromo() {
             <label className="block text-xs font-semibold">{pick(COPY.email, lang)}<input required type="email" value={form.email} onChange={set("email")} className="mt-2 w-full border border-[#2C2621]/20 p-3" /></label>
             <div><label className="block text-xs font-semibold mb-2">{pick(COPY.phone, lang)}</label><InternationalPhoneInput required value={form.phone} onValueChange={phone => setForm(current => ({ ...current, phone }))} lang={lang} /></div>
             <ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="magic-lamp-pref" />
-            <label className="flex items-start gap-3 text-xs leading-relaxed"><input type="checkbox" required checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-0.5 accent-[#C16542]" /><span>{pick(COPY.consent, lang)} <a href="https://xalucatours.com/" target="_blank" rel="noopener noreferrer" className="underline">{lang === "es" ? "Ver política" : "Privacy policy"}</a></span></label>
+            <label className="flex items-start gap-3 text-xs leading-relaxed"><input type="checkbox" required checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-0.5 accent-[#C16542]" /><span>{pick(COPY.consent, lang)} <a href={pathFor(lang, "privacy")} target="_blank" rel="noopener noreferrer" className="underline">{pick(T("Ver información de privacidad", "View privacy information", "Voir les informations de confidentialité"), lang)}</a></span></label>
             <button type="submit" disabled={sending} className="xaluca-button w-full inline-flex items-center justify-center gap-2 bg-[#C16542] hover:bg-[#A85231] text-white px-6 py-4 text-xs tracking-[0.18em] uppercase font-semibold disabled:opacity-60"><Send className="w-4 h-4" />{sending ? "Enviando…" : pick(COPY.submit, lang)}</button>
           </form>}
         </div>

@@ -12,7 +12,7 @@ jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ lang: mockLang }),
   pick: (copy, lang) => copy[lang] || copy.es,
 }));
-jest.mock("@/lib/routes", () => ({ resolvePath: () => ({ routeId: "home" }) }));
+jest.mock("@/lib/routes", () => ({ resolvePath: () => ({ routeId: "home" }), pathFor: (lang, routeId) => routeId === "privacy" ? ({ es: "/privacidad", en: "/en/privacy", fr: "/fr/confidentialite" }[lang]) : "/" }));
 jest.mock("@/components/InternationalPhoneInput", () => ({
   __esModule: true,
   default: ({ name, value, onValueChange, testId }) => (

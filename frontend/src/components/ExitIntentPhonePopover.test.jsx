@@ -11,7 +11,7 @@ jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ lang: "es" }),
   pick: (copy, lang) => copy[lang] || copy.es,
 }));
-jest.mock("@/lib/routes", () => ({ resolvePath: () => ({ routeId: "home" }) }));
+jest.mock("@/lib/routes", () => ({ resolvePath: () => ({ routeId: "home" }), pathFor: () => "/privacidad" }));
 jest.mock("@/components/LeadSubmissionSuccess", () => () => null);
 
 let container, root, originalResizeObserver, originalScrollIntoView;

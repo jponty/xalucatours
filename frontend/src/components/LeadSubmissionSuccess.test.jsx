@@ -20,7 +20,7 @@ describe("LeadSubmissionSuccess", () => {
       <LeadSubmissionSuccess />,
     );
 
-    expect(html).toContain("¡Recibido! Te respondemos en 24–48 h.");
+    expect(html).toContain("¡Recibido! Te respondemos en 24–48 horas laborables.");
     expect(html).toContain("24–48 horas");
     expect(html).toContain('href="/"');
     expect(html).toContain('href="/archivo"');

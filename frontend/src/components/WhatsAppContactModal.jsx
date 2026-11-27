@@ -4,6 +4,7 @@ import { ArrowRight, Check, MessageCircle, ShieldCheck } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import { useLeadCapture } from "@/lib/leadCapture";
 import { contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
 import { ContactPreference } from "@/components/FormExtras";
@@ -11,7 +12,6 @@ import InternationalPhoneInput, { isValidInternationalPhone } from "@/components
 import { WHATSAPP_URL } from "@/components/WhatsAppIcon";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const PRIVACY_URL = "https://xalucatours.com/";
 const INITIAL_FORM = { first_name: "", last_name: "", email: "", phone: "", privacy: false };
 
 const WHATSAPP_MODAL_EVENT = "xaluca:open-whatsapp-contact";
@@ -261,7 +261,7 @@ export default function WhatsAppContactModal() {
               <input required type="checkbox" name="privacy" checked={form.privacy} onChange={updateForm} data-testid="whatsapp-contact-privacy" className="mt-0.5 h-4 w-4 shrink-0 accent-[#C16542]" />
               <span>
                 {pick(COPY.privacyPre, lang)}
-                <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacyLink, lang)}</a>.
+                <a href={pathFor(lang, "privacy")} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacyLink, lang)}</a>.
               </span>
             </label>
 

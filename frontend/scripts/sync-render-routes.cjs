@@ -19,12 +19,15 @@ async function publicPaths() {
 async function publicRewrites() {
   const { pathFor, blogSlugs } = await loadSiteData();
   const paths = await publicPaths();
-  // Limit patterns to public travel/blog namespaces. No catch-all HTML rewrite:
-  // admin, API, assets and all other paths keep the existing SPA fallback.
+  // Known public routes only. Unknown paths must return HTTP 404.
   const prefixes = ["es", "en", "fr"].flatMap((lang) => [pathFor(lang, "toursLanding"), pathFor(lang, "blog")]);
   const blogPrefixes = ["es", "en", "fr"].map((lang) => pathFor(lang, "blog"));
   const rules = prefixes.filter((prefix) => !blogPrefixes.includes(prefix))
     .map((prefix) => ({ type: "rewrite", source: `${prefix}/*`, destination: `${prefix}/*/index.html` }));
+  rules.push(
+    { type: "rewrite", source: "/admin", destination: "/index.html" },
+    { type: "rewrite", source: "/admin/*", destination: "/index.html" },
+  );
   // Existing editorial posts retain their generated route-specific HTML.
   for (const prefix of blogPrefixes) for (const slug of blogSlugs) {
     rules.push({ type: "rewrite", source: `${prefix}/${slug}`, destination: `${prefix}/${slug}/index.html` });

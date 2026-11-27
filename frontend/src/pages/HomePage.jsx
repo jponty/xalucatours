@@ -53,7 +53,7 @@ const COPY = {
     eyebrow: { es: "Viajes por el sur de Marruecos", en: "Southern Morocco journeys", fr: "Voyages au Sud du Maroc" },
     title:   { es: "La magia del sur de Marruecos",  en: "The magic of southern Morocco", fr: "La magie du Sud du Maroc" },
     description: {
-      es: "Cuatro circuitos cinematográficos por la ruta de las mil kasbahs, el Alto Atlas y las dunas del Erg Chebbi — el alma del Sahara marroquí.",
+      es: "Cuatro circuitos cinematográficos por la ruta de las mil kasbahs, el Alto Atlas y las dunas del Erg Chebbi — el alma del Sáhara marroquí.",
       en: "Four cinematic circuits along the thousand-kasbahs route, the High Atlas and the Erg Chebbi dunes — the soul of Moroccan Sahara.",
       fr: "Quatre circuits cinématographiques sur la route des mille kasbahs, le Haut Atlas et les dunes de l'Erg Chebbi — l'âme du Sahara marocain.",
     },

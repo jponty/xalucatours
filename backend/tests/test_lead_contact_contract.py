@@ -86,8 +86,7 @@ def test_invalid_contact_does_not_create_or_notify(flow, endpoint, overrides):
     (server.ContactRequestCreate, {"first_name": "Ana", "last_name": "García", "message": "Un viaje a Marruecos"}),
     (server.TripPlannerCreate, {"first_name": "Ana", "last_name": "García"}),
     (server.ProgramDownloadCreate, {"first_name": "Ana", "last_name": "García", "privacy_accepted": True}),
-    (server.NewsletterSubscriptionCreate, {"first_name": "Ana", "last_name": "García", "consent": True}),
-    (server.ContestSpinPayload, {"first_name": "Ana", "last_name": "García"}),
+    (server.ContestSpinPayload, {"first_name": "Ana", "last_name": "García", "access_code": "xalucatours"}),
     (server.FeedbackFields, {"message": "Un viaje inolvidable", "consent": True}),
 ])
 def test_every_capture_requires_both_details_and_only_two_preferences(model, extra):

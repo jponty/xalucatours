@@ -73,6 +73,7 @@ export default function SeoHead({
   jsonLd,                 // object | array of structured-data objects
   siteName = "Xaluca Tours",
   twitterCard = "summary_large_image",
+  noindex = false,
 }) {
   useEffect(() => {
     const head = document.head;
@@ -98,6 +99,7 @@ export default function SeoHead({
 
     // 2. Sweep previously injected dynamic tags
     head.querySelectorAll(`[${SEO_FLAG}="${SEO_FLAG_VAL}"]`).forEach((n) => n.remove());
+    if (noindex) ensureMeta(head, "name", "robots", "noindex,follow");
 
     // 3. Description
     if (description) ensureMeta(head, "name", "description", description);
@@ -151,7 +153,7 @@ export default function SeoHead({
       head.querySelectorAll(`[${SEO_FLAG}="${SEO_FLAG_VAL}"]`).forEach((n) => n.remove());
     };
   }, [
-    title, description, image, type, lang, siteName, twitterCard,
+    title, description, image, type, lang, siteName, twitterCard, noindex,
     // serialize complex props to a stable dep
     JSON.stringify(hreflang || null),
     JSON.stringify(jsonLd || null),

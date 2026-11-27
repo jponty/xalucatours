@@ -25,7 +25,7 @@ from storage import init_storage, put_object, get_object
 from supabase_db import SupabaseDatabase, UpdateOne
 from contest_prize_policy import contest_prize_policy_error, normalize_legacy_contest_prize
 from lead_registry import LeadCapture, register_lead_routes, save_submission
-from lead_contact import LeadContactInput, normalize_international_phone, contact_preference_label
+from lead_contact import LeadContactInput, NewsletterContactInput, normalize_international_phone, contact_preference_label
 from calendly_leads import register_calendly_routes
 from newsletter_leads import import_newsletter_leads
 from form_dictation import register_dictation_routes
@@ -422,7 +422,7 @@ class ProgramDownloadCreate(LeadCapture, LeadContactInput):
 
 
 # ---------- Newsletter subscriptions ----------
-class NewsletterSubscriptionCreate(LeadCapture, LeadContactInput):
+class NewsletterSubscriptionCreate(LeadCapture, NewsletterContactInput):
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=150)
     consent: bool
@@ -530,7 +530,7 @@ async def create_newsletter_subscription(payload: NewsletterSubscriptionCreate):
             ("Nombre", _html.escape(payload.first_name)),
             ("Apellido(s)", _html.escape(payload.last_name)),
             ("Email", _html.escape(email)),
-            ("Teléfono", _html.escape(payload.phone)),
+            ("Teléfono", _html.escape(payload.phone or "No facilitado")),
             ("Página origen", _html.escape(payload.source_url or payload.source_path or "/")),
             ("Canal preferido", _contact_pref_label(payload.preferred_contact)),
         ],

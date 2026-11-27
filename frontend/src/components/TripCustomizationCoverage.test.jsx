@@ -69,9 +69,9 @@ function pageFor(routeId) {
   return defaultImport ? pageModule.default : pageModule[name];
 }
 
-test("the audit includes all 67 individual routes, including the special departure", () => {
-  expect(routeIds).toHaveLength(67);
-  expect(new Set(routeIds).size).toBe(67);
+test("the audit includes all 68 registered individual routes, including the special departure", () => {
+  expect(routeIds).toHaveLength(68);
+  expect(new Set(routeIds).size).toBe(68);
 });
 
 describe.each(["es", "en", "fr"])("customization rollout in %s", (lang) => {

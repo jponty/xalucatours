@@ -33,9 +33,9 @@ export const WHAT_NEXT = {
       "Si vous le souhaitez, nous pouvons préparer une proposition sur mesure adaptée à vos intérêts, dates et budget."),
   ],
   response: T(
-    "Tiempo habitual de respuesta: dentro del horario de oficina, normalmente respondemos en pocas horas laborables.",
-    "Typical response time: within office hours, we usually reply within a few working hours.",
-    "Délai de réponse habituel : pendant les heures de bureau, nous répondons généralement en quelques heures ouvrables.",
+    "Tiempo habitual de respuesta: 24–48 horas laborables. Horario de oficina: lunes a viernes, de 10:00 a 20:00 h.",
+    "Typical response time: 24–48 business hours. Office hours: Monday to Friday, 10:00–20:00.",
+    "Délai de réponse habituel : 24–48 heures ouvrables. Horaires du bureau : du lundi au vendredi, de 10 h à 20 h.",
   ),
 };
 

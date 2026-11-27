@@ -274,6 +274,9 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
             </div>
             <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
               <C name="hero.title" defaults={metaAllLangs(program, variant, "title")} multiline={false} />
+              {variant === "da" && ["tourDesiertoAtlas45", "tourDesiertoAtlas56", "tourDesiertoAtlas67"].includes(program.routeId) && (
+                <span className="block text-[0.52em] mt-3">{pick(program.duration, lang)}</span>
+              )}
             </h1>
             <p className="fade-up fade-up-delay-2 mt-8 max-w-2xl text-base md:text-lg text-[#FDFBF7]/90 leading-relaxed text-on-image">
               <C name="hero.subtitle" defaults={metaAllLangs(program, variant, "subtitle")} />

@@ -75,6 +75,27 @@ class _NewContactClient(_ExistingContactClient):
         return _Response(404)
 
 
+def test_newsletter_email_only_without_phone(monkeypatch, newsletter_database):
+    monkeypatch.setattr(server, "sync_newsletter_contact", lambda *args: "contact-id")
+    payload = server.NewsletterSubscriptionCreate(
+        first_name="Ana", last_name="García", email="ana@example.com", consent=True,
+        preferred_contact=["email"],
+    )
+    assert payload.phone is None
+    result = asyncio.run(server.create_newsletter_subscription(payload))
+    assert result.status == "subscribed"
+    saved = next(iter(newsletter_database.contact_requests.rows.values()))
+    assert saved["phone"] is None
+    assert saved["preferred_contact"] == ["email"]
+    assert "No facilitado" in newsletter_database.notifications[0][0]["html"]
+
+
+def test_newsletter_phone_preference_requires_phone():
+    with pytest.raises(ValueError, match="Phone is required"):
+        server.NewsletterSubscriptionCreate(first_name="Ana", last_name="García",
+            email="ana@example.com", consent=True, preferred_contact=["email", "phone"])
+
+
 def test_newsletter_signup_normalizes_email_and_waits_for_resend(monkeypatch, newsletter_database):
     captured = []
     monkeypatch.setattr(

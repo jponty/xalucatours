@@ -89,7 +89,7 @@ describe.each(forms)("$kind contact submission", config => {
     expect(get(config.email).required).toBe(true);
     expect(get(config.form).checkValidity()).toBe(true);
     await submit(config.form);
-    expect(container.textContent).toContain("¡Recibido! Te respondemos en 24–48 h.");
+    expect(container.textContent).toContain("¡Recibido! Te respondemos en 24–48 horas laborables.");
     expect(get("lead-success-home").getAttribute("href")).toBe("/");
     expect(request()).toMatchObject({
       first_name: "Ana", last_name: "García", email: "ana@example.com", phone: "+34612345678", preferred_contact: methods,
@@ -116,6 +116,6 @@ describe.each(forms)("$kind contact submission", config => {
       await act(async () => notificationRoot.unmount());
     } else expect(container.querySelector('[role="alert"]').textContent).not.toContain("[object Object]");
     await submit(config.form);
-    expect(container.textContent).toContain("¡Recibido! Te respondemos en 24–48 h.");
+    expect(container.textContent).toContain("¡Recibido! Te respondemos en 24–48 horas laborables.");
   });
 });

@@ -6,9 +6,9 @@ import { pathFor } from "@/lib/routes";
 
 const COPY = {
   title: {
-    es: "¡Recibido! Te respondemos en 24–48 h.",
-    en: "Received! We will reply within 24–48 hours.",
-    fr: "Bien reçu ! Nous vous répondrons sous 24–48 h.",
+    es: "¡Recibido! Te respondemos en 24–48 horas laborables.",
+    en: "Received! We will reply within 24–48 business hours.",
+    fr: "Bien reçu ! Nous vous répondrons sous 24–48 heures ouvrables.",
   },
   receivedBefore: {
     es: "Hemos recibido tu solicitud correctamente. Nuestro equipo la revisará y se pondrá en contacto contigo en un plazo de ",
@@ -16,9 +16,9 @@ const COPY = {
     fr: "Nous avons bien reçu votre demande. Notre équipe l’examinera et vous contactera sous ",
   },
   receivedTime: {
-    es: "24–48 horas",
-    en: "24–48 hours",
-    fr: "24–48 heures",
+    es: "24–48 horas laborables",
+    en: "24–48 business hours",
+    fr: "24–48 heures ouvrables",
   },
   meanwhile: {
     es: "Mientras tanto, puedes descubrir todos nuestros viajes o reservar una cita previa con nuestro equipo.",

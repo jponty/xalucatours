@@ -136,6 +136,7 @@ export const ROUTES = {
 
   morocco:            { es: "marruecos",                 en: "morocco",                  fr: "maroc" },
   contact:            { es: "contacto",                  en: "contact",                  fr: "contact" },
+  privacy:            { es: "privacidad",                en: "privacy",                  fr: "confidentialite" },
   newsletter:         { es: "newsletter",                en: "newsletter",               fr: "newsletter" },
 
   // Interactive

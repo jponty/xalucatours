@@ -35,7 +35,7 @@ const COPY = {
     },
   },
   cta: {
-    primary: { es: "Reservar plaza", en: "Book your seat", fr: "Réserver" },
+    primary: { es: "Consultar disponibilidad y condiciones", en: "Ask about availability and terms", fr: "Consulter les disponibilités et conditions" },
     secondary: { es: "Hablar con un asesor", en: "Talk to an advisor", fr: "Parler à un conseiller" },
   },
   overview: {
@@ -47,8 +47,8 @@ const COPY = {
       fr: "Ouarzazate · Boumalne Dadès · Boutaghrar · Amskar · Erfoud · Erg Chebbi · Merdani · Khamlia · Rissani · Errachidia",
     },
     airports: { es: "Ouarzazate / Errachidia", en: "Ouarzazate / Errachidia", fr: "Ouarzazate / Errachidia" },
-    price: { es: "1.980 € por persona", en: "€1,980 per person", fr: "1 980 € par personne" },
-    priceNote: { es: "Vuelo privado directo · Tasas no incluidas (120 €)", en: "Private direct flight · Taxes not included (€120)", fr: "Vol privé direct · Taxes non incluses (120 €)" },
+    price: { es: "2.100 € por adulto", en: "€2,100 per adult", fr: "2 100 € par adulte" },
+    priceNote: { es: "Tarifa publicada: 1.980 € + 120 € de tasas de aeropuerto. Confirma disponibilidad y condiciones actuales con el equipo.", en: "Published fare: €1,980 + €120 airport taxes. Confirm current availability and terms with our team.", fr: "Tarif publié : 1 980 € + 120 € de taxes d'aéroport. Confirmez les disponibilités et conditions actuelles auprès de notre équipe." },
   },
   itinerary: {
     overline: { es: "Itinerario · día a día", en: "Itinerary · day by day", fr: "Itinéraire · jour par jour" },
@@ -86,15 +86,15 @@ const COPY = {
     overline: { es: "Paquete alojamiento + excursiones", en: "Accommodation + excursions package", fr: "Forfait hébergement + excursions" },
     title: { es: "Precio del viaje.", en: "Trip price.", fr: "Prix du voyage." },
     adults: { es: "Adultos", en: "Adults", fr: "Adultes" },
-    adultsPrice: { es: "1.980 €", en: "€1,980", fr: "1 980 €" },
-    adultsNote: { es: "por persona*", en: "per person*", fr: "par personne*" },
+    adultsPrice: { es: "2.100 €", en: "€2,100", fr: "2 100 €" },
+    adultsNote: { es: "por adulto, incluidas tasas*", en: "per adult, including taxes*", fr: "par adulte, taxes comprises*" },
     children: { es: "Niños", en: "Children", fr: "Enfants" },
     childrenPrice: { es: "1.540 €", en: "€1,540", fr: "1 540 €" },
     childrenNote: { es: "por niño · 3 a 11 años, mín. 2 adultos*", en: "per child · ages 3 to 11, min. 2 adults*", fr: "par enfant · 3 à 11 ans, min. 2 adultes*" },
     single: { es: "Suplemento habitación individual", en: "Single-room supplement", fr: "Supplément chambre individuelle" },
     singlePrice: { es: "335 €", en: "€335", fr: "335 €" },
     singleNote: { es: "por persona", en: "per person", fr: "par personne" },
-    asterisk: { es: "* Tasas de aeropuerto no incluidas (120 € por persona).", en: "* Airport taxes not included (€120 per person).", fr: "* Taxes d'aéroport non incluses (120 € par personne)." },
+    asterisk: { es: "* Adulto: 1.980 € de tarifa + 120 € de tasas de aeropuerto. Para nuevas reservas, consulta disponibilidad, precio final y condiciones actuales con el equipo.", en: "* Adult: €1,980 fare + €120 airport taxes. For new bookings, confirm availability, final price and current terms with our team.", fr: "* Adulte : 1 980 € de tarif + 120 € de taxes d'aéroport. Pour toute nouvelle réservation, confirmez disponibilités, prix final et conditions actuelles auprès de notre équipe." },
   },
   notes: {
     overline: { es: "Notas importantes", en: "Important notes", fr: "Notes importantes" },
@@ -139,9 +139,9 @@ const COPY = {
     booking: {
       title: { es: "Reserva", en: "Booking", fr: "Réservation" },
       body: {
-        es: "Para confirmar la reserva será necesario completar la ficha de inscripción y realizar el pago de la paga y señal.",
-        en: "To confirm your booking, complete the registration form and pay the deposit.",
-        fr: "Pour confirmer la réservation, remplir la fiche d'inscription et payer l'acompte.",
+        es: "Antes de realizar una nueva reserva, contacta con el equipo para confirmar disponibilidad, plazo de pago y condiciones actuales. Te indicaremos cómo completar la inscripción y el pago.",
+        en: "Before making a new booking, contact our team to confirm availability, the payment deadline and current terms. We will explain registration and payment.",
+        fr: "Avant toute nouvelle réservation, contactez notre équipe pour confirmer les disponibilités, l'échéance de paiement et les conditions actuelles. Nous vous indiquerons comment vous inscrire et payer.",
       },
     },
     payment: {
@@ -151,7 +151,7 @@ const COPY = {
         { es: "Tarjeta Visa", en: "Visa card", fr: "Carte Visa" },
       ],
       deposit: { label: { es: "Paga y señal", en: "Deposit", fr: "Acompte" }, value: { es: "800 € por persona", en: "€800 per person", fr: "800 € par personne" } },
-      final: { label: { es: "Pago final", en: "Final payment", fr: "Solde" }, value: { es: "Antes del 23 de noviembre de 2026", en: "Before 23 November 2026", fr: "Avant le 23 novembre 2026" } },
+      final: { label: { es: "Pago final para nuevas reservas", en: "Final payment for new bookings", fr: "Solde pour les nouvelles réservations" }, value: { es: "Consulta el nuevo plazo con el equipo antes de reservar", en: "Ask our team for the current deadline before booking", fr: "Demandez à notre équipe la nouvelle échéance avant de réserver" } },
     },
     cancel: {
       title: { es: "Gastos de cancelación", en: "Cancellation fees", fr: "Frais d'annulation" },

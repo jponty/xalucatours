@@ -8,6 +8,7 @@ import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Gift, Mail, User, Phone, Loader2, RotateCw, PartyPopper, X, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import monogramWhite from "@/assets/monograma-x-white.png";
 import { loadSupabaseImages } from "@/lib/supabaseImages";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
@@ -17,7 +18,6 @@ const T = (es, en, fr) => ({ es, en, fr });
 const L = (o, lang) => (o && (o[lang] ?? o.es)) || "";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LEGAL_URL = "https://xalucatours.com/";
-const PRIVACY_URL = "https://xalucatours.com/";
 const CONFETTI_COLORS = ["#C16542", "#D4A373", "#B8862F", "#2C2621", "#F2EBE1"];
 
 const UI = {
@@ -396,7 +396,7 @@ export default function ConcursoPage() {
                           {L(UI.legalBases, lang)}
                         </a>
                         {L(UI.legalMid, lang)}
-                        <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" data-testid="concurso-privacy-link" className="text-[#C16542] underline underline-offset-2 hover:text-[#A35133]">
+                        <a href={pathFor(lang, "privacy")} target="_blank" rel="noopener noreferrer" data-testid="concurso-privacy-link" className="text-[#C16542] underline underline-offset-2 hover:text-[#A35133]">
                           {L(UI.legalPrivacy, lang)}
                         </a>
                         {L(UI.legalPost, lang)}

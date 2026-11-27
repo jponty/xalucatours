@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { resolvePath } from "@/lib/routes";
+import { resolvePath, pathFor } from "@/lib/routes";
 import { supabaseMedia } from "@/lib/supabaseMedia";
 import Img from "@/components/Img";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
@@ -22,7 +22,6 @@ import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 import { TEAM_MEMBERS } from "@/lib/teamMembers";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const PRIVACY_URL = "https://xalucatours.com/";
 const T = (es, en, fr) => ({ es, en, fr });
 
 const COPY = {
@@ -259,7 +258,7 @@ export default function FounderContactModal({ open, onOpenChange, initialRecipie
               <div className="mt-6"><ContactPreference lang={lang} value={form.preferred_contact} onChange={preferred_contact => setForm(current => ({ ...current, preferred_contact }))} testidPrefix="founder-contact-pref" /></div>
               <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#62584E]">
                 <input required type="checkbox" name="privacy" checked={form.privacy} onChange={onChange} data-testid="founder-contact-privacy" className="mt-0.5 h-4 w-4 shrink-0 accent-[#C16542]" />
-                <span>{pick(COPY.privacyPre, lang)}<a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacy, lang)}</a>.</span>
+                <span>{pick(COPY.privacyPre, lang)}<a href={pathFor(lang, "privacy")} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacy, lang)}</a>.</span>
               </label>
 
               <div className="mt-8 flex flex-col gap-4 border-t border-[#2C2621]/10 pt-7 sm:flex-row sm:items-center sm:justify-between">

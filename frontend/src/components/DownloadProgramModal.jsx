@@ -8,11 +8,10 @@ import { toast } from "sonner";
 import { errorToastMessage } from "@/components/GenericErrorMessage";
 import { X, Download, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
+import { pathFor } from "@/lib/routes";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-const PRIVACY_URL = "https://xalucatours.com/";
 
 const COPY = {
   title: { es: "Descargar programa", en: "Download programme", fr: "Télécharger le programme" },
@@ -130,10 +129,10 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
         language: lang,
       });
       setDone(true);
-      const url = data?.download_url || PRIVACY_URL;
+      const url = data?.download_url;
       // Redirect automatically to the brochure link for this trip page.
       setTimeout(() => {
-        window.open(url, "_blank", "noopener,noreferrer");
+        if (url) window.open(url, "_blank", "noopener,noreferrer");
         onClose();
       }, 900);
     } catch (error) {
@@ -229,7 +228,7 @@ export const DownloadProgramModal = ({ open, onClose, routeId, programTitle }) =
                   required data-testid="download-checkbox-privacy" className="dl-checkbox mt-0.5" />
                 <span className="text-[13px] leading-snug text-[#2C2621]/80">
                   {L("privacy_pre")}
-                  <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer"
+                  <a href={pathFor(lang, "privacy")} target="_blank" rel="noopener noreferrer"
                     className="text-[#C16542] underline underline-offset-2 hover:text-[#A35133]"
                     data-testid="download-privacy-link">
                     {L("privacy_link")}

@@ -18,6 +18,7 @@ import { BlogPostPage } from "@/pages/BlogPage";
 import { resolvePath, pathFor, redirectForPath, STANDALONE_PATHS } from "@/lib/routes";
 import { ROUTE_COMPONENTS } from "@/lib/routeComponents";
 import SeoHead from "@/components/SeoHead";
+import NotFoundPage from "@/pages/NotFoundPage";
 import { getSeoMeta } from "@/lib/seoMeta";
 import { seoImageForRoute } from "@/lib/seoImages";
 
@@ -50,8 +51,7 @@ const LocalizedRouter = () => {
 
   const Component = ROUTE_COMPONENTS[routeId];
   if (!Component && !routeId) {
-    // Unknown URL within a known lang → redirect to home of that lang
-    return <Navigate to={pathFor(lang, "home")} replace />;
+    return <NotFoundPage />;
   }
 
   // Per-page SEO: title + description + canonical + hreflang + a branded,

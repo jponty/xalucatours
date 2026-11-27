@@ -34,6 +34,38 @@ const withBrand = (label) => ({
 
 const SEO = {
   home: DEFAULT_SEO,
+  privacy: {
+    title: withBrand(T("Información de privacidad", "Privacy information", "Informations de confidentialité")),
+    description: T(
+      "Consulta cómo Xaluca Tours utiliza los datos de los formularios para atender tus solicitudes y cómo puedes contactar con el equipo sobre privacidad.",
+      "Learn how Xaluca Tours uses form submissions to handle your requests and how to contact the team about privacy.",
+      "Découvrez comment Xaluca Tours utilise les données des formulaires pour traiter vos demandes et comment contacter notre équipe."
+    ),
+  },
+  contact: {
+    title: withBrand(T("Contacto y asesoramiento de viajes", "Contact our Morocco travel team", "Contactez notre équipe voyages")),
+    description: T("Habla con el equipo de Xaluca Tours para resolver dudas, planificar tu viaje por Marruecos o reservar una cita en Sabadell.", "Contact Xaluca Tours to ask questions, plan a Morocco trip or book an appointment with our team in Sabadell.", "Contactez Xaluca Tours pour poser vos questions, préparer un voyage au Maroc ou prendre rendez-vous avec notre équipe à Sabadell."),
+  },
+  blog: {
+    title: withBrand(T("Blog de viajes por Marruecos", "Morocco travel blog", "Blog de voyage au Maroc")),
+    description: T("Historias, rutas y consejos sobre el desierto, las kasbahs y la cultura de Marruecos contados por el equipo de Xaluca Tours.", "Stories, routes and advice on Morocco's desert, kasbahs and culture from the Xaluca Tours team.", "Récits, itinéraires et conseils sur le désert, les kasbahs et la culture du Maroc par l'équipe Xaluca Tours."),
+  },
+  about: {
+    title: withBrand(T("Conoce al equipo", "Meet our team", "Découvrez notre équipe")),
+    description: T("Conoce a las personas de Xaluca Tours que diseñan viajes a medida por Marruecos y acompañan cada experiencia.", "Meet the Xaluca Tours team who design tailor-made journeys across Morocco and support every experience.", "Rencontrez l'équipe Xaluca Tours qui conçoit des voyages sur mesure au Maroc et accompagne chaque expérience."),
+  },
+  galeria: {
+    title: withBrand(T("Galería de Marruecos", "Morocco photo gallery", "Galerie photo du Maroc")),
+    description: T("Explora fotografías del desierto, el Atlas, las ciudades y los alojamientos que forman parte de los viajes Xaluca Tours.", "Explore photos of the desert, Atlas, cities and accommodation featured in Xaluca Tours journeys.", "Découvrez les photos du désert, de l'Atlas, des villes et des hébergements des voyages Xaluca Tours."),
+  },
+  tourBespoke: {
+    title: withBrand(T("Viajes a medida por Marruecos", "Tailor-made Morocco trips", "Voyages sur mesure au Maroc")),
+    description: T("Diseña un itinerario personalizado por Marruecos con el equipo de Xaluca Tours, adaptado a tus fechas, intereses y ritmo.", "Design a personalised Morocco itinerary with Xaluca Tours, tailored to your dates, interests and pace.", "Concevez un itinéraire au Maroc avec Xaluca Tours, adapté à vos dates, vos envies et votre rythme."),
+  },
+  planTrip: {
+    title: withBrand(T("Planifica tu viaje a Marruecos", "Plan your Morocco trip", "Planifiez votre voyage au Maroc")),
+    description: T("Cuéntanos cómo imaginas tu viaje a Marruecos y recibe una propuesta personalizada del equipo Xaluca Tours.", "Tell us how you imagine your Morocco trip and receive a personalised proposal from Xaluca Tours.", "Racontez-nous votre projet de voyage au Maroc et recevez une proposition personnalisée de Xaluca Tours."),
+  },
   tourFinDeAno2025: {
     title: withBrand(T("Fin de Año 2026 en el desierto", "New Year's Eve 2026 in the desert", "Réveillon 2026 dans le désert")),
     description: T(
@@ -70,11 +102,11 @@ const SEO = {
   },
 
   fastTrack: {
-    title: withBrand(T("Fast Track · Planificación prioritaria", "Fast Track · Planificación prioritaria", "Fast Track · Planificación prioritaria")),
+    title: withBrand(T("Fast Track · Planificación prioritaria", "Fast Track · Priority trip planning", "Fast Track · Planification prioritaire")),
     description: T(
       "Activa Fast Track por 150 € y accede a una planificación prioritaria y personalizada. Importe no reembolsable, deducible íntegramente si reservas el viaje.",
-      "Activa Fast Track por 150 € y accede a una planificación prioritaria y personalizada. Importe no reembolsable, deducible íntegramente si reservas el viaje.",
-      "Activa Fast Track por 150 € y accede a una planificación prioritaria y personalizada. Importe no reembolsable, deducible íntegramente si reservas el viaje."
+      "Activate Fast Track for €150 and get priority, personalised trip planning. The fee is non-refundable and fully deducted if you book.",
+      "Activez Fast Track pour 150 € et bénéficiez d'une planification prioritaire et personnalisée. Montant non remboursable, déduit si vous réservez."
     ),
   },
 

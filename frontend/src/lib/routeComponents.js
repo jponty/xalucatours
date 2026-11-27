@@ -4,6 +4,7 @@
 // Usage: const Component = ROUTE_COMPONENTS[routeId];
 
 import HomePage from "@/pages/HomePage";
+import PrivacyPage from "@/pages/PrivacyPage";
 import ClimatePage from "@/pages/ClimatePage";
 import ToursLandingPage from "@/pages/ToursLandingPage";
 import MarruecosPage from "@/pages/MarruecosPage";
@@ -251,6 +252,7 @@ export const ROUTE_COMPONENTS = {
   about:                         EquipoPage,
   blog:                          BlogPage,
   contact:                       ContactPage,
+  privacy:                       PrivacyPage,
   newsletter:                    NewsletterPage,
   appointment:                   CitaPreviaPage,
   juego:                         JuegoPage,

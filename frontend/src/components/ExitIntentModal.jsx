@@ -7,7 +7,7 @@ import { ContactPreference } from "@/components/FormExtras";
 import { ArrowRight, Mail, Phone, Sparkles, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useLanguage, pick } from "@/contexts/LanguageContext";
-import { resolvePath } from "@/lib/routes";
+import { resolvePath, pathFor } from "@/lib/routes";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import LeadSubmissionSuccess from "@/components/LeadSubmissionSuccess";
 import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextField";
@@ -17,7 +17,6 @@ const SESSION_SHOWN_KEY = "xaluca:exit-intent-shown";
 const SESSION_STARTED_KEY = "xaluca:exit-intent-started";
 const SESSION_VIEWS_KEY = "xaluca:exit-intent-page-views";
 const CONVERTED_KEY = "xaluca:exit-intent-converted";
-const PRIVACY_URL = "https://xalucatours.com/";
 const DESKTOP_DELAY = 10_000;
 const MOBILE_DELAY = 45_000;
 const MOBILE_MULTI_PAGE_DELAY = 20_000;
@@ -338,7 +337,7 @@ export default function ExitIntentModal() {
                 <input type="checkbox" name="privacy" checked={form.privacy} onChange={onChange} required data-testid="exit-intent-privacy" className="mt-0.5 h-4 w-4 accent-[#C16542]" />
                 <span>
                   {pick(COPY.privacyPre, lang)}
-                  <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacy, lang)}</a>.
+                  <a href={pathFor(lang, "privacy")} target="_blank" rel="noopener noreferrer" className="text-[#C16542] underline underline-offset-2">{pick(COPY.privacy, lang)}</a>.
                 </span>
               </label>
 

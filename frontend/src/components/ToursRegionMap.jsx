@@ -231,7 +231,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
         </div>
 
         {/* Region chips */}
-        <div className="flex flex-wrap justify-center gap-2.5 mb-8" role="tablist" aria-label="Regiones">
+        <div className="flex flex-wrap justify-center gap-2.5 mb-8" role="tablist" aria-label={pick(T("Regiones", "Regions", "Régions"), lang)}>
           {REGIONS.map((r) => {
             const isActive = r.id === active.id;
             return (
@@ -239,6 +239,7 @@ export const ToursRegionMap = ({ defaultZone, topPadClass = "pt-4" } = {}) => {
                 key={r.id}
                 type="button"
                 role="tab"
+                aria-label={pick(r.name, lang)}
                 aria-selected={isActive}
                 data-testid={`region-map-chip-${r.id}`}
                 onClick={() => setActiveId(r.id)}

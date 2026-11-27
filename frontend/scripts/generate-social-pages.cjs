@@ -43,7 +43,15 @@ async function main() {
       ...(noindex ? ['<meta name="robots" content="noindex,follow" />'] : []),
       "</head>",
     ].join("\n"));
+    const browseLabel = { es: "Explorar viajes", en: "Explore trips", fr: "Explorer les voyages" }[lang];
+    const contactLabel = { es: "Contactar con el equipo", en: "Contact our team", fr: "Contacter notre équipe" }[lang];
+    const browsePath = pathFor(lang, "toursLanding");
+    const contactPath = pathFor(lang, "contact");
+    // Useful HTML for crawlers and visitors without JavaScript. React replaces
+    // this lightweight shell when the application starts.
+    const semanticBody = `<main id="static-page-content" style="max-width:900px;margin:4rem auto;padding:2rem;font-family:system-ui,sans-serif;color:#2C2621"><h1>${escapeHtml(meta.title.replace(/ · Xaluca Tours$/, ""))}</h1><p>${escapeHtml(meta.description)}</p><nav aria-label="${escapeHtml(browseLabel)}"><a href="${escapeHtml(browsePath)}">${escapeHtml(browseLabel)}</a> · <a href="${escapeHtml(contactPath)}">${escapeHtml(contactLabel)}</a></nav></main>`;
     return withAlternates
+      .replace('<div id="root"></div>', `<div id="root">${semanticBody}</div>`)
       .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
       .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${escapeHtml(meta.description)}" />`)
       .replace(/<meta property="og:title" content="[^"]*"\s*\/>/, `<meta property="og:title" content="${escapeHtml(meta.title)}" />`)

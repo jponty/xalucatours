@@ -214,7 +214,7 @@ export default function VideoSection({
                 type="button"
                 onClick={togglePlay}
                 data-testid={`${testid}-toggle-play`}
-                aria-label={playing ? "Pause" : "Play"}
+                aria-label={pick(playing ? { es: "Pausar", en: "Pause", fr: "Mettre en pause" } : { es: "Reproducir", en: "Play", fr: "Lire" }, lang)}
                 className="inline-flex items-center justify-center w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#FDFBF7]/12 hover:bg-[#FDFBF7]/25 backdrop-blur-md border border-[#FDFBF7]/30 text-[#FDFBF7] transition-colors"
               >
                 {playing ? (
@@ -227,7 +227,7 @@ export default function VideoSection({
                 type="button"
                 onClick={toggleMute}
                 data-testid={`${testid}-toggle-mute`}
-                aria-label={muted ? "Unmute" : "Mute"}
+                aria-label={pick(muted ? { es: "Activar sonido", en: "Unmute", fr: "Activer le son" } : { es: "Silenciar", en: "Mute", fr: "Couper le son" }, lang)}
                 className="inline-flex items-center justify-center w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#FDFBF7]/12 hover:bg-[#FDFBF7]/25 backdrop-blur-md border border-[#FDFBF7]/30 text-[#FDFBF7] transition-colors"
               >
                 {muted ? (

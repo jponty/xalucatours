@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLeadCapture } from "@/lib/leadCapture";
-import { contactSubmissionError, contactSubmissionFields, DEFAULT_CONTACT_PREFERENCE } from "@/lib/contactSubmission";
+import { contactSubmissionError, contactSubmissionFields } from "@/lib/contactSubmission";
 import { ContactPreference } from "@/components/FormExtras";
 import InternationalPhoneInput, { isValidInternationalPhone } from "@/components/InternationalPhoneInput";
 import { ArrowRight, Check, Mail, Sparkles } from "lucide-react";
@@ -46,9 +46,9 @@ const COPY = {
   phoneLabel: { es: "Teléfono", en: "Phone", fr: "Téléphone" },
   invalidPhone: { es: "Introduce un teléfono internacional válido.", en: "Enter a valid international phone number.", fr: "Saisissez un téléphone international valide." },
   contactUse: {
-    es: "Guardamos tu teléfono y tu preferencia de contacto junto a tus datos. Esta elección no modifica tu suscripción por email ni autoriza envíos promocionales por teléfono o WhatsApp.",
-    en: "We store your phone and contact preference with your details. This choice does not change your email subscription or authorise promotional calls or WhatsApp messages.",
-    fr: "Nous conservons votre téléphone et votre préférence de contact. Ce choix ne modifie pas votre abonnement par e-mail et n’autorise pas de communications promotionnelles par téléphone ou WhatsApp.",
+    es: "Si facilitas un teléfono, guardaremos el número y tu preferencia de contacto. Esta elección no modifica tu suscripción por email ni autoriza envíos promocionales por teléfono o WhatsApp.",
+    en: "If you provide a phone number, we store it with your contact preference. This does not change your email subscription or authorise promotional calls or WhatsApp messages.",
+    fr: "Si vous indiquez un numéro de téléphone, nous le conservons avec votre préférence de contact. Cela ne modifie pas votre abonnement par e-mail et n'autorise pas de communications promotionnelles par téléphone ou WhatsApp.",
   },
   emailPlaceholder: { es: "tu@email.com", en: "you@email.com", fr: "vous@email.com" },
   consentPre: {
@@ -96,7 +96,7 @@ export default function NewsletterSignup() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [preference, setPreference] = useState(DEFAULT_CONTACT_PREFERENCE);
+  const [preference, setPreference] = useState(["email"]);
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
   const [sending, setSending] = useState(false);
@@ -122,7 +122,8 @@ export default function NewsletterSignup() {
       setError(t("consentError"));
       return;
     }
-    if (!isValidInternationalPhone(phone)) { setError(t("invalidPhone")); return; }
+    if (phone.trim() && !isValidInternationalPhone(phone)) { setError(t("invalidPhone")); return; }
+    if (preference.includes("phone") && !isValidInternationalPhone(phone)) { setError(t("invalidPhone")); return; }
 
     setError("");
     setSending(true);
@@ -142,7 +143,7 @@ export default function NewsletterSignup() {
       setLastName("");
       setEmail("");
       setPhone("");
-      setPreference(DEFAULT_CONTACT_PREFERENCE);
+      setPreference(["email"]);
       setConsent(false);
       setWebsite("");
     } catch (requestError) {
@@ -272,8 +273,8 @@ export default function NewsletterSignup() {
                     placeholder={t("emailPlaceholder")}
                     className="min-h-14 min-w-0 flex-1 border border-[#2C2621]/18 bg-white px-4 text-base text-[#2C2621] outline-none transition-colors placeholder:text-[#82756A]/65 focus:border-[#C16542]"
                   />
-                  <label htmlFor="newsletter-phone" className="mt-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">{t("phoneLabel")} *</label>
-                  <InternationalPhoneInput id="newsletter-phone" name="phone" required value={phone} onValueChange={value => { setPhone(value); setError(""); }} lang={lang} testId="newsletter-phone" />
+                  <label htmlFor="newsletter-phone" className="mt-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#5C5248]">{t("phoneLabel")} {preference.includes("phone") ? "*" : ""}</label>
+                  <InternationalPhoneInput id="newsletter-phone" name="phone" required={preference.includes("phone")} value={phone} onValueChange={value => { setPhone(value); setError(""); }} lang={lang} testId="newsletter-phone" />
                   <div className="my-3"><ContactPreference lang={lang} value={preference} onChange={setPreference} testidPrefix="newsletter-pref" /></div>
                   <button
                     type="submit"

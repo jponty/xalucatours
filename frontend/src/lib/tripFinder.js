@@ -41,19 +41,21 @@ const ORIGIN_DIRECT = {
   pmi: ["marrakech", "tanger"],
 };
 
-/* ---- Month options: Enero 2026 … Diciembre 2027 + "Soy flexible" ---- */
+/* ---- Rolling 12-month window: never offer a date in the past. ---- */
 const MONTH_NAMES = {
   es: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
   en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
 };
 export const FLEXIBLE_LABEL = T("Soy flexible", "I'm flexible", "Je suis flexible");
-export const buildMonthOptions = (lang) => {
+export const buildMonthOptions = (lang, today = new Date()) => {
   const out = [];
-  for (const year of [2026, 2027]) {
-    for (let m = 1; m <= 12; m += 1) {
-      out.push({ value: `${year}-${m}`, month: m, year, label: `${MONTH_NAMES[lang][m - 1]} ${year}` });
-    }
+  const names = MONTH_NAMES[lang] || MONTH_NAMES.es;
+  for (let offset = 0; offset < 12; offset += 1) {
+    const date = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+    const year = date.getFullYear();
+    const m = date.getMonth() + 1;
+    out.push({ value: `${year}-${m}`, month: m, year, label: `${names[m - 1]} ${year}` });
   }
   return out;
 };

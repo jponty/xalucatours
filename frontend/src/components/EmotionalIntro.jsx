@@ -48,7 +48,7 @@ const SLIDES = [
   {
     src: "https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=1400&q=85",
     caption: {
-      es: "Ait Ben Haddou — kasbahs de adobe.",
+      es: "Aït Ben Haddou — kasbahs de adobe.",
       en: "Aït Ben Haddou — adobe kasbahs.",
       fr: "Aït Ben Haddou — kasbahs en pisé.",
     },
@@ -199,7 +199,7 @@ export const EmotionalIntro = () => {
               <button
                 type="button"
                 onClick={() => go(idx - 1)}
-                aria-label="Prev"
+                aria-label={pick({ es: "Imagen anterior", en: "Previous image", fr: "Image précédente" }, lang)}
                 data-testid="emotional-intro-prev"
                 data-edit-allow="true"
                 className={`absolute top-1/2 left-3 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
@@ -211,7 +211,7 @@ export const EmotionalIntro = () => {
               <button
                 type="button"
                 onClick={() => go(idx + 1)}
-                aria-label="Next"
+                aria-label={pick({ es: "Imagen siguiente", en: "Next image", fr: "Image suivante" }, lang)}
                 data-testid="emotional-intro-next"
                 data-edit-allow="true"
                 className={`absolute top-1/2 right-3 -translate-y-1/2 z-[50] inline-flex items-center justify-center w-9 h-9 bg-[#FDFBF7]/85 backdrop-blur-sm text-[#2C2621] transition-opacity duration-300 hover:bg-[#FDFBF7] ${
@@ -228,7 +228,7 @@ export const EmotionalIntro = () => {
                     key={i}
                     type="button"
                     onClick={() => setIdx(i)}
-                    aria-label={`Slide ${i + 1}`}
+                    aria-label={`${pick({ es: "Imagen", en: "Image", fr: "Image" }, lang)} ${i + 1}`}
                     aria-current={i === idx}
                     data-testid={`emotional-intro-dot-${i}`}
                     data-edit-allow="true"

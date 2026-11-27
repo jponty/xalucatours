@@ -62,16 +62,17 @@ test.each([
   }
   const group = get(`${prefix}-pref-group`);
   const form = group.closest("form");
-  expect(get(`${prefix}-pref-both`).checked).toBe(true);
+  expect(get(`${prefix}-pref-${prefix === "newsletter" ? "email" : "both"}`).checked).toBe(true);
   expect(group.querySelectorAll("input")).toHaveLength(2);
   expect(form.querySelectorAll('input[type="email"]')).toHaveLength(1);
   expect(form.querySelectorAll('input[type="tel"]')).toHaveLength(1);
-  for (const type of ["email", "tel"]) expect(form.querySelector(`input[type="${type}"]`).required).toBe(true);
+  expect(form.querySelector('input[type="email"]').required).toBe(true);
+  expect(form.querySelector('input[type="tel"]').required).toBe(prefix !== "newsletter");
   await click(`${prefix}-pref-email`);
   expect(get(`${prefix}-pref-both`).checked).toBe(false);
   expect(get(`${prefix}-pref-email`).checked).toBe(true);
   expect(form.querySelector('input[type="email"]').required).toBe(true);
-  expect(form.querySelector('input[type="tel"]').required).toBe(true);
+  expect(form.querySelector('input[type="tel"]').required).toBe(prefix !== "newsletter");
   expect(group.querySelectorAll("input")).toHaveLength(2);
 });
 
@@ -86,8 +87,16 @@ test.each(["both", "email"])("newsletter saves %s with both details and independ
   expect(axios.post.mock.calls[0][1]).toMatchObject({ email: "ana@example.com", phone: "+34612345678", preferred_contact: option === "both" ? ["email", "phone"] : ["email"], consent: true });
   expect(container.textContent).toContain("Suscripción confirmada");
 });
-test.each(["email", "phone"])("newsletter rejects empty %s even if Email only is selected", async field => {
-  await fillNewsletter(); await click("newsletter-pref-email"); await change(`newsletter-${field}`, ""); await submitNewsletter();
+test("newsletter accepts email only without a phone", async () => {
+  await fillNewsletter(); await click("newsletter-pref-email"); await change("newsletter-phone", ""); await submitNewsletter();
+  expect(axios.post.mock.calls[0][1]).toMatchObject({ phone: "", preferred_contact: ["email"] });
+});
+test("newsletter rejects empty email", async () => {
+  await fillNewsletter(); await change("newsletter-email", ""); await submitNewsletter();
+  expect(axios.post).not.toHaveBeenCalled(); expect(get("newsletter-error")).not.toBeNull();
+});
+test("newsletter requires phone for Email + Phone", async () => {
+  await fillNewsletter(); await click("newsletter-pref-both"); await change("newsletter-phone", ""); await submitNewsletter();
   expect(axios.post).not.toHaveBeenCalled(); expect(get("newsletter-error")).not.toBeNull();
 });
 test("newsletter renders structured server errors safely without losing data", async () => {

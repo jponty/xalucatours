@@ -40,14 +40,14 @@ const T = (es, en, fr) => ({ es, en, fr });
 export const PLANNER_COPY = {
   eyebrow: T("Planifica tu viaje", "Plan your trip", "Planifiez votre voyage"),
   title:   T(
-    "Cuéntanos cómo soñaste con Marruecos.",
-    "Tell us how you dreamed of Morocco.",
-    "Dites-nous comment vous avez rêvé du Maroc.",
+    "Cuéntanos cómo imaginas tu viaje a Marruecos.",
+    "Tell us how you imagine your trip to Morocco.",
+    "Racontez-nous comment vous imaginez votre voyage au Maroc.",
   ),
   intro: T(
-    "Cuatro pasos y un mensaje opcional. Nuestro equipo en destino te responde con una propuesta personalizada en 24-48 h.",
-    "Four short steps and an optional note. Our in-country team replies with a custom proposal within 24-48 h.",
-    "Quatre étapes courtes et une note optionnelle. Notre équipe sur place vous répond avec une proposition sur mesure sous 24-48 h.",
+    "Cuatro pasos y un mensaje opcional. Nuestro equipo en destino te responde con una propuesta personalizada en 24–48 horas laborables.",
+    "Four short steps and an optional note. Our in-country team replies with a custom proposal within 24–48 business hours.",
+    "Quatre étapes courtes et une note optionnelle. Notre équipe sur place vous répond avec une proposition sur mesure sous 24–48 heures ouvrables.",
   ),
   step:        T("Paso", "Step", "Étape"),
   ...TRIP_PLANNING_COPY,
