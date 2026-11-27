@@ -14,19 +14,23 @@ const META = {
   },
   edition: { es: "Edición del viaje", en: "Journey edition", fr: "Édition du voyage" },
   addressee: { es: "Para quien sueña con Marruecos", en: "For those who dream of Morocco", fr: "Pour ceux qui rêvent du Maroc" },
+  closing: { es: "¿Te imaginas viviéndolo?", en: "Can you picture yourself there?", fr: "Vous imaginez-vous vivre ce voyage ?" },
 };
 
-export default function JourneyStoryPostcard({ content, image, tripTitle, duration }) {
+export default function JourneyStoryPostcard({ content, image, tripTitle, duration, localizedSummary }) {
   const { lang } = useLanguage();
 
   if (!content) return null;
-  if (lang !== "es" && (!content.paragraphs?.every((paragraph) => paragraph[lang]) || !content.closing?.[lang])) return null;
+  const sourceIsLocalized = lang === "es" || (content.paragraphs?.every((paragraph) => paragraph[lang]) && content.closing?.[lang]);
+  const summary = localizedSummary?.[lang];
+  if (!sourceIsLocalized && (!Array.isArray(summary) || !summary.length)) return null;
+  const paragraphs = sourceIsLocalized ? content.paragraphs : summary.map((text) => ({ [lang]: text }));
 
   const eyebrow = content.eyebrow || META.eyebrow;
   const title = content.title || META.title;
   const destination = content.destination || tripTitle || { es: "Marruecos", en: "Morocco", fr: "Maroc" };
   const durationLabel = pick(duration, lang) || pick(META.edition, lang);
-  const closingText = pick(content.closing, lang);
+  const closingText = sourceIsLocalized ? pick(content.closing, lang) : pick(META.closing, lang);
   const compactClosing = closingText.length > 90;
 
   return (
@@ -109,7 +113,7 @@ export default function JourneyStoryPostcard({ content, image, tripTitle, durati
             </div>
 
             <div className="columns-1 gap-10 text-[14px] leading-[1.8] text-[#51483F] xl:columns-2">
-              {content.paragraphs.map((paragraph, index) => (
+              {paragraphs.map((paragraph, index) => (
                 <p
                   key={`${pick(paragraph, lang).slice(0, 24)}-${index}`}
                   className={`mb-4 break-inside-avoid ${index === 0 ? "font-serif-x-italic text-lg leading-[1.65] text-[#A14E32]" : ""}`}

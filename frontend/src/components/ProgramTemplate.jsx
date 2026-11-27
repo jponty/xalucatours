@@ -899,6 +899,7 @@ export default function ProgramTemplate({ program, variant = "da", flipbookSrc, 
                 image={tripHeroImage(routeId) || program.days?.[1]?.image || program.days?.[0]?.image}
                 tripTitle={vt.title}
                 duration={program.duration}
+                localizedSummary={metaAllLangs(program, variant, "description")}
               />
             )}
             {showJourneyChronology && (

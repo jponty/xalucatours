@@ -101,7 +101,7 @@ const COPY = {
     docTitle: "Upcoming Morocco departures · Xaluca Tours",
     hero: {
       eyebrow: "Group departures · Fixed dates",
-      place: "New Year 2027",
+      place: "New Year's Eve 2026",
       title: "Upcoming Morocco departures.",
       subtitle: "Fixed dates, small groups and experiences designed around special moments of the year.",
       intro: "Itineraries carefully organised by our team with group departures around specific times — New Year, Easter, summer, long weekends and other special occasions throughout the year.",

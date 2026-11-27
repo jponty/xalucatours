@@ -27,7 +27,7 @@ const COPY = {
   hero: {
     eyebrow: { es: "Del 27 de diciembre al 1 de enero · Vuelo especial directo", en: "From 27 Dec to 1 Jan · Special direct flight", fr: "Du 27 déc. au 1ᵉʳ jan. · Vol spécial direct" },
     place: { es: "Sahara · Erg Chebbi · Atlas Central", en: "Sahara · Erg Chebbi · Central Atlas", fr: "Sahara · Erg Chebbi · Atlas Central" },
-    title: { es: "Fin de Año 2026 en el desierto de Marruecos.", en: "New Year 2026 in the Moroccan desert.", fr: "Réveillon 2026 dans le désert marocain." },
+    title: { es: "Fin de Año 2026 en el desierto de Marruecos.", en: "New Year's Eve 2026 in the Moroccan desert.", fr: "Réveillon 2026 dans le désert marocain." },
     subtitle: {
       es: "Seis días para despedir el año bajo las dunas del Erg Chebbi, brindar entre las haimas y empezar enero con el silencio del Sahara.",
       en: "Six days to close the year under the Erg Chebbi dunes, toast among the tents and open January with the silence of the Sahara.",

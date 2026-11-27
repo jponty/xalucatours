@@ -25,7 +25,7 @@ const render = (props) => {
 
 test.each([
   ["es", "Viaje destacado", "Fin de Año en Marruecos", "Ver viaje", "/findeano2026"],
-  ["en", "Featured journey", "New Year's Eve in Morocco", "View trip", "/en/newyear2026"],
+  ["en", "Featured journey", "New Year's Eve 2026 in Morocco", "View trip", "/en/newyear2026"],
   ["fr", "Voyage à la une", "Réveillon au Maroc", "Voir le voyage", "/fr/nouvelan2026"],
 ])("shows the featured departure and correct CTA in %s", (lang, eyebrow, title, cta, href) => {
   mockLang = lang;

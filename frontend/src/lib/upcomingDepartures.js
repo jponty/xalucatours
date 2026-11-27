@@ -9,11 +9,11 @@ const DEPARTURE_CATALOG = [
     tripRouteId: "tourFinDeAno2025",
     published: true,
     featured: true,
-    badge: { es: "Año Nuevo 2027", en: "New Year 2027", fr: "Nouvel An 2027" },
+    badge: { es: "Fin de Año 2026", en: "New Year's Eve 2026", fr: "Réveillon 2026" },
     badgeColor: "#D4A373",
     title: {
       es: "Viaje Especial de Fin de Año al Desierto de Marruecos",
-      en: "Special New Year journey to the Moroccan desert",
+      en: "Special New Year's Eve 2026 journey to the Moroccan desert",
       fr: "Voyage spécial du Nouvel An dans le désert marocain",
     },
     dates: { es: "27 Dic 2026 – 01 Ene 2027", en: "27 Dec 2026 – 01 Jan 2027", fr: "27 Déc 2026 – 01 Jan 2027" },

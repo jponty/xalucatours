@@ -13,7 +13,7 @@ const COPY = {
   eyebrowTours: { es: "Viajes destacados", en: "Featured journeys", fr: "Voyages à la une" },
   title: {
     es: "Fin de Año en Marruecos",
-    en: "New Year's Eve in Morocco",
+    en: "New Year's Eve 2026 in Morocco",
     fr: "Réveillon au Maroc",
   },
   description: {

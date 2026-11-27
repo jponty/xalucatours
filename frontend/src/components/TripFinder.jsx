@@ -55,7 +55,7 @@ const UI = {
     "Try widening the price range or adjusting the other filters.",
     "Essayez d'élargir la fourchette de prix ou d'ajuster les autres filtres.",
   ),
-  emptyReset: T("Restablecer rango completo", "Reset full range", "Réinitialiser toute la fourchette"),
+  emptyReset: T("Quitar filtro de duración y precio", "Clear duration and price filters", "Effacer les filtres de durée et de prix"),
 };
 
 const FieldLabel = ({ Icon, children }) => (
@@ -353,7 +353,7 @@ export const TripFinder = () => {
             <button
               type="button"
               data-testid="trip-finder-empty-reset"
-              onClick={() => setRange(null)}
+              onClick={() => { setRange(null); setDurationId(""); }}
               className="xaluca-button mt-6 inline-flex items-center gap-2 bg-[#2C2621] hover:bg-[#C16542] text-[#FDFBF7] px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase transition-colors"
             >
               <RotateCcw className="w-4 h-4" strokeWidth={1.8} />

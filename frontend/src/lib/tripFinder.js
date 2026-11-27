@@ -138,14 +138,11 @@ export const rankTrips = ({ originId, monthValue, durationId, priceMin, priceMax
     const reasons = [];
     const from = tripFromPrice(trip.routeId, pricing);
 
-    // 1) Duration (primary). Exact bucket match dominates; near-miss softens.
+    // 1) Duration (primary). A selected range is a filter, not a suggestion.
     if (bucket) {
       if (trip.days >= bucket.min && trip.days <= bucket.max) {
         score += 100;
         reasons.push("duration");
-      } else {
-        const dist = trip.days < bucket.min ? bucket.min - trip.days : trip.days - bucket.max;
-        score += Math.max(0, 40 - dist * 20); // 1 off → +20, ≥2 off → 0
       }
     }
 
@@ -172,7 +169,8 @@ export const rankTrips = ({ originId, monthValue, durationId, priceMin, priceMax
 
     return { trip, score, reasons, idx, from };
   })
-    .filter((r) => !usePriceFilter || (typeof r.from === "number" && r.from >= priceMin && r.from <= priceMax))
+    .filter((r) => (!bucket || (r.trip.days >= bucket.min && r.trip.days <= bucket.max))
+      && (!usePriceFilter || (typeof r.from === "number" && r.from >= priceMin && r.from <= priceMax)))
     .sort((a, b) => b.score - a.score || a.idx - b.idx);
 };
 

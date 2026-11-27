@@ -18,6 +18,10 @@ import VoiceTextField, { VoiceDictationProvider } from "@/components/VoiceTextFi
 import PersonalNameFields, { personalNameFields, hasPersonalName } from "@/components/PersonalNameFields";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const localDateToday = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+};
 
 const initialState = {
   first_name: "",
@@ -49,6 +53,10 @@ export const ContactForm = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (sending || dictating) return;
+    if (form.travel_start_date && form.travel_start_date < localDateToday()) {
+      toast.error(pick({ es: "La fecha de inicio no puede ser anterior a hoy.", en: "The start date cannot be in the past.", fr: "La date de début ne peut pas être antérieure à aujourd'hui." }, lang));
+      return;
+    }
     const required = pick({ es: "Campo obligatorio", en: "Required field", fr: "Champ obligatoire" }, lang);
     if (!hasPersonalName(form)) { toast.error(required); return; }
     if (!isValidInternationalPhone(form.phone)) {
@@ -192,6 +200,7 @@ export const ContactForm = () => {
                             type="date"
                             name="travel_start_date"
                             value={form.travel_start_date}
+                            min={localDateToday()}
                             max={form.travel_end_date || undefined}
                             onChange={onChange}
                             data-testid="contact-input-start-date"
