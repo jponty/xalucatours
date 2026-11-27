@@ -1,7 +1,8 @@
 .morocco-trip-map-section { background: #f2ebe1; }
 .morocco-trip-map-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
-.morocco-trip-map-frame { min-width: 0; background: #e9e1d0; border: 1px solid rgba(110, 45, 23, .22); padding: clamp(14px, 2vw, 26px); }
-.morocco-trip-map-art { min-height: 320px; background: radial-gradient(circle at 54% 48%, #f5efe3 0%, #e8ddca 75%); }
+.morocco-trip-map-frame { position: relative; min-width: 0; background: #f2ebe1; padding: clamp(14px, 2vw, 26px); }
+.morocco-trip-map-art { min-height: 320px; background: #f2ebe1; }
+.morocco-trip-map-frame .morocco-trip-map-logo { top: clamp(16px, 2vw, 28px); right: clamp(16px, 2vw, 28px); width: 44px; height: 44px; z-index: 2; }
 .morocco-trip-map-art svg { width: 100%; height: auto; max-height: 610px; display: block; }
 .morocco-trip-map-loading { width: min(80%, 350px); height: 440px; margin: auto; background: #d9be9c; clip-path: polygon(73% 0, 61% 13%, 50% 32%, 37% 56%, 25% 74%, 15% 100%, 61% 100%, 61% 71%, 77% 71%, 88% 48%, 86% 20%); opacity: .5; }
 .morocco-trip-map-zone { cursor: pointer; outline: none; }

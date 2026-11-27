@@ -95,11 +95,13 @@ test("opens only on demand, uses the real shared form and closes with Escape or 
 test("shows five distinct Moroccan banner images before the shared dictation form", async () => {
   await click("home-dictation-trigger");
   const banner = get("home-dictation-banner");
-  const images = [...banner.querySelectorAll("img")];
+  const images = [...banner.querySelectorAll(".home-dictation-banner-frame > img:first-child")];
   expect(images.map(image => image.alt)).toEqual([
     "Paisajes del desierto", "Merzouga", "Erg Chebbi", "Aït Ben Haddou", "Chefchaouen",
   ]);
   expect(new Set(images.map(image => new URL(image.src).pathname)).size).toBe(5);
+  expect(get("home-dictation-banner-logo").closest(".home-dictation-banner-frame")).toBe(images[0].parentElement);
+  expect(get("home-dictation-banner-monogram").closest(".home-dictation-banner-frame")).toBe(images[0].parentElement);
   expect(banner.compareDocumentPosition(get("dictation-form-section")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });
 

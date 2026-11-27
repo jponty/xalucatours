@@ -22,8 +22,8 @@ import {
      · Sección   →  Inicio › Viajes › Sur de Marruecos
    Renders nothing for unknown routes (no clutter on home, etc).
 
-   Mounted globally inside <Layout/>, absolute-positioned over the
-   hero with a thin glassy strip so it floats above full-bleed media.
+   Mounted globally inside <Layout/>. Keep it in document flow so a
+   multi-line trail never covers a hero title on narrow screens.
 ---------------------------------------------------------------- */
 export default function Breadcrumbs() {
   const { lang } = useLanguage();
@@ -39,10 +39,10 @@ export default function Breadcrumbs() {
     <nav
       aria-label="Breadcrumb"
       data-testid="breadcrumbs"
-      className="absolute top-0 left-0 right-0 z-30 pointer-events-none"
+      className="relative z-30 bg-[#1A1513] pt-24 md:pt-[116px]"
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 pt-[112px] md:pt-[132px]">
-        <div className="pointer-events-auto inline-flex flex-wrap items-center gap-1.5 md:gap-2 bg-[#1A1513]/55 backdrop-blur-md border border-white/10 px-3.5 md:px-4 py-1.5 md:py-2 text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-[#FDFBF7]/90">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 py-3">
+        <div className="inline-flex max-w-full flex-wrap items-center gap-1.5 md:gap-2 bg-[#1A1513]/55 border border-white/10 px-3.5 md:px-4 py-1.5 md:py-2 text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-[#FDFBF7]/90">
           {trail.map((node, i) => {
             const isLast = i === trail.length - 1;
             return (

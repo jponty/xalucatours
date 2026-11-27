@@ -5,6 +5,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#1A1513" />
         <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-logo.png" />
+        <script>document.documentElement.classList.add("js-enabled");</script>
+        <style>
+          /* The pre-rendered SEO content remains available without JavaScript.
+             With JavaScript, show a branded loading state until React replaces it. */
+          html.js-enabled #static-page-content {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            box-sizing: border-box;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: grid;
+            place-items: center;
+            background: #f7f2ea;
+          }
+          html.js-enabled #static-page-content > * { display: none; }
+          html.js-enabled #static-page-content::before {
+            content: "";
+            width: 76px;
+            height: 76px;
+            background: url("%PUBLIC_URL%/favicon-logo.png") center / contain no-repeat;
+          }
+        </style>
 
         <!-- ============================================================
              SEO + Social sharing (Open Graph / Twitter) — STATIC defaults.

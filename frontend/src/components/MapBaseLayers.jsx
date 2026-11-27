@@ -11,17 +11,16 @@ import { useLanguage } from "@/contexts/LanguageContext";
    <TileLayer/> line(s). It renders the current style tiles
    ("map") and lets the user switch to satellite imagery.
 
-   variant:
-     - "light"   → CartoDB light_all (single layer)
-     - "labeled" → CartoDB light_nolabels + light_only_labels
-     - "dark"    → CartoDB dark_all (single layer)
+   All variants use the OpenStreetMap standard map. The dark variant
+   applies a visual filter without relying on a separate tile provider.
 
    The toggle is rendered as a real Leaflet control (so it lives
    inside the map block and never scrolls away), styled to match
    the Xaluca UI and responsive on every breakpoint.
 ============================================================ */
 
-const SUB = "abcd";
+const MAP_TILES = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const MAP_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
 
 // Esri World Imagery (free, key-less) + place-name reference overlay.
 const SAT_IMAGERY =
@@ -36,18 +35,14 @@ const LABELS = {
 };
 
 const MapTiles = ({ variant }) => {
-  if (variant === "labeled") {
-    return (
-      <>
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" subdomains={SUB} />
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png" subdomains={SUB} />
-      </>
-    );
-  }
-  if (variant === "dark") {
-    return <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" subdomains={SUB} />;
-  }
-  return <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" subdomains={SUB} />;
+  return (
+    <TileLayer
+      url={MAP_TILES}
+      attribution={MAP_ATTRIBUTION}
+      maxZoom={19}
+      className={variant === "dark" ? "xaluca-map-tiles-dark" : undefined}
+    />
+  );
 };
 
 const SatelliteTiles = () => (

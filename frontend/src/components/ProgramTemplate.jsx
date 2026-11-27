@@ -264,13 +264,13 @@ const ProgramHero = ({ vt, t, program, lang, variant, routeId, onDownload }) => 
       <div className="flex-1 flex items-end pt-28 md:pt-44 pb-32 md:pb-28">
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="max-w-4xl">
-            <div className="fade-up inline-flex items-center gap-3 text-[#D4A373]">
-              <Compass className="w-3.5 h-3.5" strokeWidth={1.6} />
-              <span className="text-[11px] tracking-[0.35em] uppercase font-semibold">
+            <div className="fade-up flex flex-wrap items-start sm:items-center gap-x-3 gap-y-2 text-[#D4A373]">
+              <Compass className="w-3.5 h-3.5 shrink-0 mt-0.5 sm:mt-0" strokeWidth={1.6} />
+              <span className="min-w-0 flex-1 sm:flex-none text-[11px] tracking-[0.35em] uppercase font-semibold">
                 <C name="hero.eyebrow" defaults={metaAllLangs(program, variant, "eyebrow_prefix")} multiline={false} /> · <C name="hero.duration" defaults={program.duration} multiline={false} />
               </span>
-              <span className="w-8 h-px bg-[#D4A373]/50" />
-              <C name="hero.place" defaults={metaAllLangs(program, variant, "place")} multiline={false} className="text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80" />
+              <span className="hidden sm:block w-8 h-px bg-[#D4A373]/50" />
+              <C name="hero.place" defaults={metaAllLangs(program, variant, "place")} multiline={false} className="basis-full sm:basis-auto pl-[26px] sm:pl-0 text-[10px] tracking-[0.3em] uppercase text-[#D4A373]/80" />
             </div>
             <h1 className="fade-up fade-up-delay-1 font-serif-x text-[#FDFBF7] text-on-image text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mt-6">
               <C name="hero.title" defaults={metaAllLangs(program, variant, "title")} multiline={false} />

@@ -38,6 +38,13 @@
   pointer-events: auto;
   transform: none;
 }
+@media (max-width: 639px) {
+  .trip-floating-stack [data-testid="journey-chronology-fab"] {
+    width: 44px;
+    min-height: 44px;
+    padding: 4px;
+  }
+}
 .trip-floating-slot [data-testid="narration-mini-player"],
 .trip-floating-slot [data-testid="edit-mode-fab"] {
   position: static;

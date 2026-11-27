@@ -9,6 +9,7 @@ import { MAP_ZONES, buildMoroccoTripMapIndex, tripsForMapSelection } from "@/lib
 import { tripHeroSlot, tripTextSlot } from "@/lib/tripHero";
 import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
+import XalucaLogoBadge from "@/components/XalucaLogoBadge";
 import xMonogramBorde from "@/assets/monograma-x-borde.png";
 import "./HomeMoroccoTripMap.css";
 
@@ -68,6 +69,7 @@ export default function HomeMoroccoTripMap() {
 
         <div className="morocco-trip-map-layout">
           <div className="morocco-trip-map-frame">
+            <XalucaLogoBadge className="morocco-trip-map-logo" testid="morocco-trip-map-logo" />
             <div className="morocco-trip-map-art">
               {geo ? <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={pick(COPY.map, lang)} data-testid="morocco-silhouette">
                 <defs><clipPath id="morocco-trip-map-clip"><path d={geo.outline} /></clipPath></defs>

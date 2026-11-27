@@ -253,7 +253,7 @@ export function ChronologyButton({ lang = "es", compact = false }) {
       <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C16542]">
         <History className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
       </span>
-      <span className={`${compact ? "" : "hidden sm:inline"} text-[9px] font-medium uppercase tracking-[0.2em]`}>
+      <span className="hidden sm:inline text-[9px] font-medium uppercase tracking-[0.2em]">
         {compact ? ({ es: "Cronología", en: "Timeline", fr: "Chronologie" }[lang] || "Cronología") : t.returnToChronology}
       </span>
     </button>

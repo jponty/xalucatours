@@ -613,3 +613,6 @@ body.edit-mode-on a:not([data-edit-allow="true"]) .group-hover\:translate-x-0\.5
     box-shadow: 0 1px 4px rgba(26,21,19,0.12);
     backdrop-filter: blur(1px);
 }
+.xaluca-map-tiles-dark {
+  filter: grayscale(0.85) invert(0.9) hue-rotate(180deg) brightness(0.8);
+}
